@@ -1,4 +1,6 @@
-"""Version 1 dataset bundle contract: manifest + CSV or SQLite data (docs/DATA_CONTRACT.md).
+"""Version 1 dataset bundle contract: manifest + CSV, SQLite or Parquet data.
+
+See docs/DATA_CONTRACT.md.
 
 This module is the public, versioned contract API shared by producers and consumers.
 Readers validate everything they rely on and raise :class:`BundleError` on violations;
@@ -29,6 +31,7 @@ import pandas as pd
 CONTRACT_VERSION = 1
 NULL_TOKEN = "\\N"
 LOGICAL_TYPES = ("string", "int64", "float64", "boolean", "date", "timestamp", "decimal")
+STORAGE_FORMATS = {"csv": "data.csv", "sqlite": "data.sqlite", "parquet": "data.parquet"}
 _SQLITE_TYPES = {
     "string": "TEXT",
     "int64": "INTEGER",
@@ -342,7 +345,7 @@ def write_bundle(
     target = Path(path)
     if target.exists():
         raise BundleError(f"bundle already exists: {target}")
-    if fmt not in ("csv", "sqlite"):
+    if fmt not in STORAGE_FORMATS:
         raise BundleError(f"unsupported storage format {fmt!r}")
     if not table.isidentifier():
         raise BundleError(f"invalid SQLite table name {table!r}")
@@ -357,7 +360,7 @@ def write_bundle(
         for rec in frame.itertuples(index=False, name=None)
     ]
     created = (created_at or datetime.now(UTC)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    storage = {"format": fmt, "path": "data.csv" if fmt == "csv" else "data.sqlite"}
+    storage = {"format": fmt, "path": STORAGE_FORMATS[fmt]}
     if fmt == "sqlite":
         storage["table"] = table
     manifest = Manifest(
@@ -380,6 +383,8 @@ def write_bundle(
         data_path = tmp / storage["path"]
         if fmt == "csv":
             _write_csv(data_path, cols, rows)
+        elif fmt == "parquet":
+            _write_parquet(data_path, cols, rows)
         else:
             _write_sqlite(data_path, cols, rows, table)
         (tmp / "manifest.json").write_text(json.dumps(manifest.to_json(), indent=2) + "\n")
@@ -448,7 +453,7 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
         if key not in raw:
             raise BundleError(f"manifest missing {key!r}")
     storage = raw["storage"]
-    if storage.get("format") not in ("csv", "sqlite"):
+    if storage.get("format") not in STORAGE_FORMATS:
         raise BundleError(f"unsupported storage format {storage.get('format')!r}")
     rel = Path(str(storage.get("path", "")))
     if rel.is_absolute() or ".." in rel.parts or not rel.parts:
@@ -480,6 +485,8 @@ def read_bundle(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
         raise BundleError(f"missing data file {manifest.storage['path']}")
     if manifest.storage["format"] == "csv":
         stored = _read_csv(data_path, manifest)
+    elif manifest.storage["format"] == "parquet":
+        stored = _read_parquet(data_path, manifest)
     else:
         stored = _read_sqlite(data_path, manifest)
     rows = [[_parse_value(c, v) for c, v in zip(manifest.columns, r, strict=True)] for r in stored]
@@ -523,3 +530,68 @@ def _read_sqlite(path: Path, manifest: Manifest) -> list[list[Any]]:
         raise BundleError(f"SQLite error: {exc}") from exc
     finally:
         con.close()
+
+
+# ---------------------------------------------------------------------------
+# Parquet (typed columnar storage; no custom null/escape convention needed)
+
+
+def _arrow_type(col: Column) -> Any:
+    import pyarrow as pa
+
+    if col.type == "decimal":
+        assert col.precision is not None and col.scale is not None
+        return pa.decimal128(col.precision, col.scale)
+    return {
+        "string": pa.string(),
+        "int64": pa.int64(),
+        "float64": pa.float64(),
+        "boolean": pa.bool_(),
+        "date": pa.date32(),
+        "timestamp": pa.timestamp("us", tz="UTC"),
+    }[col.type]
+
+
+def _to_arrow_value(col: Column, v: Any) -> Any:
+    """Canonical stored value (see _format_value) -> Python object for pyarrow."""
+    if v is None:
+        return None
+    if col.type == "boolean":
+        return v == "true"
+    if col.type == "date":
+        return datetime.strptime(v, "%Y-%m-%d").date()
+    if col.type == "timestamp":
+        return pd.Timestamp(v).to_pydatetime()
+    if col.type == "decimal":
+        return Decimal(v)
+    return v
+
+
+def _write_parquet(path: Path, cols: Sequence[Column], rows: list[list[Any]]) -> None:
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    arrays = [
+        pa.array([_to_arrow_value(c, r[j]) for r in rows], type=_arrow_type(c))
+        for j, c in enumerate(cols)
+    ]
+    schema = pa.schema([pa.field(c.name, _arrow_type(c), nullable=c.nullable) for c in cols])
+    pq.write_table(pa.Table.from_arrays(arrays, schema=schema), path)
+
+
+def _read_parquet(path: Path, manifest: Manifest) -> list[list[Any]]:
+    import pyarrow.parquet as pq
+
+    try:
+        table = pq.read_table(path)
+    except Exception as exc:  # pyarrow raises several unrelated exception types
+        raise BundleError(f"Parquet error: {exc}") from exc
+    if table.column_names != manifest.column_names:
+        raise BundleError("Parquet columns do not match manifest")
+    columns = []
+    for col, arrow_field in zip(manifest.columns, table.schema, strict=True):
+        if not arrow_field.type.equals(_arrow_type(col)):
+            raise BundleError(f"column {col.name!r}: Parquet type {arrow_field.type} != {col.type}")
+        # Re-encode to the canonical stored form so one parser validates every format.
+        columns.append([_format_value(col, v) for v in table.column(col.name).to_pylist()])
+    return [list(r) for r in zip(*columns, strict=True)] if columns else []

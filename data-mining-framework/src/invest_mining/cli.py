@@ -133,7 +133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     ex.add_argument("--factor", type=Path, required=True)
     ex.add_argument("--out", type=Path, required=True)
     ex.add_argument("--start", help="first decision date to export (YYYY-MM-DD)")
-    ex.add_argument("--format", choices=["csv", "sqlite"], default="csv")
+    ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
 
     args = parser.parse_args(argv)
     return {"evaluate": _evaluate, "search": _search, "export": _export}[args.command](args)

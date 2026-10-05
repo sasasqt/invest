@@ -35,7 +35,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     syn = sub.add_parser("synthetic", help="publish a deterministic synthetic market dataset")
     syn.add_argument("--out", type=Path, required=True)
-    syn.add_argument("--format", choices=["csv", "sqlite"], default="csv")
+    syn.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
     syn.add_argument("--instruments", type=int, default=SyntheticConfig.n_instruments)
     syn.add_argument("--days", type=int, default=SyntheticConfig.n_days)
     syn.add_argument("--seed", type=int, default=SyntheticConfig.seed)
@@ -44,7 +44,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     imp.add_argument("source", type=Path)
     imp.add_argument("--out", type=Path, required=True)
     imp.add_argument("--dataset-id", required=True)
-    imp.add_argument("--format", choices=["csv", "sqlite"], default="csv")
+    imp.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
     imp.add_argument("--currency", required=True)
     imp.add_argument("--calendar", required=True, help="e.g. XNYS")
     imp.add_argument(

@@ -19,7 +19,7 @@ def run(module: str, *args: str) -> str:
     return out.stdout
 
 
-@pytest.mark.parametrize("fmt", ["csv", "sqlite"])
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_prepare_mine_evaluate(tmp_path, fmt):
     data, search, signals, report = (tmp_path / p for p in ("data", "search", "signals", "run"))
     run(

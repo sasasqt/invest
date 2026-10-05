@@ -87,7 +87,7 @@ def test_load_csv_bars_with_column_map(tmp_path):
     assert out["close"].tolist() == [1.5] and np.issubdtype(out["date"].dtype, np.datetime64)
 
 
-@pytest.mark.parametrize("fmt", ["csv", "sqlite"])
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_cli_synthetic_publishes_bundle(tmp_path, fmt, capsys):
     out = tmp_path / "bundle"
     assert (

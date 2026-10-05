@@ -37,7 +37,7 @@ def tricky_frame() -> pd.DataFrame:
     )
 
 
-@pytest.mark.parametrize("fmt", ["csv", "sqlite"])
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_round_trip_preserves_values(tmp_path, fmt):
     frame = tricky_frame()
     write_bundle(frame, tmp_path / "b", dataset_id="t", fmt=fmt, columns=COLS, primary_key=["id"])
@@ -52,11 +52,29 @@ def test_round_trip_preserves_values(tmp_path, fmt):
     assert back["ts"][0] == pd.Timestamp("2024-01-02T15:30:00Z")
 
 
-def test_csv_and_sqlite_have_same_content_hash(tmp_path):
+def test_all_formats_have_same_content_hash_and_frame(tmp_path):
     frame = tricky_frame()
-    m1 = write_bundle(frame, tmp_path / "c", dataset_id="t", fmt="csv", columns=COLS)
-    m2 = write_bundle(frame, tmp_path / "s", dataset_id="t", fmt="sqlite", columns=COLS)
-    assert m1.content_sha256 == m2.content_sha256
+    hashes, frames = set(), []
+    for fmt in ("csv", "sqlite", "parquet"):
+        m = write_bundle(frame, tmp_path / fmt, dataset_id="t", fmt=fmt, columns=COLS)
+        hashes.add(m.content_sha256)
+        frames.append(read_bundle(tmp_path / fmt)[1])
+    assert len(hashes) == 1
+    pd.testing.assert_frame_equal(frames[0], frames[1])
+    pd.testing.assert_frame_equal(frames[0], frames[2])
+
+
+def test_parquet_reader_rejects_type_mismatch(tmp_path):
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    _published(tmp_path, fmt="parquet")
+    pq.write_table(
+        pa.table({"id": ["a", "b"], "d": ["2024-01-01", "2024-01-02"]}),
+        tmp_path / "b" / "data.parquet",
+    )
+    with pytest.raises(BundleError, match="Parquet type"):
+        read_bundle(tmp_path / "b")
 
 
 def test_csv_null_and_escape_encoding(tmp_path):
@@ -126,7 +144,7 @@ def _edit_manifest(path, **changes):
         ({"contract_version": 2}, "unsupported contract_version"),
         ({"row_count": 3}, "row_count"),
         ({"storage": {"format": "csv", "path": "../x.csv"}}, "inside the bundle"),
-        ({"storage": {"format": "parquet", "path": "data.csv"}}, "unsupported storage"),
+        ({"storage": {"format": "orc", "path": "data.csv"}}, "unsupported storage"),
         ({"columns": [{"name": "id", "type": "uuid"}]}, "unsupported logical type"),
     ],
 )

@@ -3,7 +3,7 @@ name = "invest-data"
 version = "0.1.0"
 description = "Download, clean and publish versioned market datasets (CSV/SQLite bundles)."
 requires-python = ">=3.11"
-dependencies = ["numpy>=1.26", "pandas>=2.1"]
+dependencies = ["numpy>=1.26", "pandas>=2.1", "pyarrow>=15"]
 
 [project.scripts]
 invest-data = "invest_data.cli:main"
