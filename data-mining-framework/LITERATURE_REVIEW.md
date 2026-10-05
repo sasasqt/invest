@@ -1,0 +1,220 @@
+# Industry-oriented factor mining: literature and implementation roadmap
+
+Research date: October 5, 2026. Scope: financial alpha and feature mining, especially interpretable formulas, expression trees, gradient-assisted search, and exploration versus exploitation.
+
+## Main recommendation
+
+Build a common typed expression engine, a reproducible evaluator, and a diverse factor archive before implementing a sophisticated search algorithm. Start with random search and genetic programming, then compare an AlphaGen-style pool-aware search against a FEAT-style hybrid of tree evolution and numeric optimization. Add uncertainty-aware or GFlowNet search only after those baselines work under the same evaluation budget.
+
+For the closest connections to applied quant research, prioritize AlphaGen, AlphaForge, AlphaQCM, AlphaEval, Qlib, and R&D-Agent-Quant. For the specific idea of backpropagation through symbolic features, prioritize FEAT and Equation Learner. For exploration and diverse factor collections, prioritize AlphaSAGE, AlphaPROBE, GFlowNets, and neural-guided genetic programming.
+
+## Search and evidence limits
+
+Live web research used GitHub repository search and author/project repositories. General search engines, arXiv, and OpenAlex requests returned proxy HTTP 403; GitHub search also imposed rate limits during discovery. Accessible project documentation and selected implementation files were inspected. This is a broad research map, not an exhaustive systematic review or a full-text review of every paper.
+
+Evidence labels used below:
+
+- **P — project verified:** title or method checked against an author/project repository or its documentation. Linked paper pages were not necessarily accessible.
+- **S — secondary verified:** checked against a benchmark or reproduction repository; original bibliographic details still need confirmation.
+- **B — background reference:** established methodological or finance reference included for completeness; its primary page was not inspected in this session.
+
+Descriptions of implementation choices are recommendations, not claims that a cited paper implemented them. No experiments, reported returns, or live trading results were independently reproduced. Open code, realistic historical data, or industry affiliation is useful evidence of applicability, but does not establish production deployment or net profitability. Dates and venues are included only where supported by inspected documentation or explicitly labeled as background.
+
+## What “factor” means here
+
+A formulaic alpha maps information available at a decision time to a signal for each instrument. A latent risk factor, a return predictor, and an executable trading strategy are related but distinct outputs. Symbolic-regression papers often minimize prediction error; financial alpha mining often optimizes cross-sectional information coefficient (IC), rank IC, or the marginal contribution to a factor collection. None of those scores alone establishes a tradable strategy.
+
+The same engine can support daily market data, fundamentals, or alternative data, but timing, units, legal access, and missing-data behavior must be explicit. Initially target daily cross-sectional equities, which aligns with several accessible reference implementations. Intraday and other markets require separate execution assumptions and validation.
+
+## 1. Direct financial alpha mining
+
+| Work | Evidence and source | Main idea | Why it matters here | Important limitation |
+|---|---|---|---|---|
+| **Generating Synergistic Formulaic Alpha Collections via Reinforcement Learning — AlphaGen** (Yu et al., KDD 2023, Applied Data Science track) | **P**: [author repository](https://github.com/RL-MLDM/alphagen); [paper DOI](https://doi.org/10.1145/3580305.3599831) | Generate formulas with reinforcement learning and evaluate their contribution to an alpha collection. | Strong starting point for a grammar-constrained search policy, evaluator interface, and pool-aware selection. The documented calculator abstraction supports replacing the data backend. | Neural policy training is not differentiation through discrete formula structure. Historical performance requires independent cost and leakage checks. |
+| **AlphaForge: A Framework to Mine and Dynamically Combine Formulaic Alpha Factors** (AAAI 2025, as identified by the official repository's search description) | **P**: [author repository](https://github.com/DulyHao/AlphaForge) | Separate factor mining from subsequent adaptive factor combination. | Adopt separate candidate generation, factor archive, and combination stages. The README documents chronological train/validation/test periods and a separate combination command. | Adaptive combination must use only information available before the next trade. The README alone does not establish production readiness or all optimizer details. |
+| **AlphaQCM: Alpha Discovery in Finance with Distributional Reinforcement Learning** | **P**: [author repository](https://github.com/ZhuZhouFan/AlphaQCM); [training implementation](https://github.com/ZhuZhouFan/AlphaQCM/blob/main/train_qcm.py) | Apply distributional RL to the alpha-discovery environment, with quantile-based agents and an uncertainty-related tuning parameter. | Relevant to exploration guided by richer action-value estimates rather than only expected reward. The implementation exposes QRDQN/IQN choices and factor-pool output. | A return distribution models more than epistemic uncertainty; its spread is not automatically a reliable confidence interval. Publication year/venue was not established from the inspected README. |
+| **AlphaSAGE: Structure-Aware Alpha Mining via GFlowNets for Robust Exploration** (2025 preprint identifier) | **P**: [author repository](https://github.com/BerkinChen/AlphaSAGE); [paper](https://arxiv.org/abs/2509.25055) | Structure-aware graph encoding, GFlowNet generation, and multifaceted feedback for diverse expressions. | Closely matches AST-aware representations and the need to generate several useful, different alphas. The README documents novelty and entropy controls. | Inspect how rewards are defined and made positive, and how intermediate rewards affect the target distribution. Repository superiority claims were not independently checked. |
+| **AlphaPROBE: Alpha Mining via Principled Retrieval and On-graph Biased Evolution** (2026 preprint) | **P**: [author repository](https://github.com/gta0804/AlphaPROBE); [paper](https://arxiv.org/abs/2602.11917) | Bayesian factor retrieval and DAG-aware generation/evolution in a closed loop. | A direct reference for selecting which existing factors to improve and tracking relationships among derived factors. Listed affiliations include Zhengren Quant, giving a concrete industry connection. | Affiliation does not establish live deployment. Requires scrutiny of retrieval uncertainty, validation reuse, LLM costs, and reproducibility. |
+| **A hybrid approach to formulaic alpha discovery with large language model assistance — HARLA** (Frontiers of Computer Science, 2026 citation in repository) | **P**: [author repository and citation](https://github.com/RL-MLDM/alphagen); [paper DOI](https://doi.org/10.1007/S11704-025-41061-5) | Combine conventional alpha discovery with LLM assistance. | Use language models to supply hypotheses or useful starting expressions while keeping numerical evaluation independent. | LLM-generated explanations are not evidence that a factor works. Model versions and generated expressions must be saved. |
+| **R&D-Agent-Quant: A Multi-Agent Framework for Data-Centric Factors and Model Joint Optimization** (2025; NeurIPS acceptance reported by project) | **P**: [Microsoft project](https://github.com/microsoft/RD-Agent); [paper](https://arxiv.org/abs/2505.15155) | Iterative factor and downstream-model co-optimization with research and development agents. | Relevant to the full research loop: hypothesis, implementation, execution, feedback, and experiment management. | Joint optimization expands the search space and the number of trials; model selection must be nested inside evaluation. Project-reported returns and dollar costs are not reproduced here. |
+| **AutoAlpha: an Efficient Hierarchical Evolutionary Algorithm for Mining Alpha Factors in Quantitative Investment** (2020) | **S**: [educational reproduction](https://github.com/bigsuperFishfish/AutoAlpha); [paper identifier cited there](https://arxiv.org/abs/2002.08245); [AlphaEval comparison repository](https://github.com/LeoDingggg/AlphaEval) | Hierarchical evolutionary search with reusable building blocks and diversity-oriented search. | Useful non-neural baseline and motivation for search by complexity/depth and an archive of useful subexpressions. | The inspected implementation explicitly identifies itself as educational; its detailed claims and numeric results must not be treated as an audited reproduction of the original paper. |
+| **Mining Profitable Alpha Factors via Convolution Kernel Learning** | **P**, limited: [repository identifying itself as the paper's source](https://github.com/szy1900/autoAlpha) | Learning-based alpha extraction through convolution kernels. | Additional route to investigate for gradient-based feature mining rather than only discrete tree search. | The brief README does not establish architecture details, year, venue, or equivalence to differentiating an AST. This is a follow-up lead, not a basis for implementation claims. |
+| **AlphaEval: A Comprehensive and Efficient Evaluation Framework for Formula Alpha Mining** (2025 preprint) | **P**: [project repository](https://github.com/LeoDingggg/AlphaEval); [paper](https://arxiv.org/abs/2508.13174) | Common evaluation infrastructure with several formula-mining baselines. | Essential comparison reference: compare miners through the same evaluator and dataset, not separately tuned backtests. | Included implementations differ in provenance. Audit each baseline and metric before relying on cross-method rankings. Do not confuse this with the unrelated GAIR-NLP project also named AlphaEval. |
+
+### Additional finance leads requiring primary verification
+
+The [AlphaEval repository](https://github.com/LeoDingggg/AlphaEval) lists **AlphaEvolve**, **FAMA**, and **AlphaAgent** implementations. These are useful discovery leads, but matching original papers and author repositories was not completed. Do not assign them bibliographic metadata or treat those included implementations as official without checking.
+
+In particular, [RndmVariableQ/AlphaAgent](https://github.com/RndmVariableQ/AlphaAgent) was inspected and documents a factor-research application, but that name alone does not establish that it is the author implementation of a particular AlphaAgent paper. Avoid conflating it with the AlphaEval baseline. This review deliberately distinguishes confirmed references from similarly named projects.
+
+## 2. Symbolic features, ASTs, and gradients
+
+| Work | Evidence and source | Mechanism | Application to factor mining |
+|---|---|---|---|
+| **Learning concise representations for regression by evolving networks of trees — FEAT** (La Cava et al., ICLR 2019) | **P**: [author repository](https://github.com/lacava/feat); [paper](https://arxiv.org/abs/1807.00981); [method documentation](https://github.com/lacava/feat/blob/master/docs/overview.md) | Evolve symbolic feature representations; fit a downstream model and update weights of differentiable features with stochastic gradient descent. | Closest verified match to gradient-assisted AST feature mining. Evaluate several feature trees jointly instead of searching only for one best equation. |
+| **Learning feature spaces for regression with genetic programming** (La Cava and Moore, 2020, as cited in FEAT documentation) | **P**: [method description and reference](https://github.com/lacava/feat/blob/master/docs/overview.md) | Wrapper-based evolution of feature spaces, model fitting, and numeric refinement. | Use an inner model-fitting loop and a complexity-aware archive; substitute finance-specific objectives carefully. |
+| **Learning equations for extrapolation and control — Equation Learner / EQL** (Sahoo, Lampert, Martius, ICML 2018) | **P**: [author repository](https://github.com/martius-lab/EQL); [paper](https://proceedings.mlr.press/v80/sahoo18a.html) | Neural-network approach to concise symbolic equations with mathematical operator units. | An alternative differentiable representation. Useful for learning numeric connections/weights and extracting formulas, but it is not unrestricted discrete tree optimization. |
+| **Deep symbolic regression: Recovering mathematical expressions from data via risk-seeking policy gradients** (Petersen et al., ICLR 2021) | **P**: [DSO author project](https://github.com/dso-org/deep-symbolic-optimization); [paper](https://openreview.net/forum?id=m5Qsh0kBQG) | A neural policy generates symbolic expressions; policy-gradient training emphasizes high-reward samples. | Learn where to search in a discrete expression grammar. Replace regression reward with a carefully defined financial objective. |
+| **Symbolic Regression via Neural-Guided Genetic Programming Population Seeding** (Mundhenk et al., NeurIPS 2021) | **P**: [DSO publication list](https://github.com/dso-org/deep-symbolic-optimization); [paper](https://proceedings.neurips.cc/paper/2021/hash/d073bb8d0c47f317dd39de9c9f004e9d-Abstract.html) | Combine learned generation with genetic-programming refinement. | A practical global-search/local-improvement hybrid. Benchmark whether neural guidance helps beyond simply running more GP evaluations. |
+| **A Unified Framework for Deep Symbolic Regression** (Landajuela et al., NeurIPS 2022) | **P**: [DSO project](https://github.com/dso-org/deep-symbolic-optimization); [paper](https://openreview.net/forum?id=2FNnBhwJsHK) | Unified symbolic search with neural and evolutionary mechanisms and enhanced expression handling. | Reference implementation for configurable search tasks, expression constraints, inner optimization, and model archives. |
+| **DisCo-DSO: Coupling Discrete and Continuous Optimization for Efficient Generative Design in Hybrid Spaces** (Pettit et al., AAAI 2025) | **P**: [DSO publication list](https://github.com/dso-org/deep-symbolic-optimization); [paper](https://arxiv.org/abs/2412.11051) | Couple discrete choices with continuous optimization in hybrid design spaces. | Relevant to jointly reasoning about operator choices and numeric parameters. Its reported application is not financial factor discovery; transfer needs experimentation. |
+| **Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl** (Cranmer, 2023 preprint identifier) | **P** for project and paper link: [PySR](https://github.com/MilesCranmer/PySR); [paper](https://arxiv.org/abs/2305.01582); [backend](https://github.com/astroautomata/SymbolicRegression.jl) | Symbolic expression search with configurable operators and accuracy/complexity tradeoffs. | Mature candidate baseline or external search adapter. Restrict operators and use finance-specific objectives; standard tabular regression is not sufficient validation for market data. |
+| **Operon C++: An Efficient Genetic Programming Framework for Symbolic Regression** (Burlacu, Kronberger, Kommenda, GECCO Companion 2020) | **P**: [author project](https://github.com/heal-research/operon); [paper DOI](https://doi.org/10.1145/3377929.3398099) | Efficient expression-tree genetic programming with Python bindings available separately. | Useful for evaluator throughput and a strong native-code baseline. Investigate numeric parameter optimizers in the exact version selected rather than assuming all optimizers use backpropagation. |
+| **Linear Scaling with and within Semantic Backpropagation-based Genetic Programming for Symbolic Regression** (Virgolin et al., GECCO 2019) | **P**: [author project and citation](https://github.com/marcovirgolin/GP-GOMEA); **S** paper link from [SRBench](https://github.com/cavalab/srbench): [DOI](https://doi.org/10.1145/3321707.3321758) | Semantic backpropagation guides modification by recursively inverting functions toward desired outputs. | A distinct interpretation of “backprop on trees.” Useful for subtree repair, but inverses may be ambiguous and trees may grow complex. |
+| **Improving model-based genetic programming for symbolic regression of small expressions** (Virgolin et al., Evolutionary Computation 2021) | **P**: [GP-GOMEA author project](https://github.com/marcovirgolin/GP-GOMEA) | Learn dependencies between components and recombine useful building blocks together. | Preserve meaningful subtrees while searching for compact formulas; compare to ordinary crossover. |
+| **AI Feynman: A physics-inspired method for symbolic regression** and **AI Feynman 2.0: Pareto-optimal symbolic regression exploiting graph modularity** (2020) | **P**: [author code and citations](https://github.com/SJ001/AI-Feynman); [2.0 paper](https://arxiv.org/abs/2006.10782) | Exploit structural properties and modularity to simplify equation discovery. | Inspiration for decomposition and complexity-aware search. Financial signals are noisy and nonstationary; success on physical equations does not establish transfer. |
+| **Contemporary Symbolic Regression Methods and their Relative Performance — SRBench** (La Cava et al., NeurIPS Datasets and Benchmarks 2021) | **P**: [benchmark](https://github.com/cavalab/srbench); [paper](https://arxiv.org/abs/2107.14351) | Compare modern symbolic regression with common datasets and interfaces. | Adopt common protocols, independent seeds, cost reporting, and strong baselines. Ordinary SR benchmarks are complementary to financial evaluation. |
+
+### Four different meanings of backpropagation
+
+1. **Numeric differentiation through a fixed expression.** Given a structure such as `a * rolling_mean(close, 20) + b * volume`, differentiate with respect to `a` and `b`. This does not choose a different operator or rolling-window length. FEAT is the most directly supported reference above; [QuickSR's implementation/report](https://github.com/kocatepedogu/quick-symbolic-regression) also explicitly describes forward/backward bytecode and gradient fitting of tree parameters. QuickSR is an engineering reference, not a verified peer-reviewed financial paper.
+2. **Policy gradients for structure generation.** Optimize parameters of a distribution over discrete expressions. DSR and AlphaGen belong in this category; the reward need not be differentiable with respect to the expression.
+3. **Continuous relaxation of discrete structure.** Mix candidate operators with differentiable weights, optimize the mixture, then discretize it. EQL provides a related differentiable symbolic architecture; DARTS and Gumbel-Softmax below are general methodological references. Soft and discretized models can behave differently.
+4. **Semantic backpropagation.** Propagate desired output behavior through inverse operations to guide subtree changes. This is not ordinary reverse-mode differentiation.
+
+For finance, `rank`, discrete lags/windows, comparisons, branching, and some missing-value policies are not smoothly differentiable. Differentiable rolling averages can coexist with nondifferentiable structure choices. Soft ranks, continuous windows, or straight-through estimators require explicit approximation tests. Never silently substitute them for the exact operator used in validation and trading.
+
+A reasonable first hybrid is outer-loop tree search plus inner-loop fitting of continuous coefficients, with a small ridge-regression or gradient-based optimizer. Fit everything on training data, select on validation, freeze both structure and coefficients for the untouched test. Do not continually tune constants on the test period.
+
+## 3. Exploration versus exploitation
+
+Exploration spends evaluations on uncertain or structurally different candidates; exploitation spends them improving currently promising candidates. Financial search also needs **diversity**: several moderately strong, weakly correlated signals may be more useful than many variations of one high-scoring signal.
+
+| Mechanism | Closest verified reference | What to test | Failure mode |
+|---|---|---|---|
+| Random search and random restarts | [gplearn](https://github.com/trevorstephens/gplearn) and [SRBench](https://github.com/cavalab/srbench) as implementation/benchmark references | Same grammar and number of unique evaluations as learned miners | Weak candidates, but indispensable as a budget-matched baseline |
+| Mutation, crossover, and hierarchical reuse | AutoAlpha; GP-GOMEA | Diversity, useful subtrees, complexity, and cost versus ordinary GP | Premature convergence, expression bloat, repeated equivalent formulas |
+| Entropy-regularized policy generation | AlphaGen; AlphaSAGE's documented entropy controls | Diversity and factor quality across entropy schedules and seeds | High entropy can waste the budget; low entropy can collapse the pool |
+| Reward-tail or elite-sample optimization | DSR; unified DSR | Sensitivity to elite thresholds and reward noise | Overfitting to lucky high-scoring candidates |
+| Distributional action values | AlphaQCM | Whether uncertainty-guided choices improve held-out archive quality | Reward variability mistaken for lack of knowledge |
+| Diverse reward-weighted generation | AlphaSAGE; GFlowNets | Effective number of distinct, economically useful signal clusters | Different strings that evaluate almost identically; reward-scale sensitivity |
+| Bayesian retrieval of parents | AlphaPROBE | Benefit per expensive offspring evaluation; posterior calibration | Overconfident retrieval and repeated exploitation of a misleading parent |
+| Neural proposals followed by local evolution | Neural-guided GP; HARLA | Compare under the same evaluation and compute/token budgets | Improvements explained only by spending more compute |
+| Structural and behavioral novelty archives | AlphaSAGE; AutoAlpha; GP-GOMEA | Marginal contribution after controlling redundancy and exposures | Maximizing novelty without predictive value |
+
+### GFlowNet and exploration references
+
+- **Flow Network based Generative Models for Non-Iterative Diverse Candidate Generation** (Bengio et al., 2021). **P**: [author implementation](https://github.com/GFNOrg/gflownet), [paper](https://arxiv.org/abs/2106.04399). Learn a distribution over useful candidates rather than targeting only a single optimum. A finance implementation must define rewards and handle duplicate paths/expressions carefully.
+- **Improving exploration in policy gradient search: Application to symbolic optimization** (Landajuela et al., Math-AI workshop at ICLR 2021). **P**: [DSO publication list](https://github.com/dso-org/deep-symbolic-optimization), [paper](https://mathai-iclr.github.io/papers/papers/MATHAI_16_paper.pdf). Particularly relevant to exploration in symbolic search; workshop results need broader financial validation.
+
+### General methodological references to verify before implementation
+
+These **B** references complete the method map; they are not financial-alpha evidence and their full text was not inspected here.
+
+| Reference | Link | Role |
+|---|---|---|
+| **Finite-time Analysis of the Multiarmed Bandit Problem** (Auer, Cesa-Bianchi, Fischer, 2002) | [DOI](https://doi.org/10.1023/A:1013689704352) | Upper-confidence-bound selection of search strategies or factor families; stationary-bandit assumptions do not automatically hold during adaptive search. |
+| **On the Likelihood that One Unknown Probability Exceeds Another in View of the Evidence of Two Samples** (Thompson, 1933) | [DOI](https://doi.org/10.1093/biomet/25.3-4.285) | Posterior sampling for allocating evaluations; posterior modeling must reflect the actual noisy objective. |
+| **Bandit based Monte-Carlo Planning** (Kocsis and Szepesvári, 2006) | [DOI](https://doi.org/10.1007/11871842_29) | UCT / Monte Carlo tree search over partial expressions; delayed rewards, grammar legality, and caching need explicit design. |
+| **Proximal Policy Optimization Algorithms** (Schulman et al., 2017) | [paper](https://arxiv.org/abs/1707.06347) | Policy optimization foundation for an AlphaGen-style baseline. |
+| **Distributional Reinforcement Learning with Quantile Regression** (Dabney et al., 2018) | [paper](https://arxiv.org/abs/1710.10044) | Quantile-based value distributions behind distributional-RL designs. |
+| **Implicit Quantile Networks for Distributional Reinforcement Learning** (Dabney et al., 2018) | [paper](https://arxiv.org/abs/1806.06923) | Flexible return-distribution approximation; inspect exploration assumptions separately. |
+| **Trajectory Balance: Improved Credit Assignment in GFlowNets** (Malkin et al., 2022) | [paper](https://arxiv.org/abs/2201.13259) | Candidate training objective for reward-weighted generation over expression trajectories. |
+| **DARTS: Differentiable Architecture Search** (Liu et al., 2019) | [paper](https://arxiv.org/abs/1806.09055) | Inspiration for continuous relaxation of operator choices; not direct proof of differentiable financial AST mining. |
+| **Categorical Reparameterization with Gumbel-Softmax** (Jang, Gu, Poole, 2017) | [paper](https://arxiv.org/abs/1611.01144) | Differentiable approximation to discrete selections; test temperature and discretization behavior. |
+
+Do not immediately implement every search strategy. Add a method only when it addresses an observed problem in the current search, and compare its incremental benefit under a fixed budget.
+
+## 4. Industry relevance, baselines, and statistical validity
+
+### Verified project references
+
+- **Qlib: An AI-oriented Quantitative Investment Platform** (2020 preprint identifier). **P**: [Microsoft project](https://github.com/microsoft/qlib), [paper](https://arxiv.org/abs/2009.11189). Useful reference for research workflows, feature baselines, model training, portfolio backtesting, and execution. Keep Qlib optional behind an adapter; the mining framework must still consume the repository's CSV/SQLite contract independently.
+- **101 Formulaic Alphas** (Kakushadze, 2016). **S**: cited in the inspected [AutoAlpha reproduction](https://github.com/bigsuperFishfish/AutoAlpha). Useful hand-designed formula baseline and operator vocabulary. Confirm original definitions and implementation semantics before comparing against mined factors; a formula list is not evidence of current profitability.
+- **A flexible symbolic regression method for constructing interpretable clinical prediction models** (La Cava et al., npj Digital Medicine 2023). **P**: [FEAT project reference](https://github.com/lacava/feat), [paper](https://www.nature.com/articles/s41746-023-00833-8). An applied feature-construction example outside finance, useful for interpretability and validation design. Clinical results do not demonstrate trading performance.
+
+### Finance and evaluation background to add to the reading queue
+
+These **B** references are relevant safeguards or non-symbolic baselines. They were not independently retrieved during this search and should receive a primary-source review before extracting detailed claims.
+
+- **Empirical Asset Pricing via Machine Learning** — Gu, Kelly, Xiu (2020), [DOI](https://doi.org/10.1093/rfs/hhaa009). Establish strong conventional return-prediction baselines; a symbolic miner should compete with simpler linear and tree-based alternatives.
+- **Autoencoder Asset Pricing Models** — Gu, Kelly, Xiu (2021), [NBER working paper](https://www.nber.org/papers/w25492). A latent-factor approach to contrast with interpretable formulaic features.
+- **Characteristics Are Covariances: A Unified Model of Risk and Return** — Kelly, Pruitt, Su (2019), [NBER working paper](https://www.nber.org/papers/w24540). Instrumented PCA is a useful latent-factor comparator; risk-factor modeling and alpha prediction should remain distinct tasks.
+- **… and the Cross-Section of Expected Returns** — Harvey, Liu, Zhu (2016), [DOI](https://doi.org/10.1093/rfs/hhv059). Relevant to multiple testing in the factor zoo; automated search increases rather than removes that problem.
+- **The Probability of Backtest Overfitting** — Bailey et al. (2017), [DOI](https://doi.org/10.21314/JCF.2016.322). Evaluate sensitivity to repeated strategy selection. Its methodology is not a substitute for time-aware, leakage-free evaluation.
+- **The Deflated Sharpe Ratio: Correcting for Selection Bias, Backtest Overfitting, and Non-Normality** — Bailey and López de Prado (2014), [DOI](https://doi.org/10.3905/jpm.2014.40.5.094). Useful selection-bias diagnostic; record search trials and assumptions needed for its use.
+- **A Reality Check for Data Snooping** — White (2000), [DOI](https://doi.org/10.1111/1468-0262.00152). Compare a family of adaptively considered strategies with dependence-aware resampling.
+- **A Test for Superior Predictive Ability** — Hansen (2005), [DOI](https://doi.org/10.1198/073500105000000063). Further reference for comparisons under multiple competing models.
+- **Trading Costs** — Frazzini, Israel, Moskowitz, [working paper](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3229719). Industry-oriented execution-cost reference. Inspect trading universe, scale, and cost assumptions before transferring estimates.
+
+### Evaluation requirements for this repository
+
+1. **Point-in-time inputs.** Record event time and availability time separately for fundamentals, alternative data, and revisions. Avoid survivorship bias in universes and preserve delisted instruments. Define corporate-action handling explicitly.
+2. **Causal operator evaluation.** Factor values at time `t` may use only information available by the decision time. Labels may use future observations but must never become candidate features. Define rolling-window alignment and whether today's close is tradable before or after signal construction.
+3. **Temporal validation.** Use chronological train/validation/test splits, with purging of overlapping label intervals and embargo where justified. Fit normalization, neutralization coefficients, selection, and learned preprocessing within the training process. Repeated validation reuse also causes overfitting; retain a genuinely untouched final evaluation.
+4. **Strong baselines.** Include simple momentum/reversal signals, fixed formulas, random search, GP, regularized linear models, and a conventional boosted-tree predictor. Report what each comparison actually tests.
+5. **Comparable budgets.** Record unique full-data evaluations, total proposals, wall time, hardware, optimizer steps, memory, and LLM calls/tokens/cost. Cached evaluations and surrogate scores must be reported separately.
+6. **Signal diagnostics.** Report mean daily cross-sectional IC and rank IC, their variability with an explicitly defined ICIR convention, coverage, factor correlation, quantile behavior, turnover, and exposures. Show behavior across subperiods and universes. Define missing-value and degenerate-correlation handling.
+7. **Portfolio diagnostics.** Use explicit construction, rebalance time, holding periods, costs, slippage, liquidity/participation constraints, borrowing limits, and benchmark. Report net returns, Sharpe with documented annualization, drawdown, turnover, and capacity sensitivity. Long-only and long-short results are not interchangeable.
+8. **Selection accounting.** Save every evaluated candidate, rejected candidates, search settings, and selection rounds. Consider dependence-aware uncertainty estimates and multiple-testing adjustments. More discovered formulas does not mean more independent evidence.
+9. **Ablations and seeds.** Compare pool-aware versus single-factor rewards, structural versus behavioral novelty, gradient refinement on/off, learned proposals versus random proposals, and exact versus relaxed operators. Report dispersion across independent runs, not only the best seed.
+10. **Reproducibility.** Pin code and dataset versions, save manifests and splits, operator semantics, expression serialization, fitted parameters, and experiment configuration. A claimed reproducible backtest should be rerunnable from the published dataset artifact without a downloader or live external API.
+
+## 5. Architecture informed by the papers
+
+Keep the mining package separate from `data-pipeline/`. Its only data dependency is the [dataset artifact contract](../docs/DATA_CONTRACT.md). Any financial metadata the generic contract does not yet describe needs a reviewed extension, not a hidden import of pipeline state.
+
+```text
+CSV / SQLite bundle + manifest
+             |
+     read-only data adapter
+             |
+   point-in-time panel and splits
+             |
+       typed AST evaluator <---- search strategy
+             |                       |
+      candidate diagnostics ---- feedback
+             |
+    diverse, versioned factor archive
+             |
+   train-only combination / model fitting
+             |
+     frozen walk-forward evaluation
+             |
+ expressions + parameters + reports + provenance
+```
+
+Recommended independent interfaces:
+
+- **Dataset reader:** validate the bundle and expose aligned timestamps, instrument identifiers, features, and availability metadata. No downloading or cleaning service dependency.
+- **Operator registry:** type signatures, units, lookback, causal alignment, missing-data behavior, exact evaluation, and optional derivatives. Grammar masks reject invalid expressions before costly evaluation.
+- **Expression representation:** canonical, versioned AST serialization and hashes. Start with immutable trees; use DAGs for shared subexpression evaluation or evolutionary lineage when justified. Syntax equivalence and empirical similarity are different kinds of deduplication.
+- **Evaluator:** compute training rewards and separate validation diagnostics using explicit split identifiers. Cache by dataset version, split, expression, numeric parameters, and operator version. Never reuse a training score as a test score.
+- **Searcher:** propose expressions without owning the data source or portfolio simulator. Support random search, GP, policy-based proposals, and later GFlowNets through the same interface.
+- **Parameter fitter:** fit constants and differentiable weights for a fixed structure on training data; return frozen parameters and optimizer provenance.
+- **Archive and selector:** retain a Pareto set of quality, complexity, turnover, and behavioral diversity; measure marginal predictive contribution. Correlation alone does not capture all redundancy or risk exposures.
+- **Combination and backtester:** fit combinations separately, apply realistic execution assumptions, and preserve the distinction between signal quality and portfolio returns.
+- **Experiment recorder:** save budgets, seeds, candidates, split definitions, source versions, failures, and results. Include LLM prompts/model versions when relevant; exclude secrets.
+
+For daily cross-sectional data, a proposed logical key is `(timestamp, instrument_id)`. Add explicit target horizon, feature availability rules, trading calendar, timezone, units, and universe policy as mining metadata. This proposal does not silently change version 1 of the existing contract.
+
+## 6. Staged implementation and tests
+
+| Stage | Deliverable | Reading priority | Completion evidence |
+|---|---|---|---|
+| 1 | Read-only CSV/SQLite adapter, typed AST, causal evaluator, manifests and splits | Qlib; AlphaGen calculator interface; AlphaEval | Independent dataset fixtures; exact operator tests; future-data perturbations cannot change earlier signals; duplicate and invalid expressions rejected |
+| 2 | Random search, GP, cached evaluator, diverse archive, fixed baselines | AutoAlpha; gplearn; GP-GOMEA; SRBench | Budget-matched reproducible comparisons; equivalent expressions identified; expected results on synthetic known-signal data |
+| 3 | Numeric fitting for fixed ASTs; separately fitted combinations | FEAT; EQL; DisCo-DSO | Analytic or finite-difference gradient checks on smooth operators; known-coefficient recovery; training-only fitting; exact exported expression matches fitted evaluation |
+| 4 | Pool-aware learned proposals and hybrid GP refinement | AlphaGen; DSR; neural-guided GP; AlphaForge | Incremental archive quality versus GP/random at equal budgets; independent seeds and reward ablations |
+| 5 | Uncertainty/diversity experiments | AlphaQCM; AlphaSAGE; AlphaPROBE; GFlowNets | Held-out benefit from exploration mechanism; structural and signal diversity; reward-scale and uncertainty-calibration sensitivity |
+| 6 | Optional LLM hypothesis and implementation assistance | HARLA; R&D-Agent-Quant | Sandboxed execution of generated code, saved hypotheses, reproducible numerical checks, token/cost budgets, and no holdout feedback in the agent loop |
+| 7 | Walk-forward portfolio validation and operational review | AlphaEval; finance/statistical background | Net-of-cost robustness, capacity/exposure diagnostics, complete trial ledger, untouched evaluation, then prospective paper trading |
+
+Unit tests should cover types, operators, derivatives, canonicalization, serialization, and masks. Integration tests should consume independent bundles and exercise the full candidate-to-report path. Synthetic planted-signal tests verify pipeline mechanics but do not establish financial profitability. LLM output must never be executed as unrestricted Python; a constrained expression DSL is preferable for ordinary factor proposals.
+
+## 7. Questions to resolve before selecting a miner
+
+- Is the immediate goal interpretable alpha discovery, risk-factor discovery, or predictive feature engineering? These need different targets and validation.
+- What market, frequency, holding horizon, decision time, and execution rules apply?
+- Are price/volume inputs enough, or are point-in-time fundamentals and alternative data available?
+- Which operators are meaningful and legal, and which support reliable numeric derivatives?
+- Is the objective one strong factor, a diversified library, or a downstream portfolio? How will turnover and exposures enter selection?
+- What is the evaluation budget, and will neural/LLM methods be affordable relative to GP?
+
+Until those decisions are made, implement the common representation and evaluator rather than committing the framework to a single research paper.
+
+## Source trail
+
+The live discovery searches included AlphaForge, AlphaGen, AlphaQCM, AlphaSAGE, AlphaPROBE, AutoAlpha, AlphaEval, alpha mining, and symbolic regression backpropagation on [GitHub repository search](https://github.com/search?type=repositories). Author and benchmark sources used are linked alongside their entries. Inspected sources included the AlphaGen calculator documentation, AlphaQCM's `train_qcm.py`, FEAT's `docs/overview.md`, and the publication lists in DSO, GP-GOMEA, SRBench, Qlib, and RD-Agent.
+
+Further full-text research requires access to general scholarly search and paper hosts, including `arxiv.org`, `export.arxiv.org`, `openreview.net`, `proceedings.mlr.press`, `proceedings.neurips.cc`, `doi.org`, and relevant publisher sites. This document records the current evidence limits rather than claiming those paper pages or background citations were verified. Recheck publication versions, licenses, and experiment details before adopting code or citing numeric results.
