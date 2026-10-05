@@ -1,12 +1,19 @@
 # Invest
 
-This repository is the starting point for a Python project. Application code, package configuration, and tests have not been added yet.
+This repository contains the designs for two independent Python components on `main`. Application code, package configuration, and tests have not been added yet.
+
+## Components
+
+- [Data pipeline](data-pipeline/README.md): download, clean, preprocess, and publish CSV or SQLite datasets.
+- [Data mining framework](data-mining-framework/README.md): consume published datasets for analysis, training, and evaluation.
+
+The components exchange artifacts through a [versioned dataset contract](docs/DATA_CONTRACT.md). They do not import each other's code. Each folder will contain its own Python package, dependency configuration, and tests.
 
 ## Development guidelines
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
-The recommended foundation is a `src/invest` package, a `pyproject.toml` configuration, a committed dependency lockfile, and pytest tests under `tests/`. Use Ruff for formatting and linting, and mypy for type checking.
+Within each component folder, use a `src` package layout, a `pyproject.toml` configuration, a committed dependency lockfile, and pytest tests under `tests/`. Use Ruff for formatting and linting, and mypy for type checking. Adapt the single-package examples in the guidelines to each component's package name and working directory.
 
 ## Getting started
 
