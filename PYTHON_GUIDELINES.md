@@ -1,10 +1,10 @@
 # Python Development Guidelines
 
-Use these guidelines when building this repository. The repository is currently empty; the layout and commands below describe the recommended future setup, not an already installed application.
+Use these guidelines when building this repository. It currently contains design and research documents; the layout and commands below describe a future setup, not an installed application. Apply the examples to each independent component in the [architecture](docs/ARCHITECTURE.md).
 
 ## Project structure
 
-Use a `src` layout with one clearly named import package. For this project, `invest` is a reasonable default:
+Use a `src` layout with one clearly named import package per component. The example below uses `invest`; this repository plans `invest_data`, `invest_mining`, and `invest_evaluation` in their respective component folders:
 
 ```text
 pyproject.toml
@@ -101,6 +101,8 @@ These commands are recommendations and have not been run against an implemented 
 - Review dependencies regularly and investigate security findings in context.
 
 ## Cloud development workflow
+
+Follow the [rapid development guidelines](RAPID_DEVELOPMENT.md) for small working increments, fast feedback, and validation appropriate to the change.
 
 Use the existing checkout in the isolated cloud task. Do not create an additional Git worktree unless explicitly requested. Keep installation steps repeatable and separate retained dependencies from services that must restart. Document service startup and functional readiness checks when services are introduced.
 
