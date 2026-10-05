@@ -9,3 +9,5 @@ Consume signals from mining, hand-written factors, or external sources through a
 The proposed Python package is `invest_evaluation`, with its own `pyproject.toml`, lockfile, and tests. Implementation is pending. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
 
 Required validation will cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, and rejection of signals unavailable at decision time. Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
+
+Apply the portfolio portion of the [alpha validation protocol](../../data-mining-framework/ALPHA_VALIDATION.md): evaluate frozen signals under base/adverse costs, execution delays, liquidity/capacity constraints, and dependence-aware uncertainty. Return a separate strategy report; statistical factor confirmation alone does not establish tradability.

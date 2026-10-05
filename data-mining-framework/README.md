@@ -8,6 +8,8 @@ Read the [factor-mining literature review](LITERATURE_REVIEW.md) for industry-or
 
 The [primary-source catalog](PRIMARY_SOURCE_CATALOG.md) records the expanded arXiv search, with versioned paper links and evidence limits.
 
+Every mined alpha must follow the [robustness and statistical validation protocol](ALPHA_VALIDATION.md) before promotion. It specifies temporal holdouts, dependence-aware uncertainty, multiple-testing control, stress scenarios, redundancy checks, and report requirements.
+
 ## Responsibilities
 
 - Load CSV and SQLite bundles through input adapters and validate their manifests and data.
@@ -46,3 +48,5 @@ Each component should have its own `pyproject.toml`, dependency lockfile, and te
 ## Acceptance checks
 
 Test both storage adapters against independent contract fixtures, invalid-input errors, deterministic analysis, and training/evaluation separation. A smoke test must read a bundle and produce meaningful results. Follow [Python guidelines](../PYTHON_GUIDELINES.md) for linting, typing, packaging, and test quality.
+
+Implement statistical calibration, causality, and robustness tests from the validation protocol. Factor confirmation and execution-aware strategy validation are separate outcomes; neither may be inferred from training scores alone.
