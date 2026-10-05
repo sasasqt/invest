@@ -6,6 +6,8 @@ This folder is reserved for a Python framework that consumes datasets described 
 
 Read the [factor-mining literature review](LITERATURE_REVIEW.md) for industry-oriented papers, AST and gradient-based methods, exploration versus exploitation, evaluation requirements, and a staged implementation roadmap.
 
+The [primary-source catalog](PRIMARY_SOURCE_CATALOG.md) records the expanded arXiv search, with versioned paper links and evidence limits.
+
 ## Responsibilities
 
 - Load CSV and SQLite bundles through input adapters and validate their manifests and data.
