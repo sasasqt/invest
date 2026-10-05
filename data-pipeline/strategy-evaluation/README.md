@@ -2,6 +2,8 @@
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 
+The [metric specification](METRICS.md) defines trade outcomes, net profit, mean/variance of returns, CAGR, XIRR, annual and downside volatility, Sharpe, Sortino, Calmar, Ulcer Index, tail risk, drawdowns, benchmark performance, costs, and capacity. Implement the full applicable report with explicit calculation conventions and undefined-result statuses.
+
 Trading rules belong in this component's planned `src/invest_evaluation/strategies/` package. A strategy maps information available at a decision time and portfolio state to target positions or orders through a defined interface. The simulation engine owns fill accounting and costs; individual strategies should not duplicate it.
 
 Consume signals from mining, hand-written factors, or external sources through artifacts. Do not import a downloader or model-training loop. A simple baseline strategy may use market data directly. Model fitting and inference belong in `data-mining-framework/`.
