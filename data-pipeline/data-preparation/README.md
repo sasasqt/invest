@@ -1,9 +1,10 @@
 # Data preparation
 
-Package `invest_data`. Implemented: the v1 bundle contract (`bundle.py`, CSV and read-only SQLite, atomic publication, content hashes), the financial dataset kinds `market_bars` and `signals` (`schemas.py`), a deterministic synthetic market with a planted causal effect and point-in-time listings/delistings, a local CSV importer (`sources.py`), and deterministic cleaning with a rejected-row report (`cleaning.py`).
+Package `invest_data`. Implemented: the v1 bundle contract (`bundle.py`: CSV, read-only SQLite and Parquet, atomic publication, content hashes); the dataset kinds `market_bars`, `universe`, `fundamentals` and `signals` (`schemas.py`); point-in-time helpers for universe membership and as-of fundamentals with revisions (`pit.py`); a deterministic synthetic market with a planted causal effect, listings/delistings, a universe and fundamentals with reporting lags and revisions, plus a local CSV importer (`sources.py`); and deterministic cleaning with a rejected-row report (`cleaning.py`).
 
 ```sh
-uv run invest-data synthetic --out artifacts/data/synthetic [--format sqlite]
+uv run invest-data synthetic --out artifacts/data/synthetic [--format csv|sqlite|parquet] \
+  [--universe-out artifacts/data/universe] [--fundamentals-out artifacts/data/fundamentals]
 uv run invest-data import-csv bars.csv --out artifacts/data/mine --dataset-id mine \
   --currency USD --calendar XNYS --price-adjustment total_return_adjusted
 uv run pytest data-pipeline/data-preparation

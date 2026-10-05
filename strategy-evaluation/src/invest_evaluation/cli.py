@@ -9,7 +9,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from invest_data.schemas import read_market_bars, read_signals
+from invest_data.schemas import read_market_bars, read_signals, read_universe
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.engine import run_backtest
 from invest_evaluation.metrics import compute_metrics
@@ -43,15 +43,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="strategies/signals tried before this one (for the deflated Sharpe)",
     )
     run.add_argument("--no-scenarios", action="store_true")
+    run.add_argument("--universe", type=Path, help="universe bundle limiting new positions")
     args = parser.parse_args(argv)
 
     market_manifest, bars = read_market_bars(args.data)
     signal_manifest, signals = read_signals(args.signals)
     cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
-    result = run_backtest(bars, signals, cfg)
+    universe = read_universe(args.universe)[1] if args.universe else None
+    result = run_backtest(bars, signals, cfg, universe=universe)
     metrics = compute_metrics(result)
     stats = strategy_statistics(result.returns, cfg.annualization, n_trials=args.n_trials)
-    scenarios = None if args.no_scenarios else run_scenarios(bars, signals, cfg)
+    scenarios = None if args.no_scenarios else run_scenarios(bars, signals, cfg, universe=universe)
     save_run(
         args.out,
         result,

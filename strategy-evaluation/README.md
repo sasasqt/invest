@@ -1,9 +1,9 @@
 # Strategy evaluation
 
-Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, delisting and halt handling, and exact per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy (`strategies.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
+Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, delisting and halt handling, and exact per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
 
 ```sh
-uv run invest-eval run --data <market bundle> --signals <signals bundle> \
+uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
   --config strategy-evaluation/examples/quantile_long_short.json \
   --n-trials <strategies tried> --out artifacts/eval/<run>
 uv run pytest strategy-evaluation

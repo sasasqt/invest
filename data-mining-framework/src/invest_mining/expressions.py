@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import ast
 import math
+import re
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import TypeAlias
@@ -23,11 +24,16 @@ from typing import TypeAlias
 import numpy as np
 import pandas as pd
 
+from invest_data.pit import fundamentals_asof, membership_panel
+
 OPERATOR_VERSION = "1"
 BASE_FIELDS = ("open", "high", "low", "close", "volume")
 # Derived features and the number of extra past sessions each needs.
 DERIVED_FIELDS: dict[str, int] = {"returns": 1, "dollar_volume": 0, "intraday_return": 0}
 FEATURES = (*BASE_FIELDS, *DERIVED_FIELDS)
+# Point-in-time fundamentals are exposed as ``fund_<field>`` (see build_panel).
+FUNDAMENTAL_FEATURE = re.compile(r"fund_[a-z][a-z0-9_]*")
+UNIVERSE_KEY = "universe"  # optional boolean panel entry restricting cross-sections
 _EPS = 1e-12
 
 Panel: TypeAlias = Mapping[str, pd.DataFrame]
@@ -176,8 +182,10 @@ def _window(node: ast.expr, op: str) -> int:
 
 def _convert(node: ast.expr) -> Node:
     if isinstance(node, ast.Name):
-        if node.id not in FEATURES:
-            raise ExpressionError(f"unknown feature {node.id!r}; available: {FEATURES}")
+        if node.id not in FEATURES and not FUNDAMENTAL_FEATURE.fullmatch(node.id):
+            raise ExpressionError(
+                f"unknown feature {node.id!r}; available: {FEATURES} or fund_<field>"
+            )
         return Feature(node.id)
     if isinstance(node, ast.Constant):
         value = node.value
@@ -271,8 +279,19 @@ def canonical(node: Node | str) -> str:
 # Evaluation
 
 
-def build_panel(bars: pd.DataFrame) -> dict[str, pd.DataFrame]:
-    """Long bars -> wide date x instrument frames for base and derived features."""
+def build_panel(
+    bars: pd.DataFrame,
+    *,
+    universe: pd.DataFrame | None = None,
+    fundamentals: pd.DataFrame | None = None,
+) -> dict[str, pd.DataFrame]:
+    """Long bars -> wide date x instrument frames for base and derived features.
+
+    ``universe`` (a membership table) adds a boolean ``universe`` entry: cross-sectional
+    operators then rank/normalise only across members, while time-series operators still
+    use each instrument's full history. ``fundamentals`` adds one ``fund_<field>`` frame per
+    field with the value known as of each date's close.
+    """
     panel: dict[str, pd.DataFrame] = {}
     for field in BASE_FIELDS:
         wide = bars.pivot(index="date", columns="instrument", values=field).sort_index()
@@ -280,6 +299,13 @@ def build_panel(bars: pd.DataFrame) -> dict[str, pd.DataFrame]:
     panel["returns"] = _clean(panel["close"] / panel["close"].shift(1) - 1.0)
     panel["dollar_volume"] = panel["close"] * panel["volume"]
     panel["intraday_return"] = panel["close"] / panel["open"] - 1.0
+    dates = pd.DatetimeIndex(panel["close"].index)
+    instruments = panel["close"].columns
+    if universe is not None:
+        panel[UNIVERSE_KEY] = membership_panel(universe, dates, instruments)
+    if fundamentals is not None:
+        for field in sorted(fundamentals["field"].unique()):
+            panel[f"fund_{field}"] = fundamentals_asof(fundamentals, field, dates, instruments)
     return panel
 
 
@@ -295,6 +321,8 @@ def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
             return cache[key]
         out: Value
         if isinstance(n, Feature):
+            if n.name not in panel:
+                raise ExpressionError(f"feature {n.name!r} is not in the panel")
             out = panel[n.name]
         elif isinstance(n, Const):
             out = n.value
@@ -307,7 +335,10 @@ def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
             elif spec.kind in ("ts", "ts2"):
                 out = spec.fn(*[_frame(v, like) for v in vals], n.window)
             else:
-                out = spec.fn(_frame(vals[0], like))
+                arg = _frame(vals[0], like)
+                if UNIVERSE_KEY in panel:
+                    arg = arg.where(panel[UNIVERSE_KEY])
+                out = spec.fn(arg)
             out = _clean(_frame(out, like))
         cache[key] = out
         return out
@@ -345,3 +376,11 @@ def random_expression(rng: np.random.Generator, max_depth: int = 4) -> Node:
     node = grow(max_depth)
     # Round-trip through text so generated and parsed trees are identical.
     return parse(str(node))
+
+
+def restrict(values: pd.DataFrame, panel: Panel) -> pd.DataFrame:
+    """Mask values for instruments not trading (no bar) or outside the universe."""
+    values = values.where(panel["close"].notna())
+    if UNIVERSE_KEY in panel:
+        values = values.where(panel[UNIVERSE_KEY])
+    return values

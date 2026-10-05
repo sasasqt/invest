@@ -147,3 +147,63 @@ def load_csv_bars(
     for col in required[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
     return out
+
+
+def synthetic_universe(
+    bars: pd.DataFrame, *, name: str = "SYN", seasoning: int = 20, seed: int = 7
+) -> pd.DataFrame:
+    """Point-in-time membership derived from listings, for testing and demos.
+
+    An instrument joins ``seasoning`` sessions after listing and leaves on its final
+    session. A few members are also removed for a while and re-added later, so the
+    universe changes independently of listing status.
+    """
+    rng = np.random.default_rng(seed)
+    dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
+    end_of_data = dates[-1]
+    rows = []
+    for instrument, grp in bars.groupby("instrument"):
+        first = dates.get_loc(grp["date"].min())
+        last_date = grp["date"].max()
+        start_i = first + seasoning
+        if start_i >= len(dates) or dates[start_i] >= last_date:
+            continue
+        end = None if last_date == end_of_data else last_date
+        start = dates[start_i]
+        span = (len(dates) - 1 if end is None else dates.get_loc(end)) - start_i
+        if span > 120 and rng.random() < 0.2:
+            out_i = start_i + int(rng.integers(30, span // 2))
+            back_i = out_i + int(rng.integers(20, 60))
+            rows.append((name, instrument, start, dates[out_i]))
+            rows.append((name, instrument, dates[back_i], end))
+        else:
+            rows.append((name, instrument, start, end))
+    out = pd.DataFrame(rows, columns=["universe", "instrument", "start_date", "end_date"])
+    out["end_date"] = pd.to_datetime(out["end_date"])
+    return out
+
+
+def synthetic_fundamentals(bars: pd.DataFrame, *, seed: int = 7) -> pd.DataFrame:
+    """Quarterly ``book_to_price`` and ``earnings_yield`` with reporting lags and revisions.
+
+    Each value is published 30-45 calendar days after its period end; about 20% are later
+    revised (published again 60-90 days after period end with a changed value).
+    """
+    rng = np.random.default_rng(seed + 1)
+    rows = []
+    for instrument, grp in bars.groupby("instrument"):
+        closes = grp.set_index("date")["close"]
+        period_ends = closes.index[::63]
+        level = {"book_to_price": rng.uniform(0.2, 1.5), "earnings_yield": rng.uniform(0.0, 0.1)}
+        for pe in period_ends:
+            for field, base in level.items():
+                value = float(base * np.exp(rng.normal(0, 0.15)))
+                avail = pe + pd.Timedelta(days=int(rng.integers(30, 46)))
+                rows.append((instrument, field, pe, avail, value))
+                if rng.random() < 0.2:
+                    revised = value * float(np.exp(rng.normal(0, 0.1)))
+                    later = pe + pd.Timedelta(days=int(rng.integers(60, 91)))
+                    rows.append((instrument, field, pe, later, revised))
+    return pd.DataFrame(
+        rows, columns=["instrument", "field", "period_end", "available_date", "value"]
+    )

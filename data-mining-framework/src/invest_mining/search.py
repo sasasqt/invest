@@ -39,6 +39,7 @@ from invest_mining.expressions import (
     lookback,
     parse,
     random_expression,
+    restrict,
     size,
 )
 
@@ -117,7 +118,7 @@ def run_search(
     dataset_sha256: str | None = None,
 ) -> SearchResult:
     rng = np.random.default_rng(seed)
-    label = forward_returns(panel["open"], horizon)
+    label = restrict(forward_returns(panel["open"], horizon), panel)
     split = chronological_split(
         pd.DatetimeIndex(panel["close"].index), dev_fraction, horizon, embargo
     )
@@ -152,7 +153,7 @@ def run_search(
         if row["size"] > max_size or row["lookback"] > max_lookback:
             row.update(status="rejected", reason="complexity_limit")
             continue
-        values = evaluate(node, panel).loc[split.dev_dates]
+        values = restrict(evaluate(node, panel), panel).loc[split.dev_dates]
         coverage = float(values.notna().sum().sum() / max(dev_label.notna().sum().sum(), 1))
         row["dev_coverage"] = coverage
         if coverage < min_coverage:
@@ -255,7 +256,10 @@ def confirm(
     """Test the frozen family once on confirmation data (one-sided, Holm-adjusted)."""
     rows = []
     for factor in family:
-        values = evaluate(factor.expression, panel).loc[confirm_label.index] * factor.orientation
+        values = (
+            restrict(evaluate(factor.expression, panel), panel).loc[confirm_label.index]
+            * factor.orientation
+        )
         ic = daily_ic(values, confirm_label, "spearman")["ic"].dropna()
         test = newey_west_mean_test(ic, newey_west_lags(len(ic), horizon), min_n=min_dates)
         rows.append(

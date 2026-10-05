@@ -220,3 +220,24 @@ def test_config_rejects_unknown_keys():
         BacktestConfig.from_dict({"strategy": {"long_fraction": 0.6, "short_fraction": 0.6}})
     cfg = BacktestConfig.from_dict({"costs": {"commission_bps": 2}, "annualization": 260})
     assert cfg.costs.commission_bps == 2 and cfg.annualization == 260
+
+
+def test_universe_limits_new_positions():
+    bars = hand_market()
+    uni = pd.DataFrame(
+        {
+            "universe": ["U"],
+            "instrument": ["B"],
+            "start_date": [pd.Timestamp("2024-01-01")],
+            "end_date": [pd.NaT],
+        }
+    )
+    res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), QuantileOnly(), universe=uni)
+    assert set(res.trades["instrument"]) == {"B"}
+
+
+class QuantileOnly:
+    """Long every eligible instrument equally (to observe which ones are eligible)."""
+
+    def target_weights(self, scores: pd.Series) -> pd.Series:
+        return pd.Series(1.0 / len(scores), index=scores.index) if len(scores) else scores

@@ -8,7 +8,9 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from invest_data.schemas import read_market_bars
+import pandas as pd
+
+from invest_data.schemas import read_fundamentals, read_market_bars, read_universe
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
     daily_ic,
@@ -18,17 +20,24 @@ from invest_mining.diagnostics import (
     rank_autocorrelation,
     tail_returns,
 )
-from invest_mining.expressions import build_panel, canonical, evaluate
+from invest_mining.expressions import build_panel, canonical, evaluate, restrict
 from invest_mining.inference import export_signals
 from invest_mining.reporting import write_factor_report
 from invest_mining.search import run_search
 
 
+def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
+    return {
+        "universe": read_universe(args.universe)[1] if args.universe else None,
+        "fundamentals": read_fundamentals(args.fundamentals)[1] if args.fundamentals else None,
+    }
+
+
 def _evaluate(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
-    panel = build_panel(bars)
-    values = evaluate(args.expr, panel)
-    label = forward_returns(panel["open"], args.horizon)
+    panel = build_panel(bars, **_optional_inputs(args))
+    values = restrict(evaluate(args.expr, panel), panel)
+    label = restrict(forward_returns(panel["open"], args.horizon), panel)
     ic = daily_ic(values, label, "spearman")
     summary = ic_summary(ic, args.horizon)
     summary["pearson_mean_ic"] = ic_summary(daily_ic(values, label, "pearson"), args.horizon)[
@@ -65,7 +74,7 @@ def _evaluate(args: argparse.Namespace) -> int:
 def _search(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
     result = run_search(
-        build_panel(bars),
+        build_panel(bars, **_optional_inputs(args)),
         n_trials=args.trials,
         seed=args.seed,
         horizon=args.horizon,
@@ -99,7 +108,13 @@ def _export(args: argparse.Namespace) -> int:
             file=sys.stderr,
         )
     out = export_signals(
-        factor, bars, args.out, dataset_id=manifest.dataset_id, start=args.start, fmt=args.format
+        factor,
+        bars,
+        args.out,
+        dataset_id=manifest.dataset_id,
+        start=args.start,
+        fmt=args.format,
+        **_optional_inputs(args),
     )
     print(
         json.dumps({"signals": str(args.out), "rows": out.row_count, "factor_id": factor.factor_id})
@@ -134,6 +149,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     ex.add_argument("--out", type=Path, required=True)
     ex.add_argument("--start", help="first decision date to export (YYYY-MM-DD)")
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
+
+    for p in (ev, se, ex):
+        p.add_argument("--universe", type=Path, help="universe bundle (point-in-time membership)")
+        p.add_argument("--fundamentals", type=Path, help="fundamentals bundle (fund_<field>)")
 
     args = parser.parse_args(argv)
     return {"evaluate": _evaluate, "search": _search, "export": _export}[args.command](args)

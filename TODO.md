@@ -14,7 +14,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 ## M0 — Contracts and initial scope
 
 - [ ] SCOPE-01: Select the first market, universe, frequency, licensed/authorized data source, and minimum strategy; document exclusions and execution assumptions.
-- [ ] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes.
+- [x] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes. *`market_bars`, `universe`, `fundamentals`, `signals` in `invest_data/schemas.py`; [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).*
 - [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms.
 - [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance.
 - [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).

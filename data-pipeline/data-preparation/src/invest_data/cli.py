@@ -11,8 +11,15 @@ from pathlib import Path
 import pandas as pd
 
 from invest_data.cleaning import clean_bars
-from invest_data.schemas import publish_market_bars
-from invest_data.sources import SYNTHETIC_METADATA, SyntheticConfig, load_csv_bars, synthetic_market
+from invest_data.schemas import publish_fundamentals, publish_market_bars, publish_universe
+from invest_data.sources import (
+    SYNTHETIC_METADATA,
+    SyntheticConfig,
+    load_csv_bars,
+    synthetic_fundamentals,
+    synthetic_market,
+    synthetic_universe,
+)
 
 
 def _publish(
@@ -39,6 +46,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     syn.add_argument("--instruments", type=int, default=SyntheticConfig.n_instruments)
     syn.add_argument("--days", type=int, default=SyntheticConfig.n_days)
     syn.add_argument("--seed", type=int, default=SyntheticConfig.seed)
+    syn.add_argument("--universe-out", type=Path, help="also publish a universe bundle")
+    syn.add_argument("--fundamentals-out", type=Path, help="also publish a fundamentals bundle")
 
     imp = sub.add_parser("import-csv", help="clean and publish user-supplied daily bars")
     imp.add_argument("source", type=Path)
@@ -56,8 +65,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "synthetic":
         cfg = SyntheticConfig(n_instruments=args.instruments, n_days=args.days, seed=args.seed)
+        bars = synthetic_market(cfg)
+        prov = {"sources": ["invest_data.sources"], "config": cfg.to_dict()}
+        if args.universe_out:
+            publish_universe(
+                synthetic_universe(bars, seed=cfg.seed),
+                args.universe_out,
+                dataset_id=f"synthetic-universe-{cfg.seed}",
+                provenance=prov,
+                fmt=args.format,
+            )
+        if args.fundamentals_out:
+            publish_fundamentals(
+                synthetic_fundamentals(bars, seed=cfg.seed),
+                args.fundamentals_out,
+                dataset_id=f"synthetic-fundamentals-{cfg.seed}",
+                provenance=prov,
+                fmt=args.format,
+            )
         return _publish(
-            synthetic_market(cfg),
+            bars,
             args.out,
             f"synthetic-{cfg.seed}",
             SYNTHETIC_METADATA,

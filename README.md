@@ -34,20 +34,24 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). The three packages f
 uv sync --frozen
 
 # 1. Prepare: publish a deterministic synthetic market (or `import-csv` your own bars).
-uv run invest-data synthetic --out artifacts/data/synthetic
+uv run invest-data synthetic --out artifacts/data/synthetic --format parquet \
+  --universe-out artifacts/data/universe --fundamentals-out artifacts/data/fundamentals
 
 # 2. Mine: random search + templates on the development period, with a full trial
 #    ledger; the top candidates are tested once on the confirmation period (Holm).
-uv run invest-mine search --data artifacts/data/synthetic --trials 200 --out artifacts/mining/search
-uv run invest-mine evaluate --data artifacts/data/synthetic --expr "-delta(close, 5)" --out artifacts/mining/rev5
+uv run invest-mine search --data artifacts/data/synthetic --universe artifacts/data/universe \
+  --trials 200 --out artifacts/mining/search
+uv run invest-mine evaluate --data artifacts/data/synthetic --fundamentals artifacts/data/fundamentals \
+  --expr "cs_rank(fund_book_to_price)" --out artifacts/mining/value
 
 # 3. Freeze and export signals for the confirmation period only.
-uv run invest-mine export --data artifacts/data/synthetic \
+uv run invest-mine export --data artifacts/data/synthetic --universe artifacts/data/universe \
   --factor artifacts/mining/search/factors/<factor_id>.json \
   --start <first confirmation date from search/config.json> --out artifacts/signals/rev5
 
 # 4. Evaluate: backtest with costs, metrics, statistics, stress scenarios and figures.
 uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/rev5 \
+  --universe artifacts/data/universe \
   --config strategy-evaluation/examples/quantile_long_short.json \
   --n-trials 207 --out artifacts/eval/rev5
 ```
@@ -64,12 +68,14 @@ uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --co
 
 - **Timing.** A signal dated `t` uses data through the close of `t`. Orders fill at the open of `t + 1 + delay`. Factor labels use the same convention (open `t+1` to open `t+1+h`), so mining diagnostics and backtests agree. Tests check that changing future prices or signals cannot change earlier signals, fills or equity.
 - **Costs.** Commission and half-spread (bps of notional), plus square-root market impact `impact_coef × daily_vol × sqrt(notional / ADV$)`, a participation cap per fill, short borrow fees, and interest on cash. Volatility and ADV are trailing estimates known at the decision date. Stress scenarios scale costs, add delays, tighten participation, and raise capital.
-- **Survivorship.** Instruments list and delist point-in-time. A held instrument that delists is liquidated at its final close (a delisting return of zero), and orders for instruments with no bar on the fill date are rejected and reported.
+- **Survivorship and universes.** Instruments list and delist point-in-time. A held instrument that delists is liquidated at its final close (a delisting return of zero), and orders for instruments with no bar on the fill date are rejected and reported. An optional universe bundle gives point-in-time membership: mining ranks only members, and the backtest opens positions only in members.
+- **Fundamentals.** An optional fundamentals bundle records when each value (and each revision) was published. Expressions read them as `fund_<field>` with the value known at each date's close, never a later revision.
+- **Storage.** Bundles are CSV, SQLite or Parquet, validated by one reader and identified by a format-independent content hash.
 - **Undefined results.** Metrics carry a status and reason (for example `undefined: zero_excess_return_dispersion`) instead of returning 0 or infinity.
 
 ### Known limitations of the baseline
 
-- There is no vendor download adapter yet. Use `import-csv` for your own bars or add an adapter in `invest_data.sources`.
+- There is no vendor download adapter yet. Use `import-csv` for your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter in `invest_data.sources`.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Only external flows of zero are supported, so XIRR is not computed yet. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
 

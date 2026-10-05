@@ -25,6 +25,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from invest_data.pit import membership_panel
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.strategies import QuantileStrategy, Strategy
 
@@ -72,7 +73,11 @@ def run_backtest(
     signals: pd.DataFrame,
     config: BacktestConfig | None = None,
     strategy: Strategy | None = None,
+    universe: pd.DataFrame | None = None,
 ) -> BacktestResult:
+    """Simulate ``signals`` on ``bars``. ``universe`` (a membership table) limits new
+    positions to instruments that are members on the decision date; holdings that leave
+    the universe are sold at the next rebalance."""
     cfg = config or BacktestConfig()
     strat = strategy or QuantileStrategy(cfg.strategy)
     ex, cm = cfg.execution, cfg.costs
@@ -120,6 +125,11 @@ def run_backtest(
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
     last_idx = np.array([calendar.get_loc(d) for d in last_bar])
+    member = (
+        membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
+        if universe is not None
+        else np.ones((len(calendar), len(instruments)), dtype=bool)
+    )
     last_idx[last_idx == len(calendar) - 1] = len(calendar)  # end of data is not a delisting
     n = len(instruments)
 
@@ -319,6 +329,7 @@ def run_backtest(
             if fill_i <= sessions[-1]:
                 eligible = (
                     np.isfinite(S[i])
+                    & member[i]
                     & has_close
                     & (px_close[i] >= ex.min_price)
                     & np.isfinite(ADV[i])
@@ -358,7 +369,8 @@ def run_backtest(
         )
 
     rets = close_w / close_w.shift(1) - 1
-    bench = rets.mean(axis=1).reindex(daily.index).fillna(0.0).rename("benchmark")
+    held_from = np.vstack([member[:1], member[:-1]])  # members at the previous close
+    bench = rets.where(held_from).mean(axis=1).reindex(daily.index).fillna(0.0).rename("benchmark")
     trade_cols = [
         "date",
         "instrument",

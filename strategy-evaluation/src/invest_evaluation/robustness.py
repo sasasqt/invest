@@ -50,10 +50,13 @@ def run_scenarios(
     signals: pd.DataFrame,
     base: BacktestConfig,
     scenarios: dict[str, dict[str, float]] | None = None,
+    universe: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     rows = []
     for name, spec in (scenarios or DEFAULT_SCENARIOS).items():
-        m = compute_metrics(run_backtest(bars, signals, scenario_config(base, spec)))
+        m = compute_metrics(
+            run_backtest(bars, signals, scenario_config(base, spec), universe=universe)
+        )
         perf, trading = m["performance"], m["trading"]
         rows.append(
             {

@@ -116,3 +116,31 @@ def test_random_expressions_round_trip_and_are_deterministic():
     assert a == b
     for text in a:
         assert canonical(text) == text
+
+
+def test_fundamental_features_and_universe_restricted_cross_sections(tiny_panel):
+    p = dict(tiny_panel)
+    with pytest.raises(ExpressionError, match="not in the panel"):
+        evaluate("fund_bp", p)
+    p["fund_bp"] = p["close"] * 0 + 2.0
+    pd.testing.assert_frame_equal(evaluate("fund_bp * close", p), 2 * p["close"])
+    p["universe"] = p["close"].notna() & pd.DataFrame(
+        {"A": True, "B": True, "C": False}, index=p["close"].index
+    )
+    r = evaluate("cs_rank(close)", p).iloc[-1]
+    assert r["A"] == 1.0 and r["B"] == 0.5 and np.isnan(r["C"])
+    with pytest.raises(ExpressionError):
+        parse("fund_BP")
+
+
+def test_fundamental_expressions_are_causal(bars):
+    from invest_data.sources import synthetic_fundamentals
+
+    fund = synthetic_fundamentals(bars, seed=11)
+    cut = pd.Timestamp(sorted(bars["date"].unique())[250])
+    full = build_panel(bars, fundamentals=fund)
+    known = build_panel(bars[bars["date"] <= cut], fundamentals=fund[fund["available_date"] <= cut])
+    for text in ("fund_book_to_price", "cs_rank(fund_earnings_yield) - ts_mean(returns, 5)"):
+        pd.testing.assert_frame_equal(
+            evaluate(text, full).loc[:cut], evaluate(text, known), check_freq=False
+        )

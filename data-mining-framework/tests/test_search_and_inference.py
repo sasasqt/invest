@@ -83,3 +83,17 @@ def test_export_signals_bundle(tmp_path, bars):
     assert sig["decision_date"].min() >= pd.Timestamp("2020-06-01")
     assert manifest.metadata["factor_id"] == f.factor_id
     assert manifest.metadata["available_at"] == "decision_date_close"
+
+
+def test_scores_respect_universe(bars):
+    from invest_data.sources import synthetic_universe
+
+    uni = synthetic_universe(bars, seed=11)
+    scores = compute_scores(_factor(), bars, universe=uni)
+    for row in scores.sample(200, random_state=0).itertuples():
+        spans = uni[uni["instrument"] == row.instrument]
+        inside = (spans["start_date"] <= row.decision_date) & (
+            spans["end_date"].isna() | (row.decision_date < spans["end_date"])
+        )
+        assert inside.any()
+    assert len(scores) < len(compute_scores(_factor(), bars))

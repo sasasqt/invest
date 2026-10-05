@@ -9,11 +9,16 @@ import pytest
 
 pytestmark = pytest.mark.integration
 ROOT = Path(__file__).resolve().parents[1]
+CONFIG = ROOT / "strategy-evaluation/examples/quantile_long_short.json"
 
 
 def run(module: str, *args: str) -> str:
     out = subprocess.run(
-        [sys.executable, "-m", module, *args], capture_output=True, text=True, check=False, cwd=ROOT
+        [sys.executable, "-m", module, *args],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
     )
     assert out.returncode == 0, out.stderr
     return out.stdout
@@ -21,7 +26,8 @@ def run(module: str, *args: str) -> str:
 
 @pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_prepare_mine_evaluate(tmp_path, fmt):
-    data, search, signals, report = (tmp_path / p for p in ("data", "search", "signals", "run"))
+    data, uni, fund = tmp_path / "data", tmp_path / "universe", tmp_path / "fund"
+    search, signals, report = tmp_path / "search", tmp_path / "signals", tmp_path / "run"
     run(
         "invest_data.cli",
         "synthetic",
@@ -33,12 +39,35 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
         "40",
         "--days",
         "500",
+        "--universe-out",
+        str(uni),
+        "--fundamentals-out",
+        str(fund),
     )
+
+    run(
+        "invest_mining.cli",
+        "evaluate",
+        "--data",
+        str(data),
+        "--universe",
+        str(uni),
+        "--fundamentals",
+        str(fund),
+        "--expr",
+        "cs_rank(fund_book_to_price)",
+        "--out",
+        str(tmp_path / "fund_eval"),
+    )
+    assert json.loads((tmp_path / "fund_eval" / "metrics.json").read_text())["valid_dates"] > 0
+
     run(
         "invest_mining.cli",
         "search",
         "--data",
         str(data),
+        "--universe",
+        str(uni),
         "--trials",
         "40",
         "--top-k",
@@ -48,16 +77,18 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
     )
     confirmation = (search / "confirmation.csv").read_text().splitlines()
     assert len(confirmation) == 4
-    best = sorted((search / "factors").glob("*.json"))
     first_id = confirmation[1].split(",")[0]
-    factor = next(p for p in best if p.stem == first_id)
+    factor = search / "factors" / f"{first_id}.json"
     split = json.loads((search / "config.json").read_text())["split"]
     confirm_start = split["confirmation"][0]
+
     run(
         "invest_mining.cli",
         "export",
         "--data",
         str(data),
+        "--universe",
+        str(uni),
         "--factor",
         str(factor),
         "--out",
@@ -74,13 +105,16 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
         str(data),
         "--signals",
         str(signals),
+        "--universe",
+        str(uni),
         "--config",
-        str(ROOT / "strategy-evaluation/examples/quantile_long_short.json"),
+        str(CONFIG),
         "--out",
         str(report),
         "--n-trials",
         "47",
     )
+
     summary = json.loads(out)
     metrics = json.loads((report / "metrics.json").read_text())
     manifest = json.loads((report / "manifest.json").read_text())
