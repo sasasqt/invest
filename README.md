@@ -1,6 +1,6 @@
 # Invest
 
-This repository contains the designs for three independent Python components in two top-level folders. Application code, package configuration, and tests have not been added yet. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components in two top-level folders. A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
@@ -22,15 +22,54 @@ Read [Rapid Software Development Guidelines](RAPID_DEVELOPMENT.md) for small wor
 
 The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide lists the prerequisites for the first runnable end-to-end workflow.
 
-Within each component folder, use a `src` package layout, a `pyproject.toml` configuration, a committed dependency lockfile, and pytest tests under `tests/`. Use Ruff for formatting and linting, and mypy for type checking. Adapt the single-package examples in the guidelines to each component's package name and working directory.
+Each component folder has a `src` package layout, its own `pyproject.toml`, and pytest tests under `tests/`. The root `pyproject.toml` defines the uv workspace, the shared dev tools (Ruff, mypy, pytest), and the single lockfile `uv.lock`. Mining and evaluation depend on `invest-data` only for its public, versioned bundle contract (`invest_data.bundle` and `invest_data.schemas`). They never import each other.
 
 ## Getting started
 
-Start with the [roadmap](ROADMAP.md) for milestone sequencing and acceptance gates, and [TODO list](TODO.md) for actionable tasks and progress. The current next milestone is **M0: finalize financial contracts and the initial market/use case**. Python packages, CI, download adapters, mining algorithms, and simulation remain planned.
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). The three packages form one uv workspace with a single committed lockfile; each package still installs on its own (CI checks this).
 
-The first runnable milestone will publish a small dataset, apply one known causal formula, export frozen signals, and evaluate one fixed bucket strategy with reconciled accounting and saved reports. Advanced search methods follow verified returns, statistics, and robustness checks.
+```sh
+uv sync --frozen
 
-There are currently no application startup commands or executable test suites. The commands in the guidelines describe the intended future workflow.
+# 1. Prepare: publish a deterministic synthetic market (or `import-csv` your own bars).
+uv run invest-data synthetic --out artifacts/data/synthetic
+
+# 2. Mine: random search + templates on the development period, with a full trial
+#    ledger; the top candidates are tested once on the confirmation period (Holm).
+uv run invest-mine search --data artifacts/data/synthetic --trials 200 --out artifacts/mining/search
+uv run invest-mine evaluate --data artifacts/data/synthetic --expr "-delta(close, 5)" --out artifacts/mining/rev5
+
+# 3. Freeze and export signals for the confirmation period only.
+uv run invest-mine export --data artifacts/data/synthetic \
+  --factor artifacts/mining/search/factors/<factor_id>.json \
+  --start <first confirmation date from search/config.json> --out artifacts/signals/rev5
+
+# 4. Evaluate: backtest with costs, metrics, statistics, stress scenarios and figures.
+uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/rev5 \
+  --config data-pipeline/strategy-evaluation/examples/quantile_long_short.json \
+  --n-trials 207 --out artifacts/eval/rev5
+```
+
+Checks (the same as CI):
+
+```sh
+uv run ruff format --check . && uv run ruff check .
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src data-pipeline/strategy-evaluation/src
+uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch
+```
+
+### Key conventions
+
+- **Timing.** A signal dated `t` uses data through the close of `t`. Orders fill at the open of `t + 1 + delay`. Factor labels use the same convention (open `t+1` to open `t+1+h`), so mining diagnostics and backtests agree. Tests check that changing future prices or signals cannot change earlier signals, fills or equity.
+- **Costs.** Commission and half-spread (bps of notional), plus square-root market impact `impact_coef × daily_vol × sqrt(notional / ADV$)`, a participation cap per fill, short borrow fees, and interest on cash. Volatility and ADV are trailing estimates known at the decision date. Stress scenarios scale costs, add delays, tighten participation, and raise capital.
+- **Survivorship.** Instruments list and delist point-in-time. A held instrument that delists is liquidated at its final close (a delisting return of zero), and orders for instruments with no bar on the fill date are rejected and reported.
+- **Undefined results.** Metrics carry a status and reason (for example `undefined: zero_excess_return_dispersion`) instead of returning 0 or infinity.
+
+### Known limitations of the baseline
+
+- There is no vendor download adapter yet. Use `import-csv` for your own bars or add an adapter in `invest_data.sources`.
+- Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
+- Only external flows of zero are supported, so XIRR is not computed yet. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
 
 ## Documentation maintenance
 

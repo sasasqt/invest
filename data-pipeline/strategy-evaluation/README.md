@@ -1,6 +1,13 @@
 # Strategy evaluation
 
-Implementation is planned. See the shared [roadmap](../../ROADMAP.md) and [TODO list](../../TODO.md) for sequencing and progress; the first target is one fixed strategy with verified execution and accounting.
+Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, delisting and halt handling, and exact per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy (`strategies.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
+
+```sh
+uv run invest-eval run --data <market bundle> --signals <signals bundle> \
+  --config data-pipeline/strategy-evaluation/examples/quantile_long_short.json \
+  --n-trials <strategies tried> --out artifacts/eval/<run>
+uv run pytest data-pipeline/strategy-evaluation
+```
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 
@@ -14,7 +21,7 @@ Consume signals from mining, hand-written factors, or external sources through a
 
 Policies that depend on actual portfolio state need the frozen-policy runtime interface described in the [architecture](../../docs/ARCHITECTURE.md). Static signals cannot represent every state-dependent decision policy.
 
-The proposed Python package is `invest_evaluation`, with its own `pyproject.toml`, lockfile, and tests. Implementation is pending. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
+The package has its own `pyproject.toml` and tests and does not depend on mining. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
 
 Required validation will cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, and rejection of signals unavailable at decision time. Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
 

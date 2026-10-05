@@ -1,0 +1,149 @@
+"""Data sources: a deterministic synthetic market and a local CSV importer.
+
+Network adapters (vendor APIs) are intentionally not bundled: licensing, credentials and
+rate limits are source specific. Add one as a function returning a raw bars DataFrame
+with the columns of :data:`invest_data.schemas.MARKET_BAR_COLUMNS`, then pass it through
+:func:`invest_data.cleaning.clean_bars`.
+"""
+
+from __future__ import annotations
+
+import os
+from dataclasses import asdict, dataclass
+
+import numpy as np
+import pandas as pd
+
+
+@dataclass(frozen=True)
+class SyntheticConfig:
+    n_instruments: int = 60
+    n_days: int = 750
+    start: str = "2020-01-01"
+    seed: int = 7
+    market_vol: float = 0.010
+    idio_vol: float = 0.018
+    # Planted, causal effect: next-session (open->close) return loads on minus the
+    # cross-sectional z-score of the trailing ``reversal_window`` close-to-close return.
+    reversal_strength: float = 0.0015
+    reversal_window: int = 5
+    listing_churn: float = 0.15  # share of instruments that list late or delist early
+    adv_shares_range: tuple[float, float] = (2e5, 5e6)
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
+
+
+def synthetic_market(config: SyntheticConfig | None = None) -> pd.DataFrame:
+    """Generate daily OHLCV bars with a known, weak, *causal* reversal effect.
+
+    The predictable part of each return is a function only of prices up to the previous
+    close, and it is realised between the next open and close. A correct pipeline that
+    trades at the next open can capture it; a pipeline with lookahead would show
+    implausibly large profits. Some instruments list late or delist early to exercise
+    survivorship handling.
+    """
+    cfg = config or SyntheticConfig()
+    rng = np.random.default_rng(cfg.seed)
+    n, t = cfg.n_instruments, cfg.n_days
+    dates = pd.bdate_range(cfg.start, periods=t)
+    names = [f"SYN{i:03d}" for i in range(n)]
+
+    beta = rng.uniform(0.6, 1.4, n)
+    vol = cfg.idio_vol * rng.uniform(0.6, 1.6, n)
+    lo, hi = cfg.adv_shares_range
+    adv = np.exp(rng.uniform(np.log(lo), np.log(hi), n))
+    start_px = np.exp(rng.uniform(np.log(10), np.log(200), n))
+
+    first = np.zeros(n, dtype=int)
+    last = np.full(n, t - 1)
+    churn = rng.random(n) < (cfg.listing_churn if t >= 60 else 0.0)
+    for i in np.flatnonzero(churn).tolist():
+        if rng.random() < 0.5:
+            first[i] = rng.integers(20, t // 2)
+        else:
+            last[i] = rng.integers(t // 2, t - 20)
+
+    log_close = np.full((t, n), np.nan)
+    log_open = np.full((t, n), np.nan)
+    log_close[0] = np.log(start_px)
+    log_open[0] = log_close[0]
+    w = cfg.reversal_window
+    for d in range(1, t):
+        mkt_on = rng.normal(0, cfg.market_vol * 0.4)
+        mkt_id = rng.normal(0, cfg.market_vol * 0.9)
+        past = log_close[d - 1] - log_close[max(d - 1 - w, 0)]
+        signal = np.zeros(n)
+        if d - 1 - w >= 0:
+            z = (past - past.mean()) / (past.std() + 1e-12)
+            signal = -cfg.reversal_strength * z
+        overnight = beta * mkt_on + rng.normal(0, vol * 0.4)
+        intraday = beta * mkt_id + signal + rng.normal(0, vol * 0.9)
+        log_open[d] = log_close[d - 1] + overnight
+        log_close[d] = log_open[d] + intraday
+
+    open_ = np.exp(log_open)
+    close = np.exp(log_close)
+    span = np.abs(rng.normal(0, 0.004, (t, n)))
+    high = np.maximum(open_, close) * np.exp(span)
+    low = np.minimum(open_, close) * np.exp(-np.abs(rng.normal(0, 0.004, (t, n))))
+    volume = np.round(adv * np.exp(rng.normal(0, 0.35, (t, n))))
+
+    frames = []
+    for i, name in enumerate(names):
+        sl = slice(first[i], last[i] + 1)
+        frames.append(
+            pd.DataFrame(
+                {
+                    "date": dates[sl],
+                    "instrument": name,
+                    "open": open_[sl, i],
+                    "high": high[sl, i],
+                    "low": low[sl, i],
+                    "close": close[sl, i],
+                    "volume": volume[sl, i],
+                }
+            )
+        )
+    out = pd.concat(frames, ignore_index=True).sort_values(["date", "instrument"])
+    return out.reset_index(drop=True)
+
+
+SYNTHETIC_METADATA = {
+    "frequency": "1d",
+    "currency": "USD",
+    "price_adjustment": "total_return_adjusted",
+    "calendar": "weekdays (synthetic, no holidays)",
+    "timezone": "America/New_York",
+    "universe": "all listed instruments on each date (point-in-time by construction)",
+    "note": "Synthetic data with a planted 5-day reversal effect. Not market data.",
+}
+
+
+def load_csv_bars(
+    path: str | os.PathLike[str],
+    *,
+    column_map: dict[str, str] | None = None,
+    date_format: str | None = None,
+) -> pd.DataFrame:
+    """Load user-supplied daily bars from a local CSV (one row per date and instrument).
+
+    ``column_map`` renames source columns to ``date, instrument, open, high, low, close,
+    volume``. Values are parsed but not cleaned; run :func:`clean_bars` next.
+    """
+    raw = pd.read_csv(path, dtype=str, keep_default_na=False)
+    if column_map:
+        raw = raw.rename(columns=column_map)
+    required = ["date", "instrument", "open", "high", "low", "close", "volume"]
+    missing = [c for c in required if c not in raw.columns]
+    if missing:
+        raise ValueError(f"CSV is missing required columns {missing}")
+    out = pd.DataFrame(
+        {
+            "date": pd.to_datetime(raw["date"], format=date_format, errors="coerce"),
+            "instrument": raw["instrument"].str.strip(),
+        }
+    )
+    for col in required[2:]:
+        out[col] = pd.to_numeric(raw[col], errors="coerce")
+    return out

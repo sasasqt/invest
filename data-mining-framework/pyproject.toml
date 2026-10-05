@@ -1,0 +1,17 @@
+[project]
+name = "invest-mining"
+version = "0.1.0"
+description = "Factor expressions, alpha search, diagnostics and frozen signal export."
+requires-python = ">=3.11"
+# invest-data is used only for its public, versioned bundle contract (invest_data.bundle).
+dependencies = ["invest-data", "numpy>=1.26", "pandas>=2.1", "matplotlib>=3.8"]
+
+[project.scripts]
+invest-mine = "invest_mining.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+invest-data = { workspace = true }

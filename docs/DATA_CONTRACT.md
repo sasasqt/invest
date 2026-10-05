@@ -1,6 +1,6 @@
 # Dataset exchange contract
 
-Status: generic dataset specification for the three logical components. Readers, writers, and validation tests are not implemented yet. Financial timing/universe metadata and signal/model/report contracts remain to be finalized before implementation.
+Status: implemented in `invest_data.bundle` (generic v1) and `invest_data.schemas` (financial dataset kinds), with tests in `data-pipeline/data-preparation/tests`. Fitted-model and report contracts are not yet machine-validated.
 
 ## Boundary
 
@@ -34,6 +34,15 @@ Example manifest for CSV:
 ```
 
 For SQLite, use `"storage": {"format": "sqlite", "path": "data.sqlite", "table": "observations"}`. The manifest defines logical types for both formats: `string`, `int64`, `float64`, `boolean`, `date`, `timestamp`, and `decimal`. Decimal columns additionally declare precision and scale. Column names are unique, ordered, and match the stored dataset. Nullable columns may contain nulls; a declared primary key must be non-null and unique. `row_count` must equal the stored row count.
+
+### Optional v1 extensions
+
+Readers that ignore unknown keys remain compatible with these optional manifest fields:
+
+- `content_sha256`: a format-independent hash of the column schema and canonical row values. CSV and SQLite copies of the same data have the same hash. Readers verify it when present.
+- `dataset_kind` and `metadata`: financial semantics layered on the generic table.
+  - `market_bars`: keys `(date, instrument)`, columns `open, high, low, close, volume`. Required metadata: `frequency`, `currency`, `price_adjustment`, `calendar`. A missing row means the instrument was not tradable that session.
+  - `signals`: keys `(decision_date, instrument)`, column `score` (higher is more attractive). Required metadata: `available_at = "decision_date_close"`, `signal_type`, `factor_id`, `horizon_days`. Consumers may act no earlier than the next session.
 
 ## Serialization rules
 

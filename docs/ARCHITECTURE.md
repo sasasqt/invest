@@ -2,7 +2,7 @@
 
 The repository has two top-level folders and three independent logical components. Data preparation and strategy evaluation share the `data-pipeline/` parent, but have separate packages, dependencies, and tests. Model discovery, training, and inference belong in `data-mining-framework/`.
 
-The component folders and scope documents exist. Python packages, commands, and tests below are planned, not implemented.
+The three packages exist with tests and CLIs. Directories in the tree below that are not present yet (for example `features/`, `models/`, `training/`) are planned.
 
 ## Layout
 
@@ -126,7 +126,7 @@ Every mined alpha follows the [validation protocol](../data-mining-framework/ALP
 
 The [roadmap](../ROADMAP.md) tracks milestone sequencing and acceptance gates; [TODO.md](../TODO.md) tracks implementation tasks. The prerequisites below explain the architectural reasons for that order.
 
-The current repository is a design and research collection, not a functioning framework. Before adding multiple miners or a dashboard:
+Steps 2 and 4 below have a tested baseline; the remaining steps still apply. Before adding multiple miners or a dashboard:
 
 1. Finalize machine-validated schemas and compatibility fixtures for financial datasets, fitted artifacts, signals, and reports. Specify availability/revision times, point-in-time membership, price adjustment/total-return rules, labels and horizons, keys, units, calendars, and content hashes. The generic CSV/SQLite contract alone does not encode this financial information.
 2. Establish a supported Python version, the three package manifests/lockfiles, component test commands, and CI. Add public interfaces and modules as needed by a runnable use case rather than creating the whole proposed directory tree at once.

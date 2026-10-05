@@ -1,0 +1,17 @@
+[project]
+name = "invest-evaluation"
+version = "0.1.0"
+description = "Backtest supplied signals with explicit execution timing, costs, metrics and statistics."
+requires-python = ">=3.11"
+# invest-data is used only for its public, versioned bundle contract (invest_data.bundle).
+dependencies = ["invest-data", "numpy>=1.26", "pandas>=2.1", "matplotlib>=3.8"]
+
+[project.scripts]
+invest-eval = "invest_evaluation.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+invest-data = { workspace = true }

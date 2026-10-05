@@ -2,7 +2,7 @@
 
 Every mined alpha needs a recorded validation result before promotion to a usable factor library. A high training IC, a small unadjusted p-value, or a good backtest is insufficient on its own.
 
-This document specifies the protocol to implement. No statistical engine, dataset, or alpha has been evaluated yet. Factor diagnostics belong in mining; portfolio and execution checks belong in [strategy evaluation](../data-pipeline/strategy-evaluation/README.md). Both publish independent reports through the [architecture's artifact boundaries](../docs/ARCHITECTURE.md).
+This document specifies the protocol. Sections 1–4 are implemented in baseline form (`invest_mining/search.py`, `invest_mining/diagnostics.py`); the robustness matrix of section 5 is only partly covered, by strategy-level stress scenarios. Factor diagnostics belong in mining; portfolio and execution checks belong in [strategy evaluation](../data-pipeline/strategy-evaluation/README.md). Both publish independent reports through the [architecture's artifact boundaries](../docs/ARCHITECTURE.md).
 
 ## 1. Freeze the experiment before confirmation
 

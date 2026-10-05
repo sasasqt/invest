@@ -21,37 +21,37 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 
 ## M1 — Packages and tooling
 
-- [ ] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles.
-- [ ] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage.
-- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation.
-- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled.
+- [x] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles. *Python ≥ 3.11, uv workspace with one `uv.lock`; CI installs each component on its own.*
+- [x] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage. *`invest-data`, `invest-mine`, `invest-eval`; see README.*
+- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *Done except Markdown/link validation and wheel builds (`.github/workflows/ci.yml`).*
+- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *94 tests, 92% branch coverage; validation uses explicit exceptions, not `assert`. Still missing: committed fixture bundles shared by all components.*
 
 ## M2 — First runnable workflow
 
-- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling.
-- [ ] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
-- [ ] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
-- [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market.
-- [ ] EVAL-02: Implement one fixed bucket strategy using supplied signals, with explicit rebalance/holding rules and point-in-time eligibility.
-- [ ] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
-- [ ] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
-- [ ] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration.
+- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling. *Synthetic and local-CSV sources exist; a network adapter waits on SCOPE-01.*
+- [x] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
+- [x] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
+- [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market. *Done for adjusted daily bars without external flows (`invest_evaluation/engine.py`); external flows and unadjusted corporate actions remain.*
+- [x] EVAL-02: Implement one fixed bucket strategy using supplied signals, with explicit rebalance/holding rules and point-in-time eligibility.
+- [x] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
+- [x] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
+- [x] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration. *`tests/test_pipeline.py` and component tests.*
 - [ ] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions.
 
 ## M3 — Evaluation completeness and robust alpha evidence
 
 - [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification.
 - [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails.
-- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks.
+- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks. *HAC tests, stationary bootstrap, PSR/DSR done; Monte Carlo calibration checks remain.*
 - [ ] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures.
 - [ ] ROBUST-01: Add time/universe/parameter/data/timing perturbations, redundancy diagnostics, and separate factor outcome statuses.
-- [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes.
+- [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes. *Scenarios done (`robustness.py`); a portfolio validation status is not emitted yet.*
 - [ ] REPORT-02: Extend saved-result reports with quantile tables, uncertainty, robustness scenarios, and reasons for undefined/inconclusive results.
 
 ## M4 — Search, training, and inference
 
 - [ ] AST-01: Implement typed AST grammar, causal operator semantics, lookbacks, numerical-domain policies, and serialization compatibility tests.
-- [ ] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
+- [x] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
 - [ ] TRAIN-01: Fit learned preprocessing and models only within development splits; persist transforms and configuration with fitted artifacts.
 - [ ] INFER-01: Verify frozen export/reload parity, schema compatibility, historical-context requirements, and inference without fitting.
 - [ ] COMPARE-01: Establish matched-budget comparisons with locked endpoints and independent confirmation before promoting search methods.

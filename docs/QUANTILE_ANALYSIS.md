@@ -1,6 +1,6 @@
 # Quantile analysis for factors and strategies
 
-This is a shared report specification, not an implemented evaluator. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../data-pipeline/strategy-evaluation/METRICS.md).
+This is a shared report specification. Deciles and overlapping tail slices are implemented as factor diagnostics in `invest_mining/diagnostics.py`; bucket portfolios are evaluated through the quantile strategy in `invest_evaluation`. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../data-pipeline/strategy-evaluation/METRICS.md).
 
 ## Signal buckets
 
