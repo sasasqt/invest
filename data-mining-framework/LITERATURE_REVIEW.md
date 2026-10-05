@@ -214,7 +214,7 @@ These **B** references are relevant safeguards or non-symbolic baselines. They w
 
 ## 5. Architecture informed by the papers
 
-Keep the mining package separate from `data-pipeline/`. Its only data dependency is the [dataset artifact contract](../docs/DATA_CONTRACT.md). Any financial metadata the generic contract does not yet describe needs a reviewed extension, not a hidden import of pipeline state.
+Keep the mining package separate from `data-pipeline/`. Its only data dependency is the [dataset artifact contract](../docs/DATA_CONTRACT.md). Under the [component architecture](../docs/ARCHITECTURE.md), training and inference live in mining; trading strategies and the backtest engine live in `data-pipeline/strategy-evaluation/`. The interfaces below describe the overall research workflow. Portfolio feedback crosses an artifact boundary rather than importing the simulator into mining. Any financial metadata the generic contract does not yet describe needs a reviewed extension, not a hidden import of pipeline state.
 
 ```text
 CSV / SQLite bundle + manifest
