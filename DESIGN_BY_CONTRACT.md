@@ -2,7 +2,7 @@
 
 Design by contract makes the obligations of a caller and the guarantees of an implementation explicit. Apply it to public APIs, artifact boundaries, important state transitions, and numerical routines. A contract is useful when it prevents a concrete failure or makes an assumption testable; it should not become ceremonial validation around every line of code.
 
-This repository currently contains design documents. The examples below are illustrative, not implemented package APIs.
+The examples below are illustrative. The implemented boundaries follow these rules: bundle readers raise `BundleError`, the backtest engine raises `InputError` and `AccountingError`, and metrics return explicit statuses instead of `assert`-based checks.
 
 ## 1. Preconditions, postconditions, and invariants
 
