@@ -2,7 +2,7 @@
 
 Both components are currently at the design stage. Follow the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md) for implementation order and progress.
 
-This folder contains two independent subprojects on `main`:
+This folder contains two independent subprojects:
 
 - [Data preparation](data-preparation/README.md): download, validate, clean, preprocess, and publish versioned CSV or SQLite datasets.
 - [Strategy evaluation](strategy-evaluation/README.md): evaluate supplied trading rules and signals using consistent portfolio, execution, cost, and reporting logic.

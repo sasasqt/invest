@@ -1,6 +1,6 @@
 # Invest
 
-This repository contains the designs for three independent Python components in two top-level folders on `main`. Application code, package configuration, and tests have not been added yet.
+This repository contains the designs for three independent Python components in two top-level folders. Application code, package configuration, and tests have not been added yet. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 

@@ -1,6 +1,6 @@
 # Data mining framework
 
-Component folder: `data-mining-framework/` on `main`.
+Component folder: `data-mining-framework/`. Development branches follow the shared [Git guidelines](../GIT_GUIDELINES.md).
 
 Implementation progress is tracked in the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md). A known causal formula and frozen signals come first; automated search and learned models follow verified evaluation and robustness checks.
 

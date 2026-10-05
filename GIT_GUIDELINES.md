@@ -1,12 +1,13 @@
 # Git Development Guidelines
 
-These guidelines apply to both components in this repository. Keep `data-pipeline/` and `data-mining-framework/` together on `main`, with independent implementations and a shared dataset contract.
+These guidelines apply to all three components in this repository. Organize `data-pipeline/` and `data-mining-framework/` by folders, with independent implementations and versioned artifact contracts. Branches organize development and releases; there is no requirement to keep all work on `main` or retain only that branch.
 
 ## Branching
 
 - Keep `main` suitable for other contributors to build on. Use short-lived branches for new work and merge through pull requests.
 - Name branches by purpose, such as `feat/pipeline-csv-export`, `feat/mining-csv-reader`, `fix/pipeline-null-handling`, or `docs/dataset-contract`.
 - Create branches from the current `main`. Avoid permanent component branches: folders provide component separation, while branches represent changes.
+- Use experiment or release branches when isolation or supported-release maintenance warrants them. Give them a clear purpose and integration or retirement plan; short-lived feature branches remain the default for ordinary changes.
 - Keep one coherent task per branch. Coordinate changes to the shared dataset contract with both producer and consumer behavior.
 - In isolated cloud tasks, use the existing checkout. Create additional Git worktrees only when explicitly requested.
 
