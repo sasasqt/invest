@@ -9,7 +9,7 @@ Planned code locations:
 ```text
 data-mining-framework/src/invest_mining/reporting/
   plots/                    # IC, quantiles, decay, redundancy, robustness
-data-pipeline/strategy-evaluation/src/invest_evaluation/reporting/
+strategy-evaluation/src/invest_evaluation/reporting/
   plots/                    # Equity, drawdown, trades, costs, exposures
 ```
 

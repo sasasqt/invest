@@ -43,7 +43,7 @@ Do not use Python `assert` to validate external inputs or essential production c
 
 Use standard `ValueError` or `TypeError` for simple APIs, or a small documented exception hierarchy when consumers need to distinguish schema, compatibility, causality, and accounting errors. Catch errors only where the caller can recover meaningfully; preserve context when wrapping them.
 
-Distinguish **invalid input** from a **valid but undefined statistic**. Invalid return data should fail validation; a valid flat series may produce a metric with `value: null`, `status: undefined`, and a reason. Follow the [metric specification](data-pipeline/strategy-evaluation/METRICS.md).
+Distinguish **invalid input** from a **valid but undefined statistic**. Invalid return data should fail validation; a valid flat series may produce a metric with `value: null`, `status: undefined`, and a reason. Follow the [metric specification](strategy-evaluation/METRICS.md).
 
 ## 4. Repository contracts
 

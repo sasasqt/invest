@@ -1,6 +1,6 @@
 # Git Development Guidelines
 
-These guidelines apply to all three components in this repository. Organize `data-pipeline/` and `data-mining-framework/` by folders, with independent implementations and versioned artifact contracts. Branches organize development and releases; there is no requirement to keep all work on `main` or retain only that branch.
+These guidelines apply to all three components in this repository. Organize `data-pipeline/`, `data-mining-framework/`, and `strategy-evaluation/` by folders, with independent implementations and versioned artifact contracts. Branches organize development and releases; there is no requirement to keep all work on `main` or retain only that branch.
 
 ## Branching
 

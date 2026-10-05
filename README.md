@@ -1,11 +1,11 @@
 # Invest
 
-A modular Python investment research framework made of three independently installable components in two top-level folders. A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
 - [Data preparation](data-pipeline/data-preparation/README.md): download, clean, preprocess, and publish CSV or SQLite datasets.
-- [Strategy evaluation](data-pipeline/strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
+- [Strategy evaluation](strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
 - [Data mining framework](data-mining-framework/README.md): consume published datasets for factor discovery, model training, inference, and signal diagnostics.
 
 The components exchange artifacts through a [versioned dataset contract](docs/DATA_CONTRACT.md). They do not depend on each other's private implementation; any shared public contract/runtime utility must have an explicit versioned interface. Each component will contain its own Python package, dependency configuration, and tests. See the [architecture guide](docs/ARCHITECTURE.md) for the folder layout and ownership boundaries.
@@ -48,7 +48,7 @@ uv run invest-mine export --data artifacts/data/synthetic \
 
 # 4. Evaluate: backtest with costs, metrics, statistics, stress scenarios and figures.
 uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/rev5 \
-  --config data-pipeline/strategy-evaluation/examples/quantile_long_short.json \
+  --config strategy-evaluation/examples/quantile_long_short.json \
   --n-trials 207 --out artifacts/eval/rev5
 ```
 
@@ -56,7 +56,7 @@ Checks (the same as CI):
 
 ```sh
 uv run ruff format --check . && uv run ruff check .
-uv run mypy data-pipeline/data-preparation/src data-mining-framework/src data-pipeline/strategy-evaluation/src
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch
 ```
 

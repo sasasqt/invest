@@ -75,7 +75,7 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
         "--signals",
         str(signals),
         "--config",
-        str(ROOT / "data-pipeline/strategy-evaluation/examples/quantile_long_short.json"),
+        str(ROOT / "strategy-evaluation/examples/quantile_long_short.json"),
         "--out",
         str(report),
         "--n-trials",

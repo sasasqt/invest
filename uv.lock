@@ -496,7 +496,7 @@ requires-dist = [
 [[package]]
 name = "invest-evaluation"
 version = "0.1.0"
-source = { editable = "data-pipeline/strategy-evaluation" }
+source = { editable = "strategy-evaluation" }
 dependencies = [
     { name = "invest-data" },
     { name = "matplotlib" },
@@ -554,7 +554,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "invest-data", editable = "data-pipeline/data-preparation" },
-    { name = "invest-evaluation", editable = "data-pipeline/strategy-evaluation" },
+    { name = "invest-evaluation", editable = "strategy-evaluation" },
     { name = "invest-mining", editable = "data-mining-framework" },
 ]
 

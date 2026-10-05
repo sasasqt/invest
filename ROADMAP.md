@@ -2,7 +2,7 @@
 
 A first end-to-end baseline (most of M1 and M2) is implemented and tested on synthetic data. M0's market and data-source decisions are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
 
-Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable within the requested two top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
+Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
 
 ## M0 — Finalize contracts and scope
 
@@ -32,7 +32,7 @@ Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one
 
 **Status:** planned. **Depends on:** M2's verified accounting and returns.
 
-Implement the [metric specification](data-pipeline/strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
+Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
 
 **Acceptance gate:** hand-calculated metric fixtures and statistical calibration checks pass; deciles and overlapping tails follow declared rules; reports separate factor confirmation from executable strategy validation and retain failed/inconclusive trials.
 

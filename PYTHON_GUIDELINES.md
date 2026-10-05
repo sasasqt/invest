@@ -85,7 +85,7 @@ Run these from the repository root (CI runs the same commands on Python 3.11 and
 uv sync --frozen
 uv run ruff format --check .
 uv run ruff check .
-uv run mypy data-pipeline/data-preparation/src data-mining-framework/src data-pipeline/strategy-evaluation/src
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
 ```
 

@@ -2,7 +2,7 @@
 
 Implement the following metric families in `invest_evaluation/metrics.py`. Return the full applicable report, not just Sharpe or win rate. The core of sections 1–6 and 8–9 is implemented (`invest_evaluation/metrics.py`); XIRR, rolling/calendar tables, MAE/MFE and conditional drawdown at risk are not yet.
 
-Metrics describe an evaluated strategy under declared data, trading, cost, and cash-flow assumptions. They do not establish statistical robustness by themselves; apply the [validation protocol](../../data-mining-framework/ALPHA_VALIDATION.md) separately.
+Metrics describe an evaluated strategy under declared data, trading, cost, and cash-flow assumptions. They do not establish statistical robustness by themselves; apply the [validation protocol](../data-mining-framework/ALPHA_VALIDATION.md) separately.
 
 ## 1. Accounting and conventions
 

@@ -1,4 +1,4 @@
-"""Strategy metrics following data-pipeline/strategy-evaluation/METRICS.md.
+"""Strategy metrics following strategy-evaluation/METRICS.md.
 
 Every metric is a :class:`Metric` with a value *and* a status, so undefined results
 (zero dispersion, no losses, insolvency, too few observations) are explicit instead of

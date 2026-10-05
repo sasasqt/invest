@@ -1,53 +1,47 @@
 # Component arrangement
 
-The repository has two top-level folders and three independent logical components. Data preparation and strategy evaluation share the `data-pipeline/` parent, but have separate packages, dependencies, and tests. Model discovery, training, and inference belong in `data-mining-framework/`.
-
-The three packages exist with tests and CLIs. Directories in the tree below that are not present yet (for example `features/`, `models/`, `training/`) are planned.
+The repository has three independent components, each in its own top-level folder: data preparation (`data-pipeline/data-preparation/`), mining (`data-mining-framework/`), and strategy evaluation (`strategy-evaluation/`). Each has its own package, dependencies, and tests.
 
 ## Layout
 
 ```text
+pyproject.toml                     # uv workspace, shared dev tools; one uv.lock
 data-pipeline/
-  data-preparation/
-    README.md
-    pyproject.toml                 # Planned independent package
+  data-preparation/                # invest-data
     src/invest_data/
-      sources/
-      cleaning/
-      transforms/                 # Deterministic transformations
-      writers/
+      bundle.py                    # v1 bundle contract: CSV / SQLite / Parquet
+      schemas.py                   # market_bars, universe, fundamentals, signals kinds
+      pit.py                       # point-in-time membership and as-of fundamentals
+      sources.py                   # synthetic market, local CSV import
+      cleaning.py                  # deterministic cleaning, rejected-row report
+      cli.py
     tests/
-  strategy-evaluation/
-    README.md
-    pyproject.toml                 # Planned independent package
-    src/invest_evaluation/
-      readers/
-      strategies/                 # Trading and portfolio rules
-      backtesting/
-      execution/                  # Simulated fills and costs
-      metrics/
-      reporting/                  # Report assembly and plots
-    tests/
-data-mining-framework/
-  README.md
-  pyproject.toml                   # Planned independent package
+data-mining-framework/             # invest-mining
   src/invest_mining/
-    readers/
-    expressions/                  # Factor ASTs and operators
-    search/                       # GP, RL, MCTS, etc.
-    features/
-    models/
-    training/
-    inference/
-    diagnostics/                  # Factor/prediction quality
-    reporting/                    # Report assembly and plots
+    expressions.py                 # typed causal factor ASTs and operators
+    diagnostics.py                 # IC, HAC tests, quantiles, multiple testing
+    search.py                      # search baseline, ledger, split, confirmation
+    artifact.py                    # frozen factor artifacts
+    inference.py                   # signal export
+    reporting.py, cli.py
   tests/
+strategy-evaluation/               # invest-evaluation
+  src/invest_evaluation/
+    config.py                      # strategy, execution and cost configuration
+    strategies.py                  # trading rules (score -> target weights)
+    engine.py                      # event order, fills, costs, accounting
+    metrics.py, stats.py           # performance metrics and uncertainty
+    robustness.py                  # cost/delay/liquidity/capacity scenarios
+    reporting.py, cli.py
+  examples/
+  tests/
+tests/                             # cross-component tests through published artifacts
 docs/
-  DATA_CONTRACT.md
-  ARCHITECTURE.md
 ```
 
-Create Python modules when implementing their responsibilities; do not populate this entire tree with empty modules. Give each of the three packages its own development tools and dependency lockfile. The parent pipeline folder is an organizational container, not a package that couples its children.
+Planned additions (`features/`, `models/`, `training/` in mining; GP/MCTS/RL search) get their own modules when implemented.
+
+Create modules when implementing their responsibilities; don't add empty placeholders. Development tools and the lockfile are shared at the workspace root; each package keeps its own runtime dependencies and installs on its own.
 
 ## Where each responsibility belongs
 
@@ -141,4 +135,4 @@ CSV and SQLite are sensible initial interchange formats. If panel scale makes th
 
 Training and inference live together because they must agree on model and feature semantics. Trading rules live with the evaluator because the same rules should work with mined, manually designed, or externally supplied signals. Data production stays independent so either consumer can reuse it.
 
-Strategy evaluation is broader than data processing. If the repository grows, promote `strategy-evaluation/` to a top-level `backtesting/` component. Its independent package and artifact interfaces make that move possible without changing mining or preparation internals. The current layout retains the requested two pipeline subfolders.
+Strategy evaluation is broader than data processing, so it is a top-level component rather than a child of `data-pipeline/`.

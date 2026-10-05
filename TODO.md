@@ -7,7 +7,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] DOC-01: Document three independent components in two top-level folders and their artifact boundaries ([architecture](docs/ARCHITECTURE.md)).
 - [x] DOC-02: Document [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) practices.
 - [x] DOC-03: Record factor-mining literature and primary-source evidence ([review](data-mining-framework/LITERATURE_REVIEW.md), [catalog](data-mining-framework/PRIMARY_SOURCE_CATALOG.md)).
-- [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](data-pipeline/strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
+- [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
 - [x] DOC-05: Add roadmap, actionable backlog, and README maintenance rules.
 - [x] DOC-06: Document [rapid software development practices](RAPID_DEVELOPMENT.md) and link them from development guidance.
 

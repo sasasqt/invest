@@ -14,7 +14,7 @@ package = false
 [tool.uv.workspace]
 members = [
   "data-pipeline/data-preparation",
-  "data-pipeline/strategy-evaluation",
+  "strategy-evaluation",
   "data-mining-framework",
 ]
 
@@ -45,7 +45,7 @@ addopts = "-q --import-mode=importlib"
 testpaths = [
   "data-pipeline/data-preparation/tests",
   "data-mining-framework/tests",
-  "data-pipeline/strategy-evaluation/tests",
+  "strategy-evaluation/tests",
   "tests",
 ]
 markers = ["integration: crosses component boundaries through published artifacts"]
