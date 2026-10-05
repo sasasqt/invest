@@ -40,6 +40,8 @@ Create directories only when there is code that needs them. Small projects can s
 
 ## Design and extensibility
 
+Apply [design by contract](DESIGN_BY_CONTRACT.md) to public APIs, artifact boundaries, state transitions, and numerical routines. Make obligations and guarantees explicit; enforce essential runtime validation with checks that remain active when Python assertions are disabled.
+
 - Prefer simple functions and composition. Introduce classes when they manage meaningful state or enforce an invariant.
 - Pass dependencies explicitly. Inject external clients, repositories, clocks, and random generators when tests or alternate implementations need control.
 - Use `typing.Protocol` at boundaries with multiple implementations; do not introduce an interface for every class.

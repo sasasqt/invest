@@ -100,6 +100,8 @@ For such policies, define a narrow frozen-policy runtime interface: available ob
 
 ## Contracts to implement
 
+Follow the [design-by-contract guidelines](../DESIGN_BY_CONTRACT.md): each boundary needs caller obligations, success/failure guarantees, invariants, and independent compatibility tests. Artifact schemas must include semantic validation for units, timing, and alignment, not only field types.
+
 The existing [dataset contract](DATA_CONTRACT.md) describes CSV/SQLite exchange. Additional contracts below are proposals; they do not alter version 1 silently.
 
 1. **Financial dataset metadata:** instrument keys, event and availability times, trading calendar, units, adjustments, and universe policy.
