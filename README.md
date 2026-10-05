@@ -16,6 +16,8 @@ Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended p
 
 Read [Git Development Guidelines](GIT_GUIDELINES.md) for branch naming, focused commits, pull requests, history management, conflict resolution, and safe collaboration.
 
+Read [CI/CD Guidelines](CI_CD_GUIDELINES.md) for what CI checks, pinned and least-privilege workflows, release versioning and publishing, and reproducible research runs.
+
 Read [Design by Contract Guidelines](DESIGN_BY_CONTRACT.md) for preconditions, postconditions, invariants, failure guarantees, boundary validation, numerical contracts, and interchangeable implementation tests.
 
 Read [Rapid Software Development Guidelines](RAPID_DEVELOPMENT.md) for small working increments, bounded experiments, fast feedback, proportionate validation, technical debt management, and reliable research iteration.
