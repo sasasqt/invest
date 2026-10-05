@@ -1,5 +1,7 @@
 # Data preparation
 
+Implementation is planned. See the shared [roadmap](../../ROADMAP.md) and [TODO list](../../TODO.md) for sequencing and progress; the first target is one source and deterministic CSV/SQLite publication.
+
 Download, validate, clean, and deterministically transform data, then publish versioned CSV or SQLite bundles using the [dataset contract](../../docs/DATA_CONTRACT.md).
 
 Keep raw snapshots separate from derived data. Record sources, units, timestamps, transformation policies, rejected rows, and provenance. Use explicit timeouts and bounded retries for external sources, and publish validated bundles atomically.

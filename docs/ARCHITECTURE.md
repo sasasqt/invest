@@ -124,6 +124,8 @@ Every mined alpha follows the [validation protocol](../data-mining-framework/ALP
 
 ## Prerequisites and first implementation milestone
 
+The [roadmap](../ROADMAP.md) tracks milestone sequencing and acceptance gates; [TODO.md](../TODO.md) tracks implementation tasks. The prerequisites below explain the architectural reasons for that order.
+
 The current repository is a design and research collection, not a functioning framework. Before adding multiple miners or a dashboard:
 
 1. Finalize machine-validated schemas and compatibility fixtures for financial datasets, fitted artifacts, signals, and reports. Specify availability/revision times, point-in-time membership, price adjustment/total-return rules, labels and horizons, keys, units, calendars, and content hashes. The generic CSV/SQLite contract alone does not encode this financial information.

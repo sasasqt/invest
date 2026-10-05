@@ -1,5 +1,7 @@
 # Strategy evaluation
 
+Implementation is planned. See the shared [roadmap](../../ROADMAP.md) and [TODO list](../../TODO.md) for sequencing and progress; the first target is one fixed strategy with verified execution and accounting.
+
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 
 The [metric specification](METRICS.md) defines trade outcomes, net profit, mean/variance of returns, CAGR, XIRR, annual and downside volatility, Sharpe, Sortino, Calmar, Ulcer Index, tail risk, drawdowns, benchmark performance, costs, and capacity. Implement the full applicable report with explicit calculation conventions and undefined-result statuses.

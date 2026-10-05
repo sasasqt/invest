@@ -24,12 +24,15 @@ Within each component folder, use a `src` package layout, a `pyproject.toml` con
 
 ## Getting started
 
-1. Choose a supported Python version and declare it in `pyproject.toml`.
-2. Add the package, runtime dependencies, and development tools using the selected dependency manager; the guidelines recommend `uv`.
-3. Add tests alongside the first application behavior.
-4. Document the actual installation, execution, and validation commands here once implemented.
+Start with the [roadmap](ROADMAP.md) for milestone sequencing and acceptance gates, and [TODO list](TODO.md) for actionable tasks and progress. The current next milestone is **M0: finalize financial contracts and the initial market/use case**. Python packages, CI, download adapters, mining algorithms, and simulation remain planned.
+
+The first runnable milestone will publish a small dataset, apply one known causal formula, export frozen signals, and evaluate one fixed bucket strategy with reconciled accounting and saved reports. Advanced search methods follow verified returns, statistics, and robustness checks.
 
 There are currently no application startup commands or executable test suites. The commands in the guidelines describe the intended future workflow.
+
+## Documentation maintenance
+
+Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
 
 ## Local files
 

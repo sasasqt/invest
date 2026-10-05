@@ -2,6 +2,8 @@
 
 Component folder: `data-mining-framework/` on `main`.
 
+Implementation progress is tracked in the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md). A known causal formula and frozen signals come first; automated search and learned models follow verified evaluation and robustness checks.
+
 This folder is reserved for a Python framework that consumes datasets described by [the dataset contract](../docs/DATA_CONTRACT.md). This document defines scope; executable code has not been added yet.
 
 Read the [factor-mining literature review](LITERATURE_REVIEW.md) for industry-oriented papers, AST and gradient-based methods, exploration versus exploitation, evaluation requirements, and a staged implementation roadmap.

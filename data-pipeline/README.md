@@ -1,5 +1,7 @@
 # Data pipeline and strategy evaluation
 
+Both components are currently at the design stage. Follow the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md) for implementation order and progress.
+
 This folder contains two independent subprojects on `main`:
 
 - [Data preparation](data-preparation/README.md): download, validate, clean, preprocess, and publish versioned CSV or SQLite datasets.

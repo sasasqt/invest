@@ -1,0 +1,74 @@
+# TODO
+
+This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items are planned, not implemented. Items are grouped by milestone; identifiers remain stable when tasks move. Keep detailed formulas and interface rules in their linked specifications.
+
+## Completed documentation foundations
+
+- [x] DOC-01: Document three independent components in two top-level folders and their artifact boundaries ([architecture](docs/ARCHITECTURE.md)).
+- [x] DOC-02: Document [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) practices.
+- [x] DOC-03: Record factor-mining literature and primary-source evidence ([review](data-mining-framework/LITERATURE_REVIEW.md), [catalog](data-mining-framework/PRIMARY_SOURCE_CATALOG.md)).
+- [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](data-pipeline/strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
+- [x] DOC-05: Add roadmap, actionable backlog, and README maintenance rules.
+
+## M0 — Contracts and initial scope
+
+- [ ] SCOPE-01: Select the first market, universe, frequency, licensed/authorized data source, and minimum strategy; document exclusions and execution assumptions.
+- [ ] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes.
+- [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms.
+- [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance.
+- [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
+
+## M1 — Packages and tooling
+
+- [ ] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles.
+- [ ] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage.
+- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation.
+- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled.
+
+## M2 — First runnable workflow
+
+- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling.
+- [ ] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
+- [ ] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
+- [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market.
+- [ ] EVAL-02: Implement one fixed bucket strategy using supplied signals, with explicit rebalance/holding rules and point-in-time eligibility.
+- [ ] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
+- [ ] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
+- [ ] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration.
+- [ ] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions.
+
+## M3 — Evaluation completeness and robust alpha evidence
+
+- [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification.
+- [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails.
+- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks.
+- [ ] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures.
+- [ ] ROBUST-01: Add time/universe/parameter/data/timing perturbations, redundancy diagnostics, and separate factor outcome statuses.
+- [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes.
+- [ ] REPORT-02: Extend saved-result reports with quantile tables, uncertainty, robustness scenarios, and reasons for undefined/inconclusive results.
+
+## M4 — Search, training, and inference
+
+- [ ] AST-01: Implement typed AST grammar, causal operator semantics, lookbacks, numerical-domain policies, and serialization compatibility tests.
+- [ ] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
+- [ ] TRAIN-01: Fit learned preprocessing and models only within development splits; persist transforms and configuration with fitted artifacts.
+- [ ] INFER-01: Verify frozen export/reload parity, schema compatibility, historical-context requirements, and inference without fitting.
+- [ ] COMPARE-01: Establish matched-budget comparisons with locked endpoints and independent confirmation before promoting search methods.
+
+## M5 — Extensions after baseline evidence
+
+- [ ] SEARCH-02: Evaluate GP, differentiable/gradient-assisted AST search, MCTS, and learned generators against the baseline; prioritize using literature evidence and observed bottlenecks.
+- [ ] POLICY-01: Specify and test a frozen stateful-policy interface with actual holdings/cash/fill feedback before enabling policy simulation.
+- [ ] SCALE-01: Profile representative workloads before adding columnar adapters, parallel execution, or caching; verify correctness and reproducibility of each extension.
+- [ ] PRODUCT-01: Assess additional markets and optional dashboard requirements after saved reports satisfy the baseline workflow.
+
+## Updating the backlog and README
+
+For every implementation change:
+
+1. Update affected task states in the same commit and link the relevant implementation/check evidence when marking an item complete. Split partially completed tasks instead of checking them prematurely.
+2. Update the root README when project status, next milestone, layout, supported capabilities, or setup commands change. Update affected component READMEs with exact commands and limitations.
+3. Update the roadmap if milestone scope, ordering, or acceptance gates change. Keep one authoritative location for each detailed specification.
+4. Run the applicable code checks and documentation link/whitespace checks. Record blocked tasks with their dependency and reason; never treat a skipped check as passing.
+
+The root README remains the entry point, the roadmap explains sequencing and acceptance, and this file records actionable progress. Generated runs and reports belong in artifact storage, not in these planning files.
