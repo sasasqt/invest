@@ -35,5 +35,6 @@ coverage.xml
 Thumbs.db
 
 # Runtime outputs
+/artifacts/
 *.log
 .ipynb_checkpoints/

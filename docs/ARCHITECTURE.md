@@ -26,7 +26,7 @@ data-pipeline/
       backtesting/
       execution/                  # Simulated fills and costs
       metrics/
-      reports/
+      reporting/                  # Report assembly and plots
     tests/
 data-mining-framework/
   README.md
@@ -40,6 +40,7 @@ data-mining-framework/
     training/
     inference/
     diagnostics/                  # Factor/prediction quality
+    reporting/                    # Report assembly and plots
   tests/
 docs/
   DATA_CONTRACT.md
@@ -82,11 +83,20 @@ market dataset + signals + strategy config -> strategy evaluation -> reports
 
 Simple hand-written strategies may read the market dataset directly, without a mining stage. Evaluation accepts supplied strategies and signals; it does not require the miner or downloader to run.
 
+Factor diagnostics should likewise accept supplied factor values and metadata without invoking search or training. This enables identical checks for mined, hand-written, and externally supplied alphas. Missing timing/provenance evidence limits the claims a report can make even when numerical statistics can be calculated.
+
 - Data preparation never imports mining or evaluation code.
 - Mining reads dataset artifacts and publishes fitted artifacts and signals. It never imports the downloader or simulator implementation.
 - Evaluation reads market datasets and supplied signals, then applies a strategy through a stable strategy interface. It never loads the miner's training loop to run a backtest.
 - An external orchestrator can run the stages as commands. Exchange artifacts rather than importing another component's private modules.
+- A decoupled workflow may reuse an explicitly versioned public contract/runtime utility. Avoid shared training state, hidden mutable caches, and dependencies on another component's private modules; duplicating mathematical or schema logic is not itself a goal.
 - If mining uses portfolio feedback as a search objective, consume separately produced training/validation reports through an adapter. Keep final test reports outside the search loop.
+
+### Stateful policies need simulator feedback
+
+Precomputed timestamped signals work for factors/predictors driven only by available market inputs. They are not a complete interface for a learned policy that depends on holdings, cash, previous fills, or recurrent state.
+
+For such policies, define a narrow frozen-policy runtime interface: available observations plus simulator portfolio state in, target positions/orders plus updated policy state out. The simulator owns fills, cash, and execution timing and passes actual outcomes back to the policy. Training and search remain outside evaluation. The inference bridge and its dependency/serialization contract must be specified before supporting this workflow; do not replay orders precomputed under a different portfolio state as if they were an equivalent policy backtest.
 
 ## Contracts to implement
 
@@ -107,6 +117,21 @@ The existing [dataset contract](DATA_CONTRACT.md) describes CSV/SQLite exchange.
 - Strategy/parameter tuning uses training or designated validation periods. Final evaluation freezes data versions, strategy rules, models, and assumptions before the test period is examined.
 
 Every mined alpha follows the [validation protocol](../data-mining-framework/ALPHA_VALIDATION.md). Mining publishes factor evidence; evaluation publishes portfolio evidence. Track statistical confirmation and strategy validation separately, including rejected and inconclusive outcomes.
+
+[Quantile analysis](QUANTILE_ANALYSIS.md) specifies signal buckets and their distinct factor/portfolio interpretations. [Reporting](REPORTING.md) defines plot ownership, reproducible chart inputs, and generated artifact locations.
+
+## Prerequisites and first implementation milestone
+
+The current repository is a design and research collection, not a functioning framework. Before adding multiple miners or a dashboard:
+
+1. Finalize machine-validated schemas and compatibility fixtures for financial datasets, fitted artifacts, signals, and reports. Specify availability/revision times, point-in-time membership, price adjustment/total-return rules, labels and horizons, keys, units, calendars, and content hashes. The generic CSV/SQLite contract alone does not encode this financial information.
+2. Establish a supported Python version, the three package manifests/lockfiles, component test commands, and CI. Add public interfaces and modules as needed by a runnable use case rather than creating the whole proposed directory tree at once.
+3. Define simulation event order: observation availability, decision, order submission, eligible fill, settlement/cash update, corporate actions, and valuation. Define partial fills, price limits, missing marks, delistings, shorting, and financing for the selected market. An OHLC bar does not reveal intrabar event order; disclose the fill approximation.
+4. Implement one complete flow: a deterministic small dataset, one known formula, frozen signals, one declared bucket strategy, reconciled portfolio/trade accounting, basic metrics, and saved figures. Use golden fixtures plus causal/contract tests; then run a representative historical dataset.
+5. Add dependence-aware statistics, multiple-testing protocols, robustness scenarios, and metric families incrementally once the underlying returns and accounting are verified. Persist all trials and scenario outcomes.
+6. Only then compare GP, gradient-assisted search, and learned generators under matched budgets. Retain prospective frozen evaluation for final research claims; historical splits do not eliminate potential knowledge contamination from modern pretrained LLMs.
+
+CSV and SQLite are sensible initial interchange formats. If panel scale makes them a bottleneck, add a versioned Parquet or other columnar adapter after measuring it. Do not require a database server or replace formats solely because the architecture is extensible.
 
 ## Why this arrangement
 

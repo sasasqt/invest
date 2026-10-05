@@ -1,12 +1,12 @@
 # Dataset exchange contract
 
-Status: architecture specification for the two independent components. Readers, writers, and validation tests are not implemented yet.
+Status: generic dataset specification for the three logical components. Readers, writers, and validation tests are not implemented yet. Financial timing/universe metadata and signal/model/report contracts remain to be finalized before implementation.
 
 ## Boundary
 
-The data pipeline downloads, cleans, and preprocesses data. It publishes immutable dataset artifacts. The mining framework consumes those artifacts and produces analysis results. Neither component imports the other's implementation or requires the other's service to run.
+Data preparation downloads, cleans, and preprocesses data and publishes immutable dataset artifacts. Mining and strategy evaluation consume these artifacts independently. Mining additionally publishes factors/models and signals; strategy evaluation produces portfolio reports. No consumer requires the downloader to run during evaluation.
 
-Both components implement this versioned contract independently. Changes to it require compatibility review and producer/consumer fixture tests. Both components live in separate folders on main; the artifact contract provides runtime decoupling without cross-component imports.
+Producer and consumer adapters implement this versioned contract without depending on each other's private implementation. Changes require compatibility review and producer/consumer fixture tests. A shared public contract utility may be introduced if justified; runtime decoupling does not require duplicating business logic.
 
 ## Version 1 dataset bundle
 
@@ -37,7 +37,7 @@ For SQLite, use `"storage": {"format": "sqlite", "path": "data.sqlite", "table":
 
 ## Serialization rules
 
-- CSV uses UTF-8, a header, comma delimiters, and standard CSV quoting. Use the literal `\N` for null. To preserve strings, prefix a backslash to any non-null string beginning with a backslash; readers reverse that escape after detecting the null token. An empty string remains an empty string.
+- CSV uses UTF-8, a header, comma delimiters, and standard CSV quoting. Use the literal `\N` (one backslash followed by `N`) for null. Prefix one additional backslash to any non-null string beginning with a backslash; readers reverse that escape after detecting the null token. Thus raw field content `\\N` represents the non-null string `\N`. An empty string remains an empty string. This is an explicit custom null/escape convention; generic CSV readers need a matching adapter.
 - Dates use ISO 8601 `YYYY-MM-DD`. Timestamps use RFC 3339 in UTC with a `Z` suffix. Boolean values are `true` or `false` in CSV. Numeric serialization is locale independent; NaN and infinity are rejected. Decimal values use base-10 strings without conversion through float.
 - SQLite uses SQL NULL, INTEGER for int64 and booleans (0 or 1), REAL for float64, and TEXT for string, date, timestamp, and decimal. Readers enforce the manifest's logical types rather than relying on SQLite affinity alone.
 - Artifact paths are relative to the bundle root and may not escape it. SQLite table names come from validated metadata and must be quoted safely; readers open databases read-only.

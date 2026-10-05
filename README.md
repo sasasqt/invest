@@ -8,13 +8,15 @@ This repository contains the designs for three independent Python components in 
 - [Strategy evaluation](data-pipeline/strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
 - [Data mining framework](data-mining-framework/README.md): consume published datasets for factor discovery, model training, inference, and signal diagnostics.
 
-The components exchange artifacts through a [versioned dataset contract](docs/DATA_CONTRACT.md). They do not import each other's code. Each component will contain its own Python package, dependency configuration, and tests. See the [architecture guide](docs/ARCHITECTURE.md) for the folder layout and ownership boundaries.
+The components exchange artifacts through a [versioned dataset contract](docs/DATA_CONTRACT.md). They do not depend on each other's private implementation; any shared public contract/runtime utility must have an explicit versioned interface. Each component will contain its own Python package, dependency configuration, and tests. See the [architecture guide](docs/ARCHITECTURE.md) for the folder layout and ownership boundaries.
 
 ## Development guidelines
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
 Read [Git Development Guidelines](GIT_GUIDELINES.md) for branch naming, focused commits, pull requests, history management, conflict resolution, and safe collaboration.
+
+The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide lists the prerequisites for the first runnable end-to-end workflow.
 
 Within each component folder, use a `src` package layout, a `pyproject.toml` configuration, a committed dependency lockfile, and pytest tests under `tests/`. Use Ruff for formatting and linting, and mypy for type checking. Adapt the single-package examples in the guidelines to each component's package name and working directory.
 

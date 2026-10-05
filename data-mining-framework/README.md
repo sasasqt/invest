@@ -10,6 +10,8 @@ The [primary-source catalog](PRIMARY_SOURCE_CATALOG.md) records the expanded arX
 
 Every mined alpha must follow the [robustness and statistical validation protocol](ALPHA_VALIDATION.md) before promotion. It specifies temporal holdouts, dependence-aware uncertainty, multiple-testing control, stress scenarios, redundancy checks, and report requirements.
 
+Use the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/visualization](../docs/REPORTING.md) specifications. Factor diagnostics and portfolio backtests have different meanings even when they display the same signal buckets.
+
 ## Responsibilities
 
 - Load CSV and SQLite bundles through input adapters and validate their manifests and data.
@@ -32,6 +34,7 @@ data-mining-framework/src/invest_mining/
   training/      # Fitting, tuning, and model selection
   inference/     # Apply frozen artifacts and publish signals
   diagnostics/   # Factor and prediction quality
+  reporting/     # Saved-result reports and plots
   cli.py         # Thin command entry point
 data-mining-framework/tests/
   unit/
@@ -43,7 +46,7 @@ Start with a dataset-reader interface and one representative analysis workflow. 
 
 Trading rules, portfolio accounting, and execution simulation belong in [strategy evaluation](../data-pipeline/strategy-evaluation/README.md). Search policies belong here. See the [architecture guide](../docs/ARCHITECTURE.md) for artifact boundaries and the distinction between factor diagnostics and strategy evaluation.
 
-Each component should have its own `pyproject.toml`, dependency lockfile, and tests. Install and validate components independently; neither package depends on the other. The paths above are the planned layout, not implemented files.
+Each component should have its own `pyproject.toml`, dependency lockfile, and tests. Install and validate independently without depending on another component's private modules. Any shared public contract/runtime utility must have an explicit versioned interface. The paths above are planned, not implemented files.
 
 ## Acceptance checks
 
