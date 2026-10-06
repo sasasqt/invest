@@ -19,6 +19,7 @@ they don't.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from numbers import Real
 from typing import Any
@@ -92,7 +93,7 @@ def _delisting_events(
         if (
             isinstance(price, bool)
             or not isinstance(price, Real)
-            or not np.isfinite(price)
+            or not math.isfinite(price)
             or price < 0
         ):
             raise InputError("delisting settlement_price must be finite and nonnegative")
