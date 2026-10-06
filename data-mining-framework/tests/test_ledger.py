@@ -292,3 +292,65 @@ def test_cli_reserved_window_is_only_usable_for_confirmation(tmp_path):
         _search(data, tmp_path / "s4", book, "--confirm-start", "2020-01-02")
     with pytest.raises(SystemExit, match="no development or confirmation"):
         _search(data, tmp_path / "s5", book, "--confirm-start", "2030-01-01")
+
+
+def test_cli_confirms_a_fixed_formula_once_on_a_reserved_window(tmp_path, capsys):
+    data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    ledger_cmd = ["ledger", "--ledger", str(book)]
+    assert main([*ledger_cmd, "inspect", "--start", "2020-01-01", "--end", "2020-08-31"]) == 0
+    assert main([*ledger_cmd, "reserve", "--start", "2020-09-01"]) == 0
+    expr = "close / delay(close, 5) - 1"
+    freeze = ["freeze", "--expr", expr, "--horizon", "5", "--orientation", "-1"]
+    assert main([*freeze, "--out", str(factor)]) == 0
+
+    def confirm(out, *extra, start="2020-09-01"):
+        args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+        return main([*args, "--confirm-start", start, *extra, "--out", str(tmp_path / out)])
+
+    # Starting before the reservation would mix inspected and reserved data.
+    with pytest.raises(SystemExit, match="starts before the reserved window"):
+        confirm("early", start="2020-08-03")
+    assert len(ledger.load(book)) == 2
+
+    assert confirm("c1", "--require-confirmatory") == 0
+    table = pd.read_csv(tmp_path / "c1" / "confirmation.csv")
+    assert list(table["confirmation_use"]) == ["confirmatory"]
+    assert table.loc[0, "status"] == table.loc[0, "test_outcome"]
+    # The planted 5-day reversal is detected on the reserved window.
+    assert table.loc[0, "status"] == "confirmation_passed" and table.loc[0, "n_dates"] >= 60
+    entry = ledger.load(book)[-1]
+    assert entry["kind"] == "experiment" and entry["n_proposals"] == 1
+    assert entry["confirmation"]["start"] == "2020-09-01"
+    # Only the formula's lookback before confirmation is recorded as used history.
+    assert entry["development"] == {"start": "2020-08-25", "end": "2020-08-31"}
+    assert ledger.unused_reservations(ledger.load(book)) == []
+    config = json.loads((tmp_path / "c1" / "config.json").read_text())
+    assert config["experiment"]["experiment_id"] == entry["experiment_id"]
+
+    # A second look is a repeat: refused on request, otherwise exploratory.
+    with pytest.raises(SystemExit, match="already used"):
+        confirm("c2", "--require-confirmatory")
+    assert not (tmp_path / "c2").exists() and len(ledger.load(book)) == 3
+    capsys.readouterr()
+    assert confirm("c3") == 0
+    assert "Exploratory" in capsys.readouterr().out
+    again = pd.read_csv(tmp_path / "c3" / "confirmation.csv")
+    assert list(again["status"]) == ["exploratory"]
+    assert list(again["test_outcome"]) == list(table["status"])
+
+
+def test_cli_confirm_refuses_search_selected_factors_and_bad_dates(tmp_path):
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    assert _search(data, tmp_path / "s", book) == 0
+    member = next((tmp_path / "s" / "factors").glob("*.json"))
+    args = ["confirm", "--data", str(data), "--ledger", str(book), "--out", str(tmp_path / "c")]
+    with pytest.raises(SystemExit, match="only fixed formulas"):
+        main([*args, "--factor", str(member), "--confirm-start", "2020-09-01"])
+    fixed = tmp_path / "f.json"
+    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(fixed)]) == 0
+    for start in ("2019-01-01", "2030-01-01"):
+        with pytest.raises(SystemExit, match="no history or confirmation"):
+            main([*args, "--factor", str(fixed), "--confirm-start", start])
+    assert len(ledger.load(book)) == 1 and not (tmp_path / "c").exists()

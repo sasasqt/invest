@@ -33,7 +33,7 @@ from invest_mining.expressions import (
 from invest_mining.inference import export_signals
 from invest_mining.ledger import LedgerError, Window
 from invest_mining.reporting import write_factor_report
-from invest_mining.search import chronological_split, mark_confirmation_use, run_search
+from invest_mining.search import chronological_split, confirm, mark_confirmation_use, run_search
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
@@ -226,6 +226,96 @@ def _search(args: argparse.Namespace) -> int:
     return 0
 
 
+def _confirm(args: argparse.Namespace) -> int:
+    """Test one fixed, pre-registered formula once on a confirmation window.
+
+    Only ``freeze`` artifacts qualify: a factor selected by a search belongs to its
+    Holm-adjusted family, and confirming members one by one would undo that adjustment.
+    The ledger records the run before any result is written, exactly like ``search``.
+    """
+    factor = FrozenFactor.load(args.factor)
+    if factor.selection.get("method") != "fixed_formula":
+        raise SystemExit(
+            f"{args.factor}: only fixed formulas from `invest-mine freeze` can be confirmed "
+            "alone; confirm search-selected factors with their family (`search --confirm-start`)"
+        )
+    manifest, bars = read_market_bars(args.data)
+    panel = build_panel(bars, **_optional_inputs(args))
+    dates = pd.DatetimeIndex(panel["close"].index)
+    k = int(dates.searchsorted(pd.Timestamp(args.confirm_start)))
+    if not 0 < k < len(dates):
+        raise SystemExit(
+            f"--confirm-start {args.confirm_start} leaves no history or confirmation data"
+        )
+    # Sessions before confirmation are read only as formula inputs, never as outcomes.
+    context = _span(dates[max(k - max(factor.lookback, 1), 0) : k], "history")
+    confirmation = _span(dates[k:], "confirmation")
+    identity = {
+        "dataset_sha256": manifest.content_sha256,
+        **_input_hashes(args),
+        "operator_version": OPERATOR_VERSION,
+        "params": {
+            "method": "fixed_formula",
+            "factor_id": factor.factor_id,
+            "horizon": factor.horizon_days,
+        },
+        "development": context.to_json(),
+        "confirmation": confirmation.to_json(),
+    }
+    exp_id = ledger.experiment_id(identity)
+    try:
+        use, reasons = ledger.assess_confirmation(
+            ledger.load(args.ledger), context, confirmation, exp_id
+        )
+    except LedgerError as exc:
+        raise SystemExit(f"{args.ledger}: {exc}") from exc
+    if use == "exploratory" and args.require_confirmatory:
+        raise SystemExit(
+            f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
+        )
+    label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
+    table = mark_confirmation_use(
+        confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
+    )
+    ledger.append(
+        args.ledger,
+        "experiment",
+        {
+            "experiment_id": exp_id,
+            "dataset_id": manifest.dataset_id,
+            **identity,
+            "family": [factor.factor_id],
+            "n_proposals": 1,
+            "confirmation_use": use,
+            "reasons": reasons,
+        },
+    )
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    table.to_csv(out / "confirmation.csv", index=False)
+    config = {
+        "factor": factor.to_json(),
+        "horizon": factor.horizon_days,
+        "confirm_start": args.confirm_start,
+        "experiment": {
+            "experiment_id": exp_id,
+            "confirmation_use": use,
+            "reasons": reasons,
+            "ledger": str(args.ledger),
+            "identity": identity,
+        },
+    }
+    (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    print(
+        table[
+            ["factor_id", "expression", "confirm_mean_rank_ic", "p_one_sided", "status"]
+        ].to_string(index=False)
+    )
+    if use == "exploratory":
+        print(f"Exploratory: confirmation data was already used ({'; '.join(reasons)}).")
+    return 0
+
+
 def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor, str]:
     """Export in the family order frozen on development data before confirmation.
 
@@ -378,6 +468,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     fr.add_argument("--out", type=Path, required=True, help="frozen factor JSON to write")
 
+    co = sub.add_parser(
+        "confirm", help="test one fixed formula once on a confirmation window (ledger required)"
+    )
+    co.add_argument("--data", type=Path, required=True)
+    co.add_argument("--factor", type=Path, required=True, help="frozen factor JSON from freeze")
+    co.add_argument(
+        "--confirm-start",
+        required=True,
+        help="first confirmation date (YYYY-MM-DD), e.g. the start of a reserved window",
+    )
+    co.add_argument(
+        "--ledger",
+        type=Path,
+        required=True,
+        help="confirmation-use ledger: classify the run as confirmatory or exploratory",
+    )
+    co.add_argument(
+        "--require-confirmatory",
+        action="store_true",
+        help="refuse to run if the confirmation data was already used",
+    )
+    co.add_argument("--out", type=Path, required=True)
+
     ex = sub.add_parser("export", help="apply a frozen factor and publish a signals bundle")
     ex.add_argument("--data", type=Path, required=True)
     source = ex.add_mutually_exclusive_group(required=True)
@@ -398,7 +511,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
 
-    for p in (ev, se, ex):
+    for p in (ev, se, co, ex):
         p.add_argument("--universe", type=Path, help="universe bundle (point-in-time membership)")
         p.add_argument("--fundamentals", type=Path, help="fundamentals bundle (fund_<field>)")
     ev.add_argument(
@@ -427,6 +540,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "evaluate": _evaluate,
         "search": _search,
         "freeze": _freeze,
+        "confirm": _confirm,
         "export": _export,
         "ledger": _ledger,
     }

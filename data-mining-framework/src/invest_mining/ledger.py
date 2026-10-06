@@ -9,8 +9,10 @@ same history. Each line is an object with ``ledger_version`` and one ``kind``:
   it (descriptive diagnostics, development data) until a search confirms on it.
 - ``inspection``: a window already looked at outside a confirmatory search, such as a
   full-sample diagnostic or a backtest. It can never again provide confirmatory evidence.
-- ``experiment``: one search, identified by its dataset, inputs, configuration and split.
-  Its development window includes label prices, not just decision dates.
+- ``experiment``: one search, or one fixed-formula confirmation (``invest-mine confirm``),
+  identified by its dataset, inputs, configuration and split. A search's development
+  window includes label prices, not just decision dates; a fixed formula's covers only
+  the lookback history read before confirmation.
 
 A search is ``confirmatory`` only if its confirmation window overlaps no inspection, no
 earlier experiment's development or confirmation window, and is not a repeat of an
