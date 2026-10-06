@@ -32,7 +32,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 
 ## M2 — First runnable workflow
 
-- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling. *Synthetic and local-CSV sources exist; a network adapter waits on SCOPE-01.*
+- [x] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling. *Test-only Yahoo Finance adapter (`invest_data/yahoo.py`, `invest-data yahoo download|publish`): immutable raw snapshots with per-file SHA-256 and failures, offline replay with hash checks, rejected-row reports, same snapshot → same `content_sha256`. Offline tests with fabricated responses in `test_yahoo.py`. An authorized research source is still open (SCOPE-01).*
 - [x] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
 - [x] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
 - [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market. *Done for adjusted daily bars without external flows (`invest_evaluation/engine.py`); external flows and unadjusted corporate actions remain.*
@@ -41,11 +41,11 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
 - [x] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration. *`tests/test_pipeline.py` and component tests.*
 - [x] FLOW-03: Run the synthetic workflow with one command and no hand-copied factor ids or dates. *`scripts/synthetic_workflow.sh`; `invest-mine export --from-search`; `invest-eval run` takes `n_trials` from the signals bundle; covered by `tests/test_pipeline.py`.*
-- [ ] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions.
+- [x] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions. *`scripts/historical_workflow.sh` (today's S&P 100, 2010–2024, SPY benchmark, 5-day reversal frozen with `invest-mine freeze`, `n_trials = 1`); results, hashes and limitations in [HISTORICAL_BASELINE.md](docs/HISTORICAL_BASELINE.md); covered offline by `tests/test_pipeline.py`. Survivorship-biased and test-only.*
 
 ## M3 — Evaluation completeness and robust alpha evidence
 
-- [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification.
+- [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification. *An external benchmark (`invest-eval run --benchmark`) is reported next to the universe equal-weight one.*
 - [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails. *Implemented for factor diagnostics: per-date deciles (ties share a bucket, dates with fewer names than buckets excluded) and separate top/bottom 1/5/10% tails (`invest_mining/diagnostics.py`, saved by `invest-mine evaluate`). Missing: executable decile and tail portfolios in evaluation, small-sample statuses for tails.*
 - [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks. *HAC tests, stationary bootstrap, PSR/DSR done; calibration across repeated null simulations remains (one null-market search test exists).*
 - [x] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures. *`invest_mining/search.py` (purge + embargo, full ledger, frozen top-k family, one-shot Holm), Holm/BH in `diagnostics.py`; tests in `test_search_and_inference.py`, `test_diagnostics.py`, `test_cli.py`.*

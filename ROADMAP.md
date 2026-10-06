@@ -1,6 +1,6 @@
 # Roadmap
 
-A first end-to-end baseline (M1 and most of M2) is implemented and tested on synthetic data, with parts of M3 and M4 already in place. The next goal is a reproducible historical-data experiment with credible alpha and portfolio evidence. Yahoo Finance is the test-only data source; the research market and authorized source are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
+A first end-to-end baseline (M1 and M2) is implemented and tested on synthetic data and has run on test-only Yahoo Finance history, with parts of M3 and M4 already in place. The next goal is credible alpha and portfolio evidence: validation on the historical baseline and an authorized research data source. Yahoo Finance is the test-only data source; the research market and authorized source are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
 
 Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
 
@@ -22,7 +22,7 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 ## M2 — Deliver one correct end-to-end baseline
 
-**Status:** done on synthetic data, runnable with one command (FLOW-03); a run on representative historical data (FLOW-02) needs a data adapter (DATA-01). **Depends on:** M0 and M1.
+**Status:** done. Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
 
 Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one known causal formula; export frozen signals; run one declared bucket strategy. Specify event order, eligible fills, fees, cash/position accounting, corporate actions, missing marks, and the selected market's constraints. Save basic metrics, result tables, and figures without rerunning calculations during rendering. Then exercise the same flow on a representative historical dataset.
 
