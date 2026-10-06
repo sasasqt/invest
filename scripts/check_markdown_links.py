@@ -15,7 +15,7 @@ from pathlib import Path
 
 LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
-FENCE = re.compile(r"^\s*(```|~~~)")
+FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 INLINE_CODE = re.compile(r"(`+)(.*?)\1")
 EXTERNAL = ("http://", "https://", "mailto:")
 
@@ -28,24 +28,33 @@ def _markdown_files(root: Path) -> list[Path]:
 
 
 def _lines_outside_code(text: str) -> list[str]:
-    lines, fenced = [], False
+    lines: list[str] = []
+    fence: tuple[str, int] | None = None
     for line in text.splitlines():
-        if FENCE.match(line):
-            fenced = not fenced
+        marker = FENCE.match(line)
+        if fence is not None:
+            if (
+                marker
+                and marker.group(1)[0] == fence[0]
+                and len(marker.group(1)) >= fence[1]
+                and not marker.group(2).strip()
+            ):
+                fence = None
             continue
-        if not fenced:
-            lines.append(line)
+        if marker and not (marker.group(1)[0] == "`" and "`" in marker.group(2)):
+            fence = (marker.group(1)[0], len(marker.group(1)))
+            continue
+        lines.append(line)
     return lines
 
 
 def slug(heading: str) -> str:
     """GitHub's anchor for a heading: lowercase, punctuation dropped, spaces to hyphens."""
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading)  # keep link text only
-    # Remove formatting markers, keeping code-span contents and intraword underscores
-    # (GitHub renders ``snake_case`` literally, so its anchor keeps the underscore).
+    # Remove paired emphasis, preserving code contents and literal, unpaired underscores.
     text = re.sub(
-        r"(`+)(.*?)\1|\*|(?<!\w)_+|_+(?!\w)",
-        lambda m: m.group(2) if m.group(1) else "",
+        r"(`+)(.*?)\1|(?<!\w)(_+)(?=\S)(.*?\S)\3(?!\w)|\*",
+        lambda m: m.group(2) if m.group(1) else m.group(4) if m.group(3) else "",
         text,
     )
     text = text.strip().lower()
@@ -55,15 +64,16 @@ def slug(heading: str) -> str:
 
 def anchors(path: Path) -> set[str]:
     found: set[str] = set()
-    counts: dict[str, int] = {}
     for line in _lines_outside_code(path.read_text(encoding="utf-8")):
         m = HEADING.match(line)
         if not m:
             continue
         base = slug(m.group(2))
-        n = counts.get(base, 0)
-        counts[base] = n + 1
-        found.add(base if n == 0 else f"{base}-{n}")
+        anchor, n = base, 0
+        while anchor in found:
+            n += 1
+            anchor = f"{base}-{n}"
+        found.add(anchor)
     return found
 
 

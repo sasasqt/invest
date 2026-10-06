@@ -75,6 +75,8 @@ uv run python scripts/check_markdown_links.py
 
 CI additionally builds the three wheels and runs the tests against the installed packages; see the [CI/CD guidelines](CI_CD_GUIDELINES.md).
 
+The offline Markdown check validates relative links and heading anchors, including literal underscores and duplicate-heading collisions, while ignoring links inside inline and fenced code examples.
+
 Automatic export follows the candidate order frozen during development. Confirmation scores and pass/reject outcomes never choose the replayed factor; inspect `confirmation.csv` separately. A portfolio replay does not promote a rejected or inconclusive factor. Changing `--rank` or strategy settings after inspecting confirmation results makes subsequent replays exploratory and requires new untouched data for final validation.
 
 ### Key conventions
