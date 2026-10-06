@@ -13,20 +13,21 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 
 ## M0 — Contracts and initial scope
 
-- [ ] SCOPE-01: Select the first market, universe, frequency, licensed/authorized data source, and minimum strategy; document exclusions and execution assumptions.
+- [ ] SCOPE-01: Select the first market, universe, frequency, licensed/authorized data source, and minimum strategy; document exclusions and execution assumptions. *Decided 2026-10-06: Yahoo Finance daily bars as a test-only source (no delisted tickers, no point-in-time membership, adjusted history is revised). The research market, benchmark and authorized source remain open.*
 - [x] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes. *`market_bars`, `universe`, `fundamentals`, `signals` in `invest_data/schemas.py`; [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).*
-- [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms.
-- [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance.
+- [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms. *Implemented: `FrozenFactor` artifact v1 (orientation, horizon, training window, dataset hash, operator version; `invest_mining/artifact.py`) and the `signals` kind with `signal_type = score` and optional `n_trials`. Missing: fitted-model/transform artifacts, weight and order signal types, compatibility fixtures.*
+- [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance. *Implemented: validated `BacktestConfig` (`config.py`); runs save the resolved config, daily/trade/episode ledgers, metrics with statuses, and provenance (`reporting.py`). Missing: a versioned machine-readable result schema and external flows.*
 - [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
 
 ## M1 — Packages and tooling
 
 - [x] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles. *Python ≥ 3.11, uv workspace with one `uv.lock`; CI installs each component on its own.*
 - [x] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage. *`invest-data`, `invest-mine`, `invest-eval`; see README.*
-- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *Done except Markdown/link validation and wheel builds (`.github/workflows/ci.yml`).*
+- [x] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *`.github/workflows/ci.yml`: `checks` (Ruff, mypy, pytest, `scripts/check_markdown_links.py`), `independent-install`, and `wheels` (build, clean install, CLI smoke, tests against installed wheels); link checker tests in `tests/test_markdown_links.py`.*
 - [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *Component and end-to-end tests exist; critical boundary validation uses explicit exceptions. Still missing: committed fixture bundles shared by all components.*
 - [x] REVIEW-01: Fix PR #1 correctness findings: explicit causal settlement events, decision-time quantiles, validated strategy targets/configuration, consistent excess-return Sharpe statistics, undefined/empty result handling, and metadata validation before publication. *Regression coverage in component tests; README and evaluator event contract updated.*
 - [x] REVIEW-02: Preserve loss/drawdown evidence and complete base/stress reports when a settlement makes the portfolio insolvent; handle short-series autocorrelations without numerical warnings. *Regression coverage in evaluator metric and CLI tests.*
+- [x] REVIEW-03: Fix [PR #2](https://github.com/sasasqt/invest/pull/2) findings: export follows the development-frozen candidate order without conditioning on confirmation results; heading anchors preserve inline-code text; signal trial counts are validated before publication and on consumption without coercion. *Regression coverage in mining CLI/inference tests, `test_signal_metadata.py`, `test_markdown_links.py` and evaluator CLI tests.*
 
 ## M2 — First runnable workflow
 
@@ -38,24 +39,26 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
 - [x] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
 - [x] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration. *`tests/test_pipeline.py` and component tests.*
+- [x] FLOW-03: Run the synthetic workflow with one command and no hand-copied factor ids or dates. *`scripts/synthetic_workflow.sh`; `invest-mine export --from-search`; `invest-eval run` takes `n_trials` from the signals bundle; covered by `tests/test_pipeline.py`.*
 - [ ] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions.
 
 ## M3 — Evaluation completeness and robust alpha evidence
 
 - [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification.
-- [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails.
-- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks. *HAC tests, stationary bootstrap, PSR/DSR done; Monte Carlo calibration checks remain.*
-- [ ] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures.
-- [ ] ROBUST-01: Add time/universe/parameter/data/timing perturbations, redundancy diagnostics, and separate factor outcome statuses.
+- [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails. *Implemented for factor diagnostics: per-date deciles (ties share a bucket, dates with fewer names than buckets excluded) and separate top/bottom 1/5/10% tails (`invest_mining/diagnostics.py`, saved by `invest-mine evaluate`). Missing: executable decile and tail portfolios in evaluation, small-sample statuses for tails.*
+- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks. *HAC tests, stationary bootstrap, PSR/DSR done; calibration across repeated null simulations remains (one null-market search test exists).*
+- [x] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures. *`invest_mining/search.py` (purge + embargo, full ledger, frozen top-k family, one-shot Holm), Holm/BH in `diagnostics.py`; tests in `test_search_and_inference.py`, `test_diagnostics.py`, `test_cli.py`.*
+- [ ] STATS-03: Persist experiment identities and confirmation-use history so repeated searches cannot silently reuse the same confirmation period.
+- [ ] ROBUST-01: Add time/universe/parameter/data/timing perturbations, redundancy diagnostics, and separate factor outcome statuses. *Implemented: a redundancy filter in family selection and factor confirmation statuses. Missing: regime, universe, parameter, data and timing perturbations.*
 - [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes. *Scenarios done (`robustness.py`); a portfolio validation status is not emitted yet.*
-- [ ] REPORT-02: Extend saved-result reports with quantile tables, uncertainty, robustness scenarios, and reasons for undefined/inconclusive results.
+- [ ] REPORT-02: Extend saved-result reports with quantile tables, uncertainty, robustness scenarios, and reasons for undefined/inconclusive results. *Implemented: factor reports save quantile and tail tables; strategy reports save statistics, scenarios and undefined-result reasons. Missing: portfolio quantile tables and factor confirmation reported side by side with, but separate from, portfolio validation.*
 
 ## M4 — Search, training, and inference
 
-- [ ] AST-01: Implement typed AST grammar, causal operator semantics, lookbacks, numerical-domain policies, and serialization compatibility tests.
+- [ ] AST-01: Implement typed AST grammar, causal operator semantics, lookbacks, numerical-domain policies, and serialization compatibility tests. *Implemented: typed AST with a safe parser, causal operators, `lookback()`, missing-not-infinite domain policy, `OPERATOR_VERSION` checked on artifact load (`expressions.py`, `artifact.py`). Missing: saved-artifact compatibility fixtures across operator versions.*
 - [x] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
 - [ ] TRAIN-01: Fit learned preprocessing and models only within development splits; persist transforms and configuration with fitted artifacts.
-- [ ] INFER-01: Verify frozen export/reload parity, schema compatibility, historical-context requirements, and inference without fitting.
+- [ ] INFER-01: Verify frozen export/reload parity, schema compatibility, historical-context requirements, and inference without fitting. *Implemented for expression factors: reload with version and id checks, export without fitting, causal-score tests (`inference.py`, `test_search_and_inference.py`). Missing: parity for fitted models (after TRAIN-01).*
 - [ ] COMPARE-01: Establish matched-budget comparisons with locked endpoints and independent confirmation before promoting search methods.
 
 ## M5 — Extensions after baseline evidence

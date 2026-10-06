@@ -81,6 +81,10 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
     missing = [k for k in required if k not in metadata]
     if missing:
         raise BundleError(f"{kind}: metadata missing {missing}")
+    if kind == SIGNALS and "n_trials" in metadata:
+        n_trials = metadata["n_trials"]
+        if type(n_trials) is not int or n_trials < 1:
+            raise BundleError("signals: n_trials must be a positive integer (not a boolean)")
 
 
 def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:

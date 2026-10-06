@@ -89,6 +89,7 @@ Send frozen factor values or predictions to `strategy-evaluation/`. Apply a decl
 - Test base and adverse cost assumptions, execution delays, rebalance schedules, capital/participation levels, and liquidity constraints. Attribute performance to positions and costs.
 - Report net P&L, drawdown, turnover, exposures, concentration, net Sharpe, uncertainty, and capacity sensitivity. Dependence and non-normal returns affect inference and Sharpe annualization.
 - Keep trading-rule and combination tuning in development periods. A factor whose ranking is significant may still fail after costs; a profitable backtest may still reflect selection bias.
+- Replay candidates in the order frozen during development, retaining rejected and inconclusive confirmation outcomes. Ranking or filtering candidates by confirmation evidence and replaying them on that same period makes portfolio evidence exploratory. Use separate untouched data for final validation after such selection.
 - A factor may be useful only as part of a collection. Evaluate its incremental contribution rather than requiring every constituent to trade profitably on its own.
 
 ## 7. Promotion gates and report artifacts

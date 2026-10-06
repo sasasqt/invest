@@ -87,9 +87,10 @@ uv run ruff format --check .
 uv run ruff check .
 uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
+uv run python scripts/check_markdown_links.py
 ```
 
-Wheel builds (`uv build --package <name>`) are not yet part of CI. A zero-test run does not demonstrate readiness. For distributable packages, also install the built wheel in a clean environment and verify its imports and entry points.
+CI also builds all three wheels (`uv build --all-packages`), installs them in a clean environment, smoke-tests the CLIs, and runs the component and end-to-end tests against the installed packages. A zero-test run does not demonstrate readiness.
 
 ## Continuous integration and change review
 

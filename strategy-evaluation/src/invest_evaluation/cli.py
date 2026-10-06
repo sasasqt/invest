@@ -41,8 +41,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     run.add_argument(
         "--n-trials",
         type=int,
-        default=1,
-        help="strategies/signals tried before this one (for the deflated Sharpe)",
+        help="strategies/signals tried before this one, for the deflated Sharpe "
+        "(default: the signals bundle's n_trials metadata, else 1)",
     )
     run.add_argument("--no-scenarios", action="store_true")
     run.add_argument("--universe", type=Path, help="universe bundle limiting new positions")
@@ -55,6 +55,11 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     market_manifest, bars = read_market_bars(args.data)
     signal_manifest, signals = read_signals(args.signals)
+    n_trials = args.n_trials
+    if n_trials is None:
+        n_trials = signal_manifest.metadata.get("n_trials", 1)
+    if n_trials < 1:
+        raise SystemExit("--n-trials must be at least 1")
     cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
     universe = read_universe(args.universe)[1] if args.universe else None
     delistings = None
@@ -68,7 +73,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     stats = strategy_statistics(
         result.returns,
         cfg.annualization,
-        n_trials=args.n_trials,
+        n_trials=n_trials,
         risk_free_annual=cfg.risk_free_annual,
     )
     scenarios = (
@@ -93,6 +98,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "metadata": signal_manifest.metadata,
             },
             "code_revision": _git_revision(),
+            "n_trials": n_trials,
             "delisting_settlements": None if delistings is None else delistings.to_dict("records"),
         },
     )

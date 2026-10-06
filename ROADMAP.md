@@ -1,12 +1,12 @@
 # Roadmap
 
-A first end-to-end baseline (most of M1 and M2) is implemented and tested on synthetic data. M0's market and data-source decisions are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
+A first end-to-end baseline (M1 and most of M2) is implemented and tested on synthetic data, with parts of M3 and M4 already in place. The next goal is a reproducible historical-data experiment with credible alpha and portfolio evidence. Yahoo Finance is the test-only data source; the research market and authorized source are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
 
 Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
 
 ## M0 — Finalize contracts and scope
 
-**Status:** planned; architecture and behavioral specifications are documented.
+**Status:** partly done. The dataset contract (CONTRACT-01) is finalized and Yahoo Finance is chosen as a test-only source. The research market and source, artifact and result schemas (CONTRACT-02/03), and compatibility fixtures (CONTRACT-04) remain.
 
 Select the initial market and data source, supported Python version, dependency manager, and minimal runnable use case. Finalize machine-readable schemas for financial datasets, fitted artifacts, signals, strategy configuration, and evaluation reports. Include units, availability/revision times, point-in-time membership, adjustments, calendars, label intervals, provenance, and content identity. Define compatible schema evolution without silently changing dataset contract version 1.
 
@@ -14,7 +14,7 @@ Select the initial market and data source, supported Python version, dependency 
 
 ## M1 — Establish independent packages and quality checks
 
-**Status:** mostly done; Markdown/link checks and wheel builds remain. **Depends on:** M0's scope and initial interfaces.
+**Status:** done except shared contract fixtures (QUALITY-02). CI runs lint, types, tests, Markdown link checks, independent installs and built-wheel tests. **Depends on:** M0's scope and initial interfaces.
 
 Create `invest_data`, `invest_mining`, and `invest_evaluation` with component manifests, lockfiles, thin entry points, and tests as behavior is introduced. Establish Ruff, mypy, pytest, packaging checks, and CI. Create only modules needed by the first workflow. Add deterministic small fixtures and contract checks that remain effective when assertions are disabled.
 
@@ -22,7 +22,7 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 ## M2 — Deliver one correct end-to-end baseline
 
-**Status:** done on synthetic data; a run on representative historical data (FLOW-02) waits on M0's data-source decision. **Depends on:** M0 and M1.
+**Status:** done on synthetic data, runnable with one command (FLOW-03); a run on representative historical data (FLOW-02) needs a data adapter (DATA-01). **Depends on:** M0 and M1.
 
 Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one known causal formula; export frozen signals; run one declared bucket strategy. Specify event order, eligible fills, fees, cash/position accounting, corporate actions, missing marks, and the selected market's constraints. Save basic metrics, result tables, and figures without rerunning calculations during rendering. Then exercise the same flow on a representative historical dataset.
 
@@ -30,7 +30,7 @@ Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one
 
 ## M3 — Complete diagnostics, statistics, and robustness
 
-**Status:** planned. **Depends on:** M2's verified accounting and returns.
+**Status:** in progress. Implemented: HAC, stationary-bootstrap and PSR/DSR statistics; purged development/confirmation search with a trial ledger and Holm adjustment (STATS-02); factor decile and tail diagnostics; cost, delay and liquidity stress scenarios. Remaining: null-simulation calibration, robustness perturbations, executable decile/tail portfolios, confirmation-use history, and separate factor and portfolio validation outcomes. **Depends on:** M2's verified accounting and returns.
 
 Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
 
@@ -38,7 +38,7 @@ Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile 
 
 ## M4 — Add reproducible mining, training, and frozen inference
 
-**Status:** planned. **Depends on:** M3; a fixed formula already works in M2.
+**Status:** in progress. A typed causal AST, a random-search baseline and frozen expression-factor inference exist. Remaining: artifact compatibility fixtures, learned preprocessing and models, fitted-artifact inference parity, and matched-budget comparisons. **Depends on:** M3; a fixed formula already works in M2.
 
 Implement typed causal AST operators and a simple search baseline, then learned preprocessing and model fitting inside development splits. Export reloadable fitted artifacts with versioned operator semantics and provenance. Compare subsequent search methods using identical data, objectives, budgets, and evaluation protocols.
 

@@ -20,4 +20,4 @@ Learned transformations such as scaling, imputation fitting, and feature selecti
 
 The package has its own `pyproject.toml` and tests. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
 
-Required validation will cover source failures, cleaning policies, point-in-time metadata, repeatable exports, CSV/SQLite value preservation, and independent contract readers.
+Tests cover cleaning policies, point-in-time metadata, repeatable exports, CSV/SQLite/Parquet value preservation, and contract validation. Source-failure handling (timeouts, retries) will be tested with the first network adapter.

@@ -102,9 +102,34 @@ def _search(args: argparse.Namespace) -> int:
     return 0
 
 
+def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor, str]:
+    """Export in the family order frozen on development data before confirmation.
+
+    The confirmation table retains that order. Read only candidate IDs: neither
+    confirmation statistics nor pass/reject outcomes may select the replayed factor.
+    """
+    family = pd.read_csv(root / "confirmation.csv", usecols=["factor_id"])
+    if rank < 1 or rank > len(family):
+        raise SystemExit(
+            f"{root}: {len(family)} factor(s) in the frozen family; cannot export rank {rank}"
+        )
+    factor_id = str(family.iloc[rank - 1]["factor_id"])
+    factor = FrozenFactor.load(root / "factors" / f"{factor_id}.json")
+    confirm_start = json.loads((root / "config.json").read_text())["split"]["confirmation"][0]
+    if start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start):
+        raise SystemExit(
+            f"--start {start} precedes the confirmation period ({confirm_start}); "
+            "those decisions were used for selection"
+        )
+    return factor, start or confirm_start
+
+
 def _export(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
-    factor = FrozenFactor.load(args.factor)
+    if args.from_search is not None:
+        factor, start = _from_search(args.from_search, args.rank, args.start)
+    else:
+        factor, start = FrozenFactor.load(args.factor), args.start
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",
@@ -115,12 +140,19 @@ def _export(args: argparse.Namespace) -> int:
         bars,
         args.out,
         dataset_id=manifest.dataset_id,
-        start=args.start,
+        start=start,
         fmt=args.format,
         **_optional_inputs(args),
     )
     print(
-        json.dumps({"signals": str(args.out), "rows": out.row_count, "factor_id": factor.factor_id})
+        json.dumps(
+            {
+                "signals": str(args.out),
+                "rows": out.row_count,
+                "factor_id": factor.factor_id,
+                "start": start,
+            }
+        )
     )
     return 0
 
@@ -148,9 +180,22 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     ex = sub.add_parser("export", help="apply a frozen factor and publish a signals bundle")
     ex.add_argument("--data", type=Path, required=True)
-    ex.add_argument("--factor", type=Path, required=True)
+    source = ex.add_mutually_exclusive_group(required=True)
+    source.add_argument("--factor", type=Path, help="frozen factor JSON")
+    source.add_argument(
+        "--from-search",
+        type=Path,
+        help="search output: export a development-selected factor from its confirmation start",
+    )
+    ex.add_argument(
+        "--rank", type=int, default=1, help="with --from-search: n-th factor in the frozen family"
+    )
     ex.add_argument("--out", type=Path, required=True)
-    ex.add_argument("--start", help="first decision date to export (YYYY-MM-DD)")
+    ex.add_argument(
+        "--start",
+        help="first decision date to export (YYYY-MM-DD); "
+        "defaults to the confirmation start with --from-search",
+    )
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
 
     for p in (ev, se, ex):

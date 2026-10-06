@@ -2,11 +2,11 @@
 
 Invest is co-developed by human contributors, GPT, and Claude.
 
-A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. The next milestone is a reproducible experiment on historical data, starting with Yahoo Finance as a test-only source; see the [roadmap](ROADMAP.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
-- [Data preparation](data-pipeline/data-preparation/README.md): download, clean, preprocess, and publish CSV or SQLite datasets.
+- [Data preparation](data-pipeline/data-preparation/README.md): download, clean, preprocess, and publish CSV, SQLite or Parquet datasets.
 - [Strategy evaluation](strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
 - [Data mining framework](data-mining-framework/README.md): consume published datasets for factor discovery, model training, inference, and signal diagnostics.
 
@@ -35,6 +35,13 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). The three packages f
 ```sh
 uv sync --frozen
 
+# Whole workflow in one command (outputs under artifacts/synthetic-workflow):
+uv run scripts/synthetic_workflow.sh
+```
+
+Or run the steps one by one. Each reads only the artifacts the previous one published; the script runs the same steps except the fundamentals diagnostic:
+
+```sh
 # 1. Prepare: publish a deterministic synthetic market (or `import-csv` your own bars).
 uv run invest-data synthetic --out artifacts/data/synthetic --format parquet \
   --universe-out artifacts/data/universe --fundamentals-out artifacts/data/fundamentals
@@ -46,16 +53,15 @@ uv run invest-mine search --data artifacts/data/synthetic --universe artifacts/d
 uv run invest-mine evaluate --data artifacts/data/synthetic --fundamentals artifacts/data/fundamentals \
   --expr "cs_rank(fund_book_to_price)" --out artifacts/mining/value
 
-# 3. Freeze and export signals for the confirmation period only.
+# 3. Export the first development-selected factor from the first confirmation date.
 uv run invest-mine export --data artifacts/data/synthetic --universe artifacts/data/universe \
-  --factor artifacts/mining/search/factors/<factor_id>.json \
-  --start <first confirmation date from search/config.json> --out artifacts/signals/rev5
+  --from-search artifacts/mining/search --out artifacts/signals/best
 
 # 4. Evaluate: backtest with costs, metrics, statistics, stress scenarios and figures.
-uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/rev5 \
+#    The deflated Sharpe uses the search's proposal count recorded in the signals bundle.
+uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/best \
   --universe artifacts/data/universe \
-  --config strategy-evaluation/examples/quantile_long_short.json \
-  --n-trials 207 --out artifacts/eval/rev5
+  --config strategy-evaluation/examples/quantile_long_short.json --out artifacts/eval/best
 ```
 
 Checks (the same as CI):
@@ -64,7 +70,12 @@ Checks (the same as CI):
 uv run ruff format --check . && uv run ruff check .
 uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch
+uv run python scripts/check_markdown_links.py
 ```
+
+CI additionally builds the three wheels and runs the tests against the installed packages; see the [CI/CD guidelines](CI_CD_GUIDELINES.md).
+
+Automatic export follows the candidate order frozen during development. Confirmation scores and pass/reject outcomes never choose the replayed factor; inspect `confirmation.csv` separately. A portfolio replay does not promote a rejected or inconclusive factor. Changing `--rank` or strategy settings after inspecting confirmation results makes subsequent replays exploratory and requires new untouched data for final validation.
 
 ### Key conventions
 

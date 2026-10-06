@@ -25,6 +25,32 @@ jobs:
       - run: uv run ruff check .
       - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
       - run: uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
+      - run: uv run python scripts/check_markdown_links.py
+
+  wheels:
+    # Build all three wheels and test them as installed, not from the source tree.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+      - run: uv build --all-packages --out-dir "$RUNNER_TEMP/dist"
+      - name: Install the built wheels into a clean venv
+        run: |
+          uv venv "$RUNNER_TEMP/venv"
+          uv pip install --python "$RUNNER_TEMP/venv" "$RUNNER_TEMP"/dist/*.whl pytest
+      - name: CLI smoke test
+        run: |
+          for cli in invest-data invest-mine invest-eval; do "$RUNNER_TEMP/venv/bin/$cli" --help > /dev/null; done
+      - name: Component and end-to-end tests against the installed wheels
+        working-directory: ${{ runner.temp }}
+        run: |
+          "$RUNNER_TEMP/venv/bin/python" -m pytest -p no:cacheprovider --rootdir "$GITHUB_WORKSPACE" \
+            "$GITHUB_WORKSPACE/data-pipeline/data-preparation/tests" \
+            "$GITHUB_WORKSPACE/data-mining-framework/tests" \
+            "$GITHUB_WORKSPACE/strategy-evaluation/tests" \
+            "$GITHUB_WORKSPACE/tests/test_pipeline.py"
 
   independent-install:
     # Each component must install and pass its own tests without the others' dev setup.

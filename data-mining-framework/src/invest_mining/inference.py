@@ -58,6 +58,12 @@ def export_signals(
             "horizon_days": factor.horizon_days,
             "training_end": factor.training_end,
             "operator_version": factor.operator_version,
+            # Proposals tried before this factor was frozen, for the deflated Sharpe.
+            **(
+                {"n_trials": factor.selection["n_proposals"]}
+                if "n_proposals" in factor.selection
+                else {}
+            ),
         },
         provenance={"market_dataset_id": dataset_id, "factor": factor.to_json()},
         fmt=fmt,
