@@ -5,12 +5,29 @@ import pandas as pd
 import pytest
 
 from invest_evaluation.metrics import (
+    benchmark_metrics,
     drawdown_metrics,
     episode_metrics,
+    instrument_returns,
     period_rate,
     return_metrics,
     tail_metrics,
 )
+
+
+def test_benchmark_gap_does_not_create_a_multi_session_daily_return():
+    sessions = pd.bdate_range("2024-01-01", periods=30)
+    bars = pd.DataFrame(
+        {"date": sessions, "instrument": "SPY", "close": 100 * 1.01 ** np.arange(30)}
+    )
+    bars = bars.drop(index=10)
+    benchmark = instrument_returns(bars, sessions=sessions)
+    assert benchmark.loc[sessions[[0, 10, 11]]].isna().all()
+    assert benchmark.loc[sessions[12]] == pytest.approx(0.01)
+    # Constant 1% daily strategy and benchmark must have zero tracking error.
+    metrics = benchmark_metrics(pd.Series(0.01, index=sessions), benchmark, 252)
+    assert metrics["tracking_error"].value == pytest.approx(0, abs=1e-12)
+    assert metrics["benchmark_total_return"].extra["aligned_sessions"] == 27
 
 
 def series(values) -> pd.Series:

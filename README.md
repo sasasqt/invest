@@ -2,7 +2,7 @@
 
 Invest is co-developed by human contributors, GPT, and Claude.
 
-A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. The next milestone is a reproducible experiment on historical data, starting with Yahoo Finance as a test-only source; see the [roadmap](ROADMAP.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. A test-only Yahoo Finance adapter runs the same workflow on historical prices from a saved raw snapshot (survivorship-biased; not research evidence). The next milestone is validation on that baseline and an authorized research data source; see the [roadmap](ROADMAP.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
@@ -64,6 +64,20 @@ uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signa
   --config strategy-evaluation/examples/quantile_long_short.json --out artifacts/eval/best
 ```
 
+### Historical workflow (Yahoo Finance, test-only)
+
+Needs network access to `query1.finance.yahoo.com` for the first run only:
+
+```sh
+uv run scripts/historical_workflow.sh   # outputs under artifacts/historical-workflow
+```
+
+It saves the raw Yahoo responses for today's S&P 100 members ([list](scripts/sp100_members.txt)) and SPY from 2010 to 2024 in `artifacts/historical-workflow/snapshot`, publishes the members and SPY as separate bundles, freezes the 5-day reversal formula `close / delay(close, 5) - 1` with orientation −1 and `n_trials = 1`, exports its signals, and evaluates them with the example quantile long-short config, reporting SPY next to the universe equal-weight benchmark.
+
+Existing snapshots replay offline using their saved request dates by default. `START` and `END` select an inclusive subset within that request; requests beyond it fail before publication. Dataset ids and selection provenance use the resolved dates, while provenance retains the original download request. `SYMBOLS_FILE` controls new downloads only; replay uses the saved symbols and excludes `BENCHMARK` from the strategy universe. Override `BENCHMARK`, `SNAPSHOT` or `CONFIG` as needed. The same snapshot and selection publish identical dataset hashes. Yahoo publication currently supports USD US equities and ETFs only. External benchmarks must have matching currency, frequency, price adjustment, calendar and declared timezone; missing closes exclude incomplete daily intervals from relative metrics.
+
+The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs.
+
 Checks (the same as CI):
 
 ```sh
@@ -92,7 +106,7 @@ Automatic export follows the candidate order frozen during development. Confirma
 
 ### Known limitations of the baseline
 
-- There is no vendor download adapter yet. Use `import-csv` for your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter in `invest_data.sources`.
+- The only network adapter is the test-only Yahoo Finance one (`invest-data yahoo`); it has no delisted tickers, point-in-time membership or fundamentals. For research data use `import-csv` with your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter beside `invest_data.yahoo`.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
 - Only external flows of zero are supported, so XIRR is not computed yet. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).

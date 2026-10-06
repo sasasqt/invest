@@ -17,7 +17,7 @@ A PR is mergeable only when all jobs are green on its latest commit.
 ## Principles
 
 - **Same commands locally and in CI.** CI runs exactly the commands listed in the [Python guidelines](PYTHON_GUIDELINES.md#development-checks). If you add a check, add it in both places in the same change.
-- **Fast and deterministic.** Tests use small synthetic fixtures, fixed seeds and no network. A run over about 5 minutes or a test that depends on the clock or a live service needs fixing, not a retry.
+- **Fast and deterministic.** Tests use small synthetic fixtures, fixed seeds and no network. Source adapters are tested with fabricated vendor-format responses (for example `invest_data.testing` for Yahoo), never with downloaded data, which must not be committed. A run over about 5 minutes or a test that depends on the clock or a live service needs fixing, not a retry.
 - **Frozen dependencies.** Install with `uv sync --frozen` from the committed `uv.lock`. Dependency changes update `pyproject.toml` and `uv.lock` in the same commit, and their CI run is the review evidence.
 - **Least privilege.** Workflows default to `permissions: contents: read`. A job that needs more (publishing a release, writing comments) declares it in that job only.
 - **Pinned actions.** Reference third-party actions by full commit SHA with the version in a comment (`uses: actions/checkout@<sha> # v4.4.0`). Update pins deliberately, ideally through Dependabot or Renovate PRs, and read the changelog.
@@ -48,7 +48,7 @@ Treat a published research result like a release:
 
 - Run it from a clean, committed revision. The evaluation manifest records `code_revision`; a run from a dirty tree is exploratory only.
 - Use the frozen lockfile, fixed seeds, and dataset bundles identified by `content_sha256`.
-- Keep generated outputs under `artifacts/` (ignored by Git). Archive results that matter in an artifact store with their manifest, not in the repository.
+- Keep generated outputs under `artifacts/` (ignored by Git), including raw vendor snapshots. A result built from a downloaded source cites the snapshot's `snapshot.json` hashes; republishing the same snapshot must give the same `content_sha256`. Archive results that matter in an artifact store with their manifest, not in the repository.
 - Scheduled jobs (for example nightly data refreshes or prospective paper-trading evaluations) run as separate workflows with their own secrets and must never push to `main`. They publish new immutable bundles or reports and fail loudly on validation errors.
 
 ## Adding or changing CI

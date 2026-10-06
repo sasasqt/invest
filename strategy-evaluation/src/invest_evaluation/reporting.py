@@ -28,6 +28,7 @@ def save_run(
     statistics: dict[str, Any],
     scenarios: pd.DataFrame | None,
     provenance: dict[str, Any],
+    external_benchmark: pd.Series | None = None,
 ) -> Path:
     root = Path(out)
     if root.exists() and any(root.iterdir()):
@@ -38,6 +39,9 @@ def save_run(
     daily["return"] = result.returns
     daily["gross_return"] = result.gross_returns
     daily["benchmark_return"] = result.benchmark
+    if external_benchmark is not None:
+        # NaN where the benchmark has no return for a backtest session.
+        daily["external_benchmark_return"] = external_benchmark.reindex(daily.index)
     daily.to_csv(root / "tables" / "daily.csv")
     result.trades.to_csv(root / "tables" / "trades.csv", index=False)
     result.episodes.to_csv(root / "tables" / "episodes.csv", index=False)
@@ -75,6 +79,17 @@ def render(root: Path) -> None:
     ax[0].plot(
         (1 + d["benchmark_return"]).cumprod(), label="universe EW (gross)", color="#999999", lw=1
     )
+    if "external_benchmark_return" in d:
+        # Leading unavailable history is omitted; an internal gap stops the wealth path.
+        # Its missing interval cannot be treated as zero or skipped in a growth curve.
+        external = d["external_benchmark_return"]
+        first = external.first_valid_index()
+        ax[0].plot(
+            (1 + external.loc[first:]).cumprod(skipna=False) if first is not None else external,
+            label="external benchmark",
+            color="#5a8f3c",
+            lw=1,
+        )
     ax[0].set_ylabel("growth of 1")
     ax[0].legend(loc="upper left")
     ax[0].set_title("Equity")
@@ -166,8 +181,17 @@ def _write_summary(root: Path) -> None:
             "average_holding_sessions",
         ],
         "benchmark": ["benchmark_total_return", "beta", "information_ratio"],
+        "external_benchmark": [
+            "benchmark_total_return",
+            "beta",
+            "alpha_annual",
+            "correlation",
+            "information_ratio",
+        ],
     }
     for section, keys in picks.items():
+        if section not in metrics:
+            continue
         lines += [f"## {section.replace('_', ' ').title()}", "", "| metric | value |", "|---|---|"]
         for k in keys:
             if k in metrics.get(section, {}):

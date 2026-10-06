@@ -1,8 +1,9 @@
 """Data sources: a deterministic synthetic market and a local CSV importer.
 
-Network adapters (vendor APIs) are intentionally not bundled: licensing, credentials and
-rate limits are source specific. Add one as a function returning a raw bars DataFrame
-with the columns of :data:`invest_data.schemas.MARKET_BAR_COLUMNS`, then pass it through
+Network adapters live in their own modules (the test-only Yahoo Finance adapter is
+:mod:`invest_data.yahoo`) because licensing, credentials and rate limits are source
+specific. An adapter returns a raw bars DataFrame with the columns of
+:data:`invest_data.schemas.MARKET_BAR_COLUMNS`, which then passes through
 :func:`invest_data.cleaning.clean_bars`.
 """
 

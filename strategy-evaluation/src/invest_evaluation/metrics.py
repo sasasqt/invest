@@ -257,10 +257,36 @@ def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
     return out
 
 
+def instrument_returns(
+    bars: pd.DataFrame, instrument: str | None = None, *, sessions: pd.DatetimeIndex
+) -> pd.Series:
+    """Close-to-close daily returns of one instrument in a market-bars frame.
+
+    ``instrument`` may be omitted when the frame holds exactly one. With total-return
+    adjusted bars this is the instrument's total return. ``sessions`` must be the full
+    evaluation market calendar, including history before the backtest starts. Align closes
+    before differencing: a missing close invalidates that day's and the next day's return.
+    """
+    names = sorted(bars["instrument"].unique())
+    if instrument is None:
+        if len(names) != 1:
+            raise ValueError(f"benchmark bundle holds {len(names)} instruments; name one")
+        instrument = names[0]
+    if instrument not in names:
+        raise ValueError(f"benchmark instrument {instrument!r} not in bundle")
+    close = bars.loc[bars["instrument"] == instrument].set_index("date")["close"].sort_index()
+    close = close.reindex(sessions.sort_values().unique())
+    return close.pct_change(fill_method=None).rename(instrument)
+
+
 def benchmark_metrics(
-    returns: pd.Series, bench: pd.Series, annualization: int, risk_free_annual: float = 0.0
+    returns: pd.Series,
+    bench: pd.Series,
+    annualization: int,
+    risk_free_annual: float = 0.0,
+    label: str = "universe_equal_weight_daily_rebalanced_gross",
 ) -> dict[str, Metric]:
-    r, b = returns.align(bench, join="inner")
+    r, b = returns.align(bench.dropna(), join="inner")
     a = annualization
     if len(r) < 20:
         return {"benchmark": _undef("", "fewer_than_20_aligned_returns", "insufficient_data")}
@@ -273,7 +299,8 @@ def benchmark_metrics(
         "benchmark_total_return": _ok(
             float(np.prod(1 + b) - 1),
             "fraction",
-            benchmark="universe_equal_weight_daily_rebalanced_gross",
+            benchmark=label,
+            aligned_sessions=len(b),
         ),
         "tracking_error": _ok(te * math.sqrt(a), "fraction/year^0.5"),
         "information_ratio": (
@@ -402,7 +429,13 @@ def episode_metrics(episodes: pd.DataFrame, flat_tolerance: float) -> dict[str, 
     return out
 
 
-def compute_metrics(result: BacktestResult) -> dict[str, dict[str, Any]]:
+def compute_metrics(
+    result: BacktestResult,
+    external_benchmark: pd.Series | None = None,
+    external_label: str = "external",
+) -> dict[str, dict[str, Any]]:
+    """All metric sections. ``external_benchmark`` (daily returns, e.g. an index ETF)
+    adds an ``external_benchmark`` section next to the universe equal-weight one."""
     cfg = result.config
     rets = result.returns
     net_profit = float(result.daily["equity"].iloc[-1] - cfg.initial_capital)
@@ -434,4 +467,8 @@ def compute_metrics(result: BacktestResult) -> dict[str, dict[str, Any]]:
         "trading": trading_metrics(result, cfg.annualization),
         "trades": episode_metrics(result.episodes, 1e-9 * cfg.initial_capital),
     }
+    if external_benchmark is not None:
+        sections["external_benchmark"] = benchmark_metrics(
+            rets, external_benchmark, cfg.annualization, cfg.risk_free_annual, external_label
+        )
     return {name: {k: m.to_dict() for k, m in sec.items()} for name, sec in sections.items()}

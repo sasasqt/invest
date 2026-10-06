@@ -62,6 +62,8 @@ Write and validate an artifact in a temporary directory, then publish it atomica
 
 Preprocessing that learns from data, such as imputation, scaling, feature selection, or dimensionality reduction, belongs in the mining training workflow and must be fitted only on training partitions. Pipeline preprocessing is limited to deterministic cleaning and explicit domain transformations to avoid evaluation leakage.
 
+The Yahoo test adapter validates daily USD US equity/ETF source metadata before declaring `XNYS` and `America/New_York`. Its immutable snapshots use exclusive destination reservation and atomic directory publication. Replay records the original request separately from selected symbols, inclusive date bounds and observed dates; subsets outside the saved request are refused. Strategy evaluation accepts an external daily benchmark only when currency, frequency, price adjustment, calendar and timezone match the market bundle (timezone may be omitted in both). It aligns closes before calculating returns so missing sessions cannot create multi-session observations labeled as daily returns.
+
 ## Required compatibility tests
 
 Use shared fixture bundles, independent of either component's code, for CSV and SQLite. Include empty datasets, nulls, empty strings, escaped backslashes, Unicode, decimals, UTC timestamps, duplicate keys, invalid types, and unsupported versions. The producer must generate valid artifacts; the consumer must read valid fixtures and reject invalid ones. A future end-to-end check should publish a pipeline dataset and run mining against that artifact without importing pipeline modules.
