@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import pytest
 
 from invest_data.cli import main as data_main
 from invest_data.schemas import read_signals
@@ -62,6 +63,27 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
     _, sig = read_signals(tmp_path / "sig")
     assert len(sig) > 0
     capsys.readouterr()
+
+    # --from-search: best confirmed factor, exported from the confirmation start.
+    confirmation = pd.read_csv(tmp_path / "se" / "confirmation.csv")
+    passed = confirmation[confirmation["status"] == "confirmation_passed"]
+    best = passed.sort_values(["p_holm", "confirm_t"], ascending=[True, False]).iloc[0]
+    best = best["factor_id"]
+    split = json.loads((tmp_path / "se" / "config.json").read_text())["split"]
+    common = ["export", "--data", str(data), "--from-search", str(tmp_path / "se")]
+    assert main([*common, "--out", str(tmp_path / "auto")]) == 0
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["factor_id"] == best and printed["start"] == split["confirmation"][0]
+    manifest, auto = read_signals(tmp_path / "auto")
+    assert auto["decision_date"].min() >= pd.Timestamp(split["confirmation"][0])
+    assert manifest.metadata["n_trials"] == 20 + 7
+
+    with pytest.raises(SystemExit, match="precedes the confirmation period"):
+        main([*common, "--start", split["development"][0], "--out", str(tmp_path / "early")])
+    with pytest.raises(SystemExit, match="cannot export rank"):
+        main([*common, "--rank", str(len(passed) + 1), "--out", str(tmp_path / "none")])
+    with pytest.raises(SystemExit):  # --factor and --from-search are exclusive
+        main([*common, "--factor", str(factors[0]), "--out", str(tmp_path / "both")])
 
 
 def test_search_with_no_qualifying_candidates_writes_structured_results(tmp_path, capsys):

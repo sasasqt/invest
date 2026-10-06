@@ -8,7 +8,8 @@ Every pull request and every push to `main` runs:
 
 | Job | Checks |
 |---|---|
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` on all three `src/` trees, and `pytest` with branch coverage |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` on all three `src/` trees, `pytest` with branch coverage, and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
 
 A PR is mergeable only when all jobs are green on its latest commit.
@@ -38,7 +39,7 @@ This is a library and research toolkit, so "delivery" means versioned packages a
 
 1. **Versioning.** Each component follows semantic versioning in its own `pyproject.toml`. Bump the minor version for new behavior, the major version for breaking changes to a public API, CLI, or artifact contract, and record the change in a `CHANGELOG.md` entry.
 2. **Tagging.** Release from `main` only, with tags `<package>-v<version>` (for example `invest-evaluation-v0.2.0`).
-3. **Build and verify.** A release workflow (to be added; see [TODO.md](TODO.md) QUALITY-01) runs `uv build --package <name>`, installs the wheel into a clean environment, runs the component's tests and a CLI smoke test against it, then publishes. Use PyPI trusted publishing (OIDC) rather than stored API tokens.
+3. **Build and verify.** The `wheels` CI job already builds, installs and tests every wheel. A release workflow (not added yet) repeats that for the tagged package with `uv build --package <name>`, then publishes. Use PyPI trusted publishing (OIDC) rather than stored API tokens.
 4. **Operator or contract changes.** If `OPERATOR_VERSION`, `ARTIFACT_VERSION`, or `CONTRACT_VERSION` changes, the release notes must say which saved factors, signals, or bundles need regenerating.
 
 ## Reproducible research runs

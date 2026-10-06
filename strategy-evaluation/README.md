@@ -5,9 +5,11 @@ Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.p
 ```sh
 uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
   --config strategy-evaluation/examples/quantile_long_short.json \
-  --n-trials <strategies tried> --out artifacts/eval/<run>
+  [--n-trials <strategies tried>] --out artifacts/eval/<run>
 uv run pytest strategy-evaluation
 ```
+
+`--n-trials` sets the number of trials for the deflated Sharpe. It defaults to the signals bundle's optional `n_trials` metadata (written by `invest-mine export`), else 1; the value used is recorded in the run's `manifest.json`.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 

@@ -4,13 +4,14 @@ Component folder: `data-mining-framework/`. Development branches follow the shar
 
 Implementation progress is tracked in the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md). A known causal formula and frozen signals come first; automated search and learned models follow verified evaluation and robustness checks.
 
-Package `invest_mining` consumes datasets described by [the dataset contract](../docs/DATA_CONTRACT.md). Implemented: typed causal expressions with a safe parser and versioned operator semantics, point-in-time fundamentals as `fund_<field>` features, and cross-sectional operators restricted to the point-in-time universe (`expressions.py`); IC/rank IC, HAC tests, quantile and tail diagnostics, Holm/BH adjustments (`diagnostics.py`); a random-search baseline with a full trial ledger, purged chronological split, redundancy filter and one-shot Holm-adjusted confirmation (`search.py`); frozen factor artifacts (`artifact.py`); signal export (`inference.py`); and saved-result reports (`reporting.py`). Learned models (fitted transforms, ML predictors) and GP/MCTS/RL search are not implemented yet.
+Package `invest_mining` consumes datasets described by [the dataset contract](../docs/DATA_CONTRACT.md). Implemented: typed causal expressions with a safe parser and versioned operator semantics, point-in-time fundamentals as `fund_<field>` features, and cross-sectional operators restricted to the point-in-time universe (`expressions.py`); IC/rank IC, HAC tests, quantile and tail diagnostics, Holm/BH adjustments (`diagnostics.py`); a random-search baseline with a full trial ledger, purged chronological split, redundancy filter and one-shot Holm-adjusted confirmation (`search.py`); frozen factor artifacts (`artifact.py`); signal export (`inference.py`); and saved-result reports (`reporting.py`). `export --from-search` picks the best factor that passed confirmation (lowest Holm-adjusted p-value, ties broken by confirmation t-statistic; `--rank` for the next ones) and exports from the first confirmation date, refusing an earlier `--start`. Signals record the number of search proposals as `n_trials`. Learned models (fitted transforms, ML predictors) and GP/MCTS/RL search are not implemented yet.
 
 ```sh
 uv run invest-mine evaluate --data <market bundle> [--universe <bundle>] [--fundamentals <bundle>] \
   --expr "cs_rank(-delta(close, 5))" --out <dir>
 uv run invest-mine search --data <market bundle> --trials 200 --seed 0 --out <dir>
-uv run invest-mine export --data <market bundle> --factor <dir>/factors/<id>.json --start <date> --out <signals>
+uv run invest-mine export --data <market bundle> --from-search <dir> [--rank 1] --out <signals>
+uv run invest-mine export --data <market bundle> --factor <dir>/factors/<id>.json [--start <date>] --out <signals>
 uv run pytest data-mining-framework
 ```
 

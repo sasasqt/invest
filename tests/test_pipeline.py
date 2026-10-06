@@ -1,6 +1,7 @@
 """End-to-end: components exchange only published artifacts, through their CLIs."""
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -77,27 +78,28 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
     )
     confirmation = (search / "confirmation.csv").read_text().splitlines()
     assert len(confirmation) == 4
-    first_id = confirmation[1].split(",")[0]
-    factor = search / "factors" / f"{first_id}.json"
     split = json.loads((search / "config.json").read_text())["split"]
     confirm_start = split["confirmation"][0]
 
-    run(
-        "invest_mining.cli",
-        "export",
-        "--data",
-        str(data),
-        "--universe",
-        str(uni),
-        "--factor",
-        str(factor),
-        "--out",
-        str(signals),
-        "--start",
-        confirm_start,
-        "--format",
-        fmt,
+    # No ids or dates are copied by hand: export reads the search output directly.
+    exported = json.loads(
+        run(
+            "invest_mining.cli",
+            "export",
+            "--data",
+            str(data),
+            "--universe",
+            str(uni),
+            "--from-search",
+            str(search),
+            "--out",
+            str(signals),
+            "--format",
+            fmt,
+        )
     )
+    first_id = exported["factor_id"]
+    assert exported["start"] == confirm_start
     out = run(
         "invest_evaluation.cli",
         "run",
@@ -111,8 +113,6 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
         str(CONFIG),
         "--out",
         str(report),
-        "--n-trials",
-        "47",
     )
 
     summary = json.loads(out)
@@ -120,7 +120,35 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
     manifest = json.loads((report / "manifest.json").read_text())
     assert summary["sharpe"] == metrics["performance"]["sharpe"]["value"]
     assert manifest["signals"]["metadata"]["factor_id"] == first_id
+    # The deflated Sharpe counts every search proposal (40 random + 7 templates).
+    assert manifest["n_trials"] == 47
+    statistics = json.loads((report / "statistics.json").read_text())
+    assert statistics["deflated_sharpe"]["n_trials"] == 47
     # Only out-of-sample (confirmation-period) decisions are traded.
     trades = (report / "tables" / "trades.csv").read_text().splitlines()[1:]
     decisions = {line.split(",")[4] for line in trades if line.split(",")[4]}
     assert min(decisions) >= confirm_start
+
+
+def test_synthetic_workflow_script(tmp_path):
+    """The README's one-command workflow runs end to end on a small market."""
+    env = {
+        **os.environ,
+        "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+        "INSTRUMENTS": "40",
+        "DAYS": "500",
+        "TRIALS": "40",
+    }
+    out = tmp_path / "wf"
+    done = subprocess.run(
+        ["bash", str(ROOT / "scripts/synthetic_workflow.sh"), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
+        env=env,
+    )
+    assert done.returncode == 0, done.stderr
+    metrics = json.loads((out / "eval" / "metrics.json").read_text())
+    assert metrics["performance"]["sharpe"]["status"] == "ok"
+    assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
