@@ -5,6 +5,7 @@ import pandas as pd
 import pytest
 
 from invest_data.cli import main as data_main
+from invest_data.schemas import publish_market_bars, read_market_bars
 from invest_mining import ledger
 from invest_mining.cli import main
 from invest_mining.ledger import LedgerError, Window
@@ -57,6 +58,33 @@ def test_append_load_round_trip_and_rejects_corrupt_lines(tmp_path):
         broken.write_text(bad + "\n")
         with pytest.raises(LedgerError, match=message):
             ledger.load(broken)
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [
+        {},
+        {"experiment_id": None},
+        {"experiment_id": 12},
+        {"experiment_id": "e_ok", "ledger_version": 2},
+        {"experiment_id": "e_ok", "kind": "inspection"},
+        {"experiment_id": "e_ok", "recorded_at": "overridden"},
+    ],
+)
+def test_append_rejects_invalid_experiments_without_changing_the_ledger(tmp_path, extra):
+    path = tmp_path / "ledger.jsonl"
+    initial = ledger.append(path, "inspection", {"window": W("2019-01-01", "2019-12-31").to_json()})
+    before = path.read_bytes()
+    fields = {
+        "development": W("2020-01-01", "2020-06-30").to_json(),
+        "confirmation": W("2020-07-01", "2020-12-31").to_json(),
+        **extra,
+    }
+    for target in (path, tmp_path / "new" / "ledger.jsonl"):
+        with pytest.raises(LedgerError):
+            ledger.append(target, "experiment", fields)
+    assert path.read_bytes() == before and ledger.load(path) == [initial]
+    assert not (tmp_path / "new").exists()
 
 
 def _experiment(exp_id, dev, conf):
@@ -126,7 +154,7 @@ def test_split_can_start_confirmation_on_a_date():
     dates = pd.bdate_range("2024-01-01", periods=100)
     s = chronological_split(dates, 0.9, horizon=2, embargo=1, confirm_start="2024-03-02")
     assert s.confirm_dates[0] == pd.Timestamp("2024-03-04")  # first session on/after
-    assert len(s.purged_dates) == 3
+    assert len(s.purged_dates) == 4
     with pytest.raises(ValueError, match="no development or confirmation"):
         chronological_split(dates, 0.6, horizon=1, confirm_start="2030-01-01")
 
@@ -185,6 +213,39 @@ def test_cli_search_records_experiments_and_flags_reuse(tmp_path, capsys):
     assert experiment["confirmation_use"] == "unrecorded" and experiment["ledger"] is None
 
 
+def test_cli_cannot_confirm_on_prices_used_by_an_earlier_development_label(tmp_path):
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    manifest, bars = read_market_bars(data)
+    dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
+    first = tmp_path / "first"
+    assert _search(data, first, book, "--horizon", "40") == 0
+    config = json.loads((first / "config.json").read_text())
+    last_decision = dates.get_loc(pd.Timestamp(config["split"]["development"][1]))
+    last_observation = dates[last_decision + 41]
+    [entry] = ledger.load(book)
+    assert entry["development"]["end"] == str(last_observation.date())
+    assert config["split"]["development_observations"][1] == str(last_observation.date())
+
+    # Those prices are outside the first run's decision windows, but shaped selection.
+    shorter = tmp_path / "shorter"
+    publish_market_bars(
+        bars[bars["date"] < dates[156]], shorter, dataset_id="shorter", metadata=manifest.metadata
+    )
+    start = str(dates[116].date())
+    with pytest.raises(SystemExit, match=r"already used.*development window"):
+        _search(
+            shorter, tmp_path / "strict", book, "--confirm-start", start, "--require-confirmatory"
+        )
+    assert not (tmp_path / "strict").exists() and len(ledger.load(book)) == 1
+    second = tmp_path / "second"
+    assert _search(shorter, second, book, "--confirm-start", start) == 0
+    assert (
+        json.loads((second / "config.json").read_text())["experiment"]["confirmation_use"]
+        == "exploratory"
+    )
+
+
 def test_cli_reserved_window_is_only_usable_for_confirmation(tmp_path):
     data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
@@ -214,6 +275,7 @@ def test_cli_reserved_window_is_only_usable_for_confirmation(tmp_path):
     config = json.loads((tmp_path / "s2" / "config.json").read_text())
     assert config["experiment"]["confirmation_use"] == "confirmatory"
     assert config["split"]["confirmation"][0] == "2020-09-01"
+    assert ledger.load(book)[-1]["development"]["end"] == "2020-08-31"
     assert config["dev_fraction"] is None and config["confirm_start"] == "2020-09-01"
     assert ledger.unused_reservations(ledger.load(book)) == []
     assert _search(data, tmp_path / "s3", book, "--confirm-start", "2020-09-01", "--seed", "1") == 0

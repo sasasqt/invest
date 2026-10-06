@@ -59,6 +59,7 @@ class Split:
     dev_dates: pd.DatetimeIndex
     confirm_dates: pd.DatetimeIndex
     purged_dates: pd.DatetimeIndex
+    dev_observation_dates: pd.DatetimeIndex
 
     def to_dict(self) -> dict[str, Any]:
         def rng(ix: pd.DatetimeIndex) -> list[str] | None:
@@ -66,6 +67,7 @@ class Split:
 
         return {
             "development": rng(self.dev_dates),
+            "development_observations": rng(self.dev_observation_dates),
             "confirmation": rng(self.confirm_dates),
             "purged": rng(self.purged_dates),
             "n_development": len(self.dev_dates),
@@ -80,11 +82,16 @@ def chronological_split(
     embargo: int = 0,
     confirm_start: str | None = None,
 ) -> Split:
-    """Dev decision ``i`` uses sessions up to ``i+1+h``; keep only ``i+1+h < k+1``.
+    """Dev decision ``i`` uses sessions up to ``i+1+h``; require ``i+1+h < k-embargo``.
 
     Confirmation starts at session ``k``: the first date on or after ``confirm_start`` when
     given (so it can align with a reserved window), else ``int(len(dates) * dev_fraction)``.
+    Development observations include the prices used by labels, even on purged decisions.
     """
+    if horizon < 1:
+        raise ValueError("horizon must be >= 1")
+    if embargo < 0:
+        raise ValueError("embargo must be >= 0")
     if confirm_start is not None:
         k = int(dates.searchsorted(pd.Timestamp(confirm_start)))
         if not 0 < k < len(dates):
@@ -95,8 +102,9 @@ def chronological_split(
         raise ValueError("dev_fraction must be in (0, 1)")
     else:
         k = int(len(dates) * dev_fraction)
-    cut = max(k - horizon - embargo, 0)
-    return Split(dates[:cut], dates[k:], dates[cut:k])
+    cut = max(k - horizon - embargo - 1, 0)
+    observed_cut = cut + horizon + 1 if cut else 0
+    return Split(dates[:cut], dates[k:], dates[cut:k], dates[:observed_cut])
 
 
 @dataclass

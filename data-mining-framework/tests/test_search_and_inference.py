@@ -8,6 +8,7 @@ from invest_data.bundle import BundleError
 from invest_data.schemas import read_signals
 from invest_data.sources import SyntheticConfig, synthetic_market
 from invest_mining.artifact import FrozenFactor
+from invest_mining.diagnostics import forward_returns
 from invest_mining.expressions import build_panel
 from invest_mining.inference import compute_scores, export_signals
 from invest_mining.search import chronological_split, run_search
@@ -18,8 +19,26 @@ def test_split_purges_overlapping_labels():
     s = chronological_split(dates, 0.6, horizon=5, embargo=2)
     k = dates.get_loc(s.confirm_dates[0])
     last_dev = dates.get_loc(s.dev_dates[-1])
-    assert last_dev + 1 + 5 < k + 1 - 2 + 1  # label end strictly before confirm labels start
+    assert last_dev + 1 + 5 < k - 2  # label end before confirmation data and the embargo
     assert len(s.dev_dates) + len(s.purged_dates) + len(s.confirm_dates) == 100
+
+
+@pytest.mark.parametrize("horizon", [1, 5, 40])
+@pytest.mark.parametrize("embargo", [0, 2])
+def test_reserved_prices_cannot_change_development_labels(horizon, embargo):
+    dates = pd.bdate_range("2024-01-01", periods=100)
+    split = chronological_split(dates, 0.6, horizon=horizon, embargo=embargo)
+    prices = pd.DataFrame({"A": range(1, 101), "B": range(101, 201)}, index=dates)
+    before = forward_returns(prices, horizon).loc[split.dev_dates]
+    changed = prices.copy()
+    changed.loc[split.confirm_dates] *= 2
+    pd.testing.assert_frame_equal(before, forward_returns(changed, horizon).loc[split.dev_dates])
+
+
+@pytest.mark.parametrize("horizon,embargo", [(0, 0), (1, -1)])
+def test_split_rejects_invalid_label_horizon_and_embargo(horizon, embargo):
+    with pytest.raises(ValueError, match="must be >="):
+        chronological_split(pd.bdate_range("2024-01-01", periods=100), 0.6, horizon, embargo)
 
 
 def test_search_recovers_planted_signal_and_records_every_trial(bars):

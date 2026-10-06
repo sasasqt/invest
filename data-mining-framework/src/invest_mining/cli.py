@@ -145,7 +145,8 @@ def _search(args: argparse.Namespace) -> int:
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
-    development = _span(split.dev_dates, "development")
+    # Decision dates alone omit prices used by forward-return labels in the purge gap.
+    development = _span(split.dev_observation_dates, "development")
     confirmation = _span(split.confirm_dates, "confirmation")
     identity = {
         "dataset_sha256": manifest.content_sha256,

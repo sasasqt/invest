@@ -10,6 +10,7 @@ same history. Each line is an object with ``ledger_version`` and one ``kind``:
 - ``inspection``: a window already looked at outside a confirmatory search, such as a
   full-sample diagnostic or a backtest. It can never again provide confirmatory evidence.
 - ``experiment``: one search, identified by its dataset, inputs, configuration and split.
+  Its development window includes label prices, not just decision dates.
 
 A search is ``confirmatory`` only if its confirmation window overlaps no inspection, no
 earlier experiment's development or confirmation window, and is not a repeat of an
@@ -100,23 +101,27 @@ def load(path: str | os.PathLike[str]) -> list[dict[str, Any]]:
             entry = json.loads(line)
         except json.JSONDecodeError as exc:
             raise LedgerError(f"{p}:{number}: not JSON: {exc}") from exc
-        if not isinstance(entry, dict):
-            raise LedgerError(f"{p}:{number}: entry must be a JSON object")
-        if entry.get("ledger_version") != LEDGER_VERSION:
-            raise LedgerError(
-                f"{p}:{number}: unsupported ledger_version {entry.get('ledger_version')!r}"
-            )
-        if entry.get("kind") not in KINDS:
-            raise LedgerError(f"{p}:{number}: unknown kind {entry.get('kind')!r}")
         try:
-            for name in _window_fields(entry["kind"]):
-                Window.from_json(entry.get(name))
+            _validate_entry(entry)
         except LedgerError as exc:
             raise LedgerError(f"{p}:{number}: {exc}") from exc
-        if entry["kind"] == "experiment" and not isinstance(entry.get("experiment_id"), str):
-            raise LedgerError(f"{p}:{number}: experiment entry without experiment_id")
         entries.append(entry)
     return entries
+
+
+def _validate_entry(entry: Any) -> None:
+    """Enforce the same entry contract on both sides of persistence."""
+    if not isinstance(entry, dict):
+        raise LedgerError("entry must be a JSON object")
+    if entry.get("ledger_version") != LEDGER_VERSION:
+        raise LedgerError(f"unsupported ledger_version {entry.get('ledger_version')!r}")
+    kind = entry.get("kind")
+    if kind not in KINDS:
+        raise LedgerError(f"unknown kind {kind!r}")
+    for name in _window_fields(kind):
+        Window.from_json(entry.get(name))
+    if kind == "experiment" and not isinstance(entry.get("experiment_id"), str):
+        raise LedgerError("experiment entry without experiment_id")
 
 
 def _window_fields(kind: str) -> tuple[str, ...]:
@@ -126,21 +131,28 @@ def _window_fields(kind: str) -> tuple[str, ...]:
 def append(
     path: str | os.PathLike[str], kind: str, fields: Mapping[str, Any], now: datetime | None = None
 ) -> dict[str, Any]:
-    """Append one validated entry and flush it to disk."""
+    """Append one validated entry and flush it to disk.
+
+    Invalid entries and attempts to override managed metadata raise :class:`LedgerError`
+    before creating directories or changing the ledger.
+    """
     if kind not in KINDS:
         raise LedgerError(f"unknown kind {kind!r}")
+    managed = {"ledger_version", "kind", "recorded_at"}.intersection(fields)
+    if managed:
+        raise LedgerError(f"fields cannot override managed metadata: {', '.join(sorted(managed))}")
     entry = {
         "ledger_version": LEDGER_VERSION,
         "kind": kind,
         "recorded_at": (now or datetime.now(UTC)).isoformat(timespec="seconds"),
         **fields,
     }
-    for name in _window_fields(kind):
-        Window.from_json(entry.get(name))
+    _validate_entry(entry)
+    encoded = json.dumps(entry, sort_keys=True, default=str) + "\n"
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a") as fh:
-        fh.write(json.dumps(entry, sort_keys=True, default=str) + "\n")
+        fh.write(encoded)
         fh.flush()
         os.fsync(fh.fileno())
     return entry

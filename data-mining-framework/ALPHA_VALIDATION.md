@@ -27,6 +27,8 @@ Use chronological discovery, selection, and untouched confirmation periods. For 
 
 Purging removes training examples whose **label intervals overlap evaluation intervals**; use actual timestamps, not an assumed number of rows. Apply an embargo when justified by the information timing and sampling design, and record the rule. Historical observations before evaluation may legitimately warm up a causal rolling feature; feature lookback alone is not a reason to discard all prior history.
 
+The implemented daily split requires the last development label's exit price to precede the first confirmation session and the embargo. Its confirmation-use ledger records the full development observation range through that exit, rather than only decision dates. Purged decision dates can still contain prices used by earlier development labels; those prices cannot later count as untouched confirmation data.
+
 Outer development evaluations can also become tuning data when repeatedly inspected. Retain a separate final confirmation period or use genuinely prospective paper trading after the design is frozen. A chronological backtest of a model refitted each fold and a fixed factor tested across periods are different experiments; report which was run.
 
 ## 3. Factor quality and uncertainty
