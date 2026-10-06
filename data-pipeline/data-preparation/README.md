@@ -11,7 +11,7 @@ uv run invest-data import-csv bars.csv --out artifacts/data/mine --dataset-id mi
 uv run invest-data yahoo download --snapshot artifacts/yahoo/snap --symbols-file scripts/sp100_members.txt \
   --symbols SPY --start 2010-01-01 --end 2024-12-31 [--timeout 20 --attempts 4 --pause 0.5]
 uv run invest-data yahoo publish --snapshot artifacts/yahoo/snap --exclude SPY --dataset-id yahoo-test \
-  --out artifacts/yahoo/market [--format parquet] [--universe-note "..."]
+  --out artifacts/yahoo/market [--format parquet] [--universe-note "..."] [--start 2015-01-01 --end 2020-12-31]
 uv run pytest data-pipeline/data-preparation
 ```
 
@@ -19,9 +19,9 @@ uv run pytest data-pipeline/data-preparation
 
 Yahoo is for exercising the workflow on real prices, not for research claims: adjusted history is rewritten by the vendor, delisted tickers are absent, and there is no point-in-time membership. So the dataset's identity is the saved raw snapshot, not the vendor:
 
-- `yahoo download` fetches each symbol's daily chart JSON with an explicit timeout and at most `--attempts` tries (network errors, timeouts, HTTP 408/425/429/5xx are retried with capped exponential backoff; other HTTP errors and malformed or error responses are not). It saves the untouched responses and `snapshot.json` (request, retrieval time, per-file SHA-256, and per-symbol failures). A snapshot is never overwritten.
-- `yahoo publish` never touches the network. It verifies every file hash, converts timestamps to exchange session dates, scales open/high/low/close by `adjclose / close` (total-return adjusted) and volume inversely (dollar volume preserved), cleans, and publishes with the snapshot recorded in provenance. Rejected rows (for example Yahoo's `null` bars) are counted in provenance and written to `<out>.rejected.csv`. The same snapshot always publishes the same `content_sha256`, whatever the format.
-- Metadata records `calendar = XNYS` (sessions as reported by Yahoo), the selection rule in `universe`, and a `TEST-ONLY` note.
+- `yahoo download` fetches each symbol's daily chart JSON with an explicit timeout and at most `--attempts` tries (network errors, timeouts, HTTP 408/425/429/5xx are retried with capped exponential backoff; other HTTP errors and malformed or error responses are not). It saves the untouched responses and `snapshot.json` (request, retrieval time, per-file SHA-256, and per-symbol failures). It exclusively reserves a new destination and atomically publishes the completed directory; competing writers and all existing paths are refused. Ordinary failures clean the reservation and staging files. A process crash may leave an empty reservation; use a fresh destination after inspecting it.
+- `yahoo publish` never touches the network. It verifies every selected file hash, validates supported source metadata, converts timestamps to exchange session dates, scales open/high/low/close by `adjclose / close` (total-return adjusted) and volume inversely (dollar volume preserved), cleans, and publishes with the snapshot recorded in provenance. `--start`/`--end` select an inclusive subset within the original request; omitted dates default to that request. Provenance keeps the original request, selected symbols and bounds, observed dates, and source metadata per instrument. Rejected rows (for example Yahoo's `null` bars) are counted in provenance and written to `<out>.rejected.csv`. The same snapshot and selection publish the same `content_sha256`, whatever the format.
+- Publication supports daily USD US equities/ETFs with Yahoo exchange codes `NYQ`, `NMS`, `NGM`, `NCM`, `ASE`, `PCX` or `BTS` and timezone `America/New_York`. Unknown or unsupported source metadata fails before publishing. Metadata records the shared US equity session calendar `XNYS`, the selection rule in `universe`, and a `TEST-ONLY` note; foreign charts are never relabeled as US data.
 
 Keep snapshots under the ignored `artifacts/` directory; never commit vendor data. Tests use fabricated Yahoo-format responses only (`invest_data.testing`).
 
@@ -33,4 +33,4 @@ Learned transformations such as scaling, imputation fitting, and feature selecti
 
 The package has its own `pyproject.toml` and tests. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
 
-Tests cover cleaning policies, point-in-time metadata, repeatable exports, CSV/SQLite/Parquet value preservation, and contract validation. Source-failure handling (bounded retries, permanent errors, malformed responses), snapshot immutability and tamper detection, adjustment and replay hash stability are tested offline in `tests/test_yahoo.py`.
+Tests cover cleaning policies, point-in-time metadata, repeatable exports, CSV/SQLite/Parquet value preservation, and contract validation. Source-failure handling, competing snapshot writers, interrupted-download cleanup, tamper detection, supported-market validation, date subsets, adjustment and replay hash stability are tested offline in `tests/test_yahoo.py`.

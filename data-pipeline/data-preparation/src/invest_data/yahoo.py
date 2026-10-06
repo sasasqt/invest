@@ -20,13 +20,14 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import tempfile
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,7 @@ SNAPSHOT_VERSION = 1
 SOURCE = "yahoo_finance_chart_v8"
 CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
 TRANSIENT_HTTP = frozenset({408, 425, 429, 500, 502, 503, 504})
+US_EQUITY_EXCHANGES = frozenset({"NYQ", "NMS", "NGM", "NCM", "ASE", "PCX", "BTS"})
 USER_AGENT = "Mozilla/5.0 (compatible; invest-data research test adapter)"
 
 Fetcher = Callable[[str, float], bytes]
@@ -146,8 +148,7 @@ def fetch_symbol(
 
 
 def _file_name(symbol: str) -> str:
-    safe = "".join(c if c.isalnum() or c in "-_." else "_" for c in symbol)
-    return f"raw/{safe}.json"
+    return f"raw/{urllib.parse.quote(symbol, safe='')}.json"
 
 
 def _sha256(data: bytes) -> str:
@@ -177,42 +178,59 @@ def download_snapshot(
     """Fetch every symbol and save an immutable raw snapshot under ``out``.
 
     Symbols that fail after retries are recorded under ``failures`` rather than aborting
-    the whole download. An existing snapshot is never overwritten.
+    the whole download. Exclusively reserve a new destination, write in a private staging
+    directory, then publish the whole snapshot with one rename. Existing paths are refused.
     """
     root = Path(out)
-    if (root / "snapshot.json").exists():
-        raise FileExistsError(f"{root} already holds a snapshot; snapshots are immutable")
     names = list(dict.fromkeys(s.strip() for s in symbols if s.strip()))
     if not names:
         raise ValueError("no symbols to download")
     chart_url(names[0], start, end)  # validates the date range before any request
-    files: dict[str, dict[str, Any]] = {}
-    failures: dict[str, str] = {}
-    for i, symbol in enumerate(names):
-        if i and pause_seconds:
-            (sleep or time.sleep)(pause_seconds)
-        try:
-            body = fetch_symbol(
-                symbol, start, end, fetcher=fetcher, timeout=timeout, retry=retry, sleep=sleep
-            )
-        except SourceError as exc:
-            failures[symbol] = str(exc)
-            continue
-        rel = _file_name(symbol)
-        _atomic_write(root / rel, body)
-        files[symbol] = {"path": rel, "sha256": _sha256(body), "bytes": len(body)}
-    manifest = {
-        "snapshot_version": SNAPSHOT_VERSION,
-        "source": SOURCE,
-        "url_template": CHART_URL,
-        "request": {"symbols": names, "start": start, "end": end, "interval": "1d"},
-        "retrieved_at": now().isoformat(timespec="seconds"),
-        "files": files,
-        "failures": failures,
-        "test_only": True,
-    }
-    _atomic_write(root / "snapshot.json", (json.dumps(manifest, indent=2) + "\n").encode())
-    return manifest
+    root.parent.mkdir(parents=True, exist_ok=True)
+    root.mkdir()  # exclusive reservation: competing writers fail before fetching
+    published = False
+    try:
+        with tempfile.TemporaryDirectory(prefix=f".{root.name}-", dir=root.parent) as tmp:
+            stage = Path(tmp) / "snapshot"
+            stage.mkdir()
+            files: dict[str, dict[str, Any]] = {}
+            failures: dict[str, str] = {}
+            for i, symbol in enumerate(names):
+                if i and pause_seconds:
+                    (sleep or time.sleep)(pause_seconds)
+                try:
+                    body = fetch_symbol(
+                        symbol,
+                        start,
+                        end,
+                        fetcher=fetcher,
+                        timeout=timeout,
+                        retry=retry,
+                        sleep=sleep,
+                    )
+                except SourceError as exc:
+                    failures[symbol] = str(exc)
+                    continue
+                rel = _file_name(symbol)
+                _atomic_write(stage / rel, body)
+                files[symbol] = {"path": rel, "sha256": _sha256(body), "bytes": len(body)}
+            manifest = {
+                "snapshot_version": SNAPSHOT_VERSION,
+                "source": SOURCE,
+                "url_template": CHART_URL,
+                "request": {"symbols": names, "start": start, "end": end, "interval": "1d"},
+                "retrieved_at": now().isoformat(timespec="seconds"),
+                "files": files,
+                "failures": failures,
+                "test_only": True,
+            }
+            _atomic_write(stage / "snapshot.json", (json.dumps(manifest, indent=2) + "\n").encode())
+            os.replace(stage, root)
+            published = True
+            return manifest
+    finally:
+        if not published:
+            root.rmdir()  # only our empty reservation; staged files are cleaned separately
 
 
 def parse_chart(payload: bytes | dict[str, Any], symbol: str) -> pd.DataFrame:
@@ -283,16 +301,23 @@ def read_snapshot_manifest(path: str | os.PathLike[str]) -> dict[str, Any]:
 
 
 def load_snapshot(
-    path: str | os.PathLike[str], symbols: Iterable[str] | None = None
+    path: str | os.PathLike[str],
+    symbols: Iterable[str] | None = None,
+    *,
+    start: str | None = None,
+    end: str | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Replay a saved snapshot offline: verify hashes, parse and adjust.
 
     Returns ``(raw bars, provenance)``. ``raw bars`` has the market-bars columns and is not
     yet cleaned; pass it to :func:`invest_data.cleaning.clean_bars`. ``symbols`` selects a
-    subset (every name must be present in the snapshot). Output order is deterministic.
+    subset (every name must be present in the snapshot). Dates default to the saved request;
+    explicit bounds must lie within it. Only supported US equity/ETF charts are published.
+    Output order is deterministic.
     """
     root = Path(path)
     manifest = read_snapshot_manifest(root)
+    first, last = snapshot_range(root, start, end)
     files: dict[str, dict[str, Any]] = manifest["files"]
     wanted = sorted(files) if symbols is None else list(dict.fromkeys(symbols))
     missing = [s for s in wanted if s not in files]
@@ -302,15 +327,31 @@ def load_snapshot(
         raise SourceError(f"{root}: snapshot holds no symbols")
     frames = []
     currencies: dict[str, str | None] = {}
+    source_metadata: dict[str, dict[str, Any]] = {}
     for symbol in sorted(wanted):
         entry = files[symbol]
         body = (root / entry["path"]).read_bytes()
         if _sha256(body) != entry["sha256"]:
             raise SourceError(f"{root}: {entry['path']} does not match its recorded SHA-256")
         payload = json.loads(body)
-        currencies[symbol] = _chart_result(payload, symbol).get("meta", {}).get("currency")
+        meta = _chart_result(payload, symbol).get("meta", {})
+        _validate_us_chart(meta, symbol)
+        source_metadata[symbol] = {
+            k: meta[k]
+            for k in (
+                "currency",
+                "exchangeName",
+                "exchangeTimezoneName",
+                "instrumentType",
+                "dataGranularity",
+            )
+        }
+        currencies[symbol] = meta["currency"]
         frames.append(total_return_adjust(parse_chart(payload, symbol)))
     raw = pd.concat(frames, ignore_index=True)
+    raw = raw[raw["date"].between(pd.Timestamp(first), pd.Timestamp(last))].reset_index(drop=True)
+    if raw.empty:
+        raise SourceError(f"{root}: no bars in selected range {first} to {last}")
     provenance = {
         "sources": [SOURCE],
         "test_only": True,
@@ -322,12 +363,52 @@ def load_snapshot(
         },
         "adjustment": "OHLC x adjclose/close; volume / (adjclose/close)",
         "currencies": currencies,
+        "source_metadata": source_metadata,
+        "selection": {
+            "symbols": sorted(wanted),
+            "start": first,
+            "end": last,
+            "observed_start": str(raw["date"].min().date()),
+            "observed_end": str(raw["date"].max().date()),
+        },
     }
     return raw, provenance
 
 
+def snapshot_range(
+    path: str | os.PathLike[str], start: str | None = None, end: str | None = None
+) -> tuple[str, str]:
+    """Resolve inclusive replay bounds; reject requests beyond the saved download range."""
+    request = read_snapshot_manifest(path)["request"]
+    first, last = start or request["start"], end or request["end"]
+    if any(date.fromisoformat(bound).isoformat() != bound for bound in (first, last)):
+        raise ValueError("snapshot dates must use YYYY-MM-DD")
+    chart_url("range-validation", first, last)
+    if pd.Timestamp(first) < pd.Timestamp(request["start"]) or pd.Timestamp(last) > pd.Timestamp(
+        request["end"]
+    ):
+        raise SourceError("selected dates must lie within the snapshot request range")
+    return first, last
+
+
+def _validate_us_chart(meta: dict[str, Any], symbol: str) -> None:
+    """Fail before publishing metadata for a market that this adapter cannot represent."""
+    if (
+        meta.get("exchangeTimezoneName") != "America/New_York"
+        or meta.get("currency") != "USD"
+        or meta.get("exchangeName") not in US_EQUITY_EXCHANGES
+        or meta.get("instrumentType") not in {"EQUITY", "ETF"}
+        or meta.get("dataGranularity") != "1d"
+    ):
+        raise SourceError(
+            f"{symbol}: only USD US equity/ETF daily charts are supported; meta={meta}"
+        )
+
+
 def yahoo_metadata(currency: str, universe: str) -> dict[str, Any]:
-    """Market-bars metadata for a Yahoo publication; ``universe`` describes the selection."""
+    """Metadata after US chart validation; XNYS is the shared US equity session calendar."""
+    if currency != "USD":
+        raise SourceError("only USD US equity/ETF daily charts are supported")
     return {
         "frequency": "1d",
         "currency": currency,

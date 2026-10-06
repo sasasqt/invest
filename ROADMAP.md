@@ -24,6 +24,8 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 **Status:** done. Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
 
+Snapshot publication is exclusive and atomic, replay resolves saved dates or explicit subsets, and supported-market and external-benchmark compatibility checks prevent misleading metadata or daily returns (DATA-03). These checks have offline regression coverage; the historical results remain those of the recorded original run.
+
 Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one known causal formula; export frozen signals; run one declared bucket strategy. Specify event order, eligible fills, fees, cash/position accounting, corporate actions, missing marks, and the selected market's constraints. Save basic metrics, result tables, and figures without rerunning calculations during rendering. Then exercise the same flow on a representative historical dataset.
 
 **Acceptance gate:** golden calculations reconcile equity, external flows, trade P&L, and costs; independent readers agree; future data cannot alter earlier signals; the evaluator runs without mining or download dependencies. Reports disclose supported assumptions and approximations.

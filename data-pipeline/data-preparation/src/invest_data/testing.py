@@ -48,6 +48,8 @@ def fake_chart(
                         "symbol": symbol,
                         "exchangeTimezoneName": tz,
                         "dataGranularity": "1d",
+                        "exchangeName": "NMS",
+                        "instrumentType": "EQUITY",
                     },
                     "timestamp": [int(t.timestamp()) for t in stamps],
                     "indicators": {

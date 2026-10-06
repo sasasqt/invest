@@ -80,8 +80,12 @@ def render(root: Path) -> None:
         (1 + d["benchmark_return"]).cumprod(), label="universe EW (gross)", color="#999999", lw=1
     )
     if "external_benchmark_return" in d:
+        # Leading unavailable history is omitted; an internal gap stops the wealth path.
+        # Its missing interval cannot be treated as zero or skipped in a growth curve.
+        external = d["external_benchmark_return"]
+        first = external.first_valid_index()
         ax[0].plot(
-            (1 + d["external_benchmark_return"].fillna(0.0)).cumprod(),
+            (1 + external.loc[first:]).cumprod(skipna=False) if first is not None else external,
             label="external benchmark",
             color="#5a8f3c",
             lw=1,

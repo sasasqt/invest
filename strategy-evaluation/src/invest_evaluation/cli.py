@@ -81,12 +81,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     external_info = None
     if args.benchmark:
         bench_manifest, bench_bars = read_market_bars(args.benchmark)
-        external = instrument_returns(bench_bars, args.benchmark_instrument)
+        for field in ("currency", "frequency", "price_adjustment", "calendar", "timezone"):
+            market_value = market_manifest.metadata.get(field)
+            bench_value = bench_manifest.metadata.get(field)
+            if market_value != bench_value or (field != "timezone" and not market_value):
+                raise ValueError(
+                    f"benchmark {field} mismatch: market={market_value!r}, "
+                    f"benchmark={bench_value!r}; conversions are not supported"
+                )
+        if market_manifest.metadata["frequency"] != "1d":
+            raise ValueError("external benchmarks require daily (1d) market bars")
+        external = instrument_returns(
+            bench_bars,
+            args.benchmark_instrument,
+            sessions=pd.DatetimeIndex(bars["date"].unique()),
+        )
         external_info = {
             "id": bench_manifest.dataset_id,
             "sha256": bench_manifest.content_sha256,
             "instrument": external.name,
-            "price_adjustment": bench_manifest.metadata.get("price_adjustment"),
+            "metadata": bench_manifest.metadata,
         }
     result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
     metrics = compute_metrics(
@@ -117,6 +131,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "market_dataset": {
                 "id": market_manifest.dataset_id,
                 "sha256": market_manifest.content_sha256,
+                "metadata": market_manifest.metadata,
             },
             "signals": {
                 "id": signal_manifest.dataset_id,

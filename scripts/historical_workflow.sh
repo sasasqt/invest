@@ -6,12 +6,13 @@
 #
 # The raw Yahoo responses are saved once under "$SNAPSHOT" (default OUT_DIR/snapshot).
 # If that snapshot already exists, nothing is downloaded and every later step replays it
-# offline, so the same snapshot always publishes the same dataset hash.
+# offline. START/END select an inclusive subset within the saved request; without them,
+# replay uses the saved request dates and publishes the same dataset hash.
 #
 # Defaults: today's S&P 100 members (SURVIVORSHIP-BIASED: names chosen today and applied to
 # all history), 2010-01-01 to 2024-12-31, SPY as the benchmark, and the 5-day reversal
 # formula frozen a priori (n_trials = 1) with the example quantile long-short config.
-# Override with SYMBOLS_FILE, START, END, BENCHMARK, SNAPSHOT, CONFIG.
+# Override with SYMBOLS_FILE (download only), START, END, BENCHMARK, SNAPSHOT, CONFIG.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -31,10 +32,21 @@ else
     --symbols "$benchmark" --start "$start" --end "$end"
 fi
 
+# Resolve labels from the actual saved request, and validate overrides before publication.
+range="$(python - "$snapshot" "${START:-}" "${END:-}" <<'PY'
+import sys
+from invest_data.yahoo import snapshot_range
+print(*snapshot_range(sys.argv[1], sys.argv[2] or None, sys.argv[3] or None))
+PY
+)"
+read -r start end <<< "$range"
+
 invest-data yahoo publish --snapshot "$snapshot" --exclude "$benchmark" --format parquet \
+  --start "$start" --end "$end" \
   --dataset-id "yahoo-test-$start-$end" --out "$out/data/market" \
-  --universe-note "S&P 100 members as of 2026-10-06 applied to all history (survivorship-biased)"
+  --universe-note "saved snapshot members applied to all history (survivorship-biased)"
 invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format parquet \
+  --start "$start" --end "$end" \
   --dataset-id "yahoo-test-$benchmark-$start-$end" --out "$out/data/benchmark" \
   --universe-note "benchmark ETF"
 

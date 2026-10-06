@@ -155,7 +155,8 @@ def test_synthetic_workflow_script(tmp_path):
     assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
 
 
-def test_historical_workflow_script_replays_snapshot_offline(tmp_path):
+@pytest.mark.parametrize("subset", [False, True])
+def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     """The Yahoo workflow runs end to end from a saved (here fabricated) snapshot."""
     from invest_data.sources import SyntheticConfig, synthetic_market
     from invest_data.testing import write_fake_snapshot
@@ -169,6 +170,8 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path):
         "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
         "SNAPSHOT": str(snapshot),
         "SYMBOLS_FILE": "/nonexistent",  # never read: the snapshot exists
+        "START": "2020-03-01" if subset else "",
+        "END": "2020-11-30" if subset else "",
     }
     out = tmp_path / "wf"
     done = subprocess.run(
@@ -190,3 +193,43 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path):
     market = json.loads((out / "data" / "market" / "manifest.json").read_text())
     assert "SPY" not in market["provenance"]["snapshot"]["files"]
     assert market["metadata"]["universe"].endswith("(survivorship-biased)")
+    assert "S&P 100" not in market["metadata"]["universe"]
+    requested = market["provenance"]["snapshot"]["request"]
+    selection = market["provenance"]["selection"]
+    first, last = (env["START"], env["END"]) if subset else (requested["start"], requested["end"])
+    assert market["dataset_id"] == f"yahoo-test-{first}-{last}"
+    assert selection["start"] == first and selection["end"] == last
+    from invest_data.schemas import read_market_bars
+
+    _, published = read_market_bars(out / "data" / "market")
+    assert published["date"].min().date().isoformat() >= first
+    assert published["date"].max().date().isoformat() <= last
+    assert set(published["date"]) == set(bars.loc[bars["date"].between(first, last), "date"])
+    assert market["provenance"]["source_metadata"]["SYN001"]["exchangeName"] == "NMS"
+
+
+def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tmp_path):
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    write_fake_snapshot(
+        synthetic_market(SyntheticConfig(n_instruments=2, n_days=80)), tmp_path / "s"
+    )
+    out = tmp_path / "wf"
+    done = subprocess.run(
+        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+            "SNAPSHOT": str(tmp_path / "s"),
+            "START": "2019-01-01",
+            "END": "2024-01-01",
+        },
+    )
+    assert done.returncode != 0
+    assert "within the snapshot" in done.stderr
+    assert not out.exists()

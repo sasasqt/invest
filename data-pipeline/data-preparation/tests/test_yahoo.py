@@ -21,6 +21,7 @@ from invest_data.yahoo import (
     fetch_symbol,
     load_snapshot,
     parse_chart,
+    snapshot_range,
     yahoo_metadata,
 )
 
@@ -144,6 +145,124 @@ def test_download_records_failures_and_is_immutable(tmp_path):
     assert (tmp_path / "s" / "raw" / "AAA.json").read_bytes() == good
     with pytest.raises(FileExistsError):
         download_snapshot(["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=fetcher)
+
+
+def test_competing_download_cannot_publish_or_overwrite(tmp_path):
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    attempted = []
+
+    def fetcher(url, timeout):
+        assert root.is_dir() and not list(root.iterdir())  # reserved, not partially published
+        with pytest.raises(FileExistsError):
+            download_snapshot(
+                ["AAA"],
+                "2020-01-01",
+                "2020-02-01",
+                root,
+                fetcher=lambda u, t: pytest.fail("competing writer made a request"),
+            )
+        attempted.append(True)
+        return good
+
+    download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetcher)
+    before = {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+    assert attempted == [True]
+    with pytest.raises(FileExistsError):
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetcher)
+    assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+
+def test_unexpected_download_failure_cleans_staging_and_allows_retry(tmp_path):
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+
+    def fetcher(url, timeout):
+        if "/chart/BBB" in url:
+            raise RuntimeError("interrupted after first file")
+        return good
+
+    with pytest.raises(RuntimeError, match="interrupted"):
+        download_snapshot(
+            ["AAA", "BBB"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=fetcher
+        )
+    assert not list(tmp_path.iterdir())
+    download_snapshot(["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=fetcher)
+    assert (tmp_path / "s" / "snapshot.json").exists()
+
+
+def test_existing_empty_destination_is_not_claimed(tmp_path):
+    root = tmp_path / "s"
+    root.mkdir()
+    with pytest.raises(FileExistsError):
+        download_snapshot(
+            ["AAA"],
+            "2020-01-01",
+            "2020-02-01",
+            root,
+            fetcher=lambda u, t: pytest.fail("existing path must not be used"),
+        )
+    assert root.is_dir() and not list(root.iterdir())
+
+
+def test_snapshot_symbol_file_names_do_not_collide(tmp_path):
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    snap = download_snapshot(
+        ["A/B", "A_B"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
+    )
+    assert len({f["path"] for f in snap["files"].values()}) == 2
+
+
+def test_replay_resolves_dates_filters_rows_and_preserves_request(tmp_path):
+    src = bars(2, 80)
+    write_fake_snapshot(src, tmp_path / "s")
+    requested = (str(src["date"].min().date()), str(src["date"].max().date()))
+    assert snapshot_range(tmp_path / "s") == requested
+    raw, prov = load_snapshot(tmp_path / "s", start="2020-02-01", end="2020-03-01")
+    assert raw["date"].min() == pd.Timestamp("2020-02-03")
+    assert raw["date"].max() == pd.Timestamp("2020-02-28")
+    assert prov["selection"]["start"] == "2020-02-01"
+    assert prov["selection"]["end"] == "2020-03-01"
+    assert prov["snapshot"]["request"]["start"] == requested[0]
+    with pytest.raises(SourceError, match="within the snapshot"):
+        load_snapshot(tmp_path / "s", start="2019-01-01")
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("exchangeTimezoneName", "Europe/Amsterdam"),
+        ("currency", "EUR"),
+        ("exchangeName", "AMS"),
+        ("instrumentType", "CRYPTOCURRENCY"),
+        ("dataGranularity", "1h"),
+        ("exchangeName", None),
+    ],
+)
+def test_publication_rejects_unsupported_source_metadata(tmp_path, field, value):
+    payload = fake_chart(bars(1, 5), "X")
+    payload["chart"]["result"][0]["meta"][field] = value
+    download_snapshot(
+        ["X"],
+        "2020-01-01",
+        "2020-02-01",
+        tmp_path / "s",
+        fetcher=lambda u, t: json.dumps(payload).encode(),
+    )
+    out = tmp_path / "bundle"
+    with pytest.raises(SourceError, match="only USD US equity/ETF"):
+        main(
+            [
+                "yahoo",
+                "publish",
+                "--snapshot",
+                str(tmp_path / "s"),
+                "--out",
+                str(out),
+                "--dataset-id",
+                "unsupported",
+            ]
+        )
+    assert not out.exists()
 
 
 def test_replay_adjusts_prices_and_preserves_dollar_volume(tmp_path):

@@ -119,6 +119,8 @@ If NAV reaches zero or becomes negative, flag insolvency and the limits of perce
 
 ## 7. Benchmark-relative performance and exposure
 
+The external daily benchmark boundary requires matching currency, frequency (`1d`), price adjustment, calendar and timezone metadata; timezone may be unknown in both bundles. Unsupported conversions fail before report publication. Compute returns after aligning benchmark closes to the full market calendar, including pre-evaluation history. A missing close invalidates both adjacent return intervals. Relative metrics use only complete aligned daily intervals and report their count. Compounded benchmark return describes that aligned sample; it is not a full-period buy-and-hold return when intervals are missing. Growth figures omit unavailable leading history and stop at an internal gap.
+
 | Metric | Definition / purpose | Notes |
 |---|---|---|
 | Active returns | Strategy return minus aligned benchmark return | Same currency, frequency, and total-return basis |

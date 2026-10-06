@@ -68,7 +68,7 @@ def _yahoo(args: argparse.Namespace) -> int:
         if symbols is None:
             symbols = list(read_snapshot_manifest(args.snapshot)["files"])
         symbols = [s for s in symbols if s not in set(args.exclude)]
-    raw, provenance = load_snapshot(args.snapshot, symbols)
+    raw, provenance = load_snapshot(args.snapshot, symbols, start=args.start, end=args.end)
     currencies = set(provenance["currencies"].values())
     if len(currencies) != 1 or None in currencies:
         raise SystemExit(
@@ -136,6 +136,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     ypub.add_argument("--out", type=Path, required=True)
     ypub.add_argument("--dataset-id", required=True)
     ypub.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
+    ypub.add_argument("--start", help="inclusive subset start (defaults to snapshot request)")
+    ypub.add_argument("--end", help="inclusive subset end (defaults to snapshot request)")
     ypub.add_argument(
         "--universe-note",
         default="symbols chosen today and applied to all history (survivorship-biased)",

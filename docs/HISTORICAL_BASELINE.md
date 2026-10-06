@@ -11,6 +11,8 @@ SNAPSHOT=<saved snapshot> uv run scripts/historical_workflow.sh <new out dir>   
 
 See the [README](../README.md#historical-workflow-yahoo-finance-test-only) for what each step does. Republishing the same snapshot gives the same dataset hashes in any storage format (checked for CSV and Parquet below). A new download gives a new snapshot and, if Yahoo has revised its adjusted prices, different hashes.
 
+Replay defaults to the saved request dates. `START`/`END` select a subset inside that range and produce new selection provenance and dataset ids; `SYMBOLS_FILE` is used only on download. Publication validates US equity/ETF source metadata, and benchmark comparison requires matching market metadata and complete daily intervals. The recorded real-data results below are from the original run; the review fixes were validated with offline fabricated snapshots, without rerunning that vendor snapshot.
+
 ## Run of 2026-10-06
 
 | item | value |

@@ -257,12 +257,15 @@ def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
     return out
 
 
-def instrument_returns(bars: pd.DataFrame, instrument: str | None = None) -> pd.Series:
+def instrument_returns(
+    bars: pd.DataFrame, instrument: str | None = None, *, sessions: pd.DatetimeIndex
+) -> pd.Series:
     """Close-to-close daily returns of one instrument in a market-bars frame.
 
     ``instrument`` may be omitted when the frame holds exactly one. With total-return
-    adjusted bars this is the instrument's total return, comparable with net strategy
-    returns (which are also close to close).
+    adjusted bars this is the instrument's total return. ``sessions`` must be the full
+    evaluation market calendar, including history before the backtest starts. Align closes
+    before differencing: a missing close invalidates that day's and the next day's return.
     """
     names = sorted(bars["instrument"].unique())
     if instrument is None:
@@ -272,7 +275,8 @@ def instrument_returns(bars: pd.DataFrame, instrument: str | None = None) -> pd.
     if instrument not in names:
         raise ValueError(f"benchmark instrument {instrument!r} not in bundle")
     close = bars.loc[bars["instrument"] == instrument].set_index("date")["close"].sort_index()
-    return close.pct_change().dropna().rename(instrument)
+    close = close.reindex(sessions.sort_values().unique())
+    return close.pct_change(fill_method=None).rename(instrument)
 
 
 def benchmark_metrics(
