@@ -30,6 +30,27 @@ def test_benchmark_gap_does_not_create_a_multi_session_daily_return():
     assert metrics["benchmark_total_return"].extra["aligned_sessions"] == 27
 
 
+@pytest.mark.parametrize("aligned", [0, 19, 20])
+def test_benchmark_coverage_is_recorded_on_both_sides_of_minimum_sample(aligned):
+    sessions = pd.bdate_range("2024-01-01", periods=30)
+    strategy = pd.Series(0.001, index=sessions)
+    benchmark = pd.Series(0.002, index=sessions[30 - aligned :])
+    metrics = benchmark_metrics(strategy, benchmark, 252, label="SPY")
+    metric = metrics["benchmark"] if aligned < 20 else metrics["benchmark_total_return"]
+    assert metric.extra == {
+        "benchmark": "SPY",
+        "aligned_sessions": aligned,
+        "evaluation_sessions": 30,
+    }
+    if aligned < 20:
+        assert metric.status == "insufficient_data"
+        assert metric.reason == "fewer_than_20_aligned_returns"
+        assert metric.value is None
+    else:
+        assert metric.status == "ok"
+        assert metric.value == pytest.approx(1.002**20 - 1)
+
+
 def series(values) -> pd.Series:
     return pd.Series(values, index=pd.bdate_range("2024-01-01", periods=len(values)), dtype=float)
 

@@ -180,8 +180,9 @@ def _write_summary(root: Path) -> None:
             "profit_factor",
             "average_holding_sessions",
         ],
-        "benchmark": ["benchmark_total_return", "beta", "information_ratio"],
+        "benchmark": ["benchmark", "benchmark_total_return", "beta", "information_ratio"],
         "external_benchmark": [
+            "benchmark",
             "benchmark_total_return",
             "beta",
             "alpha_annual",
@@ -192,7 +193,23 @@ def _write_summary(root: Path) -> None:
     for section, keys in picks.items():
         if section not in metrics:
             continue
-        lines += [f"## {section.replace('_', ' ').title()}", "", "| metric | value |", "|---|---|"]
+        lines += [f"## {section.replace('_', ' ').title()}", ""]
+        if section in ("benchmark", "external_benchmark"):
+            coverage = (
+                metrics[section]
+                .get("benchmark_total_return", metrics[section].get("benchmark", {}))
+                .get("extra", {})
+            )
+            if "aligned_sessions" in coverage:
+                lines += [
+                    f"Benchmark: {coverage['benchmark']}",
+                    "",
+                    f"Aligned daily returns: {coverage['aligned_sessions']} of "
+                    f"{coverage.get('evaluation_sessions', 'unknown')} evaluation sessions. "
+                    "Benchmark total return compounds only those aligned intervals.",
+                    "",
+                ]
+        lines += ["| metric | value |", "|---|---|"]
         for k in keys:
             if k in metrics.get(section, {}):
                 lines.append(f"| {k} | {_fmt(metrics[section][k])} |")

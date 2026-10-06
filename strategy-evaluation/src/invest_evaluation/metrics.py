@@ -289,7 +289,19 @@ def benchmark_metrics(
     r, b = returns.align(bench.dropna(), join="inner")
     a = annualization
     if len(r) < 20:
-        return {"benchmark": _undef("", "fewer_than_20_aligned_returns", "insufficient_data")}
+        return {
+            "benchmark": Metric(
+                None,
+                "",
+                status="insufficient_data",
+                reason="fewer_than_20_aligned_returns",
+                extra={
+                    "benchmark": label,
+                    "aligned_sessions": len(r),
+                    "evaluation_sessions": len(returns),
+                },
+            )
+        }
     rf = period_rate(risk_free_annual, a)
     active = r - b
     te = float(active.std(ddof=1))
@@ -301,6 +313,7 @@ def benchmark_metrics(
             "fraction",
             benchmark=label,
             aligned_sessions=len(b),
+            evaluation_sessions=len(returns),
         ),
         "tracking_error": _ok(te * math.sqrt(a), "fraction/year^0.5"),
         "information_ratio": (
