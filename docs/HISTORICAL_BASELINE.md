@@ -39,6 +39,8 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 - Statistics: Sharpe 95% stationary-bootstrap CI [−0.97, 0.03]; HAC t of the mean daily return −1.80 (p = 0.072); PSR/DSR versus zero 0.036.
 - Benchmarks: the universe equal-weight portfolio (gross) returned 1,210% and SPY returned 574% over the same sessions. Against SPY the strategy has beta 0.11, correlation 0.17, annual alpha −6.8% and information ratio −1.04.
 
+An offline replay of the same snapshot from the clean committed revision `5082f63` reproduced every dataset hash and every metric exactly.
+
 **Conclusion:** the workflow runs end to end on real prices with recorded data identity. The fixed 5-day reversal rule loses money after realistic costs on this universe, and the equal-weight benchmark's return is inflated by survivorship bias.
 
 ## Limitations
@@ -46,4 +48,3 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 - Survivorship bias: only companies that are S&P 100 members today; failed and removed companies are missing, and late listings (for example META, ABBV, UBER, PLTR) enter when their history starts.
 - Yahoo adjusted prices are revised after each dividend and split; the snapshot, not the vendor, defines the data. Total-return adjustment scales open/high/low/close by `adjclose / close`.
 - No point-in-time membership, fundamentals, delisting events or borrow availability.
-- The run used the working tree that became the PR's first commit; replay from a committed revision to cite results.
