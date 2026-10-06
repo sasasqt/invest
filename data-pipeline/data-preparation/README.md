@@ -25,7 +25,7 @@ Yahoo is for exercising the workflow on real prices, not for research claims: ad
 
 Keep snapshots under the ignored `artifacts/` directory; never commit vendor data. Tests use fabricated Yahoo-format responses only (`invest_data.testing`).
 
-Download, validate, clean, and deterministically transform data, then publish versioned CSV or SQLite bundles using the [dataset contract](../../docs/DATA_CONTRACT.md).
+Download, validate, clean, and deterministically transform data, then publish versioned CSV, SQLite or Parquet bundles using the [dataset contract](../../docs/DATA_CONTRACT.md).
 
 Keep raw snapshots separate from derived data. Record sources, units, timestamps, transformation policies, rejected rows, and provenance. Use explicit timeouts and bounded retries for external sources, and publish validated bundles atomically.
 

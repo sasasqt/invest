@@ -11,7 +11,7 @@ SNAPSHOT=<saved snapshot> uv run scripts/historical_workflow.sh <new out dir>   
 
 See the [README](../README.md#historical-workflow-yahoo-finance-test-only) for what each step does. Republishing the same snapshot gives the same dataset hashes in any storage format (checked for CSV and Parquet below). A new download gives a new snapshot and, if Yahoo has revised its adjusted prices, different hashes.
 
-Replay defaults to the saved request dates. `START`/`END` select a subset inside that range and produce new selection provenance and dataset ids; `SYMBOLS_FILE` is used only on download. Publication validates US equity/ETF source metadata, and benchmark comparison requires matching market metadata and complete daily intervals. The recorded real-data results below are from the original run; the review fixes were validated with offline fabricated snapshots, without rerunning that vendor snapshot.
+Replay defaults to the saved request dates. `START`/`END` select a subset inside that range and produce new selection provenance and dataset ids; `SYMBOLS_FILE` is used only on download. Publication validates US equity/ETF source metadata, and benchmark comparison requires matching market metadata and complete daily intervals. The first table below is from the original run; the review fixes were then checked with a fresh download (see the section after the results).
 
 ## Run of 2026-10-06
 
@@ -42,6 +42,10 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 - Benchmarks: the universe equal-weight portfolio (gross) returned 1,210% and SPY returned 574% over the same sessions. Against SPY the strategy has beta 0.11, correlation 0.17, annual alpha −6.8% and information ratio −1.04.
 
 An offline replay of the same snapshot from the clean committed revision `5082f63` reproduced every dataset hash and every metric exactly.
+
+### Fresh download on the reviewed code (2026-10-06)
+
+A new download about ten hours later, run with `scripts/historical_workflow.sh` on main at `d750df0` (after the review fixes), again published 100 names and 363,015 market rows with no rejections, and SNDK again failed with HTTP 400. Its dataset hashes differ from the first run (`content_sha256` `bff5755f00fac78ffacfb81f5781020fb3f98b19572356b031badaab2ccfd6f3` for the market, `23b484a789caf3dfc3b65d44a4ebd2ccf735ff19e73a3bed37dbffb88558e02d` for SPY), so Yahoo's responses changed between downloads; republishing the new snapshot as CSV and Parquet gave identical hashes. Every reported metric above matched to the shown precision (net CAGR −5.64%, net Sharpe −0.47, gross Sharpe 0.11, max drawdown 61.8%, equal-weight 1,210%, SPY 574%, information ratio vs SPY −1.04, DSR 0.036). This confirms that the snapshot, not the vendor, defines the dataset, and that the review fixes did not change the results. Offline replays with `START`/`END` inside the saved range ran, and a range beyond it was refused before publication.
 
 **Conclusion:** the workflow runs end to end on real prices with recorded data identity. The fixed 5-day reversal rule loses money after realistic costs on this universe, and the equal-weight benchmark's return is inflated by survivorship bias.
 

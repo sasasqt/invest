@@ -96,7 +96,7 @@ For such policies, define a narrow frozen-policy runtime interface: available ob
 
 Follow the [design-by-contract guidelines](../DESIGN_BY_CONTRACT.md): each boundary needs caller obligations, success/failure guarantees, invariants, and independent compatibility tests. Artifact schemas must include semantic validation for units, timing, and alignment, not only field types.
 
-The existing [dataset contract](DATA_CONTRACT.md) describes CSV/SQLite exchange. Additional contracts below are proposals; they do not alter version 1 silently.
+The existing [dataset contract](DATA_CONTRACT.md) describes CSV, SQLite and Parquet exchange. Additional contracts below are proposals; they do not alter version 1 silently.
 
 1. **Financial dataset metadata:** instrument keys, event and availability times, trading calendar, units, adjustments, and universe policy.
 2. **Fitted artifact metadata:** model/factor version, input schema, operator version, fitted preprocessing, training cutoff, label horizon, configuration, and provenance. Inference must apply the same fitted transformations used in training.
@@ -129,7 +129,7 @@ Steps 2 and 4 below have a tested baseline; the remaining steps still apply. Bef
 5. Add dependence-aware statistics, multiple-testing protocols, robustness scenarios, and metric families incrementally once the underlying returns and accounting are verified. Persist all trials and scenario outcomes.
 6. Only then compare GP, gradient-assisted search, and learned generators under matched budgets. Retain prospective frozen evaluation for final research claims; historical splits do not eliminate potential knowledge contamination from modern pretrained LLMs.
 
-CSV and SQLite are sensible initial interchange formats. If panel scale makes them a bottleneck, add a versioned Parquet or other columnar adapter after measuring it. Do not require a database server or replace formats solely because the architecture is extensible.
+CSV, SQLite and Parquet are the supported interchange formats; Parquet is recommended for large panels. Add other columnar or database adapters only after measuring a bottleneck. Do not require a database server or replace formats solely because the architecture is extensible.
 
 ## Why this arrangement
 
