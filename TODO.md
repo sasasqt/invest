@@ -26,6 +26,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *Done except Markdown/link validation and wheel builds (`.github/workflows/ci.yml`).*
 - [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *Component and end-to-end tests exist; critical boundary validation uses explicit exceptions. Still missing: committed fixture bundles shared by all components.*
 - [x] REVIEW-01: Fix PR #1 correctness findings: explicit causal settlement events, decision-time quantiles, validated strategy targets/configuration, consistent excess-return Sharpe statistics, undefined/empty result handling, and metadata validation before publication. *Regression coverage in component tests; README and evaluator event contract updated.*
+- [x] REVIEW-02: Preserve loss/drawdown evidence and complete base/stress reports when a settlement makes the portfolio insolvent; handle short-series autocorrelations without numerical warnings. *Regression coverage in evaluator metric and CLI tests.*
 
 ## M2 — First runnable workflow
 

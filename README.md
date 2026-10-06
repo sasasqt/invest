@@ -72,6 +72,7 @@ uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --co
 - **Fundamentals.** An optional fundamentals bundle records when each value (and each revision) was published. Expressions read them as `fund_<field>` with the value known at each date's close, never a later revision.
 - **Storage.** Bundles are CSV, SQLite or Parquet, validated by one reader and identified by a format-independent content hash.
 - **Undefined results.** Metrics carry a status and reason (for example `undefined: zero_excess_return_dispersion`) instead of returning 0 or infinity.
+- **Insolvency.** Simulation stops when equity becomes nonpositive. Reports retain net loss and drawdown evidence, while growth and risk ratios carry explicit invalid-input statuses.
 - **Statistics and diagnostics.** Sharpe confidence intervals, PSR, and DSR use the configured risk-free excess-return basis. Flat/no-trade portfolios produce undefined statistics and complete reports. Quantile membership uses decision-time signals before filtering unavailable future outcomes; an empty search family still produces a trial ledger and a structured confirmation table.
 
 ### Known limitations of the baseline

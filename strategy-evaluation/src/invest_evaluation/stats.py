@@ -183,9 +183,12 @@ def deflated_sharpe(
 
 def autocorrelations(returns: pd.Series, lags: int = 5) -> dict[str, float]:
     x = returns.dropna()
-    if len(x) < 2 or x.std(ddof=1) <= 1e-15:
-        return {f"lag_{k}": float("nan") for k in range(1, lags + 1)}
-    return {f"lag_{k}": float(x.autocorr(k)) for k in range(1, lags + 1)}
+    out = {}
+    for k in range(1, lags + 1):
+        left, right = x.iloc[k:], x.iloc[:-k]
+        valid = len(left) >= 2 and left.std(ddof=1) > 1e-15 and right.std(ddof=1) > 1e-15
+        out[f"lag_{k}"] = float(x.autocorr(k)) if valid else float("nan")
+    return out
 
 
 def strategy_statistics(

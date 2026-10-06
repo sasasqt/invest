@@ -94,6 +94,9 @@ def test_insolvency_invalidates_growth_ratios():
     m = return_metrics(series([0.1, -1.0, 0.0]), v0=1.0, annualization=252)
     assert m["insolvency"].value == "2024-01-02"
     assert m["cagr"].status == "invalid_input" and m["sharpe"].value is None
+    assert m["cagr"].unit == "fraction/year"
+    assert m["total_return"].value == -1.0
+    assert m["max_drawdown"].value == 1.0
 
 
 def test_var_and_expected_shortfall():

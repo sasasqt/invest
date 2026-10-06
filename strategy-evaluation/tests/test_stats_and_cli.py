@@ -182,13 +182,11 @@ def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
     assert "n/a (zero_excess_return_dispersion)" in (tmp_path / "run" / "report.md").read_text()
 
 
-def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path):
+@pytest.mark.parametrize("settlement_price", [8.0, 0.0])
+def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path, settlement_price):
     dates = pd.bdate_range("2024-01-01", periods=65)
     bars = pd.DataFrame(
-        [
-            (d, "A", 10.0 + i / 10, 10.0 + i / 10, 10.0 + i / 10, 10.0 + i / 10, 1e9)
-            for i, d in enumerate(dates)
-        ],
+        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9) for d in dates],
         columns=["date", "instrument", "open", "high", "low", "close", "volume"],
     )
     signals = pd.DataFrame({"decision_date": dates, "instrument": "A", "score": 1.0})
@@ -215,7 +213,13 @@ def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path):
             }
         )
     )
-    events = [{"date": dates[40].date().isoformat(), "instrument": "A", "settlement_price": 8.0}]
+    events = [
+        {
+            "date": dates[40].date().isoformat(),
+            "instrument": "A",
+            "settlement_price": settlement_price,
+        }
+    ]
     event_file = tmp_path / "events.json"
     event_file.write_text(json.dumps(events))
     assert (
@@ -239,10 +243,19 @@ def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path):
     run = tmp_path / "run"
     trades = pd.read_csv(run / "tables" / "trades.csv")
     settlement = trades[trades["reason"] == "delisted_liquidation"]
-    assert len(settlement) == 1 and settlement.iloc[0]["price"] == 8.0
+    assert len(settlement) == 1 and settlement.iloc[0]["price"] == settlement_price
     daily = pd.read_csv(run / "tables" / "daily.csv")
     assert (daily["n_long"].iloc[40:] == 0).all()
     assert daily["equity"].iloc[40:].nunique() == 1
     assert json.loads((run / "manifest.json").read_text())["delisting_settlements"] == events
     scenarios = pd.read_csv(run / "tables" / "scenarios.csv")
-    assert (scenarios["cagr"] < 0).all()  # every scenario uses the loss-making settlement
+    if settlement_price == 0:
+        metrics = json.loads((run / "metrics.json").read_text())["performance"]
+        assert metrics["total_return"]["value"] == pytest.approx(-1.0)
+        assert metrics["max_drawdown"]["value"] >= 1.0 - 1e-12
+        assert metrics["cagr"]["status"] == "invalid_input"
+        assert scenarios["cagr"].isna().all()
+        assert (scenarios["max_drawdown"] >= 1.0 - 1e-12).all()
+        assert "insolvent_wealth_path" in (run / "report.md").read_text()
+    else:
+        assert (scenarios["cagr"] < 0).all()  # every scenario uses the loss-making settlement

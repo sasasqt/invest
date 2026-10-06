@@ -142,8 +142,11 @@ def return_metrics(
     if (wealth <= 0).any():
         first = wealth.index[int(np.argmax(wealth.to_numpy() <= 0))]
         out["insolvency"] = _ok(str(first.date()), "date")
+        out["total_return"] = _ok(float(wealth.iloc[-1] / v0 - 1), "fraction")
+        out.update(drawdown_metrics(wealth, v0))
         for key in ("cagr", "sharpe", "sortino", "calmar"):
-            out[key] = _undef("ratio", "insolvent_wealth_path", "invalid_input")
+            unit = "fraction/year" if key == "cagr" else "ratio"
+            out[key] = _undef(unit, "insolvent_wealth_path", "invalid_input")
         return out
 
     rf = period_rate(risk_free_annual, a)
