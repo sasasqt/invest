@@ -48,8 +48,9 @@ uv run invest-data synthetic --out artifacts/data/synthetic --format parquet \
 
 # 2. Mine: random search + templates on the development period, with a full trial
 #    ledger; the top candidates are tested once on the confirmation period (Holm).
+#    The confirmation-use ledger marks a rerun on the same period as exploratory.
 uv run invest-mine search --data artifacts/data/synthetic --universe artifacts/data/universe \
-  --trials 200 --out artifacts/mining/search
+  --trials 200 --ledger artifacts/mining/ledger.jsonl --out artifacts/mining/search
 uv run invest-mine evaluate --data artifacts/data/synthetic --fundamentals artifacts/data/fundamentals \
   --expr "cs_rank(fund_book_to_price)" --out artifacts/mining/value
 
@@ -76,6 +77,8 @@ It saves the raw Yahoo responses for today's S&P 100 members ([list](scripts/sp1
 
 Existing snapshots replay offline using their saved request dates by default. `START` and `END` select an inclusive subset within that request; requests beyond it fail before publication. Dataset ids and selection provenance use the resolved dates, while provenance retains the original download request. `SYMBOLS_FILE` controls new downloads only; replay uses the saved symbols and excludes `BENCHMARK` from the strategy universe. Override `BENCHMARK`, `SNAPSHOT` or `CONFIG` as needed. The same snapshot and selection publish identical dataset hashes. Yahoo publication currently supports USD US equities and ETFs only. External benchmarks must have matching currency, frequency, price adjustment, calendar and declared timezone; missing closes exclude incomplete daily intervals from relative metrics. Reports show benchmark identity and aligned observation counts, with an explicit insufficient-data reason when fewer than 20 daily returns align.
 
+The committed [confirmation-use ledger](ledgers/yahoo-test.jsonl) records 2010-01-01 to 2024-12-31 as already inspected, so this history only gives exploratory evidence, and reserves 2025-01-01 onward, which has never been downloaded or inspected, for a future confirmation. The workflow checks `LEDGER` (default that file) and refuses any `START`/`END` reaching 2025 before downloading or publishing. See [confirmation-use ledger](#confirmation-use-ledger).
+
 The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs. A fresh download on the current code reproduced every reported metric, though with new dataset hashes because Yahoo's responses had changed.
 
 Checks (the same as CI):
@@ -90,6 +93,17 @@ uv run python scripts/check_markdown_links.py
 CI additionally builds the three wheels and runs the tests against the installed packages; see the [CI/CD guidelines](CI_CD_GUIDELINES.md).
 
 The offline Markdown check validates relative links and heading anchors, including literal underscores and duplicate-heading collisions, while ignoring links inside inline and fenced code examples.
+
+### Confirmation-use ledger
+
+A confirmation period gives confirmatory evidence only once. `invest-mine search --ledger <file>` records each search (experiment id from the dataset and input hashes, operator version, search settings and split) in an append-only JSON Lines ledger, one per market. Before any candidate is scored it classifies the run:
+
+- **confirmatory**: the confirmation window overlaps no earlier search's development or confirmation window and no recorded inspection, and is not a repeat.
+- **exploratory**: anything else. The run still completes, but `confirmation.csv` reports `status = exploratory` (the raw result stays in `test_outcome`), and `config.json` and the frozen factors record the experiment id, use and reasons. `--require-confirmatory` refuses instead.
+
+The ledger's development window includes every price used by its forward-return labels, including dates in the decision purge gap. For horizon `h`, decision `t` needs prices through session `t+1+h`; that session must precede the first confirmation session and any embargo. Search configuration reports decision dates in `split.development` and the full observed range in `split.development_observations`. The ledger API validates entries before appending and rejects overrides of its version, kind and recording timestamp without changing the file.
+
+`invest-mine ledger reserve|inspect|check --ledger <file> --start <date> [--end <date>]` reserves an untouched window, records one already looked at, or fails if a window touches an unused reservation. `invest-mine evaluate --ledger <file>` refuses reserved data and records its full-sample window. A search whose development data touches a reservation is refused; to use the reservation, confirm on it with `--confirm-start <first reserved date>`, which uses it up. Without `--ledger`, results say `confirmation_use = unrecorded`. Backtests in `invest-eval` are not recorded automatically: record their windows with `ledger inspect`, as the historical workflow does through its check and diagnostics.
 
 Automatic export follows the candidate order frozen during development. Confirmation scores and pass/reject outcomes never choose the replayed factor; inspect `confirmation.csv` separately. A portfolio replay does not promote a rejected or inconclusive factor. Changing `--rank` or strategy settings after inspecting confirmation results makes subsequent replays exploratory and requires new untouched data for final validation.
 
@@ -109,7 +123,7 @@ Automatic export follows the candidate order frozen during development. Confirma
 - The only network adapter is the test-only Yahoo Finance one (`invest-data yahoo`); it has no delisted tickers, point-in-time membership or fundamentals. For research data use `import-csv` with your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter beside `invest_data.yahoo`.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
-- Only external flows of zero are supported, so XIRR is not computed yet. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
+- Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
 
 ## Documentation maintenance
 

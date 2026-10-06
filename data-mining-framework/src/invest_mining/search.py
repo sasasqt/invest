@@ -59,6 +59,7 @@ class Split:
     dev_dates: pd.DatetimeIndex
     confirm_dates: pd.DatetimeIndex
     purged_dates: pd.DatetimeIndex
+    dev_observation_dates: pd.DatetimeIndex
 
     def to_dict(self) -> dict[str, Any]:
         def rng(ix: pd.DatetimeIndex) -> list[str] | None:
@@ -66,6 +67,7 @@ class Split:
 
         return {
             "development": rng(self.dev_dates),
+            "development_observations": rng(self.dev_observation_dates),
             "confirmation": rng(self.confirm_dates),
             "purged": rng(self.purged_dates),
             "n_development": len(self.dev_dates),
@@ -74,14 +76,35 @@ class Split:
 
 
 def chronological_split(
-    dates: pd.DatetimeIndex, dev_fraction: float, horizon: int, embargo: int = 0
+    dates: pd.DatetimeIndex,
+    dev_fraction: float,
+    horizon: int,
+    embargo: int = 0,
+    confirm_start: str | None = None,
 ) -> Split:
-    """Dev decision ``i`` uses sessions up to ``i+1+h``; keep only ``i+1+h < k+1``."""
-    if not 0 < dev_fraction < 1:
+    """Dev decision ``i`` uses sessions up to ``i+1+h``; require ``i+1+h < k-embargo``.
+
+    Confirmation starts at session ``k``: the first date on or after ``confirm_start`` when
+    given (so it can align with a reserved window), else ``int(len(dates) * dev_fraction)``.
+    Development observations include the prices used by labels, even on purged decisions.
+    """
+    if horizon < 1:
+        raise ValueError("horizon must be >= 1")
+    if embargo < 0:
+        raise ValueError("embargo must be >= 0")
+    if confirm_start is not None:
+        k = int(dates.searchsorted(pd.Timestamp(confirm_start)))
+        if not 0 < k < len(dates):
+            raise ValueError(
+                f"confirm_start {confirm_start} leaves no development or confirmation data"
+            )
+    elif not 0 < dev_fraction < 1:
         raise ValueError("dev_fraction must be in (0, 1)")
-    k = int(len(dates) * dev_fraction)
-    cut = max(k - horizon - embargo, 0)
-    return Split(dates[:cut], dates[k:], dates[cut:k])
+    else:
+        k = int(len(dates) * dev_fraction)
+    cut = max(k - horizon - embargo - 1, 0)
+    observed_cut = cut + horizon + 1 if cut else 0
+    return Split(dates[:cut], dates[k:], dates[cut:k], dates[:observed_cut])
 
 
 @dataclass
@@ -116,11 +139,12 @@ def run_search(
     alpha: float = 0.05,
     dataset_id: str = "",
     dataset_sha256: str | None = None,
+    confirm_start: str | None = None,
 ) -> SearchResult:
     rng = np.random.default_rng(seed)
     label = restrict(forward_returns(panel["open"], horizon), panel)
     split = chronological_split(
-        pd.DatetimeIndex(panel["close"].index), dev_fraction, horizon, embargo
+        pd.DatetimeIndex(panel["close"].index), dev_fraction, horizon, embargo, confirm_start
     )
     dev_label = label.loc[split.dev_dates]
 
@@ -208,7 +232,8 @@ def run_search(
         "n_trials": n_trials,
         "seed": seed,
         "horizon": horizon,
-        "dev_fraction": dev_fraction,
+        "dev_fraction": None if confirm_start else dev_fraction,
+        "confirm_start": confirm_start,
         "embargo": embargo,
         "top_k": top_k,
         "max_depth": max_depth,
@@ -303,4 +328,24 @@ def confirm(
     out["status"] = np.where(
         ~ok, "inconclusive", np.where(out["p_holm"] <= alpha, "confirmation_passed", "rejected")
     )
+    return out
+
+
+CONFIRMATION_USES = ("confirmatory", "exploratory", "unrecorded")
+
+
+def mark_confirmation_use(confirmation: pd.DataFrame, use: str) -> pd.DataFrame:
+    """Label how far a confirmation table can be trusted, keeping the raw test outcome.
+
+    ``test_outcome`` always holds the test result. ``status`` keeps it only when the
+    confirmation data was fresh (or no ledger was kept: ``unrecorded``); an exploratory
+    run reports ``status = "exploratory"`` so reused data cannot read as confirmation.
+    """
+    if use not in CONFIRMATION_USES:
+        raise ValueError(f"confirmation use must be one of {CONFIRMATION_USES}")
+    out = confirmation.copy()
+    out["test_outcome"] = out["status"]
+    out["confirmation_use"] = use
+    if use == "exploratory":
+        out["status"] = "exploratory"
     return out
