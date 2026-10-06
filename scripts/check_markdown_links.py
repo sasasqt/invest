@@ -41,8 +41,13 @@ def _lines_outside_code(text: str) -> list[str]:
 def slug(heading: str) -> str:
     """GitHub's anchor for a heading: lowercase, punctuation dropped, spaces to hyphens."""
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading)  # keep link text only
-    # Remove formatting markers without discarding underscores inside code spans.
-    text = re.sub(r"(`+)(.*?)\1|[*_]", lambda m: m.group(2) if m.group(1) else "", text)
+    # Remove formatting markers, keeping code-span contents and intraword underscores
+    # (GitHub renders ``snake_case`` literally, so its anchor keeps the underscore).
+    text = re.sub(
+        r"(`+)(.*?)\1|\*|(?<!\w)_+|_+(?!\w)",
+        lambda m: m.group(2) if m.group(1) else "",
+        text,
+    )
     text = text.strip().lower()
     text = re.sub(r"[^\w\- ]", "", text)
     return text.replace(" ", "-")

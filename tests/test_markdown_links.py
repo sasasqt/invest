@@ -16,6 +16,8 @@ def test_slug_matches_github_anchors():
     assert mdlinks.slug("Updating the backlog and README") == "updating-the-backlog-and-readme"
     assert mdlinks.slug("`invest-eval` [run](x.md)") == "invest-eval-run"
     assert mdlinks.slug("`invest_eval` *run*") == "invest_eval-run"
+    assert mdlinks.slug("snake_case and a__b") == "snake_case-and-a__b"
+    assert mdlinks.slug("_emphasis_ word") == "emphasis-word"
 
 
 def test_check_reports_missing_files_and_anchors(tmp_path):
