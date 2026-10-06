@@ -321,6 +321,13 @@ def test_cli_reports_external_benchmark_next_to_equal_weight(
     assert manifest["external_benchmark"]["metadata"] == SYNTHETIC_METADATA
     assert manifest["market_dataset"]["metadata"] == SYNTHETIC_METADATA
     assert "## External Benchmark" in (tmp_path / "run" / "report.md").read_text()
+    report = (tmp_path / "run" / "report.md").read_text()
+    external_report = report.split("## External Benchmark", 1)[1]
+    assert "SPY close-to-close (spy)" in external_report
+    assert (
+        f"Aligned daily returns: {len(aligned)} of {len(daily)} evaluation sessions"
+        in external_report
+    )
     no_bench = tmp_path / "plain"
     assert main([*base, "--out", str(no_bench)]) == 0
     assert "external_benchmark" not in json.loads((no_bench / "metrics.json").read_text())
@@ -385,3 +392,49 @@ def test_cli_rejects_incomparable_benchmark_before_publication(
             ]
         )
     assert not out.exists()
+
+
+@pytest.mark.parametrize("benchmark_bars", [1, 20])
+def test_cli_reports_insufficient_external_benchmark_coverage(
+    tmp_path, market, reversal_signals, benchmark_bars
+):
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        reversal_signals,
+        tmp_path / "s",
+        dataset_id="s",
+        metadata={"factor_id": "rev5", "horizon_days": 1},
+    )
+    benchmark = (
+        market[market["instrument"] == "SYN003"].tail(benchmark_bars).assign(instrument="SPY")
+    )
+    publish_market_bars(benchmark, tmp_path / "b", dataset_id="spy", metadata=SYNTHETIC_METADATA)
+    out = tmp_path / "run"
+    assert (
+        main(
+            [
+                "run",
+                "--data",
+                str(tmp_path / "m"),
+                "--signals",
+                str(tmp_path / "s"),
+                "--benchmark",
+                str(tmp_path / "b"),
+                "--out",
+                str(out),
+                "--no-scenarios",
+            ]
+        )
+        == 0
+    )
+    daily = pd.read_csv(out / "tables" / "daily.csv")
+    aligned = benchmark_bars - 1
+    assert daily["external_benchmark_return"].notna().sum() == aligned
+    metric = json.loads((out / "metrics.json").read_text())["external_benchmark"]["benchmark"]
+    assert metric["status"] == "insufficient_data"
+    assert metric["extra"]["aligned_sessions"] == aligned
+    assert metric["extra"]["evaluation_sessions"] == len(daily)
+    report = (out / "report.md").read_text().split("## External Benchmark", 1)[1]
+    assert "SPY close-to-close (spy)" in report
+    assert f"Aligned daily returns: {aligned} of {len(daily)} evaluation sessions" in report
+    assert "n/a (fewer_than_20_aligned_returns)" in report
