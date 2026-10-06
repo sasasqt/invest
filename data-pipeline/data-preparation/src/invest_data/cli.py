@@ -20,6 +20,68 @@ from invest_data.sources import (
     synthetic_market,
     synthetic_universe,
 )
+from invest_data.yahoo import (
+    RetryPolicy,
+    download_snapshot,
+    load_snapshot,
+    read_snapshot_manifest,
+    yahoo_metadata,
+)
+
+
+def _symbols(args: argparse.Namespace) -> list[str] | None:
+    """Symbols from ``--symbols`` and ``--symbols-file`` (one per line, ``#`` comments)."""
+    names = list(args.symbols or [])
+    if args.symbols_file:
+        for line in args.symbols_file.read_text().splitlines():
+            name = line.split("#", 1)[0].strip()
+            if name:
+                names.append(name)
+    return list(dict.fromkeys(names)) or None
+
+
+def _yahoo(args: argparse.Namespace) -> int:
+    symbols = _symbols(args)
+    if args.yahoo_command == "download":
+        if not symbols:
+            raise SystemExit("give --symbols or --symbols-file")
+        snap = download_snapshot(
+            symbols,
+            args.start,
+            args.end,
+            args.snapshot,
+            timeout=args.timeout,
+            retry=RetryPolicy(attempts=args.attempts),
+            pause_seconds=args.pause,
+        )
+        print(
+            json.dumps(
+                {
+                    "snapshot": str(args.snapshot),
+                    "downloaded": len(snap["files"]),
+                    "failures": snap["failures"],
+                }
+            )
+        )
+        return 0 if snap["files"] else 1
+    if args.exclude:
+        if symbols is None:
+            symbols = list(read_snapshot_manifest(args.snapshot)["files"])
+        symbols = [s for s in symbols if s not in set(args.exclude)]
+    raw, provenance = load_snapshot(args.snapshot, symbols)
+    currencies = set(provenance["currencies"].values())
+    if len(currencies) != 1 or None in currencies:
+        raise SystemExit(
+            f"cannot publish mixed or unknown currencies {sorted(map(str, currencies))}"
+        )
+    return _publish(
+        raw,
+        args.out,
+        args.dataset_id,
+        yahoo_metadata(currencies.pop(), args.universe_note),
+        provenance,
+        args.format,
+    )
 
 
 def _publish(
@@ -62,7 +124,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         choices=["total_return_adjusted", "split_adjusted", "unadjusted"],
     )
 
+    yah = sub.add_parser("yahoo", help="test-only Yahoo Finance snapshots (download, publish)")
+    ysub = yah.add_subparsers(dest="yahoo_command", required=True)
+    ydl = ysub.add_parser("download", help="save raw chart responses as an immutable snapshot")
+    ydl.add_argument("--start", required=True, help="first session (YYYY-MM-DD)")
+    ydl.add_argument("--end", required=True, help="last session (YYYY-MM-DD)")
+    ydl.add_argument("--timeout", type=float, default=20.0, help="seconds per request")
+    ydl.add_argument("--attempts", type=int, default=4, help="tries per symbol (bounded)")
+    ydl.add_argument("--pause", type=float, default=0.5, help="seconds between symbols")
+    ypub = ysub.add_parser("publish", help="replay a snapshot offline and publish market bars")
+    ypub.add_argument("--out", type=Path, required=True)
+    ypub.add_argument("--dataset-id", required=True)
+    ypub.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
+    ypub.add_argument(
+        "--universe-note",
+        default="symbols chosen today and applied to all history (survivorship-biased)",
+        help="how the symbols were selected; stored in the bundle metadata",
+    )
+    ypub.add_argument("--exclude", nargs="+", help="symbols to leave out (e.g. the benchmark)")
+    for p in (ydl, ypub):
+        p.add_argument("--snapshot", type=Path, required=True, help="snapshot directory")
+        p.add_argument("--symbols", nargs="+", help="symbols (publish: subset of the snapshot)")
+        p.add_argument("--symbols-file", type=Path, help="one symbol per line, # comments")
+
     args = parser.parse_args(argv)
+    if args.command == "yahoo":
+        return _yahoo(args)
     if args.command == "synthetic":
         cfg = SyntheticConfig(n_instruments=args.instruments, n_days=args.days, seed=args.seed)
         bars = synthetic_market(cfg)

@@ -5,11 +5,14 @@ Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.p
 ```sh
 uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
   --config strategy-evaluation/examples/quantile_long_short.json \
-  [--n-trials <strategies tried>] --out artifacts/eval/<run>
+  [--n-trials <strategies tried>] [--benchmark <market bundle> [--benchmark-instrument SPY]] \
+  --out artifacts/eval/<run>
 uv run pytest strategy-evaluation
 ```
 
 `--n-trials` sets the number of trials for the deflated Sharpe. It defaults to the signals bundle's optional `n_trials` metadata (written by `invest-mine export`), else 1; the value used is recorded in the run's `manifest.json`. The metadata must be a positive integer; booleans, fractions, strings and null values are rejected. An explicit CLI value overrides valid metadata. Search proposal counts describe mining effort; include additional portfolio/rule trials when specifying a count for a broader selection experiment. DSR remains supplementary and does not repair holdout reuse.
+
+`--benchmark` adds an `external_benchmark` metric section (total return, tracking error, information ratio, correlation, beta, alpha) computed from one instrument's close-to-close returns, for example a total-return adjusted SPY bundle. It is reported next to, not instead of, the gross universe equal-weight `benchmark` section; `tables/daily.csv` gains `external_benchmark_return` (empty on sessions the benchmark lacks) and the equity figure plots it. Only aligned sessions enter the metrics, and their count is recorded. The bundle's id, hash and instrument are saved in `manifest.json`.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 

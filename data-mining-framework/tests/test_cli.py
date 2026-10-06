@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 
 from invest_data.cli import main as data_main
-from invest_data.schemas import read_signals
+from invest_data.schemas import read_market_bars, read_signals
 from invest_mining.cli import main
 
 
@@ -145,3 +145,26 @@ def test_search_with_no_qualifying_candidates_writes_structured_results(tmp_path
             ]
         )
     assert not (tmp_path / "signals").exists()
+
+
+def test_cli_freeze_fixed_formula_exports_one_trial(tmp_path, capsys):
+    data, factor, sig = tmp_path / "data", tmp_path / "f.json", tmp_path / "sig"
+    data_main(["synthetic", "--out", str(data), "--instruments", "15", "--days", "60"])
+    expr = "close / delay(close, 5) - 1"
+    args = ["freeze", "--expr", expr, "--horizon", "5", "--orientation", "-1", "--out", str(factor)]
+    assert main(args) == 0
+    frozen = json.loads(factor.read_text())
+    assert frozen["orientation"] == -1 and frozen["horizon_days"] == 5
+    assert frozen["selection"]["method"] == "fixed_formula"
+    assert main(["export", "--data", str(data), "--factor", str(factor), "--out", str(sig)]) == 0
+    manifest, signals = read_signals(sig)
+    assert manifest.metadata["n_trials"] == 1 and manifest.metadata["horizon_days"] == 5
+    _, bars = read_market_bars(data)
+    close = bars.pivot(index="date", columns="instrument", values="close")
+    expected = -(close / close.shift(5) - 1)
+    row = signals.iloc[-1]
+    assert row["score"] == pytest.approx(expected.loc[row["decision_date"], row["instrument"]])
+    with pytest.raises(SystemExit):
+        main(["freeze", "--expr", expr, "--horizon", "0", "--out", str(factor)])
+    with pytest.raises(ValueError):
+        main(["freeze", "--expr", "close + nope(", "--horizon", "1", "--out", str(factor)])

@@ -261,3 +261,62 @@ def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path, settleme
         assert "insolvent_wealth_path" in (run / "report.md").read_text()
     else:
         assert (scenarios["cagr"] < 0).all()  # every scenario uses the loss-making settlement
+
+
+def test_cli_reports_external_benchmark_next_to_equal_weight(tmp_path, market, reversal_signals):
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        reversal_signals,
+        tmp_path / "s",
+        dataset_id="s",
+        metadata={"factor_id": "rev5", "horizon_days": 1},
+    )
+    # A benchmark bundle that starts late: sessions before it have no benchmark return.
+    spy = market[market["instrument"] == "SYN003"]
+    spy = spy[spy["date"] >= spy["date"].iloc[40]].assign(instrument="SPY")
+    publish_market_bars(spy, tmp_path / "b", dataset_id="spy", metadata=SYNTHETIC_METADATA)
+    base = [
+        "run",
+        "--data",
+        str(tmp_path / "m"),
+        "--signals",
+        str(tmp_path / "s"),
+        "--no-scenarios",
+    ]
+    assert main([*base, "--out", str(tmp_path / "run"), "--benchmark", str(tmp_path / "b")]) == 0
+
+    metrics = json.loads((tmp_path / "run" / "metrics.json").read_text())
+    ext, ew = metrics["external_benchmark"], metrics["benchmark"]
+    assert ext["benchmark_total_return"]["extra"]["benchmark"] == "SPY close-to-close (spy)"
+    assert ew["benchmark_total_return"]["extra"]["benchmark"].startswith("universe_equal_weight")
+    closes = spy.set_index("date")["close"]
+    daily = pd.read_csv(tmp_path / "run" / "tables" / "daily.csv", index_col=0, parse_dates=True)
+    aligned = closes.pct_change().dropna().reindex(daily.index).dropna()
+    assert ext["benchmark_total_return"]["extra"]["aligned_sessions"] == len(aligned)
+    assert ext["benchmark_total_return"]["value"] == pytest.approx(np.prod(1 + aligned) - 1)
+    assert daily["external_benchmark_return"].notna().sum() == len(aligned)
+    assert ext["beta"]["status"] == "ok"
+    manifest = json.loads((tmp_path / "run" / "manifest.json").read_text())
+    assert manifest["external_benchmark"]["instrument"] == "SPY"
+    assert "## External Benchmark" in (tmp_path / "run" / "report.md").read_text()
+    no_bench = tmp_path / "plain"
+    assert main([*base, "--out", str(no_bench)]) == 0
+    assert "external_benchmark" not in json.loads((no_bench / "metrics.json").read_text())
+    assert "External Benchmark" not in (no_bench / "report.md").read_text()
+
+    with pytest.raises(ValueError, match="name one"):
+        main([*base, "--out", str(tmp_path / "x"), "--benchmark", str(tmp_path / "m")])
+    pick = ["--benchmark", str(tmp_path / "m"), "--benchmark-instrument", "SYN001"]
+    assert main([*base, "--out", str(tmp_path / "y"), *pick]) == 0
+    with pytest.raises(ValueError, match="not in bundle"):
+        main(
+            [
+                *base,
+                "--out",
+                str(tmp_path / "z"),
+                "--benchmark",
+                str(tmp_path / "b"),
+                "--benchmark-instrument",
+                "QQQ",
+            ]
+        )

@@ -14,7 +14,7 @@ import pandas as pd
 from invest_data.schemas import read_market_bars, read_signals, read_universe
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.engine import run_backtest
-from invest_evaluation.metrics import compute_metrics
+from invest_evaluation.metrics import compute_metrics, instrument_returns
 from invest_evaluation.reporting import save_run
 from invest_evaluation.robustness import run_scenarios
 from invest_evaluation.stats import strategy_statistics
@@ -51,6 +51,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         help="JSON settlements: date, instrument, settlement_price (known at date close)",
     )
+    run.add_argument(
+        "--benchmark",
+        type=Path,
+        help="market-bars bundle of a benchmark (e.g. SPY), reported next to the "
+        "universe equal-weight benchmark",
+    )
+    run.add_argument(
+        "--benchmark-instrument", help="instrument in --benchmark (needed if it holds several)"
+    )
     args = parser.parse_args(argv)
 
     market_manifest, bars = read_market_bars(args.data)
@@ -68,8 +77,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         if not isinstance(raw_events, list):
             raise ValueError("delistings JSON must be a list of settlement events")
         delistings = pd.DataFrame(raw_events)
+    external = None
+    external_info = None
+    if args.benchmark:
+        bench_manifest, bench_bars = read_market_bars(args.benchmark)
+        external = instrument_returns(bench_bars, args.benchmark_instrument)
+        external_info = {
+            "id": bench_manifest.dataset_id,
+            "sha256": bench_manifest.content_sha256,
+            "instrument": external.name,
+            "price_adjustment": bench_manifest.metadata.get("price_adjustment"),
+        }
     result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
-    metrics = compute_metrics(result)
+    metrics = compute_metrics(
+        result,
+        external,
+        external_label=f"{external_info['instrument']} close-to-close ({external_info['id']})"
+        if external_info
+        else "external",
+    )
     stats = strategy_statistics(
         result.returns,
         cfg.annualization,
@@ -99,8 +125,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             },
             "code_revision": _git_revision(),
             "n_trials": n_trials,
+            "external_benchmark": external_info,
             "delisting_settlements": None if delistings is None else delistings.to_dict("records"),
         },
+        external_benchmark=external,
     )
     perf = metrics["performance"]
     print(

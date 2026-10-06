@@ -153,3 +153,40 @@ def test_synthetic_workflow_script(tmp_path):
     metrics = json.loads((out / "eval" / "metrics.json").read_text())
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
+
+
+def test_historical_workflow_script_replays_snapshot_offline(tmp_path):
+    """The Yahoo workflow runs end to end from a saved (here fabricated) snapshot."""
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
+    bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    snapshot = tmp_path / "snapshot"
+    write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
+    env = {
+        **os.environ,
+        "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+        "SNAPSHOT": str(snapshot),
+        "SYMBOLS_FILE": "/nonexistent",  # never read: the snapshot exists
+    }
+    out = tmp_path / "wf"
+    done = subprocess.run(
+        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
+        env=env,
+    )
+    assert done.returncode == 0, done.stderr
+    assert "no download" in done.stderr
+    manifest = json.loads((out / "eval" / "manifest.json").read_text())
+    assert manifest["n_trials"] == 1
+    assert manifest["external_benchmark"]["instrument"] == "SPY"
+    assert manifest["signals"]["metadata"]["n_trials"] == 1
+    metrics = json.loads((out / "eval" / "metrics.json").read_text())
+    assert metrics["external_benchmark"]["beta"]["status"] == "ok"
+    market = json.loads((out / "data" / "market" / "manifest.json").read_text())
+    assert "SPY" not in market["provenance"]["snapshot"]["files"]
+    assert market["metadata"]["universe"].endswith("(survivorship-biased)")

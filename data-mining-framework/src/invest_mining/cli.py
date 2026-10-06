@@ -124,6 +124,29 @@ def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor
     return factor, start or confirm_start
 
 
+def _freeze(args: argparse.Namespace) -> int:
+    """Freeze one formula chosen before looking at the data: no fitting, one trial."""
+    if args.horizon < 1:
+        raise SystemExit("--horizon must be at least 1")
+    factor = FrozenFactor(
+        expression=args.expr,
+        orientation=args.orientation,
+        horizon_days=args.horizon,
+        training_start="",
+        training_end="",
+        dataset_id="",
+        dataset_sha256=None,
+        selection={
+            "method": "fixed_formula",
+            "n_proposals": 1,
+            "note": "specified a priori; no data were used to select or orient it",
+        },
+    )
+    path = factor.save(args.out)
+    print(json.dumps({"factor": str(path), "factor_id": factor.factor_id, "n_trials": 1}))
+    return 0
+
+
 def _export(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
     if args.from_search is not None:
@@ -178,6 +201,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     se.add_argument("--top-k", type=int, default=5)
     se.add_argument("--out", type=Path, required=True)
 
+    fr = sub.add_parser("freeze", help="freeze a fixed, pre-specified formula (n_trials=1)")
+    fr.add_argument("--expr", required=True)
+    fr.add_argument("--horizon", type=int, required=True, help="intended holding horizon")
+    fr.add_argument(
+        "--orientation",
+        type=int,
+        choices=[1, -1],
+        default=1,
+        help="+1: higher value is more attractive; -1: lower is (e.g. reversal)",
+    )
+    fr.add_argument("--out", type=Path, required=True, help="frozen factor JSON to write")
+
     ex = sub.add_parser("export", help="apply a frozen factor and publish a signals bundle")
     ex.add_argument("--data", type=Path, required=True)
     source = ex.add_mutually_exclusive_group(required=True)
@@ -203,7 +238,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         p.add_argument("--fundamentals", type=Path, help="fundamentals bundle (fund_<field>)")
 
     args = parser.parse_args(argv)
-    return {"evaluate": _evaluate, "search": _search, "export": _export}[args.command](args)
+    commands = {"evaluate": _evaluate, "search": _search, "freeze": _freeze, "export": _export}
+    return commands[args.command](args)
 
 
 if __name__ == "__main__":
