@@ -49,6 +49,7 @@ Treat a published research result like a release:
 - Run it from a clean, committed revision. The evaluation manifest records `code_revision`; a run from a dirty tree is exploratory only.
 - Use the frozen lockfile, fixed seeds, and dataset bundles identified by `content_sha256`.
 - Keep generated outputs under `artifacts/` (ignored by Git), including raw vendor snapshots. A result built from a downloaded source cites the snapshot's `snapshot.json` hashes; republishing the same snapshot must give the same `content_sha256`. Archive results that matter in an artifact store with their manifest, not in the repository.
+- Confirmation-use ledgers are the exception: commit each market's ledger under `ledgers/` (for example `ledgers/yahoo-test.jsonl`) so every contributor sees which periods were already inspected or used for confirmation. Append entries only through `invest-mine`; never edit or delete earlier lines. Tests and CI must point `LEDGER` or `--ledger` at a temporary copy.
 - Scheduled jobs (for example nightly data refreshes or prospective paper-trading evaluations) run as separate workflows with their own secrets and must never push to `main`. They publish new immutable bundles or reports and fail loudly on validation errors.
 
 ## Adding or changing CI

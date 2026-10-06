@@ -94,7 +94,7 @@ Send frozen factor values or predictions to `strategy-evaluation/`. Apply a decl
 
 ## 7. Promotion gates and report artifacts
 
-Use explicit states: `discovered`, `screened`, `confirmation_passed`, `rejected`, or `inconclusive`. Record `strategy_validated` separately: factor confirmation does not automatically imply tradability.
+Use explicit states: `discovered`, `screened`, `confirmation_passed`, `rejected`, or `inconclusive`. A test on a confirmation period that was already inspected or used by another search is `exploratory`, whatever its outcome; the confirmation-use ledger decides this before any candidate is scored. Record `strategy_validated` separately: factor confirmation does not automatically imply tradability.
 
 Promotion requires:
 

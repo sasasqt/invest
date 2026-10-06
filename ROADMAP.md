@@ -32,7 +32,7 @@ Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one
 
 ## M3 — Complete diagnostics, statistics, and robustness
 
-**Status:** in progress. Implemented: HAC, stationary-bootstrap and PSR/DSR statistics; purged development/confirmation search with a trial ledger and Holm adjustment (STATS-02); factor decile and tail diagnostics; cost, delay and liquidity stress scenarios. Remaining: null-simulation calibration, robustness perturbations, executable decile/tail portfolios, confirmation-use history, and separate factor and portfolio validation outcomes. **Depends on:** M2's verified accounting and returns.
+**Status:** in progress. Implemented: HAC, stationary-bootstrap and PSR/DSR statistics; purged development/confirmation search with a trial ledger and Holm adjustment (STATS-02); a confirmation-use ledger with a reserved, untouched Yahoo window from 2025-01-01 (STATS-03); factor decile and tail diagnostics; cost, delay and liquidity stress scenarios. Remaining: null-simulation calibration, robustness perturbations, executable decile/tail portfolios, and separate factor and portfolio validation outcomes. **Depends on:** M2's verified accounting and returns.
 
 Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
 

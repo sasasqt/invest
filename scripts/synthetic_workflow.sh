@@ -17,8 +17,9 @@ invest-data synthetic --out "$out/data/market" --format parquet \
   --instruments "$instruments" --days "$days" \
   --universe-out "$out/data/universe" --fundamentals-out "$out/data/fundamentals"
 
+# The ledger classifies the confirmation as confirmatory or, on a rerun, exploratory.
 invest-mine search --data "$out/data/market" --universe "$out/data/universe" \
-  --trials "$trials" --out "$out/mining/search"
+  --trials "$trials" --ledger "$out/mining/ledger.jsonl" --out "$out/mining/search"
 
 # The first development-selected factor, regardless of its confirmation outcome.
 invest-mine export --data "$out/data/market" --universe "$out/data/universe" \

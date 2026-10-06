@@ -20,7 +20,8 @@ data-mining-framework/             # invest-mining
   src/invest_mining/
     expressions.py                 # typed causal factor ASTs and operators
     diagnostics.py                 # IC, HAC tests, quantiles, multiple testing
-    search.py                      # search baseline, ledger, split, confirmation
+    search.py                      # search baseline, trial ledger, split, confirmation
+    ledger.py                      # confirmation-use ledger: experiments, reservations
     artifact.py                    # frozen factor artifacts
     inference.py                   # signal export
     reporting.py, cli.py

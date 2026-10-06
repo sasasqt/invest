@@ -13,6 +13,10 @@
 # all history), 2010-01-01 to 2024-12-31, SPY as the benchmark, and the 5-day reversal
 # formula frozen a priori (n_trials = 1) with the example quantile long-short config.
 # Override with SYMBOLS_FILE (download only), START, END, BENCHMARK, SNAPSHOT, CONFIG.
+#
+# LEDGER (default ledgers/yahoo-test.jsonl) is the market's confirmation-use ledger. This
+# workflow inspects every date it publishes, so it refuses any window that touches the
+# reserved confirmation period (2025-01-01 onward) before downloading or publishing.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -23,11 +27,13 @@ end="${END:-2024-12-31}"
 benchmark="${BENCHMARK:-SPY}"
 snapshot="${SNAPSHOT:-$out/snapshot}"
 config="${CONFIG:-$root/strategy-evaluation/examples/quantile_long_short.json}"
+ledger="${LEDGER:-$root/ledgers/yahoo-test.jsonl}"
 expr="close / delay(close, 5) - 1"
 
 if [[ -f "$snapshot/snapshot.json" ]]; then
   echo "Replaying existing snapshot $snapshot (no download)" >&2
 else
+  invest-mine ledger check --ledger "$ledger" --start "$start" --end "$end" > /dev/null
   invest-data yahoo download --snapshot "$snapshot" --symbols-file "$symbols_file" \
     --symbols "$benchmark" --start "$start" --end "$end"
 fi
@@ -40,6 +46,7 @@ print(*snapshot_range(sys.argv[1], sys.argv[2] or None, sys.argv[3] or None))
 PY
 )"
 read -r start end <<< "$range"
+invest-mine ledger check --ledger "$ledger" --start "$start" --end "$end" > /dev/null
 
 invest-data yahoo publish --snapshot "$snapshot" --exclude "$benchmark" --format parquet \
   --start "$start" --end "$end" \
@@ -50,9 +57,10 @@ invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format
   --dataset-id "yahoo-test-$benchmark-$start-$end" --out "$out/data/benchmark" \
   --universe-note "benchmark ETF"
 
-# Descriptive factor diagnostics on the full sample (not a confirmatory test).
+# Descriptive factor diagnostics on the full sample (not a confirmatory test); the ledger
+# records the inspected window unless it is already recorded.
 invest-mine evaluate --data "$out/data/market" --expr "$expr" --horizon 5 \
-  --out "$out/mining/diagnostics"
+  --ledger "$ledger" --out "$out/mining/diagnostics"
 
 # A fixed formula chosen before looking at this data: low past 5-day return = attractive.
 invest-mine freeze --expr "$expr" --horizon 5 --orientation -1 --out "$out/mining/factor.json"

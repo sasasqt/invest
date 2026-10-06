@@ -6,11 +6,14 @@ import argparse
 import json
 import sys
 from collections.abc import Sequence
+from dataclasses import replace
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
 from invest_data.schemas import read_fundamentals, read_market_bars, read_universe
+from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
     daily_ic,
@@ -20,10 +23,17 @@ from invest_mining.diagnostics import (
     rank_autocorrelation,
     tail_returns,
 )
-from invest_mining.expressions import build_panel, canonical, evaluate, restrict
+from invest_mining.expressions import (
+    OPERATOR_VERSION,
+    build_panel,
+    canonical,
+    evaluate,
+    restrict,
+)
 from invest_mining.inference import export_signals
+from invest_mining.ledger import LedgerError, Window
 from invest_mining.reporting import write_factor_report
-from invest_mining.search import run_search
+from invest_mining.search import chronological_split, mark_confirmation_use, run_search
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
@@ -33,8 +43,50 @@ def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]
     }
 
 
+def _input_hashes(args: argparse.Namespace) -> dict[str, str | None]:
+    return {
+        "universe_sha256": read_universe(args.universe)[0].content_sha256
+        if args.universe
+        else None,
+        "fundamentals_sha256": read_fundamentals(args.fundamentals)[0].content_sha256
+        if args.fundamentals
+        else None,
+    }
+
+
+def _span(dates: pd.DatetimeIndex, what: str) -> Window:
+    if len(dates) == 0:
+        raise SystemExit(f"the {what} period is empty; adjust the split")
+    return Window(dates[0].date(), dates[-1].date())
+
+
+def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> None:
+    """Refuse reserved data, then record the window unless already recorded."""
+    entries = ledger.load(path)
+    try:
+        ledger.check_inspection(entries, window)
+    except LedgerError as exc:
+        raise SystemExit(f"{path}: {exc}") from exc
+    if not ledger.is_inspected(entries, window):
+        ledger.append(
+            path,
+            "inspection",
+            {
+                "window": window.to_json(),
+                "dataset_id": manifest.dataset_id,
+                "dataset_sha256": manifest.content_sha256,
+                "note": note,
+            },
+        )
+
+
 def _evaluate(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
+    if args.ledger is not None:
+        dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
+        _record_inspection(
+            args.ledger, _span(dates, "data"), manifest, "invest-mine evaluate (full sample)"
+        )
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(args.expr, panel), panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
@@ -73,17 +125,86 @@ def _evaluate(args: argparse.Namespace) -> int:
 
 def _search(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
+    panel = build_panel(bars, **_optional_inputs(args))
+    params: dict[str, Any] = {
+        "n_trials": args.trials,
+        "seed": args.seed,
+        "horizon": args.horizon,
+        "dev_fraction": None if args.confirm_start else args.dev_fraction,
+        "confirm_start": args.confirm_start,
+        "embargo": args.embargo,
+        "top_k": args.top_k,
+    }
+    try:
+        split = chronological_split(
+            pd.DatetimeIndex(panel["close"].index),
+            args.dev_fraction,
+            args.horizon,
+            args.embargo,
+            args.confirm_start,
+        )
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    development = _span(split.dev_dates, "development")
+    confirmation = _span(split.confirm_dates, "confirmation")
+    identity = {
+        "dataset_sha256": manifest.content_sha256,
+        **_input_hashes(args),
+        "operator_version": OPERATOR_VERSION,
+        "params": params,
+        "development": development.to_json(),
+        "confirmation": confirmation.to_json(),
+    }
+    exp_id = ledger.experiment_id(identity)
+    use, reasons = "unrecorded", list[str]()
+    if args.ledger is not None:
+        # Decided before any candidate is scored, so the outcome cannot influence it.
+        try:
+            use, reasons = ledger.assess_confirmation(
+                ledger.load(args.ledger), development, confirmation, exp_id
+            )
+        except LedgerError as exc:
+            raise SystemExit(f"{args.ledger}: {exc}") from exc
+        if use == "exploratory" and args.require_confirmatory:
+            raise SystemExit(
+                f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
+            )
     result = run_search(
-        build_panel(bars, **_optional_inputs(args)),
+        panel,
         n_trials=args.trials,
         seed=args.seed,
         horizon=args.horizon,
         dev_fraction=args.dev_fraction,
+        confirm_start=args.confirm_start,
         embargo=args.embargo,
         top_k=args.top_k,
         dataset_id=manifest.dataset_id,
         dataset_sha256=manifest.content_sha256,
     )
+    result.confirmation = mark_confirmation_use(result.confirmation, use)
+    tag = {"experiment_id": exp_id, "confirmation_use": use}
+    result.family = [replace(f, selection={**f.selection, **tag}) for f in result.family]
+    result.config["experiment"] = {
+        **tag,
+        "reasons": reasons,
+        "ledger": None if args.ledger is None else str(args.ledger),
+        "identity": identity,
+    }
+    if args.ledger is not None:
+        # Recorded before any result is written, so no confirmation output goes unrecorded.
+        ledger.append(
+            args.ledger,
+            "experiment",
+            {
+                "experiment_id": exp_id,
+                "dataset_id": manifest.dataset_id,
+                **identity,
+                "family": [f.factor_id for f in result.family],
+                "n_proposals": len(result.ledger),
+                "confirmation_use": use,
+                "reasons": reasons,
+            },
+        )
     out = Path(args.out)
     (out / "factors").mkdir(parents=True, exist_ok=True)
     result.ledger.to_csv(out / "ledger.csv", index=False)
@@ -99,6 +220,8 @@ def _search(args: argparse.Namespace) -> int:
             ["factor_id", "expression", "confirm_mean_rank_ic", "p_holm", "status"]
         ].to_string(index=False)
     )
+    if use == "exploratory":
+        print(f"Exploratory: confirmation data was already used ({'; '.join(reasons)}).")
     return 0
 
 
@@ -180,6 +303,37 @@ def _export(args: argparse.Namespace) -> int:
     return 0
 
 
+def _ledger(args: argparse.Namespace) -> int:
+    try:
+        window = Window.parse(args.start, args.end)
+        entries = ledger.load(args.ledger)
+        if args.action == "check":
+            ledger.check_inspection(entries, window)
+            print(json.dumps({"window": str(window), "reserved": False}))
+            return 0
+        if args.action == "reserve":
+            used = [
+                e
+                for e in entries
+                if e["kind"] != "reservation"
+                and any(
+                    window.overlaps(Window.from_json(e[k]))
+                    for k in ("window", "development", "confirmation")
+                    if k in e
+                )
+            ]
+            if used:
+                raise LedgerError(f"{window} was already inspected or used by a search")
+        else:
+            ledger.check_inspection(entries, window)
+    except LedgerError as exc:
+        raise SystemExit(f"{args.ledger}: {exc}") from exc
+    kind = "reservation" if args.action == "reserve" else "inspection"
+    entry = ledger.append(args.ledger, kind, {"window": window.to_json(), "note": args.note})
+    print(json.dumps(entry))
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="invest-mine", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -199,6 +353,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     se.add_argument("--dev-fraction", type=float, default=0.6)
     se.add_argument("--embargo", type=int, default=0)
     se.add_argument("--top-k", type=int, default=5)
+    se.add_argument(
+        "--confirm-start",
+        help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction, "
+        "e.g. to confirm on a reserved window",
+    )
+    se.add_argument(
+        "--require-confirmatory",
+        action="store_true",
+        help="with --ledger: refuse to run if the confirmation data was already used",
+    )
     se.add_argument("--out", type=Path, required=True)
 
     fr = sub.add_parser("freeze", help="freeze a fixed, pre-specified formula (n_trials=1)")
@@ -236,9 +400,35 @@ def main(argv: Sequence[str] | None = None) -> int:
     for p in (ev, se, ex):
         p.add_argument("--universe", type=Path, help="universe bundle (point-in-time membership)")
         p.add_argument("--fundamentals", type=Path, help="fundamentals bundle (fund_<field>)")
+    ev.add_argument(
+        "--ledger", type=Path, help="confirmation-use ledger: refuse reserved data, record use"
+    )
+    se.add_argument(
+        "--ledger",
+        type=Path,
+        help="confirmation-use ledger: classify the run as confirmatory or exploratory",
+    )
+
+    le = sub.add_parser("ledger", help="reserve, record or check windows in a ledger")
+    le.add_argument(
+        "action",
+        choices=["reserve", "inspect", "check"],
+        help="reserve: keep a window untouched for confirmation; inspect: record a window "
+        "as already looked at; check: fail if a window touches an unused reservation",
+    )
+    le.add_argument("--ledger", type=Path, required=True)
+    le.add_argument("--start", required=True, help="first date (YYYY-MM-DD)")
+    le.add_argument("--end", help="last date (YYYY-MM-DD); open-ended if omitted")
+    le.add_argument("--note", default="", help="why (stored with reserve/inspect)")
 
     args = parser.parse_args(argv)
-    commands = {"evaluate": _evaluate, "search": _search, "freeze": _freeze, "export": _export}
+    commands = {
+        "evaluate": _evaluate,
+        "search": _search,
+        "freeze": _freeze,
+        "export": _export,
+        "ledger": _ledger,
+    }
     return commands[args.command](args)
 
 

@@ -49,6 +49,10 @@ A new download about ten hours later, run with `scripts/historical_workflow.sh` 
 
 **Conclusion:** the workflow runs end to end on real prices with recorded data identity. The fixed 5-day reversal rule loses money after realistic costs on this universe, and the equal-weight benchmark's return is inflated by survivorship bias.
 
+## Confirmation use
+
+Both runs requested 2010-01-01 to 2024-12-31 and inspected all of it (full-sample diagnostics and the backtest), so this history can only give exploratory evidence. Data from 2025-01-01 onward has never been downloaded or inspected. [`ledgers/yahoo-test.jsonl`](../ledgers/yahoo-test.jsonl) records both facts, and the workflow refuses to download or publish any window reaching 2025. A future confirmatory test must freeze its candidates on 2010–2024 and confirm once with `invest-mine search --ledger ledgers/yahoo-test.jsonl --confirm-start 2025-01-01`.
+
 ## Limitations
 
 - Survivorship bias: only companies that are S&P 100 members today; failed and removed companies are missing, and late listings (for example META, ABBV, UBER, PLTR) enter when their history starts.

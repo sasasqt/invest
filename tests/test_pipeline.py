@@ -153,6 +153,11 @@ def test_synthetic_workflow_script(tmp_path):
     metrics = json.loads((out / "eval" / "metrics.json").read_text())
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
+    [experiment] = [
+        json.loads(line) for line in (out / "mining/ledger.jsonl").read_text().splitlines()
+    ]
+    assert experiment["kind"] == "experiment"
+    assert experiment["confirmation_use"] == "confirmatory"
 
 
 @pytest.mark.parametrize("subset", [False, True])
@@ -165,10 +170,13 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
     snapshot = tmp_path / "snapshot"
     write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
+    ledger = tmp_path / "ledger.jsonl"
+    ledger.write_text((ROOT / "ledgers/yahoo-test.jsonl").read_text())
     env = {
         **os.environ,
         "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
         "SNAPSHOT": str(snapshot),
+        "LEDGER": str(ledger),
         "SYMBOLS_FILE": "/nonexistent",  # never read: the snapshot exists
         "START": "2020-03-01" if subset else "",
         "END": "2020-11-30" if subset else "",
@@ -206,6 +214,8 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert published["date"].max().date().isoformat() <= last
     assert set(published["date"]) == set(bars.loc[bars["date"].between(first, last), "date"])
     assert market["provenance"]["source_metadata"]["SYN001"]["exchangeName"] == "NMS"
+    # These dates lie inside the recorded inspected window, so the ledger is unchanged.
+    assert ledger.read_text() == (ROOT / "ledgers/yahoo-test.jsonl").read_text()
 
 
 def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tmp_path):
@@ -232,4 +242,25 @@ def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tm
     )
     assert done.returncode != 0
     assert "within the snapshot" in done.stderr
+    assert not out.exists()
+
+
+def test_historical_workflow_refuses_the_reserved_window_before_download(tmp_path):
+    """The committed Yahoo ledger keeps 2025 onward untouched for confirmation."""
+    out = tmp_path / "wf"
+    done = subprocess.run(
+        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+            "SYMBOLS_FILE": "/nonexistent",
+            "END": "2025-06-30",
+        },
+    )
+    assert done.returncode != 0
+    assert "reserved confirmation window 2025-01-01..open" in done.stderr
     assert not out.exists()
