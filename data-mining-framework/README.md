@@ -62,7 +62,7 @@ Start with a dataset-reader interface and one representative analysis workflow. 
 
 Trading rules, portfolio accounting, and execution simulation belong in [strategy evaluation](../strategy-evaluation/README.md). Search policies belong here. See the [architecture guide](../docs/ARCHITECTURE.md) for artifact boundaries and the distinction between factor diagnostics and strategy evaluation.
 
-Each component has its own `pyproject.toml` and tests and installs independently; it depends on `invest-data` only for the public bundle contract. The tree above is the target layout; `domain/`, `features/`, `models/` and `training/` do not exist yet.
+Each component has its own `pyproject.toml` and tests and installs independently; it depends on `invest-data` only for the public bundle contract. The tree above is the target layout. Today the package is flat modules (`expressions.py`, `diagnostics.py`, `search.py`, `ledger.py`, `artifact.py`, `inference.py`, `reporting.py`, `cli.py`) with tests directly under `tests/`; `domain/`, `features/`, `models/` and `training/` do not exist yet.
 
 ## Acceptance checks
 
