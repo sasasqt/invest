@@ -16,6 +16,7 @@ from pathlib import Path
 LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 FENCE = re.compile(r"^\s*(```|~~~)")
+INLINE_CODE = re.compile(r"(`+)(.*?)\1")
 EXTERNAL = ("http://", "https://", "mailto:")
 
 
@@ -33,14 +34,16 @@ def _lines_outside_code(text: str) -> list[str]:
             fenced = not fenced
             continue
         if not fenced:
-            lines.append(re.sub(r"`[^`]*`", "", line))
+            lines.append(line)
     return lines
 
 
 def slug(heading: str) -> str:
     """GitHub's anchor for a heading: lowercase, punctuation dropped, spaces to hyphens."""
     text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", heading)  # keep link text only
-    text = re.sub(r"[`*_]", "", text).strip().lower()
+    # Remove formatting markers without discarding underscores inside code spans.
+    text = re.sub(r"(`+)(.*?)\1|[*_]", lambda m: m.group(2) if m.group(1) else "", text)
+    text = text.strip().lower()
     text = re.sub(r"[^\w\- ]", "", text)
     return text.replace(" ", "-")
 
@@ -64,7 +67,7 @@ def check(root: Path) -> list[str]:
     cache: dict[Path, set[str]] = {}
     for md in _markdown_files(root):
         for line in _lines_outside_code(md.read_text(encoding="utf-8")):
-            for target in LINK.findall(line):
+            for target in LINK.findall(INLINE_CODE.sub("", line)):
                 if target.startswith(EXTERNAL):
                     continue
                 file_part, _, anchor = target.partition("#")

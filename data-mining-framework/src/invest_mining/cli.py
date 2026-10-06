@@ -103,23 +103,17 @@ def _search(args: argparse.Namespace) -> int:
 
 
 def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor, str]:
-    """The ``rank``-th confirmed factor of a search run and its confirmation start date.
+    """Export in the family order frozen on development data before confirmation.
 
-    Only factors that passed confirmation are eligible, ordered by Holm-adjusted p-value.
-    Signals start no earlier than the confirmation period, so exported decisions are
-    out of sample for the selection.
+    The confirmation table retains that order. Read only candidate IDs: neither
+    confirmation statistics nor pass/reject outcomes may select the replayed factor.
     """
-    confirmation = pd.read_csv(root / "confirmation.csv")
-    passed = confirmation[confirmation["status"] == "confirmation_passed"]
-    # Holm can tie adjusted p-values; break ties by confirmation t-statistic, then id.
-    passed = passed.sort_values(
-        ["p_holm", "confirm_t", "factor_id"], ascending=[True, False, True], kind="stable"
-    )
-    if rank < 1 or rank > len(passed):
+    family = pd.read_csv(root / "confirmation.csv", usecols=["factor_id"])
+    if rank < 1 or rank > len(family):
         raise SystemExit(
-            f"{root}: {len(passed)} factor(s) passed confirmation; cannot export rank {rank}"
+            f"{root}: {len(family)} factor(s) in the frozen family; cannot export rank {rank}"
         )
-    factor_id = str(passed.iloc[rank - 1]["factor_id"])
+    factor_id = str(family.iloc[rank - 1]["factor_id"])
     factor = FrozenFactor.load(root / "factors" / f"{factor_id}.json")
     confirm_start = json.loads((root / "config.json").read_text())["split"]["confirmation"][0]
     if start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start):
@@ -191,9 +185,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     source.add_argument(
         "--from-search",
         type=Path,
-        help="search output: export a confirmed factor from its confirmation start",
+        help="search output: export a development-selected factor from its confirmation start",
     )
-    ex.add_argument("--rank", type=int, default=1, help="with --from-search: n-th confirmed factor")
+    ex.add_argument(
+        "--rank", type=int, default=1, help="with --from-search: n-th factor in the frozen family"
+    )
     ex.add_argument("--out", type=Path, required=True)
     ex.add_argument(
         "--start",

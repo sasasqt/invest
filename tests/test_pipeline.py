@@ -99,6 +99,7 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
         )
     )
     first_id = exported["factor_id"]
+    assert first_id == confirmation[1].split(",")[0]  # frozen development ranking
     assert exported["start"] == confirm_start
     out = run(
         "invest_evaluation.cli",
@@ -124,7 +125,7 @@ def test_prepare_mine_evaluate(tmp_path, fmt):
     assert manifest["n_trials"] == 47
     statistics = json.loads((report / "statistics.json").read_text())
     assert statistics["deflated_sharpe"]["n_trials"] == 47
-    # Only out-of-sample (confirmation-period) decisions are traded.
+    # The development-selected candidate is replayed on confirmation-period decisions.
     trades = (report / "tables" / "trades.csv").read_text().splitlines()[1:]
     decisions = {line.split(",")[4] for line in trades if line.split(",")[4]}
     assert min(decisions) >= confirm_start

@@ -64,11 +64,9 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
     assert len(sig) > 0
     capsys.readouterr()
 
-    # --from-search: best confirmed factor, exported from the confirmation start.
+    # --from-search follows the family order frozen before confirmation.
     confirmation = pd.read_csv(tmp_path / "se" / "confirmation.csv")
-    passed = confirmation[confirmation["status"] == "confirmation_passed"]
-    best = passed.sort_values(["p_holm", "confirm_t"], ascending=[True, False]).iloc[0]
-    best = best["factor_id"]
+    best = confirmation.iloc[0]["factor_id"]
     split = json.loads((tmp_path / "se" / "config.json").read_text())["split"]
     common = ["export", "--data", str(data), "--from-search", str(tmp_path / "se")]
     assert main([*common, "--out", str(tmp_path / "auto")]) == 0
@@ -78,10 +76,28 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
     assert auto["decision_date"].min() >= pd.Timestamp(split["confirmation"][0])
     assert manifest.metadata["n_trials"] == 20 + 7
 
+    # Future confirmation outcomes cannot change the exported winner or earlier scores.
+    confirmation.loc[0, ["status", "p_holm", "confirm_t"]] = ["rejected", 1.0, -100.0]
+    confirmation.loc[1, ["status", "p_holm", "confirm_t"]] = [
+        "confirmation_passed",
+        1e-12,
+        100.0,
+    ]
+    confirmation.to_csv(tmp_path / "se" / "confirmation.csv", index=False)
+    assert main([*common, "--out", str(tmp_path / "changed")]) == 0
+    changed_manifest, changed = read_signals(tmp_path / "changed")
+    assert changed_manifest.metadata["factor_id"] == best
+    pd.testing.assert_frame_equal(changed, auto)
+    assert main([*common, "--rank", "2", "--out", str(tmp_path / "second")]) == 0
+    assert (
+        read_signals(tmp_path / "second")[0].metadata["factor_id"]
+        == confirmation.iloc[1]["factor_id"]
+    )
+
     with pytest.raises(SystemExit, match="precedes the confirmation period"):
         main([*common, "--start", split["development"][0], "--out", str(tmp_path / "early")])
     with pytest.raises(SystemExit, match="cannot export rank"):
-        main([*common, "--rank", str(len(passed) + 1), "--out", str(tmp_path / "none")])
+        main([*common, "--rank", str(len(confirmation) + 1), "--out", str(tmp_path / "none")])
     with pytest.raises(SystemExit):  # --factor and --from-search are exclusive
         main([*common, "--factor", str(factors[0]), "--out", str(tmp_path / "both")])
 
@@ -116,3 +132,16 @@ def test_search_with_no_qualifying_candidates_writes_structured_results(tmp_path
     assert len(ledger) == 7 and (ledger["status"] == "rejected").all()
     assert ledger["reason"].notna().all()
     assert "No candidates qualified" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match=r"0 factor.*frozen family"):
+        main(
+            [
+                "export",
+                "--data",
+                str(tmp_path / "data"),
+                "--from-search",
+                str(tmp_path / "search"),
+                "--out",
+                str(tmp_path / "signals"),
+            ]
+        )
+    assert not (tmp_path / "signals").exists()

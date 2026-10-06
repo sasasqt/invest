@@ -20,7 +20,7 @@ invest-data synthetic --out "$out/data/market" --format parquet \
 invest-mine search --data "$out/data/market" --universe "$out/data/universe" \
   --trials "$trials" --out "$out/mining/search"
 
-# The best confirmed factor, from the first confirmation date onwards.
+# The first development-selected factor, regardless of its confirmation outcome.
 invest-mine export --data "$out/data/market" --universe "$out/data/universe" \
   --from-search "$out/mining/search" --format parquet --out "$out/signals"
 

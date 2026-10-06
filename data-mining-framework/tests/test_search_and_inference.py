@@ -1,8 +1,10 @@
 import json
+from dataclasses import replace
 
 import pandas as pd
 import pytest
 
+from invest_data.bundle import BundleError
 from invest_data.schemas import read_signals
 from invest_data.sources import SyntheticConfig, synthetic_market
 from invest_mining.artifact import FrozenFactor
@@ -83,6 +85,14 @@ def test_export_signals_bundle(tmp_path, bars):
     assert sig["decision_date"].min() >= pd.Timestamp("2020-06-01")
     assert manifest.metadata["factor_id"] == f.factor_id
     assert manifest.metadata["available_at"] == "decision_date_close"
+
+
+@pytest.mark.parametrize("invalid", [True, 2.9, 0])
+def test_export_does_not_coerce_or_drop_invalid_search_trial_counts(tmp_path, bars, invalid):
+    factor = replace(_factor(), selection={"n_proposals": invalid})
+    with pytest.raises(BundleError, match="n_trials must be a positive integer"):
+        export_signals(factor, bars, tmp_path / "signals", dataset_id="d")
+    assert not (tmp_path / "signals").exists()
 
 
 def test_scores_respect_universe(bars):

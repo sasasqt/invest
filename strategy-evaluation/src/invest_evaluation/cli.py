@@ -57,7 +57,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     signal_manifest, signals = read_signals(args.signals)
     n_trials = args.n_trials
     if n_trials is None:
-        n_trials = int(signal_manifest.metadata.get("n_trials", 1))
+        n_trials = signal_manifest.metadata.get("n_trials", 1)
     if n_trials < 1:
         raise SystemExit("--n-trials must be at least 1")
     cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()

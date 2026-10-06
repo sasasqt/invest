@@ -53,7 +53,7 @@ uv run invest-mine search --data artifacts/data/synthetic --universe artifacts/d
 uv run invest-mine evaluate --data artifacts/data/synthetic --fundamentals artifacts/data/fundamentals \
   --expr "cs_rank(fund_book_to_price)" --out artifacts/mining/value
 
-# 3. Freeze the best confirmed factor and export signals from the first confirmation date.
+# 3. Export the first development-selected factor from the first confirmation date.
 uv run invest-mine export --data artifacts/data/synthetic --universe artifacts/data/universe \
   --from-search artifacts/mining/search --out artifacts/signals/best
 
@@ -74,6 +74,8 @@ uv run python scripts/check_markdown_links.py
 ```
 
 CI additionally builds the three wheels and runs the tests against the installed packages; see the [CI/CD guidelines](CI_CD_GUIDELINES.md).
+
+Automatic export follows the candidate order frozen during development. Confirmation scores and pass/reject outcomes never choose the replayed factor; inspect `confirmation.csv` separately. A portfolio replay does not promote a rejected or inconclusive factor. Changing `--rank` or strategy settings after inspecting confirmation results makes subsequent replays exploratory and requires new untouched data for final validation.
 
 ### Key conventions
 

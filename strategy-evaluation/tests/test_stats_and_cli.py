@@ -62,7 +62,7 @@ def test_cli_run_writes_complete_report(tmp_path, market, reversal_signals, caps
         reversal_signals,
         tmp_path / "s",
         dataset_id="s",
-        metadata={"factor_id": "rev5", "horizon_days": 1},
+        metadata={"factor_id": "rev5", "horizon_days": 1, "n_trials": 37},
     )
     cfg = tmp_path / "cfg.json"
     cfg.write_text(json.dumps({"strategy": {"rebalance_every": 5}, "costs": {"impact_coef": 0.3}}))
@@ -104,6 +104,8 @@ def test_cli_run_writes_complete_report(tmp_path, market, reversal_signals, caps
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((run / "config.json").read_text())["costs"]["impact_coef"] == 0.3
     assert "Deflated Sharpe" in (run / "report.md").read_text()
+    assert json.loads((run / "manifest.json").read_text())["n_trials"] == 20
+    assert json.loads((run / "statistics.json").read_text())["deflated_sharpe"]["n_trials"] == 20
     with pytest.raises(FileExistsError):
         main(
             [

@@ -9,7 +9,7 @@ uv run invest-eval run --data <market bundle> --signals <signals bundle> [--univ
 uv run pytest strategy-evaluation
 ```
 
-`--n-trials` sets the number of trials for the deflated Sharpe. It defaults to the signals bundle's optional `n_trials` metadata (written by `invest-mine export`), else 1; the value used is recorded in the run's `manifest.json`.
+`--n-trials` sets the number of trials for the deflated Sharpe. It defaults to the signals bundle's optional `n_trials` metadata (written by `invest-mine export`), else 1; the value used is recorded in the run's `manifest.json`. The metadata must be a positive integer; booleans, fractions, strings and null values are rejected. An explicit CLI value overrides valid metadata. Search proposal counts describe mining effort; include additional portfolio/rule trials when specifying a count for a broader selection experiment. DSR remains supplementary and does not repair holdout reuse.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 
