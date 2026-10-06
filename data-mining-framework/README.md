@@ -40,7 +40,7 @@ Use the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/
 ```text
 data-mining-framework/src/invest_mining/
   domain/        # Dataset, experiment, and result models
-  readers/       # CSV, read-only SQLite and Parquet adapters
+  readers/       # Thin wrappers over the invest_data contract readers
   expressions/   # Typed factor ASTs and operators
   search/        # Factor-search strategies: GP, RL, MCTS, etc.
   features/      # Shared training/inference feature semantics

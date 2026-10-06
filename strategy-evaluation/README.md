@@ -30,7 +30,7 @@ Policies that depend on actual portfolio state need the frozen-policy runtime in
 
 The package has its own `pyproject.toml` and tests and does not depend on mining. See the [architecture](../docs/ARCHITECTURE.md) and [Python guidelines](../PYTHON_GUIDELINES.md).
 
-Tests cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, delisting settlements, and rejection of signals unavailable at decision time (`tests/test_engine.py`, `tests/test_config.py`), plus metrics, statistics, benchmarks and the CLI (`tests/test_metrics.py`, `tests/test_stats_and_cli.py`). Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
+Tests cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, delisting settlements, and rejection of signals unavailable at decision time (`tests/test_engine.py`), configuration validation (`tests/test_config.py`), plus metrics, statistics, benchmarks and the CLI (`tests/test_metrics.py`, `tests/test_stats_and_cli.py`). Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
 
 Apply the portfolio portion of the [alpha validation protocol](../data-mining-framework/ALPHA_VALIDATION.md): evaluate frozen signals under base/adverse costs, execution delays, liquidity/capacity constraints, and dependence-aware uncertainty. Return a separate strategy report; statistical factor confirmation alone does not establish tradability.
 
