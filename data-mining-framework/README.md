@@ -4,7 +4,15 @@ Component folder: `data-mining-framework/`. Development branches follow the shar
 
 Implementation progress is tracked in the shared [roadmap](../ROADMAP.md) and [TODO list](../TODO.md). A known causal formula and frozen signals come first; automated search and learned models follow verified evaluation and robustness checks.
 
-This folder is reserved for a Python framework that consumes datasets described by [the dataset contract](../docs/DATA_CONTRACT.md). This document defines scope; executable code has not been added yet.
+Package `invest_mining` consumes datasets described by [the dataset contract](../docs/DATA_CONTRACT.md). Implemented: typed causal expressions with a safe parser and versioned operator semantics, point-in-time fundamentals as `fund_<field>` features, and cross-sectional operators restricted to the point-in-time universe (`expressions.py`); IC/rank IC, HAC tests, quantile and tail diagnostics, Holm/BH adjustments (`diagnostics.py`); a random-search baseline with a full trial ledger, purged chronological split, redundancy filter and one-shot Holm-adjusted confirmation (`search.py`); frozen factor artifacts (`artifact.py`); signal export (`inference.py`); and saved-result reports (`reporting.py`). Learned models (fitted transforms, ML predictors) and GP/MCTS/RL search are not implemented yet.
+
+```sh
+uv run invest-mine evaluate --data <market bundle> [--universe <bundle>] [--fundamentals <bundle>] \
+  --expr "cs_rank(-delta(close, 5))" --out <dir>
+uv run invest-mine search --data <market bundle> --trials 200 --seed 0 --out <dir>
+uv run invest-mine export --data <market bundle> --factor <dir>/factors/<id>.json --start <date> --out <signals>
+uv run pytest data-mining-framework
+```
 
 Read the [factor-mining literature review](LITERATURE_REVIEW.md) for industry-oriented papers, AST and gradient-based methods, exploration versus exploitation, evaluation requirements, and a staged implementation roadmap.
 
@@ -46,9 +54,9 @@ data-mining-framework/tests/
 
 Start with a dataset-reader interface and one representative analysis workflow. Introduce algorithm extension points when a second implementation needs them. Keep algorithm dependencies within this component. No downloader, source credentials, or pipeline imports are required to read a published bundle.
 
-Trading rules, portfolio accounting, and execution simulation belong in [strategy evaluation](../data-pipeline/strategy-evaluation/README.md). Search policies belong here. See the [architecture guide](../docs/ARCHITECTURE.md) for artifact boundaries and the distinction between factor diagnostics and strategy evaluation.
+Trading rules, portfolio accounting, and execution simulation belong in [strategy evaluation](../strategy-evaluation/README.md). Search policies belong here. See the [architecture guide](../docs/ARCHITECTURE.md) for artifact boundaries and the distinction between factor diagnostics and strategy evaluation.
 
-Each component should have its own `pyproject.toml`, dependency lockfile, and tests. Install and validate independently without depending on another component's private modules. Any shared public contract/runtime utility must have an explicit versioned interface. The paths above are planned, not implemented files.
+Each component has its own `pyproject.toml` and tests and installs independently; it depends on `invest-data` only for the public bundle contract. The tree above is the target layout; `domain/`, `features/`, `models/` and `training/` do not exist yet.
 
 ## Acceptance checks
 

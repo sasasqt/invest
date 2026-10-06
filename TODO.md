@@ -7,51 +7,53 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] DOC-01: Document three independent components in two top-level folders and their artifact boundaries ([architecture](docs/ARCHITECTURE.md)).
 - [x] DOC-02: Document [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) practices.
 - [x] DOC-03: Record factor-mining literature and primary-source evidence ([review](data-mining-framework/LITERATURE_REVIEW.md), [catalog](data-mining-framework/PRIMARY_SOURCE_CATALOG.md)).
-- [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](data-pipeline/strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
+- [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
 - [x] DOC-05: Add roadmap, actionable backlog, and README maintenance rules.
 - [x] DOC-06: Document [rapid software development practices](RAPID_DEVELOPMENT.md) and link them from development guidance.
 
 ## M0 — Contracts and initial scope
 
 - [ ] SCOPE-01: Select the first market, universe, frequency, licensed/authorized data source, and minimum strategy; document exclusions and execution assumptions.
-- [ ] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes.
+- [x] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes. *`market_bars`, `universe`, `fundamentals`, `signals` in `invest_data/schemas.py`; [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).*
 - [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms.
 - [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance.
 - [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
 
 ## M1 — Packages and tooling
 
-- [ ] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles.
-- [ ] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage.
-- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation.
-- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled.
+- [x] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles. *Python ≥ 3.11, uv workspace with one `uv.lock`; CI installs each component on its own.*
+- [x] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage. *`invest-data`, `invest-mine`, `invest-eval`; see README.*
+- [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *Done except Markdown/link validation and wheel builds (`.github/workflows/ci.yml`).*
+- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *Component and end-to-end tests exist; critical boundary validation uses explicit exceptions. Still missing: committed fixture bundles shared by all components.*
+- [x] REVIEW-01: Fix PR #1 correctness findings: explicit causal settlement events, decision-time quantiles, validated strategy targets/configuration, consistent excess-return Sharpe statistics, undefined/empty result handling, and metadata validation before publication. *Regression coverage in component tests; README and evaluator event contract updated.*
+- [x] REVIEW-02: Preserve loss/drawdown evidence and complete base/stress reports when a settlement makes the portfolio insolvent; handle short-series autocorrelations without numerical warnings. *Regression coverage in evaluator metric and CLI tests.*
 
 ## M2 — First runnable workflow
 
-- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling.
-- [ ] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
-- [ ] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
-- [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market.
-- [ ] EVAL-02: Implement one fixed bucket strategy using supplied signals, with explicit rebalance/holding rules and point-in-time eligibility.
-- [ ] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
-- [ ] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
-- [ ] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration.
+- [ ] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling. *Synthetic and local-CSV sources exist; a network adapter waits on SCOPE-01.*
+- [x] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
+- [x] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
+- [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market. *Done for adjusted daily bars without external flows (`invest_evaluation/engine.py`); external flows and unadjusted corporate actions remain.*
+- [x] EVAL-02: Implement one fixed bucket strategy using supplied signals, with explicit rebalance/holding rules and point-in-time eligibility.
+- [x] EVAL-03: Implement basic net P&L, returns, volatility, Sharpe, and drawdown with explicit units and undefined-result statuses.
+- [x] REPORT-01: Save resolved configuration, ledgers, metrics, chart inputs, and basic figures under ignored artifacts; render only saved results.
+- [x] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration. *`tests/test_pipeline.py` and component tests.*
 - [ ] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions.
 
 ## M3 — Evaluation completeness and robust alpha evidence
 
 - [ ] METRIC-01: Add remaining applicable trade, portfolio, cash-flow, downside, tail, drawdown, benchmark, exposure, cost, and capacity metrics from the specification.
 - [ ] QUANTILE-01: Implement deciles and top/bottom 1%, 5%, and 10% diagnostics with tie/missing/small-sample policies; keep partition buckets distinct from overlapping tails.
-- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks.
+- [ ] STATS-01: Implement effect sizes and dependence-aware uncertainty with documented HAC/block-bootstrap choices and calibration checks. *HAC tests, stationary bootstrap, PSR/DSR done; Monte Carlo calibration checks remain.*
 - [ ] STATS-02: Implement development/confirmation splits, label-overlap purging, trial ledgers, frozen selection, and applicable multiple-testing procedures.
 - [ ] ROBUST-01: Add time/universe/parameter/data/timing perturbations, redundancy diagnostics, and separate factor outcome statuses.
-- [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes.
+- [ ] ROBUST-02: Add base/adverse costs, delays, liquidity/capacity scenarios, and uncertainty for fixed strategies; publish separate portfolio validation outcomes. *Scenarios done (`robustness.py`); a portfolio validation status is not emitted yet.*
 - [ ] REPORT-02: Extend saved-result reports with quantile tables, uncertainty, robustness scenarios, and reasons for undefined/inconclusive results.
 
 ## M4 — Search, training, and inference
 
 - [ ] AST-01: Implement typed AST grammar, causal operator semantics, lookbacks, numerical-domain policies, and serialization compatibility tests.
-- [ ] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
+- [x] SEARCH-01: Add a simple search baseline with objective definition, trial capture, seeds, budgets, duplicate handling, and repeatable experiments.
 - [ ] TRAIN-01: Fit learned preprocessing and models only within development splits; persist transforms and configuration with fitted artifacts.
 - [ ] INFER-01: Verify frozen export/reload parity, schema compatibility, historical-context requirements, and inference without fitting.
 - [ ] COMPARE-01: Establish matched-budget comparisons with locked endpoints and independent confirmation before promoting search methods.

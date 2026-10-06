@@ -2,7 +2,7 @@
 
 Design by contract makes the obligations of a caller and the guarantees of an implementation explicit. Apply it to public APIs, artifact boundaries, important state transitions, and numerical routines. A contract is useful when it prevents a concrete failure or makes an assumption testable; it should not become ceremonial validation around every line of code.
 
-This repository currently contains design documents. The examples below are illustrative, not implemented package APIs.
+The examples below are illustrative. The implemented boundaries follow these rules: bundle readers raise `BundleError`, the backtest engine raises `InputError` and `AccountingError`, and metrics return explicit statuses instead of `assert`-based checks.
 
 ## 1. Preconditions, postconditions, and invariants
 
@@ -43,7 +43,7 @@ Do not use Python `assert` to validate external inputs or essential production c
 
 Use standard `ValueError` or `TypeError` for simple APIs, or a small documented exception hierarchy when consumers need to distinguish schema, compatibility, causality, and accounting errors. Catch errors only where the caller can recover meaningfully; preserve context when wrapping them.
 
-Distinguish **invalid input** from a **valid but undefined statistic**. Invalid return data should fail validation; a valid flat series may produce a metric with `value: null`, `status: undefined`, and a reason. Follow the [metric specification](data-pipeline/strategy-evaluation/METRICS.md).
+Distinguish **invalid input** from a **valid but undefined statistic**. Invalid return data should fail validation; a valid flat series may produce a metric with `value: null`, `status: undefined`, and a reason. Follow the [metric specification](strategy-evaluation/METRICS.md).
 
 ## 4. Repository contracts
 

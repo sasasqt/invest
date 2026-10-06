@@ -81,7 +81,7 @@ Small datasets and short runs accelerate debugging. Label them as development ev
 
 - Keep development feedback separate from frozen confirmation. Repeatedly inspecting a holdout turns it into development data.
 - Capture datasets, configurations, versions, seeds, budgets, and unsuccessful trials automatically as experiment tooling is implemented.
-- Keep factor diagnostics separate from executable portfolio performance; use the [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) and [metric specification](data-pipeline/strategy-evaluation/METRICS.md).
+- Keep factor diagnostics separate from executable portfolio performance; use the [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) and [metric specification](strategy-evaluation/METRICS.md).
 - Confirm causality and accounting before expensive algorithm comparisons. Add complexity only after a reliable baseline is available.
 
 ## 10. Finish each increment

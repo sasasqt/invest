@@ -1,6 +1,6 @@
 # Python Development Guidelines
 
-Use these guidelines when building this repository. It currently contains design and research documents; the layout and commands below describe a future setup, not an installed application. Apply the examples to each independent component in the [architecture](docs/ARCHITECTURE.md).
+Use these guidelines when building this repository. The generic example layout below uses a single package named `invest`; this repository applies it to its three components (`invest_data`, `invest_mining`, `invest_evaluation`) as described in the [architecture](docs/ARCHITECTURE.md). The commands in [Development checks](#development-checks) are the ones CI runs.
 
 ## Project structure
 
@@ -32,7 +32,8 @@ Create directories only when there is code that needs them. Small projects can s
 ## Packaging and dependencies
 
 - Declare package metadata, the supported Python range, build backend, dependencies, and tool settings in `pyproject.toml`. Prefer a maintained stable Python version supported by required libraries.
-- Use a virtual environment. Select one dependency manager; `uv` is a suitable default. Commit its lockfile and use frozen installs in CI and repeatable environment setup.
+- Use a virtual environment. This repository uses `uv`: the root `pyproject.toml` declares a uv workspace whose members are the three components, with one committed `uv.lock` and frozen installs in CI. Each member keeps its own `pyproject.toml` and runtime dependencies so it still installs on its own; shared development tools are declared once at the root.
+- A component may depend on another component only through an explicitly versioned public module (today: `invest_data.bundle` and `invest_data.schemas`), never on private modules. Evaluation must not depend on mining.
 - Separate runtime dependencies from development tools. Add dependencies only when their maintenance cost is justified.
 - Use standard packaging entry points for executable commands rather than modifying `sys.path`.
 - Document installation, configuration, common commands, and troubleshooting in `README.md`.
@@ -78,18 +79,17 @@ Use pytest. Test observable behavior and business requirements rather than priva
 
 ## Development checks
 
-After the package and development dependencies (`pytest`, `pytest-cov`, `ruff`, `mypy`, and `build`) are configured, the expected checks are:
+Run these from the repository root (CI runs the same commands on Python 3.11 and 3.13, plus an install of each component on its own):
 
 ```sh
 uv sync --frozen
 uv run ruff format --check .
 uv run ruff check .
-uv run mypy src
-uv run pytest --cov=invest --cov-branch --cov-report=term-missing
-uv run python -m build
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
+uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
 ```
 
-These commands are recommendations and have not been run against an implemented project. A zero-test run does not demonstrate readiness. For distributable packages, also install the built wheel in a clean environment and verify its imports and entry points.
+Wheel builds (`uv build --package <name>`) are not yet part of CI. A zero-test run does not demonstrate readiness. For distributable packages, also install the built wheel in a clean environment and verify its imports and entry points.
 
 ## Continuous integration and change review
 

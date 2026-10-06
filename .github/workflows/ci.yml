@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --frozen
+      - run: uv run ruff format --check .
+      - run: uv run ruff check .
+      - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
+      - run: uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
+
+  independent-install:
+    # Each component must install and pass its own tests without the others' dev setup.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - data-pipeline/data-preparation
+          - data-mining-framework
+          - strategy-evaluation
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+      - name: Install component alone (plus the data contract package it depends on)
+        run: |
+          uv venv /tmp/venv
+          uv pip install --python /tmp/venv ./data-pipeline/data-preparation ./${{ matrix.component }} pytest
+      - name: Mining must not be importable from evaluation
+        if: matrix.component == 'strategy-evaluation'
+        run: /tmp/venv/bin/python -c "import importlib.util, sys; sys.exit(importlib.util.find_spec('invest_mining') is not None)"
+      - run: /tmp/venv/bin/python -m pytest -p no:cacheprovider ${{ matrix.component }}/tests

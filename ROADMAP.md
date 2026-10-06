@@ -1,8 +1,8 @@
 # Roadmap
 
-The repository is at the design and research stage. No application packages, commands, CI, or executable test suites exist yet. Milestones below are planned; completing documentation does not complete implementation. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
+A first end-to-end baseline (most of M1 and M2) is implemented and tested on synthetic data. M0's market and data-source decisions are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
 
-Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable within the requested two top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
+Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
 
 ## M0 — Finalize contracts and scope
 
@@ -14,7 +14,7 @@ Select the initial market and data source, supported Python version, dependency 
 
 ## M1 — Establish independent packages and quality checks
 
-**Status:** planned. **Depends on:** M0's scope and initial interfaces.
+**Status:** mostly done; Markdown/link checks and wheel builds remain. **Depends on:** M0's scope and initial interfaces.
 
 Create `invest_data`, `invest_mining`, and `invest_evaluation` with component manifests, lockfiles, thin entry points, and tests as behavior is introduced. Establish Ruff, mypy, pytest, packaging checks, and CI. Create only modules needed by the first workflow. Add deterministic small fixtures and contract checks that remain effective when assertions are disabled.
 
@@ -22,7 +22,7 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 ## M2 — Deliver one correct end-to-end baseline
 
-**Status:** planned. **Depends on:** M0 and M1.
+**Status:** done on synthetic data; a run on representative historical data (FLOW-02) waits on M0's data-source decision. **Depends on:** M0 and M1.
 
 Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one known causal formula; export frozen signals; run one declared bucket strategy. Specify event order, eligible fills, fees, cash/position accounting, corporate actions, missing marks, and the selected market's constraints. Save basic metrics, result tables, and figures without rerunning calculations during rendering. Then exercise the same flow on a representative historical dataset.
 
@@ -32,7 +32,7 @@ Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one
 
 **Status:** planned. **Depends on:** M2's verified accounting and returns.
 
-Implement the [metric specification](data-pipeline/strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
+Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
 
 **Acceptance gate:** hand-calculated metric fixtures and statistical calibration checks pass; deciles and overlapping tails follow declared rules; reports separate factor confirmation from executable strategy validation and retain failed/inconclusive trials.
 

@@ -1,6 +1,6 @@
 # Dataset exchange contract
 
-Status: generic dataset specification for the three logical components. Readers, writers, and validation tests are not implemented yet. Financial timing/universe metadata and signal/model/report contracts remain to be finalized before implementation.
+Status: implemented in `invest_data.bundle` (generic v1) and `invest_data.schemas` (financial dataset kinds), with tests in `data-pipeline/data-preparation/tests`. Fitted-model and report contracts are not yet machine-validated.
 
 ## Boundary
 
@@ -10,7 +10,7 @@ Producer and consumer adapters implement this versioned contract without dependi
 
 ## Version 1 dataset bundle
 
-Each dataset is a directory containing `manifest.json` and either `data.csv` or `data.sqlite`. The initial formats are CSV and SQLite, both usable without a database server. Other database systems can be added behind separate adapters later.
+Each dataset is a directory containing `manifest.json` and one data file: `data.csv`, `data.sqlite`, or `data.parquet`. All three work without a database server. Parquet is the recommended format for large panels: it is typed and columnar, so it needs no custom null/escape convention and standard tools (pandas, pyarrow, DuckDB, Polars) read it directly. CSV remains for human inspection and interchange. Other database systems can be added behind separate adapters later.
 
 Example manifest for CSV:
 
@@ -35,6 +35,17 @@ Example manifest for CSV:
 
 For SQLite, use `"storage": {"format": "sqlite", "path": "data.sqlite", "table": "observations"}`. The manifest defines logical types for both formats: `string`, `int64`, `float64`, `boolean`, `date`, `timestamp`, and `decimal`. Decimal columns additionally declare precision and scale. Column names are unique, ordered, and match the stored dataset. Nullable columns may contain nulls; a declared primary key must be non-null and unique. `row_count` must equal the stored row count.
 
+### Optional v1 extensions
+
+Readers that ignore unknown keys remain compatible with these optional manifest fields:
+
+- `content_sha256`: a format-independent hash of the column schema and canonical row values. CSV, SQLite and Parquet copies of the same data have the same hash. Readers verify it when present.
+- `dataset_kind` and `metadata`: financial semantics layered on the generic table.
+  - `market_bars`: keys `(date, instrument)`, columns `open, high, low, close, volume`. Required metadata: `frequency`, `currency`, `price_adjustment`, `calendar`. A missing row means the instrument was not tradable that session.
+  - `universe`: point-in-time membership intervals `(universe, instrument, start_date, end_date)`. Member on date `d` when `start_date <= d < end_date`; a null `end_date` means still a member. Intervals for one instrument must not overlap.
+  - `fundamentals`: point-in-time values `(instrument, field, period_end, available_date, value)`, keyed by all but `value`. A row is usable from the close of `available_date`, which must not precede `period_end`. Revisions are new rows with a later `available_date`; nothing is overwritten. `invest_data.pit.fundamentals_asof` returns, for each date, the latest revision of the most recent period published by then.
+  - `signals`: keys `(decision_date, instrument)`, column `score` (higher is more attractive). Required metadata: `available_at = "decision_date_close"`, `signal_type`, `factor_id`, `horizon_days`. Consumers may act no earlier than the next session.
+
 ## Serialization rules
 
 - CSV uses UTF-8, a header, comma delimiters, and standard CSV quoting. Use the literal `\N` (one backslash followed by `N`) for null. Prefix one additional backslash to any non-null string beginning with a backslash; readers reverse that escape after detecting the null token. Thus raw field content `\\N` represents the non-null string `\N`. An empty string remains an empty string. This is an explicit custom null/escape convention; generic CSV readers need a matching adapter.
@@ -42,6 +53,8 @@ For SQLite, use `"storage": {"format": "sqlite", "path": "data.sqlite", "table":
 - SQLite uses SQL NULL, INTEGER for int64 and booleans (0 or 1), REAL for float64, and TEXT for string, date, timestamp, and decimal. Readers enforce the manifest's logical types rather than relying on SQLite affinity alone.
 - Artifact paths are relative to the bundle root and may not escape it. SQLite table names come from validated metadata and must be quoted safely; readers open databases read-only.
 - Include units, currency, and feature meanings as optional column metadata where relevant. Provenance must not contain credentials or private access URLs.
+- Parquet stores each logical type natively: `string`, `int64`, `float64`, `bool`, `date32`, `timestamp[us, UTC]`, and `decimal128(precision, scale)`. Readers reject a file whose column names or Arrow types differ from the manifest.
+
 
 ## Publication and consumption
 

@@ -1,0 +1,52 @@
+[project]
+name = "invest-workspace"
+version = "0.1.0"
+description = "Workspace root for the invest research framework (not a package)."
+requires-python = ">=3.11"
+dependencies = ["invest-data", "invest-mining", "invest-evaluation"]
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "mypy>=1.11"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+  "data-pipeline/data-preparation",
+  "strategy-evaluation",
+  "data-mining-framework",
+]
+
+[tool.uv.sources]
+invest-data = { workspace = true }
+invest-mining = { workspace = true }
+invest-evaluation = { workspace = true }
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY", "PD002", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["invest_data", "invest_mining", "invest_evaluation"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-q --import-mode=importlib"
+testpaths = [
+  "data-pipeline/data-preparation/tests",
+  "data-mining-framework/tests",
+  "strategy-evaluation/tests",
+  "tests",
+]
+markers = ["integration: crosses component boundaries through published artifacts"]
+filterwarnings = ["error::RuntimeWarning:invest_.*"]

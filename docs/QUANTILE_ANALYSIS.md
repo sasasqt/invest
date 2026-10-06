@@ -1,6 +1,6 @@
 # Quantile analysis for factors and strategies
 
-This is a shared report specification, not an implemented evaluator. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../data-pipeline/strategy-evaluation/METRICS.md).
+This is a shared report specification. Deciles and overlapping tail slices are implemented as factor diagnostics in `invest_mining/diagnostics.py`; bucket portfolios are evaluated through the quantile strategy in `invest_evaluation`. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../strategy-evaluation/METRICS.md).
 
 ## Signal buckets
 
@@ -39,7 +39,7 @@ Overlapping multi-period forward returns and idealized bucket spreads are **sign
 
 Use explicit portfolio rules to turn selected buckets into positions: long-only or long-short, gross/net exposure, weighting, holding horizon, staggered holdings, rebalance schedule, costs, borrowing, and liquidity constraints.
 
-Report the applicable [strategy metrics](../data-pipeline/strategy-evaluation/METRICS.md) for each prespecified selection policy, including turnover and capacity. A 1% portfolio may have better idealized returns but worse concentration and execution costs.
+Report the applicable [strategy metrics](../strategy-evaluation/METRICS.md) for each prespecified selection policy, including turnover and capacity. A 1% portfolio may have better idealized returns but worse concentration and execution costs.
 
 Keep threshold selection and trading-rule tuning in development data. The family of confirmation tests includes examined thresholds, horizons, and revisions as specified in the validation protocol. Do not promote the best test-period bucket as if its threshold were selected beforehand.
 
