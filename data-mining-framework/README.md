@@ -28,7 +28,7 @@ Use the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/
 
 ## Responsibilities
 
-- Load CSV and SQLite bundles through input adapters and validate their manifests and data.
+- Load CSV, SQLite and Parquet bundles through the `invest_data` contract readers and validate their manifests and data.
 - Discover factors and fit models through analysis, feature engineering, training, tuning, and reproducible result export.
 - Apply frozen models and preprocessing in inference to publish timestamped signals.
 - Evaluate factor and prediction quality; consume separately produced strategy reports when portfolio feedback is needed.
@@ -40,7 +40,7 @@ Use the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/
 ```text
 data-mining-framework/src/invest_mining/
   domain/        # Dataset, experiment, and result models
-  readers/       # CSV and read-only SQLite adapters
+  readers/       # Thin wrappers over the invest_data contract readers
   expressions/   # Typed factor ASTs and operators
   search/        # Factor-search strategies: GP, RL, MCTS, etc.
   features/      # Shared training/inference feature semantics
@@ -64,6 +64,6 @@ Each component has its own `pyproject.toml` and tests and installs independently
 
 ## Acceptance checks
 
-Test both storage adapters against independent contract fixtures, invalid-input errors, deterministic analysis, and training/evaluation separation. A smoke test must read a bundle and produce meaningful results. Follow [Python guidelines](../PYTHON_GUIDELINES.md) for linting, typing, packaging, and test quality.
+Test the storage formats against independent contract fixtures, invalid-input errors, deterministic analysis, and training/evaluation separation. A smoke test must read a bundle and produce meaningful results. Follow [Python guidelines](../PYTHON_GUIDELINES.md) for linting, typing, packaging, and test quality.
 
 Implement statistical calibration, causality, and robustness tests from the validation protocol. Factor confirmation and execution-aware strategy validation are separate outcomes; neither may be inferred from training scores alone.

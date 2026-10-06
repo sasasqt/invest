@@ -17,7 +17,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] CONTRACT-01: Finalize financial dataset schema and manifest validation, including keys, units, availability/revision times, membership, adjustments, calendar, missing values, and hashes. *`market_bars`, `universe`, `fundamentals`, `signals` in `invest_data/schemas.py`; [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).*
 - [ ] CONTRACT-02: Define fitted artifact and signal schemas, including score/weight/order distinctions, operator versions, training cutoff, horizons, and fitted transforms. *Implemented: `FrozenFactor` artifact v1 (orientation, horizon, training window, dataset hash, operator version; `invest_mining/artifact.py`) and the `signals` kind with `signal_type = score` and optional `n_trials`. Missing: fitted-model/transform artifacts, weight and order signal types, compatibility fixtures.*
 - [ ] CONTRACT-03: Define strategy configuration and evaluation result schemas, including fills, positions, equity, external flows, costs, metric statuses, and provenance. *Implemented: validated `BacktestConfig` (`config.py`); runs save the resolved config, daily/trade/episode ledgers, metrics with statuses, and provenance (`reporting.py`). Missing: a versioned machine-readable result schema and external flows.*
-- [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
+- [ ] CONTRACT-04: Define version compatibility/migration rules and independent valid/invalid CSV/SQLite/Parquet fixtures; preserve the documented null/escaping rules in [DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
 
 ## M1 — Packages and tooling
 
@@ -33,7 +33,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 ## M2 — First runnable workflow
 
 - [x] DATA-01: Implement one source adapter with raw snapshot provenance, explicit timeouts, bounded retries, and source-error handling. *Test-only Yahoo Finance adapter (`invest_data/yahoo.py`, `invest-data yahoo download|publish`): immutable raw snapshots with per-file SHA-256 and failures, offline replay with hash checks, rejected-row reports, same snapshot → same `content_sha256`. Offline tests with fabricated responses in `test_yahoo.py`. An authorized research source is still open (SCOPE-01).*
-- [x] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite publication.
+- [x] DATA-02: Implement deterministic cleaning, rejected-row reporting, semantic validation, and atomic CSV/SQLite/Parquet publication.
 - [x] DATA-03: Harden Yahoo replay and snapshot publication: exclusive atomic snapshots, interrupted-download cleanup, supported US equity/ETF metadata, explicit date subsets and selection provenance. *Regression tests cover competing writers, unsupported markets and workflow scope overrides.*
 - [x] MINE-01: Implement independent readers, one known causal formula, frozen artifact loading, and aligned timestamped signal export.
 - [ ] EVAL-01: Specify and implement event order, portfolio state, fill eligibility, fees, external flows, corporate actions, and valuation for the initial market. *Done for adjusted daily bars without external flows (`invest_evaluation/engine.py`); external flows and unadjusted corporate actions remain.*
@@ -67,7 +67,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 
 - [ ] SEARCH-02: Evaluate GP, differentiable/gradient-assisted AST search, MCTS, and learned generators against the baseline; prioritize using literature evidence and observed bottlenecks.
 - [ ] POLICY-01: Specify and test a frozen stateful-policy interface with actual holdings/cash/fill feedback before enabling policy simulation.
-- [ ] SCALE-01: Profile representative workloads before adding columnar adapters, parallel execution, or caching; verify correctness and reproducibility of each extension.
+- [ ] SCALE-01: Profile representative workloads before adding further storage adapters, parallel execution, or caching; verify correctness and reproducibility of each extension.
 - [ ] PRODUCT-01: Assess additional markets and optional dashboard requirements after saved reports satisfy the baseline workflow.
 
 ## Updating the backlog and README
