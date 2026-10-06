@@ -91,6 +91,9 @@ def _search(args: argparse.Namespace) -> int:
     (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
     for factor in result.family:
         factor.save(out / "factors" / f"{factor.factor_id}.json")
+    if not result.family:
+        print("No candidates qualified for confirmation; see ledger.csv for rejection reasons.")
+        return 0
     print(
         result.confirmation[
             ["factor_id", "expression", "confirm_mean_rank_ic", "p_holm", "status"]

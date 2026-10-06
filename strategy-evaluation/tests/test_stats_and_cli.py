@@ -118,3 +118,131 @@ def test_cli_run_writes_complete_report(tmp_path, market, reversal_signals, caps
             ]
         )
     capsys.readouterr()
+
+
+def test_sharpe_statistics_use_the_configured_excess_return_basis():
+    from invest_evaluation.metrics import period_rate, return_metrics
+    from invest_evaluation.stats import strategy_statistics
+
+    annual = 0.10
+    rf = period_rate(annual, 252)
+    returns = pd.Series(rf + np.random.default_rng(0).normal(0, 0.0001, 252))
+    stats = strategy_statistics(returns, 252, risk_free_annual=annual)
+    metric = return_metrics(returns, v0=1000, annualization=252, risk_free_annual=annual)
+    low, high = stats["bootstrap"]["sharpe_ci"]
+    assert low < metric["sharpe"].value < high
+    expected_psr = probabilistic_sharpe(returns - rf)
+    assert stats["probabilistic_sharpe_vs_zero"] == expected_psr
+    assert stats["deflated_sharpe"] == deflated_sharpe(returns - rf, 1)
+    assert stats["sharpe_basis"] == "excess_returns"
+    assert stats["risk_free_annual"] == annual
+
+
+def test_flat_bootstrap_is_explicitly_undefined():
+    with np.errstate(all="raise"):
+        out = bootstrap_ci(pd.Series(np.zeros(65)), 252)
+    assert out["status"] == "undefined"
+    assert out["reason"] == "zero_excess_return_dispersion"
+    assert out["sharpe_ci"] is None and out["share_sharpe_le_0"] is None
+    assert out["valid_sharpe_replications"] == 0
+    assert out["annual_mean_ci"] == [0.0, 0.0]
+
+
+def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
+    dates = pd.bdate_range("2024-01-01", periods=65)
+    bars = pd.DataFrame(
+        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9) for d in dates],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+    )
+    signals = pd.DataFrame({"decision_date": [dates[0]], "instrument": ["A"], "score": [1.0]})
+    publish_market_bars(bars, tmp_path / "data", dataset_id="flat", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        signals,
+        tmp_path / "signals",
+        dataset_id="s",
+        metadata={"factor_id": "constant", "horizon_days": 1},
+    )
+    assert (
+        main(
+            [
+                "run",
+                "--data",
+                str(tmp_path / "data"),
+                "--signals",
+                str(tmp_path / "signals"),
+                "--out",
+                str(tmp_path / "run"),
+                "--no-scenarios",
+            ]
+        )
+        == 0
+    )
+    stats = json.loads((tmp_path / "run" / "statistics.json").read_text())
+    assert stats["bootstrap"]["status"] == "undefined"
+    assert "n/a (zero_excess_return_dispersion)" in (tmp_path / "run" / "report.md").read_text()
+
+
+def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path):
+    dates = pd.bdate_range("2024-01-01", periods=65)
+    bars = pd.DataFrame(
+        [
+            (d, "A", 10.0 + i / 10, 10.0 + i / 10, 10.0 + i / 10, 10.0 + i / 10, 1e9)
+            for i, d in enumerate(dates)
+        ],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+    )
+    signals = pd.DataFrame({"decision_date": dates, "instrument": "A", "score": 1.0})
+    publish_market_bars(bars, tmp_path / "data", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        signals,
+        tmp_path / "signals",
+        dataset_id="s",
+        metadata={"factor_id": "constant", "horizon_days": 1},
+    )
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(
+        json.dumps(
+            {
+                "initial_capital": 1000,
+                "strategy": {"long_fraction": 1, "short_fraction": 0, "min_names": 1},
+                "costs": {
+                    "adv_window": 1,
+                    "vol_window": 2,
+                    "commission_bps": 0,
+                    "half_spread_bps": 0,
+                    "impact_coef": 0,
+                },
+            }
+        )
+    )
+    events = [{"date": dates[40].date().isoformat(), "instrument": "A", "settlement_price": 8.0}]
+    event_file = tmp_path / "events.json"
+    event_file.write_text(json.dumps(events))
+    assert (
+        main(
+            [
+                "run",
+                "--data",
+                str(tmp_path / "data"),
+                "--signals",
+                str(tmp_path / "signals"),
+                "--config",
+                str(cfg),
+                "--delistings",
+                str(event_file),
+                "--out",
+                str(tmp_path / "run"),
+            ]
+        )
+        == 0
+    )
+    run = tmp_path / "run"
+    trades = pd.read_csv(run / "tables" / "trades.csv")
+    settlement = trades[trades["reason"] == "delisted_liquidation"]
+    assert len(settlement) == 1 and settlement.iloc[0]["price"] == 8.0
+    daily = pd.read_csv(run / "tables" / "daily.csv")
+    assert (daily["n_long"].iloc[40:] == 0).all()
+    assert daily["equity"].iloc[40:].nunique() == 1
+    assert json.loads((run / "manifest.json").read_text())["delisting_settlements"] == events
+    scenarios = pd.read_csv(run / "tables" / "scenarios.csv")
+    assert (scenarios["cagr"] < 0).all()  # every scenario uses the loss-making settlement

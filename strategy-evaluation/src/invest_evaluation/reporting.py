@@ -174,9 +174,11 @@ def _write_summary(root: Path) -> None:
                 lines.append(f"| {k} | {_fmt(metrics[section][k])} |")
         lines.append("")
     b = stats.get("bootstrap", {})
-    if b.get("status") == "ok":
+    if b.get("status") == "ok" and b.get("sharpe_ci") is not None:
         lo, hi = b["sharpe_ci"]
         lines.append(f"Sharpe {b['level']:.0%} stationary-bootstrap CI: [{lo:.2f}, {hi:.2f}]")
+    elif b.get("status") == "undefined":
+        lines.append(f"Sharpe stationary-bootstrap CI: n/a ({b.get('reason')})")
     dsr = stats.get("deflated_sharpe", {})
     if dsr.get("status") == "ok":
         lines.append(f"Deflated Sharpe ratio (n_trials={dsr['n_trials']}): {dsr['dsr']:.3f}")

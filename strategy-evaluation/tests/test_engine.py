@@ -153,15 +153,86 @@ def test_future_prices_and_signals_cannot_change_the_past(market, reversal_signa
     pd.testing.assert_series_equal(base.loc[:cut], alt2.loc[:cut])
 
 
-def test_delisting_while_held_is_liquidated_at_final_close():
+def test_explicit_delisting_settlement_reconciles():
     bars = hand_market()
     bars = bars[~((bars["instrument"] == "A") & (bars["date"] > "2024-01-05"))]
-    res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"A": 1.0}))
+    events = pd.DataFrame([{"date": "2024-01-05", "instrument": "A", "settlement_price": 8.0}])
+    res = run_backtest(
+        bars, signals_on("2024-01-03"), hand_config(), Fixed({"A": 1.0}), delistings=events
+    )
     liq = res.trades[res.trades["reason"] == "delisted_liquidation"].iloc[0]
-    assert liq["date"] == pd.Timestamp("2024-01-05") and liq["price"] == 12.0
+    assert liq["date"] == pd.Timestamp("2024-01-05") and liq["price"] == 8.0
     assert res.episodes.iloc[0]["exit_reason"] == "delisted"
-    assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0 / 11.0 * 12.0)
+    assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0 / 11.0 * 8.0)
+    assert res.episodes["pnl"].sum() == pytest.approx(res.daily["equity"].iloc[-1] - 1000.0)
     assert res.daily["n_long"].iloc[-1] == 0
+
+
+@pytest.mark.parametrize("weight", [1.0, -0.5])
+def test_future_bar_removal_cannot_change_past_portfolio_state(weight):
+    bars = hand_market()
+    cut = pd.Timestamp("2024-01-05")
+    changed = bars[~((bars["instrument"] == "A") & (bars["date"] > cut))]
+    cfg = hand_config(borrow_bps_annual=2520.0, cash_rate_annual=0.05)
+    baseline = run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"A": weight}))
+    altered = run_backtest(changed, signals_on("2024-01-03"), cfg, Fixed({"A": weight}))
+    pd.testing.assert_frame_equal(baseline.daily.loc[:cut], altered.daily.loc[:cut])
+    assert "delisted_liquidation" not in altered.trades["reason"].values
+    assert altered.daily["n_long" if weight > 0 else "n_short"].iloc[-1] == 1
+
+
+def test_future_settlement_cannot_change_past_results():
+    bars = hand_market()
+    cfg = hand_config(borrow_bps_annual=2520.0)
+    baseline = run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"A": -0.5}))
+    events = pd.DataFrame([{"date": "2024-01-08", "instrument": "A", "settlement_price": 0.0}])
+    settled = run_backtest(
+        bars, signals_on("2024-01-03"), cfg, Fixed({"A": -0.5}), delistings=events
+    )
+    pd.testing.assert_frame_equal(baseline.daily.iloc[:-1], settled.daily.iloc[:-1])
+    assert settled.daily["n_short"].iloc[-1] == 0
+    assert settled.trades.iloc[-1]["price"] == 0.0
+
+
+@pytest.mark.parametrize(
+    "weights, message",
+    [
+        (pd.Series({"TYPO": 1.0}), "unknown or ineligible"),
+        (pd.Series([0.5, 0.5], index=["A", "A"]), "unique"),
+        (pd.Series({"A": np.nan}), "finite"),
+        (pd.Series({"A": np.inf}), "finite"),
+        (pd.Series({"A": "1"}), "finite"),
+        (pd.Series({"A": 2.0}), "gross_leverage"),
+    ],
+)
+def test_invalid_strategy_targets_are_rejected(weights, message):
+    strategy = Fixed({})
+    strategy.weights = weights
+    with pytest.raises(InputError, match=message):
+        run_backtest(hand_market(), signals_on("2024-01-03"), hand_config(), strategy)
+
+
+def test_strategy_cannot_trade_outside_decision_time_eligibility():
+    with pytest.raises(InputError, match="ineligible"):
+        run_backtest(
+            hand_market(), signals_on("2024-01-03", names=("A",)), hand_config(), Fixed({"B": 1.0})
+        )
+
+
+@pytest.mark.parametrize(
+    "event",
+    [
+        {"date": "2024-01-05", "instrument": "TYPO", "settlement_price": 0.0},
+        {"date": "2030-01-01", "instrument": "A", "settlement_price": 0.0},
+        {"date": "2024-01-05", "instrument": "A", "settlement_price": -1.0},
+        {"date": "2024-01-05", "instrument": "A", "settlement_price": np.nan},
+    ],
+)
+def test_invalid_settlement_events_are_rejected(event):
+    with pytest.raises(InputError, match="delisting"):
+        run_backtest(
+            hand_market(), signals_on("2024-01-03"), hand_config(), delistings=pd.DataFrame([event])
+        )
 
 
 def test_order_rejected_when_instrument_has_no_bar_on_fill_date():

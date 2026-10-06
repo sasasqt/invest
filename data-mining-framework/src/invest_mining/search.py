@@ -275,8 +275,24 @@ def confirm(
                 "test_status": test.status,
             }
         )
-    out = pd.DataFrame(rows)
+    out = pd.DataFrame(
+        rows,
+        columns=[
+            "factor_id",
+            "expression",
+            "orientation",
+            "confirm_mean_rank_ic",
+            "confirm_t",
+            "p_one_sided",
+            "n_dates",
+            "hac_lags",
+            "test_status",
+        ],
+    )
     if out.empty:
+        out["p_holm"] = pd.Series(dtype=float)
+        out["family_size"] = pd.Series(dtype=int)
+        out["status"] = pd.Series(dtype=str)
         return out
     ok = out["test_status"] == "ok"
     pvals = [

@@ -83,3 +83,23 @@ def test_quantile_and_tail_returns_on_monotone_signal():
     t = tail_returns(f, y, (0.1,))
     assert t.loc["top_0.1", "mean_forward_return"] == pytest.approx(0.185)
     assert t.loc["bottom_0.1", "mean_forward_return"] == pytest.approx(0.005)
+
+
+@pytest.mark.parametrize("drop_column", [False, True])
+def test_quantiles_and_tails_do_not_use_future_label_availability(drop_column):
+    f = pd.DataFrame([range(1, 11)], columns=list("ABCDEFGHIJ"), dtype=float)
+    y = f / 100
+    baseline = quantile_returns(f, y)
+    changed = y.drop(columns="J") if drop_column else y.assign(J=np.nan)
+    altered = quantile_returns(f, changed)
+    pd.testing.assert_frame_equal(baseline.iloc[:, :9], altered.iloc[:, :9])
+    assert len(altered) == 1 and altered["q10"].isna().all()
+    tails = tail_returns(f, changed, (0.1,))
+    assert pd.isna(tails.loc["top_0.1", "mean_forward_return"])
+    assert tails.loc["bottom_0.1", "mean_forward_return"] == pytest.approx(0.01)
+
+
+def test_quantile_dates_are_preserved_when_all_future_labels_are_missing():
+    f = pd.DataFrame([range(10)], columns=list("ABCDEFGHIJ"), dtype=float)
+    result = quantile_returns(f, f * np.nan)
+    assert result.index.equals(f.index) and result.isna().all().all()

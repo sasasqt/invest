@@ -77,10 +77,14 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
         raise BundleError(f"{manifest.dataset_kind}: columns {got} != expected {want}")
 
 
-def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:
-    missing = [k for k in required if k not in manifest.metadata]
+def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind: str) -> None:
+    missing = [k for k in required if k not in metadata]
     if missing:
-        raise BundleError(f"{manifest.dataset_kind}: metadata missing {missing}")
+        raise BundleError(f"{kind}: metadata missing {missing}")
+
+
+def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:
+    _validate_metadata(manifest.metadata, required, str(manifest.dataset_kind))
 
 
 def publish_market_bars(
@@ -92,9 +96,10 @@ def publish_market_bars(
     provenance: dict[str, Any] | None = None,
     fmt: str = "csv",
 ) -> Manifest:
+    _validate_metadata(metadata, REQUIRED_MARKET_METADATA, MARKET_BARS)
     frame = frame[[c.name for c in MARKET_BAR_COLUMNS]].sort_values(["date", "instrument"])
     validate_market_frame(frame)
-    manifest = write_bundle(
+    return write_bundle(
         frame.reset_index(drop=True),
         path,
         dataset_id=dataset_id,
@@ -105,8 +110,6 @@ def publish_market_bars(
         dataset_kind=MARKET_BARS,
         metadata=metadata,
     )
-    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
-    return manifest
 
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
@@ -143,6 +146,7 @@ def publish_signals(
 ) -> Manifest:
     frame = frame[[c.name for c in SIGNAL_COLUMNS]].sort_values(["decision_date", "instrument"])
     meta = {"available_at": "decision_date_close", "signal_type": "score", **metadata}
+    _validate_metadata(meta, REQUIRED_SIGNAL_METADATA, SIGNALS)
     if meta["available_at"] != "decision_date_close":
         raise BundleError("signals: only available_at='decision_date_close' is supported")
     return write_bundle(

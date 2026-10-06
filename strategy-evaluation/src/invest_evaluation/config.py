@@ -3,10 +3,26 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 from dataclasses import asdict, dataclass, field, fields, replace
+from datetime import date
+from numbers import Integral, Real
 from pathlib import Path
 from typing import Any
+
+
+def _number(name: str, value: Any, *, minimum: float | None = None, strict: bool = False) -> None:
+    if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(value):
+        raise ValueError(f"{name} must be a finite number")
+    if minimum is not None and (value <= minimum if strict else value < minimum):
+        relation = ">" if strict else ">="
+        raise ValueError(f"{name} must be {relation} {minimum}")
+
+
+def _integer(name: str, value: Any, minimum: int) -> None:
+    if isinstance(value, bool) or not isinstance(value, Integral) or value < minimum:
+        raise ValueError(f"{name} must be an integer >= {minimum}")
 
 
 @dataclass(frozen=True)
@@ -31,8 +47,16 @@ class CostModel:
     adv_window: int = 20
     vol_window: int = 20
 
+    def __post_init__(self) -> None:
+        for name in ("commission_bps", "half_spread_bps", "impact_coef", "borrow_bps_annual"):
+            _number(name, getattr(self, name), minimum=0)
+        _number("cash_rate_annual", self.cash_rate_annual, minimum=-1, strict=True)
+        _integer("adv_window", self.adv_window, 1)
+        _integer("vol_window", self.vol_window, 2)
+
     def scaled(self, multiplier: float) -> CostModel:
         """Scale every transaction-cost and borrow parameter (stress scenarios)."""
+        _number("cost multiplier", multiplier, minimum=0)
         return replace(
             self,
             commission_bps=self.commission_bps * multiplier,
@@ -56,6 +80,15 @@ class StrategyConfig:
     rebalance_every: int = 5
     min_names: int = 10
 
+    def __post_init__(self) -> None:
+        _number("long_fraction", self.long_fraction, minimum=0, strict=True)
+        _number("short_fraction", self.short_fraction, minimum=0)
+        if self.long_fraction + self.short_fraction > 1:
+            raise ValueError("long and short fractions must sum to <= 1")
+        _number("gross_leverage", self.gross_leverage, minimum=0, strict=True)
+        _integer("rebalance_every", self.rebalance_every, 1)
+        _integer("min_names", self.min_names, 1)
+
 
 @dataclass(frozen=True)
 class ExecutionConfig:
@@ -72,6 +105,14 @@ class ExecutionConfig:
     min_price: float = 1.0
     min_adv_dollar: float = 0.0
 
+    def __post_init__(self) -> None:
+        _integer("delay", self.delay, 0)
+        _number("max_participation", self.max_participation, minimum=0, strict=True)
+        if self.max_participation > 1:
+            raise ValueError("max_participation must be <= 1")
+        _number("min_price", self.min_price, minimum=0)
+        _number("min_adv_dollar", self.min_adv_dollar, minimum=0)
+
 
 @dataclass(frozen=True)
 class BacktestConfig:
@@ -86,21 +127,37 @@ class BacktestConfig:
     end: str | None = None
 
     def __post_init__(self) -> None:
-        s, e = self.strategy, self.execution
-        if not (0 < s.long_fraction <= 1 and 0 <= s.short_fraction <= 1):
-            raise ValueError("long_fraction must be in (0, 1], short_fraction in [0, 1]")
-        if s.long_fraction + s.short_fraction > 1:
-            raise ValueError("long and short legs overlap")
-        if s.rebalance_every < 1 or e.delay < 0 or not 0 < e.max_participation <= 1:
-            raise ValueError("invalid rebalance_every / delay / max_participation")
-        if self.initial_capital <= 0 or s.gross_leverage <= 0:
-            raise ValueError("initial_capital and gross_leverage must be positive")
+        for name, cls in (
+            ("strategy", StrategyConfig),
+            ("execution", ExecutionConfig),
+            ("costs", CostModel),
+        ):
+            if not isinstance(getattr(self, name), cls):
+                raise ValueError(f"{name} must be a {cls.__name__}")
+        _number("initial_capital", self.initial_capital, minimum=0, strict=True)
+        _integer("annualization", self.annualization, 1)
+        _number("risk_free_annual", self.risk_free_annual, minimum=-1, strict=True)
+        _number("mar_annual", self.mar_annual, minimum=-1, strict=True)
+        for name in ("start", "end"):
+            value = getattr(self, name)
+            if value is not None:
+                if not isinstance(value, str):
+                    raise ValueError(f"{name} must be an ISO date string")
+                try:
+                    if date.fromisoformat(value).isoformat() != value:
+                        raise ValueError
+                except ValueError as exc:
+                    raise ValueError(f"{name} must be an ISO date string (YYYY-MM-DD)") from exc
+        if self.start is not None and self.end is not None and self.start > self.end:
+            raise ValueError("start must be <= end")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     @staticmethod
     def from_dict(raw: dict[str, Any]) -> BacktestConfig:
+        if not isinstance(raw, dict):
+            raise ValueError("config must be a JSON object")
         known = {f.name for f in fields(BacktestConfig)}
         unknown = set(raw) - known
         if unknown:
@@ -108,6 +165,8 @@ class BacktestConfig:
 
         def sub(cls: type, key: str) -> Any:
             data = raw.get(key, {})
+            if not isinstance(data, dict):
+                raise ValueError(f"{key} must be a JSON object")
             bad = set(data) - {f.name for f in fields(cls)}
             if bad:
                 raise ValueError(f"unknown {key} keys {sorted(bad)}")

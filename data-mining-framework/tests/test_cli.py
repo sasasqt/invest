@@ -1,5 +1,7 @@
 import json
 
+import pandas as pd
+
 from invest_data.cli import main as data_main
 from invest_data.schemas import read_signals
 from invest_mining.cli import main
@@ -60,3 +62,35 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
     _, sig = read_signals(tmp_path / "sig")
     assert len(sig) > 0
     capsys.readouterr()
+
+
+def test_search_with_no_qualifying_candidates_writes_structured_results(tmp_path, capsys):
+    from invest_data.schemas import publish_market_bars
+    from invest_data.sources import SYNTHETIC_METADATA
+
+    dates = pd.bdate_range("2024-01-01", periods=100)
+    bars = pd.DataFrame(
+        [(d, f"A{i}", 10.0, 10.0, 10.0, 10.0, 1e6) for d in dates for i in range(10)],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+    )
+    publish_market_bars(bars, tmp_path / "data", dataset_id="constant", metadata=SYNTHETIC_METADATA)
+    assert (
+        main(
+            [
+                "search",
+                "--data",
+                str(tmp_path / "data"),
+                "--trials",
+                "0",
+                "--out",
+                str(tmp_path / "search"),
+            ]
+        )
+        == 0
+    )
+    result = pd.read_csv(tmp_path / "search" / "confirmation.csv")
+    assert result.empty and {"factor_id", "p_holm", "status", "test_status"} <= set(result.columns)
+    ledger = pd.read_csv(tmp_path / "search" / "ledger.csv")
+    assert len(ledger) == 7 and (ledger["status"] == "rejected").all()
+    assert ledger["reason"].notna().all()
+    assert "No candidates qualified" in capsys.readouterr().out

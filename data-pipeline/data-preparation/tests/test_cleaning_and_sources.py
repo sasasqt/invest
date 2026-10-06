@@ -60,10 +60,14 @@ def test_synthetic_market_is_deterministic_and_valid(tmp_path):
     assert back.groupby("instrument")["date"].count().nunique() >= 1
 
 
-def test_market_bars_require_metadata_and_valid_prices(tmp_path):
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
+def test_market_bars_require_metadata_and_valid_prices(tmp_path, fmt):
     clean, _ = clean_bars(raw_rows())
     with pytest.raises(BundleError, match="metadata"):
-        publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata={})
+        publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata={}, fmt=fmt)
+    assert not (tmp_path / "m").exists()
+    publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata=SYNTHETIC_METADATA, fmt=fmt)
+    assert len(read_market_bars(tmp_path / "m")[1]) == len(clean)
     bad = clean.assign(high=clean["low"] - 1)
     with pytest.raises(BundleError, match="high/low"):
         publish_market_bars(bad, tmp_path / "n", dataset_id="x", metadata=SYNTHETIC_METADATA)

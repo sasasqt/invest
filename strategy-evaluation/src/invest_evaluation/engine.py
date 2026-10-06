@@ -4,10 +4,10 @@ Event order within each session ``t``:
 
 1. **Open.** Positions are marked from the previous mark to the open. Orders whose fill
    date is ``t`` execute at the open price; transaction costs are paid in cash.
-2. **Close.** Positions are marked to the close. A held instrument that delists (its final
-   bar, excluding the end of the dataset) is valued at that close and converted to cash:
-   a delisting return of zero, a valuation assumption that gives the strategy no chance
-   to trade out early. Borrow fees on shorts and interest on cash accrue.
+2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
+   this close convert holdings to cash at the supplied settlement price. Missing bars
+   alone never imply a delisting; holdings retain their last known mark. Borrow fees on
+   shorts and interest on cash accrue.
 3. **Decision.** On rebalance dates, scores dated ``t`` (available after the close of
    ``t``) are turned into target weights. They fill at the open of ``t + 1 + delay``.
 
@@ -20,6 +20,7 @@ they don't.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from numbers import Real
 from typing import Any
 
 import numpy as np
@@ -68,16 +69,71 @@ def _wide(bars: pd.DataFrame, field: str) -> pd.DataFrame:
     return bars.pivot(index="date", columns="instrument", values=field).sort_index()
 
 
+def _delisting_events(
+    events: pd.DataFrame | None, calendar: pd.Index, instruments: pd.Index
+) -> dict[int, list[tuple[int, float]]]:
+    """Validate cash settlements available at each event date's close."""
+    if events is None or events.empty:
+        return {}
+    required = {"date", "instrument", "settlement_price"}
+    if set(events.columns) != required or events.columns.has_duplicates:
+        raise InputError("delistings require date, instrument, settlement_price columns")
+    if events["instrument"].duplicated().any():
+        raise InputError("only one delisting settlement per instrument is supported")
+    out: dict[int, list[tuple[int, float]]] = {}
+    for row in events.itertuples(index=False):
+        try:
+            date = pd.Timestamp(row.date)
+        except (TypeError, ValueError) as exc:
+            raise InputError("invalid delisting date") from exc
+        if date not in calendar or row.instrument not in instruments:
+            raise InputError("delisting date/instrument is not in the market calendar/universe")
+        price = row.settlement_price
+        if (
+            isinstance(price, bool)
+            or not isinstance(price, Real)
+            or not np.isfinite(price)
+            or price < 0
+        ):
+            raise InputError("delisting settlement_price must be finite and nonnegative")
+        out.setdefault(int(calendar.get_loc(date)), []).append(
+            (int(instruments.get_loc(row.instrument)), float(price))
+        )
+    return out
+
+
+def _validated_weights(weights: pd.Series, eligible: pd.Index, gross_limit: float) -> pd.Series:
+    if not isinstance(weights, pd.Series) or not weights.index.is_unique:
+        raise InputError("strategy targets must be a Series with unique instrument identifiers")
+    if not weights.index.isin(eligible).all():
+        raise InputError("strategy targets include unknown or ineligible instruments")
+    if (
+        not pd.api.types.is_numeric_dtype(weights.dtype)
+        or pd.api.types.is_bool_dtype(weights.dtype)
+        or pd.api.types.is_complex_dtype(weights.dtype)
+    ):
+        raise InputError("strategy target weights must be finite numbers")
+    values = weights.to_numpy(dtype=float, na_value=np.nan)
+    if not np.isfinite(values).all():
+        raise InputError("strategy target weights must be finite numbers")
+    if np.abs(values).sum() > gross_limit + 1e-12:
+        raise InputError("strategy targets exceed configured gross_leverage")
+    return pd.Series(values, index=weights.index.copy())
+
+
 def run_backtest(
     bars: pd.DataFrame,
     signals: pd.DataFrame,
     config: BacktestConfig | None = None,
     strategy: Strategy | None = None,
     universe: pd.DataFrame | None = None,
+    delistings: pd.DataFrame | None = None,
 ) -> BacktestResult:
     """Simulate ``signals`` on ``bars``. ``universe`` (a membership table) limits new
     positions to instruments that are members on the decision date; holdings that leave
-    the universe are sold at the next rebalance."""
+    the universe are sold at the next rebalance. Optional ``delistings`` contains
+    ``date, instrument, settlement_price`` cash events known at the event date's close.
+    Missing bars retain the last mark; they never imply a liquidation."""
     cfg = config or BacktestConfig()
     strat = strategy or QuantileStrategy(cfg.strategy)
     ex, cm = cfg.execution, cfg.costs
@@ -86,6 +142,7 @@ def run_backtest(
     open_w, close_w, vol_w = (_wide(bars, f) for f in ("open", "close", "volume"))
     calendar = close_w.index
     instruments = close_w.columns
+    settlement_events = _delisting_events(delistings, calendar, instruments)
     if signals.duplicated(["decision_date", "instrument"]).any():
         raise InputError("duplicate (decision_date, instrument) signals")
     unknown_dates = set(signals["decision_date"]) - set(calendar)
@@ -104,7 +161,6 @@ def run_backtest(
     daily_vol = (
         (close_w / close_w.shift(1) - 1).rolling(cm.vol_window, min_periods=cm.vol_window).std()
     )
-    last_bar = close_w.notna()[::-1].idxmax()  # final session of each instrument
 
     # Evaluation window: from `start` (default: the first session with any signal, so
     # periods before the strategy could act don't dilute its statistics) until `end`.
@@ -124,14 +180,18 @@ def run_backtest(
 
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
-    last_idx = np.array([calendar.get_loc(d) for d in last_bar])
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
         if universe is not None
         else np.ones((len(calendar), len(instruments)), dtype=bool)
     )
-    last_idx[last_idx == len(calendar) - 1] = len(calendar)  # end of data is not a delisting
     n = len(instruments)
+    missing_mark_warned = np.zeros(n, dtype=bool)
+    retired = np.zeros(n, dtype=bool)
+    for event_i, entries in settlement_events.items():
+        if event_i < sessions[0]:
+            for j, _ in entries:
+                retired[j] = True
 
     shares = np.zeros(n)
     mark = np.full(n, np.nan)
@@ -187,6 +247,18 @@ def run_backtest(
                 idx = instruments.get_indexer(weights.index)
                 target[idx] = weights.to_numpy()
             for j in np.flatnonzero((target != 0) | (shares != 0)).tolist():
+                if retired[j]:
+                    trades.append(
+                        {
+                            "date": date,
+                            "instrument": instruments[j],
+                            "status": "rejected",
+                            "reason": "delisted",
+                            "decision_date": calendar[dec_i],
+                        }
+                    )
+                    n_rejected += 1
+                    continue
                 want = target[j] * equity_open / px_open[i][j] if has_open[j] else np.nan
                 if not has_open[j]:
                     trades.append(
@@ -260,11 +332,23 @@ def run_backtest(
 
         # 2. Close: mark, delistings, borrow and cash interest.
         has_close = ~np.isnan(px_close[i])
+        stale = ~has_close & (shares != 0) & ~missing_mark_warned
+        for j in np.flatnonzero(stale).tolist():
+            warnings.append(
+                f"{instruments[j]} has no close on {date.date()}; retaining last known mark "
+                "until a new price or explicit settlement is available"
+            )
+        missing_mark_warned[stale] = True
         held_close = has_close & (shares != 0)
         pnl[held_close] += shares[held_close] * (px_close[i][held_close] - mark[held_close])
         mark[has_close] = px_close[i][has_close]
-        for j in np.flatnonzero((last_idx == i) & (shares != 0)).tolist():
-            cash += shares[j] * mark[j]
+        for j, settlement_price in settlement_events.get(i, []):
+            retired[j] = True
+            if shares[j] == 0:
+                continue
+            pnl[j] += shares[j] * (settlement_price - mark[j])
+            mark[j] = settlement_price
+            cash += shares[j] * settlement_price
             trades.append(
                 {
                     "date": date,
@@ -273,8 +357,8 @@ def run_backtest(
                     "reason": "delisted_liquidation",
                     "decision_date": None,
                     "shares": -shares[j],
-                    "price": mark[j],
-                    "notional": -shares[j] * mark[j],
+                    "price": settlement_price,
+                    "notional": -shares[j] * settlement_price,
                     "commission": 0.0,
                     "spread": 0.0,
                     "impact": 0.0,
@@ -283,9 +367,7 @@ def run_backtest(
             )
             shares[j] = 0.0
             close_episode(j, i, pnl[j], "delisted")
-            warnings.append(
-                f"{instruments[j]} delisted on {date.date()} while held; liquidated at final close"
-            )
+            warnings.append(f"{instruments[j]} settled on {date.date()} at {settlement_price}")
         short = shares < 0
         borrow = float(-np.sum(shares[short] * mark[short])) * borrow_daily
         if borrow:
@@ -330,13 +412,19 @@ def run_backtest(
                 eligible = (
                     np.isfinite(S[i])
                     & member[i]
+                    & ~retired
                     & has_close
                     & (px_close[i] >= ex.min_price)
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
                 )
                 sc = pd.Series(S[i][eligible], index=instruments[eligible], name="score")
-                pending[fill_i] = (i, strat.target_weights(sc))
+                pending[fill_i] = (
+                    i,
+                    _validated_weights(
+                        strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
+                    ),
+                )
 
     # Open episodes at the end are reported with unrealised P&L.
     end_i = sessions[0] + len(rows) - 1

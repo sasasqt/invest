@@ -18,6 +18,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from invest_evaluation.metrics import period_rate
+
 _ND = NormalDist()
 EULER_GAMMA = 0.5772156649015329
 
@@ -76,27 +78,41 @@ def bootstrap_ci(
     mean_block: float | None = None,
     level: float = 0.95,
     seed: int = 0,
+    risk_free_annual: float = 0.0,
 ) -> dict[str, Any]:
     x = returns.dropna().to_numpy(dtype=float)
     n = len(x)
     if n < 60:
         return {"status": "insufficient_data", "n": n}
-    block = mean_block or max(1.0, round(n ** (1 / 3), 1))
+    if isinstance(n_boot, bool) or not isinstance(n_boot, int) or n_boot < 1:
+        raise ValueError("n_boot must be a positive integer")
+    if not 0 < level < 1:
+        raise ValueError("level must be in (0, 1)")
+    block = mean_block if mean_block is not None else max(1.0, round(n ** (1 / 3), 1))
+    if not math.isfinite(block) or block < 1:
+        raise ValueError("mean_block must be finite and >= 1")
     idx = stationary_bootstrap_indices(n, block, n_boot, np.random.default_rng(seed))
     samples = x[idx]
-    sr = sharpe(samples, annualization)
+    sr = sharpe(samples - period_rate(risk_free_annual, annualization), annualization)
+    valid_sr = sr[np.isfinite(sr)]
     mu = samples.mean(axis=1) * annualization
     lo, hi = (1 - level) / 2, 1 - (1 - level) / 2
     return {
-        "status": "ok",
+        "status": "ok" if len(valid_sr) else "undefined",
+        "reason": None if len(valid_sr) else "zero_excess_return_dispersion",
         "method": "stationary bootstrap (percentile)",
         "mean_block_length": block,
         "replications": n_boot,
         "seed": seed,
         "level": level,
-        "sharpe_ci": [float(np.nanquantile(sr, lo)), float(np.nanquantile(sr, hi))],
+        "sharpe_basis": "excess_returns",
+        "risk_free_annual": risk_free_annual,
+        "valid_sharpe_replications": len(valid_sr),
+        "sharpe_ci": [float(np.quantile(valid_sr, lo)), float(np.quantile(valid_sr, hi))]
+        if len(valid_sr)
+        else None,
         "annual_mean_ci": [float(np.quantile(mu, lo)), float(np.quantile(mu, hi))],
-        "share_sharpe_le_0": float(np.nanmean(sr <= 0)),
+        "share_sharpe_le_0": float(np.mean(valid_sr <= 0)) if len(valid_sr) else None,
     }
 
 
@@ -167,16 +183,28 @@ def deflated_sharpe(
 
 def autocorrelations(returns: pd.Series, lags: int = 5) -> dict[str, float]:
     x = returns.dropna()
+    if len(x) < 2 or x.std(ddof=1) <= 1e-15:
+        return {f"lag_{k}": float("nan") for k in range(1, lags + 1)}
     return {f"lag_{k}": float(x.autocorr(k)) for k in range(1, lags + 1)}
 
 
 def strategy_statistics(
-    returns: pd.Series, annualization: int, n_trials: int = 1, seed: int = 0
+    returns: pd.Series,
+    annualization: int,
+    n_trials: int = 1,
+    seed: int = 0,
+    *,
+    risk_free_annual: float = 0.0,
 ) -> dict[str, Any]:
+    excess = returns - period_rate(risk_free_annual, annualization)
     return {
+        "sharpe_basis": "excess_returns",
+        "risk_free_annual": risk_free_annual,
         "hac_mean_return": newey_west_mean(returns.to_numpy()),
-        "bootstrap": bootstrap_ci(returns, annualization, seed=seed),
-        "probabilistic_sharpe_vs_zero": probabilistic_sharpe(returns),
-        "deflated_sharpe": deflated_sharpe(returns, n_trials),
+        "bootstrap": bootstrap_ci(
+            returns, annualization, seed=seed, risk_free_annual=risk_free_annual
+        ),
+        "probabilistic_sharpe_vs_zero": probabilistic_sharpe(excess),
+        "deflated_sharpe": deflated_sharpe(excess, n_trials),
         "return_autocorrelation": autocorrelations(returns),
     }

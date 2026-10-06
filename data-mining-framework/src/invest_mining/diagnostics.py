@@ -132,11 +132,12 @@ def quantile_returns(
     factor: pd.DataFrame, label: pd.DataFrame, n_buckets: int = 10
 ) -> pd.DataFrame:
     """Date x bucket table of equal-weighted mean forward returns."""
-    f, y = factor.align(label, join="inner")
-    b = assign_buckets(f.where(y.notna()), n_buckets)
+    f = factor
+    y = label.reindex(index=f.index, columns=f.columns)
+    b = assign_buckets(f, n_buckets)
     stacked = pd.DataFrame({"bucket": b.stack(), "ret": y.stack()}).dropna()
     table = stacked.groupby([stacked.index.get_level_values(0), "bucket"])["ret"].mean()
-    out = table.unstack("bucket").reindex(columns=range(1, n_buckets + 1))
+    out = table.unstack("bucket").reindex(index=f.index, columns=range(1, n_buckets + 1))
     out.columns = [f"q{int(c)}" for c in out.columns]
     out.index.name = "date"
     return out
@@ -146,8 +147,8 @@ def tail_returns(
     factor: pd.DataFrame, label: pd.DataFrame, fractions: tuple[float, ...] = (0.01, 0.05, 0.1)
 ) -> pd.DataFrame:
     """Mean forward return of top/bottom tail slices (these overlap deciles)."""
-    f, y = factor.align(label, join="inner")
-    f = f.where(y.notna())
+    f = factor
+    y = label.reindex(index=f.index, columns=f.columns)
     pct = f.rank(axis=1, method="average", pct=True)
     rows = {}
     for frac in fractions:

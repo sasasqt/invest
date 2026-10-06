@@ -38,6 +38,8 @@ class QuantileStrategy:
         n_short = int(np.floor(n * cfg.short_fraction))
         if cfg.short_fraction > 0:
             n_short = max(1, n_short)
+        if n_long + n_short > n:
+            return pd.Series(dtype=float)  # too few names for disjoint long/short legs
         longs = names[n - n_long :]
         shorts = names[:n_short]
         leg = cfg.gross_leverage / (2 if n_short else 1)

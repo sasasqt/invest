@@ -24,7 +24,8 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] BUILD-01: Declare supported Python and dependency-tool versions; add three component `pyproject.toml` files and reproducible lockfiles. *Python ≥ 3.11, uv workspace with one `uv.lock`; CI installs each component on its own.*
 - [x] BUILD-02: Add minimal packages and thin CLI entry points as real behavior is implemented; document installation and command usage. *`invest-data`, `invest-mine`, `invest-eval`; see README.*
 - [ ] QUALITY-01: Configure Ruff, mypy, pytest, and packaging checks per component; add CI with independent component jobs and Markdown validation. *Done except Markdown/link validation and wheel builds (`.github/workflows/ci.yml`).*
-- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *94 tests, 92% branch coverage; validation uses explicit exceptions, not `assert`. Still missing: committed fixture bundles shared by all components.*
+- [ ] QUALITY-02: Add reusable contract fixtures and meaningful unit/integration checks; verify critical validation with assertions disabled. *Component and end-to-end tests exist; critical boundary validation uses explicit exceptions. Still missing: committed fixture bundles shared by all components.*
+- [x] REVIEW-01: Fix PR #1 correctness findings: explicit causal settlement events, decision-time quantiles, validated strategy targets/configuration, consistent excess-return Sharpe statistics, undefined/empty result handling, and metadata validation before publication. *Regression coverage in component tests; README and evaluator event contract updated.*
 
 ## M2 — First runnable workflow
 

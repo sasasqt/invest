@@ -1,6 +1,6 @@
 # Strategy evaluation
 
-Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, delisting and halt handling, and exact per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
+Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, explicit cash delisting settlements, last-known marks for missing bars, and per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
 
 ```sh
 uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
@@ -15,7 +15,7 @@ The [metric specification](METRICS.md) defines trade outcomes, net profit, mean/
 
 Follow the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/visualization](../docs/REPORTING.md) specifications. Bucket diagnostics do not become portfolio returns until allocation, holding periods, and execution are specified.
 
-Trading rules belong in this component's planned `src/invest_evaluation/strategies/` package. A strategy maps information available at a decision time and portfolio state to target positions or orders through a defined interface. The simulation engine owns fill accounting and costs; individual strategies should not duplicate it.
+The baseline score-to-weight trading rule is in `src/invest_evaluation/strategies.py`. Targets must be a Series with unique eligible instrument identifiers, finite real weights, and gross exposure within configured leverage. Configuration rejects invalid types, non-finite numbers, invalid timing/windows, and unsupported ranges before simulation. The simulation engine owns fill accounting and costs; individual strategies should not duplicate it.
 
 Consume signals from mining, hand-written factors, or external sources through artifacts. Do not import a downloader or model-training loop. A simple baseline strategy may use market data directly. Model fitting and inference belong in `data-mining-framework/`.
 
@@ -26,3 +26,19 @@ The package has its own `pyproject.toml` and tests and does not depend on mining
 Required validation will cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, and rejection of signals unavailable at decision time. Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
 
 Apply the portfolio portion of the [alpha validation protocol](../data-mining-framework/ALPHA_VALIDATION.md): evaluate frozen signals under base/adverse costs, execution delays, liquidity/capacity constraints, and dependence-aware uncertainty. Return a separate strategy report; statistical factor confirmation alone does not establish tradability.
+
+## Delisting settlements
+
+Pass `--delistings events.json` to the CLI or a `delistings` DataFrame to `run_backtest`. The JSON file is a list of records:
+
+```json
+[
+  {"date": "2024-01-05", "instrument": "A", "settlement_price": 8.0}
+]
+```
+
+Each record describes a cash settlement known at that date's close. Prices are finite and nonnegative (zero supports a worthless holding); identifiers and dates must match the market data/calendar. Do not backdate an event to a final bar if the settlement became known later. The engine marks holdings to the settlement price, reconciles P&L, converts them to cash, and prevents later purchases. Events are included in report provenance and applied identically to stress scenarios. One settlement per instrument is supported; relisting and separate settlement fees are outside this baseline.
+
+Absent an event, missing bars retain the last known mark with a warning. This preserves causality but can leave stale valuations: supplying reliable settlement data is required for credible historical delisting performance.
+
+Sharpe confidence intervals, PSR, and DSR use excess returns under the same configured annual risk-free conversion as the performance metric. Mean-return HAC tests and annual-mean bootstrap intervals describe raw returns. Flat portfolios retain explicit undefined Sharpe statuses and can be reported normally.
