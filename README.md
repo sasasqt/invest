@@ -1,5 +1,7 @@
 # Invest
 
+Invest is co-developed by human contributors, GPT, and Claude.
+
 A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
