@@ -4,7 +4,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 
 ## Completed documentation foundations
 
-- [x] DOC-01: Document three independent components in two top-level folders and their artifact boundaries ([architecture](docs/ARCHITECTURE.md)).
+- [x] DOC-01: Document three independent components in three top-level folders and their artifact boundaries ([architecture](docs/ARCHITECTURE.md)).
 - [x] DOC-02: Document [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) practices.
 - [x] DOC-03: Record factor-mining literature and primary-source evidence ([review](data-mining-framework/LITERATURE_REVIEW.md), [catalog](data-mining-framework/PRIMARY_SOURCE_CATALOG.md)).
 - [x] DOC-04: Specify [alpha validation](data-mining-framework/ALPHA_VALIDATION.md), [strategy metrics](strategy-evaluation/METRICS.md), [quantiles](docs/QUANTILE_ANALYSIS.md), and [reporting](docs/REPORTING.md).
@@ -28,6 +28,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] REVIEW-01: Fix PR #1 correctness findings: explicit causal settlement events, decision-time quantiles, validated strategy targets/configuration, consistent excess-return Sharpe statistics, undefined/empty result handling, and metadata validation before publication. *Regression coverage in component tests; README and evaluator event contract updated.*
 - [x] REVIEW-02: Preserve loss/drawdown evidence and complete base/stress reports when a settlement makes the portfolio insolvent; handle short-series autocorrelations without numerical warnings. *Regression coverage in evaluator metric and CLI tests.*
 - [x] REVIEW-03: Fix [PR #2](https://github.com/sasasqt/invest/pull/2) findings: export follows the development-frozen candidate order without conditioning on confirmation results; heading anchors preserve inline-code text; signal trial counts are validated before publication and on consumption without coercion. *Regression coverage in mining CLI/inference tests, `test_signal_metadata.py`, `test_markdown_links.py` and evaluator CLI tests.*
+- [x] REVIEW-04: Re-review the merged workflow and Markdown checks, preserving literal underscores and globally unique heading anchors and recognizing matching code fences. *Regression and repository-link checks in [test_markdown_links.py](tests/test_markdown_links.py); correct the stale component-folder count in DOC-01.*
 
 ## M2 — First runnable workflow
 
