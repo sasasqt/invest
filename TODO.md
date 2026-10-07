@@ -45,6 +45,7 @@ This is the actionable backlog for the [roadmap](ROADMAP.md). Unchecked items ar
 - [x] FLOW-01: Verify CSV/SQLite parity, hand-calculated accounting, invalid-input handling, future-data causality, and artifact-only cross-component integration. *`tests/test_pipeline.py` and component tests.*
 - [x] FLOW-03: Run the synthetic workflow with one command and no hand-copied factor ids or dates. *`scripts/synthetic_workflow.sh`; `invest-mine export --from-search`; `invest-eval run` takes `n_trials` from the signals bundle; covered by `tests/test_pipeline.py`.*
 - [x] FLOW-02: Run the documented workflow on representative historical data; record data identity, limitations, and reproducibility instructions. *`scripts/historical_workflow.sh` (today's S&P 100, 2010–2024, SPY benchmark, 5-day reversal frozen with `invest-mine freeze`, `n_trials = 1`); results, hashes and limitations in [HISTORICAL_BASELINE.md](docs/HISTORICAL_BASELINE.md); covered offline by `tests/test_pipeline.py`. Survivorship-biased and test-only.*
+- [x] FLOW-04: Commit a small, reviewable record of each reported historical run without vendor data. *`RECORD=<dir>` in `scripts/historical_workflow.sh` calls `scripts/save_run.py` (clean checkout required, existing records refused, files over 1 MB refused); first record in [runs/yahoo-test/2026-10-07](runs/yahoo-test/2026-10-07/README.md); covered by `tests/test_pipeline.py`.*
 
 ## M3 — Evaluation completeness and robust alpha evidence
 

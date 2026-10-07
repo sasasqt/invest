@@ -1,0 +1,7 @@
+{
+  "dataset_id": "yahoo-test-2010-01-01-2024-12-31",
+  "dataset_sha256": "1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129",
+  "horizon": 5,
+  "buckets": 10,
+  "note": "Descriptive diagnostics on the full sample; not a confirmatory test."
+}

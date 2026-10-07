@@ -1,0 +1,49 @@
+{
+  "market_dataset": {
+    "id": "yahoo-test-2010-01-01-2024-12-31",
+    "sha256": "1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129",
+    "metadata": {
+      "frequency": "1d",
+      "currency": "USD",
+      "price_adjustment": "total_return_adjusted",
+      "calendar": "XNYS",
+      "timezone": "America/New_York",
+      "universe": "saved snapshot members applied to all history (survivorship-biased)",
+      "source": "yahoo_finance_chart_v8",
+      "note": "TEST-ONLY Yahoo Finance data: adjusted history is revised by the vendor, delisted names are absent and membership is not point-in-time. Identity is the saved raw snapshot recorded in provenance."
+    }
+  },
+  "signals": {
+    "id": "signals-f_f4031d273d5d",
+    "sha256": "781cd92cbb3982dc1adffb4ecf95d31d692d77f5cc0a74be86a1ccf41c10d78c",
+    "metadata": {
+      "available_at": "decision_date_close",
+      "signal_type": "score",
+      "factor_id": "f_f4031d273d5d",
+      "expression": "((close / delay(close, 5)) - 1.0)",
+      "horizon_days": 5,
+      "training_end": "",
+      "operator_version": "1",
+      "n_trials": 1
+    }
+  },
+  "code_revision": "c6f29611fb4f3c9649ef188276666078130f96f0",
+  "n_trials": 1,
+  "external_benchmark": {
+    "id": "yahoo-test-SPY-2010-01-01-2024-12-31",
+    "sha256": "02cd765d1fb1b02cfa24587d07fd2dc7083caee3d8fa2c865f7b3b5878b7cf6c",
+    "instrument": "SPY",
+    "metadata": {
+      "frequency": "1d",
+      "currency": "USD",
+      "price_adjustment": "total_return_adjusted",
+      "calendar": "XNYS",
+      "timezone": "America/New_York",
+      "universe": "benchmark ETF",
+      "source": "yahoo_finance_chart_v8",
+      "note": "TEST-ONLY Yahoo Finance data: adjusted history is revised by the vendor, delisted names are absent and membership is not point-in-time. Identity is the saved raw snapshot recorded in provenance."
+    }
+  },
+  "delisting_settlements": null,
+  "warnings": []
+}

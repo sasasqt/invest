@@ -1,0 +1,62 @@
+{
+  "sharpe_basis": "excess_returns",
+  "risk_free_annual": 0.0,
+  "hac_mean_return": {
+    "status": "ok",
+    "mean": -0.00020593588882757656,
+    "se": 0.00011439767016732612,
+    "t_stat": -1.8001755501345453,
+    "p_two_sided": 0.07183292318324197,
+    "lags": 8,
+    "n": 3769
+  },
+  "bootstrap": {
+    "status": "ok",
+    "reason": null,
+    "method": "stationary bootstrap (percentile)",
+    "mean_block_length": 15.6,
+    "replications": 2000,
+    "seed": 0,
+    "level": 0.95,
+    "sharpe_basis": "excess_returns",
+    "risk_free_annual": 0.0,
+    "valid_sharpe_replications": 2000,
+    "sharpe_ci": [
+      -0.9735674131321063,
+      0.0346095612556118
+    ],
+    "annual_mean_ci": [
+      -0.10583715400283455,
+      0.00390041386938562
+    ],
+    "share_sharpe_le_0": 0.966
+  },
+  "probabilistic_sharpe_vs_zero": {
+    "status": "ok",
+    "psr": 0.036453611210648384,
+    "sharpe_per_period": -0.029405971417356635,
+    "benchmark_sharpe_per_period": 0.0,
+    "skewness": 0.3708252826518883,
+    "kurtosis": 10.831937596735047,
+    "n": 3769
+  },
+  "deflated_sharpe": {
+    "status": "ok",
+    "sharpe_per_period": -0.029405971417356635,
+    "benchmark_sharpe_per_period": 0.0,
+    "skewness": 0.3708252826518883,
+    "kurtosis": 10.831937596735047,
+    "n": 3769,
+    "n_trials": 1,
+    "trial_sr_variance": 0.0002653927813163482,
+    "trial_sr_variance_source": "null_sampling_variance",
+    "dsr": 0.036453611210648384
+  },
+  "return_autocorrelation": {
+    "lag_1": 0.01377427250402745,
+    "lag_2": -0.014885996480199696,
+    "lag_3": -0.02760876318199459,
+    "lag_4": 0.010832341211974924,
+    "lag_5": 0.02281789269371948
+  }
+}
