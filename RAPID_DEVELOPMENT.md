@@ -73,7 +73,7 @@ Observe development friction through failed checks, time to a verified change, f
 
 Give tools a bounded task, relevant interfaces, and observable acceptance criteria. Review generated diffs, dependencies, and commands. Verify behavior with independent expectations rather than relying on generated tests that reproduce the same mistake. Inspect for accidental credentials, unsupported APIs, and unnecessary code before committing.
 
-The contributor integrating the change remains responsible for its correctness and documentation. Do not treat generated explanations or passing narrow tests as evidence that a financial claim is valid.
+The contributor integrating the change remains responsible for its correctness and documentation. Do not treat generated explanations or passing narrow tests as evidence that a financial claim is valid. Generated changes get the same [author steps before review](GIT_GUIDELINES.md#before-marking-ready): an adversarial review of the diff plus an end-to-end run on real inputs, because a diff review cannot see cross-workflow mistakes.
 
 ## 9. Preserve research validity while iterating quickly
 

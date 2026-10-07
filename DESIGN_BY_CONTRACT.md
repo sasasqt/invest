@@ -142,5 +142,6 @@ For each new boundary or stateful operation, ask:
 4. How are empty, undefined, unsupported, and insufficient-data cases distinguished?
 5. Can another implementation satisfy the same interface without hidden dependencies?
 6. Which independent tests demonstrate the guarantees?
+7. Which assumptions does the change rely on, and where is each checked?
 
 Implement the smallest explicit contract needed by the current workflow, then extend it through reviewed versions. Follow [Python guidelines](PYTHON_GUIDELINES.md) and [Git guidelines](GIT_GUIDELINES.md) when implementing and changing contracts.

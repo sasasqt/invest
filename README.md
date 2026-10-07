@@ -14,6 +14,14 @@ The components exchange artifacts through a [versioned dataset contract](docs/DA
 
 ## Development guidelines
 
+Three rules apply to every change, in code, data, research results and documentation:
+
+1. **Make every assumption explicit and check it where it is relied on.** Hidden assumptions fail silently: that names are unique, that a count measures what you think, that two components share a convention.
+2. **Verify under real conditions, at the scope of the claim.** Evidence counts only when it comes from the actual inputs and covers the same scope as the claim. Convenient inputs and partial checks prove less than they appear to.
+3. **Seek disconfirmation.** When a check disagrees with the work, change the work, not the check, and try to prove a change wrong before handing it off.
+
+Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready); reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
+
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
 Read [Git Development Guidelines](GIT_GUIDELINES.md) for branch naming, focused commits, pull requests, history management, conflict resolution, and safe collaboration.
@@ -80,7 +88,7 @@ Needs network access to `query1.finance.yahoo.com` for the first run only:
 uv run scripts/historical_workflow.sh   # outputs under artifacts/historical-workflow
 ```
 
-It saves the raw Yahoo responses for today's S&P 100 members ([list](scripts/sp100_members.txt)) and SPY from 2010 to 2024 in `artifacts/historical-workflow/snapshot`, publishes the members and SPY as separate bundles, freezes the 5-day reversal formula `close / delay(close, 5) - 1` with orientation −1 and `n_trials = 1`, exports its signals, evaluates them with the example quantile long-short config, reporting SPY next to the universe equal-weight benchmark, and backtests every decile and top/bottom tail portfolio with the same config (`quantiles/report.md`).
+It saves the raw Yahoo responses for today's S&P 100 members ([list](scripts/sp100_members.txt)) and SPY from 2010 to 2024 in `artifacts/historical-workflow/snapshot`, publishes the members and SPY as separate bundles, runs full-sample factor diagnostics and freezes the 5-day reversal formula `close / delay(close, 5) - 1`, both with orientation −1 (so bucket and tail labels mean the same direction in every report) and `n_trials = 1`, exports its signals, evaluates them with the example quantile long-short config, reporting SPY next to the universe equal-weight benchmark, and backtests every decile and top/bottom tail portfolio with the same config (`quantiles/report.md`).
 
 Existing snapshots replay offline using their saved request dates by default. `START` and `END` select an inclusive subset within that request; requests beyond it fail before publication. Dataset ids and selection provenance use the resolved dates, while provenance retains the original download request. `SYMBOLS_FILE` controls new downloads only; replay uses the saved symbols and excludes `BENCHMARK` from the strategy universe. Override `BENCHMARK`, `SNAPSHOT` or `CONFIG` as needed. The same snapshot and selection publish identical dataset hashes. Yahoo publication currently supports USD US equities and ETFs only. External benchmarks must have matching currency, frequency, price adjustment, calendar and declared timezone; missing closes exclude incomplete daily intervals from relative metrics. Reports show benchmark identity and aligned observation counts, with an explicit insufficient-data reason when fewer than 20 daily returns align.
 
@@ -155,7 +163,7 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 - Yahoo snapshot downloads publish by renaming a staging directory onto an empty reserved directory, which works on Linux and macOS but fails on Windows. CI does not test Windows.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
-- Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. The portfolio verdict does not consult the confirmation-use ledger, so a backtest on already inspected data still gets a verdict; read it as exploratory unless its window was untouched. Its rules are not yet calibrated by null simulations. Regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
+- Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. The portfolio verdict does not consult the confirmation-use ledger, so a backtest on already inspected data still gets a verdict; read it as exploratory unless its window was untouched. Its rules are not yet calibrated by null simulations. Top and bottom tail slices of the same fraction can differ by a name (inexact `1 − f` boundaries and floor/ceil counts), and mining tails and portfolios use different minimum cross-sections; see REVIEW-09 in TODO.md. Regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
 
 ## Documentation maintenance
 
