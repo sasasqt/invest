@@ -22,6 +22,8 @@ Three rules apply to every change, in code, data, research results and documenta
 
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready); reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
+Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
+
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
 Read [Git Development Guidelines](GIT_GUIDELINES.md) for branch naming, focused commits, pull requests, history management, conflict resolution, and safe collaboration.
