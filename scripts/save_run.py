@@ -169,14 +169,15 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
             (stage / "snapshot").mkdir(parents=True, exist_ok=True)
             shutil.copyfile(snapshot_dir / "snapshot.json", stage / "snapshot/snapshot.json")
         (stage / "README.md").write_text(_readme(out, snapshot))
-        # Reserve DEST exclusively before moving the record in: a rename would silently
-        # replace an empty directory created by someone else after the check above.
+        # Windows rename already refuses any existing destination. POSIX rename can
+        # replace an empty directory, so reserve DEST exclusively on POSIX first.
         try:
-            dest.mkdir()
+            if sys.platform != "win32":
+                dest.mkdir()
+                reserved = True
+            stage.rename(dest)
         except FileExistsError:
             raise SystemExit(f"{dest}: already exists; run records are never overwritten") from None
-        reserved = True
-        stage.rename(dest)  # replaces only the empty directory this call just created
     except BaseException:
         if reserved and dest.is_dir() and not any(dest.iterdir()):
             dest.rmdir()

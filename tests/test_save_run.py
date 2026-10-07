@@ -4,6 +4,7 @@ import importlib.util
 import json
 import re
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -46,6 +47,71 @@ def test_saves_a_complete_record(tmp_path):
     saved = {str(p) for p in save_run.save_run(out, tmp_path / "runs" / "day")}
     assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
     assert [p.name for p in (tmp_path / "runs").iterdir()] == ["day"]  # no staging left
+
+
+@pytest.fixture
+def windows_rename(monkeypatch):
+    """Exercise Windows' refusal to rename onto an existing target on any CI host."""
+    rename = Path.rename
+    monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform="win32"))
+
+    def rename_without_replacement(self, target):
+        if Path(target).exists():
+            raise FileExistsError(f"{target}: Windows rename refuses an existing destination")
+        return rename(self, target)
+
+    monkeypatch.setattr(Path, "rename", rename_without_replacement)
+
+
+def test_saves_a_complete_record_with_windows_rename_semantics(tmp_path, windows_rename):
+    out = _output(tmp_path)
+    dest = tmp_path / "runs" / "day"
+    saved = {str(p) for p in save_run.save_run(out, dest)}
+    assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
+    assert (dest / "eval/manifest.json").read_bytes() == (out / "eval/manifest.json").read_bytes()
+    assert [p.name for p in dest.parent.iterdir()] == ["day"]
+
+
+@pytest.mark.parametrize("nonempty", [False, True])
+def test_windows_refuses_a_destination_created_while_saving(
+    tmp_path, monkeypatch, windows_rename, nonempty
+):
+    out = _output(tmp_path)
+    dest = tmp_path / "runs" / "day"
+    readme = save_run._readme
+
+    def racing_readme(*args: object) -> str:
+        dest.mkdir()
+        if nonempty:
+            (dest / "notes.txt").write_text("mine")
+        return readme(*args)
+
+    monkeypatch.setattr(save_run, "_readme", racing_readme)
+    with pytest.raises(SystemExit, match="never overwritten"):
+        save_run.save_run(out, dest)
+    assert sorted(p.name for p in dest.iterdir()) == (["notes.txt"] if nonempty else [])
+    if nonempty:
+        assert (dest / "notes.txt").read_text() == "mine"
+    assert [p.name for p in dest.parent.iterdir()] == ["day"]
+
+
+@pytest.mark.parametrize("platform", ["linux", "win32"])
+def test_failed_publication_removes_only_its_own_directories(tmp_path, monkeypatch, platform):
+    out = _output(tmp_path)
+    dest = tmp_path / "runs" / "day"
+    other = dest.parent / ".day.other.partial"
+    other.mkdir(parents=True)
+    (other / "notes.txt").write_text("mine")
+    monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform=platform))
+
+    def fail(*args: object) -> None:
+        raise OSError("publication failed")
+
+    monkeypatch.setattr(Path, "rename", fail)
+    with pytest.raises(OSError, match="publication failed"):
+        save_run.save_run(out, dest)
+    assert [p.name for p in dest.parent.iterdir()] == [".day.other.partial"]
+    assert (other / "notes.txt").read_text() == "mine"
 
 
 def test_never_deletes_an_existing_directory_named_like_staging(tmp_path):
