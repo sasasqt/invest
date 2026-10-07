@@ -16,8 +16,9 @@ from invest_evaluation.config import BacktestConfig
 from invest_evaluation.engine import run_backtest
 from invest_evaluation.metrics import compute_metrics, instrument_returns
 from invest_evaluation.reporting import save_run
-from invest_evaluation.robustness import run_scenarios
+from invest_evaluation.robustness import DEFAULT_SCENARIOS, run_scenarios
 from invest_evaluation.stats import strategy_statistics
+from invest_evaluation.validation import verdicts
 
 
 def _git_revision() -> str | None:
@@ -70,6 +71,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     if n_trials < 1:
         raise SystemExit("--n-trials must be at least 1")
     cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
+    unknown = sorted(set(cfg.validation.stress_scenarios) - set(DEFAULT_SCENARIOS))
+    if unknown:
+        raise SystemExit(f"validation.stress_scenarios: unknown scenarios {unknown}")
+    if cfg.validation.benchmark == "external" and not args.benchmark:
+        raise SystemExit('validation.benchmark = "external" needs --benchmark')
     universe = read_universe(args.universe)[1] if args.universe else None
     delistings = None
     if args.delistings:
@@ -121,6 +127,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.no_scenarios
         else run_scenarios(bars, signals, cfg, universe=universe, delistings=delistings)
     )
+    verdict = verdicts(
+        signal_manifest.metadata, cfg.validation, result.returns, metrics, stats, scenarios
+    )
     save_run(
         args.out,
         result,
@@ -144,6 +153,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "delisting_settlements": None if delistings is None else delistings.to_dict("records"),
         },
         external_benchmark=external,
+        verdict=verdict,
     )
     perf = metrics["performance"]
     print(
@@ -154,6 +164,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "sharpe": perf["sharpe"]["value"],
                 "max_drawdown": perf["max_drawdown"]["value"],
                 "warnings": len(result.warnings),
+                "factor_status": verdict["factor"]["status"],
+                "portfolio_status": verdict["portfolio"]["status"],
             }
         )
     )

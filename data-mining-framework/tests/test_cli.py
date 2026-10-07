@@ -77,17 +77,16 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
     assert manifest.metadata["n_trials"] == 20 + 7
 
     # Future confirmation outcomes cannot change the exported winner or earlier scores.
-    confirmation.loc[0, ["status", "p_holm", "confirm_t"]] = ["rejected", 1.0, -100.0]
-    confirmation.loc[1, ["status", "p_holm", "confirm_t"]] = [
-        "confirmation_passed",
-        1e-12,
-        100.0,
-    ]
+    edited = ["status", "test_outcome", "p_holm", "confirm_t"]
+    confirmation.loc[0, edited] = ["rejected", "rejected", 1.0, -100.0]
+    confirmation.loc[1, edited] = ["confirmation_passed", "confirmation_passed", 1e-12, 100.0]
     confirmation.to_csv(tmp_path / "se" / "confirmation.csv", index=False)
     assert main([*common, "--out", str(tmp_path / "changed")]) == 0
     changed_manifest, changed = read_signals(tmp_path / "changed")
     assert changed_manifest.metadata["factor_id"] == best
     pd.testing.assert_frame_equal(changed, auto)
+    # The edited outcome is reported as evidence, after the factor was chosen.
+    assert changed_manifest.metadata["factor_evidence"]["status"] == "rejected"
     assert main([*common, "--rank", "2", "--out", str(tmp_path / "second")]) == 0
     assert (
         read_signals(tmp_path / "second")[0].metadata["factor_id"]

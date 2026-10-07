@@ -2,7 +2,7 @@
 
 Invest is co-developed by human contributors, GPT, and Claude.
 
-A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. A test-only Yahoo Finance adapter runs the same workflow on historical prices from a saved raw snapshot (survivorship-biased; not research evidence). The next milestone is validation on that baseline and an authorized research data source. The agreed order is: contract fixtures and a versioned report schema, executable decile and tail portfolios, separate factor and portfolio verdicts, null-simulation calibration, then perturbation tests; see the [roadmap](ROADMAP.md) and [TODO.md](TODO.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. A test-only Yahoo Finance adapter runs the same workflow on historical prices from a saved raw snapshot (survivorship-biased; not research evidence). The next milestone is validation on that baseline and an authorized research data source. Portfolio reports now show the factor's confirmation evidence and a rule-based portfolio verdict side by side, never merged. The agreed order of the remaining work is: executable decile and tail portfolios, null-simulation calibration and robustness perturbations, then shared contract fixtures; see the [roadmap](ROADMAP.md) and [TODO.md](TODO.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
@@ -55,11 +55,13 @@ uv run invest-mine evaluate --data artifacts/data/synthetic --fundamentals artif
   --expr "cs_rank(fund_book_to_price)" --out artifacts/mining/value
 
 # 3. Export the first development-selected factor from the first confirmation date.
+#    Its confirmation evidence (experiment, confirmation use, outcome) travels with the signals.
 uv run invest-mine export --data artifacts/data/synthetic --universe artifacts/data/universe \
   --from-search artifacts/mining/search --out artifacts/signals/best
 
 # 4. Evaluate: backtest with costs, metrics, statistics, stress scenarios and figures.
 #    The deflated Sharpe uses the search's proposal count recorded in the signals bundle.
+#    verdict.json and report.md show the factor and portfolio verdicts separately.
 uv run invest-eval run --data artifacts/data/synthetic --signals artifacts/signals/best \
   --universe artifacts/data/universe \
   --config strategy-evaluation/examples/quantile_long_short.json --out artifacts/eval/best
@@ -79,7 +81,7 @@ Existing snapshots replay offline using their saved request dates by default. `S
 
 The committed [confirmation-use ledger](ledgers/yahoo-test.jsonl) records 2010-01-01 to 2024-12-31 as already inspected, so this history only gives exploratory evidence, and reserves 2025-01-01 onward, which has never been downloaded or inspected, for a future confirmation. The workflow checks `LEDGER` (default that file) and refuses any `START`/`END` reaching 2025 before downloading or publishing. See [confirmation-use ledger](#confirmation-use-ledger).
 
-The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs. A fresh download on the current code reproduced every reported metric, though with new dataset hashes because Yahoo's responses had changed.
+The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs. Its report shows the factor as `not_confirmed` and the portfolio as `inconclusive`. A fresh download on the current code reproduced every reported metric, though with new dataset hashes because Yahoo's responses had changed.
 
 Checks (the same as CI):
 
@@ -109,6 +111,12 @@ Zero-lookback fixed formulas, such as `close`, can confirm from the dataset's fi
 
 Automatic export follows the candidate order frozen during development. Confirmation scores and pass/reject outcomes never choose the replayed factor; inspect `confirmation.csv` separately. A portfolio replay does not promote a rejected or inconclusive factor. Changing `--rank` or strategy settings after inspecting confirmation results makes subsequent replays exploratory and requires new untouched data for final validation.
 
+### Factor and portfolio verdicts
+
+After the factor is chosen, `invest-mine export` attaches its confirmation evidence to the signals bundle as `metadata.factor_evidence`: the experiment id, whether it came from a search or `confirm`, the confirmation use, the raw test outcome, the reported status (`exploratory` whenever the confirmation data had been used before), the family size, the confirmation window and the test statistics. `--from-search` attaches the evidence from the same search output; for a frozen factor pass `--confirmation <search or confirm output>`. The export refuses evidence for a different factor or experiment and contradictory statuses. The shared signals contract validates the evidence on publication and on read ([data contract](docs/DATA_CONTRACT.md)).
+
+`invest-eval run` copies that evidence unchanged into `verdict.json` under `factor` (`not_confirmed` when the signals have none) and adds a separate `portfolio` verdict: `supported`, `rejected`, `inconclusive` or `insufficient_data`, from the rules declared in the config's `validation` section (minimum sessions, net Sharpe bootstrap interval, deflated Sharpe, named stress scenarios and an optional benchmark). Each rule is saved as a check with its value and threshold, and `report.md` shows the two verdicts in separate sections. Neither verdict changes the other: a supported portfolio does not confirm a factor, and a confirmed factor does not validate a portfolio. The portfolio verdict is about the evaluated window only; it is confirmatory only if that window was untouched, which the evaluator does not check (see [Known limitations](#known-limitations-of-the-baseline)).
+
 ### Key conventions
 
 - **Timing.** A signal dated `t` uses data through the close of `t`. Orders fill at the open of `t + 1 + delay`. Factor labels use the same convention (open `t+1` to open `t+1+h`), so mining diagnostics and backtests agree. Tests check that changing future prices or signals cannot change earlier signals, fills or equity.
@@ -125,7 +133,7 @@ Automatic export follows the candidate order frozen during development. Confirma
 - The only network adapter is the test-only Yahoo Finance one (`invest-data yahoo`); it has no delisted tickers, point-in-time membership or fundamentals. For research data use `import-csv` with your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter beside `invest_data.yahoo`.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
-- Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
+- Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. The portfolio verdict does not consult the confirmation-use ledger, so a backtest on already inspected data still gets a verdict; read it as exploratory unless its window was untouched. Its rules are not yet calibrated by null simulations. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
 
 ## Documentation maintenance
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from typing import Any
 
 import pandas as pd
 
@@ -43,8 +44,13 @@ def export_signals(
     fmt: str = "csv",
     universe: pd.DataFrame | None = None,
     fundamentals: pd.DataFrame | None = None,
+    evidence: dict[str, Any] | None = None,
 ) -> Manifest:
-    """Publish a signals bundle. ``start`` limits output dates (history is still used)."""
+    """Publish a signals bundle. ``start`` limits output dates (history is still used).
+
+    ``evidence`` is the factor's confirmation evidence (``metadata.factor_evidence``),
+    validated by the shared signals contract before anything is written.
+    """
     scores = compute_scores(factor, bars, universe=universe, fundamentals=fundamentals)
     if start is not None:
         scores = scores[scores["decision_date"] >= pd.Timestamp(start)]
@@ -64,6 +70,7 @@ def export_signals(
                 if "n_proposals" in factor.selection
                 else {}
             ),
+            **({"factor_evidence": evidence} if evidence is not None else {}),
         },
         provenance={"market_dataset_id": dataset_id, "factor": factor.to_json()},
         fmt=fmt,

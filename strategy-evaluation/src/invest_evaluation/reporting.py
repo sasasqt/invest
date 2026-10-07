@@ -29,6 +29,7 @@ def save_run(
     scenarios: pd.DataFrame | None,
     provenance: dict[str, Any],
     external_benchmark: pd.Series | None = None,
+    verdict: dict[str, Any] | None = None,
 ) -> Path:
     root = Path(out)
     if root.exists() and any(root.iterdir()):
@@ -51,6 +52,8 @@ def save_run(
     _json(root / "metrics.json", metrics)
     _json(root / "statistics.json", _finite(statistics))
     _json(root / "manifest.json", {**provenance, "warnings": result.warnings})
+    if verdict is not None:
+        _json(root / "verdict.json", _finite(verdict))
     render(root)
     return root
 
@@ -147,10 +150,62 @@ def _fmt(m: dict[str, Any]) -> str:
     return str(v)
 
 
+def _number(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    if isinstance(value, list):
+        return "[" + ", ".join(_number(v) for v in value) + "]"
+    return f"{value:.4g}" if isinstance(value, float) else str(value)
+
+
+def _verdict_lines(verdict: dict[str, Any]) -> list[str]:
+    """Factor confirmation and portfolio validation as two separate sections."""
+    factor, portfolio = verdict["factor"], verdict["portfolio"]
+    lines = ["## Factor confirmation", ""]
+    if factor["status"] == "not_confirmed":
+        lines += [f"Status: **not_confirmed** ({factor['reason']}).", ""]
+    else:
+        window = factor["confirmation_window"]
+        stats = factor["statistics"]
+        lines += [
+            f"Status: **{factor['status']}** (test outcome: {factor['test_outcome']}; "
+            f"confirmation use: {factor['confirmation_use']}).",
+            "",
+            "| field | value |",
+            "|---|---|",
+            f"| factor | {factor['factor_id']} |",
+            f"| experiment | {factor['experiment_id']} ({factor['source']}) |",
+            f"| confirmation window | {window['start']} to {window['end']} |",
+            f"| family size | {factor['family_size']} |",
+            *(f"| {k} | {_number(v)} |" for k, v in stats.items()),
+            "",
+        ]
+        if factor["confirmation_use"] == "exploratory":
+            lines += ["The confirmation data had been used before, so this is exploratory.", ""]
+    lines += [
+        "## Portfolio validation",
+        "",
+        f"Status: **{portfolio['status']}**, from the declared rules in `config.json` "
+        "(`validation`), separate from the factor status above.",
+        "",
+        "| check | status | value | threshold |",
+        "|---|---|---|---|",
+        *(
+            f"| {c['name']} | {c['status']} | {_number(c['value'])} | {c['threshold']} |"
+            for c in portfolio["checks"]
+        ),
+        "",
+    ]
+    return lines
+
+
 def _write_summary(root: Path) -> None:
     metrics = json.loads((root / "metrics.json").read_text())
     stats = json.loads((root / "statistics.json").read_text())
     lines = ["# Backtest summary", ""]
+    verdict_path = root / "verdict.json"
+    if verdict_path.exists():
+        lines += _verdict_lines(json.loads(verdict_path.read_text()))
     picks = {
         "performance": [
             "total_return",

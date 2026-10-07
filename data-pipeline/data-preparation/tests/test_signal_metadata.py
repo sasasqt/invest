@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from invest_data.bundle import BundleError
-from invest_data.schemas import publish_signals, read_signals
+from invest_data.schemas import publish_signals, read_signals, validate_factor_evidence
 
 
 def _scores():
@@ -45,3 +45,79 @@ def test_invalid_trial_counts_fail_before_publication_and_on_external_read(tmp_p
     path.write_text(json.dumps(manifest))
     with pytest.raises(BundleError, match="n_trials must be a positive integer"):
         read_signals(tmp_path / "external")
+
+
+def _evidence(**changes):
+    evidence = {
+        "evidence_version": 1,
+        "factor_id": "f",
+        "experiment_id": "e_1",
+        "source": "search",
+        "confirmation_use": "confirmatory",
+        "test_outcome": "rejected",
+        "status": "rejected",
+        "family_size": 3,
+        "confirmation_window": {"start": "2024-01-01", "end": "2024-06-28"},
+        "statistics": {
+            "confirm_mean_rank_ic": 0.01,
+            "confirm_t": 0.5,
+            "p_one_sided": 0.3,
+            "p_holm": 0.9,
+            "n_dates": 120,
+        },
+    }
+    evidence.update(changes)
+    return evidence
+
+
+@pytest.mark.parametrize("fmt", ["csv", "parquet"])
+def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
+    metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence()}
+    publish_signals(_scores(), tmp_path / "s", dataset_id="s", metadata=metadata, fmt=fmt)
+    assert read_signals(tmp_path / "s")[0].metadata["factor_evidence"] == _evidence()
+    # Exploratory use overrides the outcome; undefined statistics are null.
+    stats = {**_evidence()["statistics"], "confirm_t": None}
+    validate_factor_evidence(
+        _evidence(confirmation_use="exploratory", status="exploratory", statistics=stats)
+    )
+
+
+@pytest.mark.parametrize(
+    ("changes", "message"),
+    [
+        ({"evidence_version": 2}, "evidence_version"),
+        ({"factor_id": "g"}, "is for factor 'g'"),
+        ({"experiment_id": ""}, "experiment_id"),
+        ({"source": "manual"}, "source"),
+        ({"confirmation_use": "fresh"}, "confirmation_use"),
+        ({"status": "confirmation_passed"}, "contradicts"),
+        ({"confirmation_use": "exploratory"}, "contradicts"),
+        ({"confirmation_use": "unrecorded", "status": "exploratory"}, "contradicts"),
+        ({"family_size": True}, "family_size"),
+        ({"family_size": 0}, "family_size"),
+        ({"confirmation_window": {"start": "2024-06-28", "end": "2024-01-01"}}, "window"),
+        ({"confirmation_window": {"start": "2024-01-01", "end": None}}, "window"),
+        ({"statistics": {"p_holm": 0.1}}, "exactly the keys"),
+        ({"statistics": {**_evidence()["statistics"], "p_holm": "0.1"}}, "finite number"),
+        ({"statistics": {**_evidence()["statistics"], "confirm_t": float("inf")}}, "finite"),
+    ],
+)
+def test_invalid_factor_evidence_fails_before_publication_and_on_read(tmp_path, changes, message):
+    metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence(**changes)}
+    with pytest.raises(BundleError, match=message):
+        publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+
+    metadata["factor_evidence"] = _evidence()
+    publish_signals(_scores(), tmp_path / "external", dataset_id="s", metadata=metadata)
+    path = tmp_path / "external" / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["metadata"]["factor_evidence"] = _evidence(**changes)
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match=message):
+        read_signals(tmp_path / "external")
+
+
+def test_factor_evidence_must_be_an_object():
+    with pytest.raises(BundleError, match="JSON object"):
+        validate_factor_evidence(["rejected"])

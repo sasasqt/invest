@@ -182,6 +182,9 @@ def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
     stats = json.loads((tmp_path / "run" / "statistics.json").read_text())
     assert stats["bootstrap"]["status"] == "undefined"
     assert "n/a (zero_excess_return_dispersion)" in (tmp_path / "run" / "report.md").read_text()
+    verdict = json.loads((tmp_path / "run" / "verdict.json").read_text())
+    assert verdict["portfolio"]["status"] == "insufficient_data"
+    assert verdict["factor"]["status"] == "not_confirmed"
 
 
 @pytest.mark.parametrize("settlement_price", [8.0, 0.0])

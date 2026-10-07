@@ -4,6 +4,8 @@
   "execution": {"delay": 0, "max_participation": 0.05, "min_price": 1.0, "min_adv_dollar": 0.0},
   "costs": {"commission_bps": 1.0, "half_spread_bps": 5.0, "impact_coef": 0.5,
             "borrow_bps_annual": 50.0, "cash_rate_annual": 0.0, "adv_window": 20, "vol_window": 20},
+  "validation": {"min_sessions": 252, "min_deflated_sharpe": 0.95,
+                 "stress_scenarios": ["costs_x2", "delay_1"], "benchmark": "none"},
   "initial_capital": 1000000.0,
   "annualization": 252,
   "risk_free_annual": 0.0,
