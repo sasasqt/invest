@@ -15,6 +15,8 @@ uv run invest-data yahoo publish --snapshot artifacts/yahoo/snap --exclude SPY -
 uv run pytest data-pipeline/data-preparation
 ```
 
+Signals optionally carry v2 confirmation evidence whose factor identity and tested horizon must match the bundle metadata on publication and read. V1 evidence cannot establish the horizon and is refused; [re-export it from original confirmation results](../../docs/DATA_CONTRACT.md#signal-confirmation-evidence). Signals without evidence remain supported.
+
 ### Yahoo Finance (test-only)
 
 Yahoo is for exercising the workflow on real prices, not for research claims: adjusted history is rewritten by the vendor, delisted tickers are absent, and there is no point-in-time membership. So the dataset's identity is the saved raw snapshot, not the vendor:

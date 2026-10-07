@@ -18,20 +18,22 @@ Benchmark closes are aligned to the full market session calendar before computin
 
 ## Factor and portfolio verdicts
 
-Each run writes `verdict.json` with two separate sections, also shown as two sections at the top of `report.md`:
+Each run writes `verdict.json` (`verdict_version = 2`) with two separate sections, also shown as two sections at the top of `report.md`. Version 2 adds mandatory solvency and base-Sharpe validity checks. Previously saved v1 reports remain renderable; rerun their evaluation to obtain the corrected verdict.
 
-- `factor`: the signals bundle's `factor_evidence` metadata copied unchanged (experiment id, confirmation use, test outcome, status, window and statistics), or `status = not_confirmed` when the signals carry none. Evaluation never recomputes or changes it.
+- `factor`: the signals bundle's v2 `factor_evidence` metadata copied unchanged (experiment id, tested horizon, confirmation use, test outcome, status, window and statistics), or `status = not_confirmed` when the signals carry none. Evaluation never recomputes or changes it. V1 evidence has no tested horizon and must be re-exported from the original confirmation output; see the [data contract](../docs/DATA_CONTRACT.md#signal-confirmation-evidence).
 - `portfolio`: `supported`, `rejected`, `inconclusive` or `insufficient_data`, from the config's `validation` rules, with one saved check (`pass`, `fail`, `undefined` or `not_run`) per rule and the evaluated window.
 
 | rule (`validation` key) | default | check |
 |---|---|---|
+| (always) | | solvency: finite net returns and positive wealth throughout; known insolvency gives `rejected`, even with too few sessions or missing statistics |
+| (always) | | base net Sharpe: finite value and `status = ok`; invalid, undefined or missing values cannot support a portfolio |
 | `min_sessions` | 252 | daily net returns in the run; fewer gives `insufficient_data` |
 | (always) | | net excess Sharpe stationary-bootstrap interval: lower bound above zero; upper bound below zero gives `rejected`; undefined gives `insufficient_data` |
 | `min_deflated_sharpe` | 0.95 | deflated Sharpe ratio with the run's `n_trials` |
 | `stress_scenarios` | `["costs_x2", "delay_1"]` | net Sharpe above zero under each named scenario; `not_run` with `--no-scenarios` |
 | `benchmark` | `"none"` | `"universe"` or `"external"`: information ratio above zero against that benchmark (`"external"` needs `--benchmark`) |
 
-`supported` needs every check to pass; anything else that is neither `rejected` nor `insufficient_data` is `inconclusive`, and `reasons` lists the checks that did not pass. Unknown scenario names are refused before the backtest. The verdict covers only the evaluated window and does not read the confirmation-use ledger, so a run on already inspected data is exploratory whatever its status.
+`supported` needs every check to pass; anything else that is neither `rejected` nor `insufficient_data` is `inconclusive`, and `reasons` lists the checks that did not pass. Setting `stress_scenarios = []` disables the optional stress checks but preserves the mandatory solvency and base-Sharpe checks. Unknown scenario names are refused before the backtest. The verdict covers only the evaluated window and does not read the confirmation-use ledger, so a run on already inspected data is exploratory whatever its status.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 

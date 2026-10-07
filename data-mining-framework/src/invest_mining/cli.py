@@ -384,10 +384,18 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
             f"{root}: factor {factor.factor_id} was selected in experiment {tagged}, "
             f"not {experiment.get('experiment_id')}"
         )
-    method = (identity.get("params") or {}).get("method")
+    params = identity.get("params") or {}
+    tested_horizon = params.get("horizon")
+    if type(tested_horizon) is not int or tested_horizon != factor.horizon_days:
+        raise SystemExit(
+            f"{root}: confirmation horizon {tested_horizon!r} does not match "
+            f"factor horizon {factor.horizon_days!r}"
+        )
+    method = params.get("method")
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
         "factor_id": factor.factor_id,
+        "horizon_days": tested_horizon,
         "experiment_id": experiment.get("experiment_id"),
         "source": "confirm" if method == "fixed_formula" else "search",
         "confirmation_use": row["confirmation_use"],
@@ -401,7 +409,9 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
         },
     }
     try:
-        validate_factor_evidence(evidence, factor_id=factor.factor_id)
+        validate_factor_evidence(
+            evidence, factor_id=factor.factor_id, horizon_days=factor.horizon_days
+        )
     except BundleError as exc:
         raise SystemExit(f"{root}: {exc}") from exc
     return evidence

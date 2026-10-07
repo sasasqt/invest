@@ -49,8 +49,9 @@ def test_invalid_trial_counts_fail_before_publication_and_on_external_read(tmp_p
 
 def _evidence(**changes):
     evidence = {
-        "evidence_version": 1,
+        "evidence_version": 2,
         "factor_id": "f",
+        "horizon_days": 1,
         "experiment_id": "e_1",
         "source": "search",
         "confirmation_use": "confirmatory",
@@ -70,7 +71,7 @@ def _evidence(**changes):
     return evidence
 
 
-@pytest.mark.parametrize("fmt", ["csv", "parquet"])
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
     metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence()}
     publish_signals(_scores(), tmp_path / "s", dataset_id="s", metadata=metadata, fmt=fmt)
@@ -85,8 +86,16 @@ def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
 @pytest.mark.parametrize(
     ("changes", "message"),
     [
-        ({"evidence_version": 2}, "evidence_version"),
+        ({"evidence_version": 1}, "re-export signals"),
+        ({"evidence_version": True}, "evidence_version"),
+        ({"evidence_version": 2.0}, "evidence_version"),
+        ({"evidence_version": 3}, "evidence_version"),
         ({"factor_id": "g"}, "is for factor 'g'"),
+        ({"horizon_days": 5}, "does not match signals"),
+        ({"horizon_days": None}, "horizon_days"),
+        ({"horizon_days": True}, "horizon_days"),
+        ({"horizon_days": 1.0}, "horizon_days"),
+        ({"horizon_days": 0}, "horizon_days"),
         ({"experiment_id": ""}, "experiment_id"),
         ({"source": "manual"}, "source"),
         ({"confirmation_use": "fresh"}, "confirmation_use"),
@@ -121,3 +130,26 @@ def test_invalid_factor_evidence_fails_before_publication_and_on_read(tmp_path, 
 def test_factor_evidence_must_be_an_object():
     with pytest.raises(BundleError, match="JSON object"):
         validate_factor_evidence(["rejected"])
+
+
+@pytest.mark.parametrize("invalid", [None, True, 1.0, 0, -1, "1"])
+def test_invalid_bundle_horizon_cannot_bypass_evidence_binding(tmp_path, invalid):
+    metadata = {"factor_id": "f", "horizon_days": invalid, "factor_evidence": _evidence()}
+    with pytest.raises(BundleError, match="horizon_days"):
+        publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+    metadata["horizon_days"] = 1
+    publish_signals(_scores(), tmp_path / "external", dataset_id="s", metadata=metadata)
+    path = tmp_path / "external/manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["metadata"]["horizon_days"] = invalid
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match="horizon_days"):
+        read_signals(tmp_path / "external")
+
+
+def test_factor_evidence_requires_a_tested_horizon():
+    evidence = _evidence()
+    del evidence["horizon_days"]
+    with pytest.raises(BundleError, match="horizon_days"):
+        validate_factor_evidence(evidence)

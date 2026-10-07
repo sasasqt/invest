@@ -34,6 +34,8 @@ Each immutable run manifest identifies input dataset/signal/model/strategy versi
 
 Strategy reports show factor confirmation and portfolio validation as separate verdicts. The factor verdict is the evidence published with the signals (`factor_evidence` in the [data contract](DATA_CONTRACT.md)), copied without change; the portfolio verdict comes from rules declared in the strategy configuration. Neither may be merged into or override the other ([strategy evaluation](../strategy-evaluation/README.md#factor-and-portfolio-verdicts)).
 
+New `verdict.json` files use `verdict_version = 2`: mandatory solvency and base-net-Sharpe validity checks accompany the configurable rules. Known insolvency is rejected regardless of positive bootstrap/DSR statistics or disabled stress checks. V1 saved reports can still be rendered; rerun evaluation for the corrected verdict. Factor evidence uses its own version 2, bound to both factor identity and tested horizon; see [migration instructions](DATA_CONTRACT.md#signal-confirmation-evidence).
+
 Use interactive HTML for exploration and SVG/PDF/PNG for shareable outputs. Reports need units, time ranges, gross/net labels, benchmarks, sample counts, and missing/undefined-result explanations. Distinguish training, validation, and confirmation visually; uncertainty and unfavorable results should not disappear through axis choices or omitted groups.
 
 ## Initial chart sets

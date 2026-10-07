@@ -7,6 +7,7 @@ import pytest
 
 from invest_data.cli import main as data_main
 from invest_data.schemas import read_signals
+from invest_mining.artifact import FrozenFactor
 from invest_mining.cli import main
 
 
@@ -36,6 +37,8 @@ def test_from_search_attaches_experiment_identity_use_and_outcome(tmp_path, data
     config = json.loads((tmp_path / "first" / "config.json").read_text())
     row = table.iloc[0]
     assert evidence["factor_id"] == manifest.metadata["factor_id"] == row["factor_id"]
+    assert evidence["evidence_version"] == 2
+    assert evidence["horizon_days"] == manifest.metadata["horizon_days"] == 1
     assert evidence["experiment_id"] == config["experiment"]["experiment_id"]
     assert evidence["source"] == "search" and evidence["family_size"] == len(table)
     assert evidence["confirmation_use"] == "confirmatory"
@@ -83,6 +86,7 @@ def test_fixed_formula_takes_evidence_from_its_confirm_run(tmp_path, data):
     evidence = read_signals(tmp_path / "sig")[0].metadata["factor_evidence"]
     table = pd.read_csv(tmp_path / "c" / "confirmation.csv")
     assert evidence["source"] == "confirm" and evidence["family_size"] == 1
+    assert evidence["horizon_days"] == 5
     assert evidence["status"] == table.loc[0, "status"] == "confirmation_passed"
     assert evidence["confirmation_window"]["start"] == "2020-09-01"
     assert evidence["statistics"]["p_one_sided"] == pytest.approx(table.loc[0, "p_one_sided"])
@@ -117,3 +121,69 @@ def test_factor_from_another_experiment_is_refused(tmp_path, data):
         _export(
             data, tmp_path / "x", "--factor", str(member), "--confirmation", str(tmp_path / "other")
         )
+
+
+def test_fixed_formula_evidence_cannot_be_reused_at_another_horizon(tmp_path, data):
+    for horizon in (1, 5):
+        assert (
+            main(
+                [
+                    "freeze",
+                    "--expr",
+                    "close / delay(close, 5) - 1",
+                    "--orientation",
+                    "-1",
+                    "--horizon",
+                    str(horizon),
+                    "--out",
+                    str(tmp_path / f"f{horizon}.json"),
+                ]
+            )
+            == 0
+        )
+    # Formula identity deliberately excludes the prediction/holding horizon.
+    assert (
+        FrozenFactor.load(tmp_path / "f1.json").factor_id
+        == FrozenFactor.load(tmp_path / "f5.json").factor_id
+    )
+    assert (
+        main(
+            [
+                "confirm",
+                "--data",
+                str(data),
+                "--factor",
+                str(tmp_path / "f1.json"),
+                "--confirm-start",
+                "2020-09-01",
+                "--ledger",
+                str(tmp_path / "ledger.jsonl"),
+                "--out",
+                str(tmp_path / "c"),
+            ]
+        )
+        == 0
+    )
+    with pytest.raises(SystemExit, match="horizon"):
+        _export(
+            data,
+            tmp_path / "wrong",
+            "--factor",
+            str(tmp_path / "f5.json"),
+            "--confirmation",
+            str(tmp_path / "c"),
+        )
+    assert not (tmp_path / "wrong").exists()
+    assert (
+        _export(
+            data,
+            tmp_path / "right",
+            "--factor",
+            str(tmp_path / "f1.json"),
+            "--confirmation",
+            str(tmp_path / "c"),
+        )
+        == 0
+    )
+    metadata = read_signals(tmp_path / "right")[0].metadata
+    assert metadata["factor_evidence"]["horizon_days"] == metadata["horizon_days"] == 1

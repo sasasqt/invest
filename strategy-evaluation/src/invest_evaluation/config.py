@@ -121,7 +121,9 @@ VALIDATION_BENCHMARKS = ("none", "universe", "external")
 class ValidationConfig:
     """Rules for the portfolio verdict, declared before the run (ROBUST-02).
 
-    A portfolio is ``supported`` only if the net Sharpe bootstrap interval lies above zero,
+    Solvency and a valid base net Sharpe are mandatory. Known insolvency is ``rejected``
+    regardless of sample size or optional rules. A portfolio is ``supported`` only if
+    the net Sharpe bootstrap interval lies above zero,
     the deflated Sharpe ratio reaches ``min_deflated_sharpe``, every named stress scenario
     keeps a positive net Sharpe and, unless ``benchmark = "none"``, the information ratio
     against that benchmark is positive. It is ``rejected`` when the interval lies below
