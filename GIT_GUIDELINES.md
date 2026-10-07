@@ -64,11 +64,16 @@ git commit -m "Describe the change"
 
 The author applies the README's [three development rules](README.md#development-guidelines) before asking for review:
 
-1. **Self-review with the review skill.** Run `/code-review high` (or an equivalent adversarial review) on the diff, and again after any non-trivial fix push.
+1. **Self-review with the review skill.** Run `/code-review high` (or an equivalent adversarial review) on the full diff.
+   - If its fixes are non-trivial (they change logic, a public interface or saved outputs, or span several functions), run one quicker second pass: `/code-review medium` on the fix commits only, including the whole functions they touch, and give it the first pass's findings and their outcomes. Docs-, comment-, rename-, test- or formatting-only fixes need no second pass.
+   - Repeat only for a real defect the second pass finds, on that fix alone. If that defect is in the fix code, run one more `/code-review high` on the full diff: the fixes were riskier than they looked.
+   - The same applies to non-trivial pushes that answer a reviewer's comments.
 2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
-3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a test that would have caught it. Never relax an existing assertion just so new code passes.
-4. **Pair it with end-to-end checks.** A diff review cannot see cross-workflow problems such as two components using different conventions. Run the affected workflow on its real inputs and compare outputs across reports, not only unchanged metrics.
-5. **State the result in the pull request:** that the review ran, at which level, and how each finding was resolved, alongside the checks run.
+   - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
+   - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
+3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a regression test that fails before the fix and passes after it. Never relax an existing assertion just so new code passes.
+4. **Pair it with end-to-end checks.** A diff review cannot see cross-workflow problems such as two components using different conventions. Run the affected workflow on its real inputs and compare outputs across reports, not only unchanged metrics. Rerun the checks and the workflow on the final code, after the last review fix.
+5. **State the result in the pull request:** the level, scope and finding count of each review pass, how each finding was resolved (fixed, or kept and why), and the checks run.
 
 Green CI proves only what the tests already ask; it is not readiness on its own.
 
