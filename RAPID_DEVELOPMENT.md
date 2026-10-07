@@ -73,7 +73,7 @@ Observe development friction through failed checks, time to a verified change, f
 
 Give tools a bounded task, relevant interfaces, and observable acceptance criteria. Review generated diffs, dependencies, and commands. Verify behavior with independent expectations rather than relying on generated tests that reproduce the same mistake. Inspect for accidental credentials, unsupported APIs, and unnecessary code before committing.
 
-The contributor integrating the change remains responsible for its correctness and documentation. Do not treat generated explanations or passing narrow tests as evidence that a financial claim is valid.
+The contributor integrating the change remains responsible for its correctness and documentation. Do not treat generated explanations or passing narrow tests as evidence that a financial claim is valid. Generated changes get the same [author steps before review](GIT_GUIDELINES.md#before-marking-ready): an adversarial review of the diff plus an end-to-end run on real inputs, because a diff review cannot see cross-workflow mistakes.
 
 ## 9. Preserve research validity while iterating quickly
 
@@ -83,9 +83,24 @@ Small datasets and short runs accelerate debugging. Label them as development ev
 - Capture datasets, configurations, versions, seeds, budgets, and unsuccessful trials automatically as experiment tooling is implemented.
 - Keep factor diagnostics separate from executable portfolio performance; use the [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) and [metric specification](strategy-evaluation/METRICS.md).
 - Confirm causality and accounting before expensive algorithm comparisons. Add complexity only after a reliable baseline is available.
+- Commit no API keys or licensed raw data; run records keep only results the data licence allows.
 
 ## 10. Finish each increment
 
 An increment is complete when its acceptance criteria are met, required checks pass, and the diff is reviewed. Update the README when capabilities, status, setup, or commands change; update affected component READMEs and [TODO.md](TODO.md) in the same commit. Update [ROADMAP.md](ROADMAP.md) when milestone scope or acceptance changes.
 
 Record material limitations and unrun checks accurately. For a requested push, verify the intended branch and a clean or explained working tree afterward. Working software and trustworthy evidence establish progress; documentation must describe that actual state.
+
+## 11. Step back between milestones
+
+Per-PR reviews check that each step is locally correct; they cannot tell whether the parts still fit together. A checkpoint reviews the whole before the next feature starts.
+
+- **When.** Before a [roadmap](ROADMAP.md) milestone closes, and earlier when warning signs appear: repeated findings of the same kind, the same logic duplicated across components, documentation that no longer matches behavior, or growing pull requests. Whoever notices a due checkpoint says so before starting the next feature.
+- **Start** from a green `main` with open pull requests merged or explicitly parked, so the review sees a stable base.
+- **Scope.** Review the diff since the previous checkpoint's git tag (`checkpoint-<milestone>-<n>`), plus a cross-component pass that follows each hand-off end to end (data → mining → signals → evaluation): conventions, identifiers, coverage and orientation. Rerun the historical workflow and compare its outputs with the committed run record and across reports.
+- **Also check:** research validity (§9: leakage, the reserved holdout, honest trial counts and ledger entries), test-suite health (tests that use only convenient inputs, invariants without a test, slow or flaky jobs), data licences and secrets, and that the README, [ROADMAP.md](ROADMAP.md) and [TODO.md](TODO.md) match the code.
+- **Reviewer.** Prefer a person or session that did not write the code under review. Findings follow the same rules as [before marking ready](GIT_GUIDELINES.md#before-marking-ready): verify each one, fix the class, and give a checked reason for anything kept.
+- **Refactor** only where the review shows a need, in a separate pull request that changes no behavior, proven by the workflow reproducing the saved record.
+- **Report** in [`docs/reviews/`](docs/reviews/README.md): findings, an escapes log (each defect that reached `main` or a ready pull request, the step that should have caught it, and who did), decisions with one-line reasons, and changes to these guidelines (rules added for escapes, rules removed because nobody follows them). Record findings in TODO as `REVIEW-xx` items marked *blocking* or *later*.
+- **Keep it a review, not a rewrite:** larger work becomes its own planned TODO item.
+- **Done** when blocking findings are merged, the checkpoint tag is set, the plan files are reconciled, and the next milestone's plan is agreed. A skipped checkpoint is recorded in TODO with its reason.

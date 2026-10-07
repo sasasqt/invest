@@ -12,6 +12,8 @@ from invest_mining.diagnostics import (
     holm_adjust,
     newey_west_mean_test,
     quantile_returns,
+    tail_masks,
+    tail_percentiles,
     tail_returns,
 )
 
@@ -69,8 +71,12 @@ def test_buckets_keep_ties_and_require_enough_names():
         dtype=float,
     )
     b = assign_buckets(f, 5)
-    assert b.iloc[0].tolist() == [1, 2, 3, 5, 5]
+    # The tied top pair has average rank 4.5 (q = 0.3), the mirror of a tied bottom pair
+    # (p = 0.3, bucket 2), so it shares bucket 4 and bucket 5 stays empty.
+    assert b.iloc[0].tolist() == [1, 2, 3, 4, 4]
     assert b.iloc[1].isna().all()
+    mirrored = assign_buckets(-f, 5)
+    assert mirrored.iloc[0].tolist() == [5, 4, 3, 2, 2]
 
 
 def test_quantile_and_tail_returns_on_monotone_signal():
@@ -170,8 +176,8 @@ def test_close_tail_fractions_keep_distinct_diagnostic_rows():
     f = pd.DataFrame([range(100)], dtype=float)
     tails = tail_returns(f, f / 100, (0.1, 0.10000001))
     assert len(tails) == 4 and tails.index.is_unique
-    assert tails.loc["top_0.1", "min_names"] == 10
-    assert tails.loc["top_0.10000001", "min_names"] == 11
+    # Both fractions select ten names on each side: q <= f is exact, not 1 - f rounding.
+    assert (tails["min_names"] == 10).all()
 
 
 @pytest.mark.parametrize("field", ["min_names", "min_cross_section"])
@@ -180,3 +186,73 @@ def test_tail_minimum_counts_must_be_positive_integers(field, value):
     f = pd.DataFrame([range(100)], dtype=float)
     with pytest.raises(ValueError, match=f"{field} must be a positive integer"):
         tail_returns(f, f / 100, (0.1,), **{field: value})
+
+
+@pytest.mark.parametrize(("n", "f", "count"), [(100, 0.07, 7), (250, 0.01, 2), (250, 0.05, 12)])
+def test_top_and_bottom_tails_hold_the_same_number_of_names(n, f, count):
+    f_ = pd.DataFrame([range(n)], dtype=float)
+    tails = tail_returns(f_, f_ / 100, (f,), min_names=1)
+    assert (tails["min_names"] == count).all()
+    masks = tail_masks(f_, f)
+    assert list(masks["top"].columns[masks["top"].iloc[0]]) == list(range(n - count, n))
+
+
+def test_deciles_mirror_and_end_deciles_equal_the_ten_percent_tails():
+    rng = np.random.default_rng(1)
+    f_ = pd.DataFrame(rng.integers(0, 30, (40, 120)), dtype=float)
+    f_ = f_.mask(rng.random(f_.shape) < 0.2)
+    b, reversed_ = assign_buckets(f_, 10), assign_buckets(-f_, 10)
+    masks = tail_masks(f_, 0.1)
+    pd.testing.assert_frame_equal(b.eq(1), masks["bottom"])
+    pd.testing.assert_frame_equal(b.eq(10), masks["top"])
+    pct = tail_percentiles(f_)
+    off_median = pct["bottom"] != pct["top"]  # an exact median is not mirrored
+    assert (reversed_ == 11 - b)[off_median & f_.notna()].all().all()
+    counts = pd.Series(range(28), dtype=float).to_frame().T
+    assert assign_buckets(counts, 10).iloc[0].value_counts().sort_index().tolist() == [
+        2, 3, 3, 3, 3, 3, 3, 3, 3, 2,
+    ]  # fmt: skip
+
+
+def test_top_tail_is_the_bottom_tail_of_reversed_scores():
+    rng = np.random.default_rng(0)
+    f_ = pd.DataFrame(rng.integers(0, 20, (30, 150)), dtype=float)
+    f_ = f_.mask(rng.random(f_.shape) < 0.1)
+    for frac in (0.01, 0.05, 0.07, 0.1, 0.5):
+        masks, reversed_ = tail_masks(f_, frac), tail_masks(-f_, frac)
+        pd.testing.assert_frame_equal(masks["top"], reversed_["bottom"])
+        assert not (masks["top"] & masks["bottom"]).any().any()
+
+
+def test_minimum_cross_section_applies_to_deciles():
+    f_ = pd.DataFrame([range(12), [*range(10), np.nan, np.nan]], dtype=float)
+    assert assign_buckets(f_, 10).notna().any(axis=1).tolist() == [True, True]
+    assert assign_buckets(f_, 10, 11).notna().any(axis=1).tolist() == [True, False]
+    q = quantile_returns(f_, f_, 10, 11)
+    assert q.iloc[0].notna().all() and q.iloc[1].isna().all()
+    with pytest.raises(ValueError):
+        assign_buckets(f_, 10, 0)
+
+
+def test_deciles_and_tails_use_the_same_dates():
+    f_ = pd.DataFrame([range(12), [*range(10), np.nan, np.nan], [*range(5), *[np.nan] * 7]])
+    f_ = f_.astype(float)
+    for minimum in (1, 11):
+        deciles = quantile_returns(f_, f_, 10, minimum)
+        tails = tail_returns(f_, f_, (0.5,), min_names=1, min_cross_section=minimum)
+        assert tails["n_dates"].eq(deciles.notna().any(axis=1).sum()).all()
+
+
+@pytest.mark.parametrize("n", [25, 125, 250])
+def test_bucket_boundaries_do_not_round_exact_ranks_into_the_next_bucket(n):
+    # Integer arithmetic is an independent oracle for distinct ranks. In particular,
+    # rank / n = 0.28 is an exact seventh boundary of 25 buckets, not bucket eight.
+    ranks = np.arange(1, n + 1)
+    descending = ranks[::-1]
+    expected = np.where(
+        ranks <= descending,
+        (ranks * 25 + n - 1) // n,
+        26 - (descending * 25 + n - 1) // n,
+    )
+    factor = pd.DataFrame([range(n)], dtype=float)
+    np.testing.assert_array_equal(assign_buckets(factor, 25).iloc[0], expected)

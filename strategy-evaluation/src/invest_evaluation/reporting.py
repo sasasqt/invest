@@ -17,7 +17,9 @@ import pandas as pd
 from invest_evaluation.engine import BacktestResult
 
 
-def _json(path: Path, obj: Any) -> None:
+def write_json(path: Path, obj: Any) -> None:
+    """Write ``obj`` as indented JSON; NaN/inf raise, so wrap values that may hold them
+    in ``finite``."""
     path.write_text(json.dumps(obj, indent=2, default=str, allow_nan=False) + "\n")
 
 
@@ -48,21 +50,28 @@ def save_run(
     result.episodes.to_csv(root / "tables" / "episodes.csv", index=False)
     if scenarios is not None:
         scenarios.to_csv(root / "tables" / "scenarios.csv", index=False)
-    _json(root / "config.json", result.config.to_dict())
-    _json(root / "metrics.json", metrics)
-    _json(root / "statistics.json", _finite(statistics))
-    _json(root / "manifest.json", {**provenance, "warnings": result.warnings})
+    write_json(root / "config.json", result.config.to_dict())
+    write_json(root / "metrics.json", metrics)
+    write_json(root / "statistics.json", finite(statistics))
+    write_json(root / "manifest.json", {**provenance, "warnings": result.warnings})
     if verdict is not None:
-        _json(root / "verdict.json", _finite(verdict))
+        write_json(root / "verdict.json", finite(verdict))
     render(root)
     return root
 
 
-def _finite(obj: Any) -> Any:
+def finite(obj: Any) -> Any:
+    """Copy of ``obj`` with NumPy scalars as Python numbers and NaN/inf as ``None``."""
     if isinstance(obj, dict):
-        return {k: _finite(v) for k, v in obj.items()}
+        return {k: finite(v) for k, v in obj.items()}
     if isinstance(obj, list):
-        return [_finite(v) for v in obj]
+        return [finite(v) for v in obj]
+    if isinstance(obj, np.bool_):
+        return bool(obj)
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        obj = float(obj)
     if isinstance(obj, float) and not np.isfinite(obj):
         return None
     return obj

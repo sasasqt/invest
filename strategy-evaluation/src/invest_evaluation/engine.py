@@ -51,8 +51,9 @@ class BacktestResult:
     benchmark: pd.Series  # equal-weight universe daily return (gross, no costs)
     config: BacktestConfig
     warnings: list[str]
-    # One row per eligible instrument per decision: decision_date, instrument, score,
-    # weight (the target, 0 if not held). Records decision-time eligibility and holdings.
+    # With ``record_decisions``: one row per eligible instrument per decision:
+    # decision_date, instrument, score, weight (the target, 0 if not held). Records
+    # decision-time eligibility and holdings; empty otherwise.
     decisions: pd.DataFrame = field(default_factory=lambda: pd.DataFrame(columns=DECISION_COLS))
 
     @property
@@ -133,12 +134,16 @@ def run_backtest(
     strategy: Strategy | None = None,
     universe: pd.DataFrame | None = None,
     delistings: pd.DataFrame | None = None,
+    *,
+    record_decisions: bool = False,
 ) -> BacktestResult:
     """Simulate ``signals`` on ``bars``. ``universe`` (a membership table) limits new
     positions to instruments that are members on the decision date; holdings that leave
     the universe are sold at the next rebalance. Optional ``delistings`` contains
     ``date, instrument, settlement_price`` cash events known at the event date's close.
-    Missing bars retain the last mark; they never imply a liquidation."""
+    Missing bars retain the last mark; they never imply a liquidation.
+    ``record_decisions`` fills ``BacktestResult.decisions`` (one row per eligible name
+    per decision); it is off by default because only bucket reports need it."""
     cfg = config or BacktestConfig()
     strat = strategy or QuantileStrategy(cfg.strategy)
     ex, cm = cfg.execution, cfg.costs
@@ -429,17 +434,18 @@ def run_backtest(
                     strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
                 )
                 pending[fill_i] = (i, targets)
-                decisions.append(
-                    pd.DataFrame(
-                        {
-                            "decision_date": date,
-                            "instrument": sc.index,
-                            "score": sc.to_numpy(),
-                            "weight": targets.reindex(sc.index, fill_value=0.0).to_numpy(),
-                        },
-                        columns=DECISION_COLS,
+                if record_decisions:
+                    decisions.append(
+                        pd.DataFrame(
+                            {
+                                "decision_date": date,
+                                "instrument": sc.index,
+                                "score": sc.to_numpy(),
+                                "weight": targets.reindex(sc.index, fill_value=0.0).to_numpy(),
+                            },
+                            columns=DECISION_COLS,
+                        )
                     )
-                )
 
     # Open episodes at the end are reported with unrealised P&L.
     end_i = sessions[0] + len(rows) - 1

@@ -215,7 +215,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     verdict = json.loads((out / "eval" / "verdict.json").read_text())
     assert verdict["factor"]["status"] == "not_confirmed"  # fixed formula, not yet confirmed
     quantiles = json.loads((out / "quantiles" / "quantiles.json").read_text())
-    assert quantiles["report_version"] == 1 and len(quantiles["portfolios"]) == 19
+    assert quantiles["report_version"] == 2 and len(quantiles["portfolios"]) == 19
     # 30 names: the 1% tails never reach five names, so they report no performance.
     tails = {p["portfolio"]: p for p in quantiles["portfolios"]}
     assert tails["top_0.01"]["status"] == "insufficient_data"
@@ -236,15 +236,26 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # meanings for q1/q10. Compare membership on the evaluator's eligible cross-section.
     import pandas as pd
 
-    from invest_mining.diagnostics import assign_buckets
+    from invest_mining.diagnostics import (
+        BUCKET_RULE,
+        TAIL_RULE,
+        assign_buckets,
+        tail_percentiles,
+    )
     from invest_mining.expressions import build_panel, evaluate
 
     diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
     factor = json.loads((out / "mining/factor.json").read_text())
     assert diagnostic_config["orientation"] == factor["orientation"] == -1
+    # Both reports apply the same minimum cross-section threshold.
+    assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 10
+    assert diagnostic_config["tail_rule"] == TAIL_RULE
+    assert diagnostic_config["bucket_rule"] == BUCKET_RULE
     values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
     members = pd.read_csv(
-        out / "quantiles/tables/memberships.csv.gz", parse_dates=["decision_date"]
+        out / "quantiles/tables/memberships.csv.gz",
+        parse_dates=["decision_date"],
+        float_precision="round_trip",
     )
     for date, group in members.groupby("decision_date"):
         if len(group) < 10:
@@ -255,6 +266,9 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
         # CSV may infer StringDtype while the bundle reader uses object identifiers.
         # Compare every instrument's assignment, independent of pandas storage dtype.
         assert buckets.astype(int).to_dict() == actual.to_dict()
+        # Tails: q is the percentile counted from the highest score (tail_returns' rule).
+        from_top = tail_percentiles(expected)["top"].iloc[0]
+        assert from_top.to_dict() == group.set_index("instrument")["pct_from_top"].to_dict()
     assert published["date"].min().date().isoformat() >= first
     assert published["date"].max().date().isoformat() <= last
     assert set(published["date"]) == set(bars.loc[bars["date"].between(first, last), "date"])

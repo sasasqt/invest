@@ -59,6 +59,7 @@ Use the [literature review](data-mining-framework/LITERATURE_REVIEW.md) to prior
 ## Keeping this plan current
 
 - Mark milestones complete only when their acceptance gates have recorded evidence; link the implementing commit or pull request.
+- Close a milestone only after a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system, or a recorded reason for skipping it.
 - Keep actionable checkboxes in [TODO.md](TODO.md), rather than maintaining duplicate task lists here.
 - Update the root README's status and next milestone when progress changes, and component READMEs when capabilities or commands change.
 - Record scope changes and new dependencies here before presenting them as supported behavior. Do not add dates or performance promises without a basis.

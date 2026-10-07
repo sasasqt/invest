@@ -201,3 +201,25 @@ def test_cli_freeze_fixed_formula_exports_one_trial(tmp_path, capsys):
         main(["freeze", "--expr", expr, "--horizon", "0", "--out", str(factor)])
     with pytest.raises(ValueError):
         main(["freeze", "--expr", "close + nope(", "--horizon", "1", "--out", str(factor)])
+
+
+def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tmp_path):
+    data = tmp_path / "data"
+    data_main(["synthetic", "--out", str(data), "--instruments", "12", "--days", "80"])
+    args = ["evaluate", "--data", str(data), "--expr", "close", "--horizon", "1"]
+    for minimum, expected in (("1", 10), ("11", 11), ("13", 13)):
+        out = tmp_path / minimum
+        assert main([*args, "--min-cross-section", minimum, "--out", str(out)]) == 0
+        assert json.loads((out / "config.json").read_text())["min_cross_section"] == expected
+        deciles = pd.read_csv(out / "tables/quantile_returns.csv", index_col=0)
+        tails = pd.read_csv(out / "tables/tail_returns.csv", index_col=0)
+        skipped = tails["reason"] == "no_date_with_enough_scored_names"
+        if expected > 12:  # more than the twelve names: no date is used
+            assert deciles.isna().all().all() and skipped.all()
+        else:
+            assert deciles.notna().any().any() and not skipped.any()
+    book = tmp_path / "ledger.jsonl"
+    for flag in ("--min-cross-section", "--buckets", "--min-tail-names"):
+        with pytest.raises(SystemExit):
+            main([*args, flag, "0", "--ledger", str(book), "--out", str(tmp_path / "bad")])
+    assert not book.exists()  # rejected before the ledger records an inspection

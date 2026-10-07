@@ -98,6 +98,7 @@ CI also builds all three wheels (`uv build --all-packages`), installs them in a 
 - Test the minimum supported Python version and the primary development version; expand the matrix when compatibility requirements justify it.
 - Install from the committed lockfile and use minimal CI permissions. Pin third-party actions to reviewed commit SHAs and maintain those pins.
 - Keep changes focused. Explain the behavior changed, why it changed, and how it was validated.
+- Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready) (self-review, verified findings, end-to-end checks); review others' changes [this way](GIT_GUIDELINES.md#when-reviewing).
 - Document public API changes and configuration requirements. Use deprecation paths when downstream users depend on existing behavior.
 - Review dependencies regularly and investigate security findings in context.
 

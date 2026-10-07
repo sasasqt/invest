@@ -60,6 +60,32 @@ git commit -m "Describe the change"
 - Configure protected `main` in repository settings when CI and collaboration are introduced: required checks, review requirements appropriate to the team, and restrictions on force pushes and deletion. These settings are recommendations and are not configured by this document.
 - Choose a consistent merge strategy. Squash merging is a suitable default for focused feature branches; preserve individual commits when their history is useful.
 
+### Before marking ready
+
+The author applies the README's [three development rules](README.md#development-guidelines) before asking for review:
+
+1. **Self-review with the review skill.** Run `/code-review high` (or an equivalent adversarial review) on the full diff.
+   - If its fixes are non-trivial (they change logic, a public interface or saved outputs, or span several functions), run one quicker second pass: `/code-review medium` on the fix commits only, including the whole functions they touch, and give it the first pass's findings and their outcomes. Docs-, comment-, rename-, test- or formatting-only fixes need no second pass.
+   - Repeat only for a real defect the second pass finds, on that fix alone. If that defect is in the fix code, run one more `/code-review high` on the full diff: the fixes were riskier than they looked.
+   - The same applies to non-trivial pushes that answer a reviewer's comments.
+2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
+   - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
+   - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
+3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a regression test that fails before the fix and passes after it. Never relax an existing assertion just so new code passes.
+4. **Pair it with end-to-end checks.** A diff review cannot see cross-workflow problems such as two components using different conventions. Run the affected workflow on its real inputs and compare outputs across reports, not only unchanged metrics. Rerun the checks and the workflow on the final code, after the last review fix.
+5. **State the result in the pull request:** the level, scope and finding count of each review pass, how each finding was resolved (fixed, or kept and why), and the checks run.
+
+Green CI proves only what the tests already ask; it is not readiness on its own.
+
+### When reviewing
+
+1. **Judge design first, style last:** design, then functionality, complexity and tests; naming, comments and style after ([Google review guide](https://google.github.io/eng-practices/review/reviewer/looking-for.html)).
+2. **Read the change in context,** checking how it fits the whole system and the workflows that consume it, not just the diff.
+3. **Review the tests as hard as the code:** would they fail if the code were wrong?
+4. **Check that documentation matches behavior,** and that every claim in it ("same", "consistent", "complete") is backed by a check at that scope.
+5. **Approve on improvement, not perfection,** once the change clearly improves code health ([Google review standard](https://google.github.io/eng-practices/review/reviewer/standard.html)); label nits as optional.
+6. **Keep reviews small.** Defect detection falls with review size; a few hundred lines per sitting is a practical limit, so ask for large changes to be split.
+
 ## Conflict resolution
 
 - Start an integration with a clean working tree, or preserve local changes deliberately first. Inspect `git status` to identify the operation and affected files.
