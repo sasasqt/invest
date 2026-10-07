@@ -21,14 +21,34 @@ from invest_evaluation.stats import strategy_statistics
 from invest_evaluation.validation import verdicts
 
 
-def _git_revision() -> str | None:
-    try:
-        out = subprocess.run(
-            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, timeout=5, check=True
+def code_revision(source: Path = Path(__file__)) -> tuple[str | None, bool | None]:
+    """Git revision and uncommitted-changes flag of the checkout this code was loaded from.
+
+    Looked up from the module's own location, never the caller's working directory, so a run
+    started from another repository cannot record that repository's commit. Code that Git
+    does not track there (an installed wheel, even inside a checkout's virtualenv) gives
+    ``(None, None)``. The flag covers tracked files of the whole checkout, because the run
+    also uses the other workspace packages.
+    """
+    source = source.resolve()
+
+    def git(*args: str) -> str:
+        done = subprocess.run(
+            ["git", "-C", str(source.parent), *args],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=True,
         )
-        return out.stdout.strip()
+        return done.stdout.strip()
+
+    try:
+        git("ls-files", "--error-unmatch", "--", source.name)
+        revision = git("rev-parse", "HEAD")
+        dirty = bool(git("status", "--porcelain", "--untracked-files=no"))
     except (OSError, subprocess.SubprocessError):
-        return None
+        return None, None
+    return revision, dirty
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -130,6 +150,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     verdict = verdicts(
         signal_manifest.metadata, cfg.validation, result.returns, metrics, stats, scenarios
     )
+    revision, dirty = code_revision()
     save_run(
         args.out,
         result,
@@ -147,7 +168,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "sha256": signal_manifest.content_sha256,
                 "metadata": signal_manifest.metadata,
             },
-            "code_revision": _git_revision(),
+            "code_revision": revision,
+            "code_dirty": dirty,
             "n_trials": n_trials,
             "external_benchmark": external_info,
             "delisting_settlements": None if delistings is None else delistings.to_dict("records"),

@@ -21,7 +21,8 @@
 # RECORD (optional, e.g. runs/yahoo-test/2026-10-08) saves the run's small record (reports,
 # verdicts, metrics, figures, manifests; no vendor data) there for committing, with
 # scripts/save_run.py. It must not exist yet, and tracked files must be unmodified so the
-# recorded code revision describes the code that ran.
+# recorded code revision describes the code that ran; save_run.py also refuses incomplete
+# outputs and an evaluation manifest without a clean code revision.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
