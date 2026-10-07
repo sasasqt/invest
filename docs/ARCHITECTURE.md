@@ -13,7 +13,9 @@ data-pipeline/
       schemas.py                   # market_bars, universe, fundamentals, signals kinds
       pit.py                       # point-in-time membership and as-of fundamentals
       sources.py                   # synthetic market, local CSV import
+      yahoo.py                     # test-only Yahoo Finance snapshots and replay
       cleaning.py                  # deterministic cleaning, rejected-row report
+      testing.py                   # fabricated Yahoo snapshots for offline tests
       cli.py
     tests/
 data-mining-framework/             # invest-mining
@@ -33,10 +35,14 @@ strategy-evaluation/               # invest-evaluation
     engine.py                      # event order, fills, costs, accounting
     metrics.py, stats.py           # performance metrics and uncertainty
     robustness.py                  # cost/delay/liquidity/capacity scenarios
+    validation.py                  # portfolio verdict beside copied factor evidence
     reporting.py, cli.py
   examples/
   tests/
 tests/                             # cross-component tests through published artifacts
+scripts/                           # one-command workflows, run records, Markdown link check
+ledgers/                           # committed confirmation-use ledgers, one per market
+runs/                              # committed records of reported historical runs
 docs/
 ```
 
@@ -121,7 +127,7 @@ Every mined alpha follows the [validation protocol](../data-mining-framework/ALP
 
 The [roadmap](../ROADMAP.md) tracks milestone sequencing and acceptance gates; [TODO.md](../TODO.md) tracks implementation tasks. The prerequisites below explain the architectural reasons for that order.
 
-Steps 2 and 4 below have a tested baseline; the remaining steps still apply. Before adding multiple miners or a dashboard:
+Steps 2 and 4 below have a tested baseline, step 3 is done for adjusted daily bars without external flows, and step 5 is in progress (see the roadmap's M3); the remaining steps still apply. Before adding multiple miners or a dashboard:
 
 1. Finalize machine-validated schemas and compatibility fixtures for financial datasets, fitted artifacts, signals, and reports. Specify availability/revision times, point-in-time membership, price adjustment/total-return rules, labels and horizons, keys, units, calendars, and content hashes. The generic CSV/SQLite contract alone does not encode this financial information.
 2. Establish a supported Python version, the three package manifests/lockfiles, component test commands, and CI. Add public interfaces and modules as needed by a runnable use case rather than creating the whole proposed directory tree at once.

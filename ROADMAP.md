@@ -26,6 +26,8 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 Snapshot publication is exclusive and atomic, replay resolves saved dates or explicit subsets, and supported-market and external-benchmark compatibility checks prevent misleading metadata or daily returns (DATA-03). These checks have offline regression coverage; the historical results remain those of the recorded original run.
 
+Reported historical runs are committed as small records without vendor data (FLOW-04, [runs/](runs/yahoo-test/2026-10-07/README.md)). Saving a record requires a complete run and a clean, recorded code revision of the checkout the evaluator was loaded from (REVIEW-06).
+
 Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one known causal formula; export frozen signals; run one declared bucket strategy. Specify event order, eligible fills, fees, cash/position accounting, corporate actions, missing marks, and the selected market's constraints. Save basic metrics, result tables, and figures without rerunning calculations during rendering. Then exercise the same flow on a representative historical dataset.
 
 **Acceptance gate:** golden calculations reconcile equity, external flows, trade P&L, and costs; independent readers agree; future data cannot alter earlier signals; the evaluator runs without mining or download dependencies. Reports disclose supported assumptions and approximations.
