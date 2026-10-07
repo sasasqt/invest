@@ -2,7 +2,7 @@
 
 Invest is co-developed by human contributors, GPT, and Claude.
 
-A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. A test-only Yahoo Finance adapter runs the same workflow on historical prices from a saved raw snapshot (survivorship-biased; not research evidence). The next milestone is validation on that baseline and an authorized research data source. Portfolio reports now show the factor's confirmation evidence and a rule-based portfolio verdict side by side, never merged. The agreed order of the remaining work is: executable decile and tail portfolios, null-simulation calibration and robustness perturbations, then shared contract fixtures; see the [roadmap](ROADMAP.md) and [TODO.md](TODO.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
+A modular Python investment research framework made of three independently installable components, each in its own top-level folder (`data-pipeline/data-preparation/`, `data-mining-framework/`, `strategy-evaluation/`). A first end-to-end baseline is implemented and tested: publish a dataset, mine and confirm factors, export frozen signals, and backtest them with explicit execution timing, costs, metrics, statistics, stress scenarios and figures. A test-only Yahoo Finance adapter runs the same workflow on historical prices from a saved raw snapshot (survivorship-biased; not research evidence). Portfolio reports show the factor's confirmation evidence and a rule-based portfolio verdict side by side, never merged. The next milestone is validation on that baseline and an authorized research data source. The agreed order of the remaining work is: executable decile and tail portfolios (QUANTILE-01, next), null-simulation calibration and robustness perturbations, then shared contract fixtures; see the [roadmap](ROADMAP.md) and [TODO.md](TODO.md). Development may use feature, experiment, or release branches as appropriate; the folder layout does not require all work to happen on `main`.
 
 ## Components
 
@@ -30,7 +30,7 @@ Each component folder has a `src` package layout, its own `pyproject.toml`, and 
 
 ## Getting started
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). The three packages form one uv workspace with a single committed lockfile; each package still installs on its own (CI checks this).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). CI runs on Linux; Yahoo snapshot downloads do not work on Windows yet (see [Known limitations](#known-limitations-of-the-baseline)). The three packages form one uv workspace with a single committed lockfile; each package still installs on its own (CI checks this).
 
 ```sh
 uv sync --frozen
@@ -81,7 +81,7 @@ Existing snapshots replay offline using their saved request dates by default. `S
 
 The committed [confirmation-use ledger](ledgers/yahoo-test.jsonl) records 2010-01-01 to 2024-12-31 as already inspected, so this history only gives exploratory evidence, and reserves 2025-01-01 onward, which has never been downloaded or inspected, for a future confirmation. The workflow checks `LEDGER` (default that file) and refuses any `START`/`END` reaching 2025 before downloading or publishing. See [confirmation-use ledger](#confirmation-use-ledger).
 
-The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs. Its report shows the factor as `not_confirmed` and the portfolio as `inconclusive`. A fresh download on the current code reproduced every reported metric, though with new dataset hashes because Yahoo's responses had changed.
+The result is **survivorship-biased**: names chosen today are applied to all history, delisted companies are missing, and Yahoo revises adjusted prices. Use it to check the workflow on real prices, not as alpha evidence. The first run (2026-10-06) is recorded with its data hashes in [the historical baseline](docs/HISTORICAL_BASELINE.md): the 5-day reversal had a gross Sharpe of 0.11 and lost 5.6% a year after costs. Its report shows the factor as `not_confirmed` and the portfolio as `inconclusive`. Fresh downloads on later code, most recently on 2026-10-07 with version 2 verdicts, reproduced every reported metric and both verdicts, though with new dataset hashes because Yahoo's responses had changed.
 
 Checks (the same as CI):
 
@@ -131,6 +131,7 @@ After the factor is chosen, `invest-mine export` attaches its confirmation evide
 ### Known limitations of the baseline
 
 - The only network adapter is the test-only Yahoo Finance one (`invest-data yahoo`); it has no delisted tickers, point-in-time membership or fundamentals. For research data use `import-csv` with your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter beside `invest_data.yahoo`.
+- Yahoo snapshot downloads publish by renaming a staging directory onto an empty reserved directory, which works on Linux and macOS but fails on Windows. CI does not test Windows.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
 - Only external flows of zero are supported, so XIRR is not computed yet. The confirmation-use ledger compares windows by date within one ledger file, so keep one ledger per market and assume a single writer. The portfolio verdict does not consult the confirmation-use ledger, so a backtest on already inspected data still gets a verdict; read it as exploratory unless its window was untouched. Its rules are not yet calibrated by null simulations. Quantile-to-portfolio reports, regime splits and learned (fitted) models are still to do; see [TODO.md](TODO.md).
