@@ -20,7 +20,7 @@ they don't.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from numbers import Real
 from typing import Any
 
@@ -32,6 +32,7 @@ from invest_evaluation.config import BacktestConfig
 from invest_evaluation.strategies import QuantileStrategy, Strategy
 
 COST_KINDS = ("commission", "spread", "impact")
+DECISION_COLS = ["decision_date", "instrument", "score", "weight"]
 
 
 class AccountingError(RuntimeError):
@@ -50,6 +51,9 @@ class BacktestResult:
     benchmark: pd.Series  # equal-weight universe daily return (gross, no costs)
     config: BacktestConfig
     warnings: list[str]
+    # One row per eligible instrument per decision: decision_date, instrument, score,
+    # weight (the target, 0 if not held). Records decision-time eligibility and holdings.
+    decisions: pd.DataFrame = field(default_factory=lambda: pd.DataFrame(columns=DECISION_COLS))
 
     @property
     def returns(self) -> pd.Series:
@@ -207,6 +211,7 @@ def run_backtest(
     episodes: list[dict[str, Any]] = []
     trades: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
+    decisions: list[pd.DataFrame] = []
     first_decision: int | None = None
     borrow_daily = cm.borrow_bps_annual / 1e4 / cfg.annualization
     cash_daily = cm.cash_rate_annual / cfg.annualization
@@ -420,11 +425,20 @@ def run_backtest(
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
                 )
                 sc = pd.Series(S[i][eligible], index=instruments[eligible], name="score")
-                pending[fill_i] = (
-                    i,
-                    _validated_weights(
-                        strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
-                    ),
+                targets = _validated_weights(
+                    strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
+                )
+                pending[fill_i] = (i, targets)
+                decisions.append(
+                    pd.DataFrame(
+                        {
+                            "decision_date": date,
+                            "instrument": sc.index,
+                            "score": sc.to_numpy(),
+                            "weight": targets.reindex(sc.index, fill_value=0.0).to_numpy(),
+                        },
+                        columns=DECISION_COLS,
+                    )
                 )
 
     # Open episodes at the end are reported with unrealised P&L.
@@ -491,4 +505,9 @@ def run_backtest(
         benchmark=bench,
         config=cfg,
         warnings=warnings,
+        decisions=(
+            pd.concat(decisions, ignore_index=True)
+            if decisions
+            else pd.DataFrame(columns=DECISION_COLS)
+        ),
     )

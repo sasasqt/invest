@@ -10,8 +10,8 @@ are rebuilt exactly by replaying the snapshot. DEST must not exist, so a record 
 overwritten.
 
 The output must be complete (every file the workflow writes and the README describes) and
-must come from committed code: the evaluation manifest needs a code revision and no
-uncommitted changes to tracked files.
+must come from committed code: the evaluation and quantile-portfolio manifests need a code
+revision and no uncommitted changes to tracked files.
 """
 
 from __future__ import annotations
@@ -37,6 +37,10 @@ RECORD_GLOBS = (
     "eval/report.md",
     "eval/figures/*.png",
     "eval/tables/scenarios.csv",
+    "quantiles/*.json",
+    "quantiles/report.md",
+    "quantiles/figures/*.png",
+    "quantiles/tables/portfolios.csv",
 )
 # Every output of a finished historical workflow run; a record missing any of them is refused.
 # The benchmark manifest is also required when the evaluation used an external benchmark.
@@ -60,7 +64,15 @@ REQUIRED = (
     "eval/figures/equity_drawdown.png",
     "eval/figures/scenarios.png",
     "eval/tables/scenarios.csv",
+    "quantiles/config.json",
+    "quantiles/manifest.json",
+    "quantiles/quantiles.json",
+    "quantiles/report.md",
+    "quantiles/figures/quantile_portfolios.png",
+    "quantiles/tables/portfolios.csv",
 )
+# Outputs whose code revision must be recorded and clean.
+CODE_MANIFESTS = ("eval/manifest.json", "quantiles/manifest.json")
 MAX_FILE_BYTES = 1_000_000
 
 
@@ -80,13 +92,15 @@ def record_files(out: Path) -> list[Path]:
     missing = [rel for rel in required if not (out / rel).is_file()]
     if missing:
         raise SystemExit(f"{out}: not a finished workflow output (missing {', '.join(missing)})")
-    if not manifest.get("code_revision"):
-        raise SystemExit(f"{out}: eval/manifest.json records no code revision")
-    if manifest.get("code_dirty") is not False:
-        raise SystemExit(
-            f"{out}: the evaluated code had uncommitted changes (or did not record whether it "
-            "had); rerun from a clean checkout"
-        )
+    for rel in CODE_MANIFESTS:
+        code = _load(out / rel)
+        if not code.get("code_revision"):
+            raise SystemExit(f"{out}: {rel} records no code revision")
+        if code.get("code_dirty") is not False:
+            raise SystemExit(
+                f"{out}: the code behind {rel} had uncommitted changes (or did not record "
+                "whether it had); rerun from a clean checkout"
+            )
     files = sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
     large = [str(rel) for rel in files if (out / rel).stat().st_size > MAX_FILE_BYTES]
     if large:
@@ -103,7 +117,8 @@ def _readme(out: Path, snapshot: dict[str, Any] | None) -> str:
         "",
         "Saved by `scripts/save_run.py` from a `scripts/historical_workflow.sh` run. "
         "Test-only Yahoo data is survivorship-biased: read these results as exploratory, "
-        "not as alpha evidence. See [eval/report.md](eval/report.md) for the full report.",
+        "not as alpha evidence. See [eval/report.md](eval/report.md) for the full report "
+        "and [quantiles/report.md](quantiles/report.md) for the decile and tail portfolios.",
         "",
         "## Provenance",
         "",

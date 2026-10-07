@@ -144,20 +144,43 @@ def quantile_returns(
 
 
 def tail_returns(
-    factor: pd.DataFrame, label: pd.DataFrame, fractions: tuple[float, ...] = (0.01, 0.05, 0.1)
+    factor: pd.DataFrame,
+    label: pd.DataFrame,
+    fractions: tuple[float, ...] = (0.01, 0.05, 0.1),
+    *,
+    min_names: int = 5,
+    min_cross_section: int = 10,
 ) -> pd.DataFrame:
-    """Mean forward return of top/bottom tail slices (these overlap deciles)."""
+    """Mean forward return of top/bottom tail slices (these overlap deciles).
+
+    Top ``f`` holds percentiles ``p > 1 - f`` and bottom ``f`` holds ``p <= f`` (average
+    ranks, so ties share a slice). Only dates with at least ``min_cross_section`` names
+    count, as with deciles. A slice with fewer than ``min_names`` names on any such date is
+    ``insufficient_data`` and gets no mean return; its name counts are still reported.
+    """
     f = factor
     y = label.reindex(index=f.index, columns=f.columns)
-    pct = f.rank(axis=1, method="average", pct=True)
+    sized = f.notna().sum(axis=1) >= min_cross_section
+    pct = f.loc[sized].rank(axis=1, method="average", pct=True)
+    y = y.loc[sized]
     rows = {}
     for frac in fractions:
-        top = y.where(pct > 1 - frac).mean(axis=1)
-        bottom = y.where(pct <= frac).mean(axis=1)
-        rows[f"top_{frac:g}"] = top.mean()
-        rows[f"bottom_{frac:g}"] = bottom.mean()
-        rows[f"n_dates_{frac:g}"] = float((top.notna() & bottom.notna()).sum())
-    return pd.DataFrame(rows, index=["mean_forward_return"]).T
+        for side, mask in (("top", pct > 1 - frac), ("bottom", pct <= frac)):
+            names = mask.sum(axis=1)
+            daily = y.where(mask).mean(axis=1)
+            short = int((names < min_names).sum())
+            ok = bool(sized.any()) and short == 0
+            rows[f"{side}_{frac:g}"] = {
+                "side": side,
+                "fraction": frac,
+                "mean_forward_return": float(daily.mean()) if ok else np.nan,
+                "n_dates": int(daily.notna().sum()),
+                "mean_names": float(names.mean()) if len(names) else np.nan,
+                "min_names": int(names.min()) if len(names) else 0,
+                "insufficient_dates": short,
+                "status": "ok" if ok else "insufficient_data",
+            }
+    return pd.DataFrame.from_dict(rows, orient="index")
 
 
 def rank_autocorrelation(factor: pd.DataFrame, lag: int = 1) -> float:

@@ -153,6 +153,8 @@ def test_synthetic_workflow_script(tmp_path):
     metrics = json.loads((out / "eval" / "metrics.json").read_text())
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
+    quantiles = json.loads((out / "quantiles" / "quantiles.json").read_text())
+    assert [p["portfolio"] for p in quantiles["portfolios"]][:10] == [f"q{k}" for k in range(1, 11)]
     [experiment] = [
         json.loads(line) for line in (out / "mining/ledger.jsonl").read_text().splitlines()
     ]
@@ -212,6 +214,12 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert metrics["external_benchmark"]["beta"]["status"] == "ok"
     verdict = json.loads((out / "eval" / "verdict.json").read_text())
     assert verdict["factor"]["status"] == "not_confirmed"  # fixed formula, not yet confirmed
+    quantiles = json.loads((out / "quantiles" / "quantiles.json").read_text())
+    assert quantiles["report_version"] == 1 and len(quantiles["portfolios"]) == 19
+    # 30 names: the 1% tails never reach five names, so they report no performance.
+    tails = {p["portfolio"]: p for p in quantiles["portfolios"]}
+    assert tails["top_0.01"]["status"] == "insufficient_data"
+    assert tails["top_0.01"]["net_sharpe"] is None
     market = json.loads((out / "data" / "market" / "manifest.json").read_text())
     assert "SPY" not in market["provenance"]["snapshot"]["files"]
     assert market["metadata"]["universe"].endswith("(survivorship-biased)")
@@ -235,16 +243,17 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # Records need committed code; this test may run from a dirty tree or installed wheels,
     # so it states a clean revision after checking the fields exist.
     save_run = _save_run_module()
-    eval_manifest = json.loads((out / "eval" / "manifest.json").read_text())
-    assert {"code_revision", "code_dirty"} <= eval_manifest.keys()
-    eval_manifest.update(code_revision="0" * 40, code_dirty=False)
-    (out / "eval" / "manifest.json").write_text(json.dumps(eval_manifest))
+    for part in ("eval", "quantiles"):
+        code_manifest = json.loads((out / part / "manifest.json").read_text())
+        assert {"code_revision", "code_dirty"} <= code_manifest.keys()
+        code_manifest.update(code_revision="0" * 40, code_dirty=False)
+        (out / part / "manifest.json").write_text(json.dumps(code_manifest))
     record = tmp_path / "record"
     saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
     assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
     assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved
-    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv")) for p in saved)
+    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv", ".gz")) for p in saved)
     assert not any(p.startswith("snapshot/") and p != "snapshot/snapshot.json" for p in saved)
     assert json.loads((record / "eval/verdict.json").read_text()) == verdict
     readme = (record / "README.md").read_text()

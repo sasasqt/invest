@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Test-only historical workflow on Yahoo Finance daily bars:
-# snapshot -> publish -> freeze a fixed formula -> export -> evaluate against SPY.
+# snapshot -> publish -> freeze a fixed formula -> export -> evaluate against SPY
+# -> decile and tail portfolios.
 #
 # Usage: uv run scripts/historical_workflow.sh [OUT_DIR]
 #
@@ -22,7 +23,7 @@
 # verdicts, metrics, figures, manifests; no vendor data) there for committing, with
 # scripts/save_run.py. It must not exist yet, and tracked files must be unmodified so the
 # recorded code revision describes the code that ran; save_run.py also refuses incomplete
-# outputs and an evaluation manifest without a clean code revision.
+# outputs and evaluation or quantile manifests without a clean code revision.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -87,6 +88,11 @@ invest-mine export --data "$out/data/market" --factor "$out/mining/factor.json" 
 
 invest-eval run --data "$out/data/market" --signals "$out/signals" --config "$config" \
   --benchmark "$out/data/benchmark" --out "$out/eval"
+
+# Every decile and the top/bottom 1/5/10% tails as separate backtests with the same costs
+# and timing; slices with fewer than five names on a decision report insufficient_data.
+invest-eval quantiles --data "$out/data/market" --signals "$out/signals" --config "$config" \
+  --out "$out/quantiles"
 
 if [[ -n "$record" ]]; then
   python "$root/scripts/save_run.py" "$out" "$record" --snapshot "$snapshot"

@@ -1,6 +1,6 @@
 # Quantile analysis for factors and strategies
 
-This is a shared report specification. Deciles and overlapping tail slices are implemented as factor diagnostics in `invest_mining/diagnostics.py`; bucket portfolios are evaluated through the quantile strategy in `invest_evaluation`. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../strategy-evaluation/METRICS.md).
+This is a shared report specification. Deciles and overlapping tail slices are implemented as factor diagnostics in `invest_mining/diagnostics.py` and as executable bucket portfolios in `invest_evaluation/quantiles.py` (`invest-eval quantiles`), which use the same membership rule: average-rank percentile `p` among decision-time eligible names, bucket `k` of `n` holds `ceil(p × n) = k`, top `f` holds `p > 1 − f`, bottom `f` holds `p ≤ f`. Both skip dates with fewer names than buckets and report slices with fewer than a declared minimum of names (default 5) as `insufficient_data`. `tests/test_quantile_consistency.py` checks that the two components assign the same names. Mining owns factor diagnostics; strategy evaluation owns actual portfolio results. See [component ownership](ARCHITECTURE.md), [alpha validation](../data-mining-framework/ALPHA_VALIDATION.md), and [strategy metrics](../strategy-evaluation/METRICS.md).
 
 ## Signal buckets
 

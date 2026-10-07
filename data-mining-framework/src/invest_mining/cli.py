@@ -112,12 +112,18 @@ def _evaluate(args: argparse.Namespace) -> int:
         summary=summary,
         ic=ic,
         quantiles=quantile_returns(values, label, args.buckets),
-        tails=tail_returns(values, label),
+        tails=tail_returns(
+            values,
+            label,
+            min_names=args.min_tail_names,
+            min_cross_section=args.buckets,
+        ),
         config={
             "dataset_id": manifest.dataset_id,
             "dataset_sha256": manifest.content_sha256,
             "horizon": args.horizon,
             "buckets": args.buckets,
+            "min_tail_names": args.min_tail_names,
             "note": "Descriptive diagnostics on the full sample; not a confirmatory test.",
         },
     )
@@ -518,6 +524,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     ev.add_argument("--expr", required=True)
     ev.add_argument("--horizon", type=int, default=1)
     ev.add_argument("--buckets", type=int, default=10)
+    ev.add_argument(
+        "--min-tail-names",
+        type=int,
+        default=5,
+        help="fewest names a tail slice may hold on a date before it is insufficient_data",
+    )
     ev.add_argument("--out", type=Path, required=True)
 
     se = sub.add_parser("search", help="random search with a ledger and frozen confirmation")

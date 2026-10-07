@@ -35,6 +35,7 @@ strategy-evaluation/               # invest-evaluation
     engine.py                      # event order, fills, costs, accounting
     metrics.py, stats.py           # performance metrics and uncertainty
     robustness.py                  # cost/delay/liquidity/capacity scenarios
+    quantiles.py                   # executable decile and tail bucket portfolios
     validation.py                  # portfolio verdict beside copied factor evidence
     reporting.py, cli.py
   examples/
