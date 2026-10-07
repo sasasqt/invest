@@ -35,14 +35,18 @@ import pandas as pd
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.engine import run_backtest
 from invest_evaluation.metrics import compute_metrics
+from invest_evaluation.reporting import finite, write_json
 from invest_evaluation.stats import bootstrap_ci
-from invest_evaluation.strategies import BucketStrategy, Slice, percentile_ranks
+from invest_evaluation.strategies import BucketStrategy, Slice
 
-QUANTILE_REPORT_VERSION = 1
+# Version 2: the top tail is the mirror of the bottom tail (q <= f, counted from the top)
+# instead of p > 1 - f, which held one name more than the bottom tail at some sizes.
+QUANTILE_REPORT_VERSION = 2
 TIE_RULE = (
-    "average-rank percentile p in (0, 1] among decision-time eligible names; "
-    "bucket k of n holds ceil(p * n) == k; top f holds p > 1 - f; bottom f holds p <= f; "
-    "tied scores share p and therefore a bucket"
+    "average-rank percentile p in (0, 1] among decision-time eligible names, and q, the "
+    "same percentile counted from the highest score; bucket k of n holds ceil(p * n) == k; "
+    "bottom f holds p <= f; top f holds q <= f; tied scores share p and q and therefore "
+    "a bucket"
 )
 PERFORMANCE_COLUMNS = (
     "net_cagr",
@@ -112,20 +116,55 @@ def bucket_portfolios(qcfg: QuantileConfig) -> list[BucketPortfolio]:
     return out
 
 
-def memberships(decisions: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
-    """Decision-time percentile and bucket of every eligible name, from saved decisions.
+MEMBERSHIP_KEYS = ["decision_date", "instrument", "score"]
 
-    Tail membership follows from ``pct`` with the documented rule, so one table serves
-    every portfolio.
+
+def memberships(decisions: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
+    """Decision-time percentiles and bucket of every eligible name, from saved decisions.
+
+    Tail membership follows from ``pct`` and ``pct_from_top`` with the documented rule,
+    so one table serves every portfolio.
     """
-    d = decisions[["decision_date", "instrument", "score"]].copy()
-    d["pct"] = d.groupby("decision_date")["score"].transform(percentile_ranks)
+    d = decisions[MEMBERSHIP_KEYS].copy()
+    by_date = d.groupby("decision_date")["score"]
+    # Grouped form of ``percentile_ranks``: average rank / names in the decision.
+    d["pct"] = by_date.rank(method="average", pct=True)
+    d["pct_from_top"] = by_date.rank(method="average", pct=True, ascending=False)
     d["bucket"] = np.ceil(d["pct"] * n_buckets).clip(lower=1, upper=n_buckets).astype(int)
     return d
 
 
 def _leg_counts(member: pd.DataFrame, leg: Slice) -> pd.Series:
-    return member["pct"].pipe(leg.mask).groupby(member["decision_date"]).sum()
+    mask = leg.mask(member["pct"], member["pct_from_top"])
+    return mask.groupby(member["decision_date"]).sum()
+
+
+def _membership_for(
+    member: pd.DataFrame | None, decisions: pd.DataFrame, n_buckets: int
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Membership table covering ``decisions`` and the (possibly longer) table to keep.
+
+    Eligibility does not depend on holdings, so every portfolio sees the same decisions
+    and only an insolvent portfolio stops early: each record is a prefix of the longest.
+    Percentiles are computed once, from the longest record, and that assumption is checked.
+    """
+
+    def check_prefix(longer: pd.DataFrame, shorter: pd.DataFrame) -> None:
+        same = all(
+            np.array_equal(longer[c].to_numpy()[: len(shorter)], shorter[c].to_numpy())
+            for c in MEMBERSHIP_KEYS
+        )
+        if not same:
+            raise RuntimeError("bucket portfolios saw different decision-time eligible names")
+
+    if member is None or len(decisions) > len(member):
+        # Built from these decisions, so only an earlier record needs checking.
+        previous, member = member, memberships(decisions, n_buckets)
+        if previous is not None:
+            check_prefix(member, previous)
+    else:
+        check_prefix(member, decisions)
+    return member.iloc[: len(decisions)], member
 
 
 def _value(section: dict[str, Any], key: str) -> float | None:
@@ -196,7 +235,7 @@ def _portfolio_row(
 class QuantileResult:
     table: pd.DataFrame  # one row per portfolio
     returns: pd.DataFrame  # date x portfolio net daily returns
-    memberships: pd.DataFrame  # decision_date, instrument, score, pct, bucket
+    memberships: pd.DataFrame  # decision_date, instrument, score, pct, pct_from_top, bucket
     warnings: dict[str, list[str]]
     config: BacktestConfig
     quantiles: QuantileConfig
@@ -229,13 +268,15 @@ def run_quantile_portfolios(
             min_names_per_bucket=qcfg.min_names_per_bucket,
         )
         result = run_backtest(
-            bars, signals, config, strategy, universe=universe, delistings=delistings
+            bars,
+            signals,
+            config,
+            strategy,
+            universe=universe,
+            delistings=delistings,
+            record_decisions=True,
         )
-        current = memberships(result.decisions, qcfg.n_buckets)
-        # Eligibility does not depend on holdings, so every portfolio sees the same
-        # decisions; only an insolvent portfolio stops early. Keep the longest record.
-        if member is None or len(current) > len(member):
-            member = current
+        current, member = _membership_for(member, result.decisions, qcfg.n_buckets)
         rows.append(_portfolio_row(p, result, current, min_cross_section, qcfg))
         returns[p.name] = result.returns
         warnings[p.name] = result.warnings
@@ -248,24 +289,6 @@ def run_quantile_portfolios(
         config=config,
         quantiles=qcfg,
     )
-
-
-def _clean(obj: Any) -> Any:
-    if isinstance(obj, dict):
-        return {k: _clean(v) for k, v in obj.items()}
-    if isinstance(obj, list):
-        return [_clean(v) for v in obj]
-    if isinstance(obj, float) and not math.isfinite(obj):
-        return None
-    if isinstance(obj, np.integer):
-        return int(obj)
-    if isinstance(obj, np.floating):
-        return _clean(float(obj))
-    return obj
-
-
-def _json(path: Path, obj: Any) -> None:
-    path.write_text(json.dumps(_clean(obj), indent=2, default=str, allow_nan=False) + "\n")
 
 
 def save_quantile_run(
@@ -283,23 +306,27 @@ def save_quantile_run(
     result.returns.to_csv(root / "tables" / "daily_returns.csv.gz")
     with gzip.open(root / "tables" / "memberships.csv.gz", "wt", newline="") as fh:
         result.memberships.to_csv(fh, index=False)
-    _json(
+    write_json(
         root / "config.json",
-        {"backtest": result.config.to_dict(), "quantiles": result.quantiles.to_dict()},
+        finite({"backtest": result.config.to_dict(), "quantiles": result.quantiles.to_dict()}),
     )
-    _json(
+    write_json(
         root / "quantiles.json",
-        {
-            "report_version": QUANTILE_REPORT_VERSION,
-            "kind": "quantile_portfolios",
-            "settings": result.quantiles.to_dict(),
-            "membership_rule": TIE_RULE,
-            "min_cross_section": max(result.config.strategy.min_names, result.quantiles.n_buckets),
-            "note": "Tail slices overlap deciles and each other; do not sum them.",
-            "portfolios": table.to_dict("records"),
-        },
+        finite(
+            {
+                "report_version": QUANTILE_REPORT_VERSION,
+                "kind": "quantile_portfolios",
+                "settings": result.quantiles.to_dict(),
+                "membership_rule": TIE_RULE,
+                "min_cross_section": max(
+                    result.config.strategy.min_names, result.quantiles.n_buckets
+                ),
+                "note": "Tail slices overlap deciles and each other; do not sum them.",
+                "portfolios": table.to_dict("records"),
+            }
+        ),
     )
-    _json(root / "manifest.json", {**provenance, "warnings": result.warnings})
+    write_json(root / "manifest.json", finite({**provenance, "warnings": result.warnings}))
     render_quantiles(root)
     return root
 

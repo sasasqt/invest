@@ -53,13 +53,15 @@ class QuantileStrategy:
         return pd.Series(weights, dtype=float)
 
 
-def percentile_ranks(scores: pd.Series) -> pd.Series:
+def percentile_ranks(scores: pd.Series, *, descending: bool = False) -> pd.Series:
     """Average-rank percentiles in (0, 1]; tied scores share one percentile.
 
-    The same rule as the factor diagnostics in ``invest_mining.diagnostics``, so bucket
-    portfolios hold exactly the names the diagnostics assign to that bucket.
+    ``descending=True`` ranks from the highest score down, so the top tail uses the same
+    exact ``rank / n <= f`` comparison as the bottom tail. The same rule as the factor
+    diagnostics in ``invest_mining.diagnostics``, so bucket portfolios hold exactly the
+    names the diagnostics assign to that bucket.
     """
-    return scores.rank(method="average", pct=True)
+    return scores.rank(method="average", pct=True, ascending=not descending)
 
 
 @dataclass(frozen=True)
@@ -68,7 +70,9 @@ class Slice:
 
     * ``bucket``: bucket ``value`` of ``n_buckets`` equal-width percentile buckets, i.e.
       ``ceil(p * n_buckets) == value`` (bucket 1 holds the lowest scores).
-    * ``top``: ``p > 1 - value``; ``bottom``: ``p <= value`` (overlapping tail slices).
+    * ``bottom``: ``p <= value``; ``top``: ``q <= value``, where ``q`` is the same
+      percentile counted from the highest score (overlapping tail slices). The two tails
+      are mirror images: reversing the scores swaps their members.
 
     Ties share a percentile, so they always fall in the same slice; populations can be
     unequal or empty, and are reported instead of being rebalanced by instrument id.
@@ -103,12 +107,16 @@ class Slice:
         # Float's shortest round-trip representation keeps distinct fractions distinct.
         return f"{self.kind}_{float(self.value)}"
 
-    def mask(self, pct: pd.Series) -> pd.Series:
+    def mask(self, pct: pd.Series, pct_from_top: pd.Series | None) -> pd.Series:
+        """Members given ascending (``pct``) and descending (``pct_from_top``) percentiles;
+        ``pct_from_top`` is required for top slices only."""
         if self.kind == "bucket":
             bucket = np.ceil(pct * self.n_buckets).clip(lower=1, upper=self.n_buckets)
             return bucket == int(self.value)
         if self.kind == "top":
-            return pct > 1 - self.value
+            if pct_from_top is None:
+                raise ValueError("top slices need percentiles counted from the top")
+            return pct_from_top <= self.value
         return pct <= self.value
 
 
@@ -136,15 +144,17 @@ class BucketStrategy:
         self.gross_leverage = gross_leverage
         self.min_cross_section = max(min_names, long.n_buckets)
         self.min_names_per_bucket = min_names_per_bucket
+        self.uses_top = any(s is not None and s.kind == "top" for s in (long, short))
 
     def target_weights(self, scores: pd.Series) -> pd.Series:
         scores = scores.dropna()
         if len(scores) < self.min_cross_section:
             return pd.Series(dtype=float)
         pct = percentile_ranks(scores)
-        longs = scores.index[self.long.mask(pct).to_numpy()]
+        pct_from_top = percentile_ranks(scores, descending=True) if self.uses_top else None
+        longs = scores.index[self.long.mask(pct, pct_from_top).to_numpy()]
         shorts = (
-            scores.index[self.short.mask(pct).to_numpy()]
+            scores.index[self.short.mask(pct, pct_from_top).to_numpy()]
             if self.short is not None
             else pd.Index([])
         )

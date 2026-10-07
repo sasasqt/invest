@@ -79,9 +79,17 @@ invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format
 
 # Descriptive factor diagnostics on the full sample (not a confirmatory test); the ledger
 # records the inspected window unless it is already recorded. Use the frozen orientation
-# so q10 and the top tails mean the same score direction in both reports.
+# so q10 and the top tails mean the same score direction in both reports, and the
+# portfolios' minimum cross-section (applied to scored names here, eligible names there).
+min_names="$(python - "$config" <<'PY'
+import sys
+from invest_evaluation.config import BacktestConfig
+print(BacktestConfig.load(sys.argv[1]).strategy.min_names)
+PY
+)"
 invest-mine evaluate --data "$out/data/market" --expr "$expr" --horizon 5 \
-  --orientation "$orientation" --ledger "$ledger" --out "$out/mining/diagnostics"
+  --orientation "$orientation" --min-cross-section "$min_names" \
+  --ledger "$ledger" --out "$out/mining/diagnostics"
 
 # A fixed formula chosen before looking at this data: low past 5-day return = attractive.
 invest-mine freeze --expr "$expr" --horizon 5 --orientation "$orientation" \

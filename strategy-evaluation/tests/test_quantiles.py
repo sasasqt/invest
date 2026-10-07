@@ -75,6 +75,33 @@ def test_bucket_strategy_keeps_ties_in_one_bucket():
     assert top.target_weights(s).empty  # nobody is split off by instrument id
 
 
+def held(long: Slice, s: pd.Series) -> set[str]:
+    strategy = BucketStrategy(long, None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1)
+    return set(strategy.target_weights(s).index)
+
+
+@pytest.mark.parametrize(
+    ("n", "f", "count"), [(100, 0.07, 7), (100, 0.1, 10), (250, 0.01, 2), (250, 0.05, 12)]
+)
+def test_top_and_bottom_tails_hold_the_same_number_of_names(n, f, count):
+    # p > 1 - f held 8 names for f = 0.07 (float rounding) and one name more than the
+    # bottom tail whenever f * n is fractional (250 names: 3 vs 2 at 1%, 13 vs 12 at 5%).
+    s = scores({f"N{i:03d}": float(i) for i in range(n)})
+    top, bottom = held(Slice("top", f), s), held(Slice("bottom", f), s)
+    assert len(top) == len(bottom) == count
+    assert top == {f"N{i:03d}" for i in range(n - count, n)}
+
+
+@pytest.mark.parametrize("seed", range(5))
+def test_top_tail_is_the_bottom_tail_of_reversed_scores(seed):
+    rng = np.random.default_rng(seed)
+    n = int(rng.integers(10, 300))
+    s = scores({f"N{i}": float(v) for i, v in enumerate(rng.integers(0, max(3, n // 5), n))})
+    for f in (0.01, 0.05, 0.07, 0.1, 0.25, 0.5):
+        assert held(Slice("top", f), s) == held(Slice("bottom", f), -s)
+        assert not held(Slice("top", f), s) & held(Slice("bottom", f), s)
+
+
 def test_bucket_strategy_refuses_small_buckets_and_cross_sections():
     s = scores({f"N{i}": float(i) for i in range(20)})
     long_short = BucketStrategy(
@@ -109,7 +136,8 @@ def test_hand_calculated_bucket_portfolio():
     strategy = BucketStrategy(
         Slice("bucket", 2, 2), None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1
     )
-    res = run_backtest(bars, signals, free_config(), strategy)
+    assert run_backtest(bars, signals, free_config(), strategy).decisions.empty  # off by default
+    res = run_backtest(bars, signals, free_config(), strategy, record_decisions=True)
     # Decide after the close of 2024-01-03; buy A (upper bucket) at the next open (11).
     shares, cost = 1000.0 / 11.0, 1000.0 * 10 / 1e4
     eq = res.daily["equity"]
@@ -164,16 +192,18 @@ def test_quantile_portfolios_report_small_samples(market, reversal_signals):
     q = QuantileConfig(tail_fractions=(0.05, 0.1), min_names_per_bucket=2)
     res = run_quantile_portfolios(market, reversal_signals, cfg, q)
     t = res.table.set_index("portfolio")
-    # 28 to 30 eligible names: deciles hold 2 or 3, the bottom 5% tail holds only 1.
+    # 28 to 30 eligible names: deciles hold 2 or 3, each 5% tail holds only 1.
     assert (t.loc[[f"q{k}" for k in range(1, 11)], "status"] == "ok").all()
-    assert t.loc["top_0.05", "status"] == "ok" and t.loc["top_0.05", "min_names"] == 2
-    for name in ("bottom_0.05", "top_minus_bottom_0.05"):
+    for name in ("top_0.05", "bottom_0.05", "top_minus_bottom_0.05"):
         assert t.loc[name, "status"] == "insufficient_data"
         assert pd.isna(t.loc[name, "net_sharpe"]) and pd.isna(t.loc[name, "net_cagr"])
         assert t.loc[name, "insufficient_decisions"] == t.loc[name, "decisions_with_cross_section"]
-    # The top 10% tail and the top decile are the same slice under one rule.
-    assert t.loc["top_0.1", "net_cagr"] == pytest.approx(t.loc["q10", "net_cagr"])
+    # The bottom 10% tail is the bottom decile; the top tail mirrors it, so with 28
+    # names it holds 2 (not the top decile's 3) and both tails always hold equal counts.
     assert t.loc["bottom_0.1", "net_cagr"] == pytest.approx(t.loc["q1", "net_cagr"])
+    for f in (0.05, 0.1):
+        assert t.loc[f"top_{f}", "mean_names"] == t.loc[f"bottom_{f}", "mean_names"]
+        assert t.loc[f"top_{f}", "min_names"] == t.loc[f"bottom_{f}", "min_names"]
     # Deciles partition each decision's eligible names.
     m = res.memberships
     assert m.groupby("decision_date")["bucket"].nunique().eq(10).all()
@@ -241,9 +271,44 @@ def test_cli_quantiles_writes_versioned_report(tmp_path, market, reversal_signal
     manifest = json.loads((out / "manifest.json").read_text())
     assert manifest["signals"]["id"] == "s" and "code_revision" in manifest
     with gzip.open(out / "tables" / "memberships.csv.gz", "rt") as fh:
-        assert fh.readline().strip() == "decision_date,instrument,score,pct,bucket"
+        assert fh.readline().strip() == "decision_date,instrument,score,pct,pct_from_top,bucket"
     assert "insufficient_data" in (out / "report.md").read_text()
     with pytest.raises(SystemExit):
         main([*args, "--out", str(tmp_path / "bad"), "--tails", "0.7"])
     with pytest.raises(FileExistsError):
         main([*args, "--out", str(out)])
+
+
+def test_memberships_are_computed_once_and_checked_against_every_portfolio():
+    from invest_evaluation.quantiles import _membership_for
+
+    d = pd.DataFrame(
+        {
+            "decision_date": pd.to_datetime(["2024-01-02"] * 3 + ["2024-01-03"] * 3),
+            "instrument": ["A", "B", "C"] * 2,
+            "score": [3.0, 1.0, 2.0, 1.0, 2.0, 3.0],
+        }
+    )
+    current, member = _membership_for(None, d.iloc[:3], 2)  # an insolvent first run
+    assert len(current) == len(member) == 3
+    current, member = _membership_for(member, d, 2)  # a longer run replaces it
+    assert len(current) == len(member) == 6
+    assert member["pct_from_top"].tolist() == pytest.approx([1 / 3, 1, 2 / 3, 1, 2 / 3, 1 / 3])
+    current, kept = _membership_for(member, d.iloc[:3], 2)
+    assert kept is member and len(current) == 3
+    with pytest.raises(RuntimeError, match="different decision-time eligible names"):
+        _membership_for(member, d.assign(score=d["score"].where(d.index != 4, 9.0)), 2)
+    with pytest.raises(RuntimeError, match="different decision-time eligible names"):
+        _membership_for(member.iloc[:3].assign(instrument=["A", "C", "B"]), d, 2)
+
+
+def test_top_slices_require_percentiles_from_the_top_and_json_values_are_plain():
+    from invest_evaluation.reporting import finite
+
+    pct = pd.Series([0.5, 1.0])
+    with pytest.raises(ValueError, match="from the top"):
+        Slice("top", 0.5).mask(pct, None)
+    assert Slice("bottom", 0.5).mask(pct, None).tolist() == [True, False]
+    out = finite({"a": [np.bool_(True), np.int64(2), np.float64("nan"), np.float32(0.5)]})
+    assert out == {"a": [True, 2, None, 0.5]}
+    assert [type(v) for v in out["a"]] == [bool, int, type(None), float]

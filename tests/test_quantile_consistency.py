@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 from invest_evaluation.strategies import BucketStrategy, Slice
-from invest_mining.diagnostics import assign_buckets, tail_returns
+from invest_mining.diagnostics import assign_buckets, tail_masks, tail_returns
 
 
 @pytest.mark.parametrize("seed", range(5))
@@ -33,9 +33,10 @@ def test_bucket_and_tail_membership_match_factor_diagnostics(seed):
 
     for k in range(1, 11):
         assert held(Slice("bucket", k, 10)) == set(expected.index[expected == k])
-    for f in (0.01, 0.05, 0.1, 0.25):
-        counts = tail_returns(
-            scores.to_frame().T, scores.to_frame().T, (f,), min_names=1, min_cross_section=10
-        )["min_names"]
-        for side in ("top", "bottom"):
-            assert len(held(Slice(side, f, 10))) == counts[f"{side}_{f:g}"]
+    for f in (0.01, 0.05, 0.07, 0.1, 0.25, 0.5):
+        frame = scores.to_frame().T
+        counts = tail_returns(frame, frame, (f,), min_names=1, min_cross_section=10)
+        for side, mask in tail_masks(frame, f).items():
+            members = set(mask.columns[mask.iloc[0]])
+            assert held(Slice(side, f, 10)) == members
+            assert len(members) == counts.loc[f"{side}_{float(f)}", "min_names"]

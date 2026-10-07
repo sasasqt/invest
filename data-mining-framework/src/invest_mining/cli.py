@@ -26,6 +26,7 @@ from invest_data.schemas import (
 from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
+    TAIL_RULE,
     daily_ic,
     forward_returns,
     ic_summary,
@@ -91,6 +92,14 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
 
 
 def _evaluate(args: argparse.Namespace) -> int:
+    # Validate settings before the ledger records an inspection.
+    for flag, value, minimum in (
+        ("--buckets", args.buckets, 1),
+        ("--min-tail-names", args.min_tail_names, 1),
+        ("--min-cross-section", args.min_cross_section, 1),
+    ):
+        if value < minimum:
+            raise SystemExit(f"{flag} must be an integer >= {minimum}")
     manifest, bars = read_market_bars(args.data)
     if args.ledger is not None:
         dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
@@ -107,17 +116,20 @@ def _evaluate(args: argparse.Namespace) -> int:
         "mean_ic"
     ]
     summary["rank_autocorrelation_1d"] = rank_autocorrelation(values)
+    # Deciles and tails use the same dates; portfolios apply this threshold to eligible names.
+    min_cross_section = max(args.buckets, args.min_cross_section)
     write_factor_report(
         args.out,
         expression=canonical(args.expr),
         summary=summary,
         ic=ic,
-        quantiles=quantile_returns(values, label, args.buckets),
+        quantiles=quantile_returns(values, label, args.buckets, min_cross_section),
         tails=tail_returns(
             values,
             label,
             min_names=args.min_tail_names,
-            min_cross_section=args.buckets,
+            n_buckets=args.buckets,
+            min_cross_section=min_cross_section,
         ),
         config={
             "dataset_id": manifest.dataset_id,
@@ -126,6 +138,8 @@ def _evaluate(args: argparse.Namespace) -> int:
             "orientation": args.orientation,
             "buckets": args.buckets,
             "min_tail_names": args.min_tail_names,
+            "min_cross_section": min_cross_section,
+            "tail_rule": TAIL_RULE,
             "note": "Descriptive diagnostics on the full sample; not a confirmatory test.",
         },
     )
@@ -538,6 +552,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=int,
         default=5,
         help="fewest names a tail slice may hold on a date before it is insufficient_data",
+    )
+    ev.add_argument(
+        "--min-cross-section",
+        type=int,
+        default=1,
+        help="skip dates with fewer scored names in deciles and tails (at least --buckets); "
+        "pass the evaluation config's strategy.min_names to use the bucket portfolios' "
+        "threshold (they count decision-time eligible names)",
     )
     ev.add_argument("--out", type=Path, required=True)
 

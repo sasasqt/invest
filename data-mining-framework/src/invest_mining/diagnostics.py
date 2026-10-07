@@ -18,6 +18,12 @@ import numpy as np
 import pandas as pd
 
 MIN_CROSS_SECTION = 5
+# Recorded with tail tables; before this rule, top f held p > 1 - f (sometimes one name
+# more than the bottom tail).
+TAIL_RULE = (
+    "average-rank percentiles; bottom f holds p <= f; top f holds q <= f, "
+    "with q counted from the highest score"
+)
 
 
 def forward_returns(open_: pd.DataFrame, horizon: int) -> pd.DataFrame:
@@ -120,22 +126,43 @@ def ic_summary(ic: pd.DataFrame, horizon: int) -> dict[str, Any]:
     }
 
 
-def assign_buckets(factor: pd.DataFrame, n_buckets: int = 10) -> pd.DataFrame:
-    """Per-date equal-width percentile buckets 1..n (ties share a bucket; NaN stays NaN)."""
+def _positive_int(name: str, value: object) -> None:
+    if isinstance(value, bool) or not isinstance(value, Integral) or value < 1:
+        raise ValueError(f"{name} must be a positive integer")
+
+
+def sized_dates(factor: pd.DataFrame, n_buckets: int, min_cross_section: int) -> pd.Series:
+    """Dates with at least ``max(n_buckets, min_cross_section)`` scored names.
+
+    Deciles and tails use the same dates. The bucket portfolios apply the same threshold
+    (``max(buckets, strategy.min_names)``) to decision-time eligible names.
+    """
+    _positive_int("n_buckets", n_buckets)
+    _positive_int("min_cross_section", min_cross_section)
+    return factor.notna().sum(axis=1) >= max(n_buckets, min_cross_section)
+
+
+def assign_buckets(
+    factor: pd.DataFrame, n_buckets: int = 10, min_cross_section: int = 1
+) -> pd.DataFrame:
+    """Per-date equal-width percentile buckets 1..n (ties share a bucket; NaN stays NaN).
+
+    Only ``sized_dates`` get buckets. Equal-width buckets put the remainder in the upper
+    buckets, so with 28 names q1 holds 2 and q10 holds 3; tails are symmetric instead.
+    """
     pct = factor.rank(axis=1, method="average", pct=True)
     buckets = np.ceil(pct * n_buckets).clip(lower=1, upper=n_buckets)
-    counts = factor.notna().sum(axis=1)
-    buckets.loc[counts < n_buckets] = np.nan
+    buckets.loc[~sized_dates(factor, n_buckets, min_cross_section)] = np.nan
     return buckets
 
 
 def quantile_returns(
-    factor: pd.DataFrame, label: pd.DataFrame, n_buckets: int = 10
+    factor: pd.DataFrame, label: pd.DataFrame, n_buckets: int = 10, min_cross_section: int = 1
 ) -> pd.DataFrame:
-    """Date x bucket table of equal-weighted mean forward returns."""
+    """Date x bucket table of equal-weighted mean forward returns (see ``assign_buckets``)."""
     f = factor
     y = label.reindex(index=f.index, columns=f.columns)
-    b = assign_buckets(f, n_buckets)
+    b = assign_buckets(f, n_buckets, min_cross_section)
     stacked = pd.DataFrame({"bucket": b.stack(), "ret": y.stack()}).dropna()
     table = stacked.groupby([stacked.index.get_level_values(0), "bucket"])["ret"].mean()
     out = table.unstack("bucket").reindex(index=f.index, columns=range(1, n_buckets + 1))
@@ -144,37 +171,53 @@ def quantile_returns(
     return out
 
 
+def tail_percentiles(factor: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """Average-rank percentiles counted from the top and from the bottom of each date."""
+    return {
+        "top": factor.rank(axis=1, method="average", pct=True, ascending=False),
+        "bottom": factor.rank(axis=1, method="average", pct=True),
+    }
+
+
+def tail_masks(factor: pd.DataFrame, fraction: float) -> dict[str, pd.DataFrame]:
+    """Top and bottom ``fraction`` members on every date given (``tail_returns``' rule;
+    it also drops dates outside ``sized_dates``)."""
+    return {side: pct <= fraction for side, pct in tail_percentiles(factor).items()}
+
+
 def tail_returns(
     factor: pd.DataFrame,
     label: pd.DataFrame,
     fractions: tuple[float, ...] = (0.01, 0.05, 0.1),
     *,
     min_names: int = 5,
-    min_cross_section: int = 10,
+    n_buckets: int = 10,
+    min_cross_section: int = 1,
 ) -> pd.DataFrame:
     """Mean forward return of top/bottom tail slices (these overlap deciles).
 
-    Top ``f`` holds percentiles ``p > 1 - f`` and bottom ``f`` holds ``p <= f`` (average
-    ranks, so ties share a slice). Only dates with at least ``min_cross_section`` names
-    count, as with deciles. A slice with fewer than ``min_names`` names on any such date is
-    ``insufficient_data`` and gets no mean return; its name counts are still reported.
-    Outcomes never affect membership. On dates with any observed label among scored
-    names, a slice also needs at least ``min_names`` observed outcomes. Dates without any
-    observable labels (such as the unfinished horizon at the end) are counted separately
-    and excluded from that coverage check. No usable dates means ``insufficient_data``.
+    Bottom ``f`` holds average-rank percentiles ``p <= f``; top ``f`` holds ``q <= f``,
+    where ``q`` is the same percentile counted from the highest score, so the two tails
+    are mirror images and ties share a slice. Only ``sized_dates`` count, as with deciles.
+    A slice with fewer than ``min_names`` names on any such date is ``insufficient_data``
+    and gets no mean return; its name counts are still reported. Outcomes never affect
+    membership. On dates with any observed label among scored names, a slice also needs
+    at least ``min_names`` observed outcomes. Dates without any observable labels (such
+    as the unfinished horizon at the end) are counted separately and excluded from that
+    coverage check. No usable dates means ``insufficient_data``.
     """
-    for name, value in (("min_names", min_names), ("min_cross_section", min_cross_section)):
-        if isinstance(value, bool) or not isinstance(value, Integral) or value < 1:
-            raise ValueError(f"{name} must be a positive integer")
+    _positive_int("min_names", min_names)
     f = factor
     y = label.reindex(index=f.index, columns=f.columns)
-    sized = f.notna().sum(axis=1) >= min_cross_section
-    pct = f.loc[sized].rank(axis=1, method="average", pct=True)
+    sized = sized_dates(f, n_buckets, min_cross_section)
+    f = f.loc[sized]
     y = y.loc[sized]
-    observable = y.where(pct.notna()).notna().any(axis=1)
+    observable = y.where(f.notna()).notna().any(axis=1)
+    percentiles = tail_percentiles(f)
     rows = {}
     for frac in fractions:
-        for side, mask in (("top", pct > 1 - frac), ("bottom", pct <= frac)):
+        for side, pct in percentiles.items():
+            mask = pct <= frac
             names = mask.sum(axis=1)
             outcomes = y.where(mask)
             observed_names = outcomes.notna().sum(axis=1)
