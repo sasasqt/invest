@@ -24,6 +24,12 @@ TAIL_RULE = (
     "average-rank percentiles; bottom f holds p <= f; top f holds q <= f, "
     "with q counted from the highest score"
 )
+# Recorded with decile tables; before this rule, bucket k held ceil(p * n) == k, so the top
+# bucket held up to one name more than the bottom bucket.
+BUCKET_RULE = (
+    "average-rank percentiles; names with p <= q get bucket ceil(p * n), the others "
+    "n + 1 - ceil(q * n), so bucket 1 and bucket n mirror each other"
+)
 
 
 def forward_returns(open_: pd.DataFrame, horizon: int) -> pd.DataFrame:
@@ -145,13 +151,18 @@ def sized_dates(factor: pd.DataFrame, n_buckets: int, min_cross_section: int) ->
 def assign_buckets(
     factor: pd.DataFrame, n_buckets: int = 10, min_cross_section: int = 1
 ) -> pd.DataFrame:
-    """Per-date equal-width percentile buckets 1..n (ties share a bucket; NaN stays NaN).
+    """Per-date symmetric percentile buckets 1..n (ties share a bucket; NaN stays NaN).
 
-    Only ``sized_dates`` get buckets. Equal-width buckets put the remainder in the upper
-    buckets, so with 28 names q1 holds 2 and q10 holds 3; tails are symmetric instead.
+    Names in the lower half (``p <= q``) get ``ceil(p * n)`` and the others
+    ``n + 1 - ceil(q * n)``, with ``q`` counted from the highest score (``BUCKET_RULE``).
+    Bucket 1 and bucket n mirror each other and equal the ``1/n`` tails; leftover names
+    fall in the middle buckets (28 names: 2, 3, 3, 3, 3, 3, 3, 3, 3, 2). A name or tie
+    group exactly at the median gets ``ceil(p * n)`` either way, so it is not mirrored.
+    Only ``sized_dates`` get
+    buckets.
     """
-    pct = factor.rank(axis=1, method="average", pct=True)
-    buckets = np.ceil(pct * n_buckets).clip(lower=1, upper=n_buckets)
+    percentiles = tail_percentiles(factor)
+    buckets = bucket_numbers(percentiles["bottom"], percentiles["top"], n_buckets)
     buckets.loc[~sized_dates(factor, n_buckets, min_cross_section)] = np.nan
     return buckets
 
@@ -177,6 +188,14 @@ def tail_percentiles(factor: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "top": factor.rank(axis=1, method="average", pct=True, ascending=False),
         "bottom": factor.rank(axis=1, method="average", pct=True),
     }
+
+
+def bucket_numbers(pct: pd.DataFrame, pct_from_top: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
+    """``BUCKET_RULE`` from ascending and descending percentiles (evaluation keeps a copy
+    with the same signature, because the components never import each other)."""
+    lower = np.ceil(pct * n_buckets)
+    upper = n_buckets + 1 - np.ceil(pct_from_top * n_buckets)
+    return lower.where(pct <= pct_from_top, upper).clip(lower=1, upper=n_buckets)
 
 
 def tail_masks(factor: pd.DataFrame, fraction: float) -> dict[str, pd.DataFrame]:

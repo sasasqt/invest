@@ -26,6 +26,7 @@ from invest_data.schemas import (
 from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
+    BUCKET_RULE,
     TAIL_RULE,
     daily_ic,
     forward_returns,
@@ -139,6 +140,7 @@ def _evaluate(args: argparse.Namespace) -> int:
             "buckets": args.buckets,
             "min_tail_names": args.min_tail_names,
             "min_cross_section": min_cross_section,
+            "bucket_rule": BUCKET_RULE,
             "tail_rule": TAIL_RULE,
             "note": "Descriptive diagnostics on the full sample; not a confirmatory test.",
         },

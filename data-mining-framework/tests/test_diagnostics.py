@@ -13,6 +13,7 @@ from invest_mining.diagnostics import (
     newey_west_mean_test,
     quantile_returns,
     tail_masks,
+    tail_percentiles,
     tail_returns,
 )
 
@@ -70,8 +71,12 @@ def test_buckets_keep_ties_and_require_enough_names():
         dtype=float,
     )
     b = assign_buckets(f, 5)
-    assert b.iloc[0].tolist() == [1, 2, 3, 5, 5]
+    # The tied top pair has average rank 4.5 (q = 0.3), the mirror of a tied bottom pair
+    # (p = 0.3, bucket 2), so it shares bucket 4 and bucket 5 stays empty.
+    assert b.iloc[0].tolist() == [1, 2, 3, 4, 4]
     assert b.iloc[1].isna().all()
+    mirrored = assign_buckets(-f, 5)
+    assert mirrored.iloc[0].tolist() == [5, 4, 3, 2, 2]
 
 
 def test_quantile_and_tail_returns_on_monotone_signal():
@@ -190,6 +195,23 @@ def test_top_and_bottom_tails_hold_the_same_number_of_names(n, f, count):
     assert (tails["min_names"] == count).all()
     masks = tail_masks(f_, f)
     assert list(masks["top"].columns[masks["top"].iloc[0]]) == list(range(n - count, n))
+
+
+def test_deciles_mirror_and_end_deciles_equal_the_ten_percent_tails():
+    rng = np.random.default_rng(1)
+    f_ = pd.DataFrame(rng.integers(0, 30, (40, 120)), dtype=float)
+    f_ = f_.mask(rng.random(f_.shape) < 0.2)
+    b, reversed_ = assign_buckets(f_, 10), assign_buckets(-f_, 10)
+    masks = tail_masks(f_, 0.1)
+    pd.testing.assert_frame_equal(b.eq(1), masks["bottom"])
+    pd.testing.assert_frame_equal(b.eq(10), masks["top"])
+    pct = tail_percentiles(f_)
+    off_median = pct["bottom"] != pct["top"]  # an exact median is not mirrored
+    assert (reversed_ == 11 - b)[off_median & f_.notna()].all().all()
+    counts = pd.Series(range(28), dtype=float).to_frame().T
+    assert assign_buckets(counts, 10).iloc[0].value_counts().sort_index().tolist() == [
+        2, 3, 3, 3, 3, 3, 3, 3, 3, 2,
+    ]  # fmt: skip
 
 
 def test_top_tail_is_the_bottom_tail_of_reversed_scores():

@@ -37,16 +37,18 @@ from invest_evaluation.engine import run_backtest
 from invest_evaluation.metrics import compute_metrics
 from invest_evaluation.reporting import finite, write_json
 from invest_evaluation.stats import bootstrap_ci
-from invest_evaluation.strategies import BucketStrategy, Slice
+from invest_evaluation.strategies import BucketStrategy, Slice, bucket_numbers
 
-# Version 2: the top tail is the mirror of the bottom tail (q <= f, counted from the top)
-# instead of p > 1 - f, which held one name more than the bottom tail at some sizes.
+# Version 2: buckets and tails are symmetric. The top tail is q <= f (counted from the top)
+# instead of p > 1 - f, and the upper half of the buckets mirrors the lower half instead
+# of ceil(p * n) throughout; both gave the top side up to one name more than the bottom.
 QUANTILE_REPORT_VERSION = 2
 TIE_RULE = (
     "average-rank percentile p in (0, 1] among decision-time eligible names, and q, the "
-    "same percentile counted from the highest score; bucket k of n holds ceil(p * n) == k; "
-    "bottom f holds p <= f; top f holds q <= f; tied scores share p and q and therefore "
-    "a bucket"
+    "same percentile counted from the highest score; names with p <= q get bucket "
+    "ceil(p * n) and the others n + 1 - ceil(q * n), so bucket 1 and bucket n mirror each "
+    "other; bottom f holds p <= f; top f holds q <= f; tied scores share p and q and "
+    "therefore a bucket"
 )
 PERFORMANCE_COLUMNS = (
     "net_cagr",
@@ -130,11 +132,12 @@ def memberships(decisions: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
     # Grouped form of ``percentile_ranks``: average rank / names in the decision.
     d["pct"] = by_date.rank(method="average", pct=True)
     d["pct_from_top"] = by_date.rank(method="average", pct=True, ascending=False)
-    d["bucket"] = np.ceil(d["pct"] * n_buckets).clip(lower=1, upper=n_buckets).astype(int)
+    d["bucket"] = bucket_numbers(d["pct"], d["pct_from_top"], n_buckets).astype(int)
     return d
 
 
 def _leg_counts(member: pd.DataFrame, leg: Slice) -> pd.Series:
+    # The same Slice.mask the strategy holds, so counts describe the held names.
     mask = leg.mask(member["pct"], member["pct_from_top"])
     return mask.groupby(member["decision_date"]).sum()
 

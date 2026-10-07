@@ -61,23 +61,40 @@ def test_invalid_slices_are_rejected(kind, value, n):
         Slice(kind, value, n)
 
 
-def test_bucket_strategy_keeps_ties_in_one_bucket():
-    # Ten names, four tied at the top: average rank 8.5 -> p = 0.85 -> bucket 9, not 10.
-    s = scores({**{f"N{i}": float(i) for i in range(6)}, **{f"T{i}": 9.0 for i in range(4)}})
-    strategy = BucketStrategy(
-        Slice("bucket", 9, 10), None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1
-    )
-    w = strategy.target_weights(s)
-    assert sorted(w.index) == ["T0", "T1", "T2", "T3"] and w.sum() == pytest.approx(1.0)
-    top = BucketStrategy(
-        Slice("bucket", 10, 10), None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1
-    )
-    assert top.target_weights(s).empty  # nobody is split off by instrument id
-
-
 def held(long: Slice, s: pd.Series) -> set[str]:
     strategy = BucketStrategy(long, None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1)
     return set(strategy.target_weights(s).index)
+
+
+def test_bucket_strategy_keeps_ties_in_one_bucket():
+    # Ten names, four tied at the top: average rank 8.5 -> q = 0.25 -> bucket 11 - 3 = 8,
+    # the mirror of four names tied at the bottom (p = 0.25 -> bucket 3).
+    s = scores({**{f"N{i}": float(i) for i in range(6)}, **{f"T{i}": 9.0 for i in range(4)}})
+    w = BucketStrategy(
+        Slice("bucket", 8, 10), None, gross_leverage=1.0, min_names=1, min_names_per_bucket=1
+    ).target_weights(s)
+    assert sorted(w.index) == ["T0", "T1", "T2", "T3"] and w.sum() == pytest.approx(1.0)
+    for k in (9, 10):  # nobody is split off by instrument id
+        assert held(Slice("bucket", k, 10), s) == set()
+    assert held(Slice("bucket", 3, 10), -s) == {"T0", "T1", "T2", "T3"}
+
+
+@pytest.mark.parametrize("n", [28, 87, 95, 100, 255])
+def test_deciles_are_symmetric_and_end_buckets_equal_the_tails(n):
+    s = scores({f"N{i:03d}": float(i) for i in range(n)})
+    members = {k: held(Slice("bucket", k, 10), s) for k in range(1, 11)}
+    counts = [len(members[k]) for k in range(1, 11)]
+    # 28 names: 2, 3, ..., 3, 2. With odd n the median name sits in one middle bucket.
+    median_bucket = next(k for k in members if f"N{(n - 1) // 2:03d}" in members[k])
+    mirrored = [c - int(n % 2 == 1 and k + 1 == median_bucket) for k, c in enumerate(counts)]
+    assert sum(counts) == n and mirrored == mirrored[::-1]
+    assert members[1] == held(Slice("bottom", 0.1), s)
+    assert members[10] == held(Slice("top", 0.1), s)
+    # Reversing the scores swaps bucket k and 11 - k; only an exact median name (odd n)
+    # keeps its bucket.
+    median = {f"N{(n - 1) // 2:03d}"} if n % 2 else set()
+    for k in range(1, 11):
+        assert held(Slice("bucket", k, 10), -s) - median == members[11 - k] - median
 
 
 @pytest.mark.parametrize(
@@ -198,8 +215,8 @@ def test_quantile_portfolios_report_small_samples(market, reversal_signals):
         assert t.loc[name, "status"] == "insufficient_data"
         assert pd.isna(t.loc[name, "net_sharpe"]) and pd.isna(t.loc[name, "net_cagr"])
         assert t.loc[name, "insufficient_decisions"] == t.loc[name, "decisions_with_cross_section"]
-    # The bottom 10% tail is the bottom decile; the top tail mirrors it, so with 28
-    # names it holds 2 (not the top decile's 3) and both tails always hold equal counts.
+    # The 10% tails are the end deciles under one rule, and they mirror each other.
+    assert t.loc["top_0.1", "net_cagr"] == pytest.approx(t.loc["q10", "net_cagr"])
     assert t.loc["bottom_0.1", "net_cagr"] == pytest.approx(t.loc["q1", "net_cagr"])
     for f in (0.05, 0.1):
         assert t.loc[f"top_{f}", "mean_names"] == t.loc[f"bottom_{f}", "mean_names"]
@@ -302,13 +319,12 @@ def test_memberships_are_computed_once_and_checked_against_every_portfolio():
         _membership_for(member.iloc[:3].assign(instrument=["A", "C", "B"]), d, 2)
 
 
-def test_top_slices_require_percentiles_from_the_top_and_json_values_are_plain():
+def test_tail_masks_use_their_own_percentiles_and_json_values_are_plain():
     from invest_evaluation.reporting import finite
 
     pct = pd.Series([0.5, 1.0])
-    with pytest.raises(ValueError, match="from the top"):
-        Slice("top", 0.5).mask(pct, None)
-    assert Slice("bottom", 0.5).mask(pct, None).tolist() == [True, False]
+    assert Slice("bottom", 0.5).mask(pct, 1 + 1 / 2 - pct).tolist() == [True, False]
+    assert Slice("top", 0.5).mask(pct, 1 + 1 / 2 - pct).tolist() == [False, True]
     out = finite({"a": [np.bool_(True), np.int64(2), np.float64("nan"), np.float32(0.5)]})
     assert out == {"a": [True, 2, None, 0.5]}
     assert [type(v) for v in out["a"]] == [bool, int, type(None), float]

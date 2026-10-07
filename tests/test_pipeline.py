@@ -236,7 +236,12 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # meanings for q1/q10. Compare membership on the evaluator's eligible cross-section.
     import pandas as pd
 
-    from invest_mining.diagnostics import TAIL_RULE, assign_buckets, tail_percentiles
+    from invest_mining.diagnostics import (
+        BUCKET_RULE,
+        TAIL_RULE,
+        assign_buckets,
+        tail_percentiles,
+    )
     from invest_mining.expressions import build_panel, evaluate
 
     diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
@@ -245,6 +250,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # Both reports apply the same minimum cross-section threshold.
     assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 10
     assert diagnostic_config["tail_rule"] == TAIL_RULE
+    assert diagnostic_config["bucket_rule"] == BUCKET_RULE
     values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
     members = pd.read_csv(
         out / "quantiles/tables/memberships.csv.gz",
