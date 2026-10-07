@@ -79,9 +79,10 @@ class QuantileConfig:
                 raise ValueError("tail fractions must be finite numbers")
             if not 0 < f <= 0.5:
                 raise ValueError("tail fractions must be in (0, 0.5]")
-        if len(set(fractions)) != len(fractions):
+        normalized = tuple(sorted(float(f) for f in fractions))
+        if len(set(normalized)) != len(normalized):
             raise ValueError("tail fractions must be unique")
-        object.__setattr__(self, "tail_fractions", tuple(sorted(float(f) for f in fractions)))
+        object.__setattr__(self, "tail_fractions", normalized)
 
     def to_dict(self) -> dict[str, Any]:
         out = asdict(self)
@@ -106,7 +107,7 @@ def bucket_portfolios(qcfg: QuantileConfig) -> list[BucketPortfolio]:
         out += [
             BucketPortfolio(top.label, "top", top),
             BucketPortfolio(bottom.label, "bottom", bottom),
-            BucketPortfolio(f"top_minus_bottom_{f:g}", "long_short", top, bottom),
+            BucketPortfolio(f"top_minus_bottom_{f}", "long_short", top, bottom),
         ]
     return out
 

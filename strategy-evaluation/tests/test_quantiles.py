@@ -15,6 +15,7 @@ from invest_evaluation.quantiles import (
     QuantileConfig,
     bucket_portfolios,
     run_quantile_portfolios,
+    save_quantile_run,
 )
 from invest_evaluation.strategies import BucketStrategy, Slice
 
@@ -127,6 +128,25 @@ def test_portfolio_list_separates_deciles_and_overlapping_tails():
         "top_0.05", "bottom_0.05", "top_minus_bottom_0.05",
         "top_0.1", "bottom_0.1", "top_minus_bottom_0.1",
     ]  # fmt: skip
+
+
+def test_close_tail_fractions_keep_distinct_reports_and_return_series(
+    tmp_path, market, reversal_signals
+):
+    cfg = BacktestConfig()
+    qcfg = QuantileConfig(n_buckets=2, tail_fractions=(0.1, 0.10000001), min_names_per_bucket=1)
+    result = run_quantile_portfolios(market, reversal_signals, cfg, qcfg)
+    assert result.table["portfolio"].is_unique
+    assert len(result.table) == len(result.returns.columns) == 8
+    for row in result.table.itertuples():
+        returns = result.returns[row.portfolio].dropna()
+        cagr = (1 + returns).prod() ** (cfg.annualization / len(returns)) - 1
+        assert cagr == pytest.approx(row.net_cagr)
+    out = save_quantile_run(tmp_path / "q", result, provenance={})
+    table = pd.read_csv(out / "tables/portfolios.csv")
+    returns = pd.read_csv(out / "tables/daily_returns.csv.gz", index_col=0)
+    assert table["portfolio"].tolist() == returns.columns.tolist()
+    assert {"top_0.1", "top_0.10000001"} <= set(returns.columns)
 
 
 @pytest.mark.parametrize(

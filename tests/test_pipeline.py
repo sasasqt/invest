@@ -232,6 +232,29 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     from invest_data.schemas import read_market_bars
 
     _, published = read_market_bars(out / "data" / "market")
+    # Diagnostics and exported signals use the same frozen orientation, not reversed
+    # meanings for q1/q10. Compare membership on the evaluator's eligible cross-section.
+    import pandas as pd
+
+    from invest_mining.diagnostics import assign_buckets
+    from invest_mining.expressions import build_panel, evaluate
+
+    diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
+    factor = json.loads((out / "mining/factor.json").read_text())
+    assert diagnostic_config["orientation"] == factor["orientation"] == -1
+    values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
+    members = pd.read_csv(
+        out / "quantiles/tables/memberships.csv.gz", parse_dates=["decision_date"]
+    )
+    for date, group in members.groupby("decision_date"):
+        if len(group) < 10:
+            continue
+        expected = values.loc[[date], group["instrument"]]
+        buckets = assign_buckets(expected, 10).iloc[0]
+        actual = group.set_index("instrument")["bucket"]
+        # CSV may infer StringDtype while the bundle reader uses object identifiers.
+        # Compare every instrument's assignment, independent of pandas storage dtype.
+        assert buckets.astype(int).to_dict() == actual.to_dict()
     assert published["date"].min().date().isoformat() >= first
     assert published["date"].max().date().isoformat() <= last
     assert set(published["date"]) == set(bars.loc[bars["date"].between(first, last), "date"])

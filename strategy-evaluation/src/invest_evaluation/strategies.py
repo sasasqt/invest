@@ -100,7 +100,8 @@ class Slice:
     def label(self) -> str:
         if self.kind == "bucket":
             return f"q{int(self.value)}"
-        return f"{self.kind}_{self.value:g}"
+        # Float's shortest round-trip representation keeps distinct fractions distinct.
+        return f"{self.kind}_{float(self.value)}"
 
     def mask(self, pct: pd.Series) -> pd.Series:
         if self.kind == "bucket":

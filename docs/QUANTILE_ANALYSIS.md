@@ -18,6 +18,8 @@ Extreme slices overlap deciles. They are additional views and must not be summed
 
 Record the universe, decision-time filters, signal orientation, missing-signal policy, cutpoint/ranking method, tie policy, weighting, requested intervals, and minimum observations needed to interpret a bucket.
 
+Use `invest-mine evaluate --orientation` with the frozen factor's direction (default 1); the historical reversal workflow uses -1 for both diagnostics and export. Compare memberships on the same eligible cross-section, because trading additionally applies liquidity and price filters. Tail identifiers use the shortest round-trip float representation, so distinct accepted fractions such as `0.1` and `0.10000001` retain separate tables and return series.
+
 - Derive eligibility from information available at decision time, including liquidity and universe membership. Do not select instruments because their future labels happen to exist.
 - Define interval boundaries explicitly. Under empirical cutpoints, ties can produce unequal populations, duplicate boundaries, or empty buckets. Preserve ties together by default and report actual counts and unavailable buckets.
 - Equal-count rank buckets are an alternative; if splitting ties, declare the deterministic tie-breaker and test whether it introduces systematic instrument bias. Do not silently switch methods when a library's quantile function fails.
@@ -30,6 +32,8 @@ Record the universe, decision-time filters, signal orientation, missing-signal p
 For each bucket and declared target horizon, report mean/median forward return, available-label coverage, instrument count, dispersion, and date-level return series. Include top-minus-bottom separation, exposure/concentration, and stability across development/confirmation periods and declared regimes.
 
 Use an explicit weighting convention; equal-weighted mean forward returns are a simple starting point. Infer uncertainty from date-level series with time dependence respected, rather than treating all stock-date observations as independent.
+
+`tail_returns.csv` reports assigned populations (`mean_names`, `min_names`, `insufficient_dates`) separately from coverage (`mean_observed_names`, `min_observed_names`, `insufficient_label_dates`, `missing_label_dates`). `n_dates` counts dates meeting the observed-name minimum. A tail is `insufficient_data` and has no reported mean if it lacks the assigned-name minimum, falls below the observed-name minimum on any date with observable labels among scored names, or has no usable outcome dates. Dates with no observable labels anywhere among scored names are counted as missing and excluded from the coverage check, which permits unfinished forward horizons at the sample's end. Assignments never depend on future labels.
 
 Monotonicity is a diagnostic, not a universal admission rule. Some valid signals work only in an extreme or a regime. Report the shape and assess it against the intended hypothesis rather than forcing every alpha to increase smoothly across deciles.
 

@@ -36,6 +36,7 @@ snapshot="${SNAPSHOT:-$out/snapshot}"
 config="${CONFIG:-$root/strategy-evaluation/examples/quantile_long_short.json}"
 ledger="${LEDGER:-$root/ledgers/yahoo-test.jsonl}"
 expr="close / delay(close, 5) - 1"
+orientation=-1
 record="${RECORD:-}"
 
 if [[ -n "$record" ]]; then
@@ -77,12 +78,14 @@ invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format
   --universe-note "benchmark ETF"
 
 # Descriptive factor diagnostics on the full sample (not a confirmatory test); the ledger
-# records the inspected window unless it is already recorded.
+# records the inspected window unless it is already recorded. Use the frozen orientation
+# so q10 and the top tails mean the same score direction in both reports.
 invest-mine evaluate --data "$out/data/market" --expr "$expr" --horizon 5 \
-  --ledger "$ledger" --out "$out/mining/diagnostics"
+  --orientation "$orientation" --ledger "$ledger" --out "$out/mining/diagnostics"
 
 # A fixed formula chosen before looking at this data: low past 5-day return = attractive.
-invest-mine freeze --expr "$expr" --horizon 5 --orientation -1 --out "$out/mining/factor.json"
+invest-mine freeze --expr "$expr" --horizon 5 --orientation "$orientation" \
+  --out "$out/mining/factor.json"
 invest-mine export --data "$out/data/market" --factor "$out/mining/factor.json" \
   --format parquet --out "$out/signals"
 

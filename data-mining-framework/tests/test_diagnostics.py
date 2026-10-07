@@ -127,3 +127,56 @@ def test_tail_ties_stay_together_and_small_cross_sections_are_skipped():
     # Day 1: the six tied 2.0s all sit above the median; day 2 has too few names.
     assert t.loc["top_0.5", "min_names"] == 6 and t.loc["bottom_0.5", "min_names"] == 6
     assert t.loc["top_0.5", "n_dates"] == 1
+
+
+@pytest.mark.parametrize("observed", [0, 1, 4])
+def test_tail_status_requires_observed_outcomes_without_changing_membership(observed):
+    f = pd.DataFrame([range(100)], dtype=float)
+    y = f / 100
+    y.loc[:, 90:] = np.nan
+    if observed:
+        y.loc[:, 100 - observed :] = 0.5
+    baseline = tail_returns(f, f / 100, (0.1,))
+    tails = tail_returns(f, y, (0.1,))
+    top = tails.loc["top_0.1"]
+    assert top["status"] == "insufficient_data"
+    assert pd.isna(top["mean_forward_return"]) and top["n_dates"] == 0
+    assert top["min_names"] == baseline.loc["top_0.1", "min_names"] == 10
+    assert top["min_observed_names"] == observed and top["insufficient_label_dates"] == 1
+    assert tails.loc["bottom_0.1", "status"] == "ok"
+
+
+def test_tail_with_no_observable_dates_is_insufficient():
+    f = pd.DataFrame([range(100)], dtype=float)
+    tails = tail_returns(f, f * np.nan, (0.1,))
+    assert (tails["status"] == "insufficient_data").all()
+    assert tails["mean_forward_return"].isna().all() and tails["n_dates"].eq(0).all()
+
+
+def test_tail_coverage_reports_unavailable_horizon_end_and_enough_observed_names():
+    f = pd.DataFrame([range(100)] * 2, dtype=float)
+    y = f / 100
+    y.iloc[0, 90:95] = np.nan  # Five observed names still meet the declared minimum.
+    y.iloc[1, :] = np.nan  # The final date has no observable forward outcomes anywhere.
+    tails = tail_returns(f, y, (0.1,))
+    top = tails.loc["top_0.1"]
+    assert top["status"] == "ok" and top["n_dates"] == 1
+    assert top["min_names"] == 10 and top["min_observed_names"] == 5
+    assert top["missing_label_dates"] == 1 and top["insufficient_label_dates"] == 0
+    assert top["mean_forward_return"] == pytest.approx(0.97)
+
+
+def test_close_tail_fractions_keep_distinct_diagnostic_rows():
+    f = pd.DataFrame([range(100)], dtype=float)
+    tails = tail_returns(f, f / 100, (0.1, 0.10000001))
+    assert len(tails) == 4 and tails.index.is_unique
+    assert tails.loc["top_0.1", "min_names"] == 10
+    assert tails.loc["top_0.10000001", "min_names"] == 11
+
+
+@pytest.mark.parametrize("field", ["min_names", "min_cross_section"])
+@pytest.mark.parametrize("value", [0, -1, True, 1.5])
+def test_tail_minimum_counts_must_be_positive_integers(field, value):
+    f = pd.DataFrame([range(100)], dtype=float)
+    with pytest.raises(ValueError, match=f"{field} must be a positive integer"):
+        tail_returns(f, f / 100, (0.1,), **{field: value})

@@ -12,7 +12,7 @@ Inspect confirmation evidence separately from portfolio results. Choose the repl
 
 ```sh
 uv run invest-mine evaluate --data <market bundle> [--universe <bundle>] [--fundamentals <bundle>] \
-  --expr "cs_rank(-delta(close, 5))" --out <dir>
+  --expr "cs_rank(-delta(close, 5))" [--orientation 1] --out <dir>
 uv run invest-mine search --data <market bundle> --trials 200 --seed 0 [--ledger <ledger.jsonl>] \
   [--confirm-start <date>] [--require-confirmatory] --out <dir>
 uv run invest-mine ledger reserve|inspect|check --ledger <ledger.jsonl> --start <date> [--end <date>]
@@ -24,6 +24,8 @@ uv run invest-mine confirm --data <market bundle> --factor <factor.json> --confi
   --ledger <ledger.jsonl> [--require-confirmatory] --out <dir>
 uv run pytest data-mining-framework
 ```
+
+`evaluate --orientation {-1,1}` applies the direction frozen before diagnostics and records it in `config.json` and `metrics.json`; the default is 1. Use the frozen factor's orientation when comparing its diagnostic buckets with exported-score portfolios. Tail tables keep assigned-name counts separate from observed-outcome coverage. A tail needs at least `--min-tail-names` assigned and observed names (default 5) on each date with any observable labels among scored names; otherwise its status is `insufficient_data` and its mean is withheld. Dates with no observable labels, including an unfinished horizon at the sample's end, are excluded from the coverage check and counted separately. A tail with no usable outcome dates is always insufficient.
 
 Read the [factor-mining literature review](LITERATURE_REVIEW.md) for industry-oriented papers, AST and gradient-based methods, exploration versus exploitation, evaluation requirements, and a staged implementation roadmap.
 

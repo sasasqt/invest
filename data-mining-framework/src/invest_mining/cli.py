@@ -98,10 +98,11 @@ def _evaluate(args: argparse.Namespace) -> int:
             args.ledger, _span(dates, "data"), manifest, "invest-mine evaluate (full sample)"
         )
     panel = build_panel(bars, **_optional_inputs(args))
-    values = restrict(evaluate(args.expr, panel), panel)
+    values = restrict(evaluate(args.expr, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
     ic = daily_ic(values, label, "spearman")
     summary = ic_summary(ic, args.horizon)
+    summary["orientation"] = args.orientation
     summary["pearson_mean_ic"] = ic_summary(daily_ic(values, label, "pearson"), args.horizon)[
         "mean_ic"
     ]
@@ -122,6 +123,7 @@ def _evaluate(args: argparse.Namespace) -> int:
             "dataset_id": manifest.dataset_id,
             "dataset_sha256": manifest.content_sha256,
             "horizon": args.horizon,
+            "orientation": args.orientation,
             "buckets": args.buckets,
             "min_tail_names": args.min_tail_names,
             "note": "Descriptive diagnostics on the full sample; not a confirmatory test.",
@@ -522,6 +524,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     ev = sub.add_parser("evaluate", help="diagnose one expression")
     ev.add_argument("--data", type=Path, required=True)
     ev.add_argument("--expr", required=True)
+    ev.add_argument(
+        "--orientation",
+        type=int,
+        choices=(-1, 1),
+        default=1,
+        help="frozen score direction, as used by export (default 1)",
+    )
     ev.add_argument("--horizon", type=int, default=1)
     ev.add_argument("--buckets", type=int, default=10)
     ev.add_argument(
