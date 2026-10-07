@@ -441,3 +441,39 @@ def test_cli_reports_insufficient_external_benchmark_coverage(
     assert "SPY close-to-close (spy)" in report
     assert f"Aligned daily returns: {aligned} of {len(daily)} evaluation sessions" in report
     assert "n/a (fewer_than_20_aligned_returns)" in report
+
+
+def _git(repo, *args):
+    import subprocess
+
+    done = subprocess.run(
+        ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return done.stdout.strip()
+
+
+def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
+    tmp_path, monkeypatch
+):
+    from invest_evaluation.cli import code_revision
+
+    code, other = tmp_path / "code", tmp_path / "other"
+    for repo in (code, other):
+        repo.mkdir()
+        _git(repo, "init", "-q")
+        (repo / "module.py").write_text("x = 1\n")
+        _git(repo, "add", "module.py")
+        _git(repo, "commit", "-q", "-m", "init")
+    monkeypatch.chdir(other)  # run from another repository
+    assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), False)
+    (code / "module.py").write_text("x = 2\n")
+    assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), True)
+    # Code Git does not track there (an installed wheel) or outside any checkout: unknown.
+    (code / "installed.py").write_text("")
+    assert code_revision(code / "installed.py") == (None, None)
+    (tmp_path / "loose.py").write_text("")
+    monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path))
+    assert code_revision(tmp_path / "loose.py") == (None, None)

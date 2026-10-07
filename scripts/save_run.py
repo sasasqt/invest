@@ -8,6 +8,10 @@ from a finished ``scripts/historical_workflow.sh`` output directory into DEST (f
 responses, published bundles and large ledgers are never copied: they are vendor data or
 are rebuilt exactly by replaying the snapshot. DEST must not exist, so a record is never
 overwritten.
+
+The output must be complete (every file the workflow writes and the README describes) and
+must come from committed code: the evaluation manifest needs a code revision and no
+uncommitted changes to tracked files.
 """
 
 from __future__ import annotations
@@ -16,6 +20,7 @@ import argparse
 import json
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -33,7 +38,29 @@ RECORD_GLOBS = (
     "eval/figures/*.png",
     "eval/tables/scenarios.csv",
 )
-REQUIRED = ("eval/manifest.json", "eval/verdict.json", "data/market/manifest.json")
+# Every output of a finished historical workflow run; a record missing any of them is refused.
+# The benchmark manifest is also required when the evaluation used an external benchmark.
+REQUIRED = (
+    "data/market/manifest.json",
+    "signals/manifest.json",
+    "mining/factor.json",
+    "mining/diagnostics/config.json",
+    "mining/diagnostics/metrics.json",
+    "mining/diagnostics/figures/ic.png",
+    "mining/diagnostics/figures/quantiles.png",
+    "mining/diagnostics/tables/daily_ic.csv",
+    "mining/diagnostics/tables/tail_returns.csv",
+    "eval/config.json",
+    "eval/manifest.json",
+    "eval/metrics.json",
+    "eval/statistics.json",
+    "eval/verdict.json",
+    "eval/report.md",
+    "eval/figures/diagnostics.png",
+    "eval/figures/equity_drawdown.png",
+    "eval/figures/scenarios.png",
+    "eval/tables/scenarios.csv",
+)
 MAX_FILE_BYTES = 1_000_000
 
 
@@ -42,10 +69,24 @@ def _load(path: Path) -> Any:
 
 
 def record_files(out: Path) -> list[Path]:
-    """Relative paths of the files that belong in a run record, checked for size."""
-    missing = [rel for rel in REQUIRED if not (out / rel).is_file()]
+    """Relative paths of the files that belong in a run record, checked for completeness,
+    provenance and size."""
+    if not (out / "eval/manifest.json").is_file():
+        raise SystemExit(f"{out}: not a finished workflow output (missing eval/manifest.json)")
+    manifest = _load(out / "eval/manifest.json")
+    required = list(REQUIRED)
+    if manifest.get("external_benchmark"):
+        required.append("data/benchmark/manifest.json")
+    missing = [rel for rel in required if not (out / rel).is_file()]
     if missing:
         raise SystemExit(f"{out}: not a finished workflow output (missing {', '.join(missing)})")
+    if not manifest.get("code_revision"):
+        raise SystemExit(f"{out}: eval/manifest.json records no code revision")
+    if manifest.get("code_dirty") is not False:
+        raise SystemExit(
+            f"{out}: the evaluated code had uncommitted changes (or did not record whether it "
+            "had); rerun from a clean checkout"
+        )
     files = sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
     large = [str(rel) for rel in files if (out / rel).stat().st_size > MAX_FILE_BYTES]
     if large:
@@ -113,8 +154,13 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
     if dest.exists():
         raise SystemExit(f"{dest}: already exists; run records are never overwritten")
     dest.parent.mkdir(parents=True, exist_ok=True)
-    stage = dest.with_name(f".{dest.name}.partial")
-    shutil.rmtree(stage, ignore_errors=True)
+    # A fresh, uniquely named staging directory: only this call creates it, so only this
+    # call removes it. Nothing that already existed is ever deleted. The record is built in
+    # a subdirectory so it gets normal permissions rather than mkdtemp's private mode.
+    owned = Path(tempfile.mkdtemp(prefix=f".{dest.name}.", suffix=".partial", dir=dest.parent))
+    stage = owned / "record"
+    stage.mkdir()
+    reserved = False
     try:
         for rel in files:
             (stage / rel).parent.mkdir(parents=True, exist_ok=True)
@@ -123,10 +169,21 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
             (stage / "snapshot").mkdir(parents=True, exist_ok=True)
             shutil.copyfile(snapshot_dir / "snapshot.json", stage / "snapshot/snapshot.json")
         (stage / "README.md").write_text(_readme(out, snapshot))
-        stage.rename(dest)
+        # Windows rename already refuses any existing destination. POSIX rename can
+        # replace an empty directory, so reserve DEST exclusively on POSIX first.
+        try:
+            if sys.platform != "win32":
+                dest.mkdir()
+                reserved = True
+            stage.rename(dest)
+        except FileExistsError:
+            raise SystemExit(f"{dest}: already exists; run records are never overwritten") from None
     except BaseException:
-        shutil.rmtree(stage, ignore_errors=True)
+        if reserved and dest.is_dir() and not any(dest.iterdir()):
+            dest.rmdir()
         raise
+    finally:
+        shutil.rmtree(owned, ignore_errors=True)
     return sorted(p.relative_to(dest) for p in dest.rglob("*") if p.is_file())
 
 

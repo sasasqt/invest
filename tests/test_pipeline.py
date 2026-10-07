@@ -232,10 +232,17 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert ledger.read_text() == (ROOT / "ledgers/yahoo-test.jsonl").read_text()
 
     # The committed run record holds reports and manifests, never vendor data or bundles.
+    # Records need committed code; this test may run from a dirty tree or installed wheels,
+    # so it states a clean revision after checking the fields exist.
     save_run = _save_run_module()
+    eval_manifest = json.loads((out / "eval" / "manifest.json").read_text())
+    assert {"code_revision", "code_dirty"} <= eval_manifest.keys()
+    eval_manifest.update(code_revision="0" * 40, code_dirty=False)
+    (out / "eval" / "manifest.json").write_text(json.dumps(eval_manifest))
     record = tmp_path / "record"
     saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
-    assert {"README.md", "snapshot/snapshot.json", "eval/verdict.json", "eval/report.md"} <= saved
+    assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
+    assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved
     assert not any(p.endswith((".parquet", "trades.csv", "daily.csv")) for p in saved)
     assert not any(p.startswith("snapshot/") and p != "snapshot/snapshot.json" for p in saved)
