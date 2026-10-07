@@ -74,8 +74,8 @@ FUNDAMENTAL_COLUMNS = (
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
-# Factor confirmation evidence attached to signals (``metadata.factor_evidence``, v1).
-FACTOR_EVIDENCE_VERSION = 1
+# Version 2 binds factor evidence to the tested prediction/holding horizon.
+FACTOR_EVIDENCE_VERSION = 2
 CONFIRMATION_USES = ("confirmatory", "exploratory", "unrecorded")
 FACTOR_TEST_OUTCOMES = ("confirmation_passed", "rejected", "inconclusive")
 FACTOR_STATUSES = (*FACTOR_TEST_OUTCOMES, "exploratory")
@@ -105,7 +105,15 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
         if type(n_trials) is not int or n_trials < 1:
             raise BundleError("signals: n_trials must be a positive integer (not a boolean)")
     if kind == SIGNALS and "factor_evidence" in metadata:
-        validate_factor_evidence(metadata["factor_evidence"], factor_id=metadata.get("factor_id"))
+        if type(metadata["horizon_days"]) is not int or metadata["horizon_days"] < 1:
+            raise BundleError(
+                "signals: horizon_days must be a positive integer with factor_evidence"
+            )
+        validate_factor_evidence(
+            metadata["factor_evidence"],
+            factor_id=metadata.get("factor_id"),
+            horizon_days=metadata.get("horizon_days"),
+        )
 
 
 def _iso_date(value: Any) -> bool:
@@ -115,13 +123,17 @@ def _iso_date(value: Any) -> bool:
         return False
 
 
-def validate_factor_evidence(evidence: Any, *, factor_id: Any = None) -> None:
-    """Check the factor confirmation evidence carried by a signals bundle (v1).
+def validate_factor_evidence(
+    evidence: Any, *, factor_id: Any = None, horizon_days: Any = None
+) -> None:
+    """Check horizon-bound factor confirmation evidence carried by signals (v2).
 
     ``status`` is what a report may show as the factor outcome: it equals ``test_outcome``
     unless the confirmation data had already been used (``confirmation_use =
     "exploratory"``), in which case it is ``"exploratory"`` whatever the test said. The
     evidence describes the factor only; it never selects which factor was exported.
+    Version 1 has no tested horizon and is refused; re-export from the original
+    confirmation output rather than rerunning confirmation or relabelling old evidence.
     """
 
     def fail(message: str) -> NoReturn:
@@ -129,13 +141,28 @@ def validate_factor_evidence(evidence: Any, *, factor_id: Any = None) -> None:
 
     if not isinstance(evidence, dict):
         fail("must be a JSON object")
-    if evidence.get("evidence_version") != FACTOR_EVIDENCE_VERSION:
-        fail(f"evidence_version must be {FACTOR_EVIDENCE_VERSION}")
+    if (
+        type(evidence.get("evidence_version")) is not int
+        or evidence["evidence_version"] != FACTOR_EVIDENCE_VERSION
+    ):
+        fail(
+            f"evidence_version must be {FACTOR_EVIDENCE_VERSION}; "
+            "re-export signals from the original confirmation output to bind the tested horizon"
+        )
     for key in ("factor_id", "experiment_id"):
         if not isinstance(evidence.get(key), str) or not evidence[key]:
             fail(f"{key} must be a non-empty string")
     if factor_id is not None and evidence["factor_id"] != factor_id:
         fail(f"is for factor {evidence['factor_id']!r}, not {factor_id!r}")
+    tested_horizon = evidence.get("horizon_days")
+    if type(tested_horizon) is not int or tested_horizon < 1:
+        fail("horizon_days must be a positive integer")
+    if horizon_days is not None and (
+        type(horizon_days) is not int or tested_horizon != horizon_days
+    ):
+        fail(
+            f"horizon_days {tested_horizon!r} does not match signals horizon_days {horizon_days!r}"
+        )
     choices = (
         ("source", FACTOR_EVIDENCE_SOURCES),
         ("confirmation_use", CONFIRMATION_USES),

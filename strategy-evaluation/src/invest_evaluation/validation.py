@@ -9,13 +9,16 @@ factor, and a confirmed factor does not make an untradable portfolio supported.
 
 from __future__ import annotations
 
+import math
+from numbers import Real
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 from invest_evaluation.config import ValidationConfig
 
-VERDICT_VERSION = 1
+VERDICT_VERSION = 2
 PORTFOLIO_STATUSES = ("supported", "rejected", "inconclusive", "insufficient_data")
 
 
@@ -59,22 +62,59 @@ def portfolio_verdict(
 ) -> dict[str, Any]:
     """Classify one fixed portfolio as supported, rejected, inconclusive or insufficient_data.
 
-    Every rule is reported as a check (``pass``, ``fail``, ``undefined`` or ``not_run``),
-    so an inconclusive verdict shows which evidence was missing or adverse.
+    Solvency and a valid base net Sharpe are mandatory, regardless of optional rules.
+    Known insolvency is rejected even when sample size or statistics are insufficient.
+    Every check is saved so missing or adverse evidence is visible in reports.
     """
     clean = returns.dropna()
     n = len(clean)
     window = (
         {"start": str(clean.index[0].date()), "end": str(clean.index[-1].date())} if n else None
     )
+    performance = metrics.get("performance", {})
+    finite = np.isfinite(clean.to_numpy(dtype=float))
+    insolvency = performance.get("insolvency") or {}
+    insolvent = bool((clean.loc[finite] <= -1).any()) or (
+        insolvency.get("status") == "ok" and insolvency.get("value") is not None
+    )
+    finite_returns = bool(finite.all())
+    solvent = not insolvent and n > 0 and finite_returns
+    sharpe = performance.get("sharpe") or {}
+    sharpe_value = sharpe.get("value")
+    valid_sharpe = (
+        sharpe.get("status") == "ok"
+        and isinstance(sharpe_value, Real)
+        and not isinstance(sharpe_value, bool)
+        and math.isfinite(sharpe_value)
+    )
     checks = [
+        _check(
+            "solvency",
+            "fail" if insolvent else "pass" if solvent else "undefined",
+            False if insolvent else True if solvent else None,
+            "positive wealth throughout",
+            "insolvent wealth path"
+            if insolvent
+            else "wealth stays positive"
+            if solvent
+            else "no returns or non-finite net returns",
+        ),
+        _check(
+            "net_sharpe_validity",
+            "pass" if valid_sharpe else "undefined",
+            sharpe_value if valid_sharpe else None,
+            "finite value with status ok",
+            "base net Sharpe is valid"
+            if valid_sharpe
+            else f"base net Sharpe: {sharpe.get('reason') or sharpe.get('status') or 'missing'}",
+        ),
         _check(
             "sessions",
             "pass" if n >= rules.min_sessions else "fail",
             n,
             f">= {rules.min_sessions}",
             "daily net returns in the evaluation period",
-        )
+        ),
     ]
     boot = statistics.get("bootstrap", {})
     ci = boot.get("sharpe_ci") if boot.get("status") == "ok" else None
@@ -138,7 +178,11 @@ def portfolio_verdict(
         )
 
     by_name = {c["name"]: c for c in checks}
-    if by_name["sessions"]["status"] != "pass" or by_name["net_sharpe_ci"]["status"] == "undefined":
+    if insolvent:
+        status = "rejected"
+    elif (
+        by_name["sessions"]["status"] != "pass" or by_name["net_sharpe_ci"]["status"] == "undefined"
+    ):
         status = "insufficient_data"
     elif by_name["net_sharpe_ci"]["value"][1] < 0:
         status = "rejected"

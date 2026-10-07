@@ -2,6 +2,7 @@
 
 import json
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -9,11 +10,16 @@ from invest_data.schemas import publish_market_bars, publish_signals
 from invest_data.sources import SYNTHETIC_METADATA
 from invest_evaluation.cli import main
 from invest_evaluation.config import BacktestConfig, ValidationConfig
+from invest_evaluation.metrics import return_metrics
+from invest_evaluation.stats import strategy_statistics
 from invest_evaluation.validation import factor_section, portfolio_verdict
 
 RETURNS = pd.Series(0.001, index=pd.bdate_range("2020-01-01", periods=300))
 SCENARIOS = pd.DataFrame({"scenario": ["base", "costs_x2", "delay_1"], "sharpe": [1.0, 0.5, 0.2]})
-METRICS = {"benchmark": {"information_ratio": {"value": 0.3, "status": "ok"}}}
+METRICS = {
+    "performance": {"sharpe": {"value": 1.0, "status": "ok"}},
+    "benchmark": {"information_ratio": {"value": 0.3, "status": "ok"}},
+}
 
 
 def _stats(ci=(0.2, 1.8), dsr=0.99):
@@ -33,6 +39,8 @@ def test_supported_only_when_every_declared_rule_passes():
     assert verdict["status"] == "supported" and verdict["reasons"] == []
     assert verdict["evaluation_window"] == {"start": "2020-01-01", "end": "2021-02-23"}
     assert [c["name"] for c in verdict["checks"]] == [
+        "solvency",
+        "net_sharpe_validity",
         "sessions",
         "net_sharpe_ci",
         "deflated_sharpe",
@@ -80,6 +88,70 @@ def test_undefined_scenario_sharpe_cannot_support_a_portfolio():
     assert verdict["status"] == "inconclusive" and check["status"] == "undefined"
 
 
+@pytest.mark.parametrize("loss", [-1.0, -1.1])
+def test_insolvency_overrides_positive_statistics_without_stress_rules(loss):
+    returns = pd.Series(
+        np.random.default_rng(0).normal(0.044, 0.001, 400),
+        index=pd.bdate_range("2020-01-01", periods=400),
+    )
+    returns.iloc[-1] = loss
+    performance = return_metrics(returns, v0=1000.0, annualization=252)
+    metrics = {"performance": {key: value.to_dict() for key, value in performance.items()}}
+    stats = strategy_statistics(returns, 252)
+    assert stats["bootstrap"]["sharpe_ci"][0] > 0
+    assert stats["deflated_sharpe"]["dsr"] >= 0.95
+    assert metrics["performance"]["sharpe"]["status"] == "invalid_input"
+    verdict = portfolio_verdict(
+        ValidationConfig(stress_scenarios=[]), returns, metrics, stats, None
+    )
+    assert verdict["status"] == "rejected"
+    assert any(reason.startswith("solvency: fail") for reason in verdict["reasons"])
+
+
+def test_known_insolvency_is_rejected_even_with_too_few_returns():
+    returns = pd.Series([0.1, -1.0], index=pd.bdate_range("2020-01-01", periods=2))
+    verdict = portfolio_verdict(ValidationConfig(), returns, {}, {}, None)
+    assert verdict["status"] == "rejected"
+    assert any(reason.startswith("solvency: fail") for reason in verdict["reasons"])
+
+
+def test_saved_insolvency_metric_overrides_apparently_valid_returns():
+    metrics = {
+        "performance": {
+            **METRICS["performance"],
+            "insolvency": {"value": "2020-06-01", "status": "ok"},
+        }
+    }
+    assert _verdict(metrics=metrics)["status"] == "rejected"
+
+
+@pytest.mark.parametrize(
+    "sharpe",
+    [
+        None,
+        {"value": 1.0, "status": "invalid_input", "reason": "invalid_net_returns"},
+        {"value": None, "status": "undefined", "reason": "zero_dispersion"},
+        {"value": float("inf"), "status": "ok"},
+        {"value": True, "status": "ok"},
+    ],
+)
+def test_invalid_or_missing_base_sharpe_cannot_be_supported(sharpe):
+    verdict = _verdict(
+        rules=ValidationConfig(stress_scenarios=[]), metrics={"performance": {"sharpe": sharpe}}
+    )
+    assert verdict["status"] == "inconclusive"
+    assert any(reason.startswith("net_sharpe_validity: undefined") for reason in verdict["reasons"])
+
+
+def test_missing_and_non_finite_returns_cannot_establish_solvency():
+    for returns in (RETURNS.iloc[:0], RETURNS.copy()):
+        if len(returns):
+            returns.iloc[-1] = float("inf")
+        verdict = _verdict(returns=returns)
+        assert verdict["status"] != "supported"
+        assert any(reason.startswith("solvency: undefined") for reason in verdict["reasons"])
+
+
 def test_factor_section_copies_evidence_or_reports_its_absence():
     assert factor_section({"factor_id": "f"}) == {
         "status": "not_confirmed",
@@ -108,8 +180,9 @@ def test_invalid_validation_rules_are_rejected(validation):
 
 def _evidence():
     return {
-        "evidence_version": 1,
+        "evidence_version": 2,
         "factor_id": "rev5",
+        "horizon_days": 1,
         "experiment_id": "e_1",
         "source": "confirm",
         "confirmation_use": "exploratory",
@@ -137,6 +210,7 @@ def test_cli_reports_factor_and_portfolio_verdicts_separately(
     assert main([*base, "--out", str(tmp_path / "run")]) == 0
     printed = json.loads(capsys.readouterr().out)
     verdict = json.loads((tmp_path / "run" / "verdict.json").read_text())
+    assert verdict["verdict_version"] == 2
     assert verdict["factor"] == _evidence()
     assert printed["factor_status"] == "exploratory"
     assert printed["portfolio_status"] == verdict["portfolio"]["status"]
@@ -164,3 +238,84 @@ def test_cli_reports_factor_and_portfolio_verdicts_separately(
     with pytest.raises(SystemExit, match="needs --benchmark"):
         main([*base, "--config", str(cfg), "--out", str(tmp_path / "x")])
     assert not (tmp_path / "x").exists()
+
+
+def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, capsys):
+    dates = pd.bdate_range("2020-01-01", periods=400)
+    closes = 10 * np.cumprod(np.full(len(dates), 1.04))
+    opens = np.r_[10.0, closes[:-1]]
+    market = pd.DataFrame(
+        {
+            "date": dates,
+            "instrument": "A",
+            "open": opens,
+            "close": closes,
+            "high": closes,
+            "low": opens,
+            "volume": 1e15,
+        }
+    )
+    signals = pd.DataFrame({"decision_date": dates, "instrument": "A", "score": 1.0})
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        signals, tmp_path / "s", dataset_id="s", metadata={"factor_id": "fixed", "horizon_days": 1}
+    )
+    cfg = {
+        "initial_capital": 1000.0,
+        "strategy": {
+            "long_fraction": 1.0,
+            "short_fraction": 0.0,
+            "gross_leverage": 1.1,
+            "rebalance_every": 1,
+            "min_names": 1,
+        },
+        "execution": {"max_participation": 1.0, "min_price": 0.0},
+        "costs": {
+            "commission_bps": 0,
+            "half_spread_bps": 0,
+            "impact_coef": 0,
+            "borrow_bps_annual": 0,
+            "adv_window": 1,
+            "vol_window": 2,
+        },
+        "validation": {"stress_scenarios": []},
+    }
+    (tmp_path / "cfg.json").write_text(json.dumps(cfg))
+    (tmp_path / "events.json").write_text(
+        json.dumps(
+            [
+                {"date": str(dates[-1].date()), "instrument": "A", "settlement_price": 0.0},
+            ]
+        )
+    )
+    out = tmp_path / "run"
+    assert (
+        main(
+            [
+                "run",
+                "--data",
+                str(tmp_path / "m"),
+                "--signals",
+                str(tmp_path / "s"),
+                "--config",
+                str(tmp_path / "cfg.json"),
+                "--delistings",
+                str(tmp_path / "events.json"),
+                "--no-scenarios",
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+    assert json.loads(capsys.readouterr().out)["portfolio_status"] == "rejected"
+    stats = json.loads((out / "statistics.json").read_text())
+    assert stats["bootstrap"]["sharpe_ci"][0] > 0
+    assert stats["deflated_sharpe"]["dsr"] >= 0.95
+    perf = json.loads((out / "metrics.json").read_text())["performance"]
+    assert perf["sharpe"]["reason"] == "insolvent_wealth_path"
+    verdict = json.loads((out / "verdict.json").read_text())["portfolio"]
+    assert verdict["status"] == "rejected"
+    assert any(reason.startswith("solvency: fail") for reason in verdict["reasons"])
+    report = (out / "report.md").read_text()
+    assert "Status: **rejected**" in report and "| solvency | fail |" in report
