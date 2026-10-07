@@ -17,6 +17,11 @@
 # LEDGER (default ledgers/yahoo-test.jsonl) is the market's confirmation-use ledger. This
 # workflow inspects every date it publishes, so it refuses any window that touches the
 # reserved confirmation period (2025-01-01 onward) before downloading or publishing.
+#
+# RECORD (optional, e.g. runs/yahoo-test/2026-10-08) saves the run's small record (reports,
+# verdicts, metrics, figures, manifests; no vendor data) there for committing, with
+# scripts/save_run.py. It must not exist yet, and tracked files must be unmodified so the
+# recorded code revision describes the code that ran.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -29,6 +34,18 @@ snapshot="${SNAPSHOT:-$out/snapshot}"
 config="${CONFIG:-$root/strategy-evaluation/examples/quantile_long_short.json}"
 ledger="${LEDGER:-$root/ledgers/yahoo-test.jsonl}"
 expr="close / delay(close, 5) - 1"
+record="${RECORD:-}"
+
+if [[ -n "$record" ]]; then
+  if [[ -e "$record" ]]; then
+    echo "RECORD $record already exists; run records are never overwritten" >&2
+    exit 1
+  fi
+  if [[ -n "$(git -C "$root" status --porcelain --untracked-files=no)" ]]; then
+    echo "RECORD needs a clean checkout: commit or stash changes to tracked files first" >&2
+    exit 1
+  fi
+fi
 
 if [[ -f "$snapshot/snapshot.json" ]]; then
   echo "Replaying existing snapshot $snapshot (no download)" >&2
@@ -69,3 +86,7 @@ invest-mine export --data "$out/data/market" --factor "$out/mining/factor.json" 
 
 invest-eval run --data "$out/data/market" --signals "$out/signals" --config "$config" \
   --benchmark "$out/data/benchmark" --out "$out/eval"
+
+if [[ -n "$record" ]]; then
+  python "$root/scripts/save_run.py" "$out" "$record" --snapshot "$snapshot"
+fi

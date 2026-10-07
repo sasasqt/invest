@@ -231,6 +231,52 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # These dates lie inside the recorded inspected window, so the ledger is unchanged.
     assert ledger.read_text() == (ROOT / "ledgers/yahoo-test.jsonl").read_text()
 
+    # The committed run record holds reports and manifests, never vendor data or bundles.
+    save_run = _save_run_module()
+    record = tmp_path / "record"
+    saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
+    assert {"README.md", "snapshot/snapshot.json", "eval/verdict.json", "eval/report.md"} <= saved
+    assert "data/market/manifest.json" in saved
+    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv")) for p in saved)
+    assert not any(p.startswith("snapshot/") and p != "snapshot/snapshot.json" for p in saved)
+    assert json.loads((record / "eval/verdict.json").read_text()) == verdict
+    readme = (record / "README.md").read_text()
+    assert market["dataset_id"] in readme and "`not_confirmed`" in readme
+    with pytest.raises(SystemExit, match="never overwritten"):
+        save_run.save_run(out, record, snapshot)
+
+
+def _save_run_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("save_run", ROOT / "scripts/save_run.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_historical_workflow_refuses_an_existing_record_before_work(tmp_path):
+    record = tmp_path / "record"
+    record.mkdir()
+    env = {
+        **os.environ,
+        "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+        "SNAPSHOT": str(tmp_path / "missing-snapshot"),
+        "RECORD": str(record),
+    }
+    done = subprocess.run(
+        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(tmp_path / "wf")],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=ROOT,
+        env=env,
+    )
+    assert done.returncode != 0
+    assert "never overwritten" in done.stderr
+    assert not (tmp_path / "wf").exists()
+
 
 def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tmp_path):
     from invest_data.sources import SyntheticConfig, synthetic_market
