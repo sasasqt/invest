@@ -292,3 +292,180 @@ def test_cli_reserved_window_is_only_usable_for_confirmation(tmp_path):
         _search(data, tmp_path / "s4", book, "--confirm-start", "2020-01-02")
     with pytest.raises(SystemExit, match="no development or confirmation"):
         _search(data, tmp_path / "s5", book, "--confirm-start", "2030-01-01")
+
+
+def test_cli_confirms_a_fixed_formula_once_on_a_reserved_window(tmp_path, capsys):
+    data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    ledger_cmd = ["ledger", "--ledger", str(book)]
+    assert main([*ledger_cmd, "inspect", "--start", "2020-01-01", "--end", "2020-08-31"]) == 0
+    assert main([*ledger_cmd, "reserve", "--start", "2020-09-01"]) == 0
+    expr = "close / delay(close, 5) - 1"
+    freeze = ["freeze", "--expr", expr, "--horizon", "5", "--orientation", "-1"]
+    assert main([*freeze, "--out", str(factor)]) == 0
+
+    def confirm(out, *extra, start="2020-09-01"):
+        args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+        return main([*args, "--confirm-start", start, *extra, "--out", str(tmp_path / out)])
+
+    # Starting before the reservation would mix inspected and reserved data.
+    with pytest.raises(SystemExit, match="starts before the reserved window"):
+        confirm("early", start="2020-08-03")
+    assert len(ledger.load(book)) == 2
+
+    assert confirm("c1", "--require-confirmatory") == 0
+    table = pd.read_csv(tmp_path / "c1" / "confirmation.csv")
+    assert list(table["confirmation_use"]) == ["confirmatory"]
+    assert table.loc[0, "status"] == table.loc[0, "test_outcome"]
+    # The planted 5-day reversal is detected on the reserved window.
+    assert table.loc[0, "status"] == "confirmation_passed" and table.loc[0, "n_dates"] >= 60
+    entry = ledger.load(book)[-1]
+    assert entry["kind"] == "experiment" and entry["n_proposals"] == 1
+    assert entry["confirmation"]["start"] == "2020-09-01"
+    # Only the formula's lookback before confirmation is recorded as used history.
+    assert entry["development"] == {"start": "2020-08-25", "end": "2020-08-31"}
+    assert ledger.unused_reservations(ledger.load(book)) == []
+    config = json.loads((tmp_path / "c1" / "config.json").read_text())
+    assert config["experiment"]["experiment_id"] == entry["experiment_id"]
+
+    # A second look is a repeat: refused on request, otherwise exploratory.
+    with pytest.raises(SystemExit, match="already used"):
+        confirm("c2", "--require-confirmatory")
+    assert not (tmp_path / "c2").exists() and len(ledger.load(book)) == 3
+    capsys.readouterr()
+    assert confirm("c3") == 0
+    assert "Exploratory" in capsys.readouterr().out
+    again = pd.read_csv(tmp_path / "c3" / "confirmation.csv")
+    assert list(again["status"]) == ["exploratory"]
+    assert list(again["test_outcome"]) == list(table["status"])
+
+
+def test_cli_confirm_refuses_search_selected_factors_and_bad_dates(tmp_path):
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    assert _search(data, tmp_path / "s", book) == 0
+    member = next((tmp_path / "s" / "factors").glob("*.json"))
+    args = ["confirm", "--data", str(data), "--ledger", str(book), "--out", str(tmp_path / "c")]
+    with pytest.raises(SystemExit, match="only fixed formulas"):
+        main([*args, "--factor", str(member), "--confirm-start", "2020-09-01"])
+    fixed = tmp_path / "f.json"
+    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(fixed)]) == 0
+    for start in ("2019-01-01", "2030-01-01"):
+        with pytest.raises(SystemExit, match="no history or confirmation"):
+            main([*args, "--factor", str(fixed), "--confirm-start", start])
+    assert len(ledger.load(book)) == 1 and not (tmp_path / "c").exists()
+
+
+@pytest.mark.parametrize("start_offset", [0, 1])
+def test_cli_zero_lookback_confirmation_needs_no_history(tmp_path, start_offset):
+    data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
+    dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
+    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(factor)]) == 0
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(dates[0].date())]) == 0
+    args = [
+        "confirm",
+        "--data",
+        str(data),
+        "--factor",
+        str(factor),
+        "--ledger",
+        str(book),
+        "--confirm-start",
+        str(dates[start_offset].date()),
+    ]
+    first = tmp_path / "first"
+    assert main([*args, "--require-confirmatory", "--out", str(first)]) == 0
+    table = pd.read_csv(first / "confirmation.csv")
+    assert table.loc[0, "confirmation_use"] == "confirmatory"
+    assert table.loc[0, "test_status"] == "ok" and table.loc[0, "n_dates"] == 118 - start_offset
+    entry = ledger.load(book)[-1]
+    assert entry["development"] is None
+    assert entry["params"]["lookback_sessions"] == 0
+    assert (
+        json.loads((first / "config.json").read_text())["experiment"]["identity"]["development"]
+        is None
+    )
+
+    before = book.read_bytes()
+    strict = tmp_path / "strict"
+    with pytest.raises(SystemExit, match="already used"):
+        main([*args, "--require-confirmatory", "--out", str(strict)])
+    assert not strict.exists() and book.read_bytes() == before
+    # A different start is also reused, so assessing its earlier null context must work.
+    shifted = [*args[:-1], str(dates[start_offset + 1].date())]
+    reused = tmp_path / "reused"
+    assert main([*shifted, "--out", str(reused)]) == 0
+    assert pd.read_csv(reused / "confirmation.csv").loc[0, "status"] == "exploratory"
+
+    # Reserving an unrelated window must skip null context; confirmed dates remain used.
+    reserve = ["ledger", "reserve", "--ledger", str(book)]
+    assert main([*reserve, "--start", "2019-01-01", "--end", "2019-12-31"]) == 0
+    with pytest.raises(SystemExit, match="already inspected or used"):
+        main([*reserve, "--start", str(dates[-1].date())])
+
+
+def test_cli_lookback_formula_still_requires_history(tmp_path):
+    data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
+    assert (
+        main(["freeze", "--expr", "delay(close, 1)", "--horizon", "1", "--out", str(factor)]) == 0
+    )
+    with pytest.raises(SystemExit, match="no history"):
+        main(
+            [
+                "confirm",
+                "--data",
+                str(data),
+                "--factor",
+                str(factor),
+                "--ledger",
+                str(book),
+                "--confirm-start",
+                "2020-01-01",
+                "--out",
+                str(tmp_path / "result"),
+            ]
+        )
+    assert not book.exists() and not (tmp_path / "result").exists()
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        None,
+        {},
+        {"method": "fixed_formula"},
+        {"method": "fixed_formula", "lookback_sessions": 1},
+        {"method": "fixed_formula", "lookback_sessions": False},
+        {"method": "fixed_formula", "lookback_sessions": "0"},
+        {"method": "random_search", "lookback_sessions": 0},
+    ],
+)
+def test_ledger_refuses_null_development_without_a_zero_lookback_formula(tmp_path, params):
+    path = tmp_path / "ledger.jsonl"
+    fields = {
+        "experiment_id": "e_invalid",
+        "development": None,
+        "confirmation": W("2025-01-01", "2025-12-31").to_json(),
+        "params": params,
+    }
+    with pytest.raises(LedgerError, match="zero-lookback fixed formula"):
+        ledger.append(path, "experiment", fields)
+    assert not path.exists()
+    path.write_text(json.dumps({"ledger_version": 1, "kind": "experiment", **fields}) + "\n")
+    with pytest.raises(LedgerError, match="zero-lookback fixed formula"):
+        ledger.load(path)
+
+
+def test_ledger_requires_explicit_null_for_empty_development(tmp_path):
+    with pytest.raises(LedgerError, match="start date"):
+        ledger.append(
+            tmp_path / "ledger.jsonl",
+            "experiment",
+            {
+                "experiment_id": "e_invalid",
+                "confirmation": W("2025-01-01", "2025-12-31").to_json(),
+                "params": {"method": "fixed_formula", "lookback_sessions": 0},
+            },
+        )

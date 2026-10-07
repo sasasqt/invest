@@ -32,7 +32,7 @@ Produce a small, deterministic financial dataset in CSV and SQLite; evaluate one
 
 ## M3 — Complete diagnostics, statistics, and robustness
 
-**Status:** in progress. Implemented: HAC, stationary-bootstrap and PSR/DSR statistics; purged development/confirmation search with a trial ledger and Holm adjustment (STATS-02); a confirmation-use ledger with a reserved, untouched Yahoo window from 2025-01-01 (STATS-03); factor decile and tail diagnostics; cost, delay and liquidity stress scenarios. Remaining: null-simulation calibration, robustness perturbations, executable decile/tail portfolios, and separate factor and portfolio validation outcomes. **Depends on:** M2's verified accounting and returns.
+**Status:** in progress. Implemented: HAC, stationary-bootstrap and PSR/DSR statistics; purged development/confirmation search with a trial ledger and Holm adjustment (STATS-02); a confirmation-use ledger with a reserved, untouched Yahoo window from 2025-01-01 (STATS-03) and one-shot confirmation of a fixed formula on it (STATS-04); factor decile and tail diagnostics; cost, delay and liquidity stress scenarios. Remaining, in the agreed order after shared contract fixtures and a versioned report schema (M0/M1): executable decile/tail portfolios, separate factor and portfolio validation outcomes, null-simulation calibration, and robustness perturbations. **Depends on:** M2's verified accounting and returns.
 
 Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile analysis](docs/QUANTILE_ANALYSIS.md), and [alpha validation protocol](data-mining-framework/ALPHA_VALIDATION.md) incrementally. Add effect sizes, dependence-aware intervals, trial ledgers, multiple-testing control where applicable, temporal confirmation, redundancy checks, and cost/execution stress scenarios. Distinguish undefined or insufficient evidence from rejection and success.
 
@@ -50,7 +50,7 @@ Implement typed causal AST operators and a simple search baseline, then learned 
 
 **Status:** planned. **Depends on:** M4 and evidence of a specific need.
 
-Use the [literature review](data-mining-framework/LITERATURE_REVIEW.md) to prioritize GP, gradient-assisted AST search, MCTS/exploration policies, and learned generators. Add stateful-policy simulation only after specifying the frozen runtime/portfolio-feedback interface. Add columnar storage, parallelism, caching, additional markets, or an interactive dashboard when measured scale or usage justifies them.
+Use the [literature review](data-mining-framework/LITERATURE_REVIEW.md) to prioritize GP, gradient-assisted AST search, MCTS/exploration policies, and learned generators. Add stateful-policy simulation only after specifying the frozen runtime/portfolio-feedback interface. Add further storage adapters, parallelism, caching, additional markets, or an interactive dashboard when measured scale or usage justifies them.
 
 **Acceptance gate:** each extension preserves public contracts, has independent correctness evidence, and demonstrates value against a baseline. Final claims use frozen prospective evaluation where appropriate; historical tests alone do not resolve pretrained-model knowledge contamination.
 
