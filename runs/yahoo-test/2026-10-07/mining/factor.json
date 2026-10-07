@@ -1,0 +1,21 @@
+{
+  "artifact_version": 1,
+  "factor_id": "f_f4031d273d5d",
+  "features": [
+    "close"
+  ],
+  "lookback_sessions": 5,
+  "expression": "((close / delay(close, 5)) - 1.0)",
+  "orientation": -1,
+  "horizon_days": 5,
+  "training_start": "",
+  "training_end": "",
+  "dataset_id": "",
+  "dataset_sha256": null,
+  "operator_version": "1",
+  "selection": {
+    "method": "fixed_formula",
+    "n_proposals": 1,
+    "note": "specified a priori; no data were used to select or orient it"
+  }
+}

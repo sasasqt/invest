@@ -1,0 +1,1210 @@
+{
+  "contract_version": 1,
+  "dataset_id": "yahoo-test-2010-01-01-2024-12-31",
+  "created_at": "2026-10-07T10:55:17Z",
+  "storage": {
+    "format": "parquet",
+    "path": "data.parquet"
+  },
+  "row_count": 363015,
+  "primary_key": [
+    "date",
+    "instrument"
+  ],
+  "columns": [
+    {
+      "name": "date",
+      "type": "date",
+      "nullable": false
+    },
+    {
+      "name": "instrument",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "open",
+      "type": "float64",
+      "nullable": false,
+      "unit": "price"
+    },
+    {
+      "name": "high",
+      "type": "float64",
+      "nullable": false,
+      "unit": "price"
+    },
+    {
+      "name": "low",
+      "type": "float64",
+      "nullable": false,
+      "unit": "price"
+    },
+    {
+      "name": "close",
+      "type": "float64",
+      "nullable": false,
+      "unit": "price"
+    },
+    {
+      "name": "volume",
+      "type": "float64",
+      "nullable": false,
+      "unit": "shares"
+    }
+  ],
+  "provenance": {
+    "sources": [
+      "yahoo_finance_chart_v8"
+    ],
+    "test_only": true,
+    "snapshot": {
+      "request": {
+        "symbols": [
+          "SPY",
+          "AAPL",
+          "ABBV",
+          "ABT",
+          "ACN",
+          "ADBE",
+          "AMAT",
+          "AMD",
+          "AMGN",
+          "AMT",
+          "AMZN",
+          "ANET",
+          "AVGO",
+          "AXP",
+          "BA",
+          "BAC",
+          "BKNG",
+          "BLK",
+          "BMY",
+          "BNY",
+          "BRK-B",
+          "C",
+          "CAT",
+          "CMCSA",
+          "COF",
+          "COP",
+          "COST",
+          "CRM",
+          "CSCO",
+          "CVS",
+          "CVX",
+          "DE",
+          "DELL",
+          "DHR",
+          "DIS",
+          "DUK",
+          "EMR",
+          "FDX",
+          "GD",
+          "GE",
+          "GEV",
+          "GILD",
+          "GM",
+          "GOOG",
+          "GOOGL",
+          "GS",
+          "HD",
+          "IBM",
+          "INTC",
+          "INTU",
+          "ISRG",
+          "JNJ",
+          "JPM",
+          "KO",
+          "LIN",
+          "LLY",
+          "LMT",
+          "LOW",
+          "LRCX",
+          "MA",
+          "MCD",
+          "MDLZ",
+          "MDT",
+          "META",
+          "MMM",
+          "MO",
+          "MRK",
+          "MS",
+          "MSFT",
+          "MU",
+          "NEE",
+          "NFLX",
+          "NOW",
+          "NVDA",
+          "ORCL",
+          "PANW",
+          "PEP",
+          "PFE",
+          "PG",
+          "PLTR",
+          "PM",
+          "QCOM",
+          "RTX",
+          "SBUX",
+          "SCHW",
+          "SNDK",
+          "SO",
+          "T",
+          "TMO",
+          "TMUS",
+          "TSLA",
+          "TXN",
+          "UBER",
+          "UNH",
+          "UNP",
+          "UPS",
+          "USB",
+          "V",
+          "VZ",
+          "WFC",
+          "WMT",
+          "XOM"
+        ],
+        "start": "2010-01-01",
+        "end": "2024-12-31",
+        "interval": "1d"
+      },
+      "retrieved_at": "2026-10-07T10:32:52+00:00",
+      "files": {
+        "AAPL": "271b2f699dfab484b08b83a39523f59e9257009508ffdda54dfedcbaf8f06db2",
+        "ABBV": "9a9e768911b281390d2a840cef5f83f6de14da5b50f740a4a080a03a4e2f0b3f",
+        "ABT": "1378f2e24b973995d62fcd4d7e5ae52a605d1272fbdfa2ade1e76a9a4a99bf46",
+        "ACN": "f990f710a04561d1a585f5edbde541bbc106aa3202575e0479743d522d8fd638",
+        "ADBE": "854ffc50d62c439a24cc2d4a0467493d103153053e119cc1b29d7122f276e85d",
+        "AMAT": "e9e23c652390c48ebe676bb4c1e7ddfcb4a1af303cbe3b19ae936687d0157652",
+        "AMD": "10873290bdfb5acca99237ff54d5fe22c6354d8e3e8d6022a1185fe09c2595ca",
+        "AMGN": "959f83bf41e93263356b78068bf0742356ab3e553e240f39c10e9604743c4de6",
+        "AMT": "adcce632b6009da3bfc29d6c5ed03a2f950e264a3cd473cbf924aafc08f0d458",
+        "AMZN": "4cd6a176cebcf54411019abac750cb996e5f9bd67c2cc14be29ecaea155d35ed",
+        "ANET": "79613d56fce75e8d3b57786b56b4e448c9c765de66af49416fe50e457d99b01b",
+        "AVGO": "56441c10f2a38f88056897743d2518b30b68d69e3a1d8d00599f1564db6309b2",
+        "AXP": "382e1628f12ddfeceec85b16c36fdfaf1e12a88ab33cffa0543cfbbbcd281b24",
+        "BA": "26610e6e8ff3e405be951ecdb47978f4540c562a8ee0f67a18dee95629910492",
+        "BAC": "0534f0a264f8db8c8300e7c3236a44a95992f787177ac90f4dd3c188d720225e",
+        "BKNG": "f21a0c63d93083dd26c6c75cb5478c020d034412d2df3ee798cea3fb3ad78248",
+        "BLK": "7d51c200492f1a07104c662bcd9659aabda13f0b04ba71d8129adc1f14289099",
+        "BMY": "16f8fb8940bd2bf4953cda13c61cdb3b0eb9c9268afe7b92a1c00f6d25da00ee",
+        "BNY": "813c9637e38c68f7abb53223d20794a1b57ea262928a0520c931582e154eb8d1",
+        "BRK-B": "cfac508bc96eb0bf40c7c3bc89d97143beb58e99980ee7f9b3ff6ee73cfffb80",
+        "C": "a8e0063c2c518bc0400e38cae219e7008c55ccdf1c53ad50d8015f328be41af9",
+        "CAT": "92d2fa3699586c4f7f5157bf732e1a0f9da771bc1d6f341d5f038fcb2263cea7",
+        "CMCSA": "f97ea4004c25c22c40745734b153f3f0f34fbfd65afe9ef19e0a15d8fd55684a",
+        "COF": "5fe32801eb41165c94b9d3d2657415dab4d8c942babbb5248ce400def928b26e",
+        "COP": "c7de13a388ca8a0ac5caa544682c3652d5d3b061e75d4e04bfdbf60949a612e1",
+        "COST": "882754e0a271a96e87a1a33e109f9c5415e812b29a258b848a8313560a7cdb07",
+        "CRM": "566340b1d1c6deaf3f0ed5c58692554dc87f5a61fb158a8ba00ad88ce8ee8825",
+        "CSCO": "94d4573bdd5fd81d69228d4de10ae90164762b3bed755f79a45e49ac71a8ea8f",
+        "CVS": "397185df974336291fb87e0839d4bd71964ca4e59c5625c55976101fe6b5837a",
+        "CVX": "7c4957f71e63c8cb05c86652d76e65edf8740f91dd7da2e7292fc91b45a8b394",
+        "DE": "37d4574a62be52dcdbf1170979d0a409bf98a1a29d55553a01b8745bb12fa1a5",
+        "DELL": "fabc912b3acc3d5662049e8005224c06bfb87f479e67dc717663d29ef3673565",
+        "DHR": "3702d4889722b530406cf0f1fee0798bd2603cf1519edd2f060c022bbee96e45",
+        "DIS": "2020650606348c7b9d9dcc3d392cc511e6756be9cd5c9b6726808e66216e4c3e",
+        "DUK": "94f801899815923cfebb6a1905e927a265b67ff89482c34c48a8304cf98a0fe9",
+        "EMR": "e141b4893a02cd68c1ba35440e9f0a05b8ef5f790c9b23c648c6e2adc611c99f",
+        "FDX": "bcd1b526c8e656b474a7dac9f7b25529db51c55bca28fd92f42f2e1f6d565ebc",
+        "GD": "48e88e6d1a28536b83f66d74a144e34b75578884e2a0975f937d7fa5fd04ab44",
+        "GE": "f32232ddf46f513b3625aa5dd2bc8a1c2e96e65ef69b512649545fbb744787e0",
+        "GEV": "a72e8e8649ca29efce16ad210e79773ad0198d2a20a6410b31f4093aac2a269c",
+        "GILD": "7e65b17c0f10234560cc9da33bd8fe6a46ef01d634ab14144126844d944f263a",
+        "GM": "3497aca75683208b988084ccf1c46b2a540c2e0c973f00c1a78741e40446dea0",
+        "GOOG": "9b7c4202830fcf0ae25545762e4f22c1605efc7a353abd7202440deaf6b924c5",
+        "GOOGL": "bd83a3eadd29e24d8475676e2404bc49688415d243249e727035f2178cbede3b",
+        "GS": "7cc763b1fd4f45645ff9bdd49e966945cd9e3f12b3007dc02f934ccb200e6991",
+        "HD": "abe32ba069797ff43f704c94b75d30c7fb3b9d5ecdcebdd7f17bb4e2ba83a8d0",
+        "IBM": "8779c2e086b8b9802324841f03a6963deb4880b6e6c1b1c2d14ad1fea7341f3a",
+        "INTC": "69f07d827a05eb67dce326ad66e301bcedb6cee87674a5b736f4f91098835e19",
+        "INTU": "d4eec0d6fc4f10c664879d83b345e64339a6277a82b45e5ab4d0db0e4a44dae9",
+        "ISRG": "2fdc7d7613e4f1330d49a3ef18825b7e0e16d4392f421902beee6585506429c6",
+        "JNJ": "491e607c82192d9b9d9b2a49f083225a2bc9985069a88d78583a6201d59050e9",
+        "JPM": "466470db42c19c35d48ab59795b6e022d11ee07d07fca602c5439f1726e96edb",
+        "KO": "043952246c5dd8a42e802efe6f43529e6e93708f23d8c436ade03b56938cf2da",
+        "LIN": "9382eb315d30cbc944170b59bd83cc5cdba9e40778fecd476b3d03cc75a6151b",
+        "LLY": "ecee0b52c7c727fa0a10e9353b4cbc587871d6c805e77604b78c20d5e3fe0dbb",
+        "LMT": "49cb4d0cf09c9c471cf9725ce70e5d698e423c3b00231ea465362a6d496c2353",
+        "LOW": "2978ce339f03f84121cc4bea5d59ac044adc495bf3ff70362b0aef6f20d08dd4",
+        "LRCX": "d7ac16c217bd27a22df941ccd99960a9aba04e147793835b536d75f0ccb81cae",
+        "MA": "b23c19ab781d969bcbc80aadd1253da33ccf8ede5435fc14fac65d99943d8da9",
+        "MCD": "adfdc1cc5a2f0dbfd7e115ee6848e48f259d1314d7a67ed20e3c50a2b8c1a6d6",
+        "MDLZ": "3d9285f944f918236a028daed61757ff920e52b46daedc88ebcfc271589b849d",
+        "MDT": "3cfb159d5eeca63a2421181ccfda63590f4babd7bbc6b104815fc202f40d8b5d",
+        "META": "4d155a7ff23a6f1204c135a1a648aab0a3da1d2d39b66d6b1091ddbf16d2c6ac",
+        "MMM": "1c1bdeae5edb4b11836b14f5d908527c09cb80ae956464cbefedfb7692c28ff2",
+        "MO": "356daec4c85dbd48305f1be3acc31eab058ecf064adf975f8f90fbf56f4744e3",
+        "MRK": "e5297d10b52cb104893319ffc4bce2da550332400864d4b862da1d215ec7d3c4",
+        "MS": "2d172d90bdf71cac6757f3fdfc657853c3230d0df0db5bd659e041abb8d0276b",
+        "MSFT": "7c60ca5a6703eaa6f46324561cc9ecfb85101008890a5f53eddcfd958f9082c0",
+        "MU": "bf1ff20f1eea3169c9dd60d6138a10c7a90e25a9059e9c0a18782ab90002fb02",
+        "NEE": "4389edee08bf35a5bfaf9e37df00bec3813d8dcbe731305c196f61f8468ed031",
+        "NFLX": "0d9c0291613dfc82c4e8b4ad757b9a545c910ee2cb7baa420cca5a3ee798de61",
+        "NOW": "3eb2d5e0693cfbd5f90cf7cc3d906d78084a3b5b30309ef16f5e8f497bdbdb19",
+        "NVDA": "3bfc669e8b1db61b3958d0a559418f0781d75ec0a1f861d4046da64748699f26",
+        "ORCL": "9cc0bbfddfc4402c1005153e89b4bf8702ec5c8f57479174dd879e7cc07d9933",
+        "PANW": "e713ec896e5aec6973788758c32a940793ab1996ae47d14f530dfd57a3793c91",
+        "PEP": "34f3bf83b25f074480ad33fde6d310c06abc332f81ca427e4370875d7b4d6386",
+        "PFE": "ad5e871a74afc4982583d7f1f731f96ff2169097ce094530aed1c9e657322030",
+        "PG": "89ff35ee073a2175a8b00e4064cd2787493f6a71187c354336c38878af9a4f2b",
+        "PLTR": "3f228a5aab73eeb4e26304a2c2e08344a663b3ffee536da60678d973b8889e5f",
+        "PM": "4adb53fef3e7df6a89c7ddeff082f4eccb376791d3936557880adc3bdd03f93b",
+        "QCOM": "6033ed8f5f402745eb21ddf612957b948798989535d769069ff19b86df1edbb8",
+        "RTX": "71ce08692bfe212169774f2bdda4fd593dc86cc09df77466113c9ea02457da62",
+        "SBUX": "59f6ea7e5604a72dd21c5a3ce1753a2765c77af1a2eb20d5f29e72ce5148ca29",
+        "SCHW": "394d202b45f239ec054192cd28aa03ed7eff317a5f001f4d133209fdfbffb7fa",
+        "SO": "86d22fd8f4084888a21f1f95cfa58d9503e26fd00fb49c6ea1e2b24db0b025df",
+        "T": "6019052d748baed775ed1c4c538d38c2557ba28eef0140b484fbb1eca7d77eeb",
+        "TMO": "62f9e0f95d96dced1169c65350a0e134b26cfbe1e4efe9a673e88625ad240aa1",
+        "TMUS": "a2210aa3d452051357610482d8f6bdaa12cec3ad2dfed76bb7512a2fec32cfa2",
+        "TSLA": "c0f5ad9791c0a13219b29cca29efa83960fee5a2439fa8b027ce294ad2afbbfd",
+        "TXN": "bd5e46c79ae33f8e592e7101fa2c9299612b57f5a26c2c0cd8cdcdcc0b796ac1",
+        "UBER": "9d8ad3d11acf6558be809ed09f8dc11f9a0e28aa4fefd8c3b831df0ad1fac1a1",
+        "UNH": "1f9709f49677fe6145e1ea95902fee6dd021519c3fb488e51ade5ce697b03234",
+        "UNP": "f3f62804486992ae42a0d7d2bb8f6585f247cd1c4e180eedd38148c0763c5a10",
+        "UPS": "fd239533a25c50ed046d98a46a6f3b3598594016fccbf836e8ec66c04c8b1a53",
+        "USB": "02bb9e5fe278712427155406f44b77eab7eba94d6b8df6a1e8470aa96821165b",
+        "V": "491245bb7e3f1778edd7d3047e3a889315f8c817749dcf90b9e1b14da6c38aa9",
+        "VZ": "ee689cfc07dfd6a387b59b4ebbd0f4ad2f41c7126d73986a50803f47811cc7ec",
+        "WFC": "6791def4ff6d5be66f7bb047e0d6571e067696b7de8c2ba64767a21ab39b6712",
+        "WMT": "a65355e21c7c304e6eedf52a75cff95ed5a12482b9f60b619ab83fe03587c716",
+        "XOM": "d2c30480978a8922b04d436b5a2fca94b6ee0f19f9d1f76f51c5c35664defbef"
+      },
+      "download_failures": {
+        "SNDK": "SNDK: HTTP 400"
+      }
+    },
+    "adjustment": "OHLC x adjclose/close; volume / (adjclose/close)",
+    "currencies": {
+      "AAPL": "USD",
+      "ABBV": "USD",
+      "ABT": "USD",
+      "ACN": "USD",
+      "ADBE": "USD",
+      "AMAT": "USD",
+      "AMD": "USD",
+      "AMGN": "USD",
+      "AMT": "USD",
+      "AMZN": "USD",
+      "ANET": "USD",
+      "AVGO": "USD",
+      "AXP": "USD",
+      "BA": "USD",
+      "BAC": "USD",
+      "BKNG": "USD",
+      "BLK": "USD",
+      "BMY": "USD",
+      "BNY": "USD",
+      "BRK-B": "USD",
+      "C": "USD",
+      "CAT": "USD",
+      "CMCSA": "USD",
+      "COF": "USD",
+      "COP": "USD",
+      "COST": "USD",
+      "CRM": "USD",
+      "CSCO": "USD",
+      "CVS": "USD",
+      "CVX": "USD",
+      "DE": "USD",
+      "DELL": "USD",
+      "DHR": "USD",
+      "DIS": "USD",
+      "DUK": "USD",
+      "EMR": "USD",
+      "FDX": "USD",
+      "GD": "USD",
+      "GE": "USD",
+      "GEV": "USD",
+      "GILD": "USD",
+      "GM": "USD",
+      "GOOG": "USD",
+      "GOOGL": "USD",
+      "GS": "USD",
+      "HD": "USD",
+      "IBM": "USD",
+      "INTC": "USD",
+      "INTU": "USD",
+      "ISRG": "USD",
+      "JNJ": "USD",
+      "JPM": "USD",
+      "KO": "USD",
+      "LIN": "USD",
+      "LLY": "USD",
+      "LMT": "USD",
+      "LOW": "USD",
+      "LRCX": "USD",
+      "MA": "USD",
+      "MCD": "USD",
+      "MDLZ": "USD",
+      "MDT": "USD",
+      "META": "USD",
+      "MMM": "USD",
+      "MO": "USD",
+      "MRK": "USD",
+      "MS": "USD",
+      "MSFT": "USD",
+      "MU": "USD",
+      "NEE": "USD",
+      "NFLX": "USD",
+      "NOW": "USD",
+      "NVDA": "USD",
+      "ORCL": "USD",
+      "PANW": "USD",
+      "PEP": "USD",
+      "PFE": "USD",
+      "PG": "USD",
+      "PLTR": "USD",
+      "PM": "USD",
+      "QCOM": "USD",
+      "RTX": "USD",
+      "SBUX": "USD",
+      "SCHW": "USD",
+      "SO": "USD",
+      "T": "USD",
+      "TMO": "USD",
+      "TMUS": "USD",
+      "TSLA": "USD",
+      "TXN": "USD",
+      "UBER": "USD",
+      "UNH": "USD",
+      "UNP": "USD",
+      "UPS": "USD",
+      "USB": "USD",
+      "V": "USD",
+      "VZ": "USD",
+      "WFC": "USD",
+      "WMT": "USD",
+      "XOM": "USD"
+    },
+    "source_metadata": {
+      "AAPL": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ABBV": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ABT": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ACN": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ADBE": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AMAT": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AMD": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AMGN": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AMT": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AMZN": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ANET": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AVGO": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "AXP": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BA": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BAC": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BKNG": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BLK": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BMY": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BNY": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "BRK-B": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "C": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CAT": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CMCSA": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "COF": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "COP": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "COST": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CRM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CSCO": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CVS": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "CVX": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "DE": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "DELL": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "DHR": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "DIS": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "DUK": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "EMR": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "FDX": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GD": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GE": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GEV": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GILD": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GOOG": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GOOGL": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "GS": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "HD": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "IBM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "INTC": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "INTU": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ISRG": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "JNJ": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "JPM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "KO": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "LIN": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "LLY": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "LMT": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "LOW": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "LRCX": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MA": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MCD": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MDLZ": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MDT": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "META": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MMM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MO": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MRK": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MS": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MSFT": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "MU": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "NEE": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "NFLX": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "NOW": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "NVDA": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "ORCL": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PANW": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PEP": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PFE": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PG": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PLTR": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "PM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "QCOM": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "RTX": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "SBUX": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "SCHW": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "SO": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "T": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "TMO": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "TMUS": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "TSLA": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "TXN": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "UBER": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "UNH": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "UNP": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "UPS": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "USB": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "V": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "VZ": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "WFC": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "WMT": {
+        "currency": "USD",
+        "exchangeName": "NMS",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      },
+      "XOM": {
+        "currency": "USD",
+        "exchangeName": "NYQ",
+        "exchangeTimezoneName": "America/New_York",
+        "instrumentType": "EQUITY",
+        "dataGranularity": "1d"
+      }
+    },
+    "selection": {
+      "symbols": [
+        "AAPL",
+        "ABBV",
+        "ABT",
+        "ACN",
+        "ADBE",
+        "AMAT",
+        "AMD",
+        "AMGN",
+        "AMT",
+        "AMZN",
+        "ANET",
+        "AVGO",
+        "AXP",
+        "BA",
+        "BAC",
+        "BKNG",
+        "BLK",
+        "BMY",
+        "BNY",
+        "BRK-B",
+        "C",
+        "CAT",
+        "CMCSA",
+        "COF",
+        "COP",
+        "COST",
+        "CRM",
+        "CSCO",
+        "CVS",
+        "CVX",
+        "DE",
+        "DELL",
+        "DHR",
+        "DIS",
+        "DUK",
+        "EMR",
+        "FDX",
+        "GD",
+        "GE",
+        "GEV",
+        "GILD",
+        "GM",
+        "GOOG",
+        "GOOGL",
+        "GS",
+        "HD",
+        "IBM",
+        "INTC",
+        "INTU",
+        "ISRG",
+        "JNJ",
+        "JPM",
+        "KO",
+        "LIN",
+        "LLY",
+        "LMT",
+        "LOW",
+        "LRCX",
+        "MA",
+        "MCD",
+        "MDLZ",
+        "MDT",
+        "META",
+        "MMM",
+        "MO",
+        "MRK",
+        "MS",
+        "MSFT",
+        "MU",
+        "NEE",
+        "NFLX",
+        "NOW",
+        "NVDA",
+        "ORCL",
+        "PANW",
+        "PEP",
+        "PFE",
+        "PG",
+        "PLTR",
+        "PM",
+        "QCOM",
+        "RTX",
+        "SBUX",
+        "SCHW",
+        "SO",
+        "T",
+        "TMO",
+        "TMUS",
+        "TSLA",
+        "TXN",
+        "UBER",
+        "UNH",
+        "UNP",
+        "UPS",
+        "USB",
+        "V",
+        "VZ",
+        "WFC",
+        "WMT",
+        "XOM"
+      ],
+      "start": "2010-01-01",
+      "end": "2024-12-31",
+      "observed_start": "2010-01-04",
+      "observed_end": "2024-12-31"
+    },
+    "cleaning": {
+      "input_rows": 363015,
+      "output_rows": 363015,
+      "rejected_rows": 0,
+      "rejected_by_reason": {}
+    }
+  },
+  "dataset_kind": "market_bars",
+  "metadata": {
+    "frequency": "1d",
+    "currency": "USD",
+    "price_adjustment": "total_return_adjusted",
+    "calendar": "XNYS",
+    "timezone": "America/New_York",
+    "universe": "saved snapshot members applied to all history (survivorship-biased)",
+    "source": "yahoo_finance_chart_v8",
+    "note": "TEST-ONLY Yahoo Finance data: adjusted history is revised by the vendor, delisted names are absent and membership is not point-in-time. Identity is the saved raw snapshot recorded in provenance."
+  },
+  "content_sha256": "1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129"
+}

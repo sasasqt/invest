@@ -1,0 +1,85 @@
+{
+  "verdict_version": 2,
+  "factor": {
+    "status": "not_confirmed",
+    "factor_id": "f_f4031d273d5d",
+    "reason": "the signals carry no factor confirmation evidence"
+  },
+  "portfolio": {
+    "status": "inconclusive",
+    "reasons": [
+      "net_sharpe_ci: fail (95% stationary-bootstrap interval of the net excess Sharpe)",
+      "deflated_sharpe: fail (n_trials = 1)",
+      "stress:costs_x2: fail (net Sharpe under scenario costs_x2)",
+      "stress:delay_1: fail (net Sharpe under scenario delay_1)"
+    ],
+    "evaluation_window": {
+      "start": "2010-01-11",
+      "end": "2024-12-31"
+    },
+    "checks": [
+      {
+        "name": "solvency",
+        "status": "pass",
+        "value": true,
+        "threshold": "positive wealth throughout",
+        "detail": "wealth stays positive"
+      },
+      {
+        "name": "net_sharpe_validity",
+        "status": "pass",
+        "value": -0.4668053245835952,
+        "threshold": "finite value with status ok",
+        "detail": "base net Sharpe is valid"
+      },
+      {
+        "name": "sessions",
+        "status": "pass",
+        "value": 3769,
+        "threshold": ">= 252",
+        "detail": "daily net returns in the evaluation period"
+      },
+      {
+        "name": "net_sharpe_ci",
+        "status": "fail",
+        "value": [
+          -0.9735674131321063,
+          0.0346095612556118
+        ],
+        "threshold": "lower bound > 0",
+        "detail": "95% stationary-bootstrap interval of the net excess Sharpe"
+      },
+      {
+        "name": "deflated_sharpe",
+        "status": "fail",
+        "value": 0.036453611210648384,
+        "threshold": ">= 0.95",
+        "detail": "n_trials = 1"
+      },
+      {
+        "name": "stress:costs_x2",
+        "status": "fail",
+        "value": -1.0056010945610911,
+        "threshold": "> 0",
+        "detail": "net Sharpe under scenario costs_x2"
+      },
+      {
+        "name": "stress:delay_1",
+        "status": "fail",
+        "value": -0.6457554051588722,
+        "threshold": "> 0",
+        "detail": "net Sharpe under scenario delay_1"
+      }
+    ],
+    "rules": {
+      "min_sessions": 252,
+      "min_deflated_sharpe": 0.95,
+      "stress_scenarios": [
+        "costs_x2",
+        "delay_1"
+      ],
+      "benchmark": "none"
+    }
+  },
+  "note": "Factor confirmation and portfolio validation are separate verdicts; neither changes the other."
+}

@@ -1,0 +1,628 @@
+{
+  "performance": {
+    "net_profit": {
+      "value": -580442.5024693111,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "external_flows": 0
+      }
+    },
+    "periods": {
+      "value": 3769,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "total_return": {
+      "value": -0.5804425024693105,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "cagr": {
+      "value": -0.05641859789352599,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "day_count": "periods/annualization"
+      }
+    },
+    "mean_return": {
+      "value": -0.00020593588882757656,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null
+    },
+    "median_return": {
+      "value": -0.00025284751410825645,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null
+    },
+    "geometric_mean_return": {
+      "value": -0.00023042043783361166,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null
+    },
+    "annual_arithmetic_mean": {
+      "value": -0.05189584398454929,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null
+    },
+    "variance_return": {
+      "value": 4.90448053804541e-05,
+      "unit": "fraction^2",
+      "status": "ok",
+      "reason": null
+    },
+    "annual_volatility": {
+      "value": 0.11117234798219579,
+      "unit": "fraction/year^0.5",
+      "status": "ok",
+      "reason": null
+    },
+    "downside_deviation": {
+      "value": 0.004985407329738477,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "mar_period": 0.0
+      }
+    },
+    "annual_downside_volatility": {
+      "value": 0.07914088787307957,
+      "unit": "fraction/year^0.5",
+      "status": "ok",
+      "reason": null
+    },
+    "sharpe": {
+      "value": -0.4668053245835952,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "sortino": {
+      "value": -0.6557399768849711,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "calmar": {
+      "value": -0.09135703634906298,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "martin": {
+      "value": -0.12850141396679587,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "omega": {
+      "value": 0.9193182280250629,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "gain_to_pain": {
+      "value": -0.08068177197493698,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "hit_rate": {
+      "value": 0.4791721942159724,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "basis": "net"
+      }
+    },
+    "best_period": {
+      "value": 0.07911425956764306,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null
+    },
+    "worst_period": {
+      "value": -0.040812649044952076,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null
+    },
+    "max_drawdown": {
+      "value": 0.6175616038808232,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "peak_date": "2011-02-24",
+        "trough_date": "2024-12-17",
+        "recovery_date": null
+      }
+    },
+    "current_drawdown": {
+      "value": 0.6142865950928077,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "max_drawdown_duration": {
+      "value": 3485,
+      "unit": "sessions",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "censored": true
+      }
+    },
+    "max_recovery_duration": {
+      "value": 110,
+      "unit": "sessions",
+      "status": "ok",
+      "reason": null
+    },
+    "time_under_water": {
+      "value": 0.9901830724330061,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "average_drawdown": {
+      "value": 0.37226853784776687,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "drawdown_episodes": {
+      "value": 11,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "ulcer_index": {
+      "value": 0.40385426418699893,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "var_loss_95": {
+      "value": 0.011058401633344213,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "quantile_method": "linear",
+        "sign": "loss>0"
+      }
+    },
+    "expected_shortfall_95": {
+      "value": 0.01654075470015027,
+      "unit": "fraction/period",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "tail_observations": 189
+      }
+    },
+    "skewness": {
+      "value": 0.3708252826518883,
+      "unit": "",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "estimator": "g1 (biased)"
+      }
+    },
+    "excess_kurtosis": {
+      "value": 7.831937596735047,
+      "unit": "",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "estimator": "g2"
+      }
+    },
+    "tail_ratio": {
+      "value": 0.9470330420739217,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    }
+  },
+  "gross_of_costs": {
+    "total_return": {
+      "value": 0.07666793859663534,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "cagr": {
+      "value": 0.004951325897192271,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "day_count": "periods/annualization"
+      }
+    },
+    "annual_volatility": {
+      "value": 0.06669487764205877,
+      "unit": "fraction/year^0.5",
+      "status": "ok",
+      "reason": null
+    },
+    "sharpe": {
+      "value": 0.10737672958942787,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "max_drawdown": {
+      "value": 0.20569816670501995,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "peak_date": "2011-02-24",
+        "trough_date": "2012-05-17",
+        "recovery_date": "2022-06-28"
+      }
+    }
+  },
+  "benchmark": {
+    "benchmark_total_return": {
+      "value": 12.100072653771319,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "benchmark": "universe_equal_weight_daily_rebalanced_gross",
+        "aligned_sessions": 3769,
+        "evaluation_sessions": 3769
+      }
+    },
+    "tracking_error": {
+      "value": 0.19101226339742883,
+      "unit": "fraction/year^0.5",
+      "status": "ok",
+      "reason": null
+    },
+    "information_ratio": {
+      "value": -1.25394988159273,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "correlation": {
+      "value": 0.17586756593704098,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "beta": {
+      "value": 0.1110230728011503,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "model": "OLS excess returns on benchmark"
+      }
+    },
+    "alpha_annual": {
+      "value": -0.07272643267537562,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "note": "arithmetic, OLS intercept"
+      }
+    }
+  },
+  "trading": {
+    "total_commission_cost": {
+      "value": 89518.92324042045,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "total_spread_cost": {
+      "value": 447594.6162021023,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "total_impact_cost": {
+      "value": 94628.60995127622,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "total_borrow_cost": {
+      "value": 25368.29167214351,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "total_costs": {
+      "value": 657110.4410659424,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "cost_drag_annual": {
+      "value": 0.05905732182612062,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "note": "arithmetic mean gross minus net"
+      }
+    },
+    "turnover_one_way_annual": {
+      "value": 43.97225651401003,
+      "unit": "fraction of NAV/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "definition": "0.5*traded/NAV"
+      }
+    },
+    "average_gross_exposure": {
+      "value": 0.9991490478977616,
+      "unit": "fraction of NAV",
+      "status": "ok",
+      "reason": null
+    },
+    "average_net_exposure": {
+      "value": 3.5169806467045544e-05,
+      "unit": "fraction of NAV",
+      "status": "ok",
+      "reason": null
+    },
+    "max_gross_exposure": {
+      "value": 1.1308965644384912,
+      "unit": "fraction of NAV",
+      "status": "ok",
+      "reason": null
+    },
+    "average_positions": {
+      "value": 17.881400902096047,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "fills": {
+      "value": 23392,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "rejected_orders": {
+      "value": 1,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "participation_capped_fills": {
+      "value": 0,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "max_participation": {
+      "value": 0.017535447114505186,
+      "unit": "fraction of ADV",
+      "status": "ok",
+      "reason": null
+    },
+    "total_financing": {
+      "value": 0.0,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    }
+  },
+  "trades": {
+    "closed_trades": {
+      "value": 11720,
+      "unit": "count",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "definition": "position episode (open to flat/flip)"
+      }
+    },
+    "open_trades": {
+      "value": 20,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "wins": {
+      "value": 5796,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "losses": {
+      "value": 5924,
+      "unit": "count",
+      "status": "ok",
+      "reason": null
+    },
+    "flats": {
+      "value": 0,
+      "unit": "count",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "tolerance": 0.001
+      }
+    },
+    "win_rate": {
+      "value": 0.4945392491467577,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "non_flat_win_rate": {
+      "value": 0.4945392491467577,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null
+    },
+    "average_trade_pnl": {
+      "value": -48.866567383204575,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "median_trade_pnl": {
+      "value": -14.853210923429288,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "average_win": {
+      "value": 1224.5474300772503,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "average_loss": {
+      "value": -1294.765880226013,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "payoff_ratio": {
+      "value": 0.9457674540075882,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "profit_factor": {
+      "value": 0.9253322355550272,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "expectancy": {
+      "value": -48.866567383204575,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "note": "equals mean trade P&L"
+      }
+    },
+    "total_closed_trade_pnl": {
+      "value": -572716.1697311576,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "best_trade": {
+      "value": 12618.674428732467,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "worst_trade": {
+      "value": -24591.585380258486,
+      "unit": "currency",
+      "status": "ok",
+      "reason": null
+    },
+    "average_holding_sessions": {
+      "value": 5.742747440273037,
+      "unit": "sessions",
+      "status": "ok",
+      "reason": null
+    },
+    "median_holding_sessions": {
+      "value": 5.0,
+      "unit": "sessions",
+      "status": "ok",
+      "reason": null
+    },
+    "long_trades": {
+      "value": 5893,
+      "unit": "count",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "win_rate": 0.5593076531478025,
+        "total_pnl": 754861.069386894
+      }
+    },
+    "short_trades": {
+      "value": 5827,
+      "unit": "count",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "win_rate": 0.42903724043246955,
+        "total_pnl": -1327577.2391180517
+      }
+    }
+  },
+  "external_benchmark": {
+    "benchmark_total_return": {
+      "value": 5.739052146419952,
+      "unit": "fraction",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "benchmark": "SPY close-to-close (yahoo-test-SPY-2010-01-01-2024-12-31)",
+        "aligned_sessions": 3769,
+        "evaluation_sessions": 3769
+      }
+    },
+    "tracking_error": {
+      "value": 0.18694336601163697,
+      "unit": "fraction/year^0.5",
+      "status": "ok",
+      "reason": null
+    },
+    "information_ratio": {
+      "value": -1.0382721684949654,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "correlation": {
+      "value": 0.1717343884287261,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null
+    },
+    "beta": {
+      "value": 0.11191504003275278,
+      "unit": "ratio",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "model": "OLS excess returns on benchmark"
+      }
+    },
+    "alpha_annual": {
+      "value": -0.06781041448941556,
+      "unit": "fraction/year",
+      "status": "ok",
+      "reason": null,
+      "extra": {
+        "note": "arithmetic, OLS intercept"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "expression": "((close / delay(close, 5)) - 1.0)",
+  "mean_ic": -0.011334161305393426,
+  "std_ic": 0.2030147581574777,
+  "icir": -0.05582924812097437,
+  "positive_share": 0.48365665692266807,
+  "valid_dates": 3763,
+  "total_dates": 3774,
+  "mean_cross_section": 96.17725219239968,
+  "hac_test": {
+    "mean": -0.011334161305393426,
+    "se": 0.005497142105636728,
+    "t_stat": -2.0618279621644606,
+    "p_two_sided": 0.03922411789702185,
+    "p_one_sided": 0.9803879410514891,
+    "n": 3763,
+    "lags": 8,
+    "status": "ok",
+    "reason": null
+  },
+  "pearson_mean_ic": -0.009503150693820845,
+  "rank_autocorrelation_1d": 0.753682924638557
+}
