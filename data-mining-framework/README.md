@@ -8,6 +8,8 @@ Package `invest_mining` consumes datasets described by [the dataset contract](..
 
 Inspect confirmation evidence separately from portfolio results. Choose the replay rank and trading rule before examining confirmation results; choosing them afterward requires a separate untouched period for final portfolio validation.
 
+`confirm` permits a zero-lookback formula such as `close` to start on the dataset's first session; its ledger history is explicitly null. A formula with a positive lookback requires preceding sessions. Empty history never bypasses checks for previously inspected or confirmed dates.
+
 ```sh
 uv run invest-mine evaluate --data <market bundle> [--universe <bundle>] [--fundamentals <bundle>] \
   --expr "cs_rank(-delta(close, 5))" --out <dir>

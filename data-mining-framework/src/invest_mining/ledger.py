@@ -12,7 +12,8 @@ same history. Each line is an object with ``ledger_version`` and one ``kind``:
 - ``experiment``: one search, or one fixed-formula confirmation (``invest-mine confirm``),
   identified by its dataset, inputs, configuration and split. A search's development
   window includes label prices, not just decision dates; a fixed formula's covers only
-  the lookback history read before confirmation.
+  the lookback history read before confirmation. For a zero-lookback fixed formula,
+  ``development`` is explicitly null and ``params.lookback_sessions`` is zero.
 
 A search is ``confirmatory`` only if its confirmation window overlaps no inspection, no
 earlier experiment's development or confirmation window, and is not a repeat of an
@@ -120,14 +121,35 @@ def _validate_entry(entry: Any) -> None:
     kind = entry.get("kind")
     if kind not in KINDS:
         raise LedgerError(f"unknown kind {kind!r}")
-    for name in _window_fields(kind):
-        Window.from_json(entry.get(name))
+    entry_windows(entry)
     if kind == "experiment" and not isinstance(entry.get("experiment_id"), str):
         raise LedgerError("experiment entry without experiment_id")
 
 
 def _window_fields(kind: str) -> tuple[str, ...]:
     return ("development", "confirmation") if kind == "experiment" else ("window",)
+
+
+def entry_windows(entry: Mapping[str, Any]) -> dict[str, Window]:
+    """Decode observation windows, allowing null history only for zero-lookback formulas.
+
+    The entry's kind must already be validated. An absent development field is invalid;
+    an explicit null denotes no observed history and therefore contributes no window.
+    """
+    windows = {}
+    for name in _window_fields(entry["kind"]):
+        if name == "development" and name in entry and entry[name] is None:
+            params = entry.get("params")
+            if (
+                not isinstance(params, Mapping)
+                or params.get("method") != "fixed_formula"
+                or type(params.get("lookback_sessions")) is not int
+                or params["lookback_sessions"] != 0
+            ):
+                raise LedgerError("null development requires a zero-lookback fixed formula")
+            continue
+        windows[name] = Window.from_json(entry.get(name))
+    return windows
 
 
 def append(
@@ -190,15 +212,16 @@ def is_inspected(entries: list[dict[str, Any]], window: Window) -> bool:
 
 
 def assess_confirmation(
-    entries: list[dict[str, Any]], development: Window, confirmation: Window, exp_id: str
+    entries: list[dict[str, Any]], development: Window | None, confirmation: Window, exp_id: str
 ) -> tuple[str, list[str]]:
     """Classify a planned search as ``confirmatory`` or ``exploratory``, with reasons.
 
     Raises :class:`LedgerError` (before any data is evaluated) when the development window
     touches an unused reservation, or the confirmation window starts before one it reaches.
+    A zero-lookback fixed formula has no history window and passes ``development=None``.
     """
     for reserved in unused_reservations(entries):
-        if development.overlaps(reserved):
+        if development is not None and development.overlaps(reserved):
             raise LedgerError(
                 f"development window {development} overlaps the reserved confirmation "
                 f"window {reserved}; end the development data before {reserved.start}"
@@ -220,8 +243,7 @@ def assess_confirmation(
             if other == exp_id:
                 reasons.append(f"repeat of experiment {other}")
                 continue
-            for name in ("development", "confirmation"):
-                window = Window.from_json(entry[name])
+            for name, window in entry_windows(entry).items():
                 if confirmation.overlaps(window):
                     reasons.append(f"confirmation overlaps the {name} window of {other}")
     return ("exploratory" if reasons else "confirmatory"), reasons

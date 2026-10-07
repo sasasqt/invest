@@ -242,13 +242,14 @@ def _confirm(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
     panel = build_panel(bars, **_optional_inputs(args))
     dates = pd.DatetimeIndex(panel["close"].index)
-    k = int(dates.searchsorted(pd.Timestamp(args.confirm_start)))
-    if not 0 < k < len(dates):
+    start = pd.Timestamp(args.confirm_start)
+    k = int(dates.searchsorted(start))
+    if k >= len(dates) or start < dates[0] or (k == 0 and factor.lookback > 0):
         raise SystemExit(
             f"--confirm-start {args.confirm_start} leaves no history or confirmation data"
         )
     # Sessions before confirmation are read only as formula inputs, never as outcomes.
-    context = _span(dates[max(k - max(factor.lookback, 1), 0) : k], "history")
+    context = _span(dates[max(k - factor.lookback, 0) : k], "history") if factor.lookback else None
     confirmation = _span(dates[k:], "confirmation")
     identity = {
         "dataset_sha256": manifest.content_sha256,
@@ -258,8 +259,9 @@ def _confirm(args: argparse.Namespace) -> int:
             "method": "fixed_formula",
             "factor_id": factor.factor_id,
             "horizon": factor.horizon_days,
+            "lookback_sessions": factor.lookback,
         },
-        "development": context.to_json(),
+        "development": context.to_json() if context is not None else None,
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
@@ -407,11 +409,7 @@ def _ledger(args: argparse.Namespace) -> int:
                 e
                 for e in entries
                 if e["kind"] != "reservation"
-                and any(
-                    window.overlaps(Window.from_json(e[k]))
-                    for k in ("window", "development", "confirmation")
-                    if k in e
-                )
+                and any(window.overlaps(observed) for observed in ledger.entry_windows(e).values())
             ]
             if used:
                 raise LedgerError(f"{window} was already inspected or used by a search")
