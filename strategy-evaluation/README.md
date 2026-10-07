@@ -1,14 +1,19 @@
 # Strategy evaluation
 
-Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, explicit cash delisting settlements, last-known marks for missing bars, and per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); a rule-based portfolio verdict reported beside the factor's confirmation evidence (`validation.py`); and saved-result reports and figures (`reporting.py`).
+Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, explicit cash delisting settlements, last-known marks for missing bars, and per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); executable decile and tail bucket portfolios sharing the factor diagnostics' tie rule (`strategies.py`, `quantiles.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); a rule-based portfolio verdict reported beside the factor's confirmation evidence (`validation.py`); and saved-result reports and figures (`reporting.py`).
 
 ```sh
 uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
   --config strategy-evaluation/examples/quantile_long_short.json \
   [--n-trials <strategies tried>] [--benchmark <market bundle> [--benchmark-instrument SPY]] \
   --out artifacts/eval/<run>
+uv run invest-eval quantiles --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
+  [--config <BacktestConfig JSON>] [--buckets 10] [--tails 0.01,0.05,0.1] \
+  [--min-names-per-bucket 5] --out artifacts/eval/<run>-quantiles
 uv run pytest strategy-evaluation
 ```
+
+`invest-eval quantiles` backtests each bucket portfolio separately with the config's costs, execution, `rebalance_every`, `min_names` and `gross_leverage` (split evenly between legs for long-short); `long_fraction` and `short_fraction` are not used. Decisions with fewer eligible names than `max(min_names, buckets)` hold nothing in every portfolio, as the factor diagnostics skip dates with fewer names than buckets. See the [root README](../README.md#decile-and-tail-portfolios) for the membership and small-sample rules and the saved files. Every backtest result also carries `decisions`: each decision's eligible instruments, scores and target weights.
 
 `--n-trials` sets the number of trials for the deflated Sharpe. It defaults to the signals bundle's optional `n_trials` metadata (written by `invest-mine export`), else 1; the value used is recorded in the run's `manifest.json`. The metadata must be a positive integer; booleans, fractions, strings and null values are rejected. An explicit CLI value overrides valid metadata. Search proposal counts describe mining effort; include additional portfolio/rule trials when specifying a count for a broader selection experiment. DSR remains supplementary and does not repair holdout reuse.
 
@@ -41,7 +46,7 @@ Evaluate supplied trading strategies against versioned market datasets and optio
 
 The [metric specification](METRICS.md) defines trade outcomes, net profit, mean/variance of returns, CAGR, XIRR, annual and downside volatility, Sharpe, Sortino, Calmar, Ulcer Index, tail risk, drawdowns, benchmark performance, costs, and capacity. Implement the full applicable report with explicit calculation conventions and undefined-result statuses.
 
-Follow the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/visualization](../docs/REPORTING.md) specifications. Bucket diagnostics do not become portfolio returns until allocation, holding periods, and execution are specified.
+Follow the shared [quantile analysis](../docs/QUANTILE_ANALYSIS.md) and [reporting/visualization](../docs/REPORTING.md) specifications. Bucket diagnostics do not become portfolio returns until allocation, holding periods, and execution are specified; `invest-eval quantiles` specifies them explicitly.
 
 The baseline score-to-weight trading rule is in `src/invest_evaluation/strategies.py`. Targets must be a Series with unique eligible instrument identifiers, finite real weights, and gross exposure within configured leverage. Configuration rejects invalid types, non-finite numbers, invalid timing/windows, and unsupported ranges before simulation. The simulation engine owns fill accounting and costs; individual strategies should not duplicate it.
 

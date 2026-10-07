@@ -37,6 +37,7 @@ def _output(tmp_path: Path, **manifest: object) -> Path:
         **manifest,
     }
     (out / "eval/manifest.json").write_text(json.dumps(eval_manifest))
+    (out / "quantiles/manifest.json").write_text(json.dumps(eval_manifest))
     verdict = {"factor": {"status": "not_confirmed"}, "portfolio": {"status": "inconclusive"}}
     (out / "eval/verdict.json").write_text(json.dumps({**verdict, "verdict_version": 2}))
     return out
@@ -189,6 +190,14 @@ def test_refuses_runs_without_committed_code(tmp_path, fields, reason):
     with pytest.raises(SystemExit, match=reason):
         save_run.save_run(out, tmp_path / "runs" / "day")
     assert not (tmp_path / "runs").exists() or not any((tmp_path / "runs").iterdir())
+
+
+def test_refuses_quantile_portfolios_from_uncommitted_code(tmp_path):
+    out = _output(tmp_path)
+    manifest = json.loads((out / "quantiles/manifest.json").read_text())
+    (out / "quantiles/manifest.json").write_text(json.dumps({**manifest, "code_dirty": True}))
+    with pytest.raises(SystemExit, match=r"quantiles/manifest\.json had uncommitted"):
+        save_run.save_run(out, tmp_path / "runs" / "day")
 
 
 def test_record_directory_gets_normal_permissions(tmp_path):

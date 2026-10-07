@@ -8,6 +8,40 @@ from invest_data.schemas import read_market_bars, read_signals
 from invest_mining.cli import main
 
 
+def test_evaluate_applies_and_records_frozen_orientation(tmp_path, bars):
+    from invest_data.schemas import publish_market_bars
+    from invest_data.sources import SYNTHETIC_METADATA
+
+    data = tmp_path / "data"
+    publish_market_bars(bars, data, dataset_id="m", metadata=SYNTHETIC_METADATA)
+    reports = []
+    for orientation in (1, -1):
+        out = tmp_path / str(orientation)
+        assert (
+            main(
+                [
+                    "evaluate",
+                    "--data",
+                    str(data),
+                    "--expr",
+                    "close / delay(close, 5) - 1",
+                    "--orientation",
+                    str(orientation),
+                    "--horizon",
+                    "5",
+                    "--out",
+                    str(out),
+                ]
+            )
+            == 0
+        )
+        config = json.loads((out / "config.json").read_text())
+        metrics = json.loads((out / "metrics.json").read_text())
+        assert config["orientation"] == metrics["orientation"] == orientation
+        reports.append(metrics)
+    assert reports[1]["mean_ic"] == pytest.approx(-reports[0]["mean_ic"])
+
+
 def test_cli_evaluate_search_export(tmp_path, capsys):
     data = tmp_path / "data"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])

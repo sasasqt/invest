@@ -153,6 +153,8 @@ def test_synthetic_workflow_script(tmp_path):
     metrics = json.loads((out / "eval" / "metrics.json").read_text())
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((out / "eval" / "manifest.json").read_text())["n_trials"] == 47
+    quantiles = json.loads((out / "quantiles" / "quantiles.json").read_text())
+    assert [p["portfolio"] for p in quantiles["portfolios"]][:10] == [f"q{k}" for k in range(1, 11)]
     [experiment] = [
         json.loads(line) for line in (out / "mining/ledger.jsonl").read_text().splitlines()
     ]
@@ -212,6 +214,12 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert metrics["external_benchmark"]["beta"]["status"] == "ok"
     verdict = json.loads((out / "eval" / "verdict.json").read_text())
     assert verdict["factor"]["status"] == "not_confirmed"  # fixed formula, not yet confirmed
+    quantiles = json.loads((out / "quantiles" / "quantiles.json").read_text())
+    assert quantiles["report_version"] == 1 and len(quantiles["portfolios"]) == 19
+    # 30 names: the 1% tails never reach five names, so they report no performance.
+    tails = {p["portfolio"]: p for p in quantiles["portfolios"]}
+    assert tails["top_0.01"]["status"] == "insufficient_data"
+    assert tails["top_0.01"]["net_sharpe"] is None
     market = json.loads((out / "data" / "market" / "manifest.json").read_text())
     assert "SPY" not in market["provenance"]["snapshot"]["files"]
     assert market["metadata"]["universe"].endswith("(survivorship-biased)")
@@ -224,6 +232,29 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     from invest_data.schemas import read_market_bars
 
     _, published = read_market_bars(out / "data" / "market")
+    # Diagnostics and exported signals use the same frozen orientation, not reversed
+    # meanings for q1/q10. Compare membership on the evaluator's eligible cross-section.
+    import pandas as pd
+
+    from invest_mining.diagnostics import assign_buckets
+    from invest_mining.expressions import build_panel, evaluate
+
+    diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
+    factor = json.loads((out / "mining/factor.json").read_text())
+    assert diagnostic_config["orientation"] == factor["orientation"] == -1
+    values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
+    members = pd.read_csv(
+        out / "quantiles/tables/memberships.csv.gz", parse_dates=["decision_date"]
+    )
+    for date, group in members.groupby("decision_date"):
+        if len(group) < 10:
+            continue
+        expected = values.loc[[date], group["instrument"]]
+        buckets = assign_buckets(expected, 10).iloc[0]
+        actual = group.set_index("instrument")["bucket"]
+        # CSV may infer StringDtype while the bundle reader uses object identifiers.
+        # Compare every instrument's assignment, independent of pandas storage dtype.
+        assert buckets.astype(int).to_dict() == actual.to_dict()
     assert published["date"].min().date().isoformat() >= first
     assert published["date"].max().date().isoformat() <= last
     assert set(published["date"]) == set(bars.loc[bars["date"].between(first, last), "date"])
@@ -235,16 +266,17 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     # Records need committed code; this test may run from a dirty tree or installed wheels,
     # so it states a clean revision after checking the fields exist.
     save_run = _save_run_module()
-    eval_manifest = json.loads((out / "eval" / "manifest.json").read_text())
-    assert {"code_revision", "code_dirty"} <= eval_manifest.keys()
-    eval_manifest.update(code_revision="0" * 40, code_dirty=False)
-    (out / "eval" / "manifest.json").write_text(json.dumps(eval_manifest))
+    for part in ("eval", "quantiles"):
+        code_manifest = json.loads((out / part / "manifest.json").read_text())
+        assert {"code_revision", "code_dirty"} <= code_manifest.keys()
+        code_manifest.update(code_revision="0" * 40, code_dirty=False)
+        (out / part / "manifest.json").write_text(json.dumps(code_manifest))
     record = tmp_path / "record"
     saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
     assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
     assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved
-    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv")) for p in saved)
+    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv", ".gz")) for p in saved)
     assert not any(p.startswith("snapshot/") and p != "snapshot/snapshot.json" for p in saved)
     assert json.loads((record / "eval/verdict.json").read_text()) == verdict
     readme = (record / "README.md").read_text()

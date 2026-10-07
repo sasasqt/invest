@@ -57,6 +57,8 @@ Another fresh download on 2026-10-07 (retrieved 10:32 UTC), on main at `4e439f0`
 
 ## Confirmation use
 
+Historical mining diagnostics saved before the PR #16 review fixes used the raw reversal expression (orientation +1). New workflow diagnostics use the frozen orientation -1, matching the exported scores and executable bucket labels. IC signs and diagnostic bucket direction therefore differ from those older mining reports; the baseline portfolio signals, metrics and verdict are unchanged.
+
 Both runs requested 2010-01-01 to 2024-12-31 and inspected all of it (full-sample diagnostics and the backtest), so this history can only give exploratory evidence. Data from 2025-01-01 onward has never been downloaded or inspected. [`ledgers/yahoo-test.jsonl`](../ledgers/yahoo-test.jsonl) records both facts, and the workflow refuses to download or publish any window reaching 2025. A future confirmatory test must freeze its candidates on 2010–2024 and confirm once on 2025 onward: a search family with `invest-mine search --ledger ledgers/yahoo-test.jsonl --confirm-start 2025-01-01`, or the fixed 5-day reversal with `invest-mine confirm --factor <factor.json> --ledger ledgers/yahoo-test.jsonl --confirm-start 2025-01-01`. The historical workflow refuses that window, so download and publish a snapshot reaching past 2025 with `invest-data yahoo download|publish` directly, and run nothing else on the reserved dates before confirming.
 
 ## Limitations

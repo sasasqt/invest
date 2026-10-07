@@ -80,7 +80,7 @@ def test_quantile_and_tail_returns_on_monotone_signal():
     y = f / 100.0
     q = quantile_returns(f, y, 10)
     assert (q.mean().diff().dropna() > 0).all()
-    t = tail_returns(f, y, (0.1,))
+    t = tail_returns(f, y, (0.1,), min_names=1)
     assert t.loc["top_0.1", "mean_forward_return"] == pytest.approx(0.185)
     assert t.loc["bottom_0.1", "mean_forward_return"] == pytest.approx(0.005)
 
@@ -94,7 +94,7 @@ def test_quantiles_and_tails_do_not_use_future_label_availability(drop_column):
     altered = quantile_returns(f, changed)
     pd.testing.assert_frame_equal(baseline.iloc[:, :9], altered.iloc[:, :9])
     assert len(altered) == 1 and altered["q10"].isna().all()
-    tails = tail_returns(f, changed, (0.1,))
+    tails = tail_returns(f, changed, (0.1,), min_names=1)
     assert pd.isna(tails.loc["top_0.1", "mean_forward_return"])
     assert tails.loc["bottom_0.1", "mean_forward_return"] == pytest.approx(0.01)
 
@@ -103,3 +103,80 @@ def test_quantile_dates_are_preserved_when_all_future_labels_are_missing():
     f = pd.DataFrame([range(10)], columns=list("ABCDEFGHIJ"), dtype=float)
     result = quantile_returns(f, f * np.nan)
     assert result.index.equals(f.index) and result.isna().all().all()
+
+
+def test_tail_slices_report_small_samples_instead_of_a_mean():
+    idx = pd.bdate_range("2024-01-01", periods=2)
+    f = pd.DataFrame([list(range(40))] * 2, index=idx, columns=[f"S{i}" for i in range(40)])
+    f = f.astype(float)
+    t = tail_returns(f, f / 100, (0.05, 0.1), min_names=3)
+    assert t.loc["top_0.05", "status"] == "insufficient_data"  # 2 names per date
+    assert pd.isna(t.loc["top_0.05", "mean_forward_return"])
+    assert t.loc["top_0.05", "min_names"] == 2 and t.loc["top_0.05", "insufficient_dates"] == 2
+    assert t.loc["top_0.1", "status"] == "ok" and t.loc["top_0.1", "min_names"] == 4
+    assert t.loc["top_0.1", "mean_forward_return"] == pytest.approx(0.375)
+
+
+def test_tail_ties_stay_together_and_small_cross_sections_are_skipped():
+    f = pd.DataFrame(
+        [[1.0] * 6 + [2.0] * 6, [*range(5), *[np.nan] * 7]],
+        index=pd.bdate_range("2024-01-01", periods=2),
+        columns=[f"S{i}" for i in range(12)],
+    )
+    t = tail_returns(f, f, (0.5,), min_names=1, min_cross_section=10)
+    # Day 1: the six tied 2.0s all sit above the median; day 2 has too few names.
+    assert t.loc["top_0.5", "min_names"] == 6 and t.loc["bottom_0.5", "min_names"] == 6
+    assert t.loc["top_0.5", "n_dates"] == 1
+
+
+@pytest.mark.parametrize("observed", [0, 1, 4])
+def test_tail_status_requires_observed_outcomes_without_changing_membership(observed):
+    f = pd.DataFrame([range(100)], dtype=float)
+    y = f / 100
+    y.loc[:, 90:] = np.nan
+    if observed:
+        y.loc[:, 100 - observed :] = 0.5
+    baseline = tail_returns(f, f / 100, (0.1,))
+    tails = tail_returns(f, y, (0.1,))
+    top = tails.loc["top_0.1"]
+    assert top["status"] == "insufficient_data"
+    assert pd.isna(top["mean_forward_return"]) and top["n_dates"] == 0
+    assert top["min_names"] == baseline.loc["top_0.1", "min_names"] == 10
+    assert top["min_observed_names"] == observed and top["insufficient_label_dates"] == 1
+    assert tails.loc["bottom_0.1", "status"] == "ok"
+
+
+def test_tail_with_no_observable_dates_is_insufficient():
+    f = pd.DataFrame([range(100)], dtype=float)
+    tails = tail_returns(f, f * np.nan, (0.1,))
+    assert (tails["status"] == "insufficient_data").all()
+    assert tails["mean_forward_return"].isna().all() and tails["n_dates"].eq(0).all()
+
+
+def test_tail_coverage_reports_unavailable_horizon_end_and_enough_observed_names():
+    f = pd.DataFrame([range(100)] * 2, dtype=float)
+    y = f / 100
+    y.iloc[0, 90:95] = np.nan  # Five observed names still meet the declared minimum.
+    y.iloc[1, :] = np.nan  # The final date has no observable forward outcomes anywhere.
+    tails = tail_returns(f, y, (0.1,))
+    top = tails.loc["top_0.1"]
+    assert top["status"] == "ok" and top["n_dates"] == 1
+    assert top["min_names"] == 10 and top["min_observed_names"] == 5
+    assert top["missing_label_dates"] == 1 and top["insufficient_label_dates"] == 0
+    assert top["mean_forward_return"] == pytest.approx(0.97)
+
+
+def test_close_tail_fractions_keep_distinct_diagnostic_rows():
+    f = pd.DataFrame([range(100)], dtype=float)
+    tails = tail_returns(f, f / 100, (0.1, 0.10000001))
+    assert len(tails) == 4 and tails.index.is_unique
+    assert tails.loc["top_0.1", "min_names"] == 10
+    assert tails.loc["top_0.10000001", "min_names"] == 11
+
+
+@pytest.mark.parametrize("field", ["min_names", "min_cross_section"])
+@pytest.mark.parametrize("value", [0, -1, True, 1.5])
+def test_tail_minimum_counts_must_be_positive_integers(field, value):
+    f = pd.DataFrame([range(100)], dtype=float)
+    with pytest.raises(ValueError, match=f"{field} must be a positive integer"):
+        tail_returns(f, f / 100, (0.1,), **{field: value})

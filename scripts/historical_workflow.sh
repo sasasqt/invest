@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Test-only historical workflow on Yahoo Finance daily bars:
-# snapshot -> publish -> freeze a fixed formula -> export -> evaluate against SPY.
+# snapshot -> publish -> freeze a fixed formula -> export -> evaluate against SPY
+# -> decile and tail portfolios.
 #
 # Usage: uv run scripts/historical_workflow.sh [OUT_DIR]
 #
@@ -22,7 +23,7 @@
 # verdicts, metrics, figures, manifests; no vendor data) there for committing, with
 # scripts/save_run.py. It must not exist yet, and tracked files must be unmodified so the
 # recorded code revision describes the code that ran; save_run.py also refuses incomplete
-# outputs and an evaluation manifest without a clean code revision.
+# outputs and evaluation or quantile manifests without a clean code revision.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -35,6 +36,7 @@ snapshot="${SNAPSHOT:-$out/snapshot}"
 config="${CONFIG:-$root/strategy-evaluation/examples/quantile_long_short.json}"
 ledger="${LEDGER:-$root/ledgers/yahoo-test.jsonl}"
 expr="close / delay(close, 5) - 1"
+orientation=-1
 record="${RECORD:-}"
 
 if [[ -n "$record" ]]; then
@@ -76,17 +78,24 @@ invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format
   --universe-note "benchmark ETF"
 
 # Descriptive factor diagnostics on the full sample (not a confirmatory test); the ledger
-# records the inspected window unless it is already recorded.
+# records the inspected window unless it is already recorded. Use the frozen orientation
+# so q10 and the top tails mean the same score direction in both reports.
 invest-mine evaluate --data "$out/data/market" --expr "$expr" --horizon 5 \
-  --ledger "$ledger" --out "$out/mining/diagnostics"
+  --orientation "$orientation" --ledger "$ledger" --out "$out/mining/diagnostics"
 
 # A fixed formula chosen before looking at this data: low past 5-day return = attractive.
-invest-mine freeze --expr "$expr" --horizon 5 --orientation -1 --out "$out/mining/factor.json"
+invest-mine freeze --expr "$expr" --horizon 5 --orientation "$orientation" \
+  --out "$out/mining/factor.json"
 invest-mine export --data "$out/data/market" --factor "$out/mining/factor.json" \
   --format parquet --out "$out/signals"
 
 invest-eval run --data "$out/data/market" --signals "$out/signals" --config "$config" \
   --benchmark "$out/data/benchmark" --out "$out/eval"
+
+# Every decile and the top/bottom 1/5/10% tails as separate backtests with the same costs
+# and timing; slices with fewer than five names on a decision report insufficient_data.
+invest-eval quantiles --data "$out/data/market" --signals "$out/signals" --config "$config" \
+  --out "$out/quantiles"
 
 if [[ -n "$record" ]]; then
   python "$root/scripts/save_run.py" "$out" "$record" --snapshot "$snapshot"

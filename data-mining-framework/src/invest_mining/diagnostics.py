@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import asdict, dataclass
+from numbers import Integral
 from statistics import NormalDist
 from typing import Any
 
@@ -144,20 +145,70 @@ def quantile_returns(
 
 
 def tail_returns(
-    factor: pd.DataFrame, label: pd.DataFrame, fractions: tuple[float, ...] = (0.01, 0.05, 0.1)
+    factor: pd.DataFrame,
+    label: pd.DataFrame,
+    fractions: tuple[float, ...] = (0.01, 0.05, 0.1),
+    *,
+    min_names: int = 5,
+    min_cross_section: int = 10,
 ) -> pd.DataFrame:
-    """Mean forward return of top/bottom tail slices (these overlap deciles)."""
+    """Mean forward return of top/bottom tail slices (these overlap deciles).
+
+    Top ``f`` holds percentiles ``p > 1 - f`` and bottom ``f`` holds ``p <= f`` (average
+    ranks, so ties share a slice). Only dates with at least ``min_cross_section`` names
+    count, as with deciles. A slice with fewer than ``min_names`` names on any such date is
+    ``insufficient_data`` and gets no mean return; its name counts are still reported.
+    Outcomes never affect membership. On dates with any observed label among scored
+    names, a slice also needs at least ``min_names`` observed outcomes. Dates without any
+    observable labels (such as the unfinished horizon at the end) are counted separately
+    and excluded from that coverage check. No usable dates means ``insufficient_data``.
+    """
+    for name, value in (("min_names", min_names), ("min_cross_section", min_cross_section)):
+        if isinstance(value, bool) or not isinstance(value, Integral) or value < 1:
+            raise ValueError(f"{name} must be a positive integer")
     f = factor
     y = label.reindex(index=f.index, columns=f.columns)
-    pct = f.rank(axis=1, method="average", pct=True)
+    sized = f.notna().sum(axis=1) >= min_cross_section
+    pct = f.loc[sized].rank(axis=1, method="average", pct=True)
+    y = y.loc[sized]
+    observable = y.where(pct.notna()).notna().any(axis=1)
     rows = {}
     for frac in fractions:
-        top = y.where(pct > 1 - frac).mean(axis=1)
-        bottom = y.where(pct <= frac).mean(axis=1)
-        rows[f"top_{frac:g}"] = top.mean()
-        rows[f"bottom_{frac:g}"] = bottom.mean()
-        rows[f"n_dates_{frac:g}"] = float((top.notna() & bottom.notna()).sum())
-    return pd.DataFrame(rows, index=["mean_forward_return"]).T
+        for side, mask in (("top", pct > 1 - frac), ("bottom", pct <= frac)):
+            names = mask.sum(axis=1)
+            outcomes = y.where(mask)
+            observed_names = outcomes.notna().sum(axis=1)
+            usable = observed_names >= min_names
+            daily = outcomes.mean(axis=1).where(usable)
+            short = int((names < min_names).sum())
+            short_labels = int((observable & ~usable).sum())
+            ok = bool(usable.any()) and short == 0 and short_labels == 0
+            reason = None
+            if not sized.any():
+                reason = "no_date_with_enough_scored_names"
+            elif short:
+                reason = "too_few_assigned_names"
+            elif short_labels:
+                reason = "too_few_observed_outcomes"
+            elif not usable.any():
+                reason = "no_observed_outcomes"
+            observed = observed_names.loc[observable]
+            rows[f"{side}_{float(frac)}"] = {
+                "side": side,
+                "fraction": frac,
+                "mean_forward_return": float(daily.mean()) if ok else np.nan,
+                "n_dates": int(daily.notna().sum()),
+                "mean_names": float(names.mean()) if len(names) else np.nan,
+                "min_names": int(names.min()) if len(names) else 0,
+                "insufficient_dates": short,
+                "mean_observed_names": float(observed.mean()) if len(observed) else np.nan,
+                "min_observed_names": int(observed.min()) if len(observed) else 0,
+                "insufficient_label_dates": short_labels,
+                "missing_label_dates": int((observed_names == 0).sum()),
+                "status": "ok" if ok else "insufficient_data",
+                "reason": reason,
+            }
+    return pd.DataFrame.from_dict(rows, orient="index")
 
 
 def rank_autocorrelation(factor: pd.DataFrame, lag: int = 1) -> float:
