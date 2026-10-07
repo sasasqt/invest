@@ -155,8 +155,9 @@ def assign_buckets(
 
     Names in the lower half (``p <= q``) get ``ceil(p * n)`` and the others
     ``n + 1 - ceil(q * n)``, with ``q`` counted from the highest score (``BUCKET_RULE``).
-    Bucket 1 and bucket n mirror each other and equal the ``1/n`` tails; leftover names
-    fall in the middle buckets (28 names: 2, 3, 3, 3, 3, 3, 3, 3, 3, 2). A name or tie
+    For at least three buckets, the extremes equal the ``1/n`` tails. With distinct
+    scores their populations match; ties can make them unequal. For ten buckets and
+    28 distinct names the counts are 2, 3, 3, 3, 3, 3, 3, 3, 3, 2. A name or tie
     group exactly at the median gets ``ceil(p * n)`` either way, so it is not mirrored.
     Only ``sized_dates`` get
     buckets.
@@ -193,8 +194,18 @@ def tail_percentiles(factor: pd.DataFrame) -> dict[str, pd.DataFrame]:
 def bucket_numbers(pct: pd.DataFrame, pct_from_top: pd.DataFrame, n_buckets: int) -> pd.DataFrame:
     """``BUCKET_RULE`` from ascending and descending percentiles (evaluation keeps a copy
     with the same signature, because the components never import each other)."""
-    lower = np.ceil(pct * n_buckets)
-    upper = n_buckets + 1 - np.ceil(pct_from_top * n_buckets)
+    # Compare with cutpoints directly, avoiding multiplication that rounds exact
+    # boundaries upward (for example 0.28 * 25 > 7). Evaluation keeps the same rule.
+    cutpoints = np.arange(1, n_buckets + 1) / n_buckets
+
+    def from_percentiles(values: pd.DataFrame) -> pd.DataFrame:
+        numbers = np.searchsorted(cutpoints, values.to_numpy(), side="left") + 1
+        return pd.DataFrame(numbers, index=values.index, columns=values.columns, dtype=float).where(
+            values.notna()
+        )
+
+    lower = from_percentiles(pct)
+    upper = n_buckets + 1 - from_percentiles(pct_from_top)
     return lower.where(pct <= pct_from_top, upper).clip(lower=1, upper=n_buckets)
 
 

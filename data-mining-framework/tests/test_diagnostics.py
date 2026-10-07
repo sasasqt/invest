@@ -241,3 +241,18 @@ def test_deciles_and_tails_use_the_same_dates():
         deciles = quantile_returns(f_, f_, 10, minimum)
         tails = tail_returns(f_, f_, (0.5,), min_names=1, min_cross_section=minimum)
         assert tails["n_dates"].eq(deciles.notna().any(axis=1).sum()).all()
+
+
+@pytest.mark.parametrize("n", [25, 125, 250])
+def test_bucket_boundaries_do_not_round_exact_ranks_into_the_next_bucket(n):
+    # Integer arithmetic is an independent oracle for distinct ranks. In particular,
+    # rank / n = 0.28 is an exact seventh boundary of 25 buckets, not bucket eight.
+    ranks = np.arange(1, n + 1)
+    descending = ranks[::-1]
+    expected = np.where(
+        ranks <= descending,
+        (ranks * 25 + n - 1) // n,
+        26 - (descending * 25 + n - 1) // n,
+    )
+    factor = pd.DataFrame([range(n)], dtype=float)
+    np.testing.assert_array_equal(assign_buckets(factor, 25).iloc[0], expected)

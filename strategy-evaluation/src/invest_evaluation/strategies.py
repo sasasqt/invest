@@ -68,13 +68,23 @@ def bucket_numbers(pct: pd.Series, pct_from_top: pd.Series, n_buckets: int) -> p
     """Symmetric percentile buckets 1..n (the factor diagnostics' rule).
 
     Names in the lower half (``p <= q``) get ``ceil(p * n)``; names in the upper half get
-    ``n + 1 - ceil(q * n)``. Bucket 1 and bucket n are mirror images and equal the
-    ``1/n`` tails, and leftover names fall in the middle buckets. A name or tie group
+    ``n + 1 - ceil(q * n)``. For at least three buckets the extremes equal the ``1/n``
+    tails. Ties can give the two extremes different populations. A name or tie group
     exactly at the median (``p == q``) gets ``ceil(p * n)`` whichever way the scores
     point, so it is the one placement that is not mirrored.
     """
-    lower = np.ceil(pct * n_buckets)
-    upper = n_buckets + 1 - np.ceil(pct_from_top * n_buckets)
+    # Compare with the cutpoints themselves: ceil(0.28 * 25) can incorrectly be eight.
+    # side="left" keeps a percentile exactly on k/n in bucket k, as with tail p <= f.
+    cutpoints = np.arange(1, n_buckets + 1) / n_buckets
+
+    def from_percentiles(values: pd.Series) -> pd.Series:
+        numbers = np.searchsorted(cutpoints, values.to_numpy(), side="left") + 1
+        return pd.Series(numbers, index=values.index, name=values.name, dtype=float).where(
+            values.notna()
+        )
+
+    lower = from_percentiles(pct)
+    upper = n_buckets + 1 - from_percentiles(pct_from_top)
     return lower.where(pct <= pct_from_top, upper).clip(lower=1, upper=n_buckets)
 
 

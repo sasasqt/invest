@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from invest_data.schemas import publish_market_bars, publish_signals
-from invest_data.sources import SYNTHETIC_METADATA
+from invest_data.sources import SYNTHETIC_METADATA, SyntheticConfig, synthetic_market
 from invest_evaluation.cli import main
 from invest_evaluation.config import BacktestConfig, CostModel, ExecutionConfig, StrategyConfig
 from invest_evaluation.engine import run_backtest
@@ -328,3 +328,24 @@ def test_tail_masks_use_their_own_percentiles_and_json_values_are_plain():
     out = finite({"a": [np.bool_(True), np.int64(2), np.float64("nan"), np.float32(0.5)]})
     assert out == {"a": [True, 2, None, 0.5]}
     assert [type(v) for v in out["a"]] == [bool, int, type(None), float]
+
+
+def test_twenty_five_bucket_report_does_not_discard_boundary_names():
+    bars = synthetic_market(SyntheticConfig(n_instruments=125, n_days=35, listing_churn=0, seed=13))
+    signals = bars[["date", "instrument"]].rename(columns={"date": "decision_date"})
+    names = sorted(signals["instrument"].unique())
+    score_by_name = dict(zip(names, range(125), strict=True))
+    signals["score"] = signals["instrument"].map(score_by_name).astype(float)
+    cfg = BacktestConfig(costs=CostModel(adv_window=1, vol_window=2))
+    result = run_quantile_portfolios(
+        bars, signals, cfg, QuantileConfig(n_buckets=25, tail_fractions=())
+    )
+    # Every bucket should hold five names. Previously 0.28 * 25 rounded above seven,
+    # shrinking q7/q19 to four and falsely withholding their performance.
+    assert result.table["min_names"].eq(5).all()
+    assert result.table["status"].eq("ok").all()
+    assert result.table["net_cagr"].notna().all()
+    members = result.memberships
+    assert members.groupby(["decision_date", "bucket"]).size().eq(5).all()
+    s = scores(score_by_name)
+    assert held(Slice("bucket", 19, 25), s) == set(names[90:95])
