@@ -28,14 +28,14 @@ A PR is mergeable only when all jobs are green on its latest commit.
 
 ## What every change must keep green
 
-- **Contract compatibility.** Changes to `invest_data.bundle` or `invest_data.schemas` must keep reading existing bundles. Incompatible changes bump `contract_version` and add a reader for the old version plus fixtures for both.
+- **Contract compatibility.** Changes to `invest_data.bundle` or `invest_data.schemas` must keep reading existing bundles. Incompatible changes bump `contract_version` and add a reader for the old version plus fixtures for both. Versioned fields inside the contract (for example signals `factor_evidence` or `verdict.json`) follow the same rule, with one exception: when an old version cannot satisfy a new safety check (factor evidence v1 has no tested horizon), refuse it with a migration message that names how to regenerate it, document the migration in the [data contract](docs/DATA_CONTRACT.md), and never infer the missing field or relabel the old version.
 - **Causality tests.** The tests showing that future data cannot change past signals, fills, or equity are a release gate. A change that needs to edit them needs a reviewer who understands why.
 - **Accounting reconciliation.** The engine raises `AccountingError` when equity does not reconcile; tests must exercise every cost type that is added.
 - **Component independence.** Evaluation must not import mining, and neither may import another component's private modules. The `independent-install` job enforces this.
 
 ## Continuous delivery: releases
 
-This is a library and research toolkit, so "delivery" means versioned packages and reproducible results, not a deployed service.
+This is a library and research toolkit, so "delivery" means versioned packages and reproducible results, not a deployed service. No release has been tagged yet: all three packages are still `0.1.0` and there is no `CHANGELOG.md`. The rules below start with the first release; until then, record breaking artifact changes in the PR description and the affected README or contract section.
 
 1. **Versioning.** Each component follows semantic versioning in its own `pyproject.toml`. Bump the minor version for new behavior, the major version for breaking changes to a public API, CLI, or artifact contract, and record the change in a `CHANGELOG.md` entry.
 2. **Tagging.** Release from `main` only, with tags `<package>-v<version>` (for example `invest-evaluation-v0.2.0`).
