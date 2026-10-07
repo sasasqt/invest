@@ -158,6 +158,18 @@ def test_synthetic_workflow_script(tmp_path):
     ]
     assert experiment["kind"] == "experiment"
     assert experiment["confirmation_use"] == "confirmatory"
+    # The factor's confirmation evidence reaches the portfolio report beside, not inside,
+    # the portfolio verdict.
+    verdict = json.loads((out / "eval" / "verdict.json").read_text())
+    assert verdict["factor"]["experiment_id"] == experiment["experiment_id"]
+    assert verdict["factor"]["confirmation_use"] == "confirmatory"
+    assert verdict["factor"]["factor_id"] == experiment["family"][0]
+    assert verdict["portfolio"]["status"] in (
+        "supported",
+        "rejected",
+        "inconclusive",
+        "insufficient_data",
+    )
 
 
 @pytest.mark.parametrize("subset", [False, True])
@@ -198,6 +210,8 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert manifest["signals"]["metadata"]["n_trials"] == 1
     metrics = json.loads((out / "eval" / "metrics.json").read_text())
     assert metrics["external_benchmark"]["beta"]["status"] == "ok"
+    verdict = json.loads((out / "eval" / "verdict.json").read_text())
+    assert verdict["factor"]["status"] == "not_confirmed"  # fixed formula, not yet confirmed
     market = json.loads((out / "data" / "market" / "manifest.json").read_text())
     assert "SPY" not in market["provenance"]["snapshot"]["files"]
     assert market["metadata"]["universe"].endswith("(survivorship-biased)")

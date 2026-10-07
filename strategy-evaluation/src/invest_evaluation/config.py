@@ -114,11 +114,47 @@ class ExecutionConfig:
         _number("min_adv_dollar", self.min_adv_dollar, minimum=0)
 
 
+VALIDATION_BENCHMARKS = ("none", "universe", "external")
+
+
+@dataclass(frozen=True)
+class ValidationConfig:
+    """Rules for the portfolio verdict, declared before the run (ROBUST-02).
+
+    A portfolio is ``supported`` only if the net Sharpe bootstrap interval lies above zero,
+    the deflated Sharpe ratio reaches ``min_deflated_sharpe``, every named stress scenario
+    keeps a positive net Sharpe and, unless ``benchmark = "none"``, the information ratio
+    against that benchmark is positive. It is ``rejected`` when the interval lies below
+    zero and ``insufficient_data`` with fewer than ``min_sessions`` daily returns or no
+    defined interval. Everything else is ``inconclusive``.
+    """
+
+    min_sessions: int = 252
+    min_deflated_sharpe: float = 0.95
+    stress_scenarios: tuple[str, ...] = ("costs_x2", "delay_1")
+    benchmark: str = "none"
+
+    def __post_init__(self) -> None:
+        _integer("min_sessions", self.min_sessions, 60)
+        _number("min_deflated_sharpe", self.min_deflated_sharpe, minimum=0)
+        if self.min_deflated_sharpe > 1:
+            raise ValueError("min_deflated_sharpe must be <= 1")
+        names = self.stress_scenarios
+        if isinstance(names, str) or not isinstance(names, list | tuple):
+            raise ValueError("stress_scenarios must be a list of scenario names")
+        if not all(isinstance(n, str) and n for n in names) or len(set(names)) != len(names):
+            raise ValueError("stress_scenarios must be unique non-empty names")
+        object.__setattr__(self, "stress_scenarios", tuple(names))
+        if self.benchmark not in VALIDATION_BENCHMARKS:
+            raise ValueError(f"benchmark must be one of {VALIDATION_BENCHMARKS}")
+
+
 @dataclass(frozen=True)
 class BacktestConfig:
     strategy: StrategyConfig = field(default_factory=StrategyConfig)
     execution: ExecutionConfig = field(default_factory=ExecutionConfig)
     costs: CostModel = field(default_factory=CostModel)
+    validation: ValidationConfig = field(default_factory=ValidationConfig)
     initial_capital: float = 1_000_000.0
     annualization: int = 252
     risk_free_annual: float = 0.0
@@ -131,6 +167,7 @@ class BacktestConfig:
             ("strategy", StrategyConfig),
             ("execution", ExecutionConfig),
             ("costs", CostModel),
+            ("validation", ValidationConfig),
         ):
             if not isinstance(getattr(self, name), cls):
                 raise ValueError(f"{name} must be a {cls.__name__}")
@@ -172,11 +209,13 @@ class BacktestConfig:
                 raise ValueError(f"unknown {key} keys {sorted(bad)}")
             return cls(**data)
 
-        top = {k: v for k, v in raw.items() if k not in ("strategy", "execution", "costs")}
+        nested = ("strategy", "execution", "costs", "validation")
+        top = {k: v for k, v in raw.items() if k not in nested}
         return BacktestConfig(
             strategy=sub(StrategyConfig, "strategy"),
             execution=sub(ExecutionConfig, "execution"),
             costs=sub(CostModel, "costs"),
+            validation=sub(ValidationConfig, "validation"),
             **top,
         )
 

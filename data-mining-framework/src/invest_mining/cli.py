@@ -4,15 +4,25 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from collections.abc import Sequence
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
-from invest_data.schemas import read_fundamentals, read_market_bars, read_universe
+from invest_data.bundle import BundleError
+from invest_data.schemas import (
+    FACTOR_EVIDENCE_STATISTICS,
+    FACTOR_EVIDENCE_VERSION,
+    read_fundamentals,
+    read_market_bars,
+    read_universe,
+    validate_factor_evidence,
+)
 from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
@@ -340,6 +350,63 @@ def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor
     return factor, start or confirm_start
 
 
+def _json_number(value: Any) -> float | int | None:
+    """A CSV number as JSON; undefined (NaN or infinite) statistics become null."""
+    value = value.item() if isinstance(value, np.generic) else value
+    return value if isinstance(value, int | float) and math.isfinite(value) else None
+
+
+def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
+    """Factor evidence from a ``search`` or ``confirm`` output, for the exported signals.
+
+    Called only after the factor is chosen: the outcome describes the factor and travels
+    with its signals to portfolio reports, but never decides which factor is exported.
+    """
+    try:
+        table = pd.read_csv(root / "confirmation.csv")
+        config = json.loads((root / "config.json").read_text())
+    except (OSError, ValueError) as exc:
+        raise SystemExit(f"{root}: cannot read confirmation output ({exc})") from exc
+    needed = {"factor_id", "status", "test_outcome", "confirmation_use", "family_size"}
+    if missing := sorted(needed - set(table.columns)):
+        raise SystemExit(f"{root}: confirmation.csv lacks {missing}; rerun the confirmation")
+    rows = table[table["factor_id"] == factor.factor_id]
+    if len(rows) != 1:
+        raise SystemExit(f"{root}: factor {factor.factor_id} was not confirmed in this output")
+    row = rows.iloc[0]
+    experiment = config.get("experiment") or {}
+    identity = experiment.get("identity") or {}
+    if row["confirmation_use"] != experiment.get("confirmation_use"):
+        raise SystemExit(f"{root}: confirmation.csv and config.json disagree on confirmation use")
+    tagged = factor.selection.get("experiment_id")
+    if tagged is not None and tagged != experiment.get("experiment_id"):
+        raise SystemExit(
+            f"{root}: factor {factor.factor_id} was selected in experiment {tagged}, "
+            f"not {experiment.get('experiment_id')}"
+        )
+    method = (identity.get("params") or {}).get("method")
+    evidence = {
+        "evidence_version": FACTOR_EVIDENCE_VERSION,
+        "factor_id": factor.factor_id,
+        "experiment_id": experiment.get("experiment_id"),
+        "source": "confirm" if method == "fixed_formula" else "search",
+        "confirmation_use": row["confirmation_use"],
+        "test_outcome": row["test_outcome"],
+        "status": row["status"],
+        "family_size": int(row["family_size"]),
+        "confirmation_window": identity.get("confirmation"),
+        "statistics": {
+            key: _json_number(row[key]) if key in row else None
+            for key in FACTOR_EVIDENCE_STATISTICS
+        },
+    }
+    try:
+        validate_factor_evidence(evidence, factor_id=factor.factor_id)
+    except BundleError as exc:
+        raise SystemExit(f"{root}: {exc}") from exc
+    return evidence
+
+
 def _freeze(args: argparse.Namespace) -> int:
     """Freeze one formula chosen before looking at the data: no fitting, one trial."""
     if args.horizon < 1:
@@ -365,10 +432,17 @@ def _freeze(args: argparse.Namespace) -> int:
 
 def _export(args: argparse.Namespace) -> int:
     manifest, bars = read_market_bars(args.data)
+    evidence: dict[str, Any] | None
     if args.from_search is not None:
+        if args.confirmation is not None:
+            raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor, start = _from_search(args.from_search, args.rank, args.start)
+        evidence = _confirmation_evidence(args.from_search, factor)
     else:
         factor, start = FrozenFactor.load(args.factor), args.start
+        evidence = (
+            None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
+        )
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",
@@ -381,6 +455,7 @@ def _export(args: argparse.Namespace) -> int:
         dataset_id=manifest.dataset_id,
         start=start,
         fmt=args.format,
+        evidence=evidence,
         **_optional_inputs(args),
     )
     print(
@@ -390,6 +465,7 @@ def _export(args: argparse.Namespace) -> int:
                 "rows": out.row_count,
                 "factor_id": factor.factor_id,
                 "start": start,
+                "factor_status": None if evidence is None else evidence["status"],
             }
         )
     )
@@ -508,6 +584,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         "defaults to the confirmation start with --from-search",
     )
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
+    ex.add_argument(
+        "--confirmation",
+        type=Path,
+        help="with --factor: `search` or `confirm` output whose confirmation of this factor "
+        "is attached to the signals as evidence (it never selects the factor)",
+    )
 
     for p in (ev, se, co, ex):
         p.add_argument("--universe", type=Path, help="universe bundle (point-in-time membership)")

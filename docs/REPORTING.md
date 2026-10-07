@@ -22,6 +22,7 @@ artifacts/<component>/<run-id>/
   manifest.json
   config.json
   metrics.json
+  verdict.json              # evaluation: factor evidence and portfolio verdict, separately
   tables/
   figures/
   report.html
@@ -30,6 +31,8 @@ artifacts/<component>/<run-id>/
 Generated artifacts are ignored by Git. Small synthetic/golden fixtures remain under tracked `tests/fixtures/`. Preserve valuable research outputs in an artifact store or deliberate archive; `.gitignore` is not persistence or backup.
 
 Each immutable run manifest identifies input dataset/signal/model/strategy versions, code revision, resolved configuration, split/scenario definitions, timestamps, seeds, and content checksums. Save the underlying tables needed to reproduce figures. Do not write credential values into configurations or provenance.
+
+Strategy reports show factor confirmation and portfolio validation as separate verdicts. The factor verdict is the evidence published with the signals (`factor_evidence` in the [data contract](DATA_CONTRACT.md)), copied without change; the portfolio verdict comes from rules declared in the strategy configuration. Neither may be merged into or override the other ([strategy evaluation](../strategy-evaluation/README.md#factor-and-portfolio-verdicts)).
 
 Use interactive HTML for exploration and SVG/PDF/PNG for shareable outputs. Reports need units, time ranges, gross/net labels, benchmarks, sample counts, and missing/undefined-result explanations. Distinguish training, validation, and confirmation visually; uncertainty and unfavorable results should not disappear through axis choices or omitted groups.
 

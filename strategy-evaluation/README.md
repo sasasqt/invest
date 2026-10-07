@@ -1,6 +1,6 @@
 # Strategy evaluation
 
-Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, explicit cash delisting settlements, last-known marks for missing bars, and per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); and saved-result reports and figures (`reporting.py`).
+Package `invest_evaluation`. Implemented: a daily event-driven engine (`engine.py`) with explicit event order, next-open fills, participation caps, explicit cash delisting settlements, last-known marks for missing bars, and per-instrument P&L/cost reconciliation; the cost model (commission, half-spread, square-root impact, borrow, cash interest; `config.py`); a quantile long-short/long-only strategy with optional point-in-time universe eligibility (`strategies.py`, `engine.py`); metrics with explicit statuses (`metrics.py`); HAC, stationary-bootstrap, probabilistic and deflated Sharpe statistics (`stats.py`); stress scenarios (`robustness.py`); a rule-based portfolio verdict reported beside the factor's confirmation evidence (`validation.py`); and saved-result reports and figures (`reporting.py`).
 
 ```sh
 uv run invest-eval run --data <market bundle> --signals <signals bundle> [--universe <bundle>] \
@@ -15,6 +15,23 @@ uv run pytest strategy-evaluation
 `--benchmark` adds an `external_benchmark` metric section (total return, tracking error, information ratio, correlation, beta, alpha) computed from one instrument's close-to-close returns, for example a total-return adjusted SPY bundle. It appears alongside the gross universe equal-weight `benchmark` section. Before backtesting, the CLI requires matching currency, daily frequency, price adjustment, calendar and timezone metadata (timezone may be absent in both bundles); conversions are unsupported. Both market and benchmark metadata, plus the benchmark id, hash and instrument, are saved in `manifest.json`.
 
 Benchmark closes are aligned to the full market session calendar before computing returns, retaining history before the evaluation starts. Missing prices invalidate the missing session and its following return; no forward filling or multi-session return is treated as daily. `tables/daily.csv` saves these gaps. Relative metrics use complete aligned intervals and record both aligned and evaluation session counts. The readable report identifies each benchmark and shows those counts, including an explicit `insufficient_data` reason when fewer than 20 returns align. Benchmark total return compounds this aligned sample, which may differ from the full-period buy-and-hold return. The equity figure omits leading missing history and stops the benchmark growth path at its first internal gap rather than inventing zero returns.
+
+## Factor and portfolio verdicts
+
+Each run writes `verdict.json` with two separate sections, also shown as two sections at the top of `report.md`:
+
+- `factor`: the signals bundle's `factor_evidence` metadata copied unchanged (experiment id, confirmation use, test outcome, status, window and statistics), or `status = not_confirmed` when the signals carry none. Evaluation never recomputes or changes it.
+- `portfolio`: `supported`, `rejected`, `inconclusive` or `insufficient_data`, from the config's `validation` rules, with one saved check (`pass`, `fail`, `undefined` or `not_run`) per rule and the evaluated window.
+
+| rule (`validation` key) | default | check |
+|---|---|---|
+| `min_sessions` | 252 | daily net returns in the run; fewer gives `insufficient_data` |
+| (always) | | net excess Sharpe stationary-bootstrap interval: lower bound above zero; upper bound below zero gives `rejected`; undefined gives `insufficient_data` |
+| `min_deflated_sharpe` | 0.95 | deflated Sharpe ratio with the run's `n_trials` |
+| `stress_scenarios` | `["costs_x2", "delay_1"]` | net Sharpe above zero under each named scenario; `not_run` with `--no-scenarios` |
+| `benchmark` | `"none"` | `"universe"` or `"external"`: information ratio above zero against that benchmark (`"external"` needs `--benchmark`) |
+
+`supported` needs every check to pass; anything else that is neither `rejected` nor `insufficient_data` is `inconclusive`, and `reasons` lists the checks that did not pass. Unknown scenario names are refused before the backtest. The verdict covers only the evaluated window and does not read the confirmation-use ledger, so a run on already inspected data is exploratory whatever its status.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 

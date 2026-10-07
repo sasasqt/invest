@@ -23,12 +23,17 @@ Two kinds are defined so producers and consumers can validate independently:
     Keys ``(decision_date, instrument)``. ``score`` uses only information available at the
     close of ``decision_date`` (``metadata.available_at == "decision_date_close"``); a
     consumer may act on it no earlier than the next session. Higher score = more attractive.
+    Optional ``metadata.factor_evidence`` carries the factor's confirmation evidence
+    (experiment identity, confirmation use and outcome) to portfolio reports; see
+    :func:`validate_factor_evidence`.
 """
 
 from __future__ import annotations
 
+import math
 import os
-from typing import Any
+from datetime import date
+from typing import Any, NoReturn
 
 import pandas as pd
 
@@ -69,6 +74,20 @@ FUNDAMENTAL_COLUMNS = (
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
+# Factor confirmation evidence attached to signals (``metadata.factor_evidence``, v1).
+FACTOR_EVIDENCE_VERSION = 1
+CONFIRMATION_USES = ("confirmatory", "exploratory", "unrecorded")
+FACTOR_TEST_OUTCOMES = ("confirmation_passed", "rejected", "inconclusive")
+FACTOR_STATUSES = (*FACTOR_TEST_OUTCOMES, "exploratory")
+FACTOR_EVIDENCE_SOURCES = ("search", "confirm")
+FACTOR_EVIDENCE_STATISTICS = (
+    "confirm_mean_rank_ic",
+    "confirm_t",
+    "p_one_sided",
+    "p_holm",
+    "n_dates",
+)
+
 
 def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
     got = [(c.name, c.type) for c in manifest.columns]
@@ -85,6 +104,77 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
         n_trials = metadata["n_trials"]
         if type(n_trials) is not int or n_trials < 1:
             raise BundleError("signals: n_trials must be a positive integer (not a boolean)")
+    if kind == SIGNALS and "factor_evidence" in metadata:
+        validate_factor_evidence(metadata["factor_evidence"], factor_id=metadata.get("factor_id"))
+
+
+def _iso_date(value: Any) -> bool:
+    try:
+        return isinstance(value, str) and date.fromisoformat(value).isoformat() == value
+    except ValueError:
+        return False
+
+
+def validate_factor_evidence(evidence: Any, *, factor_id: Any = None) -> None:
+    """Check the factor confirmation evidence carried by a signals bundle (v1).
+
+    ``status`` is what a report may show as the factor outcome: it equals ``test_outcome``
+    unless the confirmation data had already been used (``confirmation_use =
+    "exploratory"``), in which case it is ``"exploratory"`` whatever the test said. The
+    evidence describes the factor only; it never selects which factor was exported.
+    """
+
+    def fail(message: str) -> NoReturn:
+        raise BundleError(f"signals: factor_evidence {message}")
+
+    if not isinstance(evidence, dict):
+        fail("must be a JSON object")
+    if evidence.get("evidence_version") != FACTOR_EVIDENCE_VERSION:
+        fail(f"evidence_version must be {FACTOR_EVIDENCE_VERSION}")
+    for key in ("factor_id", "experiment_id"):
+        if not isinstance(evidence.get(key), str) or not evidence[key]:
+            fail(f"{key} must be a non-empty string")
+    if factor_id is not None and evidence["factor_id"] != factor_id:
+        fail(f"is for factor {evidence['factor_id']!r}, not {factor_id!r}")
+    choices = (
+        ("source", FACTOR_EVIDENCE_SOURCES),
+        ("confirmation_use", CONFIRMATION_USES),
+        ("test_outcome", FACTOR_TEST_OUTCOMES),
+        ("status", FACTOR_STATUSES),
+    )
+    for key, allowed in choices:
+        if evidence.get(key) not in allowed:
+            fail(f"{key} must be one of {allowed}, got {evidence.get(key)!r}")
+    expected = (
+        "exploratory" if evidence["confirmation_use"] == "exploratory" else evidence["test_outcome"]
+    )
+    if evidence["status"] != expected:
+        fail(
+            f"status {evidence['status']!r} contradicts confirmation_use "
+            f"{evidence['confirmation_use']!r} and test_outcome {evidence['test_outcome']!r}"
+        )
+    family_size = evidence.get("family_size")
+    if type(family_size) is not int or family_size < 1:
+        fail("family_size must be a positive integer")
+    window = evidence.get("confirmation_window")
+    if (
+        not isinstance(window, dict)
+        or not _iso_date(window.get("start"))
+        or not _iso_date(window.get("end"))
+        or window["end"] < window["start"]
+    ):
+        fail("confirmation_window must have ISO start <= end dates")
+    stats = evidence.get("statistics")
+    if not isinstance(stats, dict) or set(stats) != set(FACTOR_EVIDENCE_STATISTICS):
+        fail(f"statistics must have exactly the keys {FACTOR_EVIDENCE_STATISTICS}")
+    for key, value in stats.items():
+        # Undefined statistics are null; NaN and infinities are not valid JSON evidence.
+        if value is not None and (
+            isinstance(value, bool)
+            or not isinstance(value, int | float)
+            or not math.isfinite(value)
+        ):
+            fail(f"statistics.{key} must be a finite number or null")
 
 
 def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:
