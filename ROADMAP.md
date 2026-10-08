@@ -22,7 +22,7 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 ## M2 — Deliver one correct end-to-end baseline
 
-**Status:** done except external flows and unadjusted corporate actions (EVAL-01); its checkpoint review (REVIEW-10) is still due, and the 2026-10-08 bug hunt found defects that affect it (REVIEW-14 to REVIEW-17; the `min_price` look-ahead is fixed by REVIEW-13). Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
+**Status:** done except external flows and unadjusted corporate actions (EVAL-01); its checkpoint review (REVIEW-10) is still due, and the 2026-10-08 bug hunt found defects that affect it (REVIEW-14 to REVIEW-17; the `min_price` look-ahead and unadjusted bars are fixed by REVIEW-13, which left the Python-API edge cases in REVIEW-18). Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
 
 Snapshot publication is exclusive and atomic, replay resolves saved dates or explicit subsets, and supported-market and external-benchmark compatibility checks prevent misleading metadata or daily returns (DATA-03). These checks have offline regression coverage; the historical results remain those of the recorded original run.
 
