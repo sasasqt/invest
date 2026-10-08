@@ -3,6 +3,8 @@
 Cleaning never fills, interpolates or forward-fills prices: those are modelling choices
 that belong to consumers. Each rejected row carries the first rule it violated. An invalid
 value in an optional column is nulled and counted instead, so the bar itself is kept.
+Conversion to total-return adjusted prices runs on the bars that pass, so the rejected-row
+report shows the source's own values.
 """
 
 from __future__ import annotations
@@ -45,12 +47,41 @@ class CleaningReport:
         return out
 
 
-def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
-    """Return (clean bars sorted by date/instrument, report). Input is not modified."""
+def total_return_adjust(raw: pd.DataFrame, adjusted_close: str = "adjclose") -> pd.DataFrame:
+    """Scale OHLC by ``adjusted / close``; scale volume inversely to keep dollar volume.
+
+    The result has the market-bars columns, total-return adjusted. Rows lacking a positive
+    close or adjusted close get NaN prices, which cleaning rejects.
+    """
+    close = raw["close"].where(raw["close"] > 0)
+    factor = raw[adjusted_close].where(raw[adjusted_close] > 0) / close
+    out = raw[["date", "instrument"]].copy()
+    for name in ("open", "high", "low", "close"):
+        out[name] = raw[name] * factor
+    out["volume"] = raw["volume"] / factor
+    return out
+
+
+def clean_bars(
+    raw: pd.DataFrame, *, adjusted_close: str | None = None
+) -> tuple[pd.DataFrame, CleaningReport]:
+    """Return (clean bars sorted by date/instrument, report). Input is not modified.
+
+    ``adjusted_close`` names a column holding the total-return adjusted close of raw or
+    split-adjusted bars. The bars are judged as given, rows without a positive adjusted
+    close are rejected as ``invalid_adjusted_close``, and the rest are converted with
+    :func:`total_return_adjust` (optional columns are kept as they are).
+    """
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
     if missing_cols:
         raise ValueError(f"raw bars missing columns {missing_cols}")
     columns = REQUIRED + [c for c in OPTIONAL if c in raw.columns]
+    if adjusted_close is not None:
+        if adjusted_close in REQUIRED + OPTIONAL:
+            raise ValueError(f"the adjusted close cannot be the bar column {adjusted_close!r}")
+        if adjusted_close not in raw.columns:
+            raise ValueError(f"raw bars have no adjusted close column {adjusted_close!r}")
+        columns = [*columns, adjusted_close]
     df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
@@ -67,7 +98,7 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         reason.loc[mask & reason.isna()] = why
 
     invalid = {}
-    for col in columns[len(REQUIRED) :]:
+    for col in [c for c in OPTIONAL if c in df]:
         # A null marker means unknown. Any other value that is not a positive number is
         # invalid; it is nulled and counted, because the optional column must not cost the
         # session its bar.
@@ -88,11 +119,17 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     order = df.assign(_row=np.arange(len(df))).sort_values(["date", "instrument", "_row"])
     dup = order.duplicated(["date", "instrument"], keep=False)
     flag(dup.reindex(df.index).fillna(False).astype(bool), "duplicate_key")
+    if adjusted_close is not None:
+        adjusted = df[adjusted_close]
+        flag(~(np.isfinite(adjusted) & (adjusted > 0)), "invalid_adjusted_close")
 
     bad = reason.notna()
     rejected = raw.loc[bad].copy()
     rejected["reason"] = reason[bad]
     clean = df.loc[~bad].sort_values(["date", "instrument"]).reset_index(drop=True)
+    if adjusted_close is not None:
+        optional = clean[[c for c in OPTIONAL if c in clean]]
+        clean = pd.concat([total_return_adjust(clean, adjusted_close), optional], axis=1)
     clean["instrument"] = clean["instrument"].astype(object)
     nulled = {col: int((mask & ~bad).sum()) for col, mask in invalid.items()}
     report = CleaningReport(len(raw), len(clean), rejected.reset_index(drop=True), nulled)

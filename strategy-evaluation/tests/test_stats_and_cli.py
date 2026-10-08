@@ -480,16 +480,28 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
 
 
 @pytest.mark.parametrize("command", ["run", "quantiles"])
-@pytest.mark.parametrize("adjustment", ["unadjusted", "split_adjusted", "raw", None])
-def test_cli_refuses_bars_without_split_adjusted_closes(
-    tmp_path, market, reversal_signals, command, adjustment
+@pytest.mark.parametrize(
+    ("adjustment", "message"),
+    [
+        ("unadjusted", "is not supported"),
+        ("split_adjusted", "is not supported"),
+        ("raw", "is not one of"),  # outside the contract
+        (None, "is not one of"),
+        (KeyError, r"metadata missing \['price_adjustment'\]"),
+    ],
+)
+def test_cli_refuses_bars_without_total_return_closes(
+    tmp_path, market, reversal_signals, command, adjustment, message
 ):
     """N1: returns from unadjusted closes count a split as a loss, so evaluation refuses them."""
     metadata = {**SYNTHETIC_METADATA, "price_adjustment": "unadjusted"}
     publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=metadata)
     # Values outside the contract can't be published; older or edited bundles may hold them.
     manifest = json.loads((tmp_path / "m" / "manifest.json").read_text())
-    manifest["metadata"]["price_adjustment"] = adjustment
+    if adjustment is KeyError:
+        del manifest["metadata"]["price_adjustment"]
+    else:
+        manifest["metadata"]["price_adjustment"] = adjustment
     (tmp_path / "m" / "manifest.json").write_text(json.dumps(manifest))
     publish_signals(
         reversal_signals,
@@ -498,7 +510,7 @@ def test_cli_refuses_bars_without_split_adjusted_closes(
         metadata={"factor_id": "rev5", "horizon_days": 1},
     )
     args = [command, "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
-    with pytest.raises(SystemExit, match="is not supported"):
+    with pytest.raises(SystemExit, match=message):
         main([*args, "--out", str(tmp_path / "out")])
     assert not (tmp_path / "out").exists()
 

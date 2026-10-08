@@ -16,7 +16,6 @@ import numpy as np
 import pandas as pd
 
 from invest_data.schemas import AS_TRADED_CLOSE
-from invest_data.yahoo import total_return_adjust
 
 
 @dataclass(frozen=True)
@@ -140,11 +139,10 @@ def load_csv_bars(
     volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
     minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
 
-    ``adjusted_close`` names a column holding the total-return adjusted close: open, high,
-    low and close are then scaled by ``adjusted / close`` and volume inversely (dollar
-    volume is kept), giving total-return adjusted bars. ``as_traded`` says the CSV's own
-    close is the close as traded (raw prices); it is then kept as ``close_as_traded``.
-    Rows without a positive adjusted close get no prices, so cleaning rejects them.
+    ``adjusted_close`` names a column holding the total-return adjusted close; it is kept
+    as given, and ``clean_bars(bars, adjusted_close=...)`` converts the bars that pass.
+    ``as_traded`` says the CSV's own close is the close as traded (raw prices); it is then
+    also kept as ``close_as_traded``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -172,16 +170,14 @@ def load_csv_bars(
         if as_traded:
             raise ValueError("as_traded needs adjusted_close: raw prices must be adjusted")
         return out
+    if adjusted_close in [*required, AS_TRADED_CLOSE.name]:
+        raise ValueError(f"the adjusted close cannot be the bar column {adjusted_close!r}")
     if adjusted_close not in raw.columns:
         raise ValueError(f"CSV has no adjusted close column {adjusted_close!r}")
-    adjusted = total_return_adjust(
-        out.assign(adjclose=pd.to_numeric(raw[adjusted_close], errors="coerce"))
-    )
+    out[adjusted_close] = raw[adjusted_close]  # parsed by cleaning, like close_as_traded
     if as_traded:
-        adjusted[AS_TRADED_CLOSE.name] = out["close"]
-    elif AS_TRADED_CLOSE.name in out:
-        adjusted[AS_TRADED_CLOSE.name] = out[AS_TRADED_CLOSE.name]
-    return adjusted
+        out[AS_TRADED_CLOSE.name] = raw["close"]
+    return out
 
 
 def synthetic_universe(

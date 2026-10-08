@@ -92,9 +92,15 @@ def _yahoo(args: argparse.Namespace) -> int:
 
 
 def _publish(
-    raw: pd.DataFrame, out: Path, dataset_id: str, metadata: dict, provenance: dict, fmt: str
+    raw: pd.DataFrame,
+    out: Path,
+    dataset_id: str,
+    metadata: dict,
+    provenance: dict,
+    fmt: str,
+    adjusted_close: str | None = None,
 ) -> int:
-    clean, report = clean_bars(raw)
+    clean, report = clean_bars(raw, adjusted_close=adjusted_close)
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
@@ -203,7 +209,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     provenance: dict[str, Any] = {"sources": [args.source.name]}
     adjustment = args.price_adjustment
-    if args.adjusted_close:
+    if args.adjusted_close is not None:
         if adjustment == "total_return_adjusted":
             raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
         provenance["converted"] = {
@@ -221,11 +227,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         bars = load_csv_bars(
             args.source,
             adjusted_close=args.adjusted_close,
-            as_traded=bool(args.adjusted_close) and args.price_adjustment == "unadjusted",
+            as_traded=args.adjusted_close is not None and args.price_adjustment == "unadjusted",
         )
     except ValueError as exc:
         raise SystemExit(f"{args.source}: {exc}") from exc
-    return _publish(bars, args.out, args.dataset_id, meta, provenance, args.format)
+    return _publish(
+        bars, args.out, args.dataset_id, meta, provenance, args.format, args.adjusted_close
+    )
 
 
 if __name__ == "__main__":

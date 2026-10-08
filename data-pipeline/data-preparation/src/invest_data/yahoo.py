@@ -34,6 +34,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from invest_data.cleaning import total_return_adjust
+
 SNAPSHOT_VERSION = 1
 SOURCE = "yahoo_finance_chart_v8"
 CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
@@ -268,21 +270,6 @@ def parse_chart(payload: bytes | dict[str, Any], symbol: str) -> pd.DataFrame:
     for name in ("open", "high", "low", "close", "volume"):
         out[name] = column(quote.get(name), name)
     out["adjclose"] = column(adj, "adjclose")
-    return out
-
-
-def total_return_adjust(raw: pd.DataFrame) -> pd.DataFrame:
-    """Scale OHLC by ``adjclose / close``; scale volume inversely to keep dollar volume.
-
-    The result has the market-bars columns and ``price_adjustment = total_return_adjusted``.
-    Rows lacking a positive close or adjusted close get NaN prices, which cleaning rejects.
-    """
-    close = raw["close"].where(raw["close"] > 0)
-    factor = raw["adjclose"].where(raw["adjclose"] > 0) / close
-    out = raw[["date", "instrument"]].copy()
-    for name in ("open", "high", "low", "close"):
-        out[name] = raw[name] * factor
-    out["volume"] = raw["volume"] / factor
     return out
 
 

@@ -266,6 +266,8 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
         "2024-01-02,AAA,100,110,90,100,1000,50\n"  # a later 2-for-1 split (or dividends)
         "2024-01-03,AAA,100,110,90,104,1000,52\n"
         "2024-01-03,BBB,10,11,9,10,500,\n"  # no adjusted close: no usable bar
+        "2024-01-03,CCC,10,11,9,0,500,5\n"  # a bad raw price is reported as such
+        "2024-01-03,DDD,10,11,9,10,500,abc\n"
     )
     args = ["--currency", "USD", "--calendar", "XNYS", "--dataset-id", "m"]
     raw = [*args, "--price-adjustment", "unadjusted", "--adjusted-close", "adj"]
@@ -282,7 +284,14 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
     assert frame["close"].tolist() == [50.0, 52.0]
     assert frame["volume"].tolist() == [2000.0, 2000.0]  # dollar volume is kept
     assert frame["close_as_traded"].tolist() == [100.0, 104.0]  # the raw close as traded
-    assert pd.read_csv(tmp_path / "m.rejected.csv")["instrument"].tolist() == ["BBB"]
+    # The rejected-row report shows the CSV's own values and the rule each row broke.
+    rejected = pd.read_csv(tmp_path / "m.rejected.csv")
+    assert rejected[["instrument", "close", "reason"]].values.tolist() == [
+        ["BBB", 10.0, "invalid_adjusted_close"],
+        ["CCC", 0.0, "non_positive_price"],
+        ["DDD", 10.0, "invalid_adjusted_close"],
+    ]
+    assert rejected["adj"].tolist()[1:] == ["5", "abc"]
 
     # Split-adjusted prices convert too; they are not as traded, so no close_as_traded.
     split = [*args, "--price-adjustment", "split_adjusted", "--adjusted-close", "adj"]
@@ -292,6 +301,12 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
     refused = (
         ("total_return_adjusted", "adj", "converts unadjusted or split_adjusted"),
         ("unadjusted", "missing", "no adjusted close column 'missing'"),
+        ("unadjusted", "", "no adjusted close column ''"),
+        ("total_return_adjusted", "", "converts unadjusted or split_adjusted"),
+        # Naming a bar column would scale by 1 and label raw prices as adjusted.
+        ("unadjusted", "close", "cannot be the bar column 'close'"),
+        ("split_adjusted", "volume", "cannot be the bar column 'volume'"),
+        ("unadjusted", "close_as_traded", "cannot be the bar column 'close_as_traded'"),
     )
     for adjustment, column, message in refused:
         flags = [*args, "--price-adjustment", adjustment, "--adjusted-close", column]

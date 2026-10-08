@@ -161,6 +161,7 @@ def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, p
     """
     manifest = read_manifest(path)
     _check_kind(manifest, MARKET_BARS)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     require_adjusted_prices(manifest)
     manifest, frame = read_market_bars(path)
     require_adjusted_prices(manifest)
