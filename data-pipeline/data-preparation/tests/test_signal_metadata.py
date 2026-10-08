@@ -273,7 +273,8 @@ def test_search_window_check_leaves_null_dates_to_the_column_checks(tmp_path):
 
 
 def test_search_window_check_handles_arrow_dates(tmp_path):
-    pa = pytest.importorskip("pyarrow")
+    import pyarrow as pa  # a required dependency of invest-data
+
     inside = pd.Series(
         pd.to_datetime(["2024-01-02", "2024-01-03"]).date, dtype=pd.ArrowDtype(pa.date32())
     )

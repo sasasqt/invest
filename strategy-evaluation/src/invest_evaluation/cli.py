@@ -133,8 +133,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise SystemExit("--n-trials must be at least 1")
     evidence = signal_manifest.metadata.get("factor_evidence")
     if evidence is not None and evidence["source"] == "search":
-        # The contract makes n_trials at least the family size; fewer would deflate less.
-        searched = signal_manifest.metadata["n_trials"]
+        # The search tried at least this many candidates; fewer would deflate less.
+        searched = max(evidence["family_size"], signal_manifest.metadata.get("n_trials", 1))
         if n_trials < searched:
             raise SystemExit(
                 f"--n-trials {n_trials} is below the {searched} candidates the search behind "

@@ -132,14 +132,15 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
             )
 
 
-def _check_signal_window(first: str | None, metadata: dict[str, Any]) -> None:
+def _check_signal_window(dates: pd.Series, metadata: dict[str, Any]) -> None:
     """Signals with search evidence start at its confirmation window; earlier dates chose it.
 
-    ``first`` is the earliest stored ``decision_date`` (ISO), or None for no rows.
+    The dates are judged as the bundle writer stores them, whatever their dtype.
     """
     evidence = metadata.get("factor_evidence")
     if evidence is None or evidence["source"] != "search":
         return
+    first = _first_stored_date(dates)
     if first is not None and first < evidence["confirmation_window"]["start"]:
         raise BundleError(
             f"signals: decisions from {first} precede the search evidence's confirmation "
@@ -318,7 +319,7 @@ def publish_signals(
     _validate_metadata(meta, REQUIRED_SIGNAL_METADATA, SIGNALS)
     if meta["available_at"] != "decision_date_close":
         raise BundleError("signals: only available_at='decision_date_close' is supported")
-    _check_signal_window(_first_stored_date(frame["decision_date"]), meta)
+    _check_signal_window(frame["decision_date"], meta)
     return write_bundle(
         frame.reset_index(drop=True),
         path,
@@ -340,9 +341,7 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
-    # The reader returns validated naive datetime64 dates.
-    first = frame["decision_date"].min()
-    _check_signal_window(None if pd.isna(first) else first.date().isoformat(), manifest.metadata)
+    _check_signal_window(frame["decision_date"], manifest.metadata)
     return manifest, frame
 
 
