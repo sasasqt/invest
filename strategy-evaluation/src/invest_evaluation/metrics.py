@@ -436,8 +436,12 @@ def episode_metrics(episodes: pd.DataFrame, flat_tolerance: float) -> dict[str, 
     for side in ("long", "short"):
         sub = closed[closed["side"] == side]["pnl"]
         if len(sub):
+            # Wins use the same flat tolerance as the overall win_rate.
             out[f"{side}_trades"] = _ok(
-                len(sub), "count", win_rate=float((sub > 0).mean()), total_pnl=float(sub.sum())
+                len(sub),
+                "count",
+                win_rate=float((sub > flat_tolerance).mean()),
+                total_pnl=float(sub.sum()),
             )
     return out
 

@@ -352,12 +352,17 @@ def render_quantiles(root: Path) -> None:
         (-0.2, "gross_cagr", "#7fa7d1", "before costs"),
         (0.2, "net_cagr", "#1f4e79", "net"),
     ):
-        values = pd.to_numeric(deciles[col], errors="coerce").fillna(0.0) * 100
+        # A missing CAGR (insufficient or invalid portfolio) draws no bar, never a 0% one.
+        values = pd.to_numeric(deciles[col], errors="coerce") * 100
         ax[0].bar(x + offset, values, width=0.38, color=color, label=label)
+    for i, row in enumerate(deciles.itertuples(index=False)):
+        if pd.isna(pd.to_numeric(row.net_cagr, errors="coerce")):
+            why = row.reason if isinstance(row.reason, str) and row.reason else row.status
+            ax[0].text(i, 0, f" n/a ({why})", rotation=90, ha="center", va="bottom", fontsize=7)
     ax[0].set_xticks(x, deciles["portfolio"])
     ax[0].axhline(0, color="black", lw=0.6)
     ax[0].set_ylabel("CAGR (%)")
-    ax[0].set_title("Long-only decile portfolios (q1 = lowest score; no bar = insufficient)")
+    ax[0].set_title("Long-only decile portfolios (q1 = lowest score; n/a = no CAGR)")
     ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2, frameon=False)
     # Insufficient portfolios held nothing on some decisions; their paths are not shown.
     spreads = table[(table["kind"] == "long_short") & (table["status"] == "ok")]
@@ -369,14 +374,15 @@ def render_quantiles(root: Path) -> None:
             lw=1.2,
             label=name,
         )
-    skipped = table.loc[
-        (table["kind"] == "long_short") & (table["status"] != "ok"), "portfolio"
-    ].tolist()
-    if skipped:
+    skipped = table[(table["kind"] == "long_short") & (table["status"] != "ok")]
+    if len(skipped):
         ax[1].text(
             0.01,
             0.01,
-            "not shown (insufficient_data): " + ", ".join(skipped),
+            "not shown: "
+            + ", ".join(
+                f"{p} ({s})" for p, s in zip(skipped["portfolio"], skipped["status"], strict=True)
+            ),
             transform=ax[1].transAxes,
             fontsize=7,
             color="#555555",
@@ -407,13 +413,14 @@ def render_quantiles(root: Path) -> None:
         "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in report["portfolios"]:
+        status = f"{r['status']} ({r['reason']})" if r.get("reason") else r["status"]
         ci = (
             f"[{_fmt(r['net_sharpe_ci_low'])}, {_fmt(r['net_sharpe_ci_high'])}]"
             if r["net_sharpe_ci_low"] is not None
             else "–"
         )
         lines.append(
-            f"| {r['portfolio']} | {r['status']} | {_fmt(r['mean_names'])} "
+            f"| {r['portfolio']} | {status} | {_fmt(r['mean_names'])} "
             f"| {_fmt(r['net_cagr'], True)} | {_fmt(r['gross_cagr'], True)} "
             f"| {_fmt(r['net_sharpe'])} | {ci} | {_fmt(r['max_drawdown'], True)} "
             f"| {_fmt(r['turnover_one_way_annual'])} | {_fmt(r['cost_drag_annual'], True)} |"

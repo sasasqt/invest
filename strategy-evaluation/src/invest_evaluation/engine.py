@@ -120,6 +120,9 @@ def _delisting_events(
     required = {"date", "instrument", "settlement_price"}
     if set(events.columns) != required or events.columns.has_duplicates:
         raise InputError("delistings require date, instrument, settlement_price columns")
+    names = events["instrument"].astype(object)  # categorical inputs need a plain boolean mask
+    if not names.map(lambda v: isinstance(v, str) and bool(v.strip())).all():
+        raise InputError("delisting instrument must be a nonempty string")
     if events["instrument"].duplicated().any():
         raise InputError("only one delisting settlement per instrument is supported")
     out: dict[int, list[tuple[int, float]]] = {}
@@ -535,7 +538,8 @@ def run_backtest(
 
     rets = close_w / close_w.shift(1) - 1
     held_from = np.vstack([member[:1], member[:-1]])  # members at the previous close
-    bench = rets.where(held_from).mean(axis=1).reindex(daily.index).fillna(0.0).rename("benchmark")
+    # NaN on a session with no member return; benchmark metrics drop it rather than count 0%.
+    bench = rets.where(held_from).mean(axis=1).reindex(daily.index).rename("benchmark")
     trade_cols = [
         "date",
         "instrument",

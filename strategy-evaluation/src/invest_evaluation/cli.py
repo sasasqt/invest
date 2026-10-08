@@ -4,14 +4,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
-from collections.abc import Sequence
+import tempfile
+from collections.abc import Callable, Sequence
 from pathlib import Path
+from typing import Any, TypeVar
 
 import pandas as pd
 
-from invest_data.bundle import BundleError, Manifest
+from invest_data.bundle import Manifest
 from invest_data.schemas import (
     read_adjusted_market_bars,
     read_market_bars,
@@ -26,6 +29,8 @@ from invest_evaluation.reporting import save_run
 from invest_evaluation.robustness import DEFAULT_SCENARIOS, run_scenarios
 from invest_evaluation.stats import strategy_statistics
 from invest_evaluation.validation import verdicts
+
+T = TypeVar("T")
 
 
 def code_revision(source: Path = Path(__file__)) -> tuple[str | None, bool | None]:
@@ -71,13 +76,63 @@ def _add_inputs(cmd: argparse.ArgumentParser) -> None:
     )
 
 
+def _refuse_used_out(out: Path) -> None:
+    """Refuse a used or uncreatable ``--out`` before any input is read or backtest run."""
+    cannot = f"--out {out} cannot be created"
+    try:
+        if out.exists() and (not out.is_dir() or any(out.iterdir())):
+            raise SystemExit(f"--out {out} is not an empty directory; choose a new run directory")
+        ancestor = out.absolute()
+        while not (ancestor.exists() or ancestor.is_symlink()):
+            ancestor = ancestor.parent
+        if ancestor.is_symlink() and not ancestor.exists():
+            raise SystemExit(f"{cannot}: {ancestor} is a broken or looping symbolic link")
+        if not ancestor.is_dir():
+            raise SystemExit(f"{cannot}: {ancestor} is not a directory")
+        # Probe permissions; on Unix, ask the file system about its byte limit. Elsewhere
+        # probe each name, since Windows has no pathconf and its limits are not UTF-8 bytes.
+        with tempfile.TemporaryDirectory(prefix=".invest-eval-", dir=ancestor) as probe:
+            missing = out.absolute().relative_to(ancestor).parts
+            pathconf = getattr(os, "pathconf", None)
+            if pathconf is not None:
+                name_max = pathconf(ancestor, "PC_NAME_MAX")
+                if name_max >= 0 and any(len(os.fsencode(part)) > name_max for part in missing):
+                    raise SystemExit(f"{cannot}: a name is longer than {name_max} bytes")
+            else:
+                for part in missing:
+                    if part in (os.curdir, os.pardir):
+                        continue
+                    candidate = Path(probe) / part
+                    candidate.mkdir()
+                    candidate.rmdir()
+    except OSError as exc:  # for example a name too long for the file system
+        raise SystemExit(f"{cannot}: {exc}") from exc
+
+
+def _read(what: str, read: Callable[..., T], *args: Any) -> T:
+    """Read one input; an unreadable or invalid one ends with a message, not a traceback."""
+    try:
+        return read(*args)
+    except (ValueError, OSError) as exc:  # BundleError and JSONDecodeError are ValueErrors
+        raise SystemExit(f"{what}: {exc}") from exc
+
+
 def _read_delistings(path: Path | None) -> pd.DataFrame | None:
     if path is None:
         return None
     raw_events = json.loads(path.read_text())
     if not isinstance(raw_events, list):
         raise ValueError("delistings JSON must be a list of settlement events")
-    return pd.DataFrame(raw_events)
+    columns = ["date", "instrument", "settlement_price"]
+    for i, event in enumerate(raw_events, start=1):
+        if not isinstance(event, dict):
+            raise ValueError(f"delisting event {i} must be a JSON object")
+        if set(event) != set(columns):
+            raise ValueError(f"delisting event {i} requires date, instrument, settlement_price")
+        instrument = event["instrument"]
+        if not isinstance(instrument, str) or not instrument.strip():
+            raise ValueError(f"delisting event {i}: instrument must be a nonempty string")
+    return pd.DataFrame(raw_events, columns=columns)
 
 
 def _fractions(text: str) -> tuple[float, ...]:
@@ -89,10 +144,10 @@ def _fractions(text: str) -> tuple[float, ...]:
 
 def _market(path: Path, cfg: BacktestConfig) -> tuple[Manifest, pd.DataFrame]:
     """Market bars the backtest can use: adjusted closes, and the prices its rules need."""
+    manifest, bars = _read("--data", read_adjusted_market_bars, path)
     try:
-        manifest, bars = read_adjusted_market_bars(path)
         check_price_rules(bars, cfg)
-    except (BundleError, InputError) as exc:
+    except InputError as exc:
         raise SystemExit(str(exc)) from exc
     return manifest, bars
 
@@ -137,12 +192,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="fewest names a portfolio leg may hold before it is insufficient_data",
     )
     args = parser.parse_args(argv)
+    _refuse_used_out(args.out)
     if args.command == "quantiles":
         return _quantiles(args)
 
-    cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
+    cfg = _read("--config", BacktestConfig.load, args.config) if args.config else BacktestConfig()
     market_manifest, bars = _market(args.data, cfg)
-    signal_manifest, signals = read_signals(args.signals)
+    signal_manifest, signals = _read("--signals", read_signals, args.signals)
     n_trials = args.n_trials
     if n_trials is None:
         n_trials = signal_manifest.metadata.get("n_trials", 1)
@@ -160,28 +216,33 @@ def main(argv: Sequence[str] | None = None) -> int:
     unknown = sorted(set(cfg.validation.stress_scenarios) - set(DEFAULT_SCENARIOS))
     if unknown:
         raise SystemExit(f"validation.stress_scenarios: unknown scenarios {unknown}")
+    if args.benchmark_instrument and not args.benchmark:
+        raise SystemExit("--benchmark-instrument needs --benchmark")
     if cfg.validation.benchmark == "external" and not args.benchmark:
         raise SystemExit('validation.benchmark = "external" needs --benchmark')
-    universe = read_universe(args.universe)[1] if args.universe else None
-    delistings = _read_delistings(args.delistings)
+    universe = _read("--universe", read_universe, args.universe)[1] if args.universe else None
+    delistings = _read("--delistings", _read_delistings, args.delistings)
     external = None
     external_info = None
     if args.benchmark:
-        bench_manifest, bench_bars = read_market_bars(args.benchmark)
+        bench_manifest, bench_bars = _read("--benchmark", read_market_bars, args.benchmark)
         for field in ("currency", "frequency", "price_adjustment", "calendar", "timezone"):
             market_value = market_manifest.metadata.get(field)
             bench_value = bench_manifest.metadata.get(field)
             if market_value != bench_value or (field != "timezone" and not market_value):
-                raise ValueError(
+                raise SystemExit(
                     f"benchmark {field} mismatch: market={market_value!r}, "
                     f"benchmark={bench_value!r}; conversions are not supported"
                 )
         if market_manifest.metadata["frequency"] != "1d":
-            raise ValueError("external benchmarks require daily (1d) market bars")
-        external = instrument_returns(
-            bench_bars,
-            args.benchmark_instrument,
-            sessions=pd.DatetimeIndex(bars["date"].unique()),
+            raise SystemExit("external benchmarks require daily (1d) market bars")
+        external = _read(
+            "--benchmark",
+            lambda: instrument_returns(
+                bench_bars,
+                args.benchmark_instrument,
+                sessions=pd.DatetimeIndex(bars["date"].unique()),
+            ),
         )
         external_info = {
             "id": bench_manifest.dataset_id,
@@ -267,11 +328,11 @@ def _quantiles(args: argparse.Namespace) -> int:
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
-    cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
+    cfg = _read("--config", BacktestConfig.load, args.config) if args.config else BacktestConfig()
     market_manifest, bars = _market(args.data, cfg)
-    signal_manifest, signals = read_signals(args.signals)
-    universe = read_universe(args.universe)[1] if args.universe else None
-    delistings = _read_delistings(args.delistings)
+    signal_manifest, signals = _read("--signals", read_signals, args.signals)
+    universe = _read("--universe", read_universe, args.universe)[1] if args.universe else None
+    delistings = _read("--delistings", _read_delistings, args.delistings)
     try:
         result = run_quantile_portfolios(
             bars, signals, cfg, qcfg, universe=universe, delistings=delistings

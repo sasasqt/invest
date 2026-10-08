@@ -23,6 +23,34 @@ def test_split_purges_overlapping_labels():
     assert len(s.dev_dates) + len(s.purged_dates) + len(s.confirm_dates) == 100
 
 
+@pytest.mark.parametrize(("fraction", "k"), [(0.29, 29), (0.57, 57), (0.7, 70), (0.6, 60)])
+def test_split_development_share_is_exact(fraction, k):
+    """``int(100 * 0.29)`` is 28 in floating point; confirmation must start at session 29."""
+    dates = pd.bdate_range("2024-01-01", periods=100)
+    split = chronological_split(dates, fraction, horizon=1)
+    assert split.confirm_dates[0] == dates[k]
+
+
+@pytest.mark.parametrize("command", [["search", "--trials", "2"], ["evaluate", "--expr", "close"]])
+def test_cli_refuses_an_empty_market_bundle(tmp_path, command):
+    from invest_data.schemas import publish_market_bars
+    from invest_data.sources import SYNTHETIC_METADATA
+    from invest_mining.cli import main
+
+    empty = synthetic_market(SyntheticConfig(n_instruments=3, n_days=5)).iloc[:0]
+    publish_market_bars(empty, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    with pytest.raises(SystemExit, match="holds no bars"):
+        main(
+            [command[0], "--data", str(tmp_path / "m"), *command[1:], "--out", str(tmp_path / "o")]
+        )
+    assert not (tmp_path / "o").exists()
+
+
+def test_split_of_no_sessions_is_empty_not_a_division_error():
+    split = chronological_split(pd.DatetimeIndex([]), 0.6, horizon=1)
+    assert len(split.dev_dates) == len(split.confirm_dates) == 0
+
+
 @pytest.mark.parametrize("horizon", [1, 5, 40])
 @pytest.mark.parametrize("embargo", [0, 2])
 def test_reserved_prices_cannot_change_development_labels(horizon, embargo):

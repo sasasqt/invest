@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 from invest_evaluation.engine import BacktestResult
+from invest_evaluation.metrics import period_rate
 
 
 def write_json(path: Path, obj: Any) -> None:
@@ -88,18 +89,20 @@ def render(root: Path) -> None:
     )
     ax[0].plot(d["equity"] / v0, label="net", color="#1f4e79")
     ax[0].plot(d["equity_before_costs"] / v0, label="before costs", color="#7fa7d1", lw=1)
-    ax[0].plot(
-        (1 + d["benchmark_return"]).cumprod(), label="universe EW (gross)", color="#999999", lw=1
-    )
-    if "external_benchmark_return" in d:
-        # Leading unavailable history is omitted; an internal gap stops the wealth path.
-        # Its missing interval cannot be treated as zero or skipped in a growth curve.
-        external = d["external_benchmark_return"]
-        first = external.first_valid_index()
+    # Leading unavailable history is omitted; an internal gap stops a benchmark's wealth
+    # path. Its missing interval cannot be treated as zero or skipped in a growth curve.
+    for col, label, color in (
+        ("benchmark_return", "universe EW (gross)", "#999999"),
+        ("external_benchmark_return", "external benchmark", "#5a8f3c"),
+    ):
+        if col not in d:
+            continue
+        bench = d[col]
+        first = bench.first_valid_index()
         ax[0].plot(
-            (1 + external.loc[first:]).cumprod(skipna=False) if first is not None else external,
-            label="external benchmark",
-            color="#5a8f3c",
+            (1 + bench.loc[first:]).cumprod(skipna=False) if first is not None else bench,
+            label=label,
+            color=color,
             lw=1,
         )
     ax[0].set_ylabel("growth of 1")
@@ -115,10 +118,11 @@ def render(root: Path) -> None:
 
     fig, ax = plt.subplots(2, 2, figsize=(11, 7))
     r = d["return"]
-    roll = r.rolling(126, min_periods=63)
+    # The same excess-return basis as the reported Sharpe ratio.
+    roll = (r - period_rate(cfg["risk_free_annual"], a)).rolling(126, min_periods=63)
     ax[0, 0].plot(roll.mean() / roll.std() * np.sqrt(a), color="#1f4e79")
     ax[0, 0].axhline(0, color="black", lw=0.6)
-    ax[0, 0].set_title("Rolling 6-month Sharpe (net)")
+    ax[0, 0].set_title("Rolling 6-month Sharpe (net, excess of risk-free)")
     ax[0, 1].hist(r * 1e4, bins=60, color="#1f4e79")
     ax[0, 1].set_title("Daily net returns (bp)")
     costs = d[["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]].cumsum()
@@ -139,10 +143,26 @@ def render(root: Path) -> None:
     if scen_path.exists():
         s = pd.read_csv(scen_path)
         fig, ax = plt.subplots(figsize=(9, 4))
-        ax.barh(s["scenario"], s["sharpe"].fillna(0), color="#1f4e79")
+        # A missing Sharpe draws no bar, never a 0 one; the label says why it is missing.
+        # Numeric rows: with every Sharpe missing, category labels alone set no y range.
+        y = np.arange(len(s))
+        ax.barh(y, pd.to_numeric(s["sharpe"], errors="coerce"), color="#1f4e79")
+        ax.set_yticks(y, s["scenario"])
+        ax.set_ylim(-0.6, len(s) - 0.4)
+        for i, row in enumerate(s.itertuples(index=False)):
+            if pd.isna(row.sharpe):
+                why = getattr(row, "insolvency", None)
+                why = (
+                    f"insolvent {why}"
+                    if isinstance(why, str)
+                    else getattr(row, "sharpe_reason", None)
+                )
+                label = f"n/a ({why if isinstance(why, str) else 'undefined'})"
+                # x in axes fractions: an all-missing column leaves no data range to place it.
+                ax.text(0.01, i, label, va="center", transform=ax.get_yaxis_transform())
         ax.axvline(0, color="black", lw=0.6)
         ax.set_xlabel("net Sharpe")
-        ax.set_title("Stress scenarios (fixed signal and rules)")
+        ax.set_title("Stress scenarios (fixed signal and rules; no bar = Sharpe undefined)")
         fig.tight_layout()
         fig.savefig(root / "figures" / "scenarios.png", dpi=120)
         plt.close(fig)
@@ -197,10 +217,11 @@ def _verdict_lines(verdict: dict[str, Any]) -> list[str]:
         f"Status: **{portfolio['status']}**, from the declared rules in `config.json` "
         "(`validation`), separate from the factor status above.",
         "",
-        "| check | status | value | threshold |",
-        "|---|---|---|---|",
+        "| check | status | value | threshold | detail |",
+        "|---|---|---|---|---|",
         *(
-            f"| {c['name']} | {c['status']} | {_number(c['value'])} | {c['threshold']} |"
+            f"| {c['name']} | {c['status']} | {_number(c['value'])} | {c['threshold']} "
+            f"| {c.get('detail', '')} |"
             for c in portfolio["checks"]
         ),
         "",

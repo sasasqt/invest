@@ -156,10 +156,13 @@ def test_future_prices_and_signals_cannot_change_the_past(market, reversal_signa
     pd.testing.assert_series_equal(base.loc[:cut], alt2.loc[:cut])
 
 
-def test_explicit_delisting_settlement_reconciles():
+@pytest.mark.parametrize("categorical", [False, True])
+def test_explicit_delisting_settlement_reconciles(categorical):
     bars = hand_market()
     bars = bars[~((bars["instrument"] == "A") & (bars["date"] > "2024-01-05"))]
     events = pd.DataFrame([{"date": "2024-01-05", "instrument": "A", "settlement_price": 8.0}])
+    if categorical:
+        events = events.astype({"instrument": "category"})
     res = run_backtest(
         bars, signals_on("2024-01-03"), hand_config(), Fixed({"A": 1.0}), delistings=events
     )
@@ -236,6 +239,15 @@ def test_invalid_settlement_events_are_rejected(event):
         run_backtest(
             hand_market(), signals_on("2024-01-03"), hand_config(), delistings=pd.DataFrame([event])
         )
+
+
+@pytest.mark.parametrize("instrument", [[], {}, ["A"], None, 1, True, "", " "])
+def test_delisting_instruments_are_validated_before_index_operations(instrument):
+    events = pd.DataFrame(
+        [{"date": "2024-01-05", "instrument": instrument, "settlement_price": 1.0}]
+    )
+    with pytest.raises(InputError, match="delisting instrument must be a nonempty string"):
+        run_backtest(hand_market(), signals_on("2024-01-03"), hand_config(), delistings=events)
 
 
 def test_order_rejected_when_instrument_has_no_bar_on_fill_date():
@@ -434,3 +446,66 @@ def test_min_price_without_as_traded_closes_is_refused():
     # Without a price level there is nothing to compare, so adjusted closes suffice.
     res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
     assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)
+
+
+def test_universe_benchmark_is_missing_on_a_session_with_no_member_return():
+    """K17: a session where no held-universe name has a return is not a 0% benchmark day."""
+    dates = pd.bdate_range("2024-01-01", periods=30)
+    rows = []
+    for k, d in enumerate(dates):
+        # A and B skip session 15; C trades only then, so the session exists in the calendar.
+        for name, base in (("A", 10.0), ("B", 20.0), ("C", 30.0)):
+            if (name == "C") != (k == 15):
+                continue
+            px = base * 1.01**k
+            rows.append([d, name, px, px, px, px, 1e9])
+    bars = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    signals = pd.DataFrame(
+        {"decision_date": [dates[0]] * 2, "instrument": ["A", "B"], "score": [1.0, 2.0]}
+    )
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(rebalance_every=100, min_names=1),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=CostModel(
+            commission_bps=0,
+            half_spread_bps=0,
+            impact_coef=0,
+            borrow_bps_annual=0,
+            adv_window=1,
+            vol_window=2,
+        ),
+        initial_capital=1000.0,
+    )
+    bench = run_backtest(bars, signals, cfg).benchmark
+    assert np.isnan(bench.loc[dates[15]])
+    # The sessions around it keep the members' 1% return.
+    assert bench.loc[dates[14]] == pytest.approx(0.01)
+    assert bench.loc[dates[17]] == pytest.approx(0.01)
+
+
+@pytest.mark.parametrize(
+    ("n", "fraction", "count"), [(100, 0.29, 29), (100, 0.57, 57), (10, 0.3, 3)]
+)
+def test_quantile_strategy_leg_size_is_exact(n, fraction, count):
+    """K20: ``floor(100 * 0.29)`` is 28 in floating point; the leg must hold 29 names."""
+    from invest_evaluation.strategies import QuantileStrategy, leg_size
+
+    assert leg_size(n, fraction) == count
+    scores = pd.Series(np.arange(n, dtype=float), index=[f"N{i:03d}" for i in range(n)])
+    weights = QuantileStrategy(
+        StrategyConfig(long_fraction=fraction, short_fraction=0.0, min_names=1)
+    ).target_weights(scores)
+    assert int((weights > 0).sum()) == count
+
+
+def test_leg_size_matches_the_bucket_cutpoint_rule():
+    """The largest k with k / n <= f, for every n and fraction on a fine grid."""
+    from invest_evaluation.strategies import leg_size
+
+    assert leg_size(0, 0.5) == 0
+    for n in range(1, 301):
+        for f in np.round(np.arange(0.0, 1.0001, 0.01), 2):
+            expected = max(k for k in range(n + 1) if k / n <= f)
+            assert leg_size(n, float(f)) == expected, (n, f)

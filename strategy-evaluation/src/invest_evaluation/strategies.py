@@ -26,6 +26,20 @@ class Strategy(Protocol):
         ...
 
 
+def leg_size(n: int, fraction: float) -> int:
+    """Most names ``k`` with ``k / n <= fraction``: the cutpoint rule of the bucket
+    portfolios. ``floor(n * fraction)`` can fall one short in floating point
+    (``100 * 0.29`` is ``28.999...``)."""
+    if n <= 0:
+        return 0
+    k = int(np.floor(n * fraction))
+    if (k + 1) / n <= fraction:
+        return k + 1
+    if k > 0 and k / n > fraction:
+        return k - 1
+    return k
+
+
 class QuantileStrategy:
     def __init__(self, config: StrategyConfig) -> None:
         self.config = config
@@ -39,8 +53,8 @@ class QuantileStrategy:
         # Deterministic tie-break by instrument id so results don't depend on input order.
         ranked = sorted(scores.items(), key=lambda kv: (kv[1], str(kv[0])))
         names = [k for k, _ in ranked]
-        n_long = max(1, int(np.floor(n * cfg.long_fraction)))
-        n_short = int(np.floor(n * cfg.short_fraction))
+        n_long = max(1, leg_size(n, cfg.long_fraction))
+        n_short = leg_size(n, cfg.short_fraction)
         if cfg.short_fraction > 0:
             n_short = max(1, n_short)
         if n_long + n_short > n:

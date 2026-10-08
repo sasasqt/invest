@@ -96,9 +96,12 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
 def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     """Market bars whose closes give returns: every command scores or labels with them."""
     try:
-        return read_adjusted_market_bars(path)
+        manifest, bars = read_adjusted_market_bars(path)
     except BundleError as exc:
         raise SystemExit(str(exc)) from exc
+    if bars.empty:
+        raise SystemExit(f"market bundle {path} holds no bars")
+    return manifest, bars
 
 
 def _evaluate(args: argparse.Namespace) -> int:
