@@ -89,13 +89,22 @@ def _refuse_used_out(out: Path) -> None:
             raise SystemExit(f"{cannot}: {ancestor} is a broken or looping symbolic link")
         if not ancestor.is_dir():
             raise SystemExit(f"{cannot}: {ancestor} is not a directory")
-        # Try it: permission bits alone do not tell (root, read-only mounts, /sys).
-        os.rmdir(tempfile.mkdtemp(prefix=".invest-eval-", dir=ancestor))
-        # The directories still to create must fit the file system's name limit.
-        name_max = os.pathconf(ancestor, "PC_NAME_MAX")
-        missing = out.absolute().relative_to(ancestor).parts
-        if any(len(os.fsencode(part)) > name_max for part in missing):
-            raise SystemExit(f"{cannot}: a name is longer than {name_max} bytes")
+        # Probe permissions; on Unix, ask the file system about its byte limit. Elsewhere
+        # probe each name, since Windows has no pathconf and its limits are not UTF-8 bytes.
+        with tempfile.TemporaryDirectory(prefix=".invest-eval-", dir=ancestor) as probe:
+            missing = out.absolute().relative_to(ancestor).parts
+            pathconf = getattr(os, "pathconf", None)
+            if pathconf is not None:
+                name_max = pathconf(ancestor, "PC_NAME_MAX")
+                if name_max >= 0 and any(len(os.fsencode(part)) > name_max for part in missing):
+                    raise SystemExit(f"{cannot}: a name is longer than {name_max} bytes")
+            else:
+                for part in missing:
+                    if part in (os.curdir, os.pardir):
+                        continue
+                    candidate = Path(probe) / part
+                    candidate.mkdir()
+                    candidate.rmdir()
     except OSError as exc:  # for example a name too long for the file system
         raise SystemExit(f"{cannot}: {exc}") from exc
 
@@ -114,7 +123,16 @@ def _read_delistings(path: Path | None) -> pd.DataFrame | None:
     raw_events = json.loads(path.read_text())
     if not isinstance(raw_events, list):
         raise ValueError("delistings JSON must be a list of settlement events")
-    return pd.DataFrame(raw_events)
+    columns = ["date", "instrument", "settlement_price"]
+    for i, event in enumerate(raw_events, start=1):
+        if not isinstance(event, dict):
+            raise ValueError(f"delisting event {i} must be a JSON object")
+        if set(event) != set(columns):
+            raise ValueError(f"delisting event {i} requires date, instrument, settlement_price")
+        instrument = event["instrument"]
+        if not isinstance(instrument, str) or not instrument.strip():
+            raise ValueError(f"delisting event {i}: instrument must be a nonempty string")
+    return pd.DataFrame(raw_events, columns=columns)
 
 
 def _fractions(text: str) -> tuple[float, ...]:

@@ -156,10 +156,13 @@ def test_future_prices_and_signals_cannot_change_the_past(market, reversal_signa
     pd.testing.assert_series_equal(base.loc[:cut], alt2.loc[:cut])
 
 
-def test_explicit_delisting_settlement_reconciles():
+@pytest.mark.parametrize("categorical", [False, True])
+def test_explicit_delisting_settlement_reconciles(categorical):
     bars = hand_market()
     bars = bars[~((bars["instrument"] == "A") & (bars["date"] > "2024-01-05"))]
     events = pd.DataFrame([{"date": "2024-01-05", "instrument": "A", "settlement_price": 8.0}])
+    if categorical:
+        events = events.astype({"instrument": "category"})
     res = run_backtest(
         bars, signals_on("2024-01-03"), hand_config(), Fixed({"A": 1.0}), delistings=events
     )
@@ -236,6 +239,15 @@ def test_invalid_settlement_events_are_rejected(event):
         run_backtest(
             hand_market(), signals_on("2024-01-03"), hand_config(), delistings=pd.DataFrame([event])
         )
+
+
+@pytest.mark.parametrize("instrument", [[], {}, ["A"], None, 1, True, "", " "])
+def test_delisting_instruments_are_validated_before_index_operations(instrument):
+    events = pd.DataFrame(
+        [{"date": "2024-01-05", "instrument": instrument, "settlement_price": 1.0}]
+    )
+    with pytest.raises(InputError, match="delisting instrument must be a nonempty string"):
+        run_backtest(hand_market(), signals_on("2024-01-03"), hand_config(), delistings=events)
 
 
 def test_order_rejected_when_instrument_has_no_bar_on_fill_date():

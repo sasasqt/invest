@@ -753,7 +753,10 @@ def test_report_shows_why_a_portfolio_check_did_not_pass(tmp_path, market, rever
         assert f"| {check['detail']} |" in report
 
 
-def test_cli_refuses_an_out_that_cannot_be_created(tmp_path, market, reversal_signals, monkeypatch):
+@pytest.mark.parametrize("without_pathconf", [False, True])
+def test_cli_refuses_an_out_that_cannot_be_created(
+    tmp_path, market, reversal_signals, monkeypatch, without_pathconf
+):
     """K10 class: an --out under a file fails before any backtest, not in mkdir after them."""
 
     def fail(*args, **kwargs):
@@ -761,6 +764,8 @@ def test_cli_refuses_an_out_that_cannot_be_created(tmp_path, market, reversal_si
 
     for name in ("run_backtest", "run_scenarios", "run_quantile_portfolios"):
         monkeypatch.setattr(f"invest_evaluation.cli.{name}", fail)
+    if without_pathconf:
+        monkeypatch.delattr("invest_evaluation.cli.os.pathconf", raising=False)
     inputs = _published(tmp_path, market, reversal_signals)
     (tmp_path / "file").write_text("x")
     (tmp_path / "dangling").symlink_to(tmp_path / "missing" / "target")
@@ -776,3 +781,63 @@ def test_benchmark_instrument_without_benchmark_is_refused(tmp_path, market, rev
     with pytest.raises(SystemExit, match="--benchmark-instrument needs --benchmark"):
         main(["run", *inputs, "--benchmark-instrument", "SPY", "--out", str(tmp_path / "o")])
     assert not (tmp_path / "o").exists()
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+@pytest.mark.parametrize("existing", [False, True])
+def test_cli_output_preflight_works_without_unix_pathconf(tmp_path, monkeypatch, command, existing):
+    """Windows has no os.pathconf; a valid --out must reach input validation there too."""
+    monkeypatch.delattr("invest_evaluation.cli.os.pathconf", raising=False)
+    out = tmp_path / "new" / "run"
+    if existing:
+        out.mkdir(parents=True)
+    before = set(tmp_path.rglob("*"))
+    with pytest.raises(SystemExit, match=r"--data: missing manifest\.json"):
+        main(
+            [
+                command,
+                "--data",
+                str(tmp_path / "missing"),
+                "--signals",
+                "missing",
+                "--out",
+                str(out),
+            ]
+        )
+    assert set(tmp_path.rglob("*")) == before  # creation probes leave no directories behind
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+@pytest.mark.parametrize(
+    "bad_event",
+    [
+        None,
+        1,
+        "bad",
+        [],
+        {},
+        {"date": "2020-01-01", "instrument": ["SYN001"], "settlement_price": 1},
+    ],
+)
+def test_cli_checks_each_delisting_record_before_backtesting(
+    tmp_path, market, reversal_signals, monkeypatch, command, bad_event
+):
+    """A valid JSON list can still contain non-records or non-string identifiers."""
+    inputs = _published(tmp_path, market, reversal_signals)
+    valid = {
+        "date": str(market.iloc[0]["date"].date()),
+        "instrument": market.iloc[0]["instrument"],
+        "settlement_price": 1.0,
+    }
+    path = tmp_path / "delistings.json"
+    path.write_text(json.dumps([valid, bad_event]))
+
+    def fail(*args, **kwargs):
+        raise AssertionError("backtest ran before malformed delistings were refused")
+
+    for name in ("run_backtest", "run_scenarios", "run_quantile_portfolios"):
+        monkeypatch.setattr(f"invest_evaluation.cli.{name}", fail)
+    out = tmp_path / "out"
+    with pytest.raises(SystemExit, match=r"--delistings:.*event 2"):
+        main([command, *inputs, "--delistings", str(path), "--out", str(out)])
+    assert not out.exists()

@@ -120,6 +120,9 @@ def _delisting_events(
     required = {"date", "instrument", "settlement_price"}
     if set(events.columns) != required or events.columns.has_duplicates:
         raise InputError("delistings require date, instrument, settlement_price columns")
+    names = events["instrument"].astype(object)  # categorical inputs need a plain boolean mask
+    if not names.map(lambda v: isinstance(v, str) and bool(v.strip())).all():
+        raise InputError("delisting instrument must be a nonempty string")
     if events["instrument"].duplicated().any():
         raise InputError("only one delisting settlement per instrument is supported")
     out: dict[int, list[tuple[int, float]]] = {}
