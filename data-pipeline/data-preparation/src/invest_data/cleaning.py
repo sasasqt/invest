@@ -69,8 +69,10 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         # A null marker means unknown. Any other value that is not a positive number is
         # invalid; it is nulled and counted, because the optional column must not cost the
         # session its bar.
-        given = raw[col].notna() & ~raw[col].astype(str).str.strip().str.lower().isin(NULL_TOKENS)
-        invalid[col] = given & ~(np.isfinite(df[col]) & (df[col] > 0))
+        suspect = ~(np.isfinite(df[col]) & (df[col] > 0))
+        text = raw.loc[suspect, col]
+        given = text.notna() & ~text.astype(str).str.strip().str.lower().isin(NULL_TOKENS)
+        invalid[col] = given.reindex(df.index, fill_value=False)
         df.loc[invalid[col], col] = np.nan
 
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")

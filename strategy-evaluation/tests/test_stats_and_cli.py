@@ -480,13 +480,17 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
 
 
 @pytest.mark.parametrize("command", ["run", "quantiles"])
-@pytest.mark.parametrize("adjustment", ["unadjusted"])
+@pytest.mark.parametrize("adjustment", ["unadjusted", "raw", None])
 def test_cli_refuses_bars_without_split_adjusted_closes(
     tmp_path, market, reversal_signals, command, adjustment
 ):
     """N1: returns from unadjusted closes count a split as a loss, so evaluation refuses them."""
-    metadata = {**SYNTHETIC_METADATA, "price_adjustment": adjustment}
+    metadata = {**SYNTHETIC_METADATA, "price_adjustment": "unadjusted"}
     publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=metadata)
+    # Values outside the contract can't be published; older or edited bundles may hold them.
+    manifest = json.loads((tmp_path / "m" / "manifest.json").read_text())
+    manifest["metadata"]["price_adjustment"] = adjustment
+    (tmp_path / "m" / "manifest.json").write_text(json.dumps(manifest))
     publish_signals(
         reversal_signals,
         tmp_path / "s",

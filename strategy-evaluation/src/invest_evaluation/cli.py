@@ -191,6 +191,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         }
     try:
         result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
+        scenarios = (
+            None
+            if args.no_scenarios
+            else run_scenarios(bars, signals, cfg, universe=universe, delistings=delistings)
+        )
     except InputError as exc:
         raise SystemExit(str(exc)) from exc
     metrics = compute_metrics(
@@ -205,11 +210,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         cfg.annualization,
         n_trials=n_trials,
         risk_free_annual=cfg.risk_free_annual,
-    )
-    scenarios = (
-        None
-        if args.no_scenarios
-        else run_scenarios(bars, signals, cfg, universe=universe, delistings=delistings)
     )
     verdict = verdicts(
         signal_manifest.metadata, cfg.validation, result.returns, metrics, stats, scenarios

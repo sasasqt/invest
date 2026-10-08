@@ -212,7 +212,7 @@ def run_backtest(
 
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     # Price-level eligibility (zero min_price passes every name with a close).
-    traded_close = px_close  # unused without a price floor
+    traded_close = None
     if ex.min_price > 0:
         traded_close = (
             _wide(bars, AS_TRADED_CLOSE.name)
@@ -461,9 +461,10 @@ def run_backtest(
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
                 )
-                if ex.min_price > 0:
+                eligible = tradable
+                if traded_close is not None:
                     unknown_traded_close += int((tradable & np.isnan(traded_close[i])).sum())
-                eligible = tradable & (traded_close[i] >= ex.min_price)
+                    eligible = tradable & (traded_close[i] >= ex.min_price)
                 sc = pd.Series(S[i][eligible], index=instruments[eligible], name="score")
                 targets = _validated_weights(
                     strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
