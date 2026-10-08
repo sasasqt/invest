@@ -353,3 +353,12 @@ def test_clean_bars_matches_rows_by_position_not_index_label():
     assert clean["close_as_traded"].tolist()[::3] == [10.0, 21.0]
     assert clean["close_as_traded"].isna().tolist() == [False, True, True, False]
     assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 2}
+
+
+def test_clean_bars_reads_nullable_numeric_columns():
+    raw = raw_rows().iloc[:2].assign(volume=[100, 100], instrument=["A", "B"])
+    raw = raw.astype({"open": "Float64", "volume": "Int64"})
+    raw.loc[1, "open"] = pd.NA
+    clean, report = clean_bars(raw)
+    assert clean["instrument"].tolist() == ["A"] and clean["volume"].dtype == "float64"
+    assert report.summary()["rejected_by_reason"] == {"missing_or_nonfinite_value": 1}

@@ -229,9 +229,9 @@ def run_backtest(
     # Price-level eligibility (zero min_price passes every name with a close).
     traded_close = None
     if known_traded is not None:
-        traded = bars[["date", "instrument"]].assign(traded=known_traded)
+        as_traded = bars[["date", "instrument"]].assign(traded=known_traded)
         traded_close = (
-            _wide(traded, "traded").reindex(index=calendar, columns=instruments).to_numpy()
+            _wide(as_traded, "traded").reindex(index=calendar, columns=instruments).to_numpy()
         )
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")

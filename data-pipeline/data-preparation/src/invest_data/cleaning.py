@@ -99,6 +99,13 @@ def clean_bars(
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:
+        dtype = df[col].dtype
+        if pd.api.types.is_numeric_dtype(dtype) and not (
+            pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
+        ):
+            values = df[col].to_numpy(dtype="float64", na_value=np.nan)
+            df[col] = pd.Series(values, index=df.index)
+            continue
         # Booleans and complex numbers would parse as numbers; they are not quantities.
         values = df[col].astype(object).mask(non_real(df[col]))
         df[col] = pd.to_numeric(values, errors="coerce").astype("float64")
