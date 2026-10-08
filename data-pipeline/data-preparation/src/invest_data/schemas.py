@@ -5,8 +5,12 @@ Two kinds are defined so producers and consumers can validate independently:
 ``market_bars`` (daily bars)
     Keys ``(date, instrument)``. ``date`` is the trading session. ``open`` is observable at
     the session open and ``high/low/close/volume`` at the session close. Prices are adjusted
-    according to ``metadata.price_adjustment``. An instrument's absence from a session means
-    it was not tradable (not listed, halted, or delisted).
+    according to ``metadata.price_adjustment``, and volume inversely, so ``close * volume``
+    is the session's dollar volume. Optional ``close_as_traded`` is the close as it traded
+    that session, before any later split or dividend adjustment; price-level rules such as
+    a minimum price need it, because an adjusted level depends on later corporate actions.
+    An instrument's absence from a session means it was not tradable (not listed, halted,
+    or delisted).
 
 ``universe``
     Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``.
@@ -61,6 +65,7 @@ MARKET_BAR_COLUMNS = (
     Column("close", "float64", nullable=False, unit="price"),
     Column("volume", "float64", nullable=False, unit="shares"),
 )
+AS_TRADED_CLOSE = Column("close_as_traded", "float64", nullable=False, unit="price")
 SIGNAL_COLUMNS = (
     Column("decision_date", "date", nullable=False),
     Column("instrument", "string", nullable=False),
@@ -80,6 +85,8 @@ FUNDAMENTAL_COLUMNS = (
     Column("value", "float64", nullable=False),
 )
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
+PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
+ADJUSTED_PRICES = PRICE_ADJUSTMENTS[:2]
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
 # Version 2 binds factor evidence to the tested prediction/holding horizon.
@@ -102,6 +109,27 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
     want = [(c.name, c.type) for c in expected]
     if got != want:
         raise BundleError(f"{manifest.dataset_kind}: columns {got} != expected {want}")
+
+
+def market_bar_columns(names: Any) -> tuple[Column, ...]:
+    """The market-bar columns for a frame or bundle, with ``close_as_traded`` if it has it."""
+    return MARKET_BAR_COLUMNS + ((AS_TRADED_CLOSE,) if AS_TRADED_CLOSE.name in names else ())
+
+
+def require_adjusted_prices(manifest: Manifest) -> None:
+    """Refuse bars whose closes are not declared split-adjusted.
+
+    Returns computed from unadjusted closes turn every split into a gain or loss (a
+    2-for-1 split reads as -50%), and no consumer applies corporate actions yet.
+    """
+    adjustment = manifest.metadata.get("price_adjustment")
+    if adjustment not in ADJUSTED_PRICES:
+        raise BundleError(
+            f"{manifest.dataset_id}: price_adjustment {adjustment!r} is not supported; "
+            f"expected one of {list(ADJUSTED_PRICES)}. Returns from unadjusted closes count "
+            "every split as a gain or loss; publish adjusted bars (with close_as_traded for "
+            "price-level rules)"
+        )
 
 
 def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind: str) -> None:
@@ -267,14 +295,15 @@ def publish_market_bars(
     fmt: str = "csv",
 ) -> Manifest:
     _validate_metadata(metadata, REQUIRED_MARKET_METADATA, MARKET_BARS)
-    frame = frame[[c.name for c in MARKET_BAR_COLUMNS]].sort_values(["date", "instrument"])
+    columns = market_bar_columns(frame.columns)
+    frame = frame[[c.name for c in columns]].sort_values(["date", "instrument"])
     validate_market_frame(frame)
     return write_bundle(
         frame.reset_index(drop=True),
         path,
         dataset_id=dataset_id,
         fmt=fmt,
-        columns=MARKET_BAR_COLUMNS,
+        columns=columns,
         primary_key=("date", "instrument"),
         provenance=provenance,
         dataset_kind=MARKET_BARS,
@@ -284,7 +313,7 @@ def publish_market_bars(
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
-    px = frame[["open", "high", "low", "close"]]
+    px = frame[[c.name for c in market_bar_columns(frame.columns) if c.unit == "price"]]
     if (px <= 0).to_numpy().any():
         raise BundleError("market_bars: prices must be positive")
     if (frame["volume"] < 0).any():
@@ -299,7 +328,7 @@ def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFra
     manifest, frame = read_bundle(path)
     if manifest.dataset_kind != MARKET_BARS:
         raise BundleError(f"expected dataset_kind {MARKET_BARS!r}, got {manifest.dataset_kind!r}")
-    _check_columns(manifest, MARKET_BAR_COLUMNS)
+    _check_columns(manifest, market_bar_columns(manifest.column_names))
     _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     validate_market_frame(frame)
     return manifest, frame

@@ -28,6 +28,7 @@ import numpy as np
 import pandas as pd
 
 from invest_data.pit import membership_panel
+from invest_data.schemas import AS_TRADED_CLOSE
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.strategies import QuantileStrategy, Strategy
 
@@ -69,6 +70,21 @@ class BacktestResult:
         prev = eq.shift(1)
         prev.iloc[0] = self.config.initial_capital
         return (eq / prev - 1.0).rename("gross_return")
+
+
+def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
+    """``min_price`` compares the close as traded on the decision date.
+
+    An adjusted close is rescaled by every later split and dividend, so comparing it with
+    a price level would let later corporate actions decide earlier eligibility.
+    """
+    if config.execution.min_price > 0 and AS_TRADED_CLOSE.name not in bars.columns:
+        raise InputError(
+            f"execution.min_price {config.execution.min_price} needs the as-traded close "
+            f"({AS_TRADED_CLOSE.name}), which these bars lack; adjusted closes depend on "
+            "later splits and dividends. Publish bars with it, or set execution.min_price "
+            "to 0"
+        )
 
 
 def _wide(bars: pd.DataFrame, field: str) -> pd.DataFrame:
@@ -145,6 +161,7 @@ def run_backtest(
     ``record_decisions`` fills ``BacktestResult.decisions`` (one row per eligible name
     per decision); it is off by default because only bucket reports need it."""
     cfg = config or BacktestConfig()
+    check_price_rules(bars, cfg)
     strat = strategy or QuantileStrategy(cfg.strategy)
     ex, cm = cfg.execution, cfg.costs
     warnings: list[str] = []
@@ -189,6 +206,12 @@ def run_backtest(
         raise InputError("evaluation window has fewer than two sessions")
 
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
+    # Price-level eligibility (zero min_price passes every name with a close).
+    traded_close = (
+        _wide(bars, AS_TRADED_CLOSE.name).reindex(index=calendar, columns=instruments).to_numpy()
+        if ex.min_price > 0
+        else px_close
+    )
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
@@ -425,7 +448,7 @@ def run_backtest(
                     & member[i]
                     & ~retired
                     & has_close
-                    & (px_close[i] >= ex.min_price)
+                    & (traded_close[i] >= ex.min_price)
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
                 )

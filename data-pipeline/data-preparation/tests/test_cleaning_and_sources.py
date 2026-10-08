@@ -103,3 +103,50 @@ def test_cli_synthetic_publishes_bundle(tmp_path, fmt, capsys):
     manifest, frame = read_market_bars(out)
     assert manifest.storage["format"] == fmt and len(frame) > 0
     assert '"rows"' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
+def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
+    raw = raw_rows().assign(close_as_traded=lambda f: f["close"] * 10)
+    raw.loc[len(raw)] = ["2024-01-08", "CCC", 10, 11, 9, 10.5, 100, 0.0]
+    raw.loc[len(raw)] = ["2024-01-08", "DDD", 10, 11, 9, 10.5, 100, None]
+    clean, report = clean_bars(raw)
+    assert clean["close_as_traded"].tolist() == [105.0]
+    reasons = report.rejected.set_index("instrument")["reason"]
+    assert reasons["CCC"] == "non_positive_price"
+    assert reasons["DDD"] == "missing_or_nonfinite_value"
+
+    publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata=SYNTHETIC_METADATA, fmt=fmt)
+    manifest, back = read_market_bars(tmp_path / "m")
+    assert manifest.column_names[-1] == "close_as_traded"
+    assert back["close_as_traded"].tolist() == [105.0]
+    for bad, match in ((0.0, "positive"), (float("nan"), "close_as_traded")):
+        with pytest.raises(BundleError, match=match):
+            publish_market_bars(
+                clean.assign(close_as_traded=bad),
+                tmp_path / f"bad{bad}",
+                dataset_id="x",
+                metadata=SYNTHETIC_METADATA,
+                fmt=fmt,
+            )
+
+
+def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
+    src = tmp_path / "in.csv"
+    src.write_text(
+        "date,instrument,open,high,low,close,volume,close_as_traded\n"
+        "2024-01-02,AAA,1,2,0.5,1.5,10,15\n"
+    )
+    args = ["--currency", "USD", "--calendar", "XNYS", "--price-adjustment", "split_adjusted"]
+    assert (
+        main(["import-csv", str(src), "--out", str(tmp_path / "m"), "--dataset-id", "m", *args])
+        == 0
+    )
+    assert read_market_bars(tmp_path / "m")[1]["close_as_traded"].tolist() == [15.0]
+
+    assert (
+        main(["synthetic", "--out", str(tmp_path / "s"), "--instruments", "3", "--days", "30"]) == 0
+    )
+    _, frame = read_market_bars(tmp_path / "s")
+    # Synthetic prices have no splits or dividends, so they trade as quoted.
+    assert frame["close_as_traded"].equals(frame["close"])

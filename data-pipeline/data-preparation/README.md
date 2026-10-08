@@ -15,6 +15,8 @@ uv run invest-data yahoo publish --snapshot artifacts/yahoo/snap --exclude SPY -
 uv run pytest data-pipeline/data-preparation
 ```
 
+Market bars may carry an optional `close_as_traded` column: the close as it traded that session, before later split and dividend adjustments. Evaluation needs it for a minimum-price rule. The synthetic market publishes it (it simulates no corporate actions, so it equals `close`), `import-csv` keeps a `close_as_traded` column when the CSV has one, and cleaning rejects rows where it is missing or not positive. Yahoo bundles do not have it, because a snapshot cannot undo splits after its window. `--price-adjustment unadjusted` can be published, but evaluation and mining refuse such bars until corporate actions are modelled.
+
 Signals optionally carry v2 confirmation evidence whose factor identity and tested horizon must match the bundle metadata on publication and read. V1 evidence cannot establish the horizon and is refused; [re-export it from original confirmation results](../../docs/DATA_CONTRACT.md#signal-confirmation-evidence). Signals without evidence remain supported.
 
 ### Yahoo Finance (test-only)

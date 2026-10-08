@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -312,3 +314,54 @@ class QuantileOnly:
 
     def target_weights(self, scores: pd.Series) -> pd.Series:
         return pd.Series(1.0 / len(scores), index=scores.index) if len(scores) else scores
+
+
+def split_market(*, adjusted: bool) -> pd.DataFrame:
+    """A trades at 5, C at 0.5 and B at 20 on every session (as traded).
+
+    After the last session A splits 10-for-1 and C consolidates 1-for-10. ``adjusted``
+    gives the history as an adjuster publishes it once those actions are known: A's prices
+    divided by 10 and C's multiplied by 10, volumes inversely, as-traded closes unchanged.
+    """
+    dates = pd.bdate_range("2024-01-01", periods=6)
+    factor = {"A": 0.1, "B": 1.0, "C": 10.0} if adjusted else {"A": 1.0, "B": 1.0, "C": 1.0}
+    traded = {"A": 5.0, "B": 20.0, "C": 0.5}
+    rows = [
+        [d, name, *[px * factor[name]] * 4, 1e6 / factor[name], px]
+        for d in dates
+        for name, px in traded.items()
+    ]
+    columns = ["date", "instrument", "open", "high", "low", "close", "volume", "close_as_traded"]
+    return pd.DataFrame(rows, columns=columns)
+
+
+def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligibility():
+    """K11: eligibility on a decision date must not depend on corporate actions after it."""
+    cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
+    signals = signals_on("2024-01-03", names=("A", "B", "C"))
+    runs = [
+        run_backtest(
+            split_market(adjusted=adjusted),
+            signals,
+            cfg,
+            Fixed({"B": 1.0}),
+            record_decisions=True,
+        )
+        for adjusted in (False, True)
+    ]
+    for res in runs:
+        # A traded at 5 (adjusted 0.5 later) and stays eligible; C traded at 0.5 (adjusted
+        # 5 later) and stays excluded.
+        assert sorted(res.decisions["instrument"]) == ["A", "B"]
+    pd.testing.assert_frame_equal(runs[0].decisions, runs[1].decisions)
+    pd.testing.assert_series_equal(runs[0].daily["equity"], runs[1].daily["equity"])
+
+
+def test_min_price_without_as_traded_closes_is_refused():
+    bars = split_market(adjusted=True).drop(columns="close_as_traded")
+    cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
+    with pytest.raises(InputError, match="needs the as-traded close"):
+        run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"B": 1.0}))
+    # Without a price level there is nothing to compare, so adjusted closes suffice.
+    res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
+    assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)

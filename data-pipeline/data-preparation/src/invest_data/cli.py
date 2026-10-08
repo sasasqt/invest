@@ -11,7 +11,12 @@ from pathlib import Path
 import pandas as pd
 
 from invest_data.cleaning import clean_bars
-from invest_data.schemas import publish_fundamentals, publish_market_bars, publish_universe
+from invest_data.schemas import (
+    PRICE_ADJUSTMENTS,
+    publish_fundamentals,
+    publish_market_bars,
+    publish_universe,
+)
 from invest_data.sources import (
     SYNTHETIC_METADATA,
     SyntheticConfig,
@@ -121,7 +126,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     imp.add_argument(
         "--price-adjustment",
         required=True,
-        choices=["total_return_adjusted", "split_adjusted", "unadjusted"],
+        choices=PRICE_ADJUSTMENTS,
     )
 
     yah = sub.add_parser("yahoo", help="test-only Yahoo Finance snapshots (download, publish)")

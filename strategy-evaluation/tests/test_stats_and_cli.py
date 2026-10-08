@@ -153,8 +153,8 @@ def test_flat_bootstrap_is_explicitly_undefined():
 def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
     dates = pd.bdate_range("2024-01-01", periods=65)
     bars = pd.DataFrame(
-        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9) for d in dates],
-        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9, 10.0) for d in dates],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume", "close_as_traded"],
     )
     signals = pd.DataFrame({"decision_date": [dates[0]], "instrument": ["A"], "score": [1.0]})
     publish_market_bars(bars, tmp_path / "data", dataset_id="flat", metadata=SYNTHETIC_METADATA)
@@ -191,8 +191,8 @@ def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
 def test_cli_applies_cash_settlements_to_base_and_stress_runs(tmp_path, settlement_price):
     dates = pd.bdate_range("2024-01-01", periods=65)
     bars = pd.DataFrame(
-        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9) for d in dates],
-        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+        [(d, "A", 10.0, 10.0, 10.0, 10.0, 1e9, 10.0) for d in dates],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume", "close_as_traded"],
     )
     signals = pd.DataFrame({"decision_date": dates, "instrument": "A", "score": 1.0})
     publish_market_bars(bars, tmp_path / "data", dataset_id="m", metadata=SYNTHETIC_METADATA)
@@ -477,3 +477,46 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
     (tmp_path / "loose.py").write_text("")
     monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path))
     assert code_revision(tmp_path / "loose.py") == (None, None)
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+@pytest.mark.parametrize("adjustment", ["unadjusted", "raw", None])
+def test_cli_refuses_bars_without_split_adjusted_closes(
+    tmp_path, market, reversal_signals, command, adjustment
+):
+    """N1: returns from unadjusted closes count a split as a loss, so evaluation refuses them."""
+    metadata = {**SYNTHETIC_METADATA, "price_adjustment": adjustment}
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=metadata)
+    publish_signals(
+        reversal_signals,
+        tmp_path / "s",
+        dataset_id="s",
+        metadata={"factor_id": "rev5", "horizon_days": 1},
+    )
+    args = [command, "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
+    with pytest.raises(SystemExit, match="is not supported"):
+        main([*args, "--out", str(tmp_path / "out")])
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+def test_cli_refuses_min_price_without_as_traded_closes(
+    tmp_path, market, reversal_signals, command
+):
+    """K11: a price level on adjusted closes is look-ahead, so it needs as-traded closes."""
+    bars = market.drop(columns="close_as_traded")
+    publish_market_bars(bars, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        reversal_signals,
+        tmp_path / "s",
+        dataset_id="s",
+        metadata={"factor_id": "rev5", "horizon_days": 1},
+    )
+    args = [command, "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
+    with pytest.raises(SystemExit, match="needs the as-traded close"):
+        main([*args, "--out", str(tmp_path / "out")])
+    assert not (tmp_path / "out").exists()
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(json.dumps({"execution": {"min_price": 0}}))
+    extra = ["--no-scenarios"] if command == "run" else ["--min-names-per-bucket", "2"]
+    assert main([*args, "--config", str(cfg), *extra, "--out", str(tmp_path / "out")]) == 0

@@ -103,6 +103,8 @@ def synthetic_market(config: SyntheticConfig | None = None) -> pd.DataFrame:
                     "low": low[sl, i],
                     "close": close[sl, i],
                     "volume": volume[sl, i],
+                    # No splits or dividends are simulated, so prices trade as quoted.
+                    "close_as_traded": close[sl, i],
                 }
             )
         )
@@ -130,7 +132,8 @@ def load_csv_bars(
     """Load user-supplied daily bars from a local CSV (one row per date and instrument).
 
     ``column_map`` renames source columns to ``date, instrument, open, high, low, close,
-    volume``. Values are parsed but not cleaned; run :func:`clean_bars` next.
+    volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
+    minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -145,7 +148,7 @@ def load_csv_bars(
             "instrument": raw["instrument"].str.strip(),
         }
     )
-    for col in required[2:]:
+    for col in required[2:] + [c for c in ("close_as_traded",) if c in raw.columns]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
     return out
 

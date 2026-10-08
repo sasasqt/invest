@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
+OPTIONAL = ["close_as_traded"]  # kept when the source has it
 
 
 @dataclass(frozen=True)
@@ -35,12 +36,14 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
     if missing_cols:
         raise ValueError(f"raw bars missing columns {missing_cols}")
-    df = raw[REQUIRED].copy()
+    columns = REQUIRED + [c for c in OPTIONAL if c in raw.columns]
+    df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
-    for col in REQUIRED[2:]:
+    numeric = columns[2:]
+    for col in numeric:
         df[col] = pd.to_numeric(df[col], errors="coerce").astype("float64")
 
     reason = pd.Series(pd.NA, index=df.index, dtype="object")
@@ -48,11 +51,12 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     def flag(mask: pd.Series, why: str) -> None:
         reason.loc[mask & reason.isna()] = why
 
-    num = df[REQUIRED[2:]].to_numpy(dtype="float64")
+    num = df[numeric].to_numpy(dtype="float64")
     flag(df["date"].isna(), "invalid_date")
     flag(df["instrument"].isna() | (df["instrument"] == ""), "missing_instrument")
     flag(pd.Series(~np.isfinite(num).all(axis=1), index=df.index), "missing_or_nonfinite_value")
-    flag((df[["open", "high", "low", "close"]] <= 0).any(axis=1), "non_positive_price")
+    prices = [c for c in numeric if c != "volume"]
+    flag((df[prices] <= 0).any(axis=1), "non_positive_price")
     flag(df["volume"] < 0, "negative_volume")
     flag(df["high"] < df[["open", "close"]].max(axis=1), "high_below_open_close")
     flag(df["low"] > df[["open", "close"]].min(axis=1), "low_above_open_close")
