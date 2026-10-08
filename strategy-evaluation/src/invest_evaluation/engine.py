@@ -212,13 +212,15 @@ def run_backtest(
 
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     # Price-level eligibility (zero min_price passes every name with a close).
-    traded_close = (
-        _wide(bars, AS_TRADED_CLOSE.name).reindex(index=calendar, columns=instruments).to_numpy()
-        if ex.min_price > 0
-        else px_close
-    )
-    if not np.isfinite(traded_close[sessions]).any():
-        _no_traded_close(cfg, "no session in the evaluation window has one")
+    traded_close = px_close  # unused without a price floor
+    if ex.min_price > 0:
+        traded_close = (
+            _wide(bars, AS_TRADED_CLOSE.name)
+            .reindex(index=calendar, columns=instruments)
+            .to_numpy(dtype="float64", na_value=np.nan)
+        )
+        if not np.isfinite(traded_close[sessions]).any():
+            _no_traded_close(cfg, "no session in the evaluation window has one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()

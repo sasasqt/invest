@@ -1,18 +1,21 @@
 """Deterministic cleaning of raw daily bars, with an explicit rejected-row report.
 
 Cleaning never fills, interpolates or forward-fills prices: those are modelling choices
-that belong to consumers. Each rejected row carries the first rule it violated.
+that belong to consumers. Each rejected row carries the first rule it violated. An invalid
+value in an optional column is nulled and counted instead, so the bar itself is kept.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
 
+from invest_data.schemas import AS_TRADED_CLOSE
+
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
-OPTIONAL = ["close_as_traded"]  # kept when the source has it; may be missing per row
+OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
 # Values that mean "unknown" in an optional column, compared case-insensitively
 # (pandas' default CSV null markers).
 NULL_TOKENS = frozenset(
@@ -26,15 +29,20 @@ class CleaningReport:
     input_rows: int
     output_rows: int
     rejected: pd.DataFrame  # original columns + "reason"
+    # Optional columns present: output rows whose value was invalid and set to null.
+    nulled: dict[str, int] = field(default_factory=dict)
 
     def summary(self) -> dict[str, object]:
         counts = self.rejected["reason"].value_counts().sort_index()
-        return {
+        out: dict[str, object] = {
             "input_rows": self.input_rows,
             "output_rows": self.output_rows,
             "rejected_rows": len(self.rejected),
             "rejected_by_reason": {str(k): int(v) for k, v in counts.items()},
         }
+        if self.nulled:
+            out["nulled_invalid_values"] = dict(self.nulled)
+        return out
 
 
 def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
@@ -48,8 +56,7 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
-    numeric = columns[2:]
-    for col in numeric:
+    for col in columns[2:]:
         df[col] = pd.to_numeric(df[col], errors="coerce").astype("float64")
 
     reason = pd.Series(pd.NA, index=df.index, dtype="object")
@@ -57,17 +64,20 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     def flag(mask: pd.Series, why: str) -> None:
         reason.loc[mask & reason.isna()] = why
 
+    invalid = {}
+    for col in columns[len(REQUIRED) :]:
+        # A null marker means unknown. Any other value that is not a positive number is
+        # invalid; it is nulled and counted, because the optional column must not cost the
+        # session its bar.
+        given = raw[col].notna() & ~raw[col].astype(str).str.strip().str.lower().isin(NULL_TOKENS)
+        invalid[col] = given & ~(np.isfinite(df[col]) & (df[col] > 0))
+        df.loc[invalid[col], col] = np.nan
+
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")
-    present = [c for c in OPTIONAL if c in df.columns]
     flag(df["date"].isna(), "invalid_date")
     flag(df["instrument"].isna() | (df["instrument"] == ""), "missing_instrument")
     flag(pd.Series(~np.isfinite(num).all(axis=1), index=df.index), "missing_or_nonfinite_value")
-    for col in present:
-        # A null marker means unknown; any other value must be a finite number.
-        given = raw[col].notna() & ~raw[col].astype(str).str.strip().str.lower().isin(NULL_TOKENS)
-        flag(given & ~np.isfinite(df[col]), "missing_or_nonfinite_value")
-    prices = [c for c in numeric if c != "volume"]
-    flag((df[prices] <= 0).any(axis=1), "non_positive_price")
+    flag((df[["open", "high", "low", "close"]] <= 0).any(axis=1), "non_positive_price")
     flag(df["volume"] < 0, "negative_volume")
     flag(df["high"] < df[["open", "close"]].max(axis=1), "high_below_open_close")
     flag(df["low"] > df[["open", "close"]].min(axis=1), "low_above_open_close")
@@ -80,5 +90,6 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     rejected["reason"] = reason[bad]
     clean = df.loc[~bad].sort_values(["date", "instrument"]).reset_index(drop=True)
     clean["instrument"] = clean["instrument"].astype(object)
-    report = CleaningReport(len(raw), len(clean), rejected.reset_index(drop=True))
+    nulled = {col: int((mask & ~bad).sum()) for col, mask in invalid.items()}
+    report = CleaningReport(len(raw), len(clean), rejected.reset_index(drop=True), nulled)
     return clean, report

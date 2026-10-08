@@ -225,7 +225,7 @@ def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tm
     assert not book.exists()  # rejected before the ledger records an inspection
 
 
-@pytest.mark.parametrize("adjustment", ["unadjusted", "raw"])
+@pytest.mark.parametrize("adjustment", ["unadjusted"])
 def test_every_command_refuses_bars_without_split_adjusted_closes(tmp_path, bars, adjustment):
     """N1: features and forward returns from unadjusted closes treat a split as a crash."""
     from invest_data.schemas import publish_market_bars

@@ -381,13 +381,14 @@ def test_min_price_without_as_traded_closes_is_refused():
     for window in (cfg, replace(cfg, start="2024-01-03")):  # default: from the first signal
         with pytest.raises(InputError, match="no session in the evaluation window has one"):
             run_backtest(early, signals_on("2024-01-03"), window, Fixed({"B": 1.0}))
-    with pytest.raises(InputError, match="needs the as-traded close"):
-        run_backtest(
-            bars.assign(close_as_traded=float("nan")),
-            signals_on("2024-01-03"),
-            cfg,
-            Fixed({"B": 1.0}),
-        )
+    for unknown in (float("nan"), None):  # float NaN, or object None from a caller's frame
+        with pytest.raises(InputError, match="needs the as-traded close"):
+            run_backtest(
+                bars.assign(close_as_traded=unknown),
+                signals_on("2024-01-03"),
+                cfg,
+                Fixed({"B": 1.0}),
+            )
     # Without a price level there is nothing to compare, so adjusted closes suffice.
     res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
     assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)

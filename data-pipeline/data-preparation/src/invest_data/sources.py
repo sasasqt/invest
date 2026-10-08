@@ -15,6 +15,8 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import pandas as pd
 
+from invest_data.schemas import AS_TRADED_CLOSE
+
 
 @dataclass(frozen=True)
 class SyntheticConfig:
@@ -150,8 +152,8 @@ def load_csv_bars(
     )
     for col in required[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
-    if "close_as_traded" in raw.columns:
-        out["close_as_traded"] = raw["close_as_traded"]  # parsed by cleaning: blank = unknown
+    if AS_TRADED_CLOSE.name in raw.columns:  # parsed by cleaning, which judges null markers
+        out[AS_TRADED_CLOSE.name] = raw[AS_TRADED_CLOSE.name]
     return out
 
 

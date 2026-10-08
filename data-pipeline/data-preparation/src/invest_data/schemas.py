@@ -41,6 +41,7 @@ import os
 from datetime import date
 from typing import Any, NoReturn
 
+import numpy as np
 import pandas as pd
 
 from invest_data.bundle import (
@@ -157,6 +158,11 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
     missing = [k for k in required if k not in metadata]
     if missing:
         raise BundleError(f"{kind}: metadata missing {missing}")
+    if kind == MARKET_BARS and metadata["price_adjustment"] not in PRICE_ADJUSTMENTS:
+        raise BundleError(
+            f"market_bars: price_adjustment {metadata['price_adjustment']!r} is not one of "
+            f"{list(PRICE_ADJUSTMENTS)}"
+        )
     if kind == SIGNALS and "n_trials" in metadata:
         n_trials = metadata["n_trials"]
         if type(n_trials) is not int or n_trials < 1:
@@ -339,8 +345,8 @@ def validate_market_frame(frame: pd.DataFrame) -> None:
     dtypes = [frame[c].dtype for c in numbers]
     if any(not pd.api.types.is_numeric_dtype(t) or pd.api.types.is_bool_dtype(t) for t in dtypes):
         raise BundleError(f"market_bars: {numbers} must be numeric; run clean_bars first")
-    px = frame[[c.name for c in columns if c.unit == "price"]]
-    if (px <= 0).to_numpy().any():
+    px = frame[[c.name for c in columns if c.unit == "price"]].to_numpy("float64", na_value=np.nan)
+    if (px <= 0).any():
         raise BundleError("market_bars: prices must be positive")
     if (frame["volume"] < 0).any():
         raise BundleError("market_bars: volume must be non-negative")

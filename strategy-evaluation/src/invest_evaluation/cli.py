@@ -189,7 +189,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             "instrument": external.name,
             "metadata": bench_manifest.metadata,
         }
-    result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
+    try:
+        result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
+    except InputError as exc:
+        raise SystemExit(str(exc)) from exc
     metrics = compute_metrics(
         result,
         external,
@@ -269,9 +272,12 @@ def _quantiles(args: argparse.Namespace) -> int:
     signal_manifest, signals = read_signals(args.signals)
     universe = read_universe(args.universe)[1] if args.universe else None
     delistings = _read_delistings(args.delistings)
-    result = run_quantile_portfolios(
-        bars, signals, cfg, qcfg, universe=universe, delistings=delistings
-    )
+    try:
+        result = run_quantile_portfolios(
+            bars, signals, cfg, qcfg, universe=universe, delistings=delistings
+        )
+    except InputError as exc:
+        raise SystemExit(str(exc)) from exc
     revision, dirty = code_revision()
     save_quantile_run(
         args.out,

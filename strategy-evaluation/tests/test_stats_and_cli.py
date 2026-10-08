@@ -480,7 +480,7 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
 
 
 @pytest.mark.parametrize("command", ["run", "quantiles"])
-@pytest.mark.parametrize("adjustment", ["unadjusted", "raw", None])
+@pytest.mark.parametrize("adjustment", ["unadjusted"])
 def test_cli_refuses_bars_without_split_adjusted_closes(
     tmp_path, market, reversal_signals, command, adjustment
 ):
@@ -515,6 +515,17 @@ def test_cli_refuses_min_price_without_as_traded_closes(
     args = [command, "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
     with pytest.raises(SystemExit, match="needs the as-traded close"):
         main([*args, "--out", str(tmp_path / "out")])
+    assert not (tmp_path / "out").exists()
+    # A column with no known value is refused by the backtest, as a clean exit too.
+    publish_market_bars(
+        market.assign(close_as_traded=float("nan")),
+        tmp_path / "n",
+        dataset_id="n",
+        metadata=SYNTHETIC_METADATA,
+    )
+    nulls = [command, "--data", str(tmp_path / "n"), "--signals", str(tmp_path / "s")]
+    with pytest.raises(SystemExit, match="no session in the evaluation window has one"):
+        main([*nulls, "--out", str(tmp_path / "out")])
     assert not (tmp_path / "out").exists()
     cfg = tmp_path / "cfg.json"
     cfg.write_text(json.dumps({"execution": {"min_price": 0}}))

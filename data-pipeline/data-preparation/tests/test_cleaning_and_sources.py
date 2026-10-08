@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -116,13 +118,14 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw.loc[len(raw)] = ["2024-01-08", "HHH", 10, 11, 9, 10.5, 100, "N/A"]
     raw.loc[len(raw)] = ["2024-01-08", "III", 10, 11, 9, 10.5, 100, "Null"]
     clean, report = clean_bars(raw)
-    # A null marker (unknown) keeps the bar; any other non-number rejects it.
-    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG", "HHH", "III"]
+    # The optional column never costs a bar: a null marker means unknown, and any other
+    # value that is not a positive number is nulled and counted.
+    assert clean["instrument"].tolist() == ["AAA", *(c * 3 for c in "CDEFGHI")]
     assert clean["close_as_traded"].iloc[0] == 105.0
     assert clean["close_as_traded"].iloc[1:].isna().all()
-    reasons = report.rejected.set_index("instrument")["reason"]
-    assert reasons["CCC"] == "non_positive_price"
-    assert reasons["EEE"] == reasons["FFF"] == "missing_or_nonfinite_value"
+    assert set(report.rejected["instrument"]) == {"AAA", "BBB", " "}  # required-column faults
+    assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 3}  # CCC, EEE, FFF
+    assert "nulled_invalid_values" not in clean_bars(raw_rows())[1].summary()
     clean = clean.iloc[:2]
 
     publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata=SYNTHETIC_METADATA, fmt=fmt)
@@ -133,6 +136,19 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
         publish_market_bars(
             clean.assign(volume=True), tmp_path / "b", dataset_id="x", metadata=SYNTHETIC_METADATA
         )
+    # pandas' nullable floats are accepted, nulls included.
+    nullable = clean.assign(close_as_traded=pd.array([105.0, None], dtype="Float64"))
+    publish_market_bars(nullable, tmp_path / "f", dataset_id="x", metadata=SYNTHETIC_METADATA)
+    assert read_market_bars(tmp_path / "f")[1]["close_as_traded"].isna().tolist() == [False, True]
+    # The declared adjustment must be one the contract names.
+    for adjustment in ("split-adjusted", None):
+        with pytest.raises(BundleError, match="is not one of"):
+            publish_market_bars(
+                clean,
+                tmp_path / "a",
+                dataset_id="x",
+                metadata={**SYNTHETIC_METADATA, "price_adjustment": adjustment},
+            )
     for bad, match in ((0.0, "positive"), (-1.0, "positive"), (float("inf"), "close_as_traded")):
         with pytest.raises(BundleError, match=match):
             publish_market_bars(
@@ -144,7 +160,7 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
             )
 
 
-def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
+def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path, capsys):
     src = tmp_path / "in.csv"
     src.write_text(
         "date,instrument,open,high,low,close,volume,close_as_traded\n"
@@ -152,14 +168,18 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
         "2024-01-02,BBB,1,2,0.5,1.5,10,\n"
         "2024-01-02,CCC,1,2,0.5,1.5,10,1.5x\n"
         "2024-01-02,DDD,1,2,0.5,1.5,10,NA\n"
+        "2024-01-02,EEE,1,2,0.5,1.5,10,0\n"
     )
     args = ["--currency", "USD", "--calendar", "XNYS", "--price-adjustment", "split_adjusted"]
     assert (
         main(["import-csv", str(src), "--out", str(tmp_path / "m"), "--dataset-id", "m", *args])
         == 0
     )
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["rejected_rows"] == 0
+    assert printed["nulled_invalid_values"] == {"close_as_traded": 2}  # CCC and EEE
     _, frame = read_market_bars(tmp_path / "m")
-    assert frame["instrument"].tolist() == ["AAA", "BBB", "DDD"]  # CCC's is not a number
+    assert frame["instrument"].tolist() == ["AAA", "BBB", "CCC", "DDD", "EEE"]
     assert frame["close_as_traded"].iloc[0] == 15.0
     assert frame["close_as_traded"].iloc[1:].isna().all()
     # The loader leaves parsing to cleaning; publishing its raw output is refused.
@@ -167,10 +187,7 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
         publish_market_bars(
             load_csv_bars(src), tmp_path / "raw", dataset_id="r", metadata=SYNTHETIC_METADATA
         )
-    rejected = pd.read_csv(tmp_path / "m.rejected.csv")
-    assert rejected[["instrument", "reason"]].values.tolist() == [
-        ["CCC", "missing_or_nonfinite_value"]
-    ]
+    assert not (tmp_path / "m.rejected.csv").exists()
 
     assert (
         main(["synthetic", "--out", str(tmp_path / "s"), "--instruments", "3", "--days", "30"]) == 0
