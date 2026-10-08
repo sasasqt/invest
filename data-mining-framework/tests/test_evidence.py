@@ -187,3 +187,66 @@ def test_fixed_formula_evidence_cannot_be_reused_at_another_horizon(tmp_path, da
     )
     metadata = read_signals(tmp_path / "right")[0].metadata
     assert metadata["factor_evidence"]["horizon_days"] == metadata["horizon_days"] == 1
+
+
+def test_search_evidence_keeps_factor_export_out_of_sample(tmp_path, data):
+    """`--factor --confirmation <search>` is guarded like `--from-search` (K1)."""
+    book = tmp_path / "ledger.jsonl"
+    assert _search(data, tmp_path / "s", book) == 0
+    config = json.loads((tmp_path / "s" / "config.json").read_text())
+    confirm_start = config["split"]["confirmation"][0]
+    family = pd.read_csv(tmp_path / "s" / "confirmation.csv")["factor_id"]
+    member = str(tmp_path / "s" / "factors" / f"{family.iloc[0]}.json")
+    source = ("--factor", member, "--confirmation", str(tmp_path / "s"))
+
+    early = pd.Timestamp(confirm_start) - pd.Timedelta(days=30)
+    with pytest.raises(SystemExit, match="precedes the confirmation period"):
+        _export(data, tmp_path / "early", *source, "--start", str(early.date()))
+    assert not (tmp_path / "early").exists()
+
+    # Without --start the export begins at the confirmation start, as with --from-search.
+    assert _export(data, tmp_path / "sig", *source) == 0
+    _, frame = read_signals(tmp_path / "sig")
+    assert frame["decision_date"].min() == pd.Timestamp(confirm_start)
+    assert _export(data, tmp_path / "auto", "--from-search", str(tmp_path / "s")) == 0
+    assert read_signals(tmp_path / "auto")[1].equals(frame)
+
+    for bad in ("2020-13-01", "2020-09-01T12:00", "2020-09-01T00:00Z", "2020-9-1", "20200901"):
+        with pytest.raises(SystemExit, match="not a YYYY-MM-DD date"):
+            _export(data, tmp_path / "bad", *source, "--start", bad)
+        with pytest.raises(SystemExit, match="not a YYYY-MM-DD date"):
+            _export(data, tmp_path / "bad", "--factor", member, "--start", bad)
+    assert not (tmp_path / "bad").exists()
+
+    # The same factor without evidence may still be exported from any date.
+    assert _export(data, tmp_path / "plain", "--factor", member, "--start", str(early.date())) == 0
+
+
+def test_search_evidence_is_refused_for_a_refrozen_formula(tmp_path, data):
+    """A `freeze` copy of a searched formula cannot take the search's evidence (K8)."""
+    book = tmp_path / "ledger.jsonl"
+    assert _search(data, tmp_path / "s", book) == 0
+    family = pd.read_csv(tmp_path / "s" / "confirmation.csv")["factor_id"]
+    searched = FrozenFactor.load(tmp_path / "s" / "factors" / f"{family.iloc[0]}.json")
+    copy = tmp_path / "copy.json"
+    freeze = ["freeze", "--expr", searched.expression, "--orientation", str(searched.orientation)]
+    assert main([*freeze, "--horizon", str(searched.horizon_days), "--out", str(copy)]) == 0
+    assert FrozenFactor.load(copy).factor_id == searched.factor_id
+    with pytest.raises(SystemExit, match="not this search's own factor file"):
+        _export(data, tmp_path / "x", "--factor", str(copy), "--confirmation", str(tmp_path / "s"))
+    assert not (tmp_path / "x").exists()
+
+    # Any factor file not tagged with the search's experiment is refused the same way.
+    raw = json.loads((tmp_path / "s" / "factors" / f"{family.iloc[0]}.json").read_text())
+    del raw["selection"]["experiment_id"]
+    (tmp_path / "untagged.json").write_text(json.dumps(raw))
+    with pytest.raises(SystemExit, match="not this search's own factor file"):
+        _export(
+            data,
+            tmp_path / "x",
+            "--factor",
+            str(tmp_path / "untagged.json"),
+            "--confirmation",
+            str(tmp_path / "s"),
+        )
+    assert not (tmp_path / "x").exists()

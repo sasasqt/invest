@@ -1,6 +1,6 @@
 # Strategy evaluation metrics
 
-Implement the following metric families in `invest_evaluation/metrics.py`. Return the full applicable report, not just Sharpe or win rate. The core of sections 1–6 and 8–9 is implemented (`invest_evaluation/metrics.py`); XIRR, rolling/calendar tables, MAE/MFE and conditional drawdown at risk are not yet.
+Implement the following metric families in `invest_evaluation/metrics.py`. Return the full applicable report, not just Sharpe or win rate. The core of sections 1–6 and 8–9 is implemented (`invest_evaluation/metrics.py`), and of section 7 the tracking error, information ratio, correlation, beta, alpha and average gross/net exposure. Not yet: XIRR, rolling/calendar tables, MAE/MFE, conditional drawdown at risk, R², Treynor ratio, up/down capture, rolling beta and attribution.
 
 Metrics describe an evaluated strategy under declared data, trading, cost, and cash-flow assumptions. They do not establish statistical robustness by themselves; apply the [validation protocol](../data-mining-framework/ALPHA_VALIDATION.md) separately.
 

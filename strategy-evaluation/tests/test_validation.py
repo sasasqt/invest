@@ -319,3 +319,24 @@ def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, caps
     assert any(reason.startswith("solvency: fail") for reason in verdict["reasons"])
     report = (out / "report.md").read_text()
     assert "Status: **rejected**" in report and "| solvency | fail |" in report
+
+
+def test_cli_refuses_fewer_trials_than_the_search_family(tmp_path, market, reversal_signals):
+    """`--n-trials` cannot undercut the candidates a search tried (K8)."""
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    start = str(reversal_signals["decision_date"].min().date())
+    evidence = {
+        **_evidence(),
+        "source": "search",
+        "confirmation_use": "confirmatory",
+        "status": "confirmation_passed",
+        "family_size": 3,
+        "confirmation_window": {"start": start, "end": "2030-12-31"},
+    }
+    metadata = {"factor_id": "rev5", "horizon_days": 1, "n_trials": 40, "factor_evidence": evidence}
+    publish_signals(reversal_signals, tmp_path / "s", dataset_id="s", metadata=metadata)
+    base = ["run", "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
+    with pytest.raises(SystemExit, match="below the 40 candidates"):
+        main([*base, "--n-trials", "39", "--out", str(tmp_path / "x")])
+    assert not (tmp_path / "x").exists()
+    assert main([*base, "--n-trials", "40", "--no-scenarios", "--out", str(tmp_path / "ok")]) == 0

@@ -60,14 +60,14 @@ Create modules when implementing their responsibilities; don't add empty placeho
 | Formula operators, factor search, search policies, factor combination fitting | Mining | These discover or learn signals |
 | Model training, tuning, model selection, checkpoints | Mining training | Reproducible learning workflow with explicit data splits |
 | Applying frozen formulas/models and fitted transforms | Mining inference | Training and inference share feature definitions and artifact-loading code |
-| Signal-to-position rules, rebalance schedules, risk limits | Strategy evaluation's `strategies/` | These define how a signal becomes a portfolio |
+| Signal-to-position rules, rebalance schedules, risk limits | Strategy evaluation's `strategies` module | These define how a signal becomes a portfolio |
 | Order/fill simulation, fees, slippage, borrowing, account state | Strategy evaluation | A common engine evaluates supplied strategies consistently |
 | IC, rank IC, feature coverage, prediction loss | Mining diagnostics | Measure signal or model quality |
 | Factor uncertainty, multiple testing, stability, redundancy, perturbation robustness | Mining diagnostics | Confirm mined signals beyond their discovery scores |
 | Net P&L, portfolio Sharpe, drawdown, turnover, exposures, capacity | Strategy evaluation | Measure strategy performance after construction and execution |
 | Portfolio uncertainty and cost/execution stress tests | Strategy evaluation | Assess robustness of a fixed trading strategy |
 
-“Strategy” is ambiguous. **Search strategies** such as GP, MCTS, or exploration policies belong in mining's `search/`. **Trading strategies** such as top-k selection, momentum portfolios, rebalancing, and sizing belong in evaluation's `strategies/`. A trained decision policy is learned in mining and exported through inference; simulation of its decisions belongs in evaluation.
+“Strategy” is ambiguous. **Search strategies** such as GP, MCTS, or exploration policies belong in mining's `search` module. **Trading strategies** such as top-k selection, momentum portfolios, rebalancing, and sizing belong in evaluation's `strategies` module. A trained decision policy is learned in mining and exported through inference; simulation of its decisions belongs in evaluation.
 
 ## Data flow and dependency boundaries
 

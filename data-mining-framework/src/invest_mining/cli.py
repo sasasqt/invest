@@ -8,6 +8,7 @@ import math
 import sys
 from collections.abc import Sequence
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -352,7 +353,7 @@ def _confirm(args: argparse.Namespace) -> int:
     return 0
 
 
-def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor, str]:
+def _from_search(root: Path, rank: int) -> FrozenFactor:
     """Export in the family order frozen on development data before confirmation.
 
     The confirmation table retains that order. Read only candidate IDs: neither
@@ -364,14 +365,20 @@ def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor
             f"{root}: {len(family)} factor(s) in the frozen family; cannot export rank {rank}"
         )
     factor_id = str(family.iloc[rank - 1]["factor_id"])
-    factor = FrozenFactor.load(root / "factors" / f"{factor_id}.json")
-    confirm_start = json.loads((root / "config.json").read_text())["split"]["confirmation"][0]
-    if start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start):
+    return FrozenFactor.load(root / "factors" / f"{factor_id}.json")
+
+
+def _out_of_sample_start(confirm_start: str, start: str | None) -> str:
+    """First export date with search evidence: never before its confirmation period.
+
+    Both are ISO dates (``YYYY-MM-DD``), so they compare as strings.
+    """
+    if start is not None and start < confirm_start:
         raise SystemExit(
             f"--start {start} precedes the confirmation period ({confirm_start}); "
             "those decisions were used for selection"
         )
-    return factor, start or confirm_start
+    return start or confirm_start
 
 
 def _json_number(value: Any) -> float | int | None:
@@ -402,26 +409,34 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
     identity = experiment.get("identity") or {}
     if row["confirmation_use"] != experiment.get("confirmation_use"):
         raise SystemExit(f"{root}: confirmation.csv and config.json disagree on confirmation use")
+    params = identity.get("params") or {}
+    source = "confirm" if params.get("method") == "fixed_formula" else "search"
     tagged = factor.selection.get("experiment_id")
+    if source == "search" and tagged is None:
+        # Only the search's own factor file carries its trial count. A `freeze` copy of the
+        # same formula has the same factor id but would export n_trials = 1.
+        raise SystemExit(
+            f"{root}: factor {factor.factor_id} is not this search's own factor file "
+            f"(selection {factor.selection.get('method')!r}); export the file in "
+            f"{root / 'factors'} instead"
+        )
     if tagged is not None and tagged != experiment.get("experiment_id"):
         raise SystemExit(
             f"{root}: factor {factor.factor_id} was selected in experiment {tagged}, "
             f"not {experiment.get('experiment_id')}"
         )
-    params = identity.get("params") or {}
     tested_horizon = params.get("horizon")
     if type(tested_horizon) is not int or tested_horizon != factor.horizon_days:
         raise SystemExit(
             f"{root}: confirmation horizon {tested_horizon!r} does not match "
             f"factor horizon {factor.horizon_days!r}"
         )
-    method = params.get("method")
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
         "factor_id": factor.factor_id,
         "horizon_days": tested_horizon,
         "experiment_id": experiment.get("experiment_id"),
-        "source": "confirm" if method == "fixed_formula" else "search",
+        "source": source,
         "confirmation_use": row["confirmation_use"],
         "test_outcome": row["test_outcome"],
         "status": row["status"],
@@ -465,33 +480,47 @@ def _freeze(args: argparse.Namespace) -> int:
 
 
 def _export(args: argparse.Namespace) -> int:
-    manifest, bars = read_market_bars(args.data)
+    start = args.start
+    if start is not None:
+        try:
+            parsed = date.fromisoformat(start).isoformat()
+        except ValueError:
+            parsed = None
+        if parsed != start:  # fromisoformat also takes other ISO forms, such as 20200901
+            raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date")
     evidence: dict[str, Any] | None
     if args.from_search is not None:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
-        factor, start = _from_search(args.from_search, args.rank, args.start)
+        factor = _from_search(args.from_search, args.rank)
         evidence = _confirmation_evidence(args.from_search, factor)
     else:
-        factor, start = FrozenFactor.load(args.factor), args.start
+        factor = FrozenFactor.load(args.factor)
         evidence = (
             None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
         )
+    if evidence is not None and evidence["source"] == "search":
+        # Search evidence covers only the confirmation period; earlier dates chose the factor.
+        start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
+    manifest, bars = read_market_bars(args.data)
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",
             file=sys.stderr,
         )
-    out = export_signals(
-        factor,
-        bars,
-        args.out,
-        dataset_id=manifest.dataset_id,
-        start=start,
-        fmt=args.format,
-        evidence=evidence,
-        **_optional_inputs(args),
-    )
+    try:
+        out = export_signals(
+            factor,
+            bars,
+            args.out,
+            dataset_id=manifest.dataset_id,
+            start=start,
+            fmt=args.format,
+            evidence=evidence,
+            **_optional_inputs(args),
+        )
+    except BundleError as exc:
+        raise SystemExit(f"{args.out}: {exc}") from exc
     print(
         json.dumps(
             {
@@ -635,8 +664,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ex.add_argument("--out", type=Path, required=True)
     ex.add_argument(
         "--start",
-        help="first decision date to export (YYYY-MM-DD); "
-        "defaults to the confirmation start with --from-search",
+        help="first decision date to export (YYYY-MM-DD); with search evidence (--from-search, "
+        "or --confirmation <search output>) it defaults to, and may not precede, the "
+        "confirmation start",
     )
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
     ex.add_argument(
