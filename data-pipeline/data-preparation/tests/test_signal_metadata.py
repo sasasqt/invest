@@ -73,7 +73,7 @@ def _evidence(**changes):
 
 @pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
 def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
-    metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence()}
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
     publish_signals(_scores(), tmp_path / "s", dataset_id="s", metadata=metadata, fmt=fmt)
     assert read_signals(tmp_path / "s")[0].metadata["factor_evidence"] == _evidence()
     # Exploratory use overrides the outcome; undefined statistics are null.
@@ -112,7 +112,12 @@ def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
     ],
 )
 def test_invalid_factor_evidence_fails_before_publication_and_on_read(tmp_path, changes, message):
-    metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence(**changes)}
+    metadata = {
+        "factor_id": "f",
+        "horizon_days": 1,
+        "n_trials": 3,
+        "factor_evidence": _evidence(**changes),
+    }
     with pytest.raises(BundleError, match=message):
         publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
     assert not (tmp_path / "invalid").exists()
@@ -134,7 +139,12 @@ def test_factor_evidence_must_be_an_object():
 
 @pytest.mark.parametrize("invalid", [None, True, 1.0, 0, -1, "1"])
 def test_invalid_bundle_horizon_cannot_bypass_evidence_binding(tmp_path, invalid):
-    metadata = {"factor_id": "f", "horizon_days": invalid, "factor_evidence": _evidence()}
+    metadata = {
+        "factor_id": "f",
+        "horizon_days": invalid,
+        "n_trials": 3,
+        "factor_evidence": _evidence(),
+    }
     with pytest.raises(BundleError, match="horizon_days"):
         publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
     assert not (tmp_path / "invalid").exists()
@@ -153,3 +163,62 @@ def test_factor_evidence_requires_a_tested_horizon():
     del evidence["horizon_days"]
     with pytest.raises(BundleError, match="horizon_days"):
         validate_factor_evidence(evidence)
+
+
+@pytest.mark.parametrize("n_trials", [None, 1, 2])
+def test_search_evidence_needs_at_least_its_family_size_in_trials(tmp_path, n_trials):
+    """A searched factor re-labelled as one trial cannot keep its search evidence (K8)."""
+    metadata = {"factor_id": "f", "horizon_days": 1, "factor_evidence": _evidence()}
+    if n_trials is not None:
+        metadata["n_trials"] = n_trials
+    with pytest.raises(BundleError, match="n_trials >= its family_size"):
+        publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+
+    metadata["n_trials"] = 3
+    publish_signals(_scores(), tmp_path / "external", dataset_id="s", metadata=metadata)
+    path = tmp_path / "external" / "manifest.json"
+    manifest = json.loads(path.read_text())
+    if n_trials is None:
+        del manifest["metadata"]["n_trials"]
+    else:
+        manifest["metadata"]["n_trials"] = n_trials
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match="n_trials >= its family_size"):
+        read_signals(tmp_path / "external")
+
+    # A fixed formula's own confirmation has a family of one.
+    confirm = _evidence(source="confirm", family_size=1)
+    fixed = {"factor_id": "f", "horizon_days": 1, "factor_evidence": confirm}
+    publish_signals(_scores(), tmp_path / "fixed", dataset_id="s", metadata=fixed)
+
+
+def test_search_evidence_signals_start_at_the_confirmation_window(tmp_path):
+    """Decisions before a search's confirmation window selected the factor (K1)."""
+    early = pd.DataFrame(
+        {
+            "decision_date": pd.to_datetime(["2023-12-29", "2024-01-02"]),
+            "instrument": ["A", "A"],
+            "score": [1.0, 2.0],
+        }
+    )
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
+        publish_signals(early, tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+
+    # The same rows published without evidence, then given the evidence, fail on read.
+    plain = {"factor_id": "f", "horizon_days": 1, "n_trials": 3}
+    publish_signals(early, tmp_path / "external", dataset_id="s", metadata=plain)
+    path = tmp_path / "external" / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["metadata"]["factor_evidence"] = _evidence()
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
+        read_signals(tmp_path / "external")
+
+    # Confirm evidence describes a fixed formula: earlier dates selected nothing.
+    confirm = _evidence(source="confirm", family_size=1)
+    fixed = {"factor_id": "f", "horizon_days": 1, "factor_evidence": confirm}
+    publish_signals(early, tmp_path / "fixed", dataset_id="s", metadata=fixed)
+    assert read_signals(tmp_path / "fixed")[1]["decision_date"].min() == pd.Timestamp("2023-12-29")

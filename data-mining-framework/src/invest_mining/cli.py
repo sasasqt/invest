@@ -366,12 +366,17 @@ def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor
     factor_id = str(family.iloc[rank - 1]["factor_id"])
     factor = FrozenFactor.load(root / "factors" / f"{factor_id}.json")
     confirm_start = json.loads((root / "config.json").read_text())["split"]["confirmation"][0]
+    return factor, _out_of_sample_start(confirm_start, start)
+
+
+def _out_of_sample_start(confirm_start: str, start: str | None) -> str:
+    """First export date for a search-selected factor: never before its confirmation period."""
     if start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start):
         raise SystemExit(
             f"--start {start} precedes the confirmation period ({confirm_start}); "
             "those decisions were used for selection"
         )
-    return factor, start or confirm_start
+    return start or confirm_start
 
 
 def _json_number(value: Any) -> float | int | None:
@@ -415,13 +420,20 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
             f"{root}: confirmation horizon {tested_horizon!r} does not match "
             f"factor horizon {factor.horizon_days!r}"
         )
-    method = params.get("method")
+    source = "confirm" if params.get("method") == "fixed_formula" else "search"
+    if source == "search" and factor.selection.get("method") == "fixed_formula":
+        # The same formula re-frozen after a search would export n_trials = 1 with the
+        # search's evidence; the search's own factor file carries its trial count.
+        raise SystemExit(
+            f"{root}: factor {factor.factor_id} is a fixed formula from `freeze`, but this "
+            "output selected it in a search; export the search's factor file instead"
+        )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
         "factor_id": factor.factor_id,
         "horizon_days": tested_horizon,
         "experiment_id": experiment.get("experiment_id"),
-        "source": "confirm" if method == "fixed_formula" else "search",
+        "source": source,
         "confirmation_use": row["confirmation_use"],
         "test_outcome": row["test_outcome"],
         "status": row["status"],
@@ -477,6 +489,9 @@ def _export(args: argparse.Namespace) -> int:
         evidence = (
             None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
         )
+        if evidence is not None and evidence["source"] == "search":
+            # Search evidence covers only the confirmation period; earlier dates chose the factor.
+            start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",
@@ -635,8 +650,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ex.add_argument("--out", type=Path, required=True)
     ex.add_argument(
         "--start",
-        help="first decision date to export (YYYY-MM-DD); "
-        "defaults to the confirmation start with --from-search",
+        help="first decision date to export (YYYY-MM-DD); with search evidence (--from-search, "
+        "or --confirmation <search output>) it defaults to, and may not precede, the "
+        "confirmation start",
     )
     ex.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
     ex.add_argument(

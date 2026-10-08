@@ -25,7 +25,8 @@ Two kinds are defined so producers and consumers can validate independently:
     consumer may act on it no earlier than the next session. Higher score = more attractive.
     Optional ``metadata.factor_evidence`` carries the factor's confirmation evidence
     (experiment identity, confirmation use and outcome) to portfolio reports; see
-    :func:`validate_factor_evidence`.
+    :func:`validate_factor_evidence`. Search evidence also requires ``n_trials`` of at least
+    its family size and no decision before its confirmation window.
 """
 
 from __future__ import annotations
@@ -109,10 +110,30 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
             raise BundleError(
                 "signals: horizon_days must be a positive integer with factor_evidence"
             )
+        evidence = metadata["factor_evidence"]
         validate_factor_evidence(
-            metadata["factor_evidence"],
+            evidence,
             factor_id=metadata.get("factor_id"),
             horizon_days=metadata.get("horizon_days"),
+        )
+        # A searched factor was chosen from at least its family's proposals.
+        if evidence["source"] == "search" and metadata.get("n_trials", 0) < evidence["family_size"]:
+            raise BundleError(
+                "signals: search evidence needs n_trials >= its family_size "
+                f"({evidence['family_size']}), got {metadata.get('n_trials')!r}"
+            )
+
+
+def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
+    """Signals with search evidence start at its confirmation window; earlier dates chose it."""
+    evidence = metadata.get("factor_evidence")
+    if evidence is None or evidence["source"] != "search" or frame.empty:
+        return
+    first = pd.Timestamp(frame["decision_date"].min()).date().isoformat()
+    if first < evidence["confirmation_window"]["start"]:
+        raise BundleError(
+            f"signals: decisions from {first} precede the search evidence's confirmation "
+            f"window ({evidence['confirmation_window']['start']}); those dates selected the factor"
         )
 
 
@@ -270,6 +291,7 @@ def publish_signals(
     _validate_metadata(meta, REQUIRED_SIGNAL_METADATA, SIGNALS)
     if meta["available_at"] != "decision_date_close":
         raise BundleError("signals: only available_at='decision_date_close' is supported")
+    _check_signal_window(frame, meta)
     return write_bundle(
         frame.reset_index(drop=True),
         path,
@@ -291,6 +313,7 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
+    _check_signal_window(frame, manifest.metadata)
     return manifest, frame
 
 
