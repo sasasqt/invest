@@ -140,8 +140,8 @@ def load_csv_bars(
     volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
     minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
 
-    ``extra_columns`` are kept as given, for example an adjusted close for
-    ``clean_bars(bars, adjusted_close=...)``.
+    ``extra_columns`` (not bar columns) are kept as given, for example an adjusted close
+    for ``clean_bars(bars, adjusted_close=...)``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -157,14 +157,15 @@ def load_csv_bars(
     )
     for col in REQUIRED[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
-    # Parsed by cleaning, which judges null markers and refuses misused bar columns.
-    for col in [AS_TRADED_CLOSE.name] if AS_TRADED_CLOSE.name in raw.columns else []:
-        out[col] = raw[col]
+    # Parsed by cleaning, which judges null markers.
+    if AS_TRADED_CLOSE.name in raw.columns:
+        out[AS_TRADED_CLOSE.name] = raw[AS_TRADED_CLOSE.name]
     for col in extra_columns:
+        if col in out:
+            raise ValueError(f"extra column {col!r} is a bar column")
         if col not in raw.columns:
             raise ValueError(f"CSV has no column {col!r}")
-        if col not in out:
-            out[col] = raw[col]
+        out[col] = raw[col]
     return out
 
 

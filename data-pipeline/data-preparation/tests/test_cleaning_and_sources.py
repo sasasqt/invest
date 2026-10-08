@@ -310,11 +310,11 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
         ("total_return_adjusted", "adj", "converts unadjusted or split_adjusted"),
         ("unadjusted", "missing", "has no column 'missing'"),
         ("unadjusted", "", "has no column ''"),
-        ("total_return_adjusted", "", "has no column ''"),
+        ("total_return_adjusted", "missing", "converts unadjusted or split_adjusted"),
         # Naming a bar column would scale by 1 and label raw prices as adjusted.
-        ("unadjusted", "close", "cannot be the column 'close'"),
-        ("split_adjusted", "volume", "cannot be the column 'volume'"),
-        ("unadjusted", "date", "cannot be the column 'date'"),
+        ("unadjusted", "close", "'close' is a bar column"),
+        ("split_adjusted", "volume", "'volume' is a bar column"),
+        ("unadjusted", "date", "'date' is a bar column"),
     )
     for adjustment, column, message in refused:
         flags = [*args, "--price-adjustment", adjustment, "--adjusted-close", column]
@@ -330,3 +330,14 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
     stray = load_csv_bars(src, extra_columns=["adj"]).rename(columns={"adj": "adjusted_close"})
     clean, _ = clean_bars(stray)
     assert clean.loc[clean["instrument"] == "AAA", "close"].tolist() == [100.0, 104.0]
+
+
+def test_clean_bars_refuses_misused_conversion_arguments():
+    raw = raw_rows().assign(adj=1.0, reason=1.0)
+    for column in ("close", "close_as_traded", "reason"):
+        with pytest.raises(ValueError, match=f"cannot be the column '{column}'"):
+            clean_bars(raw, adjusted_close=column)
+    with pytest.raises(ValueError, match="as_traded needs adjusted_close"):
+        clean_bars(raw, as_traded=True)
+    with pytest.raises(ValueError, match="already have a close_as_traded column"):
+        clean_bars(raw.assign(close_as_traded=1.0), adjusted_close="adj", as_traded=True)

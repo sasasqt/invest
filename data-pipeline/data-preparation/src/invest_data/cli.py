@@ -90,6 +90,11 @@ def _yahoo(args: argparse.Namespace) -> int:
     )
 
 
+def _check_convertible(adjustment: str) -> None:
+    if adjustment not in ("unadjusted", "split_adjusted"):
+        raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
+
+
 def _publish(
     raw: pd.DataFrame,
     out: Path,
@@ -103,21 +108,20 @@ def _publish(
 
     The conversion and the bundle's ``price_adjustment`` label are decided together here.
     """
+    given = metadata["price_adjustment"]
     if adjusted_close is not None:
-        given = metadata["price_adjustment"]
-        if given not in ("unadjusted", "split_adjusted"):
-            raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
+        _check_convertible(given)
         metadata = {**metadata, "price_adjustment": "total_return_adjusted"}
         converted = {"from": given, "adjusted_close_column": adjusted_close}
         provenance = {**provenance, "converted": converted}
-        try:
-            clean, report = clean_bars(
-                raw, adjusted_close=adjusted_close, as_traded=given == "unadjusted"
-            )
-        except ValueError as exc:
-            raise SystemExit(str(exc)) from exc
-    else:
-        clean, report = clean_bars(raw)
+    try:
+        clean, report = clean_bars(
+            raw,
+            adjusted_close=adjusted_close,
+            as_traded=adjusted_close is not None and given == "unadjusted",
+        )
+    except ValueError as exc:
+        raise SystemExit(f"{dataset_id}: {exc}") from exc
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
@@ -230,7 +234,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "calendar": args.calendar,
         "price_adjustment": args.price_adjustment,
     }
-    extra = [] if args.adjusted_close is None else [args.adjusted_close]
+    extra = []
+    if args.adjusted_close is not None:
+        _check_convertible(args.price_adjustment)  # before reading the CSV
+        extra = [args.adjusted_close]
     try:
         bars = load_csv_bars(args.source, extra_columns=extra)
     except ValueError as exc:
