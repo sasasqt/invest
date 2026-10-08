@@ -93,7 +93,7 @@ def _market(path: Path, cfg: BacktestConfig) -> tuple[Manifest, pd.DataFrame]:
         manifest, bars = read_adjusted_market_bars(path)
         check_price_rules(bars, cfg)
     except (BundleError, InputError) as exc:
-        raise SystemExit(f"{path}: {exc}") from exc
+        raise SystemExit(str(exc)) from exc
     return manifest, bars
 
 

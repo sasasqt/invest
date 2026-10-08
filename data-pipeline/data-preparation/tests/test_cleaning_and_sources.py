@@ -111,14 +111,17 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw.loc[len(raw)] = ["2024-01-08", "CCC", 10, 11, 9, 10.5, 100, 0.0]
     raw.loc[len(raw)] = ["2024-01-08", "DDD", 10, 11, 9, 10.5, 100, None]
     raw.loc[len(raw)] = ["2024-01-08", "EEE", 10, 11, 9, 10.5, 100, float("inf")]
+    raw.loc[len(raw)] = ["2024-01-08", "FFF", 10, 11, 9, 10.5, 100, "n/a"]
+    raw.loc[len(raw)] = ["2024-01-08", "GGG", 10, 11, 9, 10.5, 100, " "]
     clean, report = clean_bars(raw)
-    # An unknown as-traded close keeps the bar; an invalid one rejects it.
-    assert clean["instrument"].tolist() == ["AAA", "DDD"]
-    assert clean["close_as_traded"].tolist()[0] == 105.0
-    assert np.isnan(clean["close_as_traded"].tolist()[1])
+    # A blank (unknown) as-traded close keeps the bar; an invalid one rejects it.
+    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG"]
+    assert clean["close_as_traded"].iloc[0] == 105.0
+    assert clean["close_as_traded"].iloc[1:].isna().all()
     reasons = report.rejected.set_index("instrument")["reason"]
     assert reasons["CCC"] == "non_positive_price"
-    assert reasons["EEE"] == "missing_or_nonfinite_value"
+    assert reasons["EEE"] == reasons["FFF"] == "missing_or_nonfinite_value"
+    clean = clean.iloc[:2]
 
     publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata=SYNTHETIC_METADATA, fmt=fmt)
     manifest, back = read_market_bars(tmp_path / "m")
@@ -140,13 +143,21 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
     src.write_text(
         "date,instrument,open,high,low,close,volume,close_as_traded\n"
         "2024-01-02,AAA,1,2,0.5,1.5,10,15\n"
+        "2024-01-02,BBB,1,2,0.5,1.5,10,\n"
+        "2024-01-02,CCC,1,2,0.5,1.5,10,1.5x\n"
     )
     args = ["--currency", "USD", "--calendar", "XNYS", "--price-adjustment", "split_adjusted"]
     assert (
         main(["import-csv", str(src), "--out", str(tmp_path / "m"), "--dataset-id", "m", *args])
         == 0
     )
-    assert read_market_bars(tmp_path / "m")[1]["close_as_traded"].tolist() == [15.0]
+    _, frame = read_market_bars(tmp_path / "m")
+    assert frame["instrument"].tolist() == ["AAA", "BBB"]  # CCC's value is not a number
+    assert frame["close_as_traded"].iloc[0] == 15.0 and pd.isna(frame["close_as_traded"].iloc[1])
+    rejected = pd.read_csv(tmp_path / "m.rejected.csv")
+    assert rejected[["instrument", "reason"]].values.tolist() == [
+        ["CCC", "missing_or_nonfinite_value"]
+    ]
 
     assert (
         main(["synthetic", "--out", str(tmp_path / "s"), "--instruments", "3", "--days", "30"]) == 0

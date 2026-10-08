@@ -93,12 +93,6 @@ def _yahoo(args: argparse.Namespace) -> int:
 def _publish(
     raw: pd.DataFrame, out: Path, dataset_id: str, metadata: dict, provenance: dict, fmt: str
 ) -> int:
-    if metadata["price_adjustment"] not in ADJUSTED_PRICES:
-        print(
-            f"note: evaluation and mining refuse {metadata['price_adjustment']!r} bars until "
-            "corporate actions are modelled",
-            file=sys.stderr,
-        )
     clean, report = clean_bars(raw)
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
@@ -107,6 +101,12 @@ def _publish(
     if len(report.rejected):
         report.rejected.to_csv(out.with_name(out.name + ".rejected.csv"), index=False)
     print(json.dumps({"bundle": str(out), "rows": manifest.row_count, **report.summary()}))
+    if metadata["price_adjustment"] not in ADJUSTED_PRICES:
+        print(
+            f"note: evaluation and mining refuse {metadata['price_adjustment']!r} bars until "
+            "corporate actions are modelled",
+            file=sys.stderr,
+        )
     return 0
 
 

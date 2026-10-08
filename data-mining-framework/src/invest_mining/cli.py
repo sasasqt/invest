@@ -98,7 +98,7 @@ def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     try:
         return read_adjusted_market_bars(path)
     except BundleError as exc:
-        raise SystemExit(f"{path}: {exc}") from exc
+        raise SystemExit(str(exc)) from exc
 
 
 def _evaluate(args: argparse.Namespace) -> int:

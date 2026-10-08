@@ -52,11 +52,14 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         reason.loc[mask & reason.isna()] = why
 
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")
-    optional = df[numeric[len(REQUIRED) - 2 :]].to_numpy(dtype="float64")
+    present = [c for c in OPTIONAL if c in df.columns]
     flag(df["date"].isna(), "invalid_date")
     flag(df["instrument"].isna() | (df["instrument"] == ""), "missing_instrument")
     flag(pd.Series(~np.isfinite(num).all(axis=1), index=df.index), "missing_or_nonfinite_value")
-    flag(pd.Series(np.isinf(optional).any(axis=1), index=df.index), "missing_or_nonfinite_value")
+    for col in present:
+        # Blank means unknown (null); any other value must be a finite number.
+        given = raw[col].notna() & (raw[col].astype(str).str.strip() != "")
+        flag(given & ~np.isfinite(df[col]), "missing_or_nonfinite_value")
     prices = [c for c in numeric if c != "volume"]
     flag((df[prices] <= 0).any(axis=1), "non_positive_price")
     flag(df["volume"] < 0, "negative_volume")

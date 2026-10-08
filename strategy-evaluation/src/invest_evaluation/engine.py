@@ -77,14 +77,14 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
 
     An adjusted close is rescaled by every later split and dividend, so comparing it with
     a price level would let later corporate actions decide earlier eligibility. A name
-    whose as-traded close is unknown on a decision date is not eligible then.
+    whose as-traded close is unknown (null) on a decision date is not eligible then.
     """
-    if config.execution.min_price > 0 and AS_TRADED_CLOSE.name not in bars.columns:
+    name = AS_TRADED_CLOSE.name
+    if config.execution.min_price > 0 and (name not in bars or bars[name].isna().all()):
         raise InputError(
             f"execution.min_price {config.execution.min_price} needs the as-traded close "
-            f"({AS_TRADED_CLOSE.name}), which these bars lack; adjusted closes depend on "
-            "later splits and dividends. Publish bars with it, or set execution.min_price "
-            "to 0"
+            f"({name}), which these bars lack; adjusted closes depend on later splits and "
+            "dividends. Publish bars with it, or set execution.min_price to 0"
         )
 
 
@@ -220,6 +220,7 @@ def run_backtest(
         else np.ones((len(calendar), len(instruments)), dtype=bool)
     )
     n = len(instruments)
+    unknown_traded_close = 0  # scored names a price floor excluded for lack of a price
     missing_mark_warned = np.zeros(n, dtype=bool)
     retired = np.zeros(n, dtype=bool)
     for event_i, entries in settlement_events.items():
@@ -444,6 +445,10 @@ def run_backtest(
         if first_decision is not None and (i - first_decision) % cfg.strategy.rebalance_every == 0:
             fill_i = i + 1 + ex.delay
             if fill_i <= sessions[-1]:
+                if ex.min_price > 0:
+                    unknown_traded_close += int(
+                        (np.isfinite(S[i]) & has_close & np.isnan(traded_close[i])).sum()
+                    )
                 eligible = (
                     np.isfinite(S[i])
                     & member[i]
@@ -470,6 +475,12 @@ def run_backtest(
                             columns=DECISION_COLS,
                         )
                     )
+
+    if unknown_traded_close:
+        warnings.append(
+            f"{unknown_traded_close} scored name-decisions had no {AS_TRADED_CLOSE.name} "
+            "and failed execution.min_price"
+        )
 
     # Open episodes at the end are reported with unrealised P&L.
     end_i = sessions[0] + len(rows) - 1

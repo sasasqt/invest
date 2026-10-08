@@ -148,8 +148,10 @@ def load_csv_bars(
             "instrument": raw["instrument"].str.strip(),
         }
     )
-    for col in required[2:] + [c for c in ("close_as_traded",) if c in raw.columns]:
+    for col in required[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
+    if "close_as_traded" in raw.columns:
+        out["close_as_traded"] = raw["close_as_traded"]  # parsed by cleaning: blank = unknown
     return out
 
 

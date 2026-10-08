@@ -121,10 +121,13 @@ def market_bar_columns(names: Any) -> tuple[Column, ...]:
 def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     """:func:`read_market_bars` for consumers that compute returns from ``close``.
 
-    The declared adjustment is checked from the manifest before the rows are read.
+    The declared adjustment is checked from the manifest before the rows are read, and
+    again on the manifest returned with them.
     """
     require_adjusted_prices(read_manifest(path))
-    return read_market_bars(path)
+    manifest, frame = read_market_bars(path)
+    require_adjusted_prices(manifest)
+    return manifest, frame
 
 
 def require_adjusted_prices(manifest: Manifest) -> None:

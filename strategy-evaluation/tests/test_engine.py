@@ -361,6 +361,7 @@ def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligi
     bars.loc[(bars["instrument"] == "A") & (bars["date"] == "2024-01-03"), "close_as_traded"] = None
     res = run_backtest(bars, signals, cfg, Fixed({"B": 1.0}), record_decisions=True)
     assert sorted(res.decisions["instrument"]) == ["B"]
+    assert "1 scored name-decisions had no close_as_traded" in res.warnings[-1]
 
 
 def test_min_price_without_as_traded_closes_is_refused():
@@ -368,6 +369,14 @@ def test_min_price_without_as_traded_closes_is_refused():
     cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
     with pytest.raises(InputError, match="needs the as-traded close"):
         run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"B": 1.0}))
+    # A column with no known value is no better than none.
+    with pytest.raises(InputError, match="needs the as-traded close"):
+        run_backtest(
+            bars.assign(close_as_traded=float("nan")),
+            signals_on("2024-01-03"),
+            cfg,
+            Fixed({"B": 1.0}),
+        )
     # Without a price level there is nothing to compare, so adjusted closes suffice.
     res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
     assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)
