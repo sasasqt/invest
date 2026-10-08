@@ -374,3 +374,9 @@ def test_clean_bars_judges_dtypes_not_only_values():
     assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 2}
     clean, _ = clean_bars(raw.astype({"volume": "category"}))  # a single category
     assert clean["volume"].tolist() == [100.0, 100.0]
+
+    from invest_data.schemas import validate_market_frame
+
+    validate_market_frame(clean.astype({"volume": "category", "close_as_traded": "category"}))
+    with pytest.raises(BundleError, match="volume must hold real numbers"):
+        validate_market_frame(clean.assign(volume=["a", "a"]).astype({"volume": "category"}))

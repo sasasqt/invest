@@ -129,12 +129,12 @@ def real_numbers(values: pd.Series, name: str) -> np.ndarray:
     whatever the dtype; numbers in an object column (for example after a concat with
     ``None``) are accepted.
     """
-    present = values[values.notna()]
-    if non_real(present).any() or not (
-        pd.api.types.is_numeric_dtype(values.dtype)
-        or present.map(lambda v: isinstance(v, numbers.Real | Decimal)).all()
-    ):
-        raise BundleError(f"{name} must hold real numbers, not {values.dtype}")
+    if not real_dtype(values.dtype):
+        present = values[values.notna()].astype(object)  # categoricals included
+        if non_real(present).any() or not (
+            present.map(lambda v: isinstance(v, numbers.Real | Decimal)).all()
+        ):
+            raise BundleError(f"{name} must hold real numbers, not {values.dtype}")
     return np.asarray(values.to_numpy(dtype="float64", na_value=np.nan))
 
 
