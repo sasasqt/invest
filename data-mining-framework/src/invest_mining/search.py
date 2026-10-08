@@ -106,7 +106,7 @@ def chronological_split(
         # in floating point (int(100 * 0.29) is 28).
         n = len(dates)
         k = int(n * dev_fraction)
-        if (k + 1) / n <= dev_fraction:
+        if n and (k + 1) / n <= dev_fraction:  # no sessions: empty split, refused later
             k += 1
         elif k > 0 and k / n > dev_fraction:
             k -= 1

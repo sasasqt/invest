@@ -85,7 +85,7 @@ def _refuse_used_out(out: Path) -> None:
         ancestor = ancestor.parent
     cannot = f"--out {out} cannot be created"
     if ancestor.is_symlink() and not ancestor.exists():
-        raise SystemExit(f"{cannot}: {ancestor} is a broken symbolic link")
+        raise SystemExit(f"{cannot}: {ancestor} is a broken or looping symbolic link")
     if not ancestor.is_dir():
         raise SystemExit(f"{cannot}: {ancestor} is not a directory")
     # Try it: permission bits alone do not tell (root, read-only mounts, /sys).

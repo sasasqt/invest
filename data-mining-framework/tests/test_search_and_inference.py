@@ -31,6 +31,11 @@ def test_split_development_share_is_exact(fraction, k):
     assert split.confirm_dates[0] == dates[k]
 
 
+def test_split_of_no_sessions_is_empty_not_a_division_error():
+    split = chronological_split(pd.DatetimeIndex([]), 0.6, horizon=1)
+    assert len(split.dev_dates) == len(split.confirm_dates) == 0
+
+
 @pytest.mark.parametrize("horizon", [1, 5, 40])
 @pytest.mark.parametrize("embargo", [0, 2])
 def test_reserved_prices_cannot_change_development_labels(horizon, embargo):

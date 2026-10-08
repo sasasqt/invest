@@ -492,6 +492,7 @@ def test_leg_size_matches_the_bucket_cutpoint_rule():
     """The largest k with k / n <= f, for every n and fraction on a fine grid."""
     from invest_evaluation.strategies import leg_size
 
+    assert leg_size(0, 0.5) == 0
     for n in range(1, 301):
         for f in np.round(np.arange(0.0, 1.0001, 0.01), 2):
             expected = max(k for k in range(n + 1) if k / n <= f)

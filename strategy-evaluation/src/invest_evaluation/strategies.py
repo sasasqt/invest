@@ -30,6 +30,8 @@ def leg_size(n: int, fraction: float) -> int:
     """Most names ``k`` with ``k / n <= fraction``: the cutpoint rule of the bucket
     portfolios. ``floor(n * fraction)`` can fall one short in floating point
     (``100 * 0.29`` is ``28.999...``)."""
+    if n <= 0:
+        return 0
     k = int(np.floor(n * fraction))
     if (k + 1) / n <= fraction:
         return k + 1
