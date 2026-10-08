@@ -12,6 +12,7 @@ import pandas as pd
 
 from invest_data.cleaning import clean_bars
 from invest_data.schemas import (
+    ADJUSTED_PRICES,
     PRICE_ADJUSTMENTS,
     publish_fundamentals,
     publish_market_bars,
@@ -92,6 +93,12 @@ def _yahoo(args: argparse.Namespace) -> int:
 def _publish(
     raw: pd.DataFrame, out: Path, dataset_id: str, metadata: dict, provenance: dict, fmt: str
 ) -> int:
+    if metadata["price_adjustment"] not in ADJUSTED_PRICES:
+        print(
+            f"note: evaluation and mining refuse {metadata['price_adjustment']!r} bars until "
+            "corporate actions are modelled",
+            file=sys.stderr,
+        )
     clean, report = clean_bars(raw)
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(

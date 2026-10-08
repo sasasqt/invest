@@ -110,17 +110,21 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw = raw_rows().assign(close_as_traded=lambda f: f["close"] * 10)
     raw.loc[len(raw)] = ["2024-01-08", "CCC", 10, 11, 9, 10.5, 100, 0.0]
     raw.loc[len(raw)] = ["2024-01-08", "DDD", 10, 11, 9, 10.5, 100, None]
+    raw.loc[len(raw)] = ["2024-01-08", "EEE", 10, 11, 9, 10.5, 100, float("inf")]
     clean, report = clean_bars(raw)
-    assert clean["close_as_traded"].tolist() == [105.0]
+    # An unknown as-traded close keeps the bar; an invalid one rejects it.
+    assert clean["instrument"].tolist() == ["AAA", "DDD"]
+    assert clean["close_as_traded"].tolist()[0] == 105.0
+    assert np.isnan(clean["close_as_traded"].tolist()[1])
     reasons = report.rejected.set_index("instrument")["reason"]
     assert reasons["CCC"] == "non_positive_price"
-    assert reasons["DDD"] == "missing_or_nonfinite_value"
+    assert reasons["EEE"] == "missing_or_nonfinite_value"
 
     publish_market_bars(clean, tmp_path / "m", dataset_id="x", metadata=SYNTHETIC_METADATA, fmt=fmt)
     manifest, back = read_market_bars(tmp_path / "m")
     assert manifest.column_names[-1] == "close_as_traded"
-    assert back["close_as_traded"].tolist() == [105.0]
-    for bad, match in ((0.0, "positive"), (float("nan"), "close_as_traded")):
+    assert back["close_as_traded"].iloc[0] == 105.0 and pd.isna(back["close_as_traded"].iloc[1])
+    for bad, match in ((0.0, "positive"), (-1.0, "positive"), (float("inf"), "close_as_traded")):
         with pytest.raises(BundleError, match=match):
             publish_market_bars(
                 clean.assign(close_as_traded=bad),
@@ -150,3 +154,19 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
     _, frame = read_market_bars(tmp_path / "s")
     # Synthetic prices have no splits or dividends, so they trade as quoted.
     assert frame["close_as_traded"].equals(frame["close"])
+
+
+def test_unadjusted_bars_publish_with_a_note_and_are_refused_from_the_manifest(tmp_path, capsys):
+    from invest_data.schemas import read_adjusted_market_bars
+
+    src = tmp_path / "in.csv"
+    src.write_text("date,instrument,open,high,low,close,volume\n2024-01-02,AAA,1,2,0.5,1.5,10\n")
+    args = ["--currency", "USD", "--calendar", "XNYS", "--price-adjustment", "unadjusted"]
+    out = tmp_path / "m"
+    assert main(["import-csv", str(src), "--out", str(out), "--dataset-id", "m", *args]) == 0
+    assert "refuse 'unadjusted' bars" in capsys.readouterr().err
+    assert len(read_market_bars(out)[1]) == 1
+    # The adjustment is judged from the manifest, before any row is read.
+    (out / "data.csv").unlink()
+    with pytest.raises(BundleError, match="'unadjusted' is not supported"):
+        read_adjusted_market_bars(out)

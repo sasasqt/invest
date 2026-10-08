@@ -7,8 +7,9 @@ Two kinds are defined so producers and consumers can validate independently:
     the session open and ``high/low/close/volume`` at the session close. Prices are adjusted
     according to ``metadata.price_adjustment``, and volume inversely, so ``close * volume``
     is the session's dollar volume. Optional ``close_as_traded`` is the close as it traded
-    that session, before any later split or dividend adjustment; price-level rules such as
-    a minimum price need it, because an adjusted level depends on later corporate actions.
+    that session, before any later split or dividend adjustment (null when unknown);
+    price-level rules such as a minimum price need it, because an adjusted level depends on
+    later corporate actions.
     An instrument's absence from a session means it was not tradable (not listed, halted,
     or delisted).
 
@@ -48,6 +49,7 @@ from invest_data.bundle import (
     Manifest,
     format_value,
     read_bundle,
+    read_manifest,
     write_bundle,
 )
 
@@ -65,7 +67,7 @@ MARKET_BAR_COLUMNS = (
     Column("close", "float64", nullable=False, unit="price"),
     Column("volume", "float64", nullable=False, unit="shares"),
 )
-AS_TRADED_CLOSE = Column("close_as_traded", "float64", nullable=False, unit="price")
+AS_TRADED_CLOSE = Column("close_as_traded", "float64", nullable=True, unit="price")
 SIGNAL_COLUMNS = (
     Column("decision_date", "date", nullable=False),
     Column("instrument", "string", nullable=False),
@@ -86,7 +88,7 @@ FUNDAMENTAL_COLUMNS = (
 )
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
 PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
-ADJUSTED_PRICES = PRICE_ADJUSTMENTS[:2]
+ADJUSTED_PRICES = ("total_return_adjusted", "split_adjusted")
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
 # Version 2 binds factor evidence to the tested prediction/holding horizon.
@@ -114,6 +116,15 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
 def market_bar_columns(names: Any) -> tuple[Column, ...]:
     """The market-bar columns for a frame or bundle, with ``close_as_traded`` if it has it."""
     return MARKET_BAR_COLUMNS + ((AS_TRADED_CLOSE,) if AS_TRADED_CLOSE.name in names else ())
+
+
+def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
+    """:func:`read_market_bars` for consumers that compute returns from ``close``.
+
+    The declared adjustment is checked from the manifest before the rows are read.
+    """
+    require_adjusted_prices(read_manifest(path))
+    return read_market_bars(path)
 
 
 def require_adjusted_prices(manifest: Manifest) -> None:

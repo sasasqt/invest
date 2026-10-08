@@ -13,10 +13,10 @@ import pandas as pd
 
 from invest_data.bundle import BundleError, Manifest
 from invest_data.schemas import (
+    read_adjusted_market_bars,
     read_market_bars,
     read_signals,
     read_universe,
-    require_adjusted_prices,
 )
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.engine import InputError, check_price_rules, run_backtest
@@ -89,12 +89,11 @@ def _fractions(text: str) -> tuple[float, ...]:
 
 def _market(path: Path, cfg: BacktestConfig) -> tuple[Manifest, pd.DataFrame]:
     """Market bars the backtest can use: adjusted closes, and the prices its rules need."""
-    manifest, bars = read_market_bars(path)
     try:
-        require_adjusted_prices(manifest)
+        manifest, bars = read_adjusted_market_bars(path)
         check_price_rules(bars, cfg)
     except (BundleError, InputError) as exc:
-        raise SystemExit(str(exc)) from exc
+        raise SystemExit(f"{path}: {exc}") from exc
     return manifest, bars
 
 

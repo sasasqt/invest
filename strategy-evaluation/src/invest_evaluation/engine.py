@@ -76,7 +76,8 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
     """``min_price`` compares the close as traded on the decision date.
 
     An adjusted close is rescaled by every later split and dividend, so comparing it with
-    a price level would let later corporate actions decide earlier eligibility.
+    a price level would let later corporate actions decide earlier eligibility. A name
+    whose as-traded close is unknown on a decision date is not eligible then.
     """
     if config.execution.min_price > 0 and AS_TRADED_CLOSE.name not in bars.columns:
         raise InputError(

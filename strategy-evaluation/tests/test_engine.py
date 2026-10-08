@@ -356,6 +356,12 @@ def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligi
     pd.testing.assert_frame_equal(runs[0].decisions, runs[1].decisions)
     pd.testing.assert_series_equal(runs[0].daily["equity"], runs[1].daily["equity"])
 
+    # A name whose as-traded close is unknown on the decision date cannot pass the floor.
+    bars = split_market(adjusted=True)
+    bars.loc[(bars["instrument"] == "A") & (bars["date"] == "2024-01-03"), "close_as_traded"] = None
+    res = run_backtest(bars, signals, cfg, Fixed({"B": 1.0}), record_decisions=True)
+    assert sorted(res.decisions["instrument"]) == ["B"]
+
 
 def test_min_price_without_as_traded_closes_is_refused():
     bars = split_market(adjusted=True).drop(columns="close_as_traded")

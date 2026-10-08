@@ -19,10 +19,9 @@ from invest_data.bundle import BundleError, Manifest
 from invest_data.schemas import (
     FACTOR_EVIDENCE_STATISTICS,
     FACTOR_EVIDENCE_VERSION,
+    read_adjusted_market_bars,
     read_fundamentals,
-    read_market_bars,
     read_universe,
-    require_adjusted_prices,
     validate_factor_evidence,
 )
 from invest_mining import ledger
@@ -96,12 +95,10 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
 
 def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     """Market bars whose closes give returns: every command scores or labels with them."""
-    manifest, bars = read_market_bars(path)
     try:
-        require_adjusted_prices(manifest)
+        return read_adjusted_market_bars(path)
     except BundleError as exc:
-        raise SystemExit(str(exc)) from exc
-    return manifest, bars
+        raise SystemExit(f"{path}: {exc}") from exc
 
 
 def _evaluate(args: argparse.Namespace) -> int:

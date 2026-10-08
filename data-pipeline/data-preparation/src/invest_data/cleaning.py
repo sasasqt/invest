@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
-OPTIONAL = ["close_as_traded"]  # kept when the source has it
+OPTIONAL = ["close_as_traded"]  # kept when the source has it; may be missing per row
 
 
 @dataclass(frozen=True)
@@ -51,10 +51,12 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     def flag(mask: pd.Series, why: str) -> None:
         reason.loc[mask & reason.isna()] = why
 
-    num = df[numeric].to_numpy(dtype="float64")
+    num = df[REQUIRED[2:]].to_numpy(dtype="float64")
+    optional = df[numeric[len(REQUIRED) - 2 :]].to_numpy(dtype="float64")
     flag(df["date"].isna(), "invalid_date")
     flag(df["instrument"].isna() | (df["instrument"] == ""), "missing_instrument")
     flag(pd.Series(~np.isfinite(num).all(axis=1), index=df.index), "missing_or_nonfinite_value")
+    flag(pd.Series(np.isinf(optional).any(axis=1), index=df.index), "missing_or_nonfinite_value")
     prices = [c for c in numeric if c != "volume"]
     flag((df[prices] <= 0).any(axis=1), "non_positive_price")
     flag(df["volume"] < 0, "negative_volume")
