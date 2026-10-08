@@ -5,8 +5,13 @@ Two kinds are defined so producers and consumers can validate independently:
 ``market_bars`` (daily bars)
     Keys ``(date, instrument)``. ``date`` is the trading session. ``open`` is observable at
     the session open and ``high/low/close/volume`` at the session close. Prices are adjusted
-    according to ``metadata.price_adjustment``. An instrument's absence from a session means
-    it was not tradable (not listed, halted, or delisted).
+    according to ``metadata.price_adjustment``, and volume inversely, so ``close * volume``
+    is the session's dollar volume. Optional ``close_as_traded`` is the close as it traded
+    that session, before any later split or dividend adjustment (null when unknown);
+    price-level rules such as a minimum price need it, because an adjusted level depends on
+    later corporate actions.
+    An instrument's absence from a session means it was not tradable (not listed, halted,
+    or delisted).
 
 ``universe``
     Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``.
@@ -32,10 +37,13 @@ Two kinds are defined so producers and consumers can validate independently:
 from __future__ import annotations
 
 import math
+import numbers
 import os
 from datetime import date
+from decimal import Decimal
 from typing import Any, NoReturn
 
+import numpy as np
 import pandas as pd
 
 from invest_data.bundle import (
@@ -44,6 +52,7 @@ from invest_data.bundle import (
     Manifest,
     format_value,
     read_bundle,
+    read_manifest,
     write_bundle,
 )
 
@@ -61,6 +70,7 @@ MARKET_BAR_COLUMNS = (
     Column("close", "float64", nullable=False, unit="price"),
     Column("volume", "float64", nullable=False, unit="shares"),
 )
+AS_TRADED_CLOSE = Column("close_as_traded", "float64", nullable=True, unit="price")
 SIGNAL_COLUMNS = (
     Column("decision_date", "date", nullable=False),
     Column("instrument", "string", nullable=False),
@@ -80,6 +90,9 @@ FUNDAMENTAL_COLUMNS = (
     Column("value", "float64", nullable=False),
 )
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
+PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
+# What evaluation and mining accept: closes whose returns include splits and dividends.
+ADJUSTED_PRICES = ("total_return_adjusted",)
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
 # Version 2 binds factor evidence to the tested prediction/holding horizon.
@@ -104,10 +117,102 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
         raise BundleError(f"{manifest.dataset_kind}: columns {got} != expected {want}")
 
 
+def _check_kind(manifest: Manifest, kind: str) -> None:
+    if manifest.dataset_kind != kind:
+        raise BundleError(f"expected dataset_kind {kind!r}, got {manifest.dataset_kind!r}")
+
+
+def real_numbers(values: pd.Series, name: str) -> np.ndarray:
+    """``values`` as float64 (null -> NaN), refusing anything but real numbers or null.
+
+    The one rule for numeric bar columns: booleans, complex numbers and text are refused,
+    whatever the dtype; numbers in an object column (for example after a concat with
+    ``None``) are accepted.
+    """
+    dtype = values.dtype
+    if not real_dtype(dtype):
+        values = values.astype(object)  # categoricals and extension arrays included
+        # A signalling NaN decimal raises in pandas' null check, so it is looked for first.
+        snan = values.map(lambda v: isinstance(v, Decimal) and v.is_snan()).astype(bool)
+        present = values[~snan]
+        present = present[present.notna()]
+        if (
+            snan.any()
+            or non_real(present).any()
+            or not present.map(lambda v: isinstance(v, numbers.Real | Decimal)).all()
+        ):
+            raise BundleError(f"{name} must hold real numbers, not {dtype}")
+    try:
+        return np.asarray(values.to_numpy(dtype="float64", na_value=np.nan))
+    except (ArithmeticError, ValueError) as exc:  # for example ints beyond float range
+        raise BundleError(f"{name} must hold real numbers that fit a float ({exc})") from exc
+
+
+def real_dtype(dtype: Any) -> bool:
+    """Numeric dtypes whose values are all real quantities (not booleans or complex)."""
+    return pd.api.types.is_numeric_dtype(dtype) and not (
+        pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
+    )
+
+
+def non_real(values: pd.Series) -> pd.Series:
+    """Booleans and complex numbers: values that parse as numbers but are not quantities."""
+    dtype = values.dtype
+    if pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype):
+        return pd.Series(True, index=values.index)
+    if real_dtype(dtype):
+        return pd.Series(False, index=values.index)
+    kinds = bool | np.bool_ | complex | np.complexfloating
+    # Through object, so categoricals give a plain boolean mask too.
+    return values.astype(object).map(lambda v: isinstance(v, kinds)).astype(bool)
+
+
+def market_bar_columns(names: Any) -> tuple[Column, ...]:
+    """The market-bar columns for a frame or bundle, with ``close_as_traded`` if it has it."""
+    return MARKET_BAR_COLUMNS + ((AS_TRADED_CLOSE,) if AS_TRADED_CLOSE.name in names else ())
+
+
+def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
+    """:func:`read_market_bars` for consumers that compute returns from ``close``.
+
+    The declared adjustment is checked from the manifest before the rows are read, and
+    again on the manifest returned with them.
+    """
+    manifest = read_manifest(path)
+    _check_kind(manifest, MARKET_BARS)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
+    require_adjusted_prices(manifest)
+    manifest, frame = read_market_bars(path)
+    require_adjusted_prices(manifest)
+    return manifest, frame
+
+
+def require_adjusted_prices(manifest: Manifest) -> None:
+    """Refuse bars whose closes are not declared total-return adjusted.
+
+    No consumer applies corporate actions yet. Returns from unadjusted closes turn every
+    split into a gain or loss (a 2-for-1 split reads as -50%); returns from split-adjusted
+    closes drop each dividend, which flatters shorts in high-yield names.
+    """
+    adjustment = manifest.metadata.get("price_adjustment")
+    if adjustment not in ADJUSTED_PRICES:
+        raise BundleError(
+            f"{manifest.dataset_id}: price_adjustment {adjustment!r} is not supported; "
+            f"expected one of {list(ADJUSTED_PRICES)}. Returns from unadjusted closes count "
+            "every split as a gain or loss, and split-adjusted ones drop dividends; publish "
+            "total-return adjusted bars (with close_as_traded for price-level rules)"
+        )
+
+
 def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind: str) -> None:
     missing = [k for k in required if k not in metadata]
     if missing:
         raise BundleError(f"{kind}: metadata missing {missing}")
+    if kind == MARKET_BARS and metadata["price_adjustment"] not in PRICE_ADJUSTMENTS:
+        raise BundleError(
+            f"market_bars: price_adjustment {metadata['price_adjustment']!r} is not one of "
+            f"{list(PRICE_ADJUSTMENTS)}"
+        )
     if kind == SIGNALS and "n_trials" in metadata:
         n_trials = metadata["n_trials"]
         if type(n_trials) is not int or n_trials < 1:
@@ -267,14 +372,15 @@ def publish_market_bars(
     fmt: str = "csv",
 ) -> Manifest:
     _validate_metadata(metadata, REQUIRED_MARKET_METADATA, MARKET_BARS)
-    frame = frame[[c.name for c in MARKET_BAR_COLUMNS]].sort_values(["date", "instrument"])
+    columns = market_bar_columns(frame.columns)
+    frame = frame[[c.name for c in columns]].sort_values(["date", "instrument"])
     validate_market_frame(frame)
     return write_bundle(
         frame.reset_index(drop=True),
         path,
         dataset_id=dataset_id,
         fmt=fmt,
-        columns=MARKET_BAR_COLUMNS,
+        columns=columns,
         primary_key=("date", "instrument"),
         provenance=provenance,
         dataset_kind=MARKET_BARS,
@@ -284,22 +390,27 @@ def publish_market_bars(
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
-    px = frame[["open", "high", "low", "close"]]
-    if (px <= 0).to_numpy().any():
+    columns = market_bar_columns(frame.columns)[2:]
+    v = {c.name: real_numbers(frame[c.name], f"market_bars: {c.name}") for c in columns}
+    for c in columns:  # null only where the column allows it, and never infinite
+        if not c.nullable and np.isnan(v[c.name]).any():
+            raise BundleError(f"market_bars: {c.name} must be finite (it has nulls)")
+        if np.isinf(v[c.name]).any():
+            raise BundleError(f"market_bars: {c.name} must be finite")
+    if any((v[c.name] <= 0).any() for c in columns if c.unit == "price"):
         raise BundleError("market_bars: prices must be positive")
-    if (frame["volume"] < 0).any():
+    if (v["volume"] < 0).any():
         raise BundleError("market_bars: volume must be non-negative")
-    hi_ok = frame["high"] >= frame[["open", "close"]].max(axis=1) * (1 - 1e-12)
-    lo_ok = frame["low"] <= frame[["open", "close"]].min(axis=1) * (1 + 1e-12)
+    hi_ok = v["high"] >= np.maximum(v["open"], v["close"]) * (1 - 1e-12)
+    lo_ok = v["low"] <= np.minimum(v["open"], v["close"]) * (1 + 1e-12)
     if not (hi_ok & lo_ok).all():
         raise BundleError("market_bars: high/low inconsistent with open/close")
 
 
 def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     manifest, frame = read_bundle(path)
-    if manifest.dataset_kind != MARKET_BARS:
-        raise BundleError(f"expected dataset_kind {MARKET_BARS!r}, got {manifest.dataset_kind!r}")
-    _check_columns(manifest, MARKET_BAR_COLUMNS)
+    _check_kind(manifest, MARKET_BARS)
+    _check_columns(manifest, market_bar_columns(manifest.column_names))
     _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     validate_market_frame(frame)
     return manifest, frame

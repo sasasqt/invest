@@ -1,9 +1,12 @@
+from dataclasses import replace
+from decimal import Decimal
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from invest_evaluation.config import BacktestConfig, CostModel, ExecutionConfig, StrategyConfig
-from invest_evaluation.engine import InputError, run_backtest
+from invest_evaluation.engine import InputError, check_price_rules, run_backtest
 
 
 class Fixed:
@@ -312,3 +315,122 @@ class QuantileOnly:
 
     def target_weights(self, scores: pd.Series) -> pd.Series:
         return pd.Series(1.0 / len(scores), index=scores.index) if len(scores) else scores
+
+
+def split_market(*, adjusted: bool) -> pd.DataFrame:
+    """A trades at 5, C at 0.5 and B at 20 on every session (as traded).
+
+    After the last session A splits 10-for-1 and C consolidates 1-for-10. ``adjusted``
+    gives the history as an adjuster publishes it once those actions are known: A's prices
+    divided by 10 and C's multiplied by 10, volumes inversely, as-traded closes unchanged.
+    """
+    dates = pd.bdate_range("2024-01-01", periods=6)
+    factor = {"A": 0.1, "B": 1.0, "C": 10.0} if adjusted else {"A": 1.0, "B": 1.0, "C": 1.0}
+    traded = {"A": 5.0, "B": 20.0, "C": 0.5}
+    rows = [
+        [d, name, *[px * factor[name]] * 4, 1e6 / factor[name], px]
+        for d in dates
+        for name, px in traded.items()
+    ]
+    columns = ["date", "instrument", "open", "high", "low", "close", "volume", "close_as_traded"]
+    return pd.DataFrame(rows, columns=columns)
+
+
+def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligibility():
+    """K11: eligibility on a decision date must not depend on corporate actions after it."""
+    cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
+    signals = signals_on("2024-01-03", names=("A", "B", "C"))
+    runs = [
+        run_backtest(
+            split_market(adjusted=adjusted),
+            signals,
+            cfg,
+            Fixed({"B": 1.0}),
+            record_decisions=True,
+        )
+        for adjusted in (False, True)
+    ]
+    for res in runs:
+        # A traded at 5 (adjusted 0.5 later) and stays eligible; C traded at 0.5 (adjusted
+        # 5 later) and stays excluded.
+        assert sorted(res.decisions["instrument"]) == ["A", "B"]
+    pd.testing.assert_frame_equal(runs[0].decisions, runs[1].decisions)
+    pd.testing.assert_series_equal(runs[0].daily["equity"], runs[1].daily["equity"])
+
+    # A name whose as-traded close is unknown on the decision date cannot pass the floor.
+    # The warning counts only names nothing else excluded (C fails min_adv_dollar too).
+    bars = split_market(adjusted=True)
+    day = bars["date"] == "2024-01-03"
+    bars.loc[day & bars["instrument"].isin(["A", "C"]), "close_as_traded"] = None
+    cfg = replace(cfg, execution=replace(cfg.execution, min_adv_dollar=1e6))
+    res = run_backtest(bars, signals, cfg, Fixed({"B": 1.0}), record_decisions=True)
+    assert sorted(res.decisions["instrument"]) == ["B"]
+    assert res.warnings == [
+        "1 otherwise eligible name-decisions had no positive finite close_as_traded and failed "
+        "execution.min_price"
+    ]
+
+
+def test_min_price_without_as_traded_closes_is_refused():
+    bars = split_market(adjusted=True).drop(columns="close_as_traded")
+    cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
+    with pytest.raises(InputError, match="needs the as-traded close"):
+        run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"B": 1.0}))
+    # A column with no known value in the evaluation window is no better than none.
+    early = bars.assign(close_as_traded=5.0).assign(
+        close_as_traded=lambda f: f["close_as_traded"].where(f["date"] < "2024-01-03")
+    )
+    for window in (cfg, replace(cfg, start="2024-01-03")):  # default: from the first signal
+        with pytest.raises(
+            InputError, match="no session in the evaluation window has a positive finite one"
+        ):
+            run_backtest(early, signals_on("2024-01-03"), window, Fixed({"B": 1.0}))
+    # NaN, object None from a caller's frame, or a value that is not a positive finite price.
+    for unknown in (float("nan"), None, float("inf"), -5.0):
+        with pytest.raises(InputError, match="needs the as-traded close"):
+            run_backtest(
+                bars.assign(close_as_traded=unknown),
+                signals_on("2024-01-03"),
+                cfg,
+                Fixed({"B": 1.0}),
+            )
+    for text in ("five", "5.0", True, 5 + 1j):  # text, booleans and complex are not prices
+        dtype = bars.assign(close_as_traded=text)["close_as_traded"].dtype  # named as given
+        with pytest.raises(InputError, match=f"must hold real numbers, not {dtype}"):
+            run_backtest(
+                bars.assign(close_as_traded=text), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
+            )
+    for huge, message in ((10**400, " that fit a float"), (Decimal("sNaN"), ", not object")):
+        column = pd.Series(huge, index=bars.index, dtype=object)
+        with pytest.raises(InputError, match=f"must hold real numbers{message}"):
+            run_backtest(
+                bars.assign(close_as_traded=column), signals_on("2024-01-03"), cfg, Fixed({})
+            )
+    # Categoricals are judged by their values.
+    with pytest.raises(InputError, match="must hold real numbers"):
+        check_price_rules(
+            bars.assign(close_as_traded="five").astype({"close_as_traded": "category"}), cfg
+        )
+    full = split_market(adjusted=True)
+    categorical = full.astype({"close_as_traded": "category"})
+    assert check_price_rules(categorical, cfg).equals(check_price_rules(full, cfg))
+    single = full.assign(close_as_traded=5.0).astype({"close_as_traded": "category"})
+    assert (check_price_rules(single, cfg) == 5.0).all()  # one category: no TypeError
+    # Real numbers in an object column (e.g. after a concat with None) are prices.
+    mixed = split_market(adjusted=True)
+    values = mixed["close_as_traded"].astype(object)
+    values[mixed["instrument"] == "A"] = Decimal("5")
+    values.iloc[0] = None
+    mixed["close_as_traded"] = values
+    cfg_floor = replace(cfg, start=None)
+    res = run_backtest(
+        mixed,
+        signals_on("2024-01-03", names=("A", "B", "C")),
+        cfg_floor,
+        Fixed({"B": 1.0}),
+        record_decisions=True,
+    )
+    assert sorted(res.decisions["instrument"]) == ["A", "B"]
+    # Without a price level there is nothing to compare, so adjusted closes suffice.
+    res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
+    assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)

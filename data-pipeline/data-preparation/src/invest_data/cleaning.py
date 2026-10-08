@@ -1,17 +1,29 @@
 """Deterministic cleaning of raw daily bars, with an explicit rejected-row report.
 
 Cleaning never fills, interpolates or forward-fills prices: those are modelling choices
-that belong to consumers. Each rejected row carries the first rule it violated.
+that belong to consumers. Each rejected row carries the first rule it violated. An invalid
+value in an optional column is nulled and counted instead, so the bar itself is kept.
+Conversion to total-return adjusted prices, when asked for, runs on the bars that pass, so
+the rejected-row report shows the prices as given.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
 
+from invest_data.schemas import AS_TRADED_CLOSE, non_real, real_dtype
+
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
+OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
+# Values that mean "unknown" in an optional column, compared case-insensitively
+# (pandas' default CSV null markers).
+NULL_TOKENS = frozenset(
+    {"", "#n/a", "#n/a n/a", "#na", "-1.#ind", "-1.#qnan", "-nan", "1.#ind", "1.#qnan", "<na>",
+     "n/a", "na", "nan", "none", "null"}
+)  # fmt: skip
 
 
 @dataclass(frozen=True)
@@ -19,34 +31,97 @@ class CleaningReport:
     input_rows: int
     output_rows: int
     rejected: pd.DataFrame  # original columns + "reason"
+    # Optional columns present: output rows whose value was invalid and set to null.
+    nulled: dict[str, int] = field(default_factory=dict)
 
     def summary(self) -> dict[str, object]:
         counts = self.rejected["reason"].value_counts().sort_index()
-        return {
+        out: dict[str, object] = {
             "input_rows": self.input_rows,
             "output_rows": self.output_rows,
             "rejected_rows": len(self.rejected),
             "rejected_by_reason": {str(k): int(v) for k, v in counts.items()},
         }
+        if self.nulled:
+            out["nulled_invalid_values"] = dict(self.nulled)
+        return out
 
 
-def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
-    """Return (clean bars sorted by date/instrument, report). Input is not modified."""
+def total_return_adjust(raw: pd.DataFrame, adjusted_close: str = "adjclose") -> pd.DataFrame:
+    """Scale OHLC by ``adjusted / close``; scale volume inversely to keep dollar volume.
+
+    ``raw`` holds numbers. The result has the market-bars columns, total-return adjusted.
+    Rows lacking a positive close or adjusted close get NaN prices; cleaning rejects those.
+    """
+    close = raw["close"].where(raw["close"] > 0)
+    factor = raw[adjusted_close].where(raw[adjusted_close] > 0) / close
+    out = raw[["date", "instrument"]].copy()
+    for name in ("open", "high", "low", "close"):
+        out[name] = raw[name] * factor
+    out["volume"] = raw["volume"] / factor
+    return out
+
+
+def clean_bars(
+    raw: pd.DataFrame, *, adjusted_close: str | None = None, as_traded: bool = False
+) -> tuple[pd.DataFrame, CleaningReport]:
+    """Return (clean bars sorted by date/instrument, report). Input is not modified.
+
+    ``adjusted_close`` names a column holding the total-return adjusted close of raw or
+    split-adjusted bars: the bars are judged as given, rows whose adjusted close is not
+    positive (or whose converted values would not be finite and positive) are rejected as
+    ``invalid_adjusted_close``, and the rest are converted with :func:`total_return_adjust`.
+    ``as_traded`` says the given closes are as traded (raw prices); they are then kept as
+    ``close_as_traded``.
+    """
+    raw = raw.reset_index(drop=True)  # rows are matched by position, whatever the labels
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
     if missing_cols:
         raise ValueError(f"raw bars missing columns {missing_cols}")
-    df = raw[REQUIRED].copy()
+    columns = REQUIRED + [c for c in OPTIONAL if c in raw.columns]
+    if adjusted_close is not None:
+        if adjusted_close in [*REQUIRED, *OPTIONAL, "reason"]:
+            raise ValueError(f"the adjusted close cannot be the column {adjusted_close!r}")
+        if adjusted_close not in raw.columns:
+            raise ValueError(f"raw bars have no adjusted close column {adjusted_close!r}")
+        columns = [*columns, adjusted_close]
+    if as_traded:
+        if adjusted_close is None:
+            raise ValueError("as_traded needs adjusted_close: raw prices must be converted")
+        if AS_TRADED_CLOSE.name in raw.columns:
+            raise ValueError(
+                f"raw bars already have a {AS_TRADED_CLOSE.name} column; with raw prices it "
+                "is taken from close"
+            )
+    df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
-    for col in REQUIRED[2:]:
-        df[col] = pd.to_numeric(df[col], errors="coerce").astype("float64")
+    for col in columns[2:]:
+        if real_dtype(df[col].dtype):
+            values = df[col].to_numpy(dtype="float64", na_value=np.nan)
+            df[col] = pd.Series(values, index=df.index)
+            continue
+        # Booleans and complex numbers would parse as numbers; they are not quantities.
+        values = df[col].astype(object).mask(non_real(df[col]))
+        df[col] = pd.to_numeric(values, errors="coerce").astype("float64")
 
     reason = pd.Series(pd.NA, index=df.index, dtype="object")
 
     def flag(mask: pd.Series, why: str) -> None:
         reason.loc[mask & reason.isna()] = why
+
+    invalid = {}
+    for col in [c for c in OPTIONAL if c in df]:
+        # A null marker means unknown. Any other value that is not a positive number is
+        # invalid; it is nulled and counted, because the optional column must not cost the
+        # session its bar.
+        suspect = ~(np.isfinite(df[col]) & (df[col] > 0))
+        text = raw.loc[suspect, col]
+        given = text.notna() & ~text.astype(str).str.strip().str.lower().isin(NULL_TOKENS)
+        invalid[col] = given.reindex(df.index, fill_value=False)
+        df.loc[invalid[col], col] = np.nan
 
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")
     flag(df["date"].isna(), "invalid_date")
@@ -59,11 +134,22 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     order = df.assign(_row=np.arange(len(df))).sort_values(["date", "instrument", "_row"])
     dup = order.duplicated(["date", "instrument"], keep=False)
     flag(dup.reindex(df.index).fillna(False).astype(bool), "duplicate_key")
+    if adjusted_close is not None:
+        converted = total_return_adjust(df, adjusted_close)
+        values = converted[REQUIRED[2:]].to_numpy(dtype="float64")
+        # NaN unless the adjusted close is positive; underflow or overflow are refused too.
+        fine = np.isfinite(values).all(axis=1) & (values[:, :4] > 0).all(axis=1)
+        flag(pd.Series(~fine, index=df.index), "invalid_adjusted_close")
 
     bad = reason.notna()
     rejected = raw.loc[bad].copy()
     rejected["reason"] = reason[bad]
+    if adjusted_close is not None:
+        optional = df[[c for c in OPTIONAL if c in df]]
+        kept = df["close"].rename(AS_TRADED_CLOSE.name) if as_traded else optional
+        df = pd.concat([converted, kept], axis=1)
     clean = df.loc[~bad].sort_values(["date", "instrument"]).reset_index(drop=True)
     clean["instrument"] = clean["instrument"].astype(object)
-    report = CleaningReport(len(raw), len(clean), rejected.reset_index(drop=True))
+    nulled = {col: int((mask & ~bad).sum()) for col, mask in invalid.items()}
+    report = CleaningReport(len(raw), len(clean), rejected.reset_index(drop=True), nulled)
     return clean, report

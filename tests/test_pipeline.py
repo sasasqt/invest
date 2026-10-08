@@ -206,6 +206,17 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     )
     assert done.returncode == 0, done.stderr
     assert "no download" in done.stderr
+    # Yahoo bars have no as-traded close, so the price floor is off in both evaluations,
+    # while the rest of the configuration is the example's.
+    assert "execution.min_price 1.0 -> 0" in done.stderr
+    example = json.loads(CONFIG.read_text())
+    for used in (
+        json.loads((out / "eval" / "config.json").read_text()),
+        json.loads((out / "quantiles" / "config.json").read_text())["backtest"],
+    ):
+        assert used["execution"]["min_price"] == 0.0
+        assert used["strategy"] == {**used["strategy"], **example["strategy"]}
+        assert used["execution"] == {**used["execution"], **example["execution"], "min_price": 0.0}
     manifest = json.loads((out / "eval" / "manifest.json").read_text())
     assert manifest["n_trials"] == 1
     assert manifest["external_benchmark"]["instrument"] == "SPY"

@@ -10,10 +10,14 @@ specific. An adapter returns a raw bars DataFrame with the columns of
 from __future__ import annotations
 
 import os
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 
 import numpy as np
 import pandas as pd
+
+from invest_data.cleaning import REQUIRED
+from invest_data.schemas import AS_TRADED_CLOSE
 
 
 @dataclass(frozen=True)
@@ -103,6 +107,8 @@ def synthetic_market(config: SyntheticConfig | None = None) -> pd.DataFrame:
                     "low": low[sl, i],
                     "close": close[sl, i],
                     "volume": volume[sl, i],
+                    # No splits or dividends are simulated, so prices trade as quoted.
+                    "close_as_traded": close[sl, i],
                 }
             )
         )
@@ -126,17 +132,21 @@ def load_csv_bars(
     *,
     column_map: dict[str, str] | None = None,
     date_format: str | None = None,
+    extra_columns: Sequence[str] = (),
 ) -> pd.DataFrame:
     """Load user-supplied daily bars from a local CSV (one row per date and instrument).
 
     ``column_map`` renames source columns to ``date, instrument, open, high, low, close,
-    volume``. Values are parsed but not cleaned; run :func:`clean_bars` next.
+    volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
+    minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
+
+    ``extra_columns`` (not bar columns) are kept as given, for example an adjusted close
+    for ``clean_bars(bars, adjusted_close=...)``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
         raw = raw.rename(columns=column_map)
-    required = ["date", "instrument", "open", "high", "low", "close", "volume"]
-    missing = [c for c in required if c not in raw.columns]
+    missing = [c for c in REQUIRED if c not in raw.columns]
     if missing:
         raise ValueError(f"CSV is missing required columns {missing}")
     out = pd.DataFrame(
@@ -145,8 +155,17 @@ def load_csv_bars(
             "instrument": raw["instrument"].str.strip(),
         }
     )
-    for col in required[2:]:
+    for col in REQUIRED[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
+    # Parsed by cleaning, which judges null markers.
+    if AS_TRADED_CLOSE.name in raw.columns:
+        out[AS_TRADED_CLOSE.name] = raw[AS_TRADED_CLOSE.name]
+    for col in extra_columns:
+        if col in out:
+            raise ValueError(f"extra column {col!r} is a bar column")
+        if col not in raw.columns:
+            raise ValueError(f"CSV has no column {col!r}")
+        out[col] = raw[col]
     return out
 
 

@@ -15,12 +15,12 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from invest_data.bundle import BundleError
+from invest_data.bundle import BundleError, Manifest
 from invest_data.schemas import (
     FACTOR_EVIDENCE_STATISTICS,
     FACTOR_EVIDENCE_VERSION,
+    read_adjusted_market_bars,
     read_fundamentals,
-    read_market_bars,
     read_universe,
     validate_factor_evidence,
 )
@@ -93,6 +93,14 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
         )
 
 
+def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
+    """Market bars whose closes give returns: every command scores or labels with them."""
+    try:
+        return read_adjusted_market_bars(path)
+    except BundleError as exc:
+        raise SystemExit(str(exc)) from exc
+
+
 def _evaluate(args: argparse.Namespace) -> int:
     # Validate settings before the ledger records an inspection.
     for flag, value, minimum in (
@@ -102,7 +110,7 @@ def _evaluate(args: argparse.Namespace) -> int:
     ):
         if value < minimum:
             raise SystemExit(f"{flag} must be an integer >= {minimum}")
-    manifest, bars = read_market_bars(args.data)
+    manifest, bars = _market_bars(args.data)
     if args.ledger is not None:
         dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
         _record_inspection(
@@ -159,7 +167,7 @@ def _evaluate(args: argparse.Namespace) -> int:
 
 
 def _search(args: argparse.Namespace) -> int:
-    manifest, bars = read_market_bars(args.data)
+    manifest, bars = _market_bars(args.data)
     panel = build_panel(bars, **_optional_inputs(args))
     params: dict[str, Any] = {
         "n_trials": args.trials,
@@ -274,7 +282,7 @@ def _confirm(args: argparse.Namespace) -> int:
             f"{args.factor}: only fixed formulas from `invest-mine freeze` can be confirmed "
             "alone; confirm search-selected factors with their family (`search --confirm-start`)"
         )
-    manifest, bars = read_market_bars(args.data)
+    manifest, bars = _market_bars(args.data)
     panel = build_panel(bars, **_optional_inputs(args))
     dates = pd.DatetimeIndex(panel["close"].index)
     start = pd.Timestamp(args.confirm_start)
@@ -502,7 +510,7 @@ def _export(args: argparse.Namespace) -> int:
     if evidence is not None and evidence["source"] == "search":
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
-    manifest, bars = read_market_bars(args.data)
+    manifest, bars = _market_bars(args.data)
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",

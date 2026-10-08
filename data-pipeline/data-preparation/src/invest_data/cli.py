@@ -11,7 +11,13 @@ from pathlib import Path
 import pandas as pd
 
 from invest_data.cleaning import clean_bars
-from invest_data.schemas import publish_fundamentals, publish_market_bars, publish_universe
+from invest_data.schemas import (
+    ADJUSTED_PRICES,
+    PRICE_ADJUSTMENTS,
+    publish_fundamentals,
+    publish_market_bars,
+    publish_universe,
+)
 from invest_data.sources import (
     SYNTHETIC_METADATA,
     SyntheticConfig,
@@ -84,10 +90,38 @@ def _yahoo(args: argparse.Namespace) -> int:
     )
 
 
+def _check_convertible(adjustment: str) -> None:
+    if adjustment not in ("unadjusted", "split_adjusted"):
+        raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
+
+
 def _publish(
-    raw: pd.DataFrame, out: Path, dataset_id: str, metadata: dict, provenance: dict, fmt: str
+    raw: pd.DataFrame,
+    out: Path,
+    dataset_id: str,
+    metadata: dict,
+    provenance: dict,
+    fmt: str,
+    adjusted_close: str | None = None,
 ) -> int:
-    clean, report = clean_bars(raw)
+    """Clean and publish; ``adjusted_close`` converts raw or split-adjusted prices.
+
+    The conversion and the bundle's ``price_adjustment`` label are decided together here.
+    """
+    given = metadata["price_adjustment"]
+    if adjusted_close is not None:
+        _check_convertible(given)
+        metadata = {**metadata, "price_adjustment": "total_return_adjusted"}
+        converted = {"from": given, "adjusted_close_column": adjusted_close}
+        provenance = {**provenance, "converted": converted}
+    try:
+        clean, report = clean_bars(
+            raw,
+            adjusted_close=adjusted_close,
+            as_traded=adjusted_close is not None and given == "unadjusted",
+        )
+    except ValueError as exc:
+        raise SystemExit(f"{dataset_id}: {exc}") from exc
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
@@ -95,6 +129,12 @@ def _publish(
     if len(report.rejected):
         report.rejected.to_csv(out.with_name(out.name + ".rejected.csv"), index=False)
     print(json.dumps({"bundle": str(out), "rows": manifest.row_count, **report.summary()}))
+    if metadata["price_adjustment"] not in ADJUSTED_PRICES:
+        print(
+            f"note: evaluation and mining refuse {metadata['price_adjustment']!r} bars until "
+            "corporate actions are modelled",
+            file=sys.stderr,
+        )
     return 0
 
 
@@ -121,7 +161,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     imp.add_argument(
         "--price-adjustment",
         required=True,
-        choices=["total_return_adjusted", "split_adjusted", "unadjusted"],
+        choices=PRICE_ADJUSTMENTS,
+        help="how the CSV's open/high/low/close are adjusted (unadjusted = raw, as traded)",
+    )
+    imp.add_argument(
+        "--adjusted-close",
+        metavar="COLUMN",
+        help="CSV column with the total-return adjusted close: converts unadjusted or "
+        "split_adjusted prices to total_return_adjusted bars (unadjusted closes are kept "
+        "as close_as_traded; split-adjusted ones are not as traded)",
     )
 
     yah = sub.add_parser("yahoo", help="test-only Yahoo Finance snapshots (download, publish)")
@@ -186,13 +234,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         "calendar": args.calendar,
         "price_adjustment": args.price_adjustment,
     }
+    extra = []
+    if args.adjusted_close is not None:
+        _check_convertible(args.price_adjustment)  # before reading the CSV
+        extra = [args.adjusted_close]
+    try:
+        bars = load_csv_bars(args.source, extra_columns=extra)
+    except ValueError as exc:
+        raise SystemExit(f"{args.source}: {exc}") from exc
+    provenance = {"sources": [args.source.name]}
     return _publish(
-        load_csv_bars(args.source),
-        args.out,
-        args.dataset_id,
-        meta,
-        {"sources": [args.source.name]},
-        args.format,
+        bars, args.out, args.dataset_id, meta, provenance, args.format, args.adjusted_close
     )
 
 

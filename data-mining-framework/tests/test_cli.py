@@ -223,3 +223,36 @@ def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tm
         with pytest.raises(SystemExit):
             main([*args, flag, "0", "--ledger", str(book), "--out", str(tmp_path / "bad")])
     assert not book.exists()  # rejected before the ledger records an inspection
+
+
+@pytest.mark.parametrize("adjustment", ["unadjusted", "split_adjusted"])
+def test_every_command_refuses_bars_without_total_return_closes(tmp_path, bars, adjustment):
+    """N1: features and forward returns from unadjusted closes treat a split as a crash."""
+    from invest_data.schemas import publish_market_bars
+    from invest_data.sources import SYNTHETIC_METADATA
+
+    data = tmp_path / "data"
+    metadata = {**SYNTHETIC_METADATA, "price_adjustment": adjustment}
+    publish_market_bars(bars, data, dataset_id="m", metadata=metadata)
+    factor = tmp_path / "f.json"
+    expr = "close / delay(close, 5) - 1"
+    assert main(["freeze", "--expr", expr, "--horizon", "1", "--out", str(factor)]) == 0
+    book = tmp_path / "ledger.jsonl"
+    commands = {
+        "evaluate": ["--expr", expr, "--ledger", str(book)],
+        "search": ["--trials", "5", "--ledger", str(book)],
+        "confirm": [
+            "--factor",
+            str(factor),
+            "--confirm-start",
+            "2020-09-01",
+            "--ledger",
+            str(book),
+        ],
+        "export": ["--factor", str(factor)],
+    }
+    for command, extra in commands.items():
+        with pytest.raises(SystemExit, match="is not supported"):
+            main([command, "--data", str(data), *extra, "--out", str(tmp_path / command)])
+        assert not (tmp_path / command).exists()
+    assert not book.exists()  # refused before any inspection was recorded

@@ -11,9 +11,15 @@ from pathlib import Path
 
 import pandas as pd
 
-from invest_data.schemas import read_market_bars, read_signals, read_universe
+from invest_data.bundle import BundleError, Manifest
+from invest_data.schemas import (
+    read_adjusted_market_bars,
+    read_market_bars,
+    read_signals,
+    read_universe,
+)
 from invest_evaluation.config import BacktestConfig
-from invest_evaluation.engine import run_backtest
+from invest_evaluation.engine import InputError, check_price_rules, run_backtest
 from invest_evaluation.metrics import compute_metrics, instrument_returns
 from invest_evaluation.quantiles import QuantileConfig, run_quantile_portfolios, save_quantile_run
 from invest_evaluation.reporting import save_run
@@ -81,6 +87,16 @@ def _fractions(text: str) -> tuple[float, ...]:
         raise argparse.ArgumentTypeError("expected comma-separated fractions") from exc
 
 
+def _market(path: Path, cfg: BacktestConfig) -> tuple[Manifest, pd.DataFrame]:
+    """Market bars the backtest can use: adjusted closes, and the prices its rules need."""
+    try:
+        manifest, bars = read_adjusted_market_bars(path)
+        check_price_rules(bars, cfg)
+    except (BundleError, InputError) as exc:
+        raise SystemExit(str(exc)) from exc
+    return manifest, bars
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="invest-eval", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -124,7 +140,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "quantiles":
         return _quantiles(args)
 
-    market_manifest, bars = read_market_bars(args.data)
+    cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
+    market_manifest, bars = _market(args.data, cfg)
     signal_manifest, signals = read_signals(args.signals)
     n_trials = args.n_trials
     if n_trials is None:
@@ -140,7 +157,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"--n-trials {n_trials} is below the {searched} candidates the search behind "
                 "these signals tried; a count may only add trials"
             )
-    cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
     unknown = sorted(set(cfg.validation.stress_scenarios) - set(DEFAULT_SCENARIOS))
     if unknown:
         raise SystemExit(f"validation.stress_scenarios: unknown scenarios {unknown}")
@@ -173,7 +189,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             "instrument": external.name,
             "metadata": bench_manifest.metadata,
         }
-    result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
+    try:
+        result = run_backtest(bars, signals, cfg, universe=universe, delistings=delistings)
+        scenarios = (
+            None
+            if args.no_scenarios
+            else run_scenarios(bars, signals, cfg, universe=universe, delistings=delistings)
+        )
+    except InputError as exc:
+        raise SystemExit(str(exc)) from exc
     metrics = compute_metrics(
         result,
         external,
@@ -186,11 +210,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         cfg.annualization,
         n_trials=n_trials,
         risk_free_annual=cfg.risk_free_annual,
-    )
-    scenarios = (
-        None
-        if args.no_scenarios
-        else run_scenarios(bars, signals, cfg, universe=universe, delistings=delistings)
     )
     verdict = verdicts(
         signal_manifest.metadata, cfg.validation, result.returns, metrics, stats, scenarios
@@ -248,14 +267,17 @@ def _quantiles(args: argparse.Namespace) -> int:
         )
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
-    market_manifest, bars = read_market_bars(args.data)
-    signal_manifest, signals = read_signals(args.signals)
     cfg = BacktestConfig.load(args.config) if args.config else BacktestConfig()
+    market_manifest, bars = _market(args.data, cfg)
+    signal_manifest, signals = read_signals(args.signals)
     universe = read_universe(args.universe)[1] if args.universe else None
     delistings = _read_delistings(args.delistings)
-    result = run_quantile_portfolios(
-        bars, signals, cfg, qcfg, universe=universe, delistings=delistings
-    )
+    try:
+        result = run_quantile_portfolios(
+            bars, signals, cfg, qcfg, universe=universe, delistings=delistings
+        )
+    except InputError as exc:
+        raise SystemExit(str(exc)) from exc
     revision, dirty = code_revision()
     save_quantile_run(
         args.out,

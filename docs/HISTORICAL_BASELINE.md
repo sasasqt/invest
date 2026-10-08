@@ -63,7 +63,7 @@ Both runs requested 2010-01-01 to 2024-12-31 and inspected all of it (full-sampl
 
 ## Limitations
 
-- Eligibility look-ahead: the example config's `min_price = 1.0` compares back-adjusted closes, so splits and dividends after a date decide which names were eligible on it (REVIEW-13). On this snapshot NVDA was ineligible until 2016. The results above include this effect and will change when it is fixed.
+- Price floor: the runs above used the example config's `min_price = 1.0` on back-adjusted closes, so splits and dividends after a date decided which names were eligible on it. REVIEW-13 fixed this look-ahead; Yahoo bars have no as-traded close, so the workflow now evaluates without a price floor (`min_price = 0`). A replay of the 2026-10-07 snapshot after the fix adds 343 name-decisions (NVDA 317, ineligible until 2016 before; NFLX 26) and gives a net CAGR of −5.65% (Sharpe −0.47, max drawdown 61.5%); both verdicts and the six `insufficient_data` tail portfolios are unchanged.
 - Survivorship bias: only companies that are S&P 100 members today; failed and removed companies are missing, and late listings (for example META, ABBV, UBER, PLTR) enter when their history starts.
 - Yahoo adjusted prices are revised after each dividend and split; the snapshot, not the vendor, defines the data. Total-return adjustment scales open/high/low/close by `adjclose / close`.
 - No point-in-time membership, fundamentals, delisting events or borrow availability.
