@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 
 from invest_data.schemas import AS_TRADED_CLOSE
+from invest_data.yahoo import total_return_adjust
 
 
 @dataclass(frozen=True)
@@ -130,12 +131,20 @@ def load_csv_bars(
     *,
     column_map: dict[str, str] | None = None,
     date_format: str | None = None,
+    adjusted_close: str | None = None,
+    as_traded: bool = False,
 ) -> pd.DataFrame:
     """Load user-supplied daily bars from a local CSV (one row per date and instrument).
 
     ``column_map`` renames source columns to ``date, instrument, open, high, low, close,
     volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
     minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
+
+    ``adjusted_close`` names a column holding the total-return adjusted close: open, high,
+    low and close are then scaled by ``adjusted / close`` and volume inversely (dollar
+    volume is kept), giving total-return adjusted bars. ``as_traded`` says the CSV's own
+    close is the close as traded (raw prices); it is then kept as ``close_as_traded``.
+    Rows without a positive adjusted close get no prices, so cleaning rejects them.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -153,8 +162,26 @@ def load_csv_bars(
     for col in required[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
     if AS_TRADED_CLOSE.name in raw.columns:  # parsed by cleaning, which judges null markers
+        if as_traded:
+            raise ValueError(
+                f"CSV already has a {AS_TRADED_CLOSE.name} column; with raw prices the "
+                "importer takes it from close"
+            )
         out[AS_TRADED_CLOSE.name] = raw[AS_TRADED_CLOSE.name]
-    return out
+    if adjusted_close is None:
+        if as_traded:
+            raise ValueError("as_traded needs adjusted_close: raw prices must be adjusted")
+        return out
+    if adjusted_close not in raw.columns:
+        raise ValueError(f"CSV has no adjusted close column {adjusted_close!r}")
+    adjusted = total_return_adjust(
+        out.assign(adjclose=pd.to_numeric(raw[adjusted_close], errors="coerce"))
+    )
+    if as_traded:
+        adjusted[AS_TRADED_CLOSE.name] = out["close"]
+    elif AS_TRADED_CLOSE.name in out:
+        adjusted[AS_TRADED_CLOSE.name] = out[AS_TRADED_CLOSE.name]
+    return adjusted
 
 
 def synthetic_universe(

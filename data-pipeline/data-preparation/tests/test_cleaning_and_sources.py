@@ -255,3 +255,50 @@ def test_one_real_number_rule_for_bar_columns(tmp_path):
         frame.loc[0, column] = bad
         with pytest.raises(BundleError, match=f"{column} must be finite"):
             validate_market_frame(frame)
+
+
+def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
+    from invest_data.schemas import read_adjusted_market_bars
+
+    src = tmp_path / "raw.csv"
+    src.write_text(
+        "date,instrument,open,high,low,close,volume,adj\n"
+        "2024-01-02,AAA,100,110,90,100,1000,50\n"  # a later 2-for-1 split (or dividends)
+        "2024-01-03,AAA,100,110,90,104,1000,52\n"
+        "2024-01-03,BBB,10,11,9,10,500,\n"  # no adjusted close: no usable bar
+    )
+    args = ["--currency", "USD", "--calendar", "XNYS", "--dataset-id", "m"]
+    raw = [*args, "--price-adjustment", "unadjusted", "--adjusted-close", "adj"]
+    assert main(["import-csv", str(src), "--out", str(tmp_path / "m"), *raw]) == 0
+    assert "note:" not in capsys.readouterr().err
+    manifest, frame = read_adjusted_market_bars(tmp_path / "m")  # evaluation accepts it
+    assert manifest.metadata["price_adjustment"] == "total_return_adjusted"
+    assert manifest.provenance["converted"] == {
+        "from": "unadjusted",
+        "adjusted_close_column": "adj",
+    }
+    assert frame["instrument"].tolist() == ["AAA", "AAA"]
+    assert frame[["open", "high", "low", "close"]].iloc[0].tolist() == [50.0, 55.0, 45.0, 50.0]
+    assert frame["close"].tolist() == [50.0, 52.0]
+    assert frame["volume"].tolist() == [2000.0, 2000.0]  # dollar volume is kept
+    assert frame["close_as_traded"].tolist() == [100.0, 104.0]  # the raw close as traded
+    assert pd.read_csv(tmp_path / "m.rejected.csv")["instrument"].tolist() == ["BBB"]
+
+    # Split-adjusted prices convert too; they are not as traded, so no close_as_traded.
+    split = [*args, "--price-adjustment", "split_adjusted", "--adjusted-close", "adj"]
+    assert main(["import-csv", str(src), "--out", str(tmp_path / "s"), *split]) == 0
+    assert "close_as_traded" not in read_adjusted_market_bars(tmp_path / "s")[1]
+
+    refused = (
+        ("total_return_adjusted", "adj", "converts unadjusted or split_adjusted"),
+        ("unadjusted", "missing", "no adjusted close column 'missing'"),
+    )
+    for adjustment, column, message in refused:
+        flags = [*args, "--price-adjustment", adjustment, "--adjusted-close", column]
+        with pytest.raises(SystemExit, match=message):
+            main(["import-csv", str(src), "--out", str(tmp_path / "x"), *flags])
+    both = tmp_path / "both.csv"
+    both.write_text("date,instrument,open,high,low,close,volume,adj,close_as_traded\n")
+    with pytest.raises(SystemExit, match="already has a close_as_traded column"):
+        main(["import-csv", str(both), "--out", str(tmp_path / "x"), *raw])
+    assert not (tmp_path / "x").exists()

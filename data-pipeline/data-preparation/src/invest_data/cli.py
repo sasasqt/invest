@@ -7,6 +7,7 @@ import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -134,6 +135,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--price-adjustment",
         required=True,
         choices=PRICE_ADJUSTMENTS,
+        help="how the CSV's open/high/low/close are adjusted (unadjusted = raw, as traded)",
+    )
+    imp.add_argument(
+        "--adjusted-close",
+        metavar="COLUMN",
+        help="CSV column with the total-return adjusted close: converts unadjusted or "
+        "split_adjusted prices to total_return_adjusted bars (raw closes are kept as "
+        "close_as_traded)",
     )
 
     yah = sub.add_parser("yahoo", help="test-only Yahoo Finance snapshots (download, publish)")
@@ -192,20 +201,31 @@ def main(argv: Sequence[str] | None = None) -> int:
             {"sources": ["invest_data.sources.synthetic_market"], "config": cfg.to_dict()},
             args.format,
         )
+    provenance: dict[str, Any] = {"sources": [args.source.name]}
+    adjustment = args.price_adjustment
+    if args.adjusted_close:
+        if adjustment == "total_return_adjusted":
+            raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
+        provenance["converted"] = {
+            "from": adjustment,
+            "adjusted_close_column": args.adjusted_close,
+        }
+        adjustment = "total_return_adjusted"
     meta = {
         "frequency": "1d",
         "currency": args.currency,
         "calendar": args.calendar,
-        "price_adjustment": args.price_adjustment,
+        "price_adjustment": adjustment,
     }
-    return _publish(
-        load_csv_bars(args.source),
-        args.out,
-        args.dataset_id,
-        meta,
-        {"sources": [args.source.name]},
-        args.format,
-    )
+    try:
+        bars = load_csv_bars(
+            args.source,
+            adjusted_close=args.adjusted_close,
+            as_traded=bool(args.adjusted_close) and args.price_adjustment == "unadjusted",
+        )
+    except ValueError as exc:
+        raise SystemExit(f"{args.source}: {exc}") from exc
+    return _publish(bars, args.out, args.dataset_id, meta, provenance, args.format)
 
 
 if __name__ == "__main__":
