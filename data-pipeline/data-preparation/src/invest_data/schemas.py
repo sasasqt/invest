@@ -37,9 +37,16 @@ from datetime import date
 from typing import Any, NoReturn
 
 import pandas as pd
-from pandas.api.types import is_numeric_dtype
+from pandas.api.types import is_datetime64_any_dtype
 
-from invest_data.bundle import BundleError, Column, Manifest, read_bundle, write_bundle
+from invest_data.bundle import (
+    BundleError,
+    Column,
+    Manifest,
+    _format_value,
+    read_bundle,
+    write_bundle,
+)
 
 MARKET_BARS = "market_bars"
 UNIVERSE = "universe"
@@ -129,17 +136,29 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
 def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
     """Signals with search evidence start at its confirmation window; earlier dates chose it."""
     evidence = metadata.get("factor_evidence")
-    dates = frame["decision_date"]
-    # Numbers and unparseable values are left to the bundle's own column checks.
-    if evidence is None or evidence["source"] != "search" or is_numeric_dtype(dates):
+    if evidence is None or evidence["source"] != "search":
         return
-    first = pd.to_datetime(dates, errors="coerce").min()
-    if pd.notna(first) and first.date().isoformat() < evidence["confirmation_window"]["start"]:
+    dates = frame["decision_date"]
+    if is_datetime64_any_dtype(dates):  # as read back, or as most producers publish
+        stored = dates.dropna().map(lambda ts: ts.date().isoformat())
+    else:  # anything else: the date the writer would store, value by value
+        stored = dates.map(_stored_date).dropna()
+    first = stored.min() if len(stored) else None
+    if first is not None and first < evidence["confirmation_window"]["start"]:
         raise BundleError(
-            f"signals: decisions from {first.date()} precede the search evidence's confirmation "
+            f"signals: decisions from {first} precede the search evidence's confirmation "
             f"window ({evidence['confirmation_window']['start']}); those dates selected the "
             "factor. Re-export from the confirmation start (`invest-mine export --from-search`)"
         )
+
+
+def _stored_date(value: Any) -> str | None:
+    """The ISO date the bundle writer stores for ``value``; None if it would refuse it."""
+    try:
+        stored = _format_value(SIGNAL_COLUMNS[0], value)
+    except (BundleError, TypeError, ValueError, OverflowError):
+        return None
+    return stored if isinstance(stored, str) else None
 
 
 def _iso_date(value: Any) -> bool:
@@ -209,6 +228,8 @@ def validate_factor_evidence(
     family_size = evidence.get("family_size")
     if type(family_size) is not int or family_size < 1:
         fail("family_size must be a positive integer")
+    if evidence.get("source") == "confirm" and family_size != 1:
+        fail("from `confirm` tests one fixed formula, so family_size must be 1")
     window = evidence.get("confirmation_window")
     if (
         not isinstance(window, dict)

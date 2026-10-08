@@ -105,6 +105,7 @@ def test_factor_evidence_round_trips_with_signals(tmp_path, fmt):
         ({"confirmation_use": "unrecorded", "status": "exploratory"}, "contradicts"),
         ({"family_size": True}, "family_size"),
         ({"family_size": 0}, "family_size"),
+        ({"source": "confirm"}, "family_size must be 1"),
         ({"confirmation_window": {"start": "2024-06-28", "end": "2024-01-01"}}, "window"),
         ({"confirmation_window": {"start": "2024-01-01", "end": None}}, "window"),
         ({"statistics": {"p_holm": 0.1}}, "exactly the keys"),
@@ -235,6 +236,30 @@ def test_search_window_check_covers_every_date_representation(tmp_path, early):
     with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
         publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
     assert not (tmp_path / "invalid").exists()
+
+
+@pytest.mark.parametrize(
+    "dates",
+    [
+        ["2024-01-02", "29 Dec 2023"],  # a later value in another format
+        [20240102, 20240103],  # integers, which the writer stores as 1970 dates
+    ],
+)
+def test_search_window_check_sees_the_dates_the_writer_stores(tmp_path, dates):
+    frame = pd.DataFrame({"decision_date": dates, "instrument": ["A", "B"], "score": [1.0, 2.0]})
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
+        publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+
+
+def test_search_window_check_accepts_what_other_evidence_accepts(tmp_path):
+    """Mixed time zones after the window publish with search evidence as without it."""
+    dates = ["2024-01-03T01:00+09:00", "2024-01-04T00:00-05:00"]
+    frame = pd.DataFrame({"decision_date": dates, "instrument": ["A", "B"], "score": [1.0, 2.0]})
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    publish_signals(frame, tmp_path / "s", dataset_id="s", metadata=metadata)
+    assert read_signals(tmp_path / "s")[1]["decision_date"].min() == pd.Timestamp("2024-01-03")
 
 
 def test_search_window_check_leaves_null_dates_to_the_column_checks(tmp_path):

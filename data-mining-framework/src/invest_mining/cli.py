@@ -8,7 +8,7 @@ import math
 import sys
 from collections.abc import Sequence
 from dataclasses import replace
-from datetime import date
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -423,12 +423,13 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
             f"factor horizon {factor.horizon_days!r}"
         )
     source = "confirm" if params.get("method") == "fixed_formula" else "search"
-    if source == "search" and factor.selection.get("method") == "fixed_formula":
-        # The same formula re-frozen after a search would export n_trials = 1 with the
-        # search's evidence; the search's own factor file carries its trial count.
+    if source == "search" and tagged != experiment.get("experiment_id"):
+        # Only the search's own factor file carries its trial count. A `freeze` copy of the
+        # same formula has the same factor id but would export n_trials = 1.
         raise SystemExit(
-            f"{root}: factor {factor.factor_id} is a fixed formula from `freeze`, but this "
-            "output selected it in a search; export the search's factor file instead"
+            f"{root}: factor {factor.factor_id} is not this search's own factor file "
+            f"(selection {factor.selection.get('method')!r}); export the file in "
+            f"{root / 'factors'} instead"
         )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
@@ -482,7 +483,7 @@ def _export(args: argparse.Namespace) -> int:
     start = args.start
     if start is not None:
         try:
-            start = date.fromisoformat(start).isoformat()
+            start = datetime.strptime(start, "%Y-%m-%d").date().isoformat()
         except ValueError as exc:
             raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date") from exc
     evidence: dict[str, Any] | None
@@ -505,16 +506,19 @@ def _export(args: argparse.Namespace) -> int:
             "note: exporting on a different dataset than the factor was selected on",
             file=sys.stderr,
         )
-    out = export_signals(
-        factor,
-        bars,
-        args.out,
-        dataset_id=manifest.dataset_id,
-        start=start,
-        fmt=args.format,
-        evidence=evidence,
-        **_optional_inputs(args),
-    )
+    try:
+        out = export_signals(
+            factor,
+            bars,
+            args.out,
+            dataset_id=manifest.dataset_id,
+            start=start,
+            fmt=args.format,
+            evidence=evidence,
+            **_optional_inputs(args),
+        )
+    except BundleError as exc:
+        raise SystemExit(f"{args.out}: {exc}") from exc
     print(
         json.dumps(
             {

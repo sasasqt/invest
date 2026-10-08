@@ -232,6 +232,21 @@ def test_search_evidence_is_refused_for_a_refrozen_formula(tmp_path, data):
     freeze = ["freeze", "--expr", searched.expression, "--orientation", str(searched.orientation)]
     assert main([*freeze, "--horizon", str(searched.horizon_days), "--out", str(copy)]) == 0
     assert FrozenFactor.load(copy).factor_id == searched.factor_id
-    with pytest.raises(SystemExit, match="fixed formula from `freeze`"):
+    with pytest.raises(SystemExit, match="not this search's own factor file"):
         _export(data, tmp_path / "x", "--factor", str(copy), "--confirmation", str(tmp_path / "s"))
+    assert not (tmp_path / "x").exists()
+
+    # Any factor file not tagged with the search's experiment is refused the same way.
+    raw = json.loads((tmp_path / "s" / "factors" / f"{family.iloc[0]}.json").read_text())
+    del raw["selection"]["experiment_id"]
+    (tmp_path / "untagged.json").write_text(json.dumps(raw))
+    with pytest.raises(SystemExit, match="not this search's own factor file"):
+        _export(
+            data,
+            tmp_path / "x",
+            "--factor",
+            str(tmp_path / "untagged.json"),
+            "--confirmation",
+            str(tmp_path / "s"),
+        )
     assert not (tmp_path / "x").exists()
