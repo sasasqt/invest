@@ -168,8 +168,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--adjusted-close",
         metavar="COLUMN",
         help="CSV column with the total-return adjusted close: converts unadjusted or "
-        "split_adjusted prices to total_return_adjusted bars (raw closes are kept as "
-        "close_as_traded)",
+        "split_adjusted prices to total_return_adjusted bars (unadjusted closes are kept "
+        "as close_as_traded; split-adjusted ones are not as traded)",
     )
 
     yah = sub.add_parser("yahoo", help="test-only Yahoo Finance snapshots (download, publish)")

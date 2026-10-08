@@ -374,7 +374,9 @@ def validate_market_frame(frame: pd.DataFrame) -> None:
     columns = market_bar_columns(frame.columns)[2:]
     v = {c.name: real_numbers(frame[c.name], f"market_bars: {c.name}") for c in columns}
     for c in columns:  # null only where the column allows it, and never infinite
-        if np.isinf(v[c.name]).any() or (not c.nullable and np.isnan(v[c.name]).any()):
+        if not c.nullable and np.isnan(v[c.name]).any():
+            raise BundleError(f"market_bars: {c.name} must be finite (it has nulls)")
+        if np.isinf(v[c.name]).any():
             raise BundleError(f"market_bars: {c.name} must be finite")
     if any((v[c.name] <= 0).any() for c in columns if c.unit == "price"):
         raise BundleError("market_bars: prices must be positive")

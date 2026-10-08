@@ -74,6 +74,7 @@ def clean_bars(
     ``as_traded`` says the given closes are as traded (raw prices); they are then kept as
     ``close_as_traded``.
     """
+    raw = raw.reset_index(drop=True)  # rows are matched by position, whatever the labels
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
     if missing_cols:
         raise ValueError(f"raw bars missing columns {missing_cols}")

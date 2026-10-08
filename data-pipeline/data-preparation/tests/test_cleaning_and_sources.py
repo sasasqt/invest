@@ -341,3 +341,15 @@ def test_clean_bars_refuses_misused_conversion_arguments():
         clean_bars(raw, as_traded=True)
     with pytest.raises(ValueError, match="already have a close_as_traded column"):
         clean_bars(raw.assign(close_as_traded=1.0), adjusted_close="adj", as_traded=True)
+
+
+def test_clean_bars_matches_rows_by_position_not_index_label():
+    """Frames concatenated without ignore_index repeat labels; values must stay on their row."""
+    raw = pd.concat([raw_rows().iloc[:1]] * 4)
+    raw = raw.assign(instrument=["A", "B", "C", "D"], close_as_traded=["10", "x", "y", "21"])
+    raw.index = [0, 0, 1, 1]
+    clean, report = clean_bars(raw)
+    assert clean["instrument"].tolist() == ["A", "B", "C", "D"]
+    assert clean["close_as_traded"].tolist()[::3] == [10.0, 21.0]
+    assert clean["close_as_traded"].isna().tolist() == [False, True, True, False]
+    assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 2}
