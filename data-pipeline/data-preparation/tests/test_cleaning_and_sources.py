@@ -226,3 +226,32 @@ def test_unadjusted_bars_publish_with_a_note_and_are_refused_from_the_manifest(t
     publish_universe(universe, tmp_path / "u", dataset_id="u")
     with pytest.raises(BundleError, match="expected dataset_kind 'market_bars'"):
         read_adjusted_market_bars(tmp_path / "u")
+
+
+def test_one_real_number_rule_for_bar_columns(tmp_path):
+    """Booleans and complex numbers are not quantities, wherever they appear."""
+    from decimal import Decimal
+
+    from invest_data.schemas import validate_market_frame
+
+    raw = raw_rows().iloc[:1].assign(close_as_traded=5.0)
+    rows = pd.concat([raw] * 4, ignore_index=True).astype(object)
+    rows["instrument"] = ["A", "B", "C", "D"]
+    rows.loc[1, "volume"] = True  # a required column: the bar is rejected
+    rows.loc[2, "close_as_traded"] = 5 + 1j  # the optional column: nulled and counted
+    rows.loc[3, "close_as_traded"] = True
+    clean, report = clean_bars(rows)
+    assert clean["instrument"].tolist() == ["A", "C", "D"]
+    assert report.rejected[["instrument", "reason"]].values.tolist() == [
+        ["B", "missing_or_nonfinite_value"]
+    ]
+    assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 2}
+
+    # Publication validates from the converted values: Decimal prices are real numbers,
+    # while nulls in required columns and infinities anywhere are refused.
+    validate_market_frame(clean.assign(close=[Decimal("10.5")] * 3))
+    for column, bad in (("close", np.nan), ("volume", None), ("close_as_traded", np.inf)):
+        frame = clean.astype({column: object})
+        frame.loc[0, column] = bad
+        with pytest.raises(BundleError, match=f"{column} must be finite"):
+            validate_market_frame(frame)

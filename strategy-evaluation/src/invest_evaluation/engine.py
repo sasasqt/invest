@@ -73,20 +73,20 @@ class BacktestResult:
         return (eq / prev - 1.0).rename("gross_return")
 
 
-def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
+def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> pd.Series | None:
     """``min_price`` compares the close as traded on the decision date.
 
     An adjusted close is rescaled by every later split and dividend, so comparing it with
     a price level would let later corporate actions decide earlier eligibility. A name
     whose as-traded close is unknown (null) on a decision date is not eligible then;
-    :func:`run_backtest` also refuses a window with no known as-traded close.
+    :func:`run_backtest` also refuses a window with no known as-traded close. Returns the
+    as-traded closes with unknown or invalid values as NaN, or None without a price floor.
     """
-    name = AS_TRADED_CLOSE.name
     if config.execution.min_price <= 0:
-        return
-    if name not in bars:
+        return None
+    if AS_TRADED_CLOSE.name not in bars:
         _no_traded_close(config, "these bars lack it")
-    _traded_closes(bars)
+    return _traded_closes(bars)
 
 
 def _traded_closes(bars: pd.DataFrame) -> pd.Series:
@@ -181,7 +181,7 @@ def run_backtest(
     ``record_decisions`` fills ``BacktestResult.decisions`` (one row per eligible name
     per decision); it is off by default because only bucket reports need it."""
     cfg = config or BacktestConfig()
-    check_price_rules(bars, cfg)
+    known_traded = check_price_rules(bars, cfg)
     strat = strategy or QuantileStrategy(cfg.strategy)
     ex, cm = cfg.execution, cfg.costs
     warnings: list[str] = []
@@ -228,8 +228,8 @@ def run_backtest(
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     # Price-level eligibility (zero min_price passes every name with a close).
     traded_close = None
-    if ex.min_price > 0:
-        traded = bars[["date", "instrument"]].assign(traded=_traded_closes(bars))
+    if known_traded is not None:
+        traded = bars[["date", "instrument"]].assign(traded=known_traded)
         traded_close = (
             _wide(traded, "traded").reindex(index=calendar, columns=instruments).to_numpy()
         )

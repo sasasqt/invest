@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
-from invest_data.schemas import AS_TRADED_CLOSE
+from invest_data.schemas import AS_TRADED_CLOSE, non_real
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
 OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
@@ -57,7 +57,9 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:
-        df[col] = pd.to_numeric(df[col], errors="coerce").astype("float64")
+        # Booleans and complex numbers would parse as numbers; they are not quantities.
+        values = df[col].astype(object).mask(non_real(df[col]))
+        df[col] = pd.to_numeric(values, errors="coerce").astype("float64")
 
     reason = pd.Series(pd.NA, index=df.index, dtype="object")
 
@@ -69,11 +71,10 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         # A null marker means unknown. Any other value that is not a positive number is
         # invalid; it is nulled and counted, because the optional column must not cost the
         # session its bar.
-        flags = raw[col].map(lambda v: isinstance(v, bool | np.bool_)).astype(bool)
-        suspect = flags | ~(np.isfinite(df[col]) & (df[col] > 0))
+        suspect = ~(np.isfinite(df[col]) & (df[col] > 0))
         text = raw.loc[suspect, col]
         given = text.notna() & ~text.astype(str).str.strip().str.lower().isin(NULL_TOKENS)
-        invalid[col] = given.reindex(df.index, fill_value=False)  # booleans are not prices
+        invalid[col] = given.reindex(df.index, fill_value=False)
         df.loc[invalid[col], col] = np.nan
 
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")

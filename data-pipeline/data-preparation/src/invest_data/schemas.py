@@ -128,16 +128,23 @@ def real_numbers(values: pd.Series, name: str) -> np.ndarray:
     whatever the dtype; numbers in an object column (for example after a concat with
     ``None``) are accepted.
     """
-    dtype = values.dtype
-    refused = pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
-    if not refused and not pd.api.types.is_numeric_dtype(dtype):
-        present = values[values.notna()]
-        refused = not present.map(
-            lambda v: isinstance(v, numbers.Real | Decimal) and not isinstance(v, bool | np.bool_)
-        ).all()
-    if refused:
-        raise BundleError(f"{name} must hold real numbers, not {dtype}")
+    present = values[values.notna()]
+    if non_real(present).any() or not (
+        pd.api.types.is_numeric_dtype(values.dtype)
+        or present.map(lambda v: isinstance(v, numbers.Real | Decimal)).all()
+    ):
+        raise BundleError(f"{name} must hold real numbers, not {values.dtype}")
     return np.asarray(values.to_numpy(dtype="float64", na_value=np.nan))
+
+
+def non_real(values: pd.Series) -> pd.Series:
+    """Booleans and complex numbers: values that parse as numbers but are not quantities."""
+    dtype = values.dtype
+    if pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype):
+        return pd.Series(True, index=values.index)
+    if pd.api.types.is_numeric_dtype(dtype):
+        return pd.Series(False, index=values.index)
+    return values.map(lambda v: isinstance(v, bool | np.bool_ | complex | np.complexfloating))
 
 
 def market_bar_columns(names: Any) -> tuple[Column, ...]:
@@ -361,15 +368,17 @@ def publish_market_bars(
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
-    columns = market_bar_columns(frame.columns)
-    values = {c.name: real_numbers(frame[c.name], f"market_bars: {c.name}") for c in columns[2:]}
-    px = np.column_stack([values[c.name] for c in columns if c.unit == "price"])
-    if (px <= 0).any():
+    columns = market_bar_columns(frame.columns)[2:]
+    v = {c.name: real_numbers(frame[c.name], f"market_bars: {c.name}") for c in columns}
+    for c in columns:  # null only where the column allows it, and never infinite
+        if np.isinf(v[c.name]).any() or (not c.nullable and np.isnan(v[c.name]).any()):
+            raise BundleError(f"market_bars: {c.name} must be finite")
+    if any((v[c.name] <= 0).any() for c in columns if c.unit == "price"):
         raise BundleError("market_bars: prices must be positive")
-    if (frame["volume"] < 0).any():
+    if (v["volume"] < 0).any():
         raise BundleError("market_bars: volume must be non-negative")
-    hi_ok = frame["high"] >= frame[["open", "close"]].max(axis=1) * (1 - 1e-12)
-    lo_ok = frame["low"] <= frame[["open", "close"]].min(axis=1) * (1 + 1e-12)
+    hi_ok = v["high"] >= np.maximum(v["open"], v["close"]) * (1 - 1e-12)
+    lo_ok = v["low"] <= np.minimum(v["open"], v["close"]) * (1 + 1e-12)
     if not (hi_ok & lo_ok).all():
         raise BundleError("market_bars: high/low inconsistent with open/close")
 
