@@ -765,7 +765,7 @@ def test_cli_refuses_an_out_that_cannot_be_created(tmp_path, market, reversal_si
     (tmp_path / "file").write_text("x")
     (tmp_path / "dangling").symlink_to(tmp_path / "missing" / "target")
     (tmp_path / "loop").symlink_to(tmp_path / "loop")
-    for out in ("file/sub", "dangling", "dangling/sub", "loop"):
+    for out in ("file/sub", "dangling", "dangling/sub", "loop", "x" * 300, "ok/" + "x" * 300):
         for command in ("run", "quantiles"):
             with pytest.raises(SystemExit, match="cannot be created"):
                 main([command, *inputs, "--out", str(tmp_path / out)])

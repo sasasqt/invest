@@ -192,6 +192,12 @@ def test_reader_rejects_a_manifest_that_is_not_a_json_object(tmp_path, content):
         read_bundle(path)
 
 
+def test_reader_reads_a_null_created_at_as_empty(tmp_path):
+    path = _published(tmp_path)
+    _edit_manifest(path, created_at=None)
+    assert read_bundle(path)[0].created_at == ""
+
+
 def test_reader_detects_tampered_data(tmp_path):
     path = _published(tmp_path)
     csv = path / "data.csv"

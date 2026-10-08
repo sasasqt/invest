@@ -78,20 +78,25 @@ def _add_inputs(cmd: argparse.ArgumentParser) -> None:
 
 def _refuse_used_out(out: Path) -> None:
     """Refuse a used or uncreatable ``--out`` before any input is read or backtest run."""
-    if out.exists() and (not out.is_dir() or any(out.iterdir())):
-        raise SystemExit(f"--out {out} is not an empty directory; choose a new run directory")
-    ancestor = out.absolute()
-    while not (ancestor.exists() or ancestor.is_symlink()):
-        ancestor = ancestor.parent
     cannot = f"--out {out} cannot be created"
-    if ancestor.is_symlink() and not ancestor.exists():
-        raise SystemExit(f"{cannot}: {ancestor} is a broken or looping symbolic link")
-    if not ancestor.is_dir():
-        raise SystemExit(f"{cannot}: {ancestor} is not a directory")
-    # Try it: permission bits alone do not tell (root, read-only mounts, /sys).
     try:
+        if out.exists() and (not out.is_dir() or any(out.iterdir())):
+            raise SystemExit(f"--out {out} is not an empty directory; choose a new run directory")
+        ancestor = out.absolute()
+        while not (ancestor.exists() or ancestor.is_symlink()):
+            ancestor = ancestor.parent
+        if ancestor.is_symlink() and not ancestor.exists():
+            raise SystemExit(f"{cannot}: {ancestor} is a broken or looping symbolic link")
+        if not ancestor.is_dir():
+            raise SystemExit(f"{cannot}: {ancestor} is not a directory")
+        # Try it: permission bits alone do not tell (root, read-only mounts, /sys).
         os.rmdir(tempfile.mkdtemp(prefix=".invest-eval-", dir=ancestor))
-    except OSError as exc:
+        # The directories still to create must fit the file system's name limit.
+        name_max = os.pathconf(ancestor, "PC_NAME_MAX")
+        missing = out.absolute().relative_to(ancestor).parts
+        if any(len(os.fsencode(part)) > name_max for part in missing):
+            raise SystemExit(f"{cannot}: a name is longer than {name_max} bytes")
+    except OSError as exc:  # for example a name too long for the file system
         raise SystemExit(f"{cannot}: {exc}") from exc
 
 

@@ -499,7 +499,7 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
         storage={k: str(v) for k, v in storage.items()},
         row_count=row_count,
         primary_key=tuple(raw.get("primary_key", [])),
-        created_at=str(raw.get("created_at", "")),
+        created_at=raw.get("created_at") or "",
         provenance=dict(raw.get("provenance", {})),
         dataset_kind=raw.get("dataset_kind"),
         metadata=dict(raw.get("metadata", {})),

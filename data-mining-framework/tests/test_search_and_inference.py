@@ -31,6 +31,21 @@ def test_split_development_share_is_exact(fraction, k):
     assert split.confirm_dates[0] == dates[k]
 
 
+@pytest.mark.parametrize("command", [["search", "--trials", "2"], ["evaluate", "--expr", "close"]])
+def test_cli_refuses_an_empty_market_bundle(tmp_path, command):
+    from invest_data.schemas import publish_market_bars
+    from invest_data.sources import SYNTHETIC_METADATA
+    from invest_mining.cli import main
+
+    empty = synthetic_market(SyntheticConfig(n_instruments=3, n_days=5)).iloc[:0]
+    publish_market_bars(empty, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    with pytest.raises(SystemExit, match="holds no bars"):
+        main(
+            [command[0], "--data", str(tmp_path / "m"), *command[1:], "--out", str(tmp_path / "o")]
+        )
+    assert not (tmp_path / "o").exists()
+
+
 def test_split_of_no_sessions_is_empty_not_a_division_error():
     split = chronological_split(pd.DatetimeIndex([]), 0.6, horizon=1)
     assert len(split.dev_dates) == len(split.confirm_dates) == 0
