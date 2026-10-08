@@ -89,18 +89,20 @@ def render(root: Path) -> None:
     )
     ax[0].plot(d["equity"] / v0, label="net", color="#1f4e79")
     ax[0].plot(d["equity_before_costs"] / v0, label="before costs", color="#7fa7d1", lw=1)
-    ax[0].plot(
-        (1 + d["benchmark_return"]).cumprod(), label="universe EW (gross)", color="#999999", lw=1
-    )
-    if "external_benchmark_return" in d:
-        # Leading unavailable history is omitted; an internal gap stops the wealth path.
-        # Its missing interval cannot be treated as zero or skipped in a growth curve.
-        external = d["external_benchmark_return"]
-        first = external.first_valid_index()
+    # Leading unavailable history is omitted; an internal gap stops a benchmark's wealth
+    # path. Its missing interval cannot be treated as zero or skipped in a growth curve.
+    for col, label, color in (
+        ("benchmark_return", "universe EW (gross)", "#999999"),
+        ("external_benchmark_return", "external benchmark", "#5a8f3c"),
+    ):
+        if col not in d:
+            continue
+        bench = d[col]
+        first = bench.first_valid_index()
         ax[0].plot(
-            (1 + external.loc[first:]).cumprod(skipna=False) if first is not None else external,
-            label="external benchmark",
-            color="#5a8f3c",
+            (1 + bench.loc[first:]).cumprod(skipna=False) if first is not None else bench,
+            label=label,
+            color=color,
             lw=1,
         )
     ax[0].set_ylabel("growth of 1")
@@ -215,10 +217,11 @@ def _verdict_lines(verdict: dict[str, Any]) -> list[str]:
         f"Status: **{portfolio['status']}**, from the declared rules in `config.json` "
         "(`validation`), separate from the factor status above.",
         "",
-        "| check | status | value | threshold |",
-        "|---|---|---|---|",
+        "| check | status | value | threshold | detail |",
+        "|---|---|---|---|---|",
         *(
-            f"| {c['name']} | {c['status']} | {_number(c['value'])} | {c['threshold']} |"
+            f"| {c['name']} | {c['status']} | {_number(c['value'])} | {c['threshold']} "
+            f"| {c.get('detail', '')} |"
             for c in portfolio["checks"]
         ),
         "",

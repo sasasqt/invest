@@ -355,9 +355,10 @@ def render_quantiles(root: Path) -> None:
         # A missing CAGR (insufficient or invalid portfolio) draws no bar, never a 0% one.
         values = pd.to_numeric(deciles[col], errors="coerce") * 100
         ax[0].bar(x + offset, values, width=0.38, color=color, label=label)
-    for i, (cagr, status) in enumerate(zip(deciles["net_cagr"], deciles["status"], strict=True)):
-        if pd.isna(pd.to_numeric(cagr, errors="coerce")):
-            ax[0].text(i, 0, f" n/a ({status})", rotation=90, ha="center", va="bottom", fontsize=7)
+    for i, row in enumerate(deciles.itertuples(index=False)):
+        if pd.isna(pd.to_numeric(row.net_cagr, errors="coerce")):
+            why = row.reason if isinstance(row.reason, str) and row.reason else row.status
+            ax[0].text(i, 0, f" n/a ({why})", rotation=90, ha="center", va="bottom", fontsize=7)
     ax[0].set_xticks(x, deciles["portfolio"])
     ax[0].axhline(0, color="black", lw=0.6)
     ax[0].set_ylabel("CAGR (%)")
@@ -412,13 +413,14 @@ def render_quantiles(root: Path) -> None:
         "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in report["portfolios"]:
+        status = f"{r['status']} ({r['reason']})" if r.get("reason") else r["status"]
         ci = (
             f"[{_fmt(r['net_sharpe_ci_low'])}, {_fmt(r['net_sharpe_ci_high'])}]"
             if r["net_sharpe_ci_low"] is not None
             else "–"
         )
         lines.append(
-            f"| {r['portfolio']} | {r['status']} | {_fmt(r['mean_names'])} "
+            f"| {r['portfolio']} | {status} | {_fmt(r['mean_names'])} "
             f"| {_fmt(r['net_cagr'], True)} | {_fmt(r['gross_cagr'], True)} "
             f"| {_fmt(r['net_sharpe'])} | {ci} | {_fmt(r['max_drawdown'], True)} "
             f"| {_fmt(r['turnover_one_way_annual'])} | {_fmt(r['cost_drag_annual'], True)} |"

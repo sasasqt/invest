@@ -23,6 +23,14 @@ def test_split_purges_overlapping_labels():
     assert len(s.dev_dates) + len(s.purged_dates) + len(s.confirm_dates) == 100
 
 
+@pytest.mark.parametrize(("fraction", "k"), [(0.29, 29), (0.57, 57), (0.7, 70), (0.6, 60)])
+def test_split_development_share_is_exact(fraction, k):
+    """``int(100 * 0.29)`` is 28 in floating point; confirmation must start at session 29."""
+    dates = pd.bdate_range("2024-01-01", periods=100)
+    split = chronological_split(dates, fraction, horizon=1)
+    assert split.confirm_dates[0] == dates[k]
+
+
 @pytest.mark.parametrize("horizon", [1, 5, 40])
 @pytest.mark.parametrize("embargo", [0, 2])
 def test_reserved_prices_cannot_change_development_labels(horizon, embargo):

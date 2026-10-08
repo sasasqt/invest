@@ -430,7 +430,10 @@ def test_quantile_figure_draws_no_bar_for_a_missing_cagr_and_names_each_status(
     assert len(heights) == 2
     assert all(np.isnan(h[9]) and (h[:9] > 0).all() for h in heights)
     texts = [str(args[2]) for method, args in calls if method == "text"]
-    assert any("q10" not in t and "invalid_input" in t for t in texts)  # the q10 label
+    assert any("n/a (insolvent_wealth_path)" in t for t in texts)  # the q10 label
     assert any(f"top_minus_bottom_0.1 ({status})" in t for t in texts)
     if status != "insufficient_data":
         assert not any("insufficient_data" in t for t in texts)
+    report = (root / "report.md").read_text()
+    assert "| q10 | invalid_input (insolvent_wealth_path) |" in report
+    assert f"| top_minus_bottom_0.1 | {status} ({reason}) |" in report

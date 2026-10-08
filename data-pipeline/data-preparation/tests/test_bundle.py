@@ -155,6 +155,38 @@ def test_reader_rejects_invalid_manifests(tmp_path, changes, message):
         read_bundle(path)
 
 
+@pytest.mark.parametrize(
+    "changes, message",
+    [
+        ({"storage": "x"}, "'storage' must be a JSON object"),
+        ({"columns": 5}, "'columns' must be a JSON array"),
+        ({"columns": ["a"]}, "column definition must be a JSON object"),
+        ({"columns": [{"name": "id", "type": "decimal", "precision": "9", "scale": 2}]}, "integer"),
+        ({"metadata": None}, "'metadata' must be a JSON object"),
+        ({"provenance": []}, "'provenance' must be a JSON object"),
+        ({"primary_key": 5}, "'primary_key' must be a JSON array"),
+        ({"primary_key": [1]}, "must list column names"),
+        ({"row_count": None}, "non-negative integer"),
+        ({"row_count": "2"}, "non-negative integer"),
+        ({"row_count": True}, "non-negative integer"),
+    ],
+)
+def test_reader_rejects_malformed_manifest_structure(tmp_path, changes, message):
+    """A malformed manifest is a BundleError, never a TypeError or AttributeError."""
+    path = _published(tmp_path)
+    _edit_manifest(path, **changes)
+    with pytest.raises(BundleError, match=message):
+        read_bundle(path)
+
+
+@pytest.mark.parametrize("content", [b"[]", b"5", b"\xff\xfe"])
+def test_reader_rejects_a_manifest_that_is_not_a_json_object(tmp_path, content):
+    path = _published(tmp_path)
+    (path / "manifest.json").write_bytes(content)
+    with pytest.raises(BundleError, match="manifest"):
+        read_bundle(path)
+
+
 def test_reader_detects_tampered_data(tmp_path):
     path = _published(tmp_path)
     csv = path / "data.csv"

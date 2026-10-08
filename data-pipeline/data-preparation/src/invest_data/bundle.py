@@ -67,6 +67,12 @@ class Column:
 
     @staticmethod
     def from_json(raw: Mapping[str, Any]) -> Column:
+        if not isinstance(raw, Mapping):
+            raise BundleError(f"column definition must be a JSON object, not {raw!r}")
+        for key in ("precision", "scale"):
+            value = raw.get(key)
+            if value is not None and (isinstance(value, bool) or not isinstance(value, int)):
+                raise BundleError(f"column {raw.get('name')!r}: {key} must be an integer")
         try:
             col = Column(
                 name=str(raw["name"]),
@@ -447,14 +453,31 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
         raise BundleError(f"missing manifest.json in {root}")
     try:
         raw = json.loads(mpath.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise BundleError(f"invalid manifest JSON: {exc}") from exc
+    # A malformed manifest is a BundleError like any other invalid bundle, never a TypeError.
+    if not isinstance(raw, dict):
+        raise BundleError("manifest must be a JSON object")
     version = raw.get("contract_version")
     if version != CONTRACT_VERSION:
         raise BundleError(f"unsupported contract_version {version!r}")
     for key in ("dataset_id", "storage", "row_count", "columns"):
         if key not in raw:
             raise BundleError(f"manifest missing {key!r}")
+    for key, kind, name in (
+        ("storage", dict, "object"),
+        ("columns", list, "array"),
+        ("primary_key", list, "array"),
+        ("provenance", dict, "object"),
+        ("metadata", dict, "object"),
+    ):
+        if key in raw and not isinstance(raw[key], kind):
+            raise BundleError(f"manifest {key!r} must be a JSON {name}")
+    if not all(isinstance(k, str) for k in raw.get("primary_key", [])):
+        raise BundleError("manifest 'primary_key' must list column names")
+    row_count = raw["row_count"]
+    if isinstance(row_count, bool) or not isinstance(row_count, int) or row_count < 0:
+        raise BundleError(f"manifest 'row_count' must be a non-negative integer, not {row_count!r}")
     storage = raw["storage"]
     if storage.get("format") not in STORAGE_FORMATS:
         raise BundleError(f"unsupported storage format {storage.get('format')!r}")
@@ -467,7 +490,7 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
         dataset_id=str(raw["dataset_id"]),
         columns=tuple(Column.from_json(c) for c in raw["columns"]),
         storage={k: str(v) for k, v in storage.items()},
-        row_count=int(raw["row_count"]),
+        row_count=row_count,
         primary_key=tuple(raw.get("primary_key", [])),
         created_at=str(raw.get("created_at", "")),
         provenance=dict(raw.get("provenance", {})),

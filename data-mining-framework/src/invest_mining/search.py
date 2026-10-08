@@ -85,7 +85,8 @@ def chronological_split(
     """Dev decision ``i`` uses sessions up to ``i+1+h``; require ``i+1+h < k-embargo``.
 
     Confirmation starts at session ``k``: the first date on or after ``confirm_start`` when
-    given (so it can align with a reserved window), else ``int(len(dates) * dev_fraction)``.
+    given (so it can align with a reserved window), else the largest ``k`` with
+    ``k / len(dates) <= dev_fraction``.
     Development observations include the prices used by labels, even on purged decisions.
     """
     if horizon < 1:
@@ -101,7 +102,14 @@ def chronological_split(
     elif not 0 < dev_fraction < 1:
         raise ValueError("dev_fraction must be in (0, 1)")
     else:
-        k = int(len(dates) * dev_fraction)
+        # The most sessions k with k / n <= dev_fraction; int(n * f) can fall one short
+        # in floating point (int(100 * 0.29) is 28).
+        n = len(dates)
+        k = int(n * dev_fraction)
+        if (k + 1) / n <= dev_fraction:
+            k += 1
+        elif k > 0 and k / n > dev_fraction:
+            k -= 1
     cut = max(k - horizon - embargo - 1, 0)
     observed_cut = cut + horizon + 1 if cut else 0
     return Split(dates[:cut], dates[k:], dates[cut:k], dates[:observed_cut])

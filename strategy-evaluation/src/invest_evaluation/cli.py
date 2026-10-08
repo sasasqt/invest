@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from collections.abc import Callable, Sequence
@@ -75,9 +76,14 @@ def _add_inputs(cmd: argparse.ArgumentParser) -> None:
 
 
 def _refuse_used_out(out: Path) -> None:
-    """Refuse a used ``--out`` before any input is read or backtest run."""
+    """Refuse a used or uncreatable ``--out`` before any input is read or backtest run."""
     if out.exists() and (not out.is_dir() or any(out.iterdir())):
         raise SystemExit(f"--out {out} is not an empty directory; choose a new run directory")
+    ancestor = out.absolute()
+    while not ancestor.exists():
+        ancestor = ancestor.parent
+    if not ancestor.is_dir() or not os.access(ancestor, os.W_OK | os.X_OK):
+        raise SystemExit(f"--out {out} cannot be created: {ancestor} is not a writable directory")
 
 
 def _read(what: str, read: Callable[..., T], *args: Any) -> T:
@@ -178,6 +184,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     unknown = sorted(set(cfg.validation.stress_scenarios) - set(DEFAULT_SCENARIOS))
     if unknown:
         raise SystemExit(f"validation.stress_scenarios: unknown scenarios {unknown}")
+    if args.benchmark_instrument and not args.benchmark:
+        raise SystemExit("--benchmark-instrument needs --benchmark")
     if cfg.validation.benchmark == "external" and not args.benchmark:
         raise SystemExit('validation.benchmark = "external" needs --benchmark')
     universe = _read("--universe", read_universe, args.universe)[1] if args.universe else None
@@ -197,7 +205,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if market_manifest.metadata["frequency"] != "1d":
             raise SystemExit("external benchmarks require daily (1d) market bars")
         external = _read(
-            "--benchmark-instrument",
+            "--benchmark",
             lambda: instrument_returns(
                 bench_bars,
                 args.benchmark_instrument,

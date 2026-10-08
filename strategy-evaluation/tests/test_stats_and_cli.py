@@ -700,3 +700,76 @@ def test_cli_unreadable_benchmark_ends_with_a_message(tmp_path, market, reversal
     with pytest.raises(SystemExit, match=r"--benchmark: missing manifest\.json"):
         main(["run", *inputs, "--benchmark", str(tmp_path / "nope"), "--out", str(out)])
     assert not out.exists()
+
+
+def test_universe_benchmark_path_stops_at_a_missing_session(tmp_path, monkeypatch):
+    """K17: like the external benchmark, a gap stops the universe growth path rather than
+    compounding through it as 0%; leading missing history is left out."""
+    from matplotlib.axes import Axes
+
+    from invest_evaluation.reporting import render
+
+    curves = {}
+    original_plot = Axes.plot
+
+    def plot(ax, *args, **kwargs):
+        curves[kwargs.get("label")] = args[0]
+        return original_plot(ax, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "plot", plot)
+    root = tmp_path / "run"
+    (root / "tables").mkdir(parents=True)
+    (root / "figures").mkdir()
+    idx = pd.bdate_range("2024-01-01", periods=80)
+    costs = ["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]
+    daily = pd.DataFrame(0.0, index=idx, columns=["return", *costs, "gross_exposure"])
+    daily["net_exposure"] = 0.0
+    daily["equity"] = daily["equity_before_costs"] = 100.0
+    daily["benchmark_return"] = 0.01
+    daily.iloc[0, daily.columns.get_loc("benchmark_return")] = np.nan
+    daily.iloc[40, daily.columns.get_loc("benchmark_return")] = np.nan
+    daily.to_csv(root / "tables" / "daily.csv")
+    (root / "config.json").write_text(
+        json.dumps({"initial_capital": 100.0, "annualization": 252, "risk_free_annual": 0.0})
+    )
+    monkeypatch.setattr("invest_evaluation.reporting._write_summary", lambda root: None)
+    render(root)
+    path = curves["universe EW (gross)"]
+    assert path.index[0] == idx[1] and path.iloc[0] == pytest.approx(1.01)
+    assert path.loc[: idx[39]].notna().all() and path.loc[idx[40] :].isna().all()
+
+
+def test_report_shows_why_a_portfolio_check_did_not_pass(tmp_path, market, reversal_signals):
+    """K16/K19: the readable report carries each check's detail, not only verdict.json."""
+    inputs = _published(tmp_path, market, reversal_signals)
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(json.dumps({"validation": {"benchmark": "universe", "min_sessions": 60}}))
+    run = tmp_path / "run"
+    assert main(["run", *inputs, "--config", str(cfg), "--out", str(run)]) == 0
+    checks = json.loads((run / "verdict.json").read_text())["portfolio"]["checks"]
+    report = (run / "report.md").read_text()
+    assert "| check | status | value | threshold | detail |" in report
+    for check in checks:
+        assert f"| {check['detail']} |" in report
+
+
+def test_cli_refuses_an_out_that_cannot_be_created(tmp_path, market, reversal_signals, monkeypatch):
+    """K10 class: an --out under a file fails before any backtest, not in mkdir after them."""
+
+    def fail(*args, **kwargs):
+        raise AssertionError("backtest ran before --out was checked")
+
+    for name in ("run_backtest", "run_scenarios", "run_quantile_portfolios"):
+        monkeypatch.setattr(f"invest_evaluation.cli.{name}", fail)
+    inputs = _published(tmp_path, market, reversal_signals)
+    (tmp_path / "file").write_text("x")
+    for command in ("run", "quantiles"):
+        with pytest.raises(SystemExit, match="cannot be created"):
+            main([command, *inputs, "--out", str(tmp_path / "file" / "sub")])
+
+
+def test_benchmark_instrument_without_benchmark_is_refused(tmp_path, market, reversal_signals):
+    inputs = _published(tmp_path, market, reversal_signals)
+    with pytest.raises(SystemExit, match="--benchmark-instrument needs --benchmark"):
+        main(["run", *inputs, "--benchmark-instrument", "SPY", "--out", str(tmp_path / "o")])
+    assert not (tmp_path / "o").exists()
