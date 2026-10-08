@@ -395,13 +395,14 @@ def test_min_price_without_as_traded_closes_is_refused():
                 Fixed({"B": 1.0}),
             )
     for text in ("five", "5.0", True, 5 + 1j):  # text, booleans and complex are not prices
-        with pytest.raises(InputError, match="must hold real numbers"):
+        dtype = bars.assign(close_as_traded=text)["close_as_traded"].dtype  # named as given
+        with pytest.raises(InputError, match=f"must hold real numbers, not {dtype}"):
             run_backtest(
                 bars.assign(close_as_traded=text), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
             )
-    for huge in (10**400, Decimal("sNaN")):  # numbers that are not floats
+    for huge, message in ((10**400, " that fit a float"), (Decimal("sNaN"), ", not object")):
         column = pd.Series(huge, index=bars.index, dtype=object)
-        with pytest.raises(InputError, match="must hold real numbers that fit a float"):
+        with pytest.raises(InputError, match=f"must hold real numbers{message}"):
             run_backtest(
                 bars.assign(close_as_traded=column), signals_on("2024-01-03"), cfg, Fixed({})
             )
