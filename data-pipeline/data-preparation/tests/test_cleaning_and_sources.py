@@ -368,7 +368,8 @@ def test_clean_bars_judges_dtypes_not_only_values():
     """Boolean and complex columns are not quantities; categoricals parse like their values."""
     raw = raw_rows().iloc[:2].assign(instrument=["A", "B"], volume=100, close_as_traded=5.0)
     clean, report = clean_bars(raw.assign(volume=[True, True]))
-    assert clean.empty and len(report.rejected) == 2
+    assert clean.empty
+    assert report.summary()["rejected_by_reason"] == {"missing_or_nonfinite_value": 2}
     clean, report = clean_bars(raw.assign(close_as_traded=np.array([5 + 2j, 5 + 0j])))
     assert clean["close_as_traded"].isna().all()
     assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 2}

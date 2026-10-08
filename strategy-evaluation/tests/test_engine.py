@@ -1,11 +1,12 @@
 from dataclasses import replace
+from decimal import Decimal
 
 import numpy as np
 import pandas as pd
 import pytest
 
 from invest_evaluation.config import BacktestConfig, CostModel, ExecutionConfig, StrategyConfig
-from invest_evaluation.engine import InputError, run_backtest
+from invest_evaluation.engine import InputError, check_price_rules, run_backtest
 
 
 class Fixed:
@@ -398,9 +399,23 @@ def test_min_price_without_as_traded_closes_is_refused():
             run_backtest(
                 bars.assign(close_as_traded=text), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
             )
+    for huge in (10**400, Decimal("sNaN")):  # numbers that are not floats
+        column = pd.Series(huge, index=bars.index, dtype=object)
+        with pytest.raises(InputError, match="must hold real numbers that fit a float"):
+            run_backtest(
+                bars.assign(close_as_traded=column), signals_on("2024-01-03"), cfg, Fixed({})
+            )
+    # Categoricals are judged by their values.
+    with pytest.raises(InputError, match="must hold real numbers"):
+        check_price_rules(
+            bars.assign(close_as_traded="five").astype({"close_as_traded": "category"}), cfg
+        )
+    full = split_market(adjusted=True)
+    categorical = full.astype({"close_as_traded": "category"})
+    assert check_price_rules(categorical, cfg).equals(check_price_rules(full, cfg))
+    single = full.assign(close_as_traded=5.0).astype({"close_as_traded": "category"})
+    assert (check_price_rules(single, cfg) == 5.0).all()  # one category: no TypeError
     # Real numbers in an object column (e.g. after a concat with None) are prices.
-    from decimal import Decimal
-
     mixed = split_market(adjusted=True)
     values = mixed["close_as_traded"].astype(object)
     values[mixed["instrument"] == "A"] = Decimal("5")
