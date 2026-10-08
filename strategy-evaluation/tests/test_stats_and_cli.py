@@ -480,7 +480,7 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
 
 
 @pytest.mark.parametrize("command", ["run", "quantiles"])
-@pytest.mark.parametrize("adjustment", ["unadjusted", "raw", None])
+@pytest.mark.parametrize("adjustment", ["unadjusted", "split_adjusted", "raw", None])
 def test_cli_refuses_bars_without_split_adjusted_closes(
     tmp_path, market, reversal_signals, command, adjustment
 ):

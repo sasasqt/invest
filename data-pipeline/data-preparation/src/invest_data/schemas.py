@@ -91,7 +91,8 @@ FUNDAMENTAL_COLUMNS = (
 )
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
 PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
-ADJUSTED_PRICES = ("total_return_adjusted", "split_adjusted")
+# What evaluation and mining accept: closes whose returns include splits and dividends.
+ADJUSTED_PRICES = ("total_return_adjusted",)
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
 # Version 2 binds factor evidence to the tested prediction/holding horizon.
@@ -167,18 +168,19 @@ def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, p
 
 
 def require_adjusted_prices(manifest: Manifest) -> None:
-    """Refuse bars whose closes are not declared split-adjusted.
+    """Refuse bars whose closes are not declared total-return adjusted.
 
-    Returns computed from unadjusted closes turn every split into a gain or loss (a
-    2-for-1 split reads as -50%), and no consumer applies corporate actions yet.
+    No consumer applies corporate actions yet. Returns from unadjusted closes turn every
+    split into a gain or loss (a 2-for-1 split reads as -50%); returns from split-adjusted
+    closes drop each dividend, which flatters shorts in high-yield names.
     """
     adjustment = manifest.metadata.get("price_adjustment")
     if adjustment not in ADJUSTED_PRICES:
         raise BundleError(
             f"{manifest.dataset_id}: price_adjustment {adjustment!r} is not supported; "
             f"expected one of {list(ADJUSTED_PRICES)}. Returns from unadjusted closes count "
-            "every split as a gain or loss; publish adjusted bars (with close_as_traded for "
-            "price-level rules)"
+            "every split as a gain or loss, and split-adjusted ones drop dividends; publish "
+            "total-return adjusted bars (with close_as_traded for price-level rules)"
         )
 
 
