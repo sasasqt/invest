@@ -37,8 +37,10 @@ Two kinds are defined so producers and consumers can validate independently:
 from __future__ import annotations
 
 import math
+import numbers
 import os
 from datetime import date
+from decimal import Decimal
 from typing import Any, NoReturn
 
 import numpy as np
@@ -117,6 +119,25 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
 def _check_kind(manifest: Manifest, kind: str) -> None:
     if manifest.dataset_kind != kind:
         raise BundleError(f"expected dataset_kind {kind!r}, got {manifest.dataset_kind!r}")
+
+
+def real_numbers(values: pd.Series, name: str) -> np.ndarray:
+    """``values`` as float64 (null -> NaN), refusing anything but real numbers or null.
+
+    The one rule for numeric bar columns: booleans, complex numbers and text are refused,
+    whatever the dtype; numbers in an object column (for example after a concat with
+    ``None``) are accepted.
+    """
+    dtype = values.dtype
+    refused = pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
+    if not refused and not pd.api.types.is_numeric_dtype(dtype):
+        present = values[values.notna()]
+        refused = not present.map(
+            lambda v: isinstance(v, numbers.Real | Decimal) and not isinstance(v, bool | np.bool_)
+        ).all()
+    if refused:
+        raise BundleError(f"{name} must hold real numbers, not {dtype}")
+    return np.asarray(values.to_numpy(dtype="float64", na_value=np.nan))
 
 
 def market_bar_columns(names: Any) -> tuple[Column, ...]:
@@ -341,11 +362,8 @@ def publish_market_bars(
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
     columns = market_bar_columns(frame.columns)
-    numbers = [c.name for c in columns if c.type == "float64"]
-    dtypes = [frame[c].dtype for c in numbers]
-    if any(not pd.api.types.is_numeric_dtype(t) or pd.api.types.is_bool_dtype(t) for t in dtypes):
-        raise BundleError(f"market_bars: {numbers} must be numeric; run clean_bars first")
-    px = frame[[c.name for c in columns if c.unit == "price"]].to_numpy("float64", na_value=np.nan)
+    values = {c.name: real_numbers(frame[c.name], f"market_bars: {c.name}") for c in columns[2:]}
+    px = np.column_stack([values[c.name] for c in columns if c.unit == "price"])
     if (px <= 0).any():
         raise BundleError("market_bars: prices must be positive")
     if (frame["volume"] < 0).any():

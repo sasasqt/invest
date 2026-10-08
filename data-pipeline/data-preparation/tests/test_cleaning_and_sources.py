@@ -117,14 +117,16 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw.loc[len(raw)] = ["2024-01-08", "GGG", 10, 11, 9, 10.5, 100, " "]
     raw.loc[len(raw)] = ["2024-01-08", "HHH", 10, 11, 9, 10.5, 100, "N/A"]
     raw.loc[len(raw)] = ["2024-01-08", "III", 10, 11, 9, 10.5, 100, "Null"]
+    raw.loc[len(raw)] = ["2024-01-08", "JJJ", 10, 11, 9, 10.5, 100, True]
     clean, report = clean_bars(raw)
     # The optional column never costs a bar: a null marker means unknown, and any other
     # value that is not a positive number is nulled and counted.
-    assert clean["instrument"].tolist() == ["AAA", *(c * 3 for c in "CDEFGHI")]
+    assert clean["instrument"].tolist() == ["AAA", *(c * 3 for c in "CDEFGHIJ")]
     assert clean["close_as_traded"].iloc[0] == 105.0
     assert clean["close_as_traded"].iloc[1:].isna().all()
     assert set(report.rejected["instrument"]) == {"AAA", "BBB", " "}  # required-column faults
-    assert report.summary()["nulled_invalid_values"] == {"close_as_traded": 3}  # CCC, EEE, FFF
+    nulled = report.summary()["nulled_invalid_values"]
+    assert nulled == {"close_as_traded": 4}  # CCC, EEE, FFF and the boolean JJJ
     assert "nulled_invalid_values" not in clean_bars(raw_rows())[1].summary()
     clean = clean.iloc[:2]
 
@@ -132,10 +134,14 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     manifest, back = read_market_bars(tmp_path / "m")
     assert manifest.column_names[-1] == "close_as_traded"
     assert back["close_as_traded"].iloc[0] == 105.0 and pd.isna(back["close_as_traded"].iloc[1])
-    with pytest.raises(BundleError, match="must be numeric"):
-        publish_market_bars(
-            clean.assign(volume=True), tmp_path / "b", dataset_id="x", metadata=SYNTHETIC_METADATA
-        )
+    for column, bad in (("volume", True), ("close_as_traded", 5 + 1j), ("close", "1.5")):
+        with pytest.raises(BundleError, match="must hold real numbers"):
+            publish_market_bars(
+                clean.assign(**{column: bad}),
+                tmp_path / "b",
+                dataset_id="x",
+                metadata=SYNTHETIC_METADATA,
+            )
     # pandas' nullable floats are accepted, nulls included.
     nullable = clean.assign(close_as_traded=pd.array([105.0, None], dtype="Float64"))
     publish_market_bars(nullable, tmp_path / "f", dataset_id="x", metadata=SYNTHETIC_METADATA)
@@ -183,7 +189,7 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path, capsys):
     assert frame["close_as_traded"].iloc[0] == 15.0
     assert frame["close_as_traded"].iloc[1:].isna().all()
     # The loader leaves parsing to cleaning; publishing its raw output is refused.
-    with pytest.raises(BundleError, match="must be numeric"):
+    with pytest.raises(BundleError, match="must hold real numbers"):
         publish_market_bars(
             load_csv_bars(src), tmp_path / "raw", dataset_id="r", metadata=SYNTHETIC_METADATA
         )

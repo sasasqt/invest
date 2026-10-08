@@ -27,8 +27,9 @@ from typing import Any, NoReturn
 import numpy as np
 import pandas as pd
 
+from invest_data.bundle import BundleError
 from invest_data.pit import membership_panel
-from invest_data.schemas import AS_TRADED_CLOSE
+from invest_data.schemas import AS_TRADED_CLOSE, real_numbers
 from invest_evaluation.config import BacktestConfig
 from invest_evaluation.strategies import QuantileStrategy, Strategy
 
@@ -85,10 +86,17 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
         return
     if name not in bars:
         _no_traded_close(config, "these bars lack it")
-    column = bars[name]
-    numeric = pd.api.types.is_float_dtype(column) or pd.api.types.is_integer_dtype(column)
-    if not numeric and not column.isna().all():  # an all-null column is merely unknown
-        raise InputError(f"{name} must hold numbers, not {column.dtype}")
+    _traded_closes(bars)
+
+
+def _traded_closes(bars: pd.DataFrame) -> pd.Series:
+    """The as-traded closes; only finite positive values count as known (others are NaN)."""
+    try:
+        values = real_numbers(bars[AS_TRADED_CLOSE.name], AS_TRADED_CLOSE.name)
+    except BundleError as exc:
+        raise InputError(str(exc)) from exc
+    known = np.isfinite(values) & (values > 0)
+    return pd.Series(np.where(known, values, np.nan), index=bars.index)
 
 
 def _no_traded_close(config: BacktestConfig, why: str) -> NoReturn:
@@ -221,10 +229,10 @@ def run_backtest(
     # Price-level eligibility (zero min_price passes every name with a close).
     traded_close = None
     if ex.min_price > 0:
-        wide = _wide(bars, AS_TRADED_CLOSE.name).reindex(index=calendar, columns=instruments)
-        values = wide.to_numpy(dtype="float64", na_value=np.nan)
-        # Only a finite positive price is known; anything else counts as unknown.
-        traded_close = np.where(np.isfinite(values) & (values > 0), values, np.nan)
+        traded = bars[["date", "instrument"]].assign(traded=_traded_closes(bars))
+        traded_close = (
+            _wide(traded, "traded").reindex(index=calendar, columns=instruments).to_numpy()
+        )
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
@@ -491,7 +499,7 @@ def run_backtest(
 
     if unknown_traded_close:
         warnings.append(
-            f"{unknown_traded_close} otherwise eligible name-decisions had no "
+            f"{unknown_traded_close} otherwise eligible name-decisions had no positive finite "
             f"{AS_TRADED_CLOSE.name} and failed execution.min_price"
         )
 

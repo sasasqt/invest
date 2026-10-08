@@ -69,10 +69,11 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
         # A null marker means unknown. Any other value that is not a positive number is
         # invalid; it is nulled and counted, because the optional column must not cost the
         # session its bar.
-        suspect = ~(np.isfinite(df[col]) & (df[col] > 0))
+        flags = raw[col].map(lambda v: isinstance(v, bool | np.bool_)).astype(bool)
+        suspect = flags | ~(np.isfinite(df[col]) & (df[col] > 0))
         text = raw.loc[suspect, col]
         given = text.notna() & ~text.astype(str).str.strip().str.lower().isin(NULL_TOKENS)
-        invalid[col] = given.reindex(df.index, fill_value=False)
+        invalid[col] = given.reindex(df.index, fill_value=False)  # booleans are not prices
         df.loc[invalid[col], col] = np.nan
 
     num = df[REQUIRED[2:]].to_numpy(dtype="float64")

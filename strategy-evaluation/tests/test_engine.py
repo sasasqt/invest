@@ -365,7 +365,8 @@ def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligi
     res = run_backtest(bars, signals, cfg, Fixed({"B": 1.0}), record_decisions=True)
     assert sorted(res.decisions["instrument"]) == ["B"]
     assert res.warnings == [
-        "1 otherwise eligible name-decisions had no close_as_traded and failed execution.min_price"
+        "1 otherwise eligible name-decisions had no positive finite close_as_traded and failed "
+        "execution.min_price"
     ]
 
 
@@ -392,11 +393,28 @@ def test_min_price_without_as_traded_closes_is_refused():
                 cfg,
                 Fixed({"B": 1.0}),
             )
-    for text in ("five", "5.0", True):  # strings and booleans are not prices
-        with pytest.raises(InputError, match="must hold numbers"):
+    for text in ("five", "5.0", True, 5 + 1j):  # text, booleans and complex are not prices
+        with pytest.raises(InputError, match="must hold real numbers"):
             run_backtest(
                 bars.assign(close_as_traded=text), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
             )
+    # Real numbers in an object column (e.g. after a concat with None) are prices.
+    from decimal import Decimal
+
+    mixed = split_market(adjusted=True)
+    values = mixed["close_as_traded"].astype(object)
+    values[mixed["instrument"] == "A"] = Decimal("5")
+    values.iloc[0] = None
+    mixed["close_as_traded"] = values
+    cfg_floor = replace(cfg, start=None)
+    res = run_backtest(
+        mixed,
+        signals_on("2024-01-03", names=("A", "B", "C")),
+        cfg_floor,
+        Fixed({"B": 1.0}),
+        record_decisions=True,
+    )
+    assert sorted(res.decisions["instrument"]) == ["A", "B"]
     # Without a price level there is nothing to compare, so adjusted closes suffice.
     res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
     assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)
