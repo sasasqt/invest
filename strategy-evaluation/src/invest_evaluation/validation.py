@@ -162,18 +162,35 @@ def portfolio_verdict(
             )
         )
     for name in rules.stress_scenarios:
-        row = None
-        if scenarios is not None and name in set(scenarios["scenario"]):
-            sharpe = scenarios.loc[scenarios["scenario"] == name, "sharpe"].iloc[0]
-            row = {"value": None if pd.isna(sharpe) else float(sharpe), "reason": "undefined"}
-        checks.append(_positive(f"stress:{name}", row, f"net Sharpe under scenario {name}"))
+        detail = f"net Sharpe under scenario {name}"
+        if scenarios is None or name not in set(scenarios["scenario"]):
+            checks.append(_positive(f"stress:{name}", None, detail))
+            continue
+        row = scenarios.loc[scenarios["scenario"] == name].iloc[0]
+        insolvency = row.get("insolvency")
+        if isinstance(insolvency, str) and insolvency:
+            # Losing all capital under a stress is a failed check, not a missing value.
+            checks.append(
+                _check(f"stress:{name}", "fail", None, "> 0", f"{detail}: insolvent {insolvency}")
+            )
+            continue
+        sharpe = row["sharpe"]
+        reason = row.get("sharpe_reason")
+        metric = {
+            "value": None if pd.isna(sharpe) else float(sharpe),
+            "reason": reason if isinstance(reason, str) and reason else "undefined",
+        }
+        checks.append(_positive(f"stress:{name}", metric, detail))
     if rules.benchmark != "none":
-        section = "benchmark" if rules.benchmark == "universe" else "external_benchmark"
+        section_name = "benchmark" if rules.benchmark == "universe" else "external_benchmark"
+        section = metrics.get(section_name, {})
+        # A section with too few aligned returns holds only its "benchmark" status entry.
+        ir = section.get("information_ratio", section.get("benchmark"))
         checks.append(
             _positive(
                 f"benchmark:{rules.benchmark}",
-                metrics.get(section, {}).get("information_ratio"),
-                f"information ratio against the {section.replace('_', ' ')}",
+                ir,
+                f"information ratio against the {section_name.replace('_', ' ')}",
             )
         )
 

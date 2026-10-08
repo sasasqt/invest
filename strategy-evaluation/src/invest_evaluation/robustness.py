@@ -71,6 +71,9 @@ def run_scenarios(
                 "total_costs": trading["total_costs"]["value"],
                 "turnover_one_way_annual": trading["turnover_one_way_annual"]["value"],
                 "participation_capped_fills": trading["participation_capped_fills"]["value"],
+                # Why a Sharpe is missing, and the first insolvent session if there was one.
+                "sharpe_reason": perf["sharpe"].get("reason"),
+                "insolvency": perf.get("insolvency", {}).get("value"),
             }
         )
     return pd.DataFrame(rows)

@@ -106,7 +106,7 @@ def test_cli_run_writes_complete_report(tmp_path, market, reversal_signals, caps
     assert "Deflated Sharpe" in (run / "report.md").read_text()
     assert json.loads((run / "manifest.json").read_text())["n_trials"] == 20
     assert json.loads((run / "statistics.json").read_text())["deflated_sharpe"]["n_trials"] == 20
-    with pytest.raises(FileExistsError):
+    with pytest.raises(SystemExit, match="not an empty directory"):
         main(
             [
                 "run",
@@ -336,11 +336,11 @@ def test_cli_reports_external_benchmark_next_to_equal_weight(
     assert "external_benchmark" not in json.loads((no_bench / "metrics.json").read_text())
     assert "External Benchmark" not in (no_bench / "report.md").read_text()
 
-    with pytest.raises(ValueError, match="name one"):
+    with pytest.raises(SystemExit, match="name one"):
         main([*base, "--out", str(tmp_path / "x"), "--benchmark", str(tmp_path / "m")])
     pick = ["--benchmark", str(tmp_path / "m"), "--benchmark-instrument", "SYN001"]
     assert main([*base, "--out", str(tmp_path / "y"), *pick]) == 0
-    with pytest.raises(ValueError, match="not in bundle"):
+    with pytest.raises(SystemExit, match="not in bundle"):
         main(
             [
                 *base,
@@ -380,7 +380,7 @@ def test_cli_rejects_incomparable_benchmark_before_publication(
         benchmark, tmp_path / "b", dataset_id="b", metadata={**SYNTHETIC_METADATA, field: value}
     )
     out = tmp_path / "run"
-    with pytest.raises(ValueError, match=f"benchmark {field} mismatch"):
+    with pytest.raises(SystemExit, match=f"benchmark {field} mismatch"):
         main(
             [
                 "run",
@@ -549,3 +549,154 @@ def test_cli_refuses_min_price_without_as_traded_closes(
     cfg.write_text(json.dumps({"execution": {"min_price": 0}}))
     extra = ["--no-scenarios"] if command == "run" else ["--min-names-per-bucket", "2"]
     assert main([*args, "--config", str(cfg), *extra, "--out", str(tmp_path / "out")]) == 0
+
+
+def _published(tmp_path, market, reversal_signals):
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        reversal_signals,
+        tmp_path / "s",
+        dataset_id="s",
+        metadata={"factor_id": "rev5", "horizon_days": 1},
+    )
+    return ["--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
+
+
+def test_rolling_sharpe_figure_uses_the_risk_free_rate(
+    tmp_path, market, reversal_signals, monkeypatch
+):
+    """N3: the rolling Sharpe uses the same excess-return basis as the reported Sharpe."""
+    from matplotlib.axes import Axes
+
+    plotted = []
+    original_plot = Axes.plot
+
+    def plot(ax, *args, **kwargs):
+        plotted.append((ax, args))
+        return original_plot(ax, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "plot", plot)
+    inputs = _published(tmp_path, market, reversal_signals)
+    cfg = tmp_path / "cfg.json"
+    cfg.write_text(json.dumps({"risk_free_annual": 0.2}))
+    run = tmp_path / "run"
+    assert main(["run", *inputs, "--config", str(cfg), "--no-scenarios", "--out", str(run)]) == 0
+    rolling = [args[0] for ax, args in plotted if ax.get_title().startswith("Rolling")]
+    assert len(rolling) == 1
+    r = pd.read_csv(run / "tables" / "daily.csv", index_col=0, parse_dates=True)["return"]
+    roll = (r - (1.2 ** (1 / 252) - 1)).rolling(126, min_periods=63)
+    expected = roll.mean() / roll.std() * math.sqrt(252)
+    pd.testing.assert_series_equal(rolling[0], expected, check_names=False)
+    assert rolling[0].dropna().iloc[-1] < (r.rolling(126).mean() / r.rolling(126).std()).iloc[
+        -1
+    ] * math.sqrt(252)
+
+
+def test_scenario_figure_draws_no_bar_for_an_undefined_sharpe(tmp_path, monkeypatch):
+    """K16: an insolvent scenario has no Sharpe; it is labelled, never drawn as 0."""
+    from matplotlib.axes import Axes
+
+    from invest_evaluation.reporting import render
+
+    calls = []
+    for method in ("barh", "text"):
+        original = getattr(Axes, method)
+
+        def spy(ax, *args, _original=original, _method=method, **kwargs):
+            calls.append((_method, args))
+            return _original(ax, *args, **kwargs)
+
+        monkeypatch.setattr(Axes, method, spy)
+    root = tmp_path / "run"
+    (root / "tables").mkdir(parents=True)
+    (root / "figures").mkdir()
+    idx = pd.bdate_range("2024-01-01", periods=80)
+    columns = ["equity", "equity_before_costs", "return", "benchmark_return"]
+    costs = ["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]
+    daily = pd.DataFrame(
+        0.0, index=idx, columns=columns + costs + ["gross_exposure", "net_exposure"]
+    )
+    daily["equity"] = daily["equity_before_costs"] = 100.0
+    daily["return"] = np.random.default_rng(0).normal(0, 0.01, len(idx))
+    daily.to_csv(root / "tables" / "daily.csv")
+    pd.DataFrame(
+        {
+            "scenario": ["base", "delay_1"],
+            "sharpe": [0.8, None],
+            "sharpe_reason": [None, "insolvent_wealth_path"],
+            "insolvency": [None, "2024-03-01"],
+        }
+    ).to_csv(root / "tables" / "scenarios.csv", index=False)
+    (root / "config.json").write_text(
+        json.dumps({"initial_capital": 100.0, "annualization": 252, "risk_free_annual": 0.0})
+    )
+    monkeypatch.setattr("invest_evaluation.reporting._write_summary", lambda root: None)
+    render(root)
+    widths = [np.asarray(args[1], dtype=float) for method, args in calls if method == "barh"]
+    assert len(widths) == 1 and widths[0][0] == 0.8 and np.isnan(widths[0][1])
+    texts = [str(args[2]) for method, args in calls if method == "text"]
+    assert any("insolvent 2024-03-01" in t for t in texts)
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+@pytest.mark.parametrize("used", ["file", "non_empty"])
+def test_cli_refuses_a_used_out_before_any_backtest(
+    tmp_path, market, reversal_signals, monkeypatch, command, used
+):
+    """K10: a used --out is refused before reading inputs or running backtests."""
+
+    def fail(*args, **kwargs):
+        raise AssertionError("backtest ran before --out was checked")
+
+    for name in ("run_backtest", "run_scenarios", "run_quantile_portfolios"):
+        monkeypatch.setattr(f"invest_evaluation.cli.{name}", fail)
+    inputs = _published(tmp_path, market, reversal_signals)
+    out = tmp_path / "out"
+    if used == "file":
+        out.write_text("x")
+    else:
+        out.mkdir()
+        (out / "keep.txt").write_text("x")
+    with pytest.raises(SystemExit, match="not an empty directory"):
+        main([command, *inputs, "--out", str(out)])
+    assert (out.read_text() if used == "file" else (out / "keep.txt").read_text()) == "x"
+
+
+@pytest.mark.parametrize("command", ["run", "quantiles"])
+@pytest.mark.parametrize(
+    ("option", "write", "message"),
+    [
+        ("--signals", None, "--signals: missing manifest.json"),
+        ("--universe", None, "--universe: missing manifest.json"),
+        ("--delistings", "not json", "--delistings: Expecting value"),
+        ("--delistings", "{}", "--delistings: delistings JSON must be a list"),
+        ("--config", "[1]", "--config: config must be a JSON object"),
+        ("--config", None, "--config: .*No such file"),
+    ],
+)
+def test_cli_unreadable_inputs_end_with_a_message(
+    tmp_path, market, reversal_signals, command, option, write, message
+):
+    """Same class as REVIEW-13: an unreadable or invalid input is a clean exit, never a
+    traceback, and nothing is written."""
+    inputs = _published(tmp_path, market, reversal_signals)
+    target = tmp_path / "input"
+    if write is not None:
+        target.write_text(write)
+    if option == "--signals":
+        inputs[inputs.index("--signals") + 1] = str(target)
+        extra = []
+    else:
+        extra = [option, str(target)]
+    out = tmp_path / "out"
+    with pytest.raises(SystemExit, match=message):
+        main([command, *inputs, *extra, "--out", str(out)])
+    assert not out.exists()
+
+
+def test_cli_unreadable_benchmark_ends_with_a_message(tmp_path, market, reversal_signals):
+    inputs = _published(tmp_path, market, reversal_signals)
+    out = tmp_path / "out"
+    with pytest.raises(SystemExit, match=r"--benchmark: missing manifest\.json"):
+        main(["run", *inputs, "--benchmark", str(tmp_path / "nope"), "--out", str(out)])
+    assert not out.exists()

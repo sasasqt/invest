@@ -168,3 +168,19 @@ def test_trade_episode_metrics():
     no_loss = episode_metrics(ep.iloc[[0, 3]], 1e-6)
     assert no_loss["profit_factor"].status == "undefined"
     assert episode_metrics(ep.iloc[[4]], 1e-6)["win_rate"].reason == "no_closed_trades"
+
+
+def test_per_side_win_rate_uses_the_flat_tolerance():
+    """N4: a short trade that made 1e-9 is flat under the tolerance, not a win."""
+    ep = pd.DataFrame(
+        {
+            "side": ["long", "long", "short", "short"],
+            "pnl": [100.0, 1e-9, 1e-9, -30.0],
+            "holding_sessions": [5, 3, 2, 4],
+            "status": ["closed"] * 4,
+        }
+    )
+    m = episode_metrics(ep, flat_tolerance=1e-6)
+    assert m["win_rate"].value == pytest.approx(0.25)
+    assert m["long_trades"].extra["win_rate"] == pytest.approx(0.5)
+    assert m["short_trades"].extra["win_rate"] == pytest.approx(0.0)

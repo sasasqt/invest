@@ -340,3 +340,86 @@ def test_cli_refuses_fewer_trials_than_the_search_family(tmp_path, market, rever
         main([*base, "--n-trials", "39", "--out", str(tmp_path / "x")])
     assert not (tmp_path / "x").exists()
     assert main([*base, "--n-trials", "40", "--no-scenarios", "--out", str(tmp_path / "ok")]) == 0
+
+
+def test_insolvent_stress_scenario_fails_and_names_its_insolvency():
+    """K16: losing all capital under a stress is a failed check with its date, not undefined."""
+    scenarios = SCENARIOS.assign(
+        sharpe=[1.0, 0.5, float("nan")],
+        sharpe_reason=[None, None, "insolvent_wealth_path"],
+        insolvency=[None, None, "2023-10-16"],
+    )
+    verdict = _verdict(scenarios=scenarios)
+    check = next(c for c in verdict["checks"] if c["name"] == "stress:delay_1")
+    assert check["status"] == "fail"
+    assert "insolvent 2023-10-16" in check["detail"]
+    assert verdict["status"] == "inconclusive"
+    assert any("insolvent 2023-10-16" in r for r in verdict["reasons"])
+
+
+def test_undefined_stress_sharpe_keeps_the_scenario_reason():
+    scenarios = SCENARIOS.assign(
+        sharpe=[1.0, float("nan"), 0.3], sharpe_reason=[None, "zero_volatility", None]
+    )
+    check = next(
+        c for c in _verdict(scenarios=scenarios)["checks"] if c["name"] == "stress:costs_x2"
+    )
+    assert check["status"] == "undefined" and "zero_volatility" in check["detail"]
+
+
+@pytest.mark.parametrize("benchmark", ["universe", "external"])
+def test_benchmark_rule_with_too_few_aligned_returns_keeps_its_reason(benchmark):
+    """K19: a benchmark section with too few aligned returns is undefined, with its reason."""
+    from invest_evaluation.metrics import benchmark_metrics
+
+    section = {
+        k: m.to_dict() for k, m in benchmark_metrics(RETURNS, RETURNS.iloc[:10] * 0.5, 252).items()
+    }
+    key = "benchmark" if benchmark == "universe" else "external_benchmark"
+    verdict = _verdict(ValidationConfig(benchmark=benchmark), metrics={**METRICS, key: section})
+    check = next(c for c in verdict["checks"] if c["name"] == f"benchmark:{benchmark}")
+    assert check["status"] == "undefined"
+    assert "fewer_than_20_aligned_returns" in check["detail"]
+    assert verdict["status"] == "inconclusive"
+
+
+def test_stress_scenario_table_records_insolvency(tmp_path):
+    """K16 end to end: the scenario row carries the insolvency date and the Sharpe reason."""
+    from invest_evaluation.robustness import run_scenarios
+
+    n_days, names = 320, [f"S{i}" for i in range(10)]
+    dates = pd.bdate_range("2023-01-02", periods=n_days)
+    rng = np.random.default_rng(0)
+    rows, sig = [], []
+    jump = 200  # S0 closes at 4x on session `jump` and opens there from `jump + 1` on
+    for name in names:
+        px = 100 * np.exp(np.cumsum(rng.normal(0, 0.01, n_days)))
+        open_, close = px.copy(), px.copy()
+        if name == "S0":
+            close[jump:] *= 4
+            open_[jump + 1 :] *= 4
+        for t, d in enumerate(dates):
+            hi, lo = max(open_[t], close[t]), min(open_[t], close[t])
+            rows.append((d, name, open_[t], hi, lo, close[t], 1e6))
+    bars = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    for t, d in enumerate(dates[30:], start=30):
+        for j, name in enumerate(names):
+            # S0 scores lowest (shorted) until the decision before the jump, then highest.
+            score = (-1.0 if t < jump - 1 else 100.0) if name == "S0" else float(j)
+            sig.append((d, name, score))
+    signals = pd.DataFrame(sig, columns=["decision_date", "instrument", "score"])
+    from invest_evaluation.config import ExecutionConfig, StrategyConfig
+
+    cfg = BacktestConfig(
+        execution=ExecutionConfig(min_price=0.0),
+        strategy=StrategyConfig(
+            long_fraction=0.1, short_fraction=0.1, rebalance_every=1, min_names=10
+        ),
+    )
+    table = run_scenarios(bars, signals, cfg, scenarios={"base": {}, "delay_1": {"delay": 1}})
+    base, delayed = table.set_index("scenario").loc[["base", "delay_1"]].to_dict("records")
+    assert pd.isna(base["insolvency"]) and pd.isna(base["sharpe_reason"])
+    assert isinstance(delayed["insolvency"], str) and np.isnan(delayed["sharpe"])
+    assert delayed["sharpe_reason"] == "insolvent_wealth_path"

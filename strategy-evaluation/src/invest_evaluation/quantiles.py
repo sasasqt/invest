@@ -352,12 +352,16 @@ def render_quantiles(root: Path) -> None:
         (-0.2, "gross_cagr", "#7fa7d1", "before costs"),
         (0.2, "net_cagr", "#1f4e79", "net"),
     ):
-        values = pd.to_numeric(deciles[col], errors="coerce").fillna(0.0) * 100
+        # A missing CAGR (insufficient or invalid portfolio) draws no bar, never a 0% one.
+        values = pd.to_numeric(deciles[col], errors="coerce") * 100
         ax[0].bar(x + offset, values, width=0.38, color=color, label=label)
+    for i, (cagr, status) in enumerate(zip(deciles["net_cagr"], deciles["status"], strict=True)):
+        if pd.isna(pd.to_numeric(cagr, errors="coerce")):
+            ax[0].text(i, 0, f" n/a ({status})", rotation=90, ha="center", va="bottom", fontsize=7)
     ax[0].set_xticks(x, deciles["portfolio"])
     ax[0].axhline(0, color="black", lw=0.6)
     ax[0].set_ylabel("CAGR (%)")
-    ax[0].set_title("Long-only decile portfolios (q1 = lowest score; no bar = insufficient)")
+    ax[0].set_title("Long-only decile portfolios (q1 = lowest score; n/a = no CAGR)")
     ax[0].legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2, frameon=False)
     # Insufficient portfolios held nothing on some decisions; their paths are not shown.
     spreads = table[(table["kind"] == "long_short") & (table["status"] == "ok")]
@@ -369,14 +373,15 @@ def render_quantiles(root: Path) -> None:
             lw=1.2,
             label=name,
         )
-    skipped = table.loc[
-        (table["kind"] == "long_short") & (table["status"] != "ok"), "portfolio"
-    ].tolist()
-    if skipped:
+    skipped = table[(table["kind"] == "long_short") & (table["status"] != "ok")]
+    if len(skipped):
         ax[1].text(
             0.01,
             0.01,
-            "not shown (insufficient_data): " + ", ".join(skipped),
+            "not shown: "
+            + ", ".join(
+                f"{p} ({s})" for p, s in zip(skipped["portfolio"], skipped["status"], strict=True)
+            ),
             transform=ax[1].transAxes,
             fontsize=7,
             color="#555555",

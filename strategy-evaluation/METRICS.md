@@ -26,7 +26,7 @@ Notation: `r_t` is the net portfolio return in period `t`; `e_t = r_t - rf_t` is
 |---|---|---|
 | Closed trades / `closed_trade_count` | Number of completed trades under the matching rule | Also report open trades, fills, and rejected orders |
 | Wins, losses, flats | Counts by net closed-trade P&L sign | Counts must reconcile to closed trades |
-| Win rate / `win_rate` | Wins / closed trades | Undefined with no closed trades; losing/flat rates complement it |
+| Win rate / `win_rate` | Wins / closed trades | Undefined with no closed trades; losing/flat rates complement it. Wins exceed the flat tolerance, also in the per-side `long_trades`/`short_trades` rates |
 | Non-flat win rate | Wins / (wins + losses) | Report separately; do not silently exclude flats |
 | Average P&L / `average_trade_pnl` | Mean net currency P&L per closed trade | Also median and standard deviation |
 | Average trade return | Mean trade P&L / declared trade capital, computed per trade | Equal-weighted trade statistic; differs from portfolio mean return |

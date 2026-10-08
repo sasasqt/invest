@@ -292,7 +292,7 @@ def test_cli_quantiles_writes_versioned_report(tmp_path, market, reversal_signal
     assert "insufficient_data" in (out / "report.md").read_text()
     with pytest.raises(SystemExit):
         main([*args, "--out", str(tmp_path / "bad"), "--tails", "0.7"])
-    with pytest.raises(FileExistsError):
+    with pytest.raises(SystemExit, match="not an empty directory"):
         main([*args, "--out", str(out)])
 
 
@@ -349,3 +349,88 @@ def test_twenty_five_bucket_report_does_not_discard_boundary_names():
     assert members.groupby(["decision_date", "bucket"]).size().eq(5).all()
     s = scores(score_by_name)
     assert held(Slice("bucket", 19, 25), s) == set(names[90:95])
+
+
+def _saved_quantile_run(tmp_path, long_short_status, long_short_reason):
+    """A saved report whose q10 has no CAGR and whose long-short is not ok."""
+    from invest_evaluation.quantiles import render_quantiles
+
+    root = tmp_path / "run"
+    (root / "tables").mkdir(parents=True)
+    (root / "figures").mkdir()
+    rows = [
+        {
+            "portfolio": f"q{k}",
+            "kind": "bucket",
+            "status": "ok" if k != 10 else "invalid_input",
+            "reason": None if k != 10 else "insolvent_wealth_path",
+            "gross_cagr": 0.05 if k != 10 else None,
+            "net_cagr": 0.04 if k != 10 else None,
+        }
+        for k in range(1, 11)
+    ]
+    rows.append(
+        {
+            "portfolio": "top_minus_bottom_0.1",
+            "kind": "long_short",
+            "status": long_short_status,
+            "reason": long_short_reason,
+            "gross_cagr": None,
+            "net_cagr": None,
+        }
+    )
+    filler = dict.fromkeys(
+        [
+            "mean_names",
+            "net_sharpe",
+            "net_sharpe_ci_low",
+            "net_sharpe_ci_high",
+            "max_drawdown",
+            "turnover_one_way_annual",
+            "cost_drag_annual",
+        ]
+    )
+    report = {
+        "report_version": QUANTILE_REPORT_VERSION,
+        "settings": {"min_names_per_bucket": 5},
+        "membership_rule": "",
+        "min_cross_section": 10,
+        "note": "",
+        "portfolios": [{**filler, **row} for row in rows],
+    }
+    (root / "quantiles.json").write_text(json.dumps(report))
+    pd.DataFrame({"q1": [0.0]}, index=pd.bdate_range("2024-01-01", periods=1)).to_csv(
+        root / "tables" / "daily_returns.csv.gz"
+    )
+    return root, render_quantiles
+
+
+@pytest.mark.parametrize(
+    ("status", "reason"),
+    [("insufficient_data", "fewer_than_5_names"), ("invalid_input", "insolvent_wealth_path")],
+)
+def test_quantile_figure_draws_no_bar_for_a_missing_cagr_and_names_each_status(
+    tmp_path, monkeypatch, status, reason
+):
+    """K6: a missing CAGR is not a 0% bar, and a skipped long-short shows its own status."""
+    from matplotlib.axes import Axes
+
+    calls = []
+    for method in ("bar", "text"):
+        original = getattr(Axes, method)
+
+        def spy(ax, *args, _original=original, _method=method, **kwargs):
+            calls.append((_method, args))
+            return _original(ax, *args, **kwargs)
+
+        monkeypatch.setattr(Axes, method, spy)
+    root, render_quantiles = _saved_quantile_run(tmp_path, status, reason)
+    render_quantiles(root)
+    heights = [np.asarray(args[1], dtype=float) for method, args in calls if method == "bar"]
+    assert len(heights) == 2
+    assert all(np.isnan(h[9]) and (h[:9] > 0).all() for h in heights)
+    texts = [str(args[2]) for method, args in calls if method == "text"]
+    assert any("q10" not in t and "invalid_input" in t for t in texts)  # the q10 label
+    assert any(f"top_minus_bottom_0.1 ({status})" in t for t in texts)
+    if status != "insufficient_data":
+        assert not any("insufficient_data" in t for t in texts)
