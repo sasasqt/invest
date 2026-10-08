@@ -8,6 +8,7 @@ import math
 import sys
 from collections.abc import Sequence
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -368,12 +369,11 @@ def _from_search(root: Path, rank: int) -> FrozenFactor:
 
 
 def _out_of_sample_start(confirm_start: str, start: str | None) -> str:
-    """First export date with search evidence: never before its confirmation period."""
-    try:
-        early = start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start)
-    except ValueError as exc:
-        raise SystemExit(f"--start {start!r} is not a date ({exc})") from exc
-    if early:
+    """First export date with search evidence: never before its confirmation period.
+
+    Both are ISO dates (``YYYY-MM-DD``), so they compare as strings.
+    """
+    if start is not None and start < confirm_start:
         raise SystemExit(
             f"--start {start} precedes the confirmation period ({confirm_start}); "
             "those decisions were used for selection"
@@ -479,7 +479,12 @@ def _freeze(args: argparse.Namespace) -> int:
 
 
 def _export(args: argparse.Namespace) -> int:
-    manifest, bars = read_market_bars(args.data)
+    start = args.start
+    if start is not None:
+        try:
+            start = date.fromisoformat(start).isoformat()
+        except ValueError as exc:
+            raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date") from exc
     evidence: dict[str, Any] | None
     if args.from_search is not None:
         if args.confirmation is not None:
@@ -491,10 +496,10 @@ def _export(args: argparse.Namespace) -> int:
         evidence = (
             None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
         )
-    start = args.start
     if evidence is not None and evidence["source"] == "search":
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
+    manifest, bars = read_market_bars(args.data)
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",

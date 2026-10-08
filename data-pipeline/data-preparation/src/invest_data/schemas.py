@@ -37,7 +37,7 @@ from datetime import date
 from typing import Any, NoReturn
 
 import pandas as pd
-from pandas.api.types import is_datetime64_any_dtype
+from pandas.api.types import is_numeric_dtype
 
 from invest_data.bundle import BundleError, Column, Manifest, read_bundle, write_bundle
 
@@ -121,8 +121,8 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
         if evidence["source"] == "search" and metadata.get("n_trials", 0) < evidence["family_size"]:
             raise BundleError(
                 "signals: search evidence needs n_trials >= its family_size "
-                f"({evidence['family_size']}), got {metadata.get('n_trials')!r}; export the "
-                "search's own factor file, which records its proposal count"
+                f"({evidence['family_size']}), got {metadata.get('n_trials')!r}; a searched "
+                "factor's signals carry the search's proposal count"
             )
 
 
@@ -130,10 +130,10 @@ def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
     """Signals with search evidence start at its confirmation window; earlier dates chose it."""
     evidence = metadata.get("factor_evidence")
     dates = frame["decision_date"]
-    # Wrong types and nulls are left to the bundle's own column checks.
-    if evidence is None or evidence["source"] != "search" or not is_datetime64_any_dtype(dates):
+    # Numbers and unparseable values are left to the bundle's own column checks.
+    if evidence is None or evidence["source"] != "search" or is_numeric_dtype(dates):
         return
-    first = dates.min()
+    first = pd.to_datetime(dates, errors="coerce").min()
     if pd.notna(first) and first.date().isoformat() < evidence["confirmation_window"]["start"]:
         raise BundleError(
             f"signals: decisions from {first.date()} precede the search evidence's confirmation "

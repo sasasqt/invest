@@ -1,6 +1,7 @@
 """Signals carry validated trial counts across the producer/consumer boundary."""
 
 import json
+from datetime import date
 
 import pandas as pd
 import pytest
@@ -224,11 +225,21 @@ def test_search_evidence_signals_start_at_the_confirmation_window(tmp_path):
     assert read_signals(tmp_path / "fixed")[1]["decision_date"].min() == pd.Timestamp("2023-12-29")
 
 
-@pytest.mark.parametrize("dates", [[pd.NaT]])
-def test_search_window_check_leaves_bad_dates_to_the_column_checks(tmp_path, dates):
-    frame = pd.DataFrame({"decision_date": dates, "instrument": ["A"], "score": [1.0]})
+@pytest.mark.parametrize("early", ["2023-12-29", date(2023, 12, 29), pd.Timestamp("2023-12-29")])
+def test_search_window_check_covers_every_date_representation(tmp_path, early):
+    """The writer accepts strings and date objects too; none may bypass the window check."""
+    frame = pd.DataFrame(
+        {"decision_date": [early, early], "instrument": ["A", "B"], "score": [1.0, 2.0]}
+    )
     metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
-    with pytest.raises(BundleError) as caught:
+    with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
         publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
-    assert "confirmation window" not in str(caught.value)
+    assert not (tmp_path / "invalid").exists()
+
+
+def test_search_window_check_leaves_null_dates_to_the_column_checks(tmp_path):
+    frame = pd.DataFrame({"decision_date": [pd.NaT], "instrument": ["A"], "score": [1.0]})
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    with pytest.raises(BundleError, match="not nullable"):
+        publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
     assert not (tmp_path / "invalid").exists()
