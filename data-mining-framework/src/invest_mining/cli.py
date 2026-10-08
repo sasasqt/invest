@@ -409,27 +409,27 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
     identity = experiment.get("identity") or {}
     if row["confirmation_use"] != experiment.get("confirmation_use"):
         raise SystemExit(f"{root}: confirmation.csv and config.json disagree on confirmation use")
-    tagged = factor.selection.get("experiment_id")
-    if tagged is not None and tagged != experiment.get("experiment_id"):
-        raise SystemExit(
-            f"{root}: factor {factor.factor_id} was selected in experiment {tagged}, "
-            f"not {experiment.get('experiment_id')}"
-        )
     params = identity.get("params") or {}
-    tested_horizon = params.get("horizon")
-    if type(tested_horizon) is not int or tested_horizon != factor.horizon_days:
-        raise SystemExit(
-            f"{root}: confirmation horizon {tested_horizon!r} does not match "
-            f"factor horizon {factor.horizon_days!r}"
-        )
     source = "confirm" if params.get("method") == "fixed_formula" else "search"
-    if source == "search" and tagged != experiment.get("experiment_id"):
+    tagged = factor.selection.get("experiment_id")
+    if source == "search" and tagged is None:
         # Only the search's own factor file carries its trial count. A `freeze` copy of the
         # same formula has the same factor id but would export n_trials = 1.
         raise SystemExit(
             f"{root}: factor {factor.factor_id} is not this search's own factor file "
             f"(selection {factor.selection.get('method')!r}); export the file in "
             f"{root / 'factors'} instead"
+        )
+    if tagged is not None and tagged != experiment.get("experiment_id"):
+        raise SystemExit(
+            f"{root}: factor {factor.factor_id} was selected in experiment {tagged}, "
+            f"not {experiment.get('experiment_id')}"
+        )
+    tested_horizon = params.get("horizon")
+    if type(tested_horizon) is not int or tested_horizon != factor.horizon_days:
+        raise SystemExit(
+            f"{root}: confirmation horizon {tested_horizon!r} does not match "
+            f"factor horizon {factor.horizon_days!r}"
         )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
@@ -483,9 +483,11 @@ def _export(args: argparse.Namespace) -> int:
     start = args.start
     if start is not None:
         try:
-            start = datetime.strptime(start, "%Y-%m-%d").date().isoformat()
-        except ValueError as exc:
-            raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date") from exc
+            parsed = datetime.strptime(start, "%Y-%m-%d").date().isoformat()
+        except ValueError:
+            parsed = None
+        if parsed != start:  # strptime also takes unpadded months and days
+            raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date")
     evidence: dict[str, Any] | None
     if args.from_search is not None:
         if args.confirmation is not None:

@@ -243,6 +243,8 @@ def test_search_window_check_covers_every_date_representation(tmp_path, early):
     [
         ["2024-01-02", "29 Dec 2023"],  # a later value in another format
         [20240102, 20240103],  # integers, which the writer stores as 1970 dates
+        pd.Categorical(["2024-01-02", "2023-12-29"]),  # unordered categories
+        pd.Categorical(["2024-01-02", "2023-12-29"], ["2024-01-02", "2023-12-29"], ordered=True),
     ],
 )
 def test_search_window_check_sees_the_dates_the_writer_stores(tmp_path, dates):

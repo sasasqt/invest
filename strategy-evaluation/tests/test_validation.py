@@ -322,7 +322,7 @@ def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, caps
 
 
 def test_cli_refuses_fewer_trials_than_the_search_family(tmp_path, market, reversal_signals):
-    """`--n-trials` cannot undercut the family a search chose the factor from (K8)."""
+    """`--n-trials` cannot undercut the candidates a search tried (K8)."""
     publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
     start = str(reversal_signals["decision_date"].min().date())
     evidence = {
@@ -336,7 +336,7 @@ def test_cli_refuses_fewer_trials_than_the_search_family(tmp_path, market, rever
     metadata = {"factor_id": "rev5", "horizon_days": 1, "n_trials": 40, "factor_evidence": evidence}
     publish_signals(reversal_signals, tmp_path / "s", dataset_id="s", metadata=metadata)
     base = ["run", "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
-    with pytest.raises(SystemExit, match="below the search family size"):
-        main([*base, "--n-trials", "2", "--out", str(tmp_path / "x")])
+    with pytest.raises(SystemExit, match="below the 40 candidates"):
+        main([*base, "--n-trials", "39", "--out", str(tmp_path / "x")])
     assert not (tmp_path / "x").exists()
-    assert main([*base, "--n-trials", "3", "--no-scenarios", "--out", str(tmp_path / "ok")]) == 0
+    assert main([*base, "--n-trials", "40", "--no-scenarios", "--out", str(tmp_path / "ok")]) == 0

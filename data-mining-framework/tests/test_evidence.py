@@ -211,7 +211,7 @@ def test_search_evidence_keeps_factor_export_out_of_sample(tmp_path, data):
     assert _export(data, tmp_path / "auto", "--from-search", str(tmp_path / "s")) == 0
     assert read_signals(tmp_path / "auto")[1].equals(frame)
 
-    for bad in ("2020-13-01", "2020-09-01T12:00", "2020-09-01T00:00Z"):
+    for bad in ("2020-13-01", "2020-09-01T12:00", "2020-09-01T00:00Z", "2020-9-1", "20200901"):
         with pytest.raises(SystemExit, match="not a YYYY-MM-DD date"):
             _export(data, tmp_path / "bad", *source, "--start", bad)
         with pytest.raises(SystemExit, match="not a YYYY-MM-DD date"):

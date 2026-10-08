@@ -43,7 +43,7 @@ from invest_data.bundle import (
     BundleError,
     Column,
     Manifest,
-    _format_value,
+    format_value,
     read_bundle,
     write_bundle,
 )
@@ -139,11 +139,12 @@ def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
     if evidence is None or evidence["source"] != "search":
         return
     dates = frame["decision_date"]
-    if is_datetime64_any_dtype(dates):  # as read back, or as most producers publish
-        stored = dates.dropna().map(lambda ts: ts.date().isoformat())
-    else:  # anything else: the date the writer would store, value by value
-        stored = dates.map(_stored_date).dropna()
-    first = stored.min() if len(stored) else None
+    first: str | None
+    if is_datetime64_any_dtype(dates):  # one time zone: the earliest instant has the earliest date
+        earliest = dates.min()
+        first = None if pd.isna(earliest) else earliest.date().isoformat()
+    else:  # anything else: the dates the writer would store, value by value
+        first = min(filter(None, map(_stored_date, dates.tolist())), default=None)
     if first is not None and first < evidence["confirmation_window"]["start"]:
         raise BundleError(
             f"signals: decisions from {first} precede the search evidence's confirmation "
@@ -155,7 +156,7 @@ def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
 def _stored_date(value: Any) -> str | None:
     """The ISO date the bundle writer stores for ``value``; None if it would refuse it."""
     try:
-        stored = _format_value(SIGNAL_COLUMNS[0], value)
+        stored = format_value(SIGNAL_COLUMNS[0], value)
     except (BundleError, TypeError, ValueError, OverflowError):
         return None
     return stored if isinstance(stored, str) else None

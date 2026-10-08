@@ -144,8 +144,11 @@ def _check_finite(name: str, value: float) -> float:
     return value
 
 
-def _format_value(col: Column, value: Any) -> str | int | float | None:
-    """Convert a Python/pandas value to its stored text (CSV) form, or None for null."""
+def format_value(col: Column, value: Any) -> str | int | float | None:
+    """Convert a Python/pandas value to its stored text (CSV) form, or None for null.
+
+    Public so that contract checks judge the values exactly as they will be stored.
+    """
     # pandas missing values (None, NaN, NaT, pd.NA) are stored as null; infinity is rejected.
     if value is None or (not isinstance(value, str) and pd.isna(value)):
         return None
@@ -356,7 +359,7 @@ def write_bundle(
         Column.from_json(c.to_json())  # validates type/decimal declaration
 
     rows = [
-        [_format_value(col, v) for col, v in zip(cols, rec, strict=True)]
+        [format_value(col, v) for col, v in zip(cols, rec, strict=True)]
         for rec in frame.itertuples(index=False, name=None)
     ]
     created = (created_at or datetime.now(UTC)).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -493,7 +496,7 @@ def read_bundle(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     _validate_table(manifest, rows)
     if manifest.content_sha256 is not None:
         canonical = [
-            [_format_value(c, v) for c, v in zip(manifest.columns, r, strict=True)] for r in rows
+            [format_value(c, v) for c, v in zip(manifest.columns, r, strict=True)] for r in rows
         ]
         if _content_sha256(manifest.columns, canonical) != manifest.content_sha256:
             raise BundleError("content hash mismatch: data does not match its manifest")
@@ -553,7 +556,7 @@ def _arrow_type(col: Column) -> Any:
 
 
 def _to_arrow_value(col: Column, v: Any) -> Any:
-    """Canonical stored value (see _format_value) -> Python object for pyarrow."""
+    """Canonical stored value (see format_value) -> Python object for pyarrow."""
     if v is None:
         return None
     if col.type == "boolean":
@@ -593,5 +596,5 @@ def _read_parquet(path: Path, manifest: Manifest) -> list[list[Any]]:
         if not arrow_field.type.equals(_arrow_type(col)):
             raise BundleError(f"column {col.name!r}: Parquet type {arrow_field.type} != {col.type}")
         # Re-encode to the canonical stored form so one parser validates every format.
-        columns.append([_format_value(col, v) for v in table.column(col.name).to_pylist()])
+        columns.append([format_value(col, v) for v in table.column(col.name).to_pylist()])
     return [list(r) for r in zip(*columns, strict=True)] if columns else []
