@@ -334,10 +334,12 @@ def publish_market_bars(
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
-    numbers = [c.name for c in market_bar_columns(frame.columns) if c.type == "float64"]
-    if not all(pd.api.types.is_numeric_dtype(frame[c]) for c in numbers):
+    columns = market_bar_columns(frame.columns)
+    numbers = [c.name for c in columns if c.type == "float64"]
+    dtypes = [frame[c].dtype for c in numbers]
+    if any(not pd.api.types.is_numeric_dtype(t) or pd.api.types.is_bool_dtype(t) for t in dtypes):
         raise BundleError(f"market_bars: {numbers} must be numeric; run clean_bars first")
-    px = frame[[c.name for c in market_bar_columns(frame.columns) if c.unit == "price"]]
+    px = frame[[c.name for c in columns if c.unit == "price"]]
     if (px <= 0).to_numpy().any():
         raise BundleError("market_bars: prices must be positive")
     if (frame["volume"] < 0).any():

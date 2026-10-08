@@ -114,9 +114,10 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw.loc[len(raw)] = ["2024-01-08", "FFF", 10, 11, 9, 10.5, 100, "12.3x"]
     raw.loc[len(raw)] = ["2024-01-08", "GGG", 10, 11, 9, 10.5, 100, " "]
     raw.loc[len(raw)] = ["2024-01-08", "HHH", 10, 11, 9, 10.5, 100, "N/A"]
+    raw.loc[len(raw)] = ["2024-01-08", "III", 10, 11, 9, 10.5, 100, "Null"]
     clean, report = clean_bars(raw)
     # A null marker (unknown) keeps the bar; any other non-number rejects it.
-    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG", "HHH"]
+    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG", "HHH", "III"]
     assert clean["close_as_traded"].iloc[0] == 105.0
     assert clean["close_as_traded"].iloc[1:].isna().all()
     reasons = report.rejected.set_index("instrument")["reason"]
@@ -128,6 +129,10 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     manifest, back = read_market_bars(tmp_path / "m")
     assert manifest.column_names[-1] == "close_as_traded"
     assert back["close_as_traded"].iloc[0] == 105.0 and pd.isna(back["close_as_traded"].iloc[1])
+    with pytest.raises(BundleError, match="must be numeric"):
+        publish_market_bars(
+            clean.assign(volume=True), tmp_path / "b", dataset_id="x", metadata=SYNTHETIC_METADATA
+        )
     for bad, match in ((0.0, "positive"), (-1.0, "positive"), (float("inf"), "close_as_traded")):
         with pytest.raises(BundleError, match=match):
             publish_market_bars(

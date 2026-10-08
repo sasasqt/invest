@@ -378,10 +378,9 @@ def test_min_price_without_as_traded_closes_is_refused():
     early = bars.assign(close_as_traded=5.0).assign(
         close_as_traded=lambda f: f["close_as_traded"].where(f["date"] < "2024-01-03")
     )
-    with pytest.raises(InputError, match="in the evaluation window"):
-        run_backtest(
-            early, signals_on("2024-01-03"), replace(cfg, start="2024-01-03"), Fixed({"B": 1.0})
-        )
+    for window in (cfg, replace(cfg, start="2024-01-03")):  # default: from the first signal
+        with pytest.raises(InputError, match="no session in the evaluation window has one"):
+            run_backtest(early, signals_on("2024-01-03"), window, Fixed({"B": 1.0}))
     with pytest.raises(InputError, match="needs the as-traded close"):
         run_backtest(
             bars.assign(close_as_traded=float("nan")),

@@ -13,10 +13,11 @@ import pandas as pd
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
 OPTIONAL = ["close_as_traded"]  # kept when the source has it; may be missing per row
-# Values that mean "unknown" in an optional column (pandas' default CSV null markers).
+# Values that mean "unknown" in an optional column, compared case-insensitively
+# (pandas' default CSV null markers).
 NULL_TOKENS = frozenset(
-    {"", "#N/A", "#N/A N/A", "#NA", "-1.#IND", "-1.#QNAN", "-NaN", "-nan", "1.#IND", "1.#QNAN",
-     "<NA>", "N/A", "NA", "NULL", "NaN", "None", "n/a", "nan", "null"}
+    {"", "#n/a", "#n/a n/a", "#na", "-1.#ind", "-1.#qnan", "-nan", "1.#ind", "1.#qnan", "<na>",
+     "n/a", "na", "nan", "none", "null"}
 )  # fmt: skip
 
 
@@ -63,7 +64,7 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     flag(pd.Series(~np.isfinite(num).all(axis=1), index=df.index), "missing_or_nonfinite_value")
     for col in present:
         # A null marker means unknown; any other value must be a finite number.
-        given = raw[col].notna() & ~raw[col].astype(str).str.strip().isin(NULL_TOKENS)
+        given = raw[col].notna() & ~raw[col].astype(str).str.strip().str.lower().isin(NULL_TOKENS)
         flag(given & ~np.isfinite(df[col]), "missing_or_nonfinite_value")
     prices = [c for c in numeric if c != "volume"]
     flag((df[prices] <= 0).any(axis=1), "non_positive_price")

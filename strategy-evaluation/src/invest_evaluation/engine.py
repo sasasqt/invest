@@ -22,7 +22,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from numbers import Real
-from typing import Any
+from typing import Any, NoReturn
 
 import numpy as np
 import pandas as pd
@@ -77,24 +77,19 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
 
     An adjusted close is rescaled by every later split and dividend, so comparing it with
     a price level would let later corporate actions decide earlier eligibility. A name
-    whose as-traded close is unknown (null) on a decision date is not eligible then; bars
-    with no known as-traded close inside the evaluation window are refused.
+    whose as-traded close is unknown (null) on a decision date is not eligible then;
+    :func:`run_backtest` also refuses a window with no known as-traded close.
     """
-    name = AS_TRADED_CLOSE.name
-    if config.execution.min_price <= 0:
-        return
-    known = bars[name].notna() if name in bars else pd.Series(False, index=bars.index)
-    if config.start:
-        known &= bars["date"] >= pd.Timestamp(config.start)
-    if config.end:
-        known &= bars["date"] <= pd.Timestamp(config.end)
-    if not known.any():
-        raise InputError(
-            f"execution.min_price {config.execution.min_price} needs the as-traded close "
-            f"({name}), which these bars lack in the evaluation window; adjusted closes depend "
-            "on later splits and dividends. Publish bars with it, or set execution.min_price "
-            "to 0"
-        )
+    if config.execution.min_price > 0 and AS_TRADED_CLOSE.name not in bars:
+        _no_traded_close(config, "these bars lack it")
+
+
+def _no_traded_close(config: BacktestConfig, why: str) -> NoReturn:
+    raise InputError(
+        f"execution.min_price {config.execution.min_price} needs the as-traded close "
+        f"({AS_TRADED_CLOSE.name}), but {why}; adjusted closes depend on later splits and "
+        "dividends. Publish bars with it, or set execution.min_price to 0"
+    )
 
 
 def _wide(bars: pd.DataFrame, field: str) -> pd.DataFrame:
@@ -222,6 +217,8 @@ def run_backtest(
         if ex.min_price > 0
         else px_close
     )
+    if not np.isfinite(traded_close[sessions]).any():
+        _no_traded_close(cfg, "no session in the evaluation window has one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
