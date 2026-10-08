@@ -25,10 +25,10 @@ artifacts/<component>/<run-id>/
   verdict.json              # evaluation: factor evidence and portfolio verdict, separately
   tables/
   figures/
-  report.html
+  report.md                 # evaluation; mining evaluate saves tables and figures only
 ```
 
-Generated artifacts are ignored by Git. Small synthetic/golden fixtures remain under tracked `tests/fixtures/`. Preserve valuable research outputs in an artifact store or deliberate archive; `.gitignore` is not persistence or backup.
+Generated artifacts are ignored by Git. Tests build their small synthetic inputs in code; shared fixture bundles under a tracked `tests/fixtures/` are planned (QUALITY-02, CONTRACT-04). Preserve valuable research outputs in an artifact store or deliberate archive; `.gitignore` is not persistence or backup.
 
 Each immutable run manifest identifies input dataset/signal/model/strategy versions, code revision, resolved configuration, split/scenario definitions, timestamps, seeds, and content checksums. Save the underlying tables needed to reproduce figures. Do not write credential values into configurations or provenance.
 

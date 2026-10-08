@@ -12,8 +12,9 @@ Inspect confirmation evidence separately from portfolio results. Choose the repl
 
 ```sh
 uv run invest-mine evaluate --data <market bundle> [--universe <bundle>] [--fundamentals <bundle>] \
-  --expr "cs_rank(-delta(close, 5))" [--orientation 1] --out <dir>
-uv run invest-mine search --data <market bundle> --trials 200 --seed 0 [--ledger <ledger.jsonl>] \
+  --expr "cs_rank(-delta(close, 5))" [--orientation 1] [--horizon 1] --out <dir>
+uv run invest-mine search --data <market bundle> --trials 200 --seed 0 [--horizon 1] \
+  [--dev-fraction 0.6] [--embargo 0] [--top-k 5] [--ledger <ledger.jsonl>] \
   [--confirm-start <date>] [--require-confirmatory] --out <dir>
 uv run invest-mine ledger reserve|inspect|check --ledger <ledger.jsonl> --start <date> [--end <date>]
 uv run invest-mine export --data <market bundle> --from-search <dir> [--rank 1] --out <signals>

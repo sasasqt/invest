@@ -40,7 +40,7 @@ Each run writes `verdict.json` (`verdict_version = 2`) with two separate section
 | `stress_scenarios` | `["costs_x2", "delay_1"]` | net Sharpe above zero under each named scenario; `not_run` with `--no-scenarios` |
 | `benchmark` | `"none"` | `"universe"` or `"external"`: information ratio above zero against that benchmark (`"external"` needs `--benchmark`) |
 
-`supported` needs every check to pass; anything else that is neither `rejected` nor `insufficient_data` is `inconclusive`, and `reasons` lists the checks that did not pass. Setting `stress_scenarios = []` disables the optional stress checks but preserves the mandatory solvency and base-Sharpe checks. Unknown scenario names are refused before the backtest. The verdict covers only the evaluated window and does not read the confirmation-use ledger, so a run on already inspected data is exploratory whatever its status.
+`supported` needs every check to pass; anything else that is neither `rejected` nor `insufficient_data` is `inconclusive`, and `reasons` lists the checks that did not pass. Setting `stress_scenarios = []` disables the optional stress checks but preserves the mandatory solvency and base-Sharpe checks. Unknown scenario names are refused before the backtest; the available scenarios are `base`, `no_costs`, `costs_x2`, `costs_x3`, `delay_1`, `delay_2`, `participation_1pct` and `capital_x10` (`robustness.py`). `min_sessions` must be at least 60 and `min_deflated_sharpe` at most 1. The verdict covers only the evaluated window and does not read the confirmation-use ledger, so a run on already inspected data is exploratory whatever its status.
 
 Evaluate supplied trading strategies against versioned market datasets and optional signal artifacts. Own portfolio construction, rebalance rules, simulated execution, costs, risk constraints, and reports.
 
@@ -56,7 +56,7 @@ Policies that depend on actual portfolio state need the frozen-policy runtime in
 
 The package has its own `pyproject.toml` and tests and does not depend on mining. See the [architecture](../docs/ARCHITECTURE.md) and [Python guidelines](../PYTHON_GUIDELINES.md).
 
-Tests cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, delisting settlements, and rejection of signals unavailable at decision time (`tests/test_engine.py`), configuration validation (`tests/test_config.py`), plus metrics, statistics, benchmarks and the CLI (`tests/test_metrics.py`, `tests/test_stats_and_cli.py`). Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
+Tests cover hand-calculated P&L, execution timing, fees, slippage, rebalance accounting, missing/untradable instruments, delisting settlements, and rejection of signals unavailable at decision time (`tests/test_engine.py`), configuration validation (`tests/test_config.py`), plus metrics, statistics, benchmarks and the CLI (`tests/test_metrics.py`, `tests/test_stats_and_cli.py`), bucket portfolios (`tests/test_quantiles.py`) and the portfolio verdict (`tests/test_validation.py`). Report performance assumptions alongside results. Keep strategy tuning and final evaluation on separate periods.
 
 Apply the portfolio portion of the [alpha validation protocol](../data-mining-framework/ALPHA_VALIDATION.md): evaluate frozen signals under base/adverse costs, execution delays, liquidity/capacity constraints, and dependence-aware uncertainty. Return a separate strategy report; statistical factor confirmation alone does not establish tradability.
 
