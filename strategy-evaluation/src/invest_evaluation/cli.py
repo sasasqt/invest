@@ -167,7 +167,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     external = None
     external_info = None
     if args.benchmark:
-        bench_manifest, bench_bars = read_market_bars(args.benchmark)
+        try:
+            bench_manifest, bench_bars = read_market_bars(args.benchmark)
+        except BundleError as exc:
+            raise SystemExit(str(exc)) from exc
         for field in ("currency", "frequency", "price_adjustment", "calendar", "timezone"):
             market_value = market_manifest.metadata.get(field)
             bench_value = bench_manifest.metadata.get(field)

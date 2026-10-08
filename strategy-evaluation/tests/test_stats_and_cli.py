@@ -497,6 +497,23 @@ def test_cli_refuses_bars_without_split_adjusted_closes(
         dataset_id="s",
         metadata={"factor_id": "rev5", "horizon_days": 1},
     )
+    if command == "run" and adjustment != "unadjusted":
+        # The same bundle as a benchmark exits cleanly too.
+        publish_market_bars(market, tmp_path / "ok", dataset_id="ok", metadata=SYNTHETIC_METADATA)
+        with pytest.raises(SystemExit, match="is not one of"):
+            main(
+                [
+                    "run",
+                    "--data",
+                    str(tmp_path / "ok"),
+                    "--signals",
+                    str(tmp_path / "s"),
+                    "--benchmark",
+                    str(tmp_path / "m"),
+                    "--out",
+                    str(tmp_path / "bench"),
+                ]
+            )
     args = [command, "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
     with pytest.raises(SystemExit, match="is not supported"):
         main([*args, "--out", str(tmp_path / "out")])

@@ -82,30 +82,30 @@ invest-data yahoo publish --snapshot "$snapshot" --symbols "$benchmark" --format
 # would then let later corporate actions decide earlier eligibility, so evaluation uses a
 # copy of CONFIG with execution.min_price = 0.
 eval_config="$out/eval-config.json"
-python - "$config" "$eval_config" <<'PY'
+# Prints the portfolios' minimum cross-section, used by the diagnostics below.
+min_names="$(python - "$config" "$eval_config" <<'PY'
 import json
 import sys
 from invest_evaluation.config import BacktestConfig
 
-min_price = BacktestConfig.load(sys.argv[1]).execution.min_price
+config = BacktestConfig.load(sys.argv[1])
 raw = json.loads(open(sys.argv[1]).read())
 raw.setdefault("execution", {})["min_price"] = 0.0
-if min_price:
-    print(f"note: execution.min_price {min_price} -> 0 (no as-traded close)", file=sys.stderr)
+if config.execution.min_price:
+    print(
+        f"note: execution.min_price {config.execution.min_price} -> 0 (no as-traded close)",
+        file=sys.stderr,
+    )
 with open(sys.argv[2], "w") as out:
     json.dump(raw, out, indent=2)
+print(config.strategy.min_names)
 PY
+)"
 
 # Descriptive factor diagnostics on the full sample (not a confirmatory test); the ledger
 # records the inspected window unless it is already recorded. Use the frozen orientation
 # so q10 and the top tails mean the same score direction in both reports, and the
 # portfolios' minimum cross-section (applied to scored names here, eligible names there).
-min_names="$(python - "$config" <<'PY'
-import sys
-from invest_evaluation.config import BacktestConfig
-print(BacktestConfig.load(sys.argv[1]).strategy.min_names)
-PY
-)"
 invest-mine evaluate --data "$out/data/market" --expr "$expr" --horizon 5 \
   --orientation "$orientation" --min-cross-section "$min_names" \
   --ledger "$ledger" --out "$out/mining/diagnostics"

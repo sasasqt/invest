@@ -214,11 +214,13 @@ def run_backtest(
     # Price-level eligibility (zero min_price passes every name with a close).
     traded_close = None
     if ex.min_price > 0:
-        traded_close = (
-            _wide(bars, AS_TRADED_CLOSE.name)
-            .reindex(index=calendar, columns=instruments)
-            .to_numpy(dtype="float64", na_value=np.nan)
-        )
+        wide = _wide(bars, AS_TRADED_CLOSE.name).reindex(index=calendar, columns=instruments)
+        try:
+            values = wide.to_numpy(dtype="float64", na_value=np.nan)
+        except (TypeError, ValueError) as exc:
+            raise InputError(f"{AS_TRADED_CLOSE.name} must be numeric") from exc
+        # Only a finite positive price is known; anything else counts as unknown.
+        traded_close = np.where(np.isfinite(values) & (values > 0), values, np.nan)
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
