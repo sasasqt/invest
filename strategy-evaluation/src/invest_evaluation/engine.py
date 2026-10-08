@@ -80,8 +80,15 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
     whose as-traded close is unknown (null) on a decision date is not eligible then;
     :func:`run_backtest` also refuses a window with no known as-traded close.
     """
-    if config.execution.min_price > 0 and AS_TRADED_CLOSE.name not in bars:
+    name = AS_TRADED_CLOSE.name
+    if config.execution.min_price <= 0:
+        return
+    if name not in bars:
         _no_traded_close(config, "these bars lack it")
+    column = bars[name]
+    numeric = pd.api.types.is_float_dtype(column) or pd.api.types.is_integer_dtype(column)
+    if not numeric and not column.isna().all():  # an all-null column is merely unknown
+        raise InputError(f"{name} must hold numbers, not {column.dtype}")
 
 
 def _no_traded_close(config: BacktestConfig, why: str) -> NoReturn:
@@ -215,14 +222,11 @@ def run_backtest(
     traded_close = None
     if ex.min_price > 0:
         wide = _wide(bars, AS_TRADED_CLOSE.name).reindex(index=calendar, columns=instruments)
-        try:
-            values = wide.to_numpy(dtype="float64", na_value=np.nan)
-        except (TypeError, ValueError) as exc:
-            raise InputError(f"{AS_TRADED_CLOSE.name} must be numeric") from exc
+        values = wide.to_numpy(dtype="float64", na_value=np.nan)
         # Only a finite positive price is known; anything else counts as unknown.
         traded_close = np.where(np.isfinite(values) & (values > 0), values, np.nan)
         if not np.isfinite(traded_close[sessions]).any():
-            _no_traded_close(cfg, "no session in the evaluation window has one")
+            _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()

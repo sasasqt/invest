@@ -379,7 +379,9 @@ def test_min_price_without_as_traded_closes_is_refused():
         close_as_traded=lambda f: f["close_as_traded"].where(f["date"] < "2024-01-03")
     )
     for window in (cfg, replace(cfg, start="2024-01-03")):  # default: from the first signal
-        with pytest.raises(InputError, match="no session in the evaluation window has one"):
+        with pytest.raises(
+            InputError, match="no session in the evaluation window has a positive finite one"
+        ):
             run_backtest(early, signals_on("2024-01-03"), window, Fixed({"B": 1.0}))
     # NaN, object None from a caller's frame, or a value that is not a positive finite price.
     for unknown in (float("nan"), None, float("inf"), -5.0):
@@ -390,10 +392,11 @@ def test_min_price_without_as_traded_closes_is_refused():
                 cfg,
                 Fixed({"B": 1.0}),
             )
-    with pytest.raises(InputError, match="must be numeric"):
-        run_backtest(
-            bars.assign(close_as_traded="five"), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
-        )
+    for text in ("five", "5.0", True):  # strings and booleans are not prices
+        with pytest.raises(InputError, match="must hold numbers"):
+            run_backtest(
+                bars.assign(close_as_traded=text), signals_on("2024-01-03"), cfg, Fixed({"B": 1.0})
+            )
     # Without a price level there is nothing to compare, so adjusted closes suffice.
     res = run_backtest(bars, signals_on("2024-01-03"), hand_config(), Fixed({"B": 1.0}))
     assert res.daily["equity"].iloc[-1] == pytest.approx(1000.0)
