@@ -62,6 +62,19 @@ Apply [design by contract](DESIGN_BY_CONTRACT.md) to public APIs, artifact bound
 - Use structured logging with appropriate levels. Never log secrets, access tokens, or sensitive customer data.
 - Use context managers for resources and explicit timeouts for external requests. Retry only appropriate transient failures, with bounded backoff and attention to idempotency.
 
+## Linux and Windows
+
+Every change must work on both Linux and Windows. CI runs only on Linux until [BUILD-03](TODO.md#m1--packages-and-tooling) adds a Windows job, so the author checks the Windows side when writing the code, not after a user reports it.
+
+- **Paths:** build them with `pathlib.Path` and the `/` operator, never by joining strings with `/` or `\`. Compare paths as `Path` objects, not strings. Keep names valid on Windows: no `:` `*` `?` `"` `<` `>` `|`, no reserved names such as `CON` or `NUL`, no two names differing only in case, and full paths under 260 characters.
+- **Text files:** pass `encoding="utf-8"` to every `open`, `read_text` and `write_text`. Without it, Python 3.11 to 3.14 on Windows uses the locale code page (often cp1252), which cannot encode characters such as `≥` or `→`. Pass `newline=""` to files read or written by the `csv` module, and `newline="\n"` when written text must be byte-identical across platforms (reports, manifests, hashed or committed files).
+- **Renames and deletes:** use `os.replace` to overwrite a file. `os.rename` and `Path.rename` fail on Windows when the target exists, and no platform replaces a non-empty directory. Windows also refuses to rename or delete a file another handle has open, so close files (context managers) before moving or removing them, and do not reopen a `NamedTemporaryFile` by name while it is still open.
+- **Processes:** call `subprocess` with an argument list and `sys.executable`, never `shell=True` or a hard-coded `python3` or `/bin/sh`. Windows starts worker processes with `spawn`, so multiprocessing code needs an `if __name__ == "__main__":` guard and picklable workers.
+- **POSIX-only APIs:** avoid `fcntl`, `os.fork`, `resource`, `pwd`, POSIX signals such as `SIGKILL`, and permission bits from `os.chmod`. When one is needed, give it a Windows path and say so in the docstring.
+- **Time zones:** Windows has no system time-zone database, so code that uses `zoneinfo` must declare the `tzdata` package as a dependency.
+- **Scripts:** new tooling goes in Python. Existing `scripts/*.sh` need a bash (Git Bash or WSL on Windows); a change to them should not add tools Git Bash lacks.
+- **Tests:** use `tmp_path` and `Path`, never `/tmp` or hard-coded separators. When a platform difference cannot run in CI, simulate it in a test (as REVIEW-07 did for Windows rename semantics) and say in the pull request that no Windows host was used.
+
 ## Testing strategy
 
 Use pytest. Test observable behavior and business requirements rather than private implementation details.
