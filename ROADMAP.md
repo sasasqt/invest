@@ -14,7 +14,7 @@ Select the initial market and data source, supported Python version, dependency 
 
 ## M1 — Establish independent packages and quality checks
 
-**Status:** done except shared contract fixtures (QUALITY-02) and the Windows-support decision (BUILD-03). CI runs lint, types, tests, Markdown link checks, independent installs and built-wheel tests. **Depends on:** M0's scope and initial interfaces.
+**Status:** done except shared contract fixtures (QUALITY-02) and Windows support (BUILD-03). CI runs lint, types, tests, Markdown link checks, independent installs and built-wheel tests. **Depends on:** M0's scope and initial interfaces.
 
 Create `invest_data`, `invest_mining`, and `invest_evaluation` with component manifests, lockfiles, thin entry points, and tests as behavior is introduced. Establish Ruff, mypy, pytest, packaging checks, and CI. Create only modules needed by the first workflow. Add deterministic small fixtures and contract checks that remain effective when assertions are disabled.
 

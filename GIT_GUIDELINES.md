@@ -57,6 +57,7 @@ git commit -m "Describe the change"
 - Keep pull requests small enough to review as a coherent change. Explain cross-component edits and dataset contract compatibility.
 - Run checks appropriate to the change. For Python behavior changes, use the component's formatting, linting, type checking, tests, and packaging checks once those tools exist. Documentation-only changes need link and whitespace validation rather than invented application tests.
 - Distinguish passing, failing, skipped, and unrun checks. Do not claim readiness from a zero-test run.
+- Consider Linux and Windows in every change, following the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows). Until CI runs on Windows, say in the pull request how Windows behavior was checked, or that it was not.
 - Configure protected `main` in repository settings when CI and collaboration are introduced: required checks, review requirements appropriate to the team, and restrictions on force pushes and deletion. These settings are recommendations and are not configured by this document.
 - Choose a consistent merge strategy. Squash merging is a suitable default for focused feature branches; preserve individual commits when their history is useful.
 
