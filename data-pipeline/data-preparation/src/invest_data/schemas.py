@@ -113,6 +113,11 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
         raise BundleError(f"{manifest.dataset_kind}: columns {got} != expected {want}")
 
 
+def _check_kind(manifest: Manifest, kind: str) -> None:
+    if manifest.dataset_kind != kind:
+        raise BundleError(f"expected dataset_kind {kind!r}, got {manifest.dataset_kind!r}")
+
+
 def market_bar_columns(names: Any) -> tuple[Column, ...]:
     """The market-bar columns for a frame or bundle, with ``close_as_traded`` if it has it."""
     return MARKET_BAR_COLUMNS + ((AS_TRADED_CLOSE,) if AS_TRADED_CLOSE.name in names else ())
@@ -124,7 +129,9 @@ def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, p
     The declared adjustment is checked from the manifest before the rows are read, and
     again on the manifest returned with them.
     """
-    require_adjusted_prices(read_manifest(path))
+    manifest = read_manifest(path)
+    _check_kind(manifest, MARKET_BARS)
+    require_adjusted_prices(manifest)
     manifest, frame = read_market_bars(path)
     require_adjusted_prices(manifest)
     return manifest, frame
@@ -327,6 +334,9 @@ def publish_market_bars(
 
 def validate_market_frame(frame: pd.DataFrame) -> None:
     """Semantic checks beyond types: positive prices and a consistent OHLC range."""
+    numbers = [c.name for c in market_bar_columns(frame.columns) if c.type == "float64"]
+    if not all(pd.api.types.is_numeric_dtype(frame[c]) for c in numbers):
+        raise BundleError(f"market_bars: {numbers} must be numeric; run clean_bars first")
     px = frame[[c.name for c in market_bar_columns(frame.columns) if c.unit == "price"]]
     if (px <= 0).to_numpy().any():
         raise BundleError("market_bars: prices must be positive")
@@ -340,8 +350,7 @@ def validate_market_frame(frame: pd.DataFrame) -> None:
 
 def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     manifest, frame = read_bundle(path)
-    if manifest.dataset_kind != MARKET_BARS:
-        raise BundleError(f"expected dataset_kind {MARKET_BARS!r}, got {manifest.dataset_kind!r}")
+    _check_kind(manifest, MARKET_BARS)
     _check_columns(manifest, market_bar_columns(manifest.column_names))
     _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     validate_market_frame(frame)

@@ -111,11 +111,12 @@ def test_as_traded_close_is_optional_and_validated(tmp_path, fmt):
     raw.loc[len(raw)] = ["2024-01-08", "CCC", 10, 11, 9, 10.5, 100, 0.0]
     raw.loc[len(raw)] = ["2024-01-08", "DDD", 10, 11, 9, 10.5, 100, None]
     raw.loc[len(raw)] = ["2024-01-08", "EEE", 10, 11, 9, 10.5, 100, float("inf")]
-    raw.loc[len(raw)] = ["2024-01-08", "FFF", 10, 11, 9, 10.5, 100, "n/a"]
+    raw.loc[len(raw)] = ["2024-01-08", "FFF", 10, 11, 9, 10.5, 100, "12.3x"]
     raw.loc[len(raw)] = ["2024-01-08", "GGG", 10, 11, 9, 10.5, 100, " "]
+    raw.loc[len(raw)] = ["2024-01-08", "HHH", 10, 11, 9, 10.5, 100, "N/A"]
     clean, report = clean_bars(raw)
-    # A blank (unknown) as-traded close keeps the bar; an invalid one rejects it.
-    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG"]
+    # A null marker (unknown) keeps the bar; any other non-number rejects it.
+    assert clean["instrument"].tolist() == ["AAA", "DDD", "GGG", "HHH"]
     assert clean["close_as_traded"].iloc[0] == 105.0
     assert clean["close_as_traded"].iloc[1:].isna().all()
     reasons = report.rejected.set_index("instrument")["reason"]
@@ -145,6 +146,7 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
         "2024-01-02,AAA,1,2,0.5,1.5,10,15\n"
         "2024-01-02,BBB,1,2,0.5,1.5,10,\n"
         "2024-01-02,CCC,1,2,0.5,1.5,10,1.5x\n"
+        "2024-01-02,DDD,1,2,0.5,1.5,10,NA\n"
     )
     args = ["--currency", "USD", "--calendar", "XNYS", "--price-adjustment", "split_adjusted"]
     assert (
@@ -152,8 +154,14 @@ def test_import_csv_and_synthetic_publish_as_traded_closes(tmp_path):
         == 0
     )
     _, frame = read_market_bars(tmp_path / "m")
-    assert frame["instrument"].tolist() == ["AAA", "BBB"]  # CCC's value is not a number
-    assert frame["close_as_traded"].iloc[0] == 15.0 and pd.isna(frame["close_as_traded"].iloc[1])
+    assert frame["instrument"].tolist() == ["AAA", "BBB", "DDD"]  # CCC's is not a number
+    assert frame["close_as_traded"].iloc[0] == 15.0
+    assert frame["close_as_traded"].iloc[1:].isna().all()
+    # The loader leaves parsing to cleaning; publishing its raw output is refused.
+    with pytest.raises(BundleError, match="must be numeric"):
+        publish_market_bars(
+            load_csv_bars(src), tmp_path / "raw", dataset_id="r", metadata=SYNTHETIC_METADATA
+        )
     rejected = pd.read_csv(tmp_path / "m.rejected.csv")
     assert rejected[["instrument", "reason"]].values.tolist() == [
         ["CCC", "missing_or_nonfinite_value"]
@@ -181,3 +189,12 @@ def test_unadjusted_bars_publish_with_a_note_and_are_refused_from_the_manifest(t
     (out / "data.csv").unlink()
     with pytest.raises(BundleError, match="'unadjusted' is not supported"):
         read_adjusted_market_bars(out)
+    # Another kind of bundle is named as such, not as unadjusted bars.
+    from invest_data.schemas import publish_universe
+
+    universe = pd.DataFrame(
+        {"universe": ["U"], "instrument": ["AAA"], "start_date": ["2024-01-02"], "end_date": [None]}
+    )
+    publish_universe(universe, tmp_path / "u", dataset_id="u")
+    with pytest.raises(BundleError, match="expected dataset_kind 'market_bars'"):
+        read_adjusted_market_bars(tmp_path / "u")

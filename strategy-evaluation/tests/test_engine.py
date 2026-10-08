@@ -357,11 +357,16 @@ def test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligi
     pd.testing.assert_series_equal(runs[0].daily["equity"], runs[1].daily["equity"])
 
     # A name whose as-traded close is unknown on the decision date cannot pass the floor.
+    # The warning counts only names nothing else excluded (C fails min_adv_dollar too).
     bars = split_market(adjusted=True)
-    bars.loc[(bars["instrument"] == "A") & (bars["date"] == "2024-01-03"), "close_as_traded"] = None
+    day = bars["date"] == "2024-01-03"
+    bars.loc[day & bars["instrument"].isin(["A", "C"]), "close_as_traded"] = None
+    cfg = replace(cfg, execution=replace(cfg.execution, min_adv_dollar=1e6))
     res = run_backtest(bars, signals, cfg, Fixed({"B": 1.0}), record_decisions=True)
     assert sorted(res.decisions["instrument"]) == ["B"]
-    assert "1 scored name-decisions had no close_as_traded" in res.warnings[-1]
+    assert res.warnings == [
+        "1 otherwise eligible name-decisions had no close_as_traded and failed execution.min_price"
+    ]
 
 
 def test_min_price_without_as_traded_closes_is_refused():
@@ -369,7 +374,14 @@ def test_min_price_without_as_traded_closes_is_refused():
     cfg = replace(hand_config(), execution=ExecutionConfig(max_participation=1.0, min_price=1.0))
     with pytest.raises(InputError, match="needs the as-traded close"):
         run_backtest(bars, signals_on("2024-01-03"), cfg, Fixed({"B": 1.0}))
-    # A column with no known value is no better than none.
+    # A column with no known value in the evaluation window is no better than none.
+    early = bars.assign(close_as_traded=5.0).assign(
+        close_as_traded=lambda f: f["close_as_traded"].where(f["date"] < "2024-01-03")
+    )
+    with pytest.raises(InputError, match="in the evaluation window"):
+        run_backtest(
+            early, signals_on("2024-01-03"), replace(cfg, start="2024-01-03"), Fixed({"B": 1.0})
+        )
     with pytest.raises(InputError, match="needs the as-traded close"):
         run_backtest(
             bars.assign(close_as_traded=float("nan")),

@@ -77,14 +77,23 @@ def check_price_rules(bars: pd.DataFrame, config: BacktestConfig) -> None:
 
     An adjusted close is rescaled by every later split and dividend, so comparing it with
     a price level would let later corporate actions decide earlier eligibility. A name
-    whose as-traded close is unknown (null) on a decision date is not eligible then.
+    whose as-traded close is unknown (null) on a decision date is not eligible then; bars
+    with no known as-traded close inside the evaluation window are refused.
     """
     name = AS_TRADED_CLOSE.name
-    if config.execution.min_price > 0 and (name not in bars or bars[name].isna().all()):
+    if config.execution.min_price <= 0:
+        return
+    known = bars[name].notna() if name in bars else pd.Series(False, index=bars.index)
+    if config.start:
+        known &= bars["date"] >= pd.Timestamp(config.start)
+    if config.end:
+        known &= bars["date"] <= pd.Timestamp(config.end)
+    if not known.any():
         raise InputError(
             f"execution.min_price {config.execution.min_price} needs the as-traded close "
-            f"({name}), which these bars lack; adjusted closes depend on later splits and "
-            "dividends. Publish bars with it, or set execution.min_price to 0"
+            f"({name}), which these bars lack in the evaluation window; adjusted closes depend "
+            "on later splits and dividends. Publish bars with it, or set execution.min_price "
+            "to 0"
         )
 
 
@@ -220,7 +229,7 @@ def run_backtest(
         else np.ones((len(calendar), len(instruments)), dtype=bool)
     )
     n = len(instruments)
-    unknown_traded_close = 0  # scored names a price floor excluded for lack of a price
+    unknown_traded_close = 0  # otherwise eligible names a price floor excluded for lack of a price
     missing_mark_warned = np.zeros(n, dtype=bool)
     retired = np.zeros(n, dtype=bool)
     for event_i, entries in settlement_events.items():
@@ -445,19 +454,17 @@ def run_backtest(
         if first_decision is not None and (i - first_decision) % cfg.strategy.rebalance_every == 0:
             fill_i = i + 1 + ex.delay
             if fill_i <= sessions[-1]:
-                if ex.min_price > 0:
-                    unknown_traded_close += int(
-                        (np.isfinite(S[i]) & has_close & np.isnan(traded_close[i])).sum()
-                    )
-                eligible = (
+                tradable = (
                     np.isfinite(S[i])
                     & member[i]
                     & ~retired
                     & has_close
-                    & (traded_close[i] >= ex.min_price)
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
                 )
+                if ex.min_price > 0:
+                    unknown_traded_close += int((tradable & np.isnan(traded_close[i])).sum())
+                eligible = tradable & (traded_close[i] >= ex.min_price)
                 sc = pd.Series(S[i][eligible], index=instruments[eligible], name="score")
                 targets = _validated_weights(
                     strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
@@ -478,8 +485,8 @@ def run_backtest(
 
     if unknown_traded_close:
         warnings.append(
-            f"{unknown_traded_close} scored name-decisions had no {AS_TRADED_CLOSE.name} "
-            "and failed execution.min_price"
+            f"{unknown_traded_close} otherwise eligible name-decisions had no "
+            f"{AS_TRADED_CLOSE.name} and failed execution.min_price"
         )
 
     # Open episodes at the end are reported with unrealised P&L.
