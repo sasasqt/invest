@@ -222,3 +222,13 @@ def test_search_evidence_signals_start_at_the_confirmation_window(tmp_path):
     fixed = {"factor_id": "f", "horizon_days": 1, "factor_evidence": confirm}
     publish_signals(early, tmp_path / "fixed", dataset_id="s", metadata=fixed)
     assert read_signals(tmp_path / "fixed")[1]["decision_date"].min() == pd.Timestamp("2023-12-29")
+
+
+@pytest.mark.parametrize("dates", [[pd.NaT]])
+def test_search_window_check_leaves_bad_dates_to_the_column_checks(tmp_path, dates):
+    frame = pd.DataFrame({"decision_date": dates, "instrument": ["A"], "score": [1.0]})
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    with pytest.raises(BundleError) as caught:
+        publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert "confirmation window" not in str(caught.value)
+    assert not (tmp_path / "invalid").exists()

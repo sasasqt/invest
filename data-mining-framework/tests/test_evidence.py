@@ -211,6 +211,9 @@ def test_search_evidence_keeps_factor_export_out_of_sample(tmp_path, data):
     assert _export(data, tmp_path / "auto", "--from-search", str(tmp_path / "s")) == 0
     assert read_signals(tmp_path / "auto")[1].equals(frame)
 
+    with pytest.raises(SystemExit, match="not a date"):
+        _export(data, tmp_path / "bad", *source, "--start", "2020-13-01")
+
     # The same factor without evidence may still be exported from any date.
     assert _export(data, tmp_path / "plain", "--factor", member, "--start", str(early.date())) == 0
 

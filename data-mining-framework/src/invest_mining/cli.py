@@ -352,7 +352,7 @@ def _confirm(args: argparse.Namespace) -> int:
     return 0
 
 
-def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor, str]:
+def _from_search(root: Path, rank: int) -> FrozenFactor:
     """Export in the family order frozen on development data before confirmation.
 
     The confirmation table retains that order. Read only candidate IDs: neither
@@ -364,14 +364,16 @@ def _from_search(root: Path, rank: int, start: str | None) -> tuple[FrozenFactor
             f"{root}: {len(family)} factor(s) in the frozen family; cannot export rank {rank}"
         )
     factor_id = str(family.iloc[rank - 1]["factor_id"])
-    factor = FrozenFactor.load(root / "factors" / f"{factor_id}.json")
-    confirm_start = json.loads((root / "config.json").read_text())["split"]["confirmation"][0]
-    return factor, _out_of_sample_start(confirm_start, start)
+    return FrozenFactor.load(root / "factors" / f"{factor_id}.json")
 
 
 def _out_of_sample_start(confirm_start: str, start: str | None) -> str:
-    """First export date for a search-selected factor: never before its confirmation period."""
-    if start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start):
+    """First export date with search evidence: never before its confirmation period."""
+    try:
+        early = start is not None and pd.Timestamp(start) < pd.Timestamp(confirm_start)
+    except ValueError as exc:
+        raise SystemExit(f"--start {start!r} is not a date ({exc})") from exc
+    if early:
         raise SystemExit(
             f"--start {start} precedes the confirmation period ({confirm_start}); "
             "those decisions were used for selection"
@@ -482,16 +484,17 @@ def _export(args: argparse.Namespace) -> int:
     if args.from_search is not None:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
-        factor, start = _from_search(args.from_search, args.rank, args.start)
+        factor = _from_search(args.from_search, args.rank)
         evidence = _confirmation_evidence(args.from_search, factor)
     else:
-        factor, start = FrozenFactor.load(args.factor), args.start
+        factor = FrozenFactor.load(args.factor)
         evidence = (
             None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
         )
-        if evidence is not None and evidence["source"] == "search":
-            # Search evidence covers only the confirmation period; earlier dates chose the factor.
-            start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
+    start = args.start
+    if evidence is not None and evidence["source"] == "search":
+        # Search evidence covers only the confirmation period; earlier dates chose the factor.
+        start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",

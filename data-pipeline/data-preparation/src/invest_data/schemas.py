@@ -37,6 +37,7 @@ from datetime import date
 from typing import Any, NoReturn
 
 import pandas as pd
+from pandas.api.types import is_datetime64_any_dtype
 
 from invest_data.bundle import BundleError, Column, Manifest, read_bundle, write_bundle
 
@@ -120,20 +121,24 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
         if evidence["source"] == "search" and metadata.get("n_trials", 0) < evidence["family_size"]:
             raise BundleError(
                 "signals: search evidence needs n_trials >= its family_size "
-                f"({evidence['family_size']}), got {metadata.get('n_trials')!r}"
+                f"({evidence['family_size']}), got {metadata.get('n_trials')!r}; export the "
+                "search's own factor file, which records its proposal count"
             )
 
 
 def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
     """Signals with search evidence start at its confirmation window; earlier dates chose it."""
     evidence = metadata.get("factor_evidence")
-    if evidence is None or evidence["source"] != "search" or frame.empty:
+    dates = frame["decision_date"]
+    # Wrong types and nulls are left to the bundle's own column checks.
+    if evidence is None or evidence["source"] != "search" or not is_datetime64_any_dtype(dates):
         return
-    first = pd.Timestamp(frame["decision_date"].min()).date().isoformat()
-    if first < evidence["confirmation_window"]["start"]:
+    first = dates.min()
+    if pd.notna(first) and first.date().isoformat() < evidence["confirmation_window"]["start"]:
         raise BundleError(
-            f"signals: decisions from {first} precede the search evidence's confirmation "
-            f"window ({evidence['confirmation_window']['start']}); those dates selected the factor"
+            f"signals: decisions from {first.date()} precede the search evidence's confirmation "
+            f"window ({evidence['confirmation_window']['start']}); those dates selected the "
+            "factor. Re-export from the confirmation start (`invest-mine export --from-search`)"
         )
 
 
