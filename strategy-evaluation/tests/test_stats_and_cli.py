@@ -1,5 +1,6 @@
 import json
 import math
+import sys
 from statistics import NormalDist
 
 import numpy as np
@@ -767,10 +768,17 @@ def test_cli_refuses_an_out_that_cannot_be_created(
     if without_pathconf:
         monkeypatch.delattr("invest_evaluation.cli.os.pathconf", raising=False)
     inputs = _published(tmp_path, market, reversal_signals)
-    (tmp_path / "file").write_text("x")
-    (tmp_path / "dangling").symlink_to(tmp_path / "missing" / "target")
-    (tmp_path / "loop").symlink_to(tmp_path / "loop")
-    for out in ("file/sub", "dangling", "dangling/sub", "loop", "x" * 300, "ok/" + "x" * 300):
+    (tmp_path / "file").write_text("x", encoding="utf-8")
+    outs = ["file/sub", "x" * 300, "ok/" + "x" * 300]
+    try:
+        # Windows refuses symbolic links without Developer Mode or administrator rights.
+        (tmp_path / "dangling").symlink_to(tmp_path / "missing" / "target")
+        (tmp_path / "loop").symlink_to(tmp_path / "loop")
+        outs += ["dangling", "dangling/sub", "loop"]
+    except OSError:
+        if sys.platform != "win32":
+            raise
+    for out in outs:
         for command in ("run", "quantiles"):
             with pytest.raises(SystemExit, match="cannot be created"):
                 main([command, *inputs, "--out", str(tmp_path / out)])
