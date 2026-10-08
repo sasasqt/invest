@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
-from invest_data.schemas import AS_TRADED_CLOSE, non_real
+from invest_data.schemas import AS_TRADED_CLOSE, non_real, real_dtype
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
 OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
@@ -99,10 +99,7 @@ def clean_bars(
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:
-        dtype = df[col].dtype
-        if pd.api.types.is_numeric_dtype(dtype) and not (
-            pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
-        ):
+        if real_dtype(df[col].dtype):
             values = df[col].to_numpy(dtype="float64", na_value=np.nan)
             df[col] = pd.Series(values, index=df.index)
             continue

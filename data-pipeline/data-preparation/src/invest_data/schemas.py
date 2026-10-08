@@ -138,14 +138,23 @@ def real_numbers(values: pd.Series, name: str) -> np.ndarray:
     return np.asarray(values.to_numpy(dtype="float64", na_value=np.nan))
 
 
+def real_dtype(dtype: Any) -> bool:
+    """Numeric dtypes whose values are all real quantities (not booleans or complex)."""
+    return pd.api.types.is_numeric_dtype(dtype) and not (
+        pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype)
+    )
+
+
 def non_real(values: pd.Series) -> pd.Series:
     """Booleans and complex numbers: values that parse as numbers but are not quantities."""
     dtype = values.dtype
     if pd.api.types.is_bool_dtype(dtype) or pd.api.types.is_complex_dtype(dtype):
         return pd.Series(True, index=values.index)
-    if pd.api.types.is_numeric_dtype(dtype):
+    if real_dtype(dtype):
         return pd.Series(False, index=values.index)
-    return values.map(lambda v: isinstance(v, bool | np.bool_ | complex | np.complexfloating))
+    kinds = bool | np.bool_ | complex | np.complexfloating
+    # Through object, so categoricals give a plain boolean mask too.
+    return values.astype(object).map(lambda v: isinstance(v, kinds)).astype(bool)
 
 
 def market_bar_columns(names: Any) -> tuple[Column, ...]:
