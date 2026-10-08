@@ -64,16 +64,36 @@ git commit -m "Describe the change"
 
 The author applies the README's [three development rules](README.md#development-guidelines) before asking for review:
 
-1. **Self-review with the review skill.** Run `/code-review high` (or an equivalent adversarial review) on the full diff.
-   - If its fixes are non-trivial (they change logic, a public interface or saved outputs, or span several functions), run one quicker second pass: `/code-review medium` on the fix commits only, including the whole functions they touch, and give it the first pass's findings and their outcomes. Docs-, comment-, rename-, test- or formatting-only fixes need no second pass.
-   - Repeat only for a real defect the second pass finds, on that fix alone. If that defect is in the fix code, run one more `/code-review high` on the full diff: the fixes were riskier than they looked.
-   - The same applies to non-trivial pushes that answer a reviewer's comments.
+1. **Self-review with the review ladder.** Start at round 1 and move up one round only when the current round earns it: a full-diff round whose verified findings lead to non-trivial fixes (they change logic, a public interface or saved outputs, or span several functions), or a fix-commits round that finds a real defect in the fix code. Docs-, comment-, rename-, test- or formatting-only fixes never move the pull request up. A real defect is a verified finding with a regression test that fails before the fix.
+
+   | Round | Model | Effort | Scope |
+   |---|---|---|---|
+   | 1 | Opus | high | Full diff |
+   | 2 | Opus | medium | Fix commits |
+   | 3 | Fable | high | Full diff |
+   | 4 | Fable | medium | Fix commits |
+   | 5 | Fable | xhigh | Full diff |
+   | 6 | Fable | high | Fix commits |
+   | 7 | Fable | max | Full diff |
+   | 8 | Fable | xhigh | Fix commits |
+
+   - Each round is a `/code-review <effort>` run (or an equivalent adversarial review) with the named model. **Full diff** is the whole pull request. **Fix commits** is only the commits that fixed the previous round's findings, plus the whole functions they touch, reviewed with the previous round's findings and their outcomes.
+   - Run each full-diff round fresh: show it the earlier findings only after it has reported its own, so it does not re-check the same spots.
+   - Fable rounds may run as a subagent so the main session keeps its model.
+   - If round 8 still finds a real defect, stop and say "checkpoint due" ([RAPID_DEVELOPMENT.md §11](RAPID_DEVELOPMENT.md#11-step-back-between-milestones)). The person who requested the change chooses: redesign, a multi-agent review, or accept with the defect recorded in TODO.
+   - The same ladder applies to non-trivial pushes that answer a reviewer's comments.
+   - A bug found after the pull request was marked ready (by a reviewer or the nightly bug hunt) means the next review of that area starts at round 3.
 2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
    - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
    - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
 3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a regression test that fails before the fix and passes after it. Never relax an existing assertion just so new code passes.
 4. **Pair it with end-to-end checks.** A diff review cannot see cross-workflow problems such as two components using different conventions. Run the affected workflow on its real inputs and compare outputs across reports, not only unchanged metrics. Rerun the checks and the workflow on the final code, after the last review fix.
-5. **State the result in the pull request:** the level, scope and finding count of each review pass, how each finding was resolved (fixed, or kept and why), and the checks run.
+5. **State the result in the pull request:** the round, model, level, scope and finding count of each review pass, how each finding was resolved (fixed, or kept and why), and the checks run.
+6. **Record unrelated bugs; don't fix them here.** A bug found while fixing another, which is not the same class or root cause (step 3 still applies to those) and is not needed to make this fix or its tests correct, stays out of this pull request. Reproduce it if you can, then record it:
+   - as a new unchecked `REVIEW-xx` item in [TODO.md](TODO.md) with its location, severity and how to reproduce it;
+   - in the pull request description under "Found, not fixed", with the TODO id.
+
+   If it is high severity, or it blocks this fix or its tests, stop and ask the person who requested the change before going on.
 
 Green CI proves only what the tests already ask; it is not readiness on its own.
 

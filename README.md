@@ -20,7 +20,7 @@ Three rules apply to every change, in code, data, research results and documenta
 2. **Verify under real conditions, at the scope of the claim.** Evidence counts only when it comes from the actual inputs and covers the same scope as the claim. Convenient inputs and partial checks prove less than they appear to.
 3. **Seek disconfirmation.** When a check disagrees with the work, change the work, not the check, and try to prove a change wrong before handing it off.
 
-Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready); reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
+Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects, and unrelated bugs found along the way recorded in TODO rather than fixed in place. Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
 
