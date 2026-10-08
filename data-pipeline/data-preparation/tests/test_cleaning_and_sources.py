@@ -268,6 +268,7 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
         "2024-01-03,BBB,10,11,9,10,500,\n"  # no adjusted close: no usable bar
         "2024-01-03,CCC,10,11,9,0,500,5\n"  # a bad raw price is reported as such
         "2024-01-03,DDD,10,11,9,10,500,abc\n"
+        "2024-01-03,EEE,10,11,9,10,500,1e-320\n"  # volume / factor would overflow
     )
     args = ["--currency", "USD", "--calendar", "XNYS", "--dataset-id", "m"]
     raw = [*args, "--price-adjustment", "unadjusted", "--adjusted-close", "adj"]
@@ -290,8 +291,9 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
         ["BBB", 10.0, "invalid_adjusted_close"],
         ["CCC", 0.0, "non_positive_price"],
         ["DDD", 10.0, "invalid_adjusted_close"],
+        ["EEE", 10.0, "invalid_adjusted_close"],
     ]
-    assert rejected["adj"].tolist()[1:] == ["5", "abc"]
+    assert rejected["adjusted_close"].tolist()[1:] == ["5", "abc", "1e-320"]
 
     # Split-adjusted prices convert too; they are not as traded, so no close_as_traded.
     split = [*args, "--price-adjustment", "split_adjusted", "--adjusted-close", "adj"]

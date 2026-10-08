@@ -15,6 +15,7 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import pandas as pd
 
+from invest_data.cleaning import ADJUSTED_CLOSE, OPTIONAL, REQUIRED
 from invest_data.schemas import AS_TRADED_CLOSE
 
 
@@ -139,15 +140,15 @@ def load_csv_bars(
     volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
     minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
 
-    ``adjusted_close`` names a column holding the total-return adjusted close; it is kept
-    as given, and ``clean_bars(bars, adjusted_close=...)`` converts the bars that pass.
-    ``as_traded`` says the CSV's own close is the close as traded (raw prices); it is then
-    also kept as ``close_as_traded``.
+    ``adjusted_close`` names a column holding the total-return adjusted close. It is kept
+    as :data:`~invest_data.cleaning.ADJUSTED_CLOSE`, so :func:`clean_bars` converts the bars
+    that pass to total-return adjusted prices. ``as_traded`` says the CSV's own close is the
+    close as traded (raw prices); it is then also kept as ``close_as_traded``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
         raw = raw.rename(columns=column_map)
-    required = ["date", "instrument", "open", "high", "low", "close", "volume"]
+    required = REQUIRED
     missing = [c for c in required if c not in raw.columns]
     if missing:
         raise ValueError(f"CSV is missing required columns {missing}")
@@ -170,11 +171,11 @@ def load_csv_bars(
         if as_traded:
             raise ValueError("as_traded needs adjusted_close: raw prices must be adjusted")
         return out
-    if adjusted_close in [*required, AS_TRADED_CLOSE.name]:
+    if adjusted_close in REQUIRED + OPTIONAL:
         raise ValueError(f"the adjusted close cannot be the bar column {adjusted_close!r}")
     if adjusted_close not in raw.columns:
         raise ValueError(f"CSV has no adjusted close column {adjusted_close!r}")
-    out[adjusted_close] = raw[adjusted_close]  # parsed by cleaning, like close_as_traded
+    out[ADJUSTED_CLOSE] = raw[adjusted_close]  # parsed by cleaning, like close_as_traded
     if as_traded:
         out[AS_TRADED_CLOSE.name] = raw["close"]
     return out

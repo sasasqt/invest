@@ -34,7 +34,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from invest_data.cleaning import total_return_adjust
+from invest_data.cleaning import ADJUSTED_CLOSE
 
 SNAPSHOT_VERSION = 1
 SOURCE = "yahoo_finance_chart_v8"
@@ -294,13 +294,14 @@ def load_snapshot(
     start: str | None = None,
     end: str | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """Replay a saved snapshot offline: verify hashes, parse and adjust.
+    """Replay a saved snapshot offline: verify hashes and parse.
 
-    Returns ``(raw bars, provenance)``. ``raw bars`` has the market-bars columns and is not
-    yet cleaned; pass it to :func:`invest_data.cleaning.clean_bars`. ``symbols`` selects a
-    subset (every name must be present in the snapshot). Dates default to the saved request;
-    explicit bounds must lie within it. Only supported US equity/ETF charts are published.
-    Output order is deterministic.
+    Returns ``(raw bars, provenance)``. ``raw bars`` has the market-bars columns, as Yahoo
+    gives them (split-adjusted), and the total-return adjusted close; it is not yet cleaned
+    or converted: pass it to :func:`invest_data.cleaning.clean_bars`, which does both.
+    ``symbols`` selects a subset (every name must be present in the snapshot). Dates default
+    to the saved request; explicit bounds must lie within it. Only supported US equity/ETF
+    charts are published. Output order is deterministic.
     """
     root = Path(path)
     manifest = read_snapshot_manifest(root)
@@ -334,7 +335,8 @@ def load_snapshot(
             )
         }
         currencies[symbol] = meta["currency"]
-        frames.append(total_return_adjust(parse_chart(payload, symbol)))
+        # clean_bars converts the split-adjusted bars to total-return adjusted prices.
+        frames.append(parse_chart(payload, symbol).rename(columns={"adjclose": ADJUSTED_CLOSE}))
     raw = pd.concat(frames, ignore_index=True)
     raw = raw[raw["date"].between(pd.Timestamp(first), pd.Timestamp(last))].reset_index(drop=True)
     if raw.empty:
