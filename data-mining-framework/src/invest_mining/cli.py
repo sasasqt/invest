@@ -8,7 +8,7 @@ import math
 import sys
 from collections.abc import Sequence
 from dataclasses import replace
-from datetime import datetime
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -483,10 +483,10 @@ def _export(args: argparse.Namespace) -> int:
     start = args.start
     if start is not None:
         try:
-            parsed = datetime.strptime(start, "%Y-%m-%d").date().isoformat()
+            parsed = date.fromisoformat(start).isoformat()
         except ValueError:
             parsed = None
-        if parsed != start:  # strptime also takes unpadded months and days
+        if parsed != start:  # fromisoformat also takes other ISO forms, such as 20200901
             raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date")
     evidence: dict[str, Any] | None
     if args.from_search is not None:

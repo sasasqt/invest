@@ -37,7 +37,6 @@ from datetime import date
 from typing import Any, NoReturn
 
 import pandas as pd
-from pandas.api.types import is_datetime64_any_dtype
 
 from invest_data.bundle import (
     BundleError,
@@ -133,24 +132,25 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
             )
 
 
-def _check_signal_window(frame: pd.DataFrame, metadata: dict[str, Any]) -> None:
-    """Signals with search evidence start at its confirmation window; earlier dates chose it."""
+def _check_signal_window(first: str | None, metadata: dict[str, Any]) -> None:
+    """Signals with search evidence start at its confirmation window; earlier dates chose it.
+
+    ``first`` is the earliest stored ``decision_date`` (ISO), or None for no rows.
+    """
     evidence = metadata.get("factor_evidence")
     if evidence is None or evidence["source"] != "search":
         return
-    dates = frame["decision_date"]
-    first: str | None
-    if is_datetime64_any_dtype(dates):  # one time zone: the earliest instant has the earliest date
-        earliest = dates.min()
-        first = None if pd.isna(earliest) else earliest.date().isoformat()
-    else:  # anything else: the dates the writer would store, value by value
-        first = min(filter(None, map(_stored_date, dates.tolist())), default=None)
     if first is not None and first < evidence["confirmation_window"]["start"]:
         raise BundleError(
             f"signals: decisions from {first} precede the search evidence's confirmation "
             f"window ({evidence['confirmation_window']['start']}); those dates selected the "
             "factor. Re-export from the confirmation start (`invest-mine export --from-search`)"
         )
+
+
+def _first_stored_date(values: pd.Series) -> str | None:
+    """Earliest ISO date the bundle writer would store for ``values``, whatever their dtype."""
+    return min(filter(None, map(_stored_date, values.tolist())), default=None)
 
 
 def _stored_date(value: Any) -> str | None:
@@ -318,7 +318,7 @@ def publish_signals(
     _validate_metadata(meta, REQUIRED_SIGNAL_METADATA, SIGNALS)
     if meta["available_at"] != "decision_date_close":
         raise BundleError("signals: only available_at='decision_date_close' is supported")
-    _check_signal_window(frame, meta)
+    _check_signal_window(_first_stored_date(frame["decision_date"]), meta)
     return write_bundle(
         frame.reset_index(drop=True),
         path,
@@ -340,7 +340,9 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
-    _check_signal_window(frame, manifest.metadata)
+    # The reader returns validated naive datetime64 dates.
+    first = frame["decision_date"].min()
+    _check_signal_window(None if pd.isna(first) else first.date().isoformat(), manifest.metadata)
     return manifest, frame
 
 

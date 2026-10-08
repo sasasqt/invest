@@ -270,3 +270,18 @@ def test_search_window_check_leaves_null_dates_to_the_column_checks(tmp_path):
     with pytest.raises(BundleError, match="not nullable"):
         publish_signals(frame, tmp_path / "invalid", dataset_id="s", metadata=metadata)
     assert not (tmp_path / "invalid").exists()
+
+
+def test_search_window_check_handles_arrow_dates(tmp_path):
+    pa = pytest.importorskip("pyarrow")
+    inside = pd.Series(
+        pd.to_datetime(["2024-01-02", "2024-01-03"]).date, dtype=pd.ArrowDtype(pa.date32())
+    )
+    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
+    frame = pd.DataFrame({"decision_date": inside, "instrument": ["A", "B"], "score": [1.0, 2.0]})
+    publish_signals(frame, tmp_path / "ok", dataset_id="s", metadata=metadata)
+    early = frame.assign(
+        decision_date=inside.iloc[::-1].reset_index(drop=True) - pd.Timedelta(days=5)
+    )
+    with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
+        publish_signals(early, tmp_path / "invalid", dataset_id="s", metadata=metadata)
