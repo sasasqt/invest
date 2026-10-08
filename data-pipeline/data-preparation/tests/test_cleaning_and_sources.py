@@ -293,7 +293,13 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
         ["DDD", 10.0, "invalid_adjusted_close"],
         ["EEE", 10.0, "invalid_adjusted_close"],
     ]
-    assert rejected["adjusted_close"].tolist()[1:] == ["5", "abc", "1e-320"]
+    assert rejected.columns.tolist() == [
+        *"date instrument open high low close".split(),
+        "volume",
+        "adj",
+        "reason",
+    ]  # the CSV's own columns, no close_as_traded added
+    assert rejected["adj"].tolist()[1:] == ["5", "abc", "1e-320"]
 
     # Split-adjusted prices convert too; they are not as traded, so no close_as_traded.
     split = [*args, "--price-adjustment", "split_adjusted", "--adjusted-close", "adj"]
@@ -302,13 +308,13 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
 
     refused = (
         ("total_return_adjusted", "adj", "converts unadjusted or split_adjusted"),
-        ("unadjusted", "missing", "no adjusted close column 'missing'"),
-        ("unadjusted", "", "no adjusted close column ''"),
-        ("total_return_adjusted", "", "converts unadjusted or split_adjusted"),
+        ("unadjusted", "missing", "has no column 'missing'"),
+        ("unadjusted", "", "has no column ''"),
+        ("total_return_adjusted", "", "has no column ''"),
         # Naming a bar column would scale by 1 and label raw prices as adjusted.
-        ("unadjusted", "close", "cannot be the bar column 'close'"),
-        ("split_adjusted", "volume", "cannot be the bar column 'volume'"),
-        ("unadjusted", "close_as_traded", "cannot be the bar column 'close_as_traded'"),
+        ("unadjusted", "close", "cannot be the column 'close'"),
+        ("split_adjusted", "volume", "cannot be the column 'volume'"),
+        ("unadjusted", "date", "cannot be the column 'date'"),
     )
     for adjustment, column, message in refused:
         flags = [*args, "--price-adjustment", adjustment, "--adjusted-close", column]
@@ -316,6 +322,11 @@ def test_import_csv_converts_raw_prices_to_total_return_bars(tmp_path, capsys):
             main(["import-csv", str(src), "--out", str(tmp_path / "x"), *flags])
     both = tmp_path / "both.csv"
     both.write_text("date,instrument,open,high,low,close,volume,adj,close_as_traded\n")
-    with pytest.raises(SystemExit, match="already has a close_as_traded column"):
+    with pytest.raises(SystemExit, match="already have a close_as_traded column"):
         main(["import-csv", str(both), "--out", str(tmp_path / "x"), *raw])
     assert not (tmp_path / "x").exists()
+
+    # Conversion is explicit: a stray adjusted-close-like column changes nothing.
+    stray = load_csv_bars(src, extra_columns=["adj"]).rename(columns={"adj": "adjusted_close"})
+    clean, _ = clean_bars(stray)
+    assert clean.loc[clean["instrument"] == "AAA", "close"].tolist() == [100.0, 104.0]

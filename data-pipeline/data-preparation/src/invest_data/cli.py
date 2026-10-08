@@ -7,7 +7,6 @@ import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 
@@ -92,9 +91,33 @@ def _yahoo(args: argparse.Namespace) -> int:
 
 
 def _publish(
-    raw: pd.DataFrame, out: Path, dataset_id: str, metadata: dict, provenance: dict, fmt: str
+    raw: pd.DataFrame,
+    out: Path,
+    dataset_id: str,
+    metadata: dict,
+    provenance: dict,
+    fmt: str,
+    adjusted_close: str | None = None,
 ) -> int:
-    clean, report = clean_bars(raw)
+    """Clean and publish; ``adjusted_close`` converts raw or split-adjusted prices.
+
+    The conversion and the bundle's ``price_adjustment`` label are decided together here.
+    """
+    if adjusted_close is not None:
+        given = metadata["price_adjustment"]
+        if given not in ("unadjusted", "split_adjusted"):
+            raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
+        metadata = {**metadata, "price_adjustment": "total_return_adjusted"}
+        converted = {"from": given, "adjusted_close_column": adjusted_close}
+        provenance = {**provenance, "converted": converted}
+        try:
+            clean, report = clean_bars(
+                raw, adjusted_close=adjusted_close, as_traded=given == "unadjusted"
+            )
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+    else:
+        clean, report = clean_bars(raw)
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
@@ -201,31 +224,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             {"sources": ["invest_data.sources.synthetic_market"], "config": cfg.to_dict()},
             args.format,
         )
-    provenance: dict[str, Any] = {"sources": [args.source.name]}
-    adjustment = args.price_adjustment
-    if args.adjusted_close is not None:
-        if adjustment == "total_return_adjusted":
-            raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
-        provenance["converted"] = {
-            "from": adjustment,
-            "adjusted_close_column": args.adjusted_close,
-        }
-        adjustment = "total_return_adjusted"
     meta = {
         "frequency": "1d",
         "currency": args.currency,
         "calendar": args.calendar,
-        "price_adjustment": adjustment,
+        "price_adjustment": args.price_adjustment,
     }
+    extra = [] if args.adjusted_close is None else [args.adjusted_close]
     try:
-        bars = load_csv_bars(
-            args.source,
-            adjusted_close=args.adjusted_close,
-            as_traded=args.adjusted_close is not None and args.price_adjustment == "unadjusted",
-        )
+        bars = load_csv_bars(args.source, extra_columns=extra)
     except ValueError as exc:
         raise SystemExit(f"{args.source}: {exc}") from exc
-    return _publish(bars, args.out, args.dataset_id, meta, provenance, args.format)
+    provenance = {"sources": [args.source.name]}
+    return _publish(
+        bars, args.out, args.dataset_id, meta, provenance, args.format, args.adjusted_close
+    )
 
 
 if __name__ == "__main__":

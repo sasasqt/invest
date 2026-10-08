@@ -3,8 +3,8 @@
 Cleaning never fills, interpolates or forward-fills prices: those are modelling choices
 that belong to consumers. Each rejected row carries the first rule it violated. An invalid
 value in an optional column is nulled and counted instead, so the bar itself is kept.
-Bars that carry an ``adjusted_close`` column are converted to total-return adjusted prices
-after they pass, so the rejected-row report shows the prices before conversion.
+Conversion to total-return adjusted prices, when asked for, runs on the bars that pass, so
+the rejected-row report shows the prices as given.
 """
 
 from __future__ import annotations
@@ -18,9 +18,6 @@ from invest_data.schemas import AS_TRADED_CLOSE, non_real
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
 OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
-# The total-return adjusted close of raw or split-adjusted bars; its presence asks cleaning
-# to convert them.
-ADJUSTED_CLOSE = "adjusted_close"
 # Values that mean "unknown" in an optional column, compared case-insensitively
 # (pandas' default CSV null markers).
 NULL_TOKENS = frozenset(
@@ -50,14 +47,14 @@ class CleaningReport:
         return out
 
 
-def total_return_adjust(raw: pd.DataFrame) -> pd.DataFrame:
-    """Scale OHLC by ``adjusted_close / close``; scale volume inversely (dollar volume kept).
+def total_return_adjust(raw: pd.DataFrame, adjusted_close: str = "adjclose") -> pd.DataFrame:
+    """Scale OHLC by ``adjusted / close``; scale volume inversely to keep dollar volume.
 
-    The result has the market-bars columns, total-return adjusted. Rows lacking a positive
-    close or adjusted close get NaN prices; :func:`clean_bars` rejects them.
+    ``raw`` holds numbers. The result has the market-bars columns, total-return adjusted.
+    Rows lacking a positive close or adjusted close get NaN prices; cleaning rejects those.
     """
     close = raw["close"].where(raw["close"] > 0)
-    factor = raw[ADJUSTED_CLOSE].where(raw[ADJUSTED_CLOSE] > 0) / close
+    factor = raw[adjusted_close].where(raw[adjusted_close] > 0) / close
     out = raw[["date", "instrument"]].copy()
     for name in ("open", "high", "low", "close"):
         out[name] = raw[name] * factor
@@ -65,18 +62,36 @@ def total_return_adjust(raw: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
+def clean_bars(
+    raw: pd.DataFrame, *, adjusted_close: str | None = None, as_traded: bool = False
+) -> tuple[pd.DataFrame, CleaningReport]:
     """Return (clean bars sorted by date/instrument, report). Input is not modified.
 
-    When ``raw`` has an :data:`ADJUSTED_CLOSE` column, its prices are raw or split-adjusted:
-    the bars are judged as given, rows whose adjusted close is not positive (or whose
-    converted values would not be finite and positive) are rejected as
+    ``adjusted_close`` names a column holding the total-return adjusted close of raw or
+    split-adjusted bars: the bars are judged as given, rows whose adjusted close is not
+    positive (or whose converted values would not be finite and positive) are rejected as
     ``invalid_adjusted_close``, and the rest are converted with :func:`total_return_adjust`.
+    ``as_traded`` says the given closes are as traded (raw prices); they are then kept as
+    ``close_as_traded``.
     """
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
     if missing_cols:
         raise ValueError(f"raw bars missing columns {missing_cols}")
-    columns = REQUIRED + [c for c in [*OPTIONAL, ADJUSTED_CLOSE] if c in raw.columns]
+    columns = REQUIRED + [c for c in OPTIONAL if c in raw.columns]
+    if adjusted_close is not None:
+        if adjusted_close in [*REQUIRED, *OPTIONAL, "reason"]:
+            raise ValueError(f"the adjusted close cannot be the column {adjusted_close!r}")
+        if adjusted_close not in raw.columns:
+            raise ValueError(f"raw bars have no adjusted close column {adjusted_close!r}")
+        columns = [*columns, adjusted_close]
+    if as_traded:
+        if adjusted_close is None:
+            raise ValueError("as_traded needs adjusted_close: raw prices must be converted")
+        if AS_TRADED_CLOSE.name in raw.columns:
+            raise ValueError(
+                f"raw bars already have a {AS_TRADED_CLOSE.name} column; with raw prices it "
+                "is taken from close"
+            )
     df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
@@ -114,9 +129,8 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     order = df.assign(_row=np.arange(len(df))).sort_values(["date", "instrument", "_row"])
     dup = order.duplicated(["date", "instrument"], keep=False)
     flag(dup.reindex(df.index).fillna(False).astype(bool), "duplicate_key")
-    convert = ADJUSTED_CLOSE in df
-    if convert:
-        converted = total_return_adjust(df)
+    if adjusted_close is not None:
+        converted = total_return_adjust(df, adjusted_close)
         values = converted[REQUIRED[2:]].to_numpy(dtype="float64")
         # NaN unless the adjusted close is positive; underflow or overflow are refused too.
         fine = np.isfinite(values).all(axis=1) & (values[:, :4] > 0).all(axis=1)
@@ -125,8 +139,10 @@ def clean_bars(raw: pd.DataFrame) -> tuple[pd.DataFrame, CleaningReport]:
     bad = reason.notna()
     rejected = raw.loc[bad].copy()
     rejected["reason"] = reason[bad]
-    if convert:
-        df = pd.concat([converted, df[[c for c in OPTIONAL if c in df]]], axis=1)
+    if adjusted_close is not None:
+        optional = df[[c for c in OPTIONAL if c in df]]
+        kept = df["close"].rename(AS_TRADED_CLOSE.name) if as_traded else optional
+        df = pd.concat([converted, kept], axis=1)
     clean = df.loc[~bad].sort_values(["date", "instrument"]).reset_index(drop=True)
     clean["instrument"] = clean["instrument"].astype(object)
     nulled = {col: int((mask & ~bad).sum()) for col, mask in invalid.items()}

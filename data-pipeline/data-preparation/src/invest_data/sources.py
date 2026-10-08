@@ -10,12 +10,13 @@ specific. An adapter returns a raw bars DataFrame with the columns of
 from __future__ import annotations
 
 import os
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 
 import numpy as np
 import pandas as pd
 
-from invest_data.cleaning import ADJUSTED_CLOSE, OPTIONAL, REQUIRED
+from invest_data.cleaning import REQUIRED
 from invest_data.schemas import AS_TRADED_CLOSE
 
 
@@ -131,8 +132,7 @@ def load_csv_bars(
     *,
     column_map: dict[str, str] | None = None,
     date_format: str | None = None,
-    adjusted_close: str | None = None,
-    as_traded: bool = False,
+    extra_columns: Sequence[str] = (),
 ) -> pd.DataFrame:
     """Load user-supplied daily bars from a local CSV (one row per date and instrument).
 
@@ -140,16 +140,13 @@ def load_csv_bars(
     volume`` and, optionally, ``close_as_traded`` (the unadjusted close, needed for a
     minimum-price rule). Values are parsed but not cleaned; run :func:`clean_bars` next.
 
-    ``adjusted_close`` names a column holding the total-return adjusted close. It is kept
-    as :data:`~invest_data.cleaning.ADJUSTED_CLOSE`, so :func:`clean_bars` converts the bars
-    that pass to total-return adjusted prices. ``as_traded`` says the CSV's own close is the
-    close as traded (raw prices); it is then also kept as ``close_as_traded``.
+    ``extra_columns`` are kept as given, for example an adjusted close for
+    ``clean_bars(bars, adjusted_close=...)``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
         raw = raw.rename(columns=column_map)
-    required = REQUIRED
-    missing = [c for c in required if c not in raw.columns]
+    missing = [c for c in REQUIRED if c not in raw.columns]
     if missing:
         raise ValueError(f"CSV is missing required columns {missing}")
     out = pd.DataFrame(
@@ -158,26 +155,16 @@ def load_csv_bars(
             "instrument": raw["instrument"].str.strip(),
         }
     )
-    for col in required[2:]:
+    for col in REQUIRED[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
-    if AS_TRADED_CLOSE.name in raw.columns:  # parsed by cleaning, which judges null markers
-        if as_traded:
-            raise ValueError(
-                f"CSV already has a {AS_TRADED_CLOSE.name} column; with raw prices the "
-                "importer takes it from close"
-            )
-        out[AS_TRADED_CLOSE.name] = raw[AS_TRADED_CLOSE.name]
-    if adjusted_close is None:
-        if as_traded:
-            raise ValueError("as_traded needs adjusted_close: raw prices must be adjusted")
-        return out
-    if adjusted_close in REQUIRED + OPTIONAL:
-        raise ValueError(f"the adjusted close cannot be the bar column {adjusted_close!r}")
-    if adjusted_close not in raw.columns:
-        raise ValueError(f"CSV has no adjusted close column {adjusted_close!r}")
-    out[ADJUSTED_CLOSE] = raw[adjusted_close]  # parsed by cleaning, like close_as_traded
-    if as_traded:
-        out[AS_TRADED_CLOSE.name] = raw["close"]
+    # Parsed by cleaning, which judges null markers and refuses misused bar columns.
+    for col in [AS_TRADED_CLOSE.name] if AS_TRADED_CLOSE.name in raw.columns else []:
+        out[col] = raw[col]
+    for col in extra_columns:
+        if col not in raw.columns:
+            raise ValueError(f"CSV has no column {col!r}")
+        if col not in out:
+            out[col] = raw[col]
     return out
 
 
