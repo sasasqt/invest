@@ -473,6 +473,13 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
     ):
         if key in raw and not isinstance(raw[key], kind):
             raise BundleError(f"manifest {key!r} must be a JSON {name}")
+    for key in ("dataset_kind", "content_sha256", "created_at"):
+        if raw.get(key) is not None and not isinstance(raw[key], str):
+            raise BundleError(f"manifest {key!r} must be a string")
+    if not isinstance(raw["dataset_id"], str):
+        raise BundleError("manifest 'dataset_id' must be a string")
+    if not all(isinstance(v, str) for v in raw["storage"].values()):
+        raise BundleError("manifest 'storage' values must be strings")
     if not all(isinstance(k, str) for k in raw.get("primary_key", [])):
         raise BundleError("manifest 'primary_key' must list column names")
     row_count = raw["row_count"]

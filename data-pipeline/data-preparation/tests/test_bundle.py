@@ -169,6 +169,11 @@ def test_reader_rejects_invalid_manifests(tmp_path, changes, message):
         ({"row_count": None}, "non-negative integer"),
         ({"row_count": "2"}, "non-negative integer"),
         ({"row_count": True}, "non-negative integer"),
+        ({"storage": {"format": ["csv"], "path": "data.csv"}}, "'storage' values must be strings"),
+        ({"storage": {"format": {}, "path": "data.csv"}}, "'storage' values must be strings"),
+        ({"dataset_kind": ["signals"]}, "'dataset_kind' must be a string"),
+        ({"dataset_id": 5}, "'dataset_id' must be a string"),
+        ({"content_sha256": 5}, "'content_sha256' must be a string"),
     ],
 )
 def test_reader_rejects_malformed_manifest_structure(tmp_path, changes, message):

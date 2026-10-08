@@ -763,9 +763,12 @@ def test_cli_refuses_an_out_that_cannot_be_created(tmp_path, market, reversal_si
         monkeypatch.setattr(f"invest_evaluation.cli.{name}", fail)
     inputs = _published(tmp_path, market, reversal_signals)
     (tmp_path / "file").write_text("x")
-    for command in ("run", "quantiles"):
-        with pytest.raises(SystemExit, match="cannot be created"):
-            main([command, *inputs, "--out", str(tmp_path / "file" / "sub")])
+    (tmp_path / "dangling").symlink_to(tmp_path / "missing" / "target")
+    (tmp_path / "loop").symlink_to(tmp_path / "loop")
+    for out in ("file/sub", "dangling", "dangling/sub", "loop"):
+        for command in ("run", "quantiles"):
+            with pytest.raises(SystemExit, match="cannot be created"):
+                main([command, *inputs, "--out", str(tmp_path / out)])
 
 
 def test_benchmark_instrument_without_benchmark_is_refused(tmp_path, market, reversal_signals):

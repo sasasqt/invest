@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any, TypeVar
@@ -80,10 +81,18 @@ def _refuse_used_out(out: Path) -> None:
     if out.exists() and (not out.is_dir() or any(out.iterdir())):
         raise SystemExit(f"--out {out} is not an empty directory; choose a new run directory")
     ancestor = out.absolute()
-    while not ancestor.exists():
+    while not (ancestor.exists() or ancestor.is_symlink()):
         ancestor = ancestor.parent
-    if not ancestor.is_dir() or not os.access(ancestor, os.W_OK | os.X_OK):
-        raise SystemExit(f"--out {out} cannot be created: {ancestor} is not a writable directory")
+    cannot = f"--out {out} cannot be created"
+    if ancestor.is_symlink() and not ancestor.exists():
+        raise SystemExit(f"{cannot}: {ancestor} is a broken symbolic link")
+    if not ancestor.is_dir():
+        raise SystemExit(f"{cannot}: {ancestor} is not a directory")
+    # Try it: permission bits alone do not tell (root, read-only mounts, /sys).
+    try:
+        os.rmdir(tempfile.mkdtemp(prefix=".invest-eval-", dir=ancestor))
+    except OSError as exc:
+        raise SystemExit(f"{cannot}: {exc}") from exc
 
 
 def _read(what: str, read: Callable[..., T], *args: Any) -> T:
