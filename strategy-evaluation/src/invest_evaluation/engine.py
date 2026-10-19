@@ -523,7 +523,14 @@ def run_backtest(
         )
 
     daily = pd.DataFrame(rows).set_index("date")
-    daily["equity_before_costs"] = daily["equity"] + daily["cum_costs"]
+    # Gross of costs: each session's net return plus that session's trading and borrow
+    # costs over the previous close's equity, compounded. Adding cumulative costs back to
+    # equity instead would divide every later session's gross return by a pile of past
+    # costs that earns nothing, understating gross returns and the cost drag.
+    prev_equity = daily["equity"].shift(1).fillna(cfg.initial_capital)
+    day_costs_paid = daily["cum_costs"].diff().fillna(daily["cum_costs"].iloc[0])
+    gross_return = (daily["equity"] + day_costs_paid) / prev_equity - 1.0
+    daily["equity_before_costs"] = cfg.initial_capital * (1.0 + gross_return).cumprod()
     daily["gross_exposure"] = (daily["long_value"] + daily["short_value"]) / daily["equity"]
     daily["net_exposure"] = (daily["long_value"] - daily["short_value"]) / daily["equity"]
     daily["turnover"] = daily["traded_notional"] / daily["equity"].shift(1).fillna(
