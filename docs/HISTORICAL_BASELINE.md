@@ -37,6 +37,8 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 | Sharpe | −0.47 | 0.11 |
 | Max drawdown | 61.8% | 20.6% |
 
+The gross-of-costs column and the cost drag below were understated by a bug that REVIEW-19 fixed; see [Limitations](#limitations) for the corrected figures.
+
 - Costs: 5.9% a year of drag at about 44× one-way annual turnover; the gross edge does not cover them. Doubling costs gives a Sharpe of −1.01; a one-session delay gives −0.65.
 - Statistics: Sharpe 95% stationary-bootstrap CI [−0.97, 0.03]; HAC t of the mean daily return −1.80 (p = 0.072); PSR/DSR versus zero 0.036.
 - Benchmarks: the universe equal-weight portfolio (gross) returned 1,210% and SPY returned 574% over the same sessions. Against SPY the strategy has beta 0.11, correlation 0.17, annual alpha −6.8% and information ratio −1.04.

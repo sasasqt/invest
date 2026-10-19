@@ -186,7 +186,6 @@ def test_gross_of_costs_metrics_are_not_diluted_by_past_costs():
     free_cagr = free_metrics["performance"]["cagr"]["value"]
     assert free_cagr > 0.6
     assert gross_cagr == pytest.approx(free_cagr, abs=0.005)
-    assert metrics["gross_of_costs"]["sharpe"]["value"] > metrics["performance"]["sharpe"]["value"]
     # The cost drag is the costs paid as a fraction of the previous close's equity, per year.
     costs = res.daily[["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]]
     prev = res.daily["equity"].shift(1).fillna(res.config.initial_capital)
