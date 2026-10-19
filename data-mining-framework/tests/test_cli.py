@@ -206,7 +206,9 @@ def test_cli_freeze_fixed_formula_exports_one_trial(tmp_path, capsys):
 def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tmp_path):
     data = tmp_path / "data"
     data_main(["synthetic", "--out", str(data), "--instruments", "12", "--days", "80"])
+    # One name per decile: --min-tail-names 1 keeps the decile means defined.
     args = ["evaluate", "--data", str(data), "--expr", "close", "--horizon", "1"]
+    args += ["--min-tail-names", "1"]
     for minimum, expected in (("1", 10), ("11", 11), ("13", 13)):
         out = tmp_path / minimum
         assert main([*args, "--min-cross-section", minimum, "--out", str(out)]) == 0
@@ -219,7 +221,7 @@ def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tm
         else:
             assert deciles.notna().any().any() and not skipped.any()
     book = tmp_path / "ledger.jsonl"
-    for flag in ("--min-cross-section", "--buckets", "--min-tail-names"):
+    for flag in ("--min-cross-section", "--buckets", "--min-tail-names", "--horizon"):
         with pytest.raises(SystemExit):
             main([*args, flag, "0", "--ledger", str(book), "--out", str(tmp_path / "bad")])
     assert not book.exists()  # rejected before the ledger records an inspection
@@ -256,3 +258,75 @@ def test_every_command_refuses_bars_without_total_return_closes(tmp_path, bars, 
             main([command, "--data", str(data), *extra, "--out", str(tmp_path / command)])
         assert not (tmp_path / command).exists()
     assert not book.exists()  # refused before any inspection was recorded
+
+
+def _small_market(tmp_path, instruments=12, days=80):
+    data = tmp_path / "data"
+    data_main(
+        ["synthetic", "--out", str(data), "--instruments", str(instruments), "--days", str(days)]
+    )
+    return data
+
+
+@pytest.mark.parametrize("expr", ["nosuchop(close)", "close +", "nosuchfeature"])
+def test_evaluate_refuses_a_bad_expression_before_recording_an_inspection(tmp_path, expr):
+    """K5: the ledger must not record an inspection for a command that cannot run."""
+    data, book = _small_market(tmp_path), tmp_path / "ledger.jsonl"
+    with pytest.raises(SystemExit, match="--expr"):
+        main(
+            [
+                "evaluate",
+                "--data",
+                str(data),
+                "--expr",
+                expr,
+                "--ledger",
+                str(book),
+                "--out",
+                str(tmp_path / "out"),
+            ]
+        )
+    assert not book.exists() and not (tmp_path / "out").exists()
+
+
+def test_evaluate_records_the_inspection_only_once_diagnostics_exist(tmp_path, monkeypatch):
+    import invest_mining.cli as cli
+
+    data, book = _small_market(tmp_path), tmp_path / "ledger.jsonl"
+    args = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+
+    def failing(*_args, **_kwargs):
+        raise RuntimeError("diagnostics failed")
+
+    monkeypatch.setattr(cli, "quantile_summary", failing)
+    with pytest.raises(RuntimeError, match="diagnostics failed"):
+        main([*args, "--out", str(tmp_path / "failed")])
+    assert not book.exists() and not (tmp_path / "failed").exists()
+    monkeypatch.undo()
+    assert main([*args, "--out", str(tmp_path / "ok")]) == 0
+    entries = [json.loads(line) for line in book.read_text().splitlines()]
+    assert [e["kind"] for e in entries] == ["inspection"]
+    assert (tmp_path / "ok" / "tables" / "quantile_summary.csv").exists()
+
+
+def test_evaluate_writes_an_undefined_rank_autocorrelation_as_null(tmp_path):
+    """BH-2026-10-14-3: fewer than five names leave the autocorrelation undefined."""
+    data, book = _small_market(tmp_path, instruments=4, days=60), tmp_path / "ledger.jsonl"
+    out = tmp_path / "out"
+    args = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    assert main([*args, "--min-cross-section", "4", "--out", str(out)]) == 0
+    assert json.loads((out / "metrics.json").read_text())["rank_autocorrelation_1d"] is None
+    assert len(book.read_text().splitlines()) == 1
+
+
+def test_search_rerun_into_the_same_directory_leaves_no_stale_factor_files(tmp_path):
+    """K9: factor files from an earlier search would pass as members of the new family."""
+    data, out = _small_market(tmp_path, instruments=25, days=260), tmp_path / "search"
+    args = ["search", "--data", str(data), "--trials", "10", "--out", str(out)]
+    assert main([*args, "--top-k", "3"]) == 0
+    stale = out / "factors" / "stale.json"
+    stale.write_text("{}")
+    assert main([*args, "--top-k", "1", "--seed", "7"]) == 0
+    family = set(pd.read_csv(out / "confirmation.csv")["factor_id"])
+    assert {p.stem for p in (out / "factors").glob("*.json")} == family
+    assert not stale.exists()
