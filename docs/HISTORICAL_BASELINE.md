@@ -37,6 +37,8 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 | Sharpe | −0.47 | 0.11 |
 | Max drawdown | 61.8% | 20.6% |
 
+The gross-of-costs column and the cost drag below were understated by a bug that REVIEW-19 fixed; see [Limitations](#limitations) for the corrected figures.
+
 - Costs: 5.9% a year of drag at about 44× one-way annual turnover; the gross edge does not cover them. Doubling costs gives a Sharpe of −1.01; a one-session delay gives −0.65.
 - Statistics: Sharpe 95% stationary-bootstrap CI [−0.97, 0.03]; HAC t of the mean daily return −1.80 (p = 0.072); PSR/DSR versus zero 0.036.
 - Benchmarks: the universe equal-weight portfolio (gross) returned 1,210% and SPY returned 574% over the same sessions. Against SPY the strategy has beta 0.11, correlation 0.17, annual alpha −6.8% and information ratio −1.04.
@@ -64,6 +66,7 @@ Both runs requested 2010-01-01 to 2024-12-31 and inspected all of it (full-sampl
 ## Limitations
 
 - Price floor: the runs above used the example config's `min_price = 1.0` on back-adjusted closes, so splits and dividends after a date decided which names were eligible on it. REVIEW-13 fixed this look-ahead; Yahoo bars have no as-traded close, so the workflow now evaluates without a price floor (`min_price = 0`). A replay of the 2026-10-07 snapshot after the fix publishes the same market bundle (`content_sha256` `1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129`) and adds 343 eligible name-decisions (NVDA 317, ineligible until 2016 before; NFLX 26) and gives a net CAGR of −5.65% (Sharpe −0.47, max drawdown 61.5%); both verdicts and the six `insufficient_data` tail portfolios are unchanged.
+- Gross-of-costs figures: the runs above added cumulative costs back to equity to get gross returns, which understated gross returns and the cost drag (REVIEW-19). On the current code the same replay reports a gross CAGR of 0.56%, gross Sharpe 0.11, gross max drawdown 23.2% and a cost drag of 6.4% a year, in line with the `no_costs` scenario (0.56%, 0.11, 23.2%). Net figures and both verdicts are unchanged, and the gross edge still does not cover costs. The long-only bucket portfolios show larger corrections: q1's cost drag is 7.0% a year (1.3% before) and its gross CAGR 18.8% (13.6% before).
 - Survivorship bias: only companies that are S&P 100 members today; failed and removed companies are missing, and late listings (for example META, ABBV, UBER, PLTR) enter when their history starts.
 - Yahoo adjusted prices are revised after each dividend and split; the snapshot, not the vendor, defines the data. Total-return adjustment scales open/high/low/close by `adjclose / close`.
 - No point-in-time membership, fundamentals, delisting events or borrow availability.
