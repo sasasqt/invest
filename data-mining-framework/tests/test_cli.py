@@ -298,11 +298,17 @@ def test_evaluate_records_the_inspection_only_once_diagnostics_exist(tmp_path, m
     def failing(*_args, **_kwargs):
         raise RuntimeError("diagnostics failed")
 
-    monkeypatch.setattr(cli, "quantile_summary", failing)
+    # main computes tails after recording; here every diagnostic precedes the record.
+    monkeypatch.setattr(cli, "tail_returns", failing)
     with pytest.raises(RuntimeError, match="diagnostics failed"):
         main([*args, "--out", str(tmp_path / "failed")])
-    assert not book.exists() and not (tmp_path / "failed").exists()
+    assert not book.exists()
     monkeypatch.undo()
+    blocked = tmp_path / "a-file"
+    blocked.write_text("")
+    with pytest.raises(SystemExit, match="--out"):
+        main([*args, "--out", str(blocked)])  # an unwritable --out fails before the record
+    assert not book.exists()
     assert main([*args, "--out", str(tmp_path / "ok")]) == 0
     entries = [json.loads(line) for line in book.read_text().splitlines()]
     assert [e["kind"] for e in entries] == ["inspection"]

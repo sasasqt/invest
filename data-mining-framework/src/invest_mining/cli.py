@@ -129,6 +129,12 @@ def _evaluate(args: argparse.Namespace) -> int:
             ledger.check_inspection(ledger.load(args.ledger), window)
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
+    # An unwritable --out must fail here, not after the inspection is recorded.
+    try:
+        for sub in ("tables", "figures"):
+            (Path(args.out) / sub).mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise SystemExit(f"--out {args.out}: {exc}") from exc
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
