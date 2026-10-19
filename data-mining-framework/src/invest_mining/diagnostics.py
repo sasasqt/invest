@@ -169,18 +169,95 @@ def assign_buckets(
 
 
 def quantile_returns(
-    factor: pd.DataFrame, label: pd.DataFrame, n_buckets: int = 10, min_cross_section: int = 1
+    factor: pd.DataFrame,
+    label: pd.DataFrame,
+    n_buckets: int = 10,
+    min_cross_section: int = 1,
+    *,
+    min_names: int = 1,
 ) -> pd.DataFrame:
-    """Date x bucket table of equal-weighted mean forward returns (see ``assign_buckets``)."""
+    """Date x bucket table of equal-weighted mean forward returns (see ``assign_buckets``).
+
+    A bucket's mean on a date needs at least ``min_names`` observed outcomes; otherwise
+    it is NaN rather than the return of the few names that have one. ``quantile_summary``
+    reports each bucket's counts, coverage and status.
+    """
+    _positive_int("min_names", min_names)
     f = factor
     y = label.reindex(index=f.index, columns=f.columns)
     b = assign_buckets(f, n_buckets, min_cross_section)
     stacked = pd.DataFrame({"bucket": b.stack(), "ret": y.stack()}).dropna()
-    table = stacked.groupby([stacked.index.get_level_values(0), "bucket"])["ret"].mean()
+    grouped = stacked.groupby([stacked.index.get_level_values(0), "bucket"])["ret"]
+    table = grouped.mean().where(grouped.count() >= min_names)
     out = table.unstack("bucket").reindex(index=f.index, columns=range(1, n_buckets + 1))
     out.columns = [f"q{int(c)}" for c in out.columns]
     out.index.name = "date"
     return out
+
+
+def quantile_summary(
+    factor: pd.DataFrame,
+    label: pd.DataFrame,
+    n_buckets: int = 10,
+    min_cross_section: int = 1,
+    *,
+    min_names: int = 5,
+) -> pd.DataFrame:
+    """Per-bucket counts, coverage and status, with the rule ``tail_returns`` applies.
+
+    A bucket is ``insufficient_data`` and gets no mean return if it holds fewer than
+    ``min_names`` names on any sized date, has fewer than ``min_names`` observed outcomes
+    on any date with observable labels among scored names, or has no usable dates.
+    """
+    _positive_int("min_names", min_names)
+    y = label.reindex(index=factor.index, columns=factor.columns)
+    sized = sized_dates(factor, n_buckets, min_cross_section)
+    buckets = assign_buckets(factor, n_buckets, min_cross_section).loc[sized]
+    f, y = factor.loc[sized], y.loc[sized]
+    observable = y.where(f.notna()).notna().any(axis=1)
+    rows = {
+        f"q{k}": {"bucket": k, **_slice_summary(buckets == k, y, observable, min_names)}
+        for k in range(1, n_buckets + 1)
+    }
+    return pd.DataFrame.from_dict(rows, orient="index")
+
+
+def _slice_summary(
+    mask: pd.DataFrame, y: pd.DataFrame, observable: pd.Series, min_names: int
+) -> dict[str, Any]:
+    """Counts, coverage, mean forward return and status of one slice on sized dates."""
+    names = mask.sum(axis=1)
+    outcomes = y.where(mask)
+    observed_names = outcomes.notna().sum(axis=1)
+    usable = observed_names >= min_names
+    daily = outcomes.mean(axis=1).where(usable)
+    short = int((names < min_names).sum())
+    short_labels = int((observable & ~usable).sum())
+    ok = bool(usable.any()) and short == 0 and short_labels == 0
+    reason = None
+    if not len(names):
+        reason = "no_date_with_enough_scored_names"
+    elif short:
+        reason = "too_few_assigned_names"
+    elif short_labels:
+        reason = "too_few_observed_outcomes"
+    elif not usable.any():
+        reason = "no_observed_outcomes"
+    observed = observed_names.loc[observable]
+    return {
+        "mean_forward_return": float(daily.mean()) if ok else np.nan,
+        "n_dates": int(daily.notna().sum()),
+        "mean_names": float(names.mean()) if len(names) else np.nan,
+        "min_names": int(names.min()) if len(names) else 0,
+        "insufficient_dates": short,
+        "mean_observed_names": float(observed.mean()) if len(observed) else np.nan,
+        "min_observed_names": int(observed.min()) if len(observed) else 0,
+        "insufficient_label_dates": short_labels,
+        # Dates with no observable label anywhere among scored names (QUANTILE_ANALYSIS).
+        "missing_label_dates": int((~observable).sum()),
+        "status": "ok" if ok else "insufficient_data",
+        "reason": reason,
+    }
 
 
 def tail_percentiles(factor: pd.DataFrame) -> dict[str, pd.DataFrame]:
@@ -247,39 +324,10 @@ def tail_returns(
     rows = {}
     for frac in fractions:
         for side, pct in percentiles.items():
-            mask = pct <= frac
-            names = mask.sum(axis=1)
-            outcomes = y.where(mask)
-            observed_names = outcomes.notna().sum(axis=1)
-            usable = observed_names >= min_names
-            daily = outcomes.mean(axis=1).where(usable)
-            short = int((names < min_names).sum())
-            short_labels = int((observable & ~usable).sum())
-            ok = bool(usable.any()) and short == 0 and short_labels == 0
-            reason = None
-            if not sized.any():
-                reason = "no_date_with_enough_scored_names"
-            elif short:
-                reason = "too_few_assigned_names"
-            elif short_labels:
-                reason = "too_few_observed_outcomes"
-            elif not usable.any():
-                reason = "no_observed_outcomes"
-            observed = observed_names.loc[observable]
             rows[f"{side}_{float(frac)}"] = {
                 "side": side,
                 "fraction": frac,
-                "mean_forward_return": float(daily.mean()) if ok else np.nan,
-                "n_dates": int(daily.notna().sum()),
-                "mean_names": float(names.mean()) if len(names) else np.nan,
-                "min_names": int(names.min()) if len(names) else 0,
-                "insufficient_dates": short,
-                "mean_observed_names": float(observed.mean()) if len(observed) else np.nan,
-                "min_observed_names": int(observed.min()) if len(observed) else 0,
-                "insufficient_label_dates": short_labels,
-                "missing_label_dates": int((observed_names == 0).sum()),
-                "status": "ok" if ok else "insufficient_data",
-                "reason": reason,
+                **_slice_summary(pct <= frac, y, observable, min_names),
             }
     return pd.DataFrame.from_dict(rows, orient="index")
 
