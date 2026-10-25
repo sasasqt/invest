@@ -1,8 +1,12 @@
-"""Run-record safety in scripts/save_run.py: staging, completeness and code provenance."""
+"""Run-record safety in scripts/save_run.py: staging, completeness, provenance and size."""
 
+import gzip
+import hashlib
 import importlib.util
 import json
+import random
 import re
+from datetime import date, timedelta
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -48,6 +52,59 @@ def test_saves_a_complete_record(tmp_path):
     saved = {str(p) for p in save_run.save_run(out, tmp_path / "runs" / "day")}
     assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
     assert [p.name for p in (tmp_path / "runs").iterdir()] == ["day"]  # no staging left
+
+
+def _decile_table(path: Path, days: int) -> bytes:
+    """A daily ten-decile table like `invest-mine evaluate` writes, with `days` rows."""
+    rng = random.Random(1)
+    lines = ["date," + ",".join(f"q{k}" for k in range(1, 11))]
+    for day in range(days):
+        session = (date(2000, 1, 3) + timedelta(days=day)).isoformat()
+        lines.append(session + "," + ",".join(repr(rng.gauss(0.0, 0.01)) for _ in range(10)))
+    data = ("\n".join(lines) + "\n").encode("utf-8")
+    path.write_bytes(data)
+    return data
+
+
+def test_compresses_an_oversize_table_and_records_how_to_recover_it(tmp_path):
+    out = _output(tmp_path)
+    rel = "mining/diagnostics/tables/quantile_returns.csv"
+    original = _decile_table(out / rel, days=6000)  # about 24 years of sessions
+    assert len(original) > save_run.MAX_FILE_BYTES
+    dest = tmp_path / "runs" / "day"
+    saved = {p.as_posix() for p in save_run.save_run(out, dest)}
+    expected = {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
+    assert saved == (expected - {rel}) | {f"{rel}.gz"}
+    stored = (dest / f"{rel}.gz").read_bytes()
+    assert len(stored) <= save_run.MAX_FILE_BYTES
+    assert gzip.decompress(stored) == original  # the figure's input is recovered exactly
+    readme = (dest / "README.md").read_text()
+    digest = hashlib.sha256(original).hexdigest()
+    assert f"| `{rel}` | {len(original)} | `{digest}` |" in readme
+    assert "python -m gzip -d FILE.gz" in readme
+    # Same input, same bytes on every run and platform: no timestamp or name in the header.
+    save_run.save_run(out, tmp_path / "runs" / "again")
+    assert (tmp_path / "runs" / "again" / f"{rel}.gz").read_bytes() == stored
+
+
+def test_small_tables_are_stored_as_they_are(tmp_path):
+    out = _output(tmp_path)
+    rel = "mining/diagnostics/tables/quantile_returns.csv"
+    original = _decile_table(out / rel, days=3800)  # the 15-year replay's size, under 1 MB
+    assert len(original) <= save_run.MAX_FILE_BYTES
+    dest = tmp_path / "runs" / "day"
+    save_run.save_run(out, dest)
+    assert (dest / rel).read_bytes() == original and not (dest / f"{rel}.gz").exists()
+    assert "Compressed files" not in (dest / "README.md").read_text()
+
+
+def test_refuses_a_file_still_over_the_limit_when_compressed(tmp_path):
+    out = _output(tmp_path)
+    rel = "eval/figures/scenarios.png"
+    (out / rel).write_bytes(random.Random(2).randbytes(save_run.MAX_FILE_BYTES + 1))
+    with pytest.raises(SystemExit, match=re.escape(f"even compressed: {rel}")):
+        save_run.save_run(out, tmp_path / "runs" / "day")
+    assert not (tmp_path / "runs").exists()  # refused before anything was staged
 
 
 @pytest.fixture
