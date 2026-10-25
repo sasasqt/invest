@@ -65,7 +65,7 @@ git commit -m "Describe the change"
 
 The author applies the README's [three development rules](README.md#development-guidelines) before asking for review:
 
-1. **Self-review with the review ladder.** Start at round 1 and move up one round only when the current round earns it: a full-diff round whose verified findings lead to non-trivial fixes (they change logic, a public interface or saved outputs, or span several functions), or a fix-commits round that finds a real defect in the fix code. Docs-, comment-, rename-, test- or formatting-only fixes never move the pull request up. A real defect is a verified finding with a regression test that fails before the fix.
+1. **Self-review with the review ladder.** Start at round 1 and move up one round only when the current round earns it (the one exception is the extra full-diff round below): a full-diff round whose verified findings lead to non-trivial fixes (they change logic, a public interface or saved outputs, or span several functions), or a fix-commits round that finds a real defect in the fix code. Docs-, comment-, rename-, test- or formatting-only fixes never move the pull request up. A real defect is a verified finding with a regression test that fails before the fix.
 
    | Round | Model | Effort | Scope |
    |---|---|---|---|
@@ -84,6 +84,7 @@ The author applies the README's [three development rules](README.md#development-
    - If round 8 still finds a real defect, stop and say "checkpoint due" ([RAPID_DEVELOPMENT.md §11](RAPID_DEVELOPMENT.md#11-step-back-between-milestones)). The person who requested the change chooses: redesign, a multi-agent review, or accept with the defect recorded in TODO.
    - The same ladder applies to non-trivial pushes that answer a reviewer's comments.
    - A bug found after the pull request was marked ready (by a reviewer or the nightly bug hunt) means the next review of that area starts at round 3.
+   - If the ladder would end after a single full-diff round, also run the next full-diff round (round 3 after round 1, round 5 after round 3), fresh, when either holds: the step 4 workflow, run on `main` and on the branch, shows any difference in metrics, verdicts or decisions, even one the change explains; or the pull request changes more than about 100 lines of source code outside tests (Markdown, run records and other generated output do not count). Check both again on the final code. If the current round's fixes earned the fix-commits round, run that first. Say in the pull request which condition triggered the extra round; climbing after it follows the usual rule.
 2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
    - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
    - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
