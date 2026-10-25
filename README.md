@@ -22,7 +22,7 @@ Three rules apply to every change, in code, data, research results and documenta
 
 Every change must work on both Linux and Windows. CI tests only Linux for now, so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
 
-Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects, unrelated bugs found along the way recorded in TODO rather than fixed in place, and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
+Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
 
