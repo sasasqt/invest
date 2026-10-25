@@ -55,8 +55,9 @@ def staggered_spread_wealth(spread: pd.Series, horizon: int) -> pd.Series:
     dates whose spread is undefined, so a figure shows them as gaps, not as 0% returns.
 
     The series is indexed by decision date: the value at date ``t`` already includes the
-    ``horizon``-day outcome of the spread decided at ``t``, which is realised ``horizon``
-    sessions later. It is a forward-outcome diagnostic, not wealth realised by that date.
+    ``horizon``-day outcome of the spread decided at ``t``, a hold from the open of ``t + 1``
+    to the open of ``t + 1 + horizon`` that is only known then. It is a forward-outcome
+    diagnostic, not wealth realised by that date.
     """
     if isinstance(horizon, bool) or not isinstance(horizon, int) or horizon < 1:
         raise ValueError("horizon must be a positive integer")

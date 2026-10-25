@@ -6,6 +6,8 @@ import importlib.util
 import json
 import random
 import re
+import subprocess
+import sys
 from datetime import date, timedelta
 from pathlib import Path
 from types import SimpleNamespace
@@ -82,7 +84,13 @@ def test_compresses_an_oversize_table_and_records_how_to_recover_it(tmp_path):
     digest = hashlib.sha256(original).hexdigest()
     assert f"| `{rel}` | {len(original)} | `{digest}` |" in readme
     assert "python -m gzip -d FILE.gz" in readme
-    # Same input, same bytes on every run and platform: no timestamp or name in the header.
+    assert b"\r" not in (dest / "README.md").read_bytes()  # committed text keeps LF endings
+    # The documented recovery command recovers the file next to the stored one.
+    subprocess.run([sys.executable, "-m", "gzip", "-d", str(dest / f"{rel}.gz")], check=True)
+    recovered = (dest / rel).read_bytes()
+    assert len(recovered) == len(original) and hashlib.sha256(recovered).hexdigest() == digest
+    # Same input, same bytes on every run with the same zlib build: no timestamp or name in
+    # the gzip header.
     save_run.save_run(out, tmp_path / "runs" / "again")
     assert (tmp_path / "runs" / "again" / f"{rel}.gz").read_bytes() == stored
 

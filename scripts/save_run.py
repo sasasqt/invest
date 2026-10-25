@@ -29,7 +29,7 @@ import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 # Paths relative to the workflow output directory. Nothing else is copied.
 RECORD_GLOBS = (
@@ -90,26 +90,36 @@ MAX_FILE_BYTES = 1_000_000
 
 
 def _load(path: Path) -> Any:
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+class Compressed(NamedTuple):
+    """A record file stored gzip-compressed: its stored bytes and what it uncompresses to."""
+
+    gz: bytes
+    size: int
+    sha256: str
 
 
 def _gzip(data: bytes) -> bytes:
     # No timestamp or file name in the header, so the same input gives the same bytes on
-    # every platform and run and a committed record stays diff-stable.
+    # every run with the same zlib build, and a committed record stays diff-stable.
     return gzip.compress(data, compresslevel=9, mtime=0)
 
 
-def compressed_files(out: Path, files: list[Path]) -> dict[Path, bytes]:
-    """Compressed contents of the record files over ``MAX_FILE_BYTES``, by relative path.
+def compressed_files(out: Path, files: list[Path]) -> dict[Path, Compressed]:
+    """The record files over ``MAX_FILE_BYTES``, compressed, by relative path.
 
-    Refuses a file that is still over the limit when compressed, before anything is staged.
+    The size and SHA-256 describe the very bytes that were compressed, so the README's
+    recovery check cannot drift from the stored file. Refuses a file that is still over the
+    limit when compressed, before anything is staged.
     """
-    compressed = {
-        rel: _gzip((out / rel).read_bytes())
-        for rel in files
-        if (out / rel).stat().st_size > MAX_FILE_BYTES
-    }
-    large = [str(rel) for rel, data in compressed.items() if len(data) > MAX_FILE_BYTES]
+    compressed = {}
+    for rel in files:
+        if (out / rel).stat().st_size > MAX_FILE_BYTES:
+            data = (out / rel).read_bytes()
+            compressed[rel] = Compressed(_gzip(data), len(data), hashlib.sha256(data).hexdigest())
+    large = [rel.as_posix() for rel, c in compressed.items() if len(c.gz) > MAX_FILE_BYTES]
     if large:
         raise SystemExit(
             f"refusing files over {MAX_FILE_BYTES} bytes even compressed: {', '.join(large)}"
@@ -141,7 +151,7 @@ def record_files(out: Path) -> list[Path]:
     return sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
 
 
-def _readme(out: Path, snapshot: dict[str, Any] | None, compressed: dict[Path, bytes]) -> str:
+def _readme(out: Path, snapshot: dict[str, Any] | None, compressed: dict[Path, Compressed]) -> str:
     manifest = _load(out / "eval/manifest.json")
     verdict = _load(out / "eval/verdict.json")
     market = manifest["market_dataset"]
@@ -198,11 +208,8 @@ def _readme(out: Path, snapshot: dict[str, Any] | None, compressed: dict[Path, b
             "| file | bytes | sha256 |",
             "|---|---|---|",
         ]
-        for rel in sorted(compressed):
-            data = (out / rel).read_bytes()
-            lines.append(
-                f"| `{rel.as_posix()}` | {len(data)} | `{hashlib.sha256(data).hexdigest()}` |"
-            )
+        for rel, c in sorted(compressed.items()):
+            lines.append(f"| `{rel.as_posix()}` | {c.size} | `{c.sha256}` |")
         lines.append("")
     return "\n".join(lines)
 
@@ -231,13 +238,15 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
         for rel in files:
             (stage / rel).parent.mkdir(parents=True, exist_ok=True)
             if rel in compressed:
-                (stage / f"{rel}.gz").write_bytes(compressed[rel])
+                (stage / f"{rel}.gz").write_bytes(compressed[rel].gz)
             else:
                 shutil.copyfile(out / rel, stage / rel)
         if snapshot_dir is not None:
             (stage / "snapshot").mkdir(parents=True, exist_ok=True)
             shutil.copyfile(snapshot_dir / "snapshot.json", stage / "snapshot/snapshot.json")
-        (stage / "README.md").write_text(_readme(out, snapshot, compressed))
+        (stage / "README.md").write_text(
+            _readme(out, snapshot, compressed), encoding="utf-8", newline="\n"
+        )
         # Windows rename already refuses any existing destination. POSIX rename can
         # replace an empty directory, so reserve DEST exclusively on POSIX first.
         try:
