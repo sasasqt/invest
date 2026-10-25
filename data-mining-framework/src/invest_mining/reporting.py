@@ -53,6 +53,10 @@ def staggered_spread_wealth(spread: pd.Series, horizon: int) -> pd.Series:
     non-overlapping periods; compounding every date would count each day ``horizon``
     times. A cohort holds cash when its date's spread is undefined. The result is NaN on
     dates whose spread is undefined, so a figure shows them as gaps, not as 0% returns.
+
+    The series is indexed by decision date: the value at date ``t`` already includes the
+    ``horizon``-day outcome of the spread decided at ``t``, which is realised ``horizon``
+    sessions later. It is a forward-outcome diagnostic, not wealth realised by that date.
     """
     if isinstance(horizon, bool) or not isinstance(horizon, int) or horizon < 1:
         raise ValueError("horizon must be a positive integer")
@@ -100,7 +104,8 @@ def render_factor_figures(root: Path) -> None:
     ax[1].plot(staggered_spread_wealth(spread, int(config["horizon"])), color="#1f4e79")
     ax[1].set_title(
         f"Top-minus-bottom spread, {config['horizon']} staggered cohorts\n"
-        "(idealised, no costs; undefined dates as gaps)",
+        f"(idealised, no costs; each {config['horizon']}-day outcome drawn on its decision "
+        "date;\nundefined dates as gaps)",
         fontsize=9,
     )
     fig.tight_layout()
