@@ -756,6 +756,7 @@ def test_an_exit_decided_after_a_missing_bar_uses_the_bars_its_windows_hold():
     [
         (10, 10, 20, 38),  # the sale waits for two daily returns after the halt (36 and 37)
         (2, 20, 30, 36),  # the volatility window still holds returns from before the halt
+        (2, 20, 32, 36),  # the last complete ADV, from session 31, is one session too old
     ],
 )
 def test_an_exit_after_a_halt_is_capped_by_the_volume_traded_since(
