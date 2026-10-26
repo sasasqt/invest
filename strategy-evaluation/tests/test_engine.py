@@ -595,8 +595,13 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
         initial_capital=1000.0,
     )
     strategy = QuantileStrategy(strategy_cfg) if quantile else EqualWeight()
-    res = run_backtest(bars, signals, cfg, strategy)
+    res = run_backtest(bars, signals, cfg, strategy, record_decisions=True)
 
+    # The gap leaves A's ADV undefined at decisions 15 to 19, so A is ineligible there;
+    # eligibility never uses the older estimates an exit may use.
+    decided = res.decisions[res.decisions["instrument"] == "A"]["decision_date"]
+    assert not set(decided) & set(dates[15:20])
+    assert dates[20] in set(decided)
     rejected = res.trades[res.trades["status"] == "rejected"]
     assert set(rejected["reason"]) <= {"no_bar_on_fill_date"}, rejected
     assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
@@ -609,4 +614,49 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
     adv_known = 10.0 * 1e8 * np.mean([1 + k for k in range(10, 15)])
     assert exit_a.iloc[0]["participation"] == pytest.approx(
         abs(exit_a.iloc[0]["notional"]) / adv_known
+    )
+
+
+def test_an_exit_after_a_missing_bar_pays_impact_on_the_volatility_known_at_its_decision():
+    """The exit that BH-2026-10-09-1 unblocked prices its impact with the latest volatility
+    known at its decision (session 14 for a gap at 15), never a later one."""
+    dates = pd.bdate_range("2024-01-01", periods=30)
+    rows = [
+        [d, name, px, px, px, px, 1e6]
+        for k, d in enumerate(dates)
+        for name, px in (("A", 10.0 + 0.3 * (k % 4) + 0.1 * (k % 7)), ("B", 20.0), ("C", 30.0))
+    ]
+    full = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    bars = full[~((full["instrument"] == "A") & (full["date"] == dates[15]))]
+    signals = full[["date", "instrument"]].rename(columns={"date": "decision_date"})
+    signals = signals.assign(score=1.0)
+    cost_model = CostModel(
+        commission_bps=0,
+        half_spread_bps=0,
+        impact_coef=0.5,
+        borrow_bps_annual=0,
+        adv_window=5,
+        vol_window=3,
+    )
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=1),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=cost_model,
+        initial_capital=1000.0,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight())
+
+    exit_a = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[16])]
+    assert len(exit_a) == 1 and exit_a.iloc[0]["status"] == "filled"
+    assert exit_a.iloc[0]["shares"] < 0
+    close_a = full[full["instrument"] == "A"].set_index("date")["close"]
+    vol = (close_a / close_a.shift(1) - 1).rolling(3, min_periods=3).std()
+    adv = (close_a * 1e6).rolling(5, min_periods=5).mean()
+    vol_14, adv_14 = vol.iloc[14], adv.iloc[14]
+    assert vol_14 != pytest.approx(vol.iloc[19])  # a later estimate would give another cost
+    notional = abs(exit_a.iloc[0]["notional"])
+    assert exit_a.iloc[0]["impact"] == pytest.approx(
+        notional * 0.5 * vol_14 * np.sqrt(notional / adv_14)
     )
