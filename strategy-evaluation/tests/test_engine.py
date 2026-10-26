@@ -562,7 +562,7 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
     """BH-2026-10-09-1: one missing bar left A's trailing ADV incomplete for
     ``adv_window`` sessions, so every sell of A was rejected ``no_liquidity_estimate``
     while the other names were sized on equity that still held A (gross 1.33 > 1.0).
-    The exit now uses the latest estimates known at its decision date."""
+    The exit now uses the bars and daily returns its trailing windows still hold."""
     from invest_evaluation.strategies import QuantileStrategy
 
     dates = pd.bdate_range("2024-01-01", periods=40)
@@ -590,7 +590,7 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
             impact_coef=0,
             borrow_bps_annual=0,
             adv_window=5,
-            vol_window=2,
+            vol_window=3,
         ),
         initial_capital=1000.0,
     )
@@ -598,7 +598,7 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
     res = run_backtest(bars, signals, cfg, strategy, record_decisions=True)
 
     # The gap leaves A's ADV undefined at decisions 15 to 19, so A is ineligible there;
-    # eligibility never uses the older estimates an exit may use.
+    # eligibility never uses the incomplete windows an exit may use.
     decided = res.decisions[res.decisions["instrument"] == "A"]["decision_date"]
     assert not set(decided) & set(dates[15:20])
     assert dates[20] in set(decided)
@@ -607,19 +607,20 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
     assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
     assert res.daily["cash"].min() >= -1e-9
     # A is ineligible at the gap's decision (no close) and sold at the next open, with
-    # the ADV known at that decision: the last complete window, sessions 10 to 14.
+    # the ADV of the bars its window holds at that decision: sessions 11 to 14.
     exit_a = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[16])]
     assert len(exit_a) == 1 and exit_a.iloc[0]["status"] == "filled"
     assert exit_a.iloc[0]["shares"] < 0
-    adv_known = 10.0 * 1e8 * np.mean([1 + k for k in range(10, 15)])
+    adv_in_window = 10.0 * 1e8 * np.mean([1 + k for k in range(11, 15)])
     assert exit_a.iloc[0]["participation"] == pytest.approx(
-        abs(exit_a.iloc[0]["notional"]) / adv_known
+        abs(exit_a.iloc[0]["notional"]) / adv_in_window
     )
 
 
-def test_an_exit_after_a_missing_bar_pays_impact_on_the_volatility_known_at_its_decision():
-    """The exit that BH-2026-10-09-1 unblocked prices its impact with the latest volatility
-    known at its decision (session 14 for a gap at 15), never a later one."""
+def test_an_exit_after_a_missing_bar_pays_impact_on_the_bars_its_windows_hold():
+    """The exit that BH-2026-10-09-1 unblocked prices its impact with the daily returns and
+    bars its trailing windows hold at its decision (the gap's session 15), never with an
+    older complete window or a later one."""
     dates = pd.bdate_range("2024-01-01", periods=30)
     rows = [
         [d, name, px, px, px, px, 1e6]
@@ -651,12 +652,113 @@ def test_an_exit_after_a_missing_bar_pays_impact_on_the_volatility_known_at_its_
     exit_a = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[16])]
     assert len(exit_a) == 1 and exit_a.iloc[0]["status"] == "filled"
     assert exit_a.iloc[0]["shares"] < 0
-    close_a = full[full["instrument"] == "A"].set_index("date")["close"]
-    vol = (close_a / close_a.shift(1) - 1).rolling(3, min_periods=3).std()
-    adv = (close_a * 1e6).rolling(5, min_periods=5).mean()
-    vol_14, adv_14 = vol.iloc[14], adv.iloc[14]
-    assert vol_14 != pytest.approx(vol.iloc[19])  # a later estimate would give another cost
+    close_a = bars[bars["instrument"] == "A"].set_index("date")["close"].reindex(dates)
+    returns = close_a / close_a.shift(1) - 1
+    vol = returns.rolling(3, min_periods=2).std()  # returns 13 and 14
+    adv = (close_a * 1e6).rolling(5, min_periods=1).mean()  # bars 11 to 14
+    vol_15, adv_15 = vol.iloc[15], adv.iloc[15]
+    # An older complete window or a later one would give another cost.
+    assert vol_15 != pytest.approx(returns.rolling(3).std().iloc[14])
+    assert vol_15 != pytest.approx(vol.iloc[19])
     notional = abs(exit_a.iloc[0]["notional"])
     assert exit_a.iloc[0]["impact"] == pytest.approx(
-        notional * 0.5 * vol_14 * np.sqrt(notional / adv_14)
+        notional * 0.5 * vol_15 * np.sqrt(notional / adv_15)
+    )
+
+
+def gapped_market(n_sessions, missing_a, volume=lambda name, k: 1e8):
+    """A, B and C at a constant price of 10; A has no bar on the sessions in ``missing_a``.
+    Signals score every name on every session, including A's missing ones."""
+    dates = pd.bdate_range("2024-01-01", periods=n_sessions)
+    rows = [
+        [d, name, 10.0, 10.0, 10.0, 10.0, volume(name, k)]
+        for k, d in enumerate(dates)
+        for name in ("A", "B", "C")
+    ]
+    full = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    bars = full[~((full["instrument"] == "A") & full["date"].isin(dates[list(missing_a)]))]
+    signals = full[["date", "instrument"]].rename(columns={"date": "decision_date"})
+    return dates, bars, signals.assign(score=1.0)
+
+
+def free_costs(adv_window, vol_window):
+    return CostModel(
+        commission_bps=0,
+        half_spread_bps=0,
+        impact_coef=0,
+        borrow_bps_annual=0,
+        adv_window=adv_window,
+        vol_window=vol_window,
+    )
+
+
+@pytest.mark.parametrize(
+    ("adv_window", "vol_window", "eligible_again"),
+    [(5, 3, 20), (3, 8, 24)],  # the ADV window, then the volatility window, completes last
+)
+def test_after_a_missing_bar_a_name_is_eligible_once_both_windows_are_complete(
+    adv_window, vol_window, eligible_again
+):
+    """A missing bar at session 15 takes one bar out of the ADV window and two daily returns
+    out of the volatility window; A is eligible again only when both windows are complete."""
+    dates, bars, signals = gapped_market(40, [15])
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=1),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=free_costs(adv_window, vol_window),
+        initial_capital=1000.0,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight(), record_decisions=True)
+    decided = set(res.decisions[res.decisions["instrument"] == "A"]["decision_date"])
+    assert not decided & set(dates[15:eligible_again])
+    assert dates[eligible_again] in decided
+
+
+def test_an_exit_decided_after_a_missing_bar_uses_the_bars_its_windows_hold():
+    """BH-2026-10-09-1 with weekly decisions: A misses session 16 and is sold at the decision
+    on session 20, which has a close but an incomplete ADV window (sessions 16 to 20). The
+    sale fills, with its participation measured on the four bars that window holds."""
+    dates, bars, signals = gapped_market(40, [16], volume=lambda name, k: 1e8 * (1 + k))
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=5),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=free_costs(5, 4),
+        initial_capital=1000.0,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight())
+    exit_a = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[21])]
+    assert len(exit_a) == 1 and exit_a.iloc[0]["status"] == "filled"
+    assert exit_a.iloc[0]["shares"] < 0
+    adv_in_window = 10.0 * 1e8 * np.mean([1 + k for k in range(17, 21)])
+    assert exit_a.iloc[0]["participation"] == pytest.approx(
+        abs(exit_a.iloc[0]["notional"]) / adv_in_window
+    )
+    assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
+    assert res.daily["cash"].min() >= -1e-9
+
+
+def test_an_exit_after_a_halt_is_capped_by_the_volume_traded_since():
+    """A has no bars for 15 sessions (longer than ``adv_window``), then trades 1/1000 of its
+    old volume. Its exit is capped by the bars its trailing window holds, never by the
+    volume from before the halt (which sold 50 times a session's dollar volume)."""
+    old, new = 1e8, 1e5
+    dates, bars, signals = gapped_market(
+        60, range(20, 35), volume=lambda name, k: new if name == "A" and k >= 35 else old
+    )
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=1),
+        execution=ExecutionConfig(max_participation=0.05, min_price=0.0),
+        costs=free_costs(10, 10),
+        initial_capital=3e8,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight())
+    after = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] >= dates[35])]
+    fills = after[after["status"] == "filled"]  # sales, then purchases once A is eligible
+    assert (fills["shares"] < 0).any()
+    session_dollar_volume = 10.0 * new
+    assert (fills["notional"].abs() <= 0.05 * session_dollar_volume * (1 + 1e-9)).all(), fills
+    assert fills["participation"].to_numpy() == pytest.approx(
+        fills["notional"].abs().to_numpy() / session_dollar_volume
     )

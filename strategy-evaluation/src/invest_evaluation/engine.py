@@ -209,10 +209,9 @@ def run_backtest(
     # undefined until a name has `adv_window` bars and `vol_window` daily returns, and for
     # that long again after a missing bar.
     dollar_vol = close_w * vol_w
+    daily_returns = close_w / close_w.shift(1) - 1
     adv = dollar_vol.rolling(cm.adv_window, min_periods=cm.adv_window).mean()
-    daily_vol = (
-        (close_w / close_w.shift(1) - 1).rolling(cm.vol_window, min_periods=cm.vol_window).std()
-    )
+    daily_vol = daily_returns.rolling(cm.vol_window, min_periods=cm.vol_window).std()
 
     # Evaluation window: from `start` (default: the first session with any signal, so
     # periods before the strategy could act don't dilute its statistics) until `end`.
@@ -241,11 +240,14 @@ def run_backtest(
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
-    # Orders use the latest estimates known at their decision. Eligibility needs both
-    # current ones, so only the exit of a name that lost them (after a missing bar) uses
-    # older ones; without them it could not be sold for `adv_window` sessions while the
-    # other targets were sized on equity that still held it.
-    ADV_KNOWN, VOL_KNOWN = adv.ffill().to_numpy(), daily_vol.ffill().to_numpy()
+    # Eligibility needs both complete windows, so every order but the exit of a name whose
+    # windows a missing bar interrupted uses them. That exit uses the bars and daily returns
+    # its windows still hold (at least one bar and two returns); without them it could not
+    # be sold for `adv_window` sessions while the other targets were sized on equity that
+    # still held it, and an older estimate would misstate the liquidity after a halt.
+    exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
+    exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
+    ADV_EXIT, VOL_EXIT = exit_adv.to_numpy(), exit_vol.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
         if universe is not None
@@ -343,7 +345,7 @@ def run_backtest(
                 delta = want - shares[j]
                 if abs(delta) * px_open[i][j] < 1e-9 * equity_open:
                     continue
-                adv_j, vol_j = ADV_KNOWN[dec_i][j], VOL_KNOWN[dec_i][j]
+                adv_j, vol_j = ADV_EXIT[dec_i][j], VOL_EXIT[dec_i][j]
                 if not (np.isfinite(adv_j) and adv_j > 0 and np.isfinite(vol_j)):
                     trades.append(
                         {

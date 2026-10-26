@@ -99,8 +99,8 @@ class ExecutionConfig:
     fill date is rejected. Each fill is capped at ``max_participation`` of trailing
     average dollar volume; the unfilled remainder is dropped (and reported). A name is
     eligible at a decision only with a close, a trailing ADV above ``min_adv_dollar`` and
-    a trailing volatility (the cost model's windows); an exit uses the latest estimates
-    known at its decision, so a missing bar in those windows cannot block it.
+    a trailing volatility (the cost model's complete windows); the exit of a name whose
+    windows a missing bar interrupted uses the bars and daily returns they still hold.
     """
 
     delay: int = 0
