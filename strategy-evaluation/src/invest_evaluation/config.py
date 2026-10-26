@@ -101,7 +101,7 @@ class ExecutionConfig:
     eligible at a decision only with a close, a trailing ADV above ``min_adv_dollar`` and
     a trailing volatility (the cost model's complete windows); the exit of a name whose
     windows a missing bar interrupted uses the bars and daily returns they still hold, or
-    a window's last complete estimate when it is too short for that.
+    the complete estimate from just before the gap when a window is too short for that.
     """
 
     delay: int = 0
