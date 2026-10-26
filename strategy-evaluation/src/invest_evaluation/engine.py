@@ -248,8 +248,10 @@ def run_backtest(
     # still held it, and an older estimate would misstate the liquidity after a halt. A
     # window too short to hold a bar or two returns without one missing bar (`adv_window`
     # 1, `vol_window` 2 or 3) falls back on the complete estimate from just before it: at
-    # most one session old for the ADV and three for the volatility, so once a halt has
-    # emptied a window the fallback cannot reach back to the trading before it.
+    # most one session old for the ADV and three for the volatility, the most a single
+    # missing bar needs. A halt can still leave a short window on that older estimate for
+    # those sessions, and with `adv_window` 1 and a `delay` a sale decided on a halt's
+    # first session can fill after the halt at the volume of the session before it.
     exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
     exit_adv = exit_adv.fillna(adv.ffill(limit=1))
     exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
