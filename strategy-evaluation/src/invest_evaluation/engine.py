@@ -206,8 +206,9 @@ def run_backtest(
     )
 
     # Trailing liquidity/volatility estimates, known at each session's close. They are
-    # undefined until a name has `adv_window` bars and `vol_window` daily returns, and for
-    # that long again after a missing bar.
+    # undefined until a name has `adv_window` bars and `vol_window` daily returns, and after
+    # a missing bar until both windows are complete again (`adv_window` sessions for the
+    # ADV, `vol_window` + 1 for the volatility, since the gap removes two returns).
     dollar_vol = close_w * vol_w
     daily_returns = close_w / close_w.shift(1) - 1
     adv = dollar_vol.rolling(cm.adv_window, min_periods=cm.adv_window).mean()
