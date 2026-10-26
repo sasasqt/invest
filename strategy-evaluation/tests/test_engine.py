@@ -759,6 +759,9 @@ def test_an_exit_decided_after_a_missing_bar_uses_the_bars_its_windows_hold():
         (2, 20, 32, 0, 36),  # the last complete ADV, from session 31, is three sessions old
         (5, 5, 30, 0, 36),  # no return after the halt; the volatility from 29 is 6 old
         (5, 5, 29, 1, 39),  # with a delay, sales decided late in the halt fill after it
+        (5, 6, 29, 0, 36),  # a halt of `vol_window` sessions: the volatility is 7 old
+        (5, 8, 27, 0, 36),  # ... 9 old
+        (5, 11, 24, 0, 36),  # ... 12 old
     ],
 )
 def test_an_exit_after_a_halt_is_capped_by_the_volume_traded_since(
@@ -886,14 +889,20 @@ def test_the_exit_fallback_reaches_back_one_session_for_adv_and_vol_window_plus_
     assert list(sale["reason"]) == ["no_liquidity_estimate"]
 
 
-@pytest.mark.parametrize("vol_window", [4, 5])
-@pytest.mark.parametrize("missing", [[32, 34], [31, 33], [31, 34]])
+@pytest.mark.parametrize(
+    ("vol_window", "missing"),
+    [
+        *((4, missing) for missing in ([32, 34], [31, 33], [31, 34])),
+        *((5, missing) for missing in ([32, 34], [31, 33], [31, 34])),
+        (3, [32, 34]),  # no return in the window; the volatility from 31 is 4 old
+    ],
+)
 def test_two_missing_bars_a_few_sessions_apart_do_not_block_the_exit(vol_window, missing):
-    """Two missing bars two or three sessions apart leave a volatility window of 4 or 5
+    """Two missing bars two or three sessions apart leave a volatility window of 3 to 5
     returns with fewer than two of them for a few sessions. The exit decided on session 35
     falls back on the volatility from just before the first gap, at most ``vol_window`` + 1
     sessions old, so it fills instead of being rejected while the other targets are sized on
-    equity that still holds A (review round 8, R8-1)."""
+    equity that still holds A (review rounds 8 and 9, R8-1 and R9-2)."""
     dates, bars, signals = gapped_market(40, missing)
     cfg = BacktestConfig(
         strategy=StrategyConfig(min_names=1, rebalance_every=5),

@@ -246,14 +246,15 @@ def run_backtest(
     # its windows still hold (at least one bar and two returns); without them it could not
     # be sold for `adv_window` sessions while the other targets were sized on equity that
     # still held it, and an older estimate would misstate the liquidity after a halt. A
-    # window too short to hold a bar or two returns without one missing bar (`adv_window`
-    # 1, `vol_window` 2 or 3) falls back on the complete estimate from just before it. For
-    # the ADV, which caps the sale, that is at most one session old, the most a single
-    # missing bar needs; for the volatility, which only prices its impact, up to
-    # `vol_window` + 1 sessions, so a few missing bars close together do not block the sale
-    # either. A halt can still leave a short window on that older estimate for those
-    # sessions, and with `adv_window` 1 and a `delay` a sale decided on a halt's first
-    # session can fill after the halt at the volume of the session before it.
+    # window left without a bar or with fewer than two returns falls back on the complete
+    # estimate from just before it. For the ADV, which caps the sale, that is at most one
+    # session old, the most a single missing bar needs (with `adv_window` 1); for the
+    # volatility, which only prices its impact, up to `vol_window` + 1 sessions, so a single
+    # missing bar never blocks the sale, two close together block it only with a
+    # `vol_window` up to 3, and three only up to 5 (REVIEW-27). After a halt of any length
+    # the volatility can therefore come from before it for up to `vol_window` + 1 sessions,
+    # and with `adv_window` 1 and a `delay` a sale decided on a halt's first session can
+    # fill after the halt at the volume of the session before it.
     exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
     exit_adv = exit_adv.fillna(adv.ffill(limit=1))
     exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
