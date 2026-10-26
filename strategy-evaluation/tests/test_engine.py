@@ -509,3 +509,104 @@ def test_leg_size_matches_the_bucket_cutpoint_rule():
         for f in np.round(np.arange(0.0, 1.0001, 0.01), 2):
             expected = max(k for k in range(n + 1) if k / n <= f)
             assert leg_size(n, float(f)) == expected, (n, f)
+
+
+class EqualWeight:
+    """Long every eligible name equally."""
+
+    def target_weights(self, scores: pd.Series) -> pd.Series:
+        return pd.Series(1.0 / len(scores), index=scores.index) if len(scores) else scores
+
+
+def listing_market() -> tuple[pd.DatetimeIndex, pd.DataFrame]:
+    """A, B and C trade for 40 sessions; NEW lists on session 11 (index 10)."""
+    dates = pd.bdate_range("2024-01-01", periods=40)
+    rows = []
+    for k, d in enumerate(dates):
+        for name, px in (("A", 10.0), ("B", 20.0), ("C", 30.0)):
+            rows.append([d, name, px, px, px, px * (1 + 0.001 * ((k % 3) - 1)), 1e8])
+        if k >= 10:
+            rows.append([d, "NEW", 50.0, 50.0, 50.0, 50.0 * (1 + 0.002 * ((k % 2) - 0.5)), 1e8])
+    columns = ["date", "instrument", "open", "high", "low", "close", "volume"]
+    return dates, pd.DataFrame(rows, columns=columns)
+
+
+@pytest.mark.parametrize(
+    ("decision", "new_eligible"),
+    [(29, False), (30, True)],  # NEW has 20 bars (19 returns), then 21 bars (20 returns)
+)
+def test_a_name_without_a_volatility_estimate_is_not_eligible(decision, new_eligible):
+    """BH-2026-10-21-1: ADV needs ``adv_window`` bars but volatility ``vol_window`` returns.
+
+    A name with the first but not the second used to get weight and then be rejected
+    ``no_liquidity_estimate`` at the fill, leaving its weight in cash.
+    """
+    dates, bars = listing_market()
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=100),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=CostModel(adv_window=20, vol_window=20),
+    )
+    names = ("A", "B", "C", "NEW")
+    res = run_backtest(
+        bars, signals_on(dates[decision], names), cfg, EqualWeight(), record_decisions=True
+    )
+    assert ("NEW" in set(res.decisions["instrument"])) is new_eligible
+    assert (res.trades["status"] == "filled").all(), res.trades[["instrument", "reason"]]
+    fill_day = res.daily.loc[dates[decision + 1]]
+    assert fill_day["gross_exposure"] == pytest.approx(1.0, abs=1e-3)
+
+
+@pytest.mark.parametrize("quantile", [False, True])
+def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
+    """BH-2026-10-09-1: one missing bar left A's trailing ADV incomplete for
+    ``adv_window`` sessions, so every sell of A was rejected ``no_liquidity_estimate``
+    while the other names were sized on equity that still held A (gross 1.33 > 1.0).
+    The exit now uses the latest estimates known at its decision date."""
+    from invest_evaluation.strategies import QuantileStrategy
+
+    dates = pd.bdate_range("2024-01-01", periods=40)
+    rows = [
+        [d, name, 10.0, 10.0, 10.0, 10.0, 1e8 * (1 + k)]
+        for k, d in enumerate(dates)
+        for name in ("A", "B", "C")
+    ]
+    full = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    gap = dates[15]
+    bars = full[~((full["instrument"] == "A") & (full["date"] == gap))]
+    signals = full[["date", "instrument"]].rename(columns={"date": "decision_date"})
+    signals = signals.assign(score=1.0)
+    strategy_cfg = StrategyConfig(
+        long_fraction=1.0, short_fraction=0.0, min_names=1, rebalance_every=1
+    )
+    cfg = BacktestConfig(
+        strategy=strategy_cfg,
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=CostModel(
+            commission_bps=0,
+            half_spread_bps=0,
+            impact_coef=0,
+            borrow_bps_annual=0,
+            adv_window=5,
+            vol_window=2,
+        ),
+        initial_capital=1000.0,
+    )
+    strategy = QuantileStrategy(strategy_cfg) if quantile else EqualWeight()
+    res = run_backtest(bars, signals, cfg, strategy)
+
+    rejected = res.trades[res.trades["status"] == "rejected"]
+    assert set(rejected["reason"]) <= {"no_bar_on_fill_date"}, rejected
+    assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
+    assert res.daily["cash"].min() >= -1e-9
+    # A is ineligible at the gap's decision (no close) and sold at the next open, with
+    # the ADV known at that decision: the last complete window, sessions 10 to 14.
+    exit_a = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[16])]
+    assert len(exit_a) == 1 and exit_a.iloc[0]["status"] == "filled"
+    assert exit_a.iloc[0]["shares"] < 0
+    adv_known = 10.0 * 1e8 * np.mean([1 + k for k in range(10, 15)])
+    assert exit_a.iloc[0]["participation"] == pytest.approx(
+        abs(exit_a.iloc[0]["notional"]) / adv_known
+    )

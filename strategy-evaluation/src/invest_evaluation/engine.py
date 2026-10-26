@@ -205,7 +205,9 @@ def run_backtest(
         index=calendar, columns=instruments
     )
 
-    # Trailing liquidity/volatility estimates, known at each session's close.
+    # Trailing liquidity/volatility estimates, known at each session's close. They are
+    # undefined until a name has `adv_window` bars and `vol_window` daily returns, and for
+    # that long again after a missing bar.
     dollar_vol = close_w * vol_w
     adv = dollar_vol.rolling(cm.adv_window, min_periods=cm.adv_window).mean()
     daily_vol = (
@@ -239,6 +241,11 @@ def run_backtest(
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
+    # Orders use the latest estimates known at their decision. Eligibility needs both
+    # current ones, so only the exit of a name that lost them (after a missing bar) uses
+    # older ones; without them it could not be sold for `adv_window` sessions while the
+    # other targets were sized on equity that still held it.
+    ADV_KNOWN, VOL_KNOWN = adv.ffill().to_numpy(), daily_vol.ffill().to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
         if universe is not None
@@ -336,7 +343,7 @@ def run_backtest(
                 delta = want - shares[j]
                 if abs(delta) * px_open[i][j] < 1e-9 * equity_open:
                     continue
-                adv_j, vol_j = ADV[dec_i][j], VOL[dec_i][j]
+                adv_j, vol_j = ADV_KNOWN[dec_i][j], VOL_KNOWN[dec_i][j]
                 if not (np.isfinite(adv_j) and adv_j > 0 and np.isfinite(vol_j)):
                     trades.append(
                         {
@@ -477,6 +484,7 @@ def run_backtest(
                     & has_close
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
+                    & np.isfinite(VOL[i])  # a fill's impact cost needs it too
                 )
                 eligible = tradable
                 if traded_close is not None:
