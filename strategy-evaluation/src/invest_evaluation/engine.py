@@ -245,9 +245,13 @@ def run_backtest(
     # windows a missing bar interrupted uses them. That exit uses the bars and daily returns
     # its windows still hold (at least one bar and two returns); without them it could not
     # be sold for `adv_window` sessions while the other targets were sized on equity that
-    # still held it, and an older estimate would misstate the liquidity after a halt.
+    # still held it, and an older estimate would misstate the liquidity after a halt. A
+    # window too short to hold a bar or two returns without the missing one falls back on
+    # its last complete estimate, if that is at most one window old.
     exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
+    exit_adv = exit_adv.fillna(adv.ffill(limit=cm.adv_window))
     exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
+    exit_vol = exit_vol.fillna(daily_vol.ffill(limit=cm.vol_window + 1))
     ADV_EXIT, VOL_EXIT = exit_adv.to_numpy(), exit_vol.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()

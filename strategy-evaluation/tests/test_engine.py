@@ -590,7 +590,7 @@ def test_a_missing_bar_does_not_block_the_exit_of_a_held_name(quantile):
             impact_coef=0,
             borrow_bps_annual=0,
             adv_window=5,
-            vol_window=3,
+            vol_window=2,
         ),
         initial_capital=1000.0,
     )
@@ -751,24 +751,35 @@ def test_an_exit_decided_after_a_missing_bar_uses_the_bars_its_windows_hold():
     assert res.daily["cash"].min() >= -1.0
 
 
-def test_an_exit_after_a_halt_is_capped_by_the_volume_traded_since():
-    """A has no bars for 15 sessions (longer than ``adv_window``), then trades 1/1000 of its
-    old volume. Its exit is capped by the bars its trailing window holds, never by the
-    volume from before the halt (which sold 50 times a session's dollar volume)."""
+@pytest.mark.parametrize(
+    ("adv_window", "vol_window", "halt_start", "first_sale"),
+    [
+        (10, 10, 20, 38),  # the sale waits for two daily returns after the halt (36 and 37)
+        (2, 20, 30, 36),  # the volatility window still holds returns from before the halt
+    ],
+)
+def test_an_exit_after_a_halt_is_capped_by_the_volume_traded_since(
+    adv_window, vol_window, halt_start, first_sale
+):
+    """A has no bars from ``halt_start`` to session 34 (longer than ``adv_window``), then
+    trades 1/1000 of its old volume. Its exit is capped by the bars its trailing window
+    holds, never by the volume from before the halt (which sold 50 times a session's dollar
+    volume)."""
     old, new = 1e8, 1e5
     dates, bars, signals = gapped_market(
-        60, range(20, 35), volume=lambda name, k: new if name == "A" and k >= 35 else old
+        60, range(halt_start, 35), volume=lambda name, k: new if name == "A" and k >= 35 else old
     )
     cfg = BacktestConfig(
         strategy=StrategyConfig(min_names=1, rebalance_every=1),
         execution=ExecutionConfig(max_participation=0.05, min_price=0.0),
-        costs=free_costs(10, 10),
+        costs=free_costs(adv_window, vol_window),
         initial_capital=3e8,
     )
     res = run_backtest(bars, signals, cfg, EqualWeight())
     after = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] >= dates[35])]
     fills = after[after["status"] == "filled"]  # sales, then purchases once A is eligible
     assert (fills["shares"] < 0).any()
+    assert fills["date"].min() == dates[first_sale]
     session_dollar_volume = 10.0 * new
     assert (fills["notional"].abs() <= 0.05 * session_dollar_volume * (1 + 1e-9)).all(), fills
     assert fills["participation"].to_numpy() == pytest.approx(
@@ -811,3 +822,23 @@ def test_a_delayed_fill_uses_the_estimates_known_at_its_decision():
     assert fill_a.iloc[0]["participation"] == pytest.approx(
         abs(fill_a.iloc[0]["notional"]) / adv_at_decision
     )
+
+
+@pytest.mark.parametrize("offset", [0, 1, 2, 3])
+@pytest.mark.parametrize(("adv_window", "vol_window"), [(1, 2), (2, 2), (5, 2), (5, 3), (3, 8)])
+def test_a_single_missing_bar_never_blocks_the_exit(adv_window, vol_window, offset):
+    """BH-2026-10-09-1 for every window size: a window too short to hold a bar or two returns
+    without the missing one falls back on its last complete estimate. A misses one session
+    and the next weekly decision comes ``offset`` sessions later."""
+    _, bars, signals = gapped_market(40, [15 - offset])
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=5),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=free_costs(adv_window, vol_window),
+        initial_capital=1000.0,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight())
+    rejected = res.trades[res.trades["status"] == "rejected"]
+    assert "no_liquidity_estimate" not in set(rejected["reason"]), rejected
+    assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
+    assert res.daily["cash"].min() >= -1e-9
