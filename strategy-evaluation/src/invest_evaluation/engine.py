@@ -247,15 +247,17 @@ def run_backtest(
     # be sold for `adv_window` sessions while the other targets were sized on equity that
     # still held it, and an older estimate would misstate the liquidity after a halt. A
     # window too short to hold a bar or two returns without one missing bar (`adv_window`
-    # 1, `vol_window` 2 or 3) falls back on the complete estimate from just before it: at
-    # most one session old for the ADV and three for the volatility, the most a single
-    # missing bar needs. A halt can still leave a short window on that older estimate for
-    # those sessions, and with `adv_window` 1 and a `delay` a sale decided on a halt's
-    # first session can fill after the halt at the volume of the session before it.
+    # 1, `vol_window` 2 or 3) falls back on the complete estimate from just before it. For
+    # the ADV, which caps the sale, that is at most one session old, the most a single
+    # missing bar needs; for the volatility, which only prices its impact, up to
+    # `vol_window` + 1 sessions, so a few missing bars close together do not block the sale
+    # either. A halt can still leave a short window on that older estimate for those
+    # sessions, and with `adv_window` 1 and a `delay` a sale decided on a halt's first
+    # session can fill after the halt at the volume of the session before it.
     exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
     exit_adv = exit_adv.fillna(adv.ffill(limit=1))
     exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
-    exit_vol = exit_vol.fillna(daily_vol.ffill(limit=3))
+    exit_vol = exit_vol.fillna(daily_vol.ffill(limit=cm.vol_window + 1))
     ADV_EXIT, VOL_EXIT = exit_adv.to_numpy(), exit_vol.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()

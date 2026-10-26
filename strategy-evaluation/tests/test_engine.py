@@ -757,7 +757,7 @@ def test_an_exit_decided_after_a_missing_bar_uses_the_bars_its_windows_hold():
         (10, 10, 20, 0, 38),  # the sale waits for two daily returns after the halt (36, 37)
         (2, 20, 30, 0, 36),  # the volatility window still holds returns from before the halt
         (2, 20, 32, 0, 36),  # the last complete ADV, from session 31, is three sessions old
-        (5, 5, 30, 0, 38),  # a halt as long as the window leaves no bar and no fallback
+        (5, 5, 30, 0, 36),  # no return after the halt; the volatility from 29 is 6 old
         (5, 5, 29, 1, 39),  # with a delay, sales decided late in the halt fill after it
     ],
 )
@@ -864,12 +864,13 @@ def test_a_single_missing_bar_never_blocks_the_exit(adv_window, vol_window, offs
         (5, 2, [12, 13], 5, 15),  # one return in the window; the last volatility is 4 old
     ],
 )
-def test_the_exit_fallback_reaches_back_one_session_for_adv_and_three_for_volatility(
+def test_the_exit_fallback_reaches_back_one_session_for_adv_and_vol_window_plus_one_for_volatility(
     adv_window, vol_window, halt, rebalance_every, decision
 ):
-    """A two-session halt is not a single missing bar: a window that holds no bar, or one
-    return, after it gets no older estimate, so the sale decided on ``decision`` is
-    rejected (REVIEW-27) rather than sized on the trading before the halt."""
+    """A two-session halt is not a single missing bar: an ADV window that holds no bar after
+    it gets no older ADV, so the sale is not sized on the trading before the halt, and a
+    volatility window with one return gets no estimate older than ``vol_window`` + 1
+    sessions, so the sale decided on ``decision`` is rejected (REVIEW-27)."""
     dates, bars, signals = gapped_market(40, halt)
     cfg = BacktestConfig(
         strategy=StrategyConfig(min_names=1, rebalance_every=rebalance_every),
@@ -883,3 +884,26 @@ def test_the_exit_fallback_reaches_back_one_session_for_adv_and_three_for_volati
     ]
     assert list(sale["status"]) == ["rejected"]
     assert list(sale["reason"]) == ["no_liquidity_estimate"]
+
+
+@pytest.mark.parametrize("vol_window", [4, 5])
+@pytest.mark.parametrize("missing", [[32, 34], [31, 33], [31, 34]])
+def test_two_missing_bars_a_few_sessions_apart_do_not_block_the_exit(vol_window, missing):
+    """Two missing bars two or three sessions apart leave a volatility window of 4 or 5
+    returns with fewer than two of them for a few sessions. The exit decided on session 35
+    falls back on the volatility from just before the first gap, at most ``vol_window`` + 1
+    sessions old, so it fills instead of being rejected while the other targets are sized on
+    equity that still holds A (review round 8, R8-1)."""
+    dates, bars, signals = gapped_market(40, missing)
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=5),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        costs=free_costs(5, vol_window),
+        initial_capital=1000.0,
+    )
+    res = run_backtest(bars, signals, cfg, EqualWeight())
+    sale = res.trades[(res.trades["instrument"] == "A") & (res.trades["date"] == dates[36])]
+    assert list(sale["status"]) == ["filled"], sale
+    assert bool(sale["shares"].iloc[0] < 0)
+    assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
+    assert res.daily["cash"].min() >= -1e-9
