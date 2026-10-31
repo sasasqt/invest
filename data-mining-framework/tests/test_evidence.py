@@ -19,9 +19,9 @@ def data(tmp_path):
     return path
 
 
-def _search(data, out, book, seed=0):
-    args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2", "--out", str(out)]
-    return main([*args, "--seed", str(seed), "--ledger", str(book)])
+def _search(data, out, book, seed=0, top_k=2):
+    args = ["search", "--data", str(data), "--trials", "10", "--top-k", str(top_k)]
+    return main([*args, "--out", str(out), "--seed", str(seed), "--ledger", str(book)])
 
 
 def _export(data, out, *source):
@@ -114,14 +114,21 @@ def test_fixed_formula_takes_evidence_from_its_confirm_run(tmp_path, data):
 
 
 def _two_searches(tmp_path, data):
-    """Run two searches with different seeds into one ledger; return each one's factor ids."""
+    """Run two experiments into one ledger; return each one's factor ids.
+
+    Same seed, so both rank the same proposals; the family is chosen greedily in rank order,
+    so `other`'s top two are exactly the first two of `first`'s top three. The overlap is
+    built in rather than depending on which proposals a seed draws.
+    """
     book = tmp_path / "ledger.jsonl"
-    assert _search(data, tmp_path / "first", book) == 0
-    assert _search(data, tmp_path / "other", book, seed=5) == 0
-    return [
+    assert _search(data, tmp_path / "first", book, top_k=3) == 0
+    assert _search(data, tmp_path / "other", book) == 0
+    first, other = (
         set(pd.read_csv(tmp_path / name / "confirmation.csv")["factor_id"])
         for name in ("first", "other")
-    ]
+    )
+    assert other < first and len(first - other) == 1
+    return first, other
 
 
 def _experiment_id(root):
@@ -135,7 +142,6 @@ def test_factor_from_another_experiment_is_refused(tmp_path, data):
     # by directory order could pick one the other search never tested (REVIEW-22).
     first, other = _two_searches(tmp_path, data)
     shared = sorted(first & other)
-    assert shared, "the two searches share no factor; the test needs one"
     first_id, other_id = _experiment_id(tmp_path / "first"), _experiment_id(tmp_path / "other")
     assert first_id != other_id
     member = tmp_path / "first" / "factors" / f"{shared[0]}.json"
@@ -151,7 +157,6 @@ def test_factor_from_another_experiment_is_refused(tmp_path, data):
 def test_factor_another_search_never_tested_is_refused(tmp_path, data):
     first, other = _two_searches(tmp_path, data)
     only_first = sorted(first - other)
-    assert only_first, "every factor of the first search was also tested by the other"
     member = tmp_path / "first" / "factors" / f"{only_first[0]}.json"
     with pytest.raises(SystemExit, match="was not confirmed in this output"):
         _export(
