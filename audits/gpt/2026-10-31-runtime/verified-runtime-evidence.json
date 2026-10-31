@@ -1,0 +1,5024 @@
+[
+  {
+    "kind": "audited",
+    "python": "3.11",
+    "job_id": 124489509595,
+    "artifact_id": 13036723049,
+    "artifact_sha256": "88b1f198837b2ab898a7b500956ec87253a6f0f36b79379877bb0b5a96db2507",
+    "expected_exit": 0,
+    "expected_failed_commands": [],
+    "round": 2,
+    "run_id": 41184820796,
+    "runner_sha": "010c7ea8b866f8f03c418d7d491d8f8e9ace466b",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "archive": "artifacts/audited-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:5a804a4c59176f7c786c737153b8c49744bb8ca3b5bcb6e18f2d6ad28c394f18",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-20d463e9d99c42b68ae8f51403b8827d",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:5a804a4c59176f7c786c737153b8c49744bb8ca3b5bcb6e18f2d6ad28c394f18",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.11/host-only-sentinel",
+        "--host-pid",
+        "2397"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 0,
+      "image_id": "sha256:5a804a4c59176f7c786c737153b8c49744bb8ca3b5bcb6e18f2d6ad28c394f18",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 9V45 96-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "586 passed in 214.78s (0:03:34)"
+      ],
+      "hash-seed-repeat": [
+        "586 passed in 119.74s (0:01:59)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 1.32s"
+      ],
+      "data-mining-framework-tests": [
+        "129 passed in 19.97s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 59.13s"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16390487599998949,
+        "child_cpu_seconds": 0.133364
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6146965490000014,
+        "child_cpu_seconds": 0.6097119999999999
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 1.9676829920000074,
+        "child_cpu_seconds": 1.944434
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.3643271389999967,
+        "child_cpu_seconds": 0.32356500000000016
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11405758800000854,
+        "child_cpu_seconds": 0.08516699999999994
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06393762199999742,
+        "child_cpu_seconds": 0.04833399999999982
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06383645799999726,
+        "child_cpu_seconds": 0.046091000000000326
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.3210096000000107,
+        "child_cpu_seconds": 2.4020269999999995
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 215.44710146199998,
+        "child_cpu_seconds": 215.43687
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06375862399994503,
+        "child_cpu_seconds": 0.034708999999984336
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.2639773359999822,
+        "child_cpu_seconds": 0.254896000000004
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5144918020000091,
+        "child_cpu_seconds": 0.46713799999999583
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5645592390000047,
+        "child_cpu_seconds": 0.5195400000000028
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 120.251004996,
+        "child_cpu_seconds": 120.238356
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 1.8676552039999592,
+        "child_cpu_seconds": 1.859149000000004
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.921478256,
+        "child_cpu_seconds": 4.864201000000035
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 1.5159785019999958,
+        "child_cpu_seconds": 1.514973999999956
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.16680699799997,
+        "child_cpu_seconds": 1.871340000000016
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 7.174037451000004,
+        "child_cpu_seconds": 6.395691000000017
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 20.557721104999985,
+        "child_cpu_seconds": 20.533590000000014
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.017992336999953,
+        "child_cpu_seconds": 2.007357999999927
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.181702806999965,
+        "child_cpu_seconds": 7.3920809999999975
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.015658414000029097,
+        "child_cpu_seconds": 0.011146000000053391
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 59.64501329000001,
+        "child_cpu_seconds": 59.62547699999999
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.872914415999958,
+        "child_cpu_seconds": 4.872861000000027
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.9235591010000235,
+        "child_cpu_seconds": 4.899376999999966
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672695182999973,
+        "child_cpu_seconds": 4.646549999999966
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.822445443999982,
+        "child_cpu_seconds": 4.7824359999999935
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.723189662999971,
+        "child_cpu_seconds": 4.672289000000042
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672206586000016,
+        "child_cpu_seconds": 4.655104000000009
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672058763999985,
+        "child_cpu_seconds": 4.653207999999946
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.722485290999998,
+        "child_cpu_seconds": 4.697542000000034
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 4.722485290999998,
+      "min_seconds": 4.672058763999985,
+      "max_seconds": 4.9235591010000235,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": []
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.872914415999958,
+        "child_cpu_seconds": 4.872861000000027,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.9235591010000235,
+        "child_cpu_seconds": 4.899376999999966,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672695182999973,
+        "child_cpu_seconds": 4.646549999999966,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.822445443999982,
+        "child_cpu_seconds": 4.7824359999999935,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.723189662999971,
+        "child_cpu_seconds": 4.672289000000042,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672206586000016,
+        "child_cpu_seconds": 4.655104000000009,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.672058763999985,
+        "child_cpu_seconds": 4.653207999999946,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.722485290999998,
+        "child_cpu_seconds": 4.697542000000034,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3703,
+      "num_statements": 3851,
+      "percent_covered": 94.76460246141825,
+      "percent_covered_display": "95",
+      "missing_lines": 148,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.15684237860296,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 110,
+      "covered_branches": 1148,
+      "missing_branches": 120,
+      "percent_branches_covered": 90.53627760252365,
+      "percent_branches_covered_display": "91"
+    }
+  },
+  {
+    "kind": "audited",
+    "python": "3.13",
+    "job_id": 124489509444,
+    "artifact_id": 13036877336,
+    "artifact_sha256": "67ac040f277b05a8d386552b8eb49f90f4b56aaafd70ed06b689a7ecd0896cc8",
+    "expected_exit": 0,
+    "expected_failed_commands": [],
+    "round": 2,
+    "run_id": 41184820796,
+    "runner_sha": "010c7ea8b866f8f03c418d7d491d8f8e9ace466b",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "archive": "artifacts/audited-3.13.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f",
+      "image_id": "sha256:33785209695d22f28dea37831cfe8ec7b4ec35ddaba6ad8c6c0048086621ca8d",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-a977c0bea2bf4b27b2808e1e9720a16b",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:33785209695d22f28dea37831cfe8ec7b4ec35ddaba6ad8c6c0048086621ca8d",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.13/host-only-sentinel",
+        "--host-pid",
+        "2616"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 0,
+      "image_id": "sha256:33785209695d22f28dea37831cfe8ec7b4ec35ddaba6ad8c6c0048086621ca8d",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.4.0"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.3"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.13/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.13/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.13/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "586 passed in 441.39s (0:07:21)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.21407407000000944,
+        "child_cpu_seconds": 0.18365499999999996
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.9156251229999839,
+        "child_cpu_seconds": 0.883261
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.168400960000014,
+        "child_cpu_seconds": 2.155561
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.4646530179999786,
+        "child_cpu_seconds": 0.4405860000000001
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.1641884199999879,
+        "child_cpu_seconds": 0.11665900000000001
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.0639901259999931,
+        "child_cpu_seconds": 0.07202800000000015
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06397576300000196,
+        "child_cpu_seconds": 0.07045699999999966
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.4268490369999824,
+        "child_cpu_seconds": 5.593473000000001
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 442.57794054299995,
+        "child_cpu_seconds": 442.52618599999994
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11416599100004987,
+        "child_cpu_seconds": 0.06528700000006449
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5149943459999804,
+        "child_cpu_seconds": 0.46885799999997957
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.916421190000051,
+        "child_cpu_seconds": 0.8758310000000407
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.8662375950000296,
+        "child_cpu_seconds": 0.8622850000000115
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.838953014000026,
+        "child_cpu_seconds": 9.795067999999983
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.83821032000003,
+        "child_cpu_seconds": 9.789793999999985
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.687099363000016,
+        "child_cpu_seconds": 9.661865000000024
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.68698899399999,
+        "child_cpu_seconds": 9.660900000000044
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.736731617000032,
+        "child_cpu_seconds": 9.719999999999985
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.788434546000076,
+        "child_cpu_seconds": 9.741962999999977
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.637378610000042,
+        "child_cpu_seconds": 9.60336900000005
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.585963973999924,
+        "child_cpu_seconds": 9.546619999999985
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 9.687099363000016,
+      "min_seconds": 9.585963973999924,
+      "max_seconds": 9.83821032000003,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": []
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.838953014000026,
+        "child_cpu_seconds": 9.795067999999983,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.83821032000003,
+        "child_cpu_seconds": 9.789793999999985,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.687099363000016,
+        "child_cpu_seconds": 9.661865000000024,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.68698899399999,
+        "child_cpu_seconds": 9.660900000000044,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.736731617000032,
+        "child_cpu_seconds": 9.719999999999985,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.788434546000076,
+        "child_cpu_seconds": 9.741962999999977,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.637378610000042,
+        "child_cpu_seconds": 9.60336900000005,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.585963973999924,
+        "child_cpu_seconds": 9.546619999999985,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3703,
+      "num_statements": 3851,
+      "percent_covered": 94.76460246141825,
+      "percent_covered_display": "95",
+      "missing_lines": 148,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.15684237860296,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 110,
+      "covered_branches": 1148,
+      "missing_branches": 120,
+      "percent_branches_covered": 90.53627760252365,
+      "percent_branches_covered_display": "91"
+    }
+  },
+  {
+    "kind": "control",
+    "python": "3.11",
+    "job_id": 124489509603,
+    "artifact_id": 13036649081,
+    "artifact_sha256": "7b0cab217a23c19dd1c489dee645999c3c5b82aca651f06e64e822cf514b2118",
+    "expected_exit": 1,
+    "expected_failed_commands": [
+      "data-mining-framework-tests"
+    ],
+    "round": 2,
+    "run_id": 41184820796,
+    "runner_sha": "010c7ea8b866f8f03c418d7d491d8f8e9ace466b",
+    "source_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "archive": "artifacts/control-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:3be17da9871f7ee24ca546c08d75e828c0d8528cc10dcc56172dfea81e9a1f77",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-c40fbddbbff347f984d0c45f23f1db0d",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:3be17da9871f7ee24ca546c08d75e828c0d8528cc10dcc56172dfea81e9a1f77",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-control-3.11/host-only-sentinel",
+        "--host-pid",
+        "2620"
+      ],
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "runner": {
+      "exit": 1,
+      "image_id": "sha256:3be17da9871f7ee24ca546c08d75e828c0d8528cc10dcc56172dfea81e9a1f77",
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "587 passed in 411.44s (0:06:51)"
+      ],
+      "hash-seed-repeat": [
+        "587 passed in 212.16s (0:03:32)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 2.45s"
+      ],
+      "data-mining-framework-tests": [
+        "2 failed, 128 passed in 35.14s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 99.87s (0:01:39)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.214053449000005,
+        "child_cpu_seconds": 0.18737099999999998
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.9157345790000022,
+        "child_cpu_seconds": 0.868153
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.0199788850000004,
+        "child_cpu_seconds": 3.008542
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.4646309959999826,
+        "child_cpu_seconds": 0.4414829999999995
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16428741100000366,
+        "child_cpu_seconds": 0.12643300000000024
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06407039599997688,
+        "child_cpu_seconds": 0.07001800000000047
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06383515699999975,
+        "child_cpu_seconds": 0.0654969999999997
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.9747334829999943,
+        "child_cpu_seconds": 4.143250000000001
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 412.43112235300003,
+        "child_cpu_seconds": 412.398021
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06392815800006701,
+        "child_cpu_seconds": 0.05763600000001823
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.4149097269998947,
+        "child_cpu_seconds": 0.401822999999931
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7655895120000196,
+        "child_cpu_seconds": 0.7520600000000623
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.8158316359999844,
+        "child_cpu_seconds": 0.7659839999999694
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 212.874957076,
+        "child_cpu_seconds": 212.86236199999993
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.0203316049999103,
+        "child_cpu_seconds": 3.0133470000000635
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 7.9312848740000845,
+        "child_cpu_seconds": 7.905019999999919
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.7704074199999695,
+        "child_cpu_seconds": 2.766582000000028
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.0704230299999153,
+        "child_cpu_seconds": 3.0181499999999843
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.687293466000028,
+        "child_cpu_seconds": 10.648750000000007
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 35.805066953999926,
+        "child_cpu_seconds": 35.79112899999997
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.070833908000054,
+        "child_cpu_seconds": 3.0529149999999454
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.937282685000014,
+        "child_cpu_seconds": 10.75233400000008
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.031798238999954265,
+        "child_cpu_seconds": 0.01591699999994134
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 100.57043609699997,
+        "child_cpu_seconds": 100.56222199999996
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.484244692000061,
+        "child_cpu_seconds": 8.447735000000101
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.634883211999977,
+        "child_cpu_seconds": 8.595004999999944
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.73538269100004,
+        "child_cpu_seconds": 8.7077859999999
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.787217215000055,
+        "child_cpu_seconds": 8.749625000000119
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.786013965999928,
+        "child_cpu_seconds": 8.739323000000063
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.786084703999904,
+        "child_cpu_seconds": 8.772989999999872
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533875899999884,
+        "child_cpu_seconds": 8.493313000000121
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.635352180999917,
+        "child_cpu_seconds": 8.62320199999991
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 8.73538269100004,
+      "min_seconds": 8.533875899999884,
+      "max_seconds": 8.787217215000055,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": [
+        "data-mining-framework-tests"
+      ]
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.484244692000061,
+        "child_cpu_seconds": 8.447735000000101,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.634883211999977,
+        "child_cpu_seconds": 8.595004999999944,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.73538269100004,
+        "child_cpu_seconds": 8.7077859999999,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.787217215000055,
+        "child_cpu_seconds": 8.749625000000119,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.786013965999928,
+        "child_cpu_seconds": 8.739323000000063,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.786084703999904,
+        "child_cpu_seconds": 8.772989999999872,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533875899999884,
+        "child_cpu_seconds": 8.493313000000121,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.635352180999917,
+        "child_cpu_seconds": 8.62320199999991,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3701,
+      "num_statements": 3851,
+      "percent_covered": 94.68646219964837,
+      "percent_covered_display": "95",
+      "missing_lines": 150,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.10490781615165,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 112,
+      "covered_branches": 1146,
+      "missing_branches": 122,
+      "percent_branches_covered": 90.37854889589906,
+      "percent_branches_covered_display": "90"
+    }
+  },
+  {
+    "kind": "audited",
+    "python": "3.13",
+    "job_id": 124493939298,
+    "artifact_id": 13037024459,
+    "artifact_sha256": "e27aa35eaab812663208d99bef6f7ddce6760c198ab0162c47ed6b3cc7191121",
+    "expected_exit": 1,
+    "expected_failed_commands": [
+      "tests"
+    ],
+    "round": 3,
+    "run_id": 41186347445,
+    "runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "archive": "artifacts/final-audited-3.13.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f",
+      "image_id": "sha256:757a1ad43070057d30cf43fe00dabcd02081e8f8ecd4f58d0a6c492b08bd3d3e",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-1f1fd6bd7a74443390117ae60521ae6f",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:757a1ad43070057d30cf43fe00dabcd02081e8f8ecd4f58d0a6c492b08bd3d3e",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.13/host-only-sentinel",
+        "--host-pid",
+        "2628"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 1,
+      "image_id": "sha256:757a1ad43070057d30cf43fe00dabcd02081e8f8ecd4f58d0a6c492b08bd3d3e",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.4.0"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.3"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.13/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.13/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.13/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "1 failed, 585 passed in 443.40s (0:07:23)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.21422140900000386,
+        "child_cpu_seconds": 0.20344800000000002
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.9661440129999619,
+        "child_cpu_seconds": 0.9454699999999999
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.2695152599999915,
+        "child_cpu_seconds": 2.2369960000000004
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5149808119999761,
+        "child_cpu_seconds": 0.4838849999999999
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16433670899999697,
+        "child_cpu_seconds": 0.12351299999999987
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06405787299996746,
+        "child_cpu_seconds": 0.07371999999999973
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06406917499998599,
+        "child_cpu_seconds": 0.06980500000000056
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.729128349999996,
+        "child_cpu_seconds": 5.90683
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 444.60194321399996,
+        "child_cpu_seconds": 444.485037
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11421664700003475,
+        "child_cpu_seconds": 0.0671330000000161
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.515297056999998,
+        "child_cpu_seconds": 0.47437899999997235
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.8662131849999923,
+        "child_cpu_seconds": 0.8584650000000309
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.9162475580000091,
+        "child_cpu_seconds": 0.89892499999997
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.838604370999974,
+        "child_cpu_seconds": 9.794651000000043
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.839933292999945,
+        "child_cpu_seconds": 9.792149000000022
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.990761700999997,
+        "child_cpu_seconds": 9.963118000000032
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.888768959999993,
+        "child_cpu_seconds": 9.884672999999975
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.839160349000053,
+        "child_cpu_seconds": 9.805562000000005
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.090943515000049,
+        "child_cpu_seconds": 10.041666000000012
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.191495147000069,
+        "child_cpu_seconds": 10.147934999999986
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.939584616999923,
+        "child_cpu_seconds": 9.901290999999995
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 9.939584616999923,
+      "min_seconds": 9.839160349000053,
+      "max_seconds": 10.191495147000069,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": [
+        "tests"
+      ]
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.838604370999974,
+        "child_cpu_seconds": 9.794651000000043,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.839933292999945,
+        "child_cpu_seconds": 9.792149000000022,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.990761700999997,
+        "child_cpu_seconds": 9.963118000000032,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.888768959999993,
+        "child_cpu_seconds": 9.884672999999975,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.839160349000053,
+        "child_cpu_seconds": 9.805562000000005,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.090943515000049,
+        "child_cpu_seconds": 10.041666000000012,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.191495147000069,
+        "child_cpu_seconds": 10.147934999999986,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.939584616999923,
+        "child_cpu_seconds": 9.901290999999995,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "88a32e4d95f4d842315ba28bfb7a8c51b3bc67a7c779ed2292f71f16f8acb567",
+        "correctness_gate": true,
+        "output_bytes": 853597
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3702,
+      "num_statements": 3851,
+      "percent_covered": 94.72553233053331,
+      "percent_covered_display": "95",
+      "missing_lines": 149,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.1308750973773,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 111,
+      "covered_branches": 1147,
+      "missing_branches": 121,
+      "percent_branches_covered": 90.45741324921136,
+      "percent_branches_covered_display": "90"
+    }
+  },
+  {
+    "kind": "audited",
+    "python": "3.11",
+    "job_id": 124493939518,
+    "artifact_id": 13037685245,
+    "artifact_sha256": "5999fe673edbf70ffdae9647209eb64a9c0dc6f584d7a913a1dbda8d88879bc3",
+    "expected_exit": 1,
+    "expected_failed_commands": [
+      "tests",
+      "hash-seed-repeat",
+      "data-mining-framework-tests"
+    ],
+    "round": 3,
+    "run_id": 41186347445,
+    "runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "archive": "artifacts/final-audited-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:2e7f51b1e9d1614a14086a3cb8c76743c08b3a700479fb16c1656e03508e2c43",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-2cc57d85d5e84f66b42a14cda3d92b85",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:2e7f51b1e9d1614a14086a3cb8c76743c08b3a700479fb16c1656e03508e2c43",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.11/host-only-sentinel",
+        "--host-pid",
+        "2378"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 1,
+      "image_id": "sha256:2e7f51b1e9d1614a14086a3cb8c76743c08b3a700479fb16c1656e03508e2c43",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "1 failed, 585 passed in 303.18s (0:05:03)"
+      ],
+      "hash-seed-repeat": [
+        "1 failed, 585 passed in 158.26s (0:02:38)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 1.94s"
+      ],
+      "data-mining-framework-tests": [
+        "1 failed, 128 passed in 25.74s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 80.43s (0:01:20)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16388817100000352,
+        "child_cpu_seconds": 0.153551
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7150921850000032,
+        "child_cpu_seconds": 0.696256
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.4690947000000065,
+        "child_cpu_seconds": 2.435093
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.36441901500000995,
+        "child_cpu_seconds": 0.35885299999999976
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11392018200000109,
+        "child_cpu_seconds": 0.09970100000000037
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06385510100000147,
+        "child_cpu_seconds": 0.054925
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.0638075150000077,
+        "child_cpu_seconds": 0.05306600000000039
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.970999154999987,
+        "child_cpu_seconds": 3.075156999999999
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 303.95893299500005,
+        "child_cpu_seconds": 303.68061900000004
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.0638946039999837,
+        "child_cpu_seconds": 0.04631899999999156
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.364354072000026,
+        "child_cpu_seconds": 0.31467000000001644
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6651193849999686,
+        "child_cpu_seconds": 0.6289479999999674
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6150136800000041,
+        "child_cpu_seconds": 0.6018909999999966
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 158.850728533,
+        "child_cpu_seconds": 158.336476
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.6693246710000267,
+        "child_cpu_seconds": 2.384767000000025
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.676814792999949,
+        "child_cpu_seconds": 6.257875999999968
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.2183230389999835,
+        "child_cpu_seconds": 2.0359200000000115
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.519061799000042,
+        "child_cpu_seconds": 2.3717819999999854
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.68213199999991,
+        "child_cpu_seconds": 8.28540200000004
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 26.268616645000066,
+        "child_cpu_seconds": 25.68636199999994
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.418560366000065,
+        "child_cpu_seconds": 2.369518000000067
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.729582535000077,
+        "child_cpu_seconds": 8.296082999999989
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.015647753999928682,
+        "child_cpu_seconds": 0.012907999999949737
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 80.9880292879999,
+        "child_cpu_seconds": 80.70618200000007
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.32671394099998,
+        "child_cpu_seconds": 6.275145999999953
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.326834940000026,
+        "child_cpu_seconds": 6.256793000000059
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.227098979999937,
+        "child_cpu_seconds": 6.2223819999999
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.226811375000011,
+        "child_cpu_seconds": 6.218205000000115
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.276913179000076,
+        "child_cpu_seconds": 6.231430999999944
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.2764770569999655,
+        "child_cpu_seconds": 6.261937999999944
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.226993681000067,
+        "child_cpu_seconds": 6.2060280000000105
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.276538456000026,
+        "child_cpu_seconds": 6.251464999999968
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 6.2764770569999655,
+      "min_seconds": 6.226811375000011,
+      "max_seconds": 6.326834940000026,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": [
+        "tests",
+        "hash-seed-repeat",
+        "data-mining-framework-tests"
+      ]
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.32671394099998,
+        "child_cpu_seconds": 6.275145999999953,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.326834940000026,
+        "child_cpu_seconds": 6.256793000000059,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.227098979999937,
+        "child_cpu_seconds": 6.2223819999999,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.226811375000011,
+        "child_cpu_seconds": 6.218205000000115,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.276913179000076,
+        "child_cpu_seconds": 6.231430999999944,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.2764770569999655,
+        "child_cpu_seconds": 6.261937999999944,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.226993681000067,
+        "child_cpu_seconds": 6.2060280000000105,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.276538456000026,
+        "child_cpu_seconds": 6.251464999999968,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "17093f0e94e7bab240c4b7d223b779dec047126ccd4741d05299d52f2983806e",
+        "correctness_gate": true,
+        "output_bytes": 853600
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3702,
+      "num_statements": 3851,
+      "percent_covered": 94.72553233053331,
+      "percent_covered_display": "95",
+      "missing_lines": 149,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.1308750973773,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 111,
+      "covered_branches": 1147,
+      "missing_branches": 121,
+      "percent_branches_covered": 90.45741324921136,
+      "percent_branches_covered_display": "90"
+    }
+  },
+  {
+    "kind": "control",
+    "python": "3.11",
+    "job_id": 124493939428,
+    "artifact_id": 13038125312,
+    "artifact_sha256": "45c21e5c6938748614dff51bfa74044cfe1b27bc29818944263f2ffa9da73dae",
+    "expected_exit": 0,
+    "expected_failed_commands": [],
+    "round": 3,
+    "run_id": 41186347445,
+    "runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "source_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "archive": "artifacts/final-control-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:59b82c9c0eb97a76272f7445e437df13470bf469370980c2b0e4e5c0a2258ba4",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-d8028e62f12442f1a32f2d84500a1f2e",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:59b82c9c0eb97a76272f7445e437df13470bf469370980c2b0e4e5c0a2258ba4",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-control-3.11/host-only-sentinel",
+        "--host-pid",
+        "2591"
+      ],
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "runner": {
+      "exit": 0,
+      "image_id": "sha256:59b82c9c0eb97a76272f7445e437df13470bf469370980c2b0e4e5c0a2258ba4",
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "587 passed in 406.71s (0:06:46)"
+      ],
+      "hash-seed-repeat": [
+        "587 passed in 212.98s (0:03:32)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 2.47s"
+      ],
+      "data-mining-framework-tests": [
+        "130 passed in 35.27s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 99.80s (0:01:39)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.21407039800000405,
+        "child_cpu_seconds": 0.194729
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.9156883859999994,
+        "child_cpu_seconds": 0.8706049999999999
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.020172260999999,
+        "child_cpu_seconds": 3.0082820000000003
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.46475148500000074,
+        "child_cpu_seconds": 0.4449679999999997
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16414475700000253,
+        "child_cpu_seconds": 0.1262279999999999
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06401666600000055,
+        "child_cpu_seconds": 0.0706779999999998
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06390513899999917,
+        "child_cpu_seconds": 0.06623700000000021
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 4.073636372999999,
+        "child_cpu_seconds": 4.229202000000001
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 407.67331661599997,
+        "child_cpu_seconds": 407.603283
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06386982300000454,
+        "child_cpu_seconds": 0.0579370000000079
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.4146161009999787,
+        "child_cpu_seconds": 0.4010330000000355
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.8156946069999549,
+        "child_cpu_seconds": 0.7730329999999999
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7656504579999819,
+        "child_cpu_seconds": 0.7647279999999519
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 213.733840734,
+        "child_cpu_seconds": 213.659794
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.070304090000036,
+        "child_cpu_seconds": 3.0254569999999923
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 7.931411586999957,
+        "child_cpu_seconds": 7.902322999999971
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.7698069750000514,
+        "child_cpu_seconds": 2.741067999999924
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.0201199770000358,
+        "child_cpu_seconds": 2.995388000000119
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.68778350599996,
+        "child_cpu_seconds": 10.649448999999908
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 35.95137629200008,
+        "child_cpu_seconds": 35.75314700000002
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.020239773000071,
+        "child_cpu_seconds": 2.981167000000049
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 10.887730405999946,
+        "child_cpu_seconds": 10.611807999999968
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.03190071699998498,
+        "child_cpu_seconds": 0.016046000000017102
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 100.509679119,
+        "child_cpu_seconds": 100.37463699999994
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.483312625000053,
+        "child_cpu_seconds": 8.457362000000117
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.535526273999949,
+        "child_cpu_seconds": 8.493884000000026
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.583971854999959,
+        "child_cpu_seconds": 8.53396099999998
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533642989999976,
+        "child_cpu_seconds": 8.493803999999969
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.534222176999947,
+        "child_cpu_seconds": 8.5256340000001
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533921221000014,
+        "child_cpu_seconds": 8.488676999999946
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.485026729999959,
+        "child_cpu_seconds": 8.472308000000037
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.434493477000046,
+        "child_cpu_seconds": 8.42288699999996
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "valid_measured_samples": 7,
+      "median_seconds": 8.533921221000014,
+      "min_seconds": 8.434493477000046,
+      "max_seconds": 8.583971854999959,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": []
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.483312625000053,
+        "child_cpu_seconds": 8.457362000000117,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.535526273999949,
+        "child_cpu_seconds": 8.493884000000026,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.583971854999959,
+        "child_cpu_seconds": 8.53396099999998,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533642989999976,
+        "child_cpu_seconds": 8.493803999999969,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.534222176999947,
+        "child_cpu_seconds": 8.5256340000001,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.533921221000014,
+        "child_cpu_seconds": 8.488676999999946,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.485026729999959,
+        "child_cpu_seconds": 8.472308000000037,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.434493477000046,
+        "child_cpu_seconds": 8.42288699999996,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_hash": "0c63be1c256b969f8fa1944d7df95885fdcfdf65aa49ce1f071d935b7c326960",
+        "correctness_gate": true,
+        "output_bytes": 853598
+      }
+    ],
+    "coverage_totals": {
+      "covered_lines": 3701,
+      "num_statements": 3851,
+      "percent_covered": 94.68646219964837,
+      "percent_covered_display": "95",
+      "missing_lines": 150,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.10490781615165,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 112,
+      "covered_branches": 1146,
+      "missing_branches": 122,
+      "percent_branches_covered": 90.37854889589906,
+      "percent_branches_covered_display": "90"
+    }
+  }
+]

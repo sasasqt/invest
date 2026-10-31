@@ -1,0 +1,39 @@
+{
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "previous_supplement": "audits/gpt/2026-10-31-execution/semantic-continuation.json at 11651c33a070b6fa2ab1ee3c1718a3579532ca0f",
+  "newly_read_lines": 408,
+  "reading": [
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "git_blob": "970dd0936216ef1c3fb85879d396db43f65a048a",
+      "sha256": "0c4120ffcc2863e1fb988e70724a8c70e1f7cfa0de4519409ba8112c9140d6aa",
+      "reviewed_ranges": [
+        [
+          1,
+          252
+        ]
+      ],
+      "scope": "static semantic reading; synthetic fixtures only"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "git_blob": "029ec411f7dfabd016658f1bcbfb6bc5e72ffc77",
+      "sha256": "5852c0c7d988daabe6fc86c30e24f4d052cff7da25f39a1937f6ba9edf22cbab",
+      "reviewed_ranges": [
+        [
+          1,
+          156
+        ]
+      ],
+      "scope": "static semantic reading; synthetic fixtures only"
+    }
+  ],
+  "remaining_paths": 78,
+  "remaining_lines": 19659,
+  "notes": [
+    "Known test-order defect confirmed statically at test_evidence.py:119. Its membership and experiment guards are different assertions; PR #31 is the existing fix.",
+    "Other evidence tests derive selected factors from the actual confirmation table, check horizon and out-of-sample start, and reject refrozen/untagged search evidence.",
+    "Search/inference tests include synthetic purged-split leakage, artifact integrity, causal scores and universe membership controls. The temporary-storage failure in test_export_signals_bundle occurred while writing a synthetic fixture; no product change is indicated by that OSError."
+  ],
+  "audit_complete": false
+}

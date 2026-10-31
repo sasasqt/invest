@@ -48,5 +48,32 @@
   "baseline": "unavailable; no previous published comparable measurements",
   "semantic_gate": "full equivalent outputs excluding declared creation timestamps only",
   "measurements": "none; no extrapolated runtime/memory/scaling claims",
-  "environment": "Linux host6.18.57; root UID; 60GiB available disk and~9.7GiB host-visible RAM; actual enforced memory/CPU quotas not established, interpreter/dependencies not installed/verified"
+  "environment": "Linux host6.18.57; root UID; 60GiB available disk and~9.7GiB host-visible RAM; actual enforced memory/CPU quotas not established, interpreter/dependencies not installed/verified",
+  "original_run_record": true,
+  "runtime_recovery": {
+    "report": "audits/gpt/2026-10-31-runtime-validation.md",
+    "executed_cases": [
+      "synth-S"
+    ],
+    "raw_invocations": 48,
+    "valid_measured_samples": 42,
+    "primary_run_id": 41186347445,
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "seed": "repository synthetic defaults; full commands and semantic hashes retained",
+    "baseline": "unavailable",
+    "limits": {
+      "memory_bytes": 2147483648,
+      "cpus": 2,
+      "pids": 256
+    },
+    "unexecuted_cases": [
+      "synth-M",
+      "synth-L",
+      "synth-XL",
+      "formats"
+    ],
+    "memory_peak": "not measured"
+  }
 }

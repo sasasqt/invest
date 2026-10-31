@@ -1,2 +1,8 @@
 run_id,case,status,wall_seconds,cpu_seconds,peak_rss_bytes,samples,reason
 GA-2026-10-31T001744Z,all required software workloads,blocked,,,,0,No verified execution boundary or locked local environment
+GH-41184820796-job-124489509595,synth-S/audited/Python-3.11,measured_remote_success,4.722485290999998,4.672289000000042,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline
+GH-41184820796-job-124489509444,synth-S/audited/Python-3.13,measured_remote_success,9.687099363000016,9.661865000000024,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline
+GH-41184820796-job-124489509603,synth-S/control/Python-3.11,measured_remote_runner_environment_failure,8.73538269100004,8.7077859999999,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline
+GH-41186347445-job-124493939298,synth-S/audited/Python-3.13,measured_remote_known_product_test_failure,9.939584616999923,9.901290999999995,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline
+GH-41186347445-job-124493939518,synth-S/audited/Python-3.11,measured_remote_known_product_test_failure,6.2764770569999655,6.231430999999944,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline
+GH-41186347445-job-124493939428,synth-S/control/Python-3.11,measured_remote_success,8.533921221000014,8.493803999999969,,7,Separate wall/CPU medians; raw samples and original overall failure retained; no matched comparison baseline

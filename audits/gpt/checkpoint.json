@@ -43,11 +43,11 @@
   "steps": {
     "preflight": "partial; isolationblocked",
     "inventory": "done110exactblobs",
-    "static_analysis": "partial; savedranges",
+    "static_analysis": "partial; 318 + 408 supplemental static lines; 19,659 unread across 78 paths",
     "independent_review": "doneC1C2C3andR1R2static/literatureonly",
-    "tests": "blocked",
-    "workflows": "blocked",
-    "benchmarks": "blocked",
+    "tests": "remote Linux installed-wheel suites, coverage, slowest25, 3.11 hash-seed repeat and independent installs verified; main retains known test failure; PR31 control passes",
+    "workflows": "remote published synth-S workflow verified; wider formats/recovery/historical replay incomplete",
+    "benchmarks": "synth-S: 6 jobs, 48 raw invocations, 42 valid measured samples; no matched baseline, memory or scaling measurement",
     "research": "partial5screened2specified0run",
     "publication": "published_verified"
   },
@@ -77,16 +77,13 @@
   "last_peer_revision": null,
   "peer_fingerprints": [],
   "remaining_work": [
-    "Establish existing enforced credential filesystem isolation and sentinel/denied-operation evidence",
-    "Exact locked environment+uv lock --check and resolved installed graph",
-    "Six distinct CI jobs locally,coverageJSON,slowest25,hashseedrepeat,wheel importpaths",
-    "Full remaining semantic intervals in dated-repro/remaining-semantic-ranges.json",
-    "GA1/GA2tworepeats+controls and policy clarification",
-    "Actualpublishedboundarysyntheticworkflow+3formats+recordrecovery",
-    "Matchpermittedrawsnapshot; original/mainreplay; noreserveddata",
-    "Allsoftwarebenchmarkssemanticgates+comparablebaseline",
-    "Remainingtestquality,portability,advisory,artifact/schema/CLIcallerreview",
-    "Researchoracleexecution; monthlyhypothesisremainsscheduling/data blocked"
+    "Unread semantic intervals in 2026-10-31-runtime/remaining-semantic-ranges.json",
+    "GA1/GA2 repeated controls and policy clarification",
+    "Wider published workflow format/recovery checks",
+    "Matching permitted raw snapshot and exact historical replay; no reserved observations",
+    "M/L/XL and storage-format benchmarks, matched baseline and memory peaks",
+    "Remaining test-quality, portability, advisory, artifact/schema/CLI caller review; Windows not executed",
+    "Research oracle execution and original research constraints"
   ],
   "publication": {
     "run_id": "GA-2026-10-31T001744Z",
@@ -165,8 +162,49 @@
     "model_effort": "model/effort unavailable; audit continued as authorized.",
     "restrictions": "Only audits/gpt/ changed. No source execution, raw/reserved observations, PR/comments/reviews or other routine/schedule mutations."
   },
-  "safe_resume": "First reconcile remote publication/runID; verify immutable110blobscope and all currentdatarestrictions. Reuse only originalsamecontentstatic evidence, never claimblockedchecks passed. Resume checkpointless7days only if immutable snapshot/evidence usable; otherwise supersede with reason.",
+  "safe_resume": "Verify current remote identities and restrictions; use the original ranges plus both execution-recovery supplements and the runtime supplement only for identical blobs. Read the current runtime-validation report before treating old blocked preflight fields as current. Accept remote execution only with actual checkout identity, audited source identity, boundary proof, lock graph, fresh timestamps and original failures. Historical replay separately needs its matching permitted raw archive.",
   "research_state": "research/state.json",
   "completed_utc": "2026-10-31T00:34:44Z",
-  "total_elapsed_seconds_to_publication_verified": 1020
+  "total_elapsed_seconds_to_publication_verified": 1020,
+  "execution_recovery": {
+    "date": "2026-10-31",
+    "report": "audits/gpt/2026-10-31-runtime-validation.md",
+    "runner_pr": "https://github.com/sasasqt/invest/pull/32",
+    "runner_code_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "runtime_run_id": 41186347445,
+    "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "static_continuation": "audits/gpt/2026-10-31-runtime/semantic-continuation.json",
+    "remaining_ranges": "audits/gpt/2026-10-31-runtime/remaining-semantic-ranges.json",
+    "remaining_lines": 19659,
+    "remaining_paths": 78,
+    "audit_complete": false,
+    "status": "remote_runtime_verified; known main test failures retained",
+    "verified_utc": "2026-10-31T09:08:07.857736+00:00",
+    "original_steps": {
+      "preflight": "partial; isolationblocked",
+      "inventory": "done110exactblobs",
+      "static_analysis": "partial; savedranges",
+      "independent_review": "doneC1C2C3andR1R2static/literatureonly",
+      "tests": "blocked",
+      "workflows": "blocked",
+      "benchmarks": "blocked",
+      "research": "partial5screened2specified0run",
+      "publication": "published_verified"
+    },
+    "original_remaining_work": [
+      "Establish existing enforced credential filesystem isolation and sentinel/denied-operation evidence",
+      "Exact locked environment+uv lock --check and resolved installed graph",
+      "Six distinct CI jobs locally,coverageJSON,slowest25,hashseedrepeat,wheel importpaths",
+      "Full remaining semantic intervals in dated-repro/remaining-semantic-ranges.json",
+      "GA1/GA2tworepeats+controls and policy clarification",
+      "Actualpublishedboundarysyntheticworkflow+3formats+recordrecovery",
+      "Matchpermittedrawsnapshot; original/mainreplay; noreserveddata",
+      "Allsoftwarebenchmarkssemanticgates+comparablebaseline",
+      "Remainingtestquality,portability,advisory,artifact/schema/CLIcallerreview",
+      "Researchoracleexecution; monthlyhypothesisremainsscheduling/data blocked"
+    ]
+  },
+  "steps_as_of_recovery_utc": "2026-10-31T09:08:07.857736+00:00",
+  "coverage_counts_scope": "original audit coarse counts; semantic supplements and current remaining ranges are authoritative for continuation"
 }

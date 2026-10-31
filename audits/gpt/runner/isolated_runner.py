@@ -11,11 +11,18 @@ import os
 import re
 import shutil
 import subprocess
+import sys
+import uuid
 from pathlib import Path
 
 
 def checked(argv, **kwargs):
-    return subprocess.run(argv, check=True, text=True, capture_output=True, **kwargs).stdout.strip()
+    result = subprocess.run(argv, text=True, capture_output=True, **kwargs)
+    if result.returncode:
+        raise RuntimeError(
+            f"{Path(argv[0]).name} exited {result.returncode}: {result.stderr.strip()}"
+        )
+    return result.stdout.strip()
 
 
 def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid):
@@ -55,6 +62,7 @@ def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid
     for name, value in {
         "HOME": "/work/home",
         "MPLCONFIGDIR": "/work/matplotlib",
+        "TMPDIR": "/work/tmp",
         "PYTHONDONTWRITEBYTECODE": "1",
         "OPENBLAS_NUM_THREADS": "1",
         "OMP_NUM_THREADS": "1",
@@ -204,7 +212,15 @@ def main():
     uv = shutil.which("uv")
     if not uv:
         raise RuntimeError("Trusted setup requires uv for metadata-only export")
-    common = ["--offline", "--no-build", "--no-python-downloads", "--directory", str(metadata)]
+    common = [
+        "--offline",
+        "--no-build",
+        "--no-python-downloads",
+        "--python",
+        sys.executable,
+        "--directory",
+        str(metadata),
+    ]
     checked([uv, "lock", "--check", *common])
     checked(
         [
@@ -248,6 +264,8 @@ def main():
     ]
     built = subprocess.run(build, env=env, capture_output=True, text=True, timeout=900)
     (results / "image-build.log").write_text(built.stdout + built.stderr)
+    if built.returncode:
+        print(built.stdout + built.stderr, flush=True)
     built.check_returncode()
     image = (output / "image-id").read_text().strip()
     work = output / "work"
@@ -258,6 +276,8 @@ def main():
     sentinel.write_text("NON_SECRET_OUTSIDE_FIXTURE")
     uid, gid = os.getuid() or 65534, os.getgid() or 65534
     command = execution_command(image, staged, work, tools, sentinel, os.getpid(), uid, gid)
+    container_name = "invest-audit-" + uuid.uuid4().hex
+    command[3:3] = ["--name", container_name]
     (results / "launch.json").write_text(
         json.dumps(
             {
@@ -269,10 +289,30 @@ def main():
             indent=2,
         )
     )
-    execution = subprocess.run(command, env=env, capture_output=True, text=True, timeout=7200)
+    try:
+        execution = subprocess.run(command, env=env, capture_output=True, text=True, timeout=6600)
+    finally:
+        subprocess.run(
+            [
+                "docker",
+                "--host=unix:///var/run/docker.sock",
+                "container",
+                "rm",
+                "--force",
+                container_name,
+            ],
+            env=env,
+            capture_output=True,
+            timeout=30,
+        )
     (results / "execution.log").write_text(execution.stdout + execution.stderr)
+    print(execution.stdout + execution.stderr, flush=True)
     if (work / "results").is_dir():
         shutil.copytree(work / "results", results / "workload")
+        for name in ("boundary.json", "environment.json", "benchmark-summary.json"):
+            path = work / "results" / name
+            if path.is_file():
+                print("AUDIT_EVIDENCE " + name + " " + path.read_text(), flush=True)
     (results / "runner.json").write_text(
         json.dumps(
             {"exit": execution.returncode, "image_id": image, "sha": args.expected_sha}, indent=2
