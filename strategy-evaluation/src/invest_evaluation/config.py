@@ -97,7 +97,11 @@ class ExecutionConfig:
     A decision uses signals and prices through the close of decision date ``t``; orders
     fill at the open of ``t + 1 + delay``. An order for an instrument with no bar on the
     fill date is rejected. Each fill is capped at ``max_participation`` of trailing
-    average dollar volume; the unfilled remainder is dropped (and reported).
+    average dollar volume; the unfilled remainder is dropped (and reported). A name is
+    eligible at a decision only with a close, a trailing ADV above ``min_adv_dollar`` and
+    a trailing volatility (the cost model's complete windows); the exit of a name whose
+    windows a missing bar interrupted uses the bars and daily returns they still hold, or
+    the complete estimate from just before the gap when a window is too short for that.
     """
 
     delay: int = 0

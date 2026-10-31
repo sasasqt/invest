@@ -205,12 +205,14 @@ def run_backtest(
         index=calendar, columns=instruments
     )
 
-    # Trailing liquidity/volatility estimates, known at each session's close.
+    # Trailing liquidity/volatility estimates, known at each session's close. They are
+    # undefined until a name has `adv_window` bars and `vol_window` daily returns, and after
+    # a missing bar until both windows are complete again (`adv_window` sessions for the
+    # ADV, `vol_window` + 1 for the volatility, since the gap removes two returns).
     dollar_vol = close_w * vol_w
+    daily_returns = close_w / close_w.shift(1) - 1
     adv = dollar_vol.rolling(cm.adv_window, min_periods=cm.adv_window).mean()
-    daily_vol = (
-        (close_w / close_w.shift(1) - 1).rolling(cm.vol_window, min_periods=cm.vol_window).std()
-    )
+    daily_vol = daily_returns.rolling(cm.vol_window, min_periods=cm.vol_window).std()
 
     # Evaluation window: from `start` (default: the first session with any signal, so
     # periods before the strategy could act don't dilute its statistics) until `end`.
@@ -239,6 +241,25 @@ def run_backtest(
         if not np.isfinite(traded_close[sessions]).any():
             _no_traded_close(cfg, "no session in the evaluation window has a positive finite one")
     ADV, VOL, S = adv.to_numpy(), daily_vol.to_numpy(), scores.to_numpy()
+    # Eligibility needs both complete windows, so every order but the exit of a name whose
+    # windows a missing bar interrupted uses them. That exit uses the bars and daily returns
+    # its windows still hold (at least one bar and two returns); without them it could not
+    # be sold for `adv_window` sessions while the other targets were sized on equity that
+    # still held it, and an older estimate would misstate the liquidity after a halt. A
+    # window left without a bar or with fewer than two returns falls back on the complete
+    # estimate from just before it. For the ADV, which caps the sale, that is at most one
+    # session old, the most a single missing bar needs (with `adv_window` 1); for the
+    # volatility, which only prices its impact, up to `vol_window` + 1 sessions, so a single
+    # missing bar never blocks the sale, two close together block it only with a
+    # `vol_window` up to 3, and three only up to 5 (REVIEW-27). After a halt of any length
+    # the volatility can therefore come from before it for up to `vol_window` + 1 sessions,
+    # and with `adv_window` 1 and a `delay` a sale decided on a halt's first session can
+    # fill after the halt at the volume of the session before it.
+    exit_adv = adv.fillna(dollar_vol.rolling(cm.adv_window, min_periods=1).mean())
+    exit_adv = exit_adv.fillna(adv.ffill(limit=1))
+    exit_vol = daily_vol.fillna(daily_returns.rolling(cm.vol_window, min_periods=2).std())
+    exit_vol = exit_vol.fillna(daily_vol.ffill(limit=cm.vol_window + 1))
+    ADV_EXIT, VOL_EXIT = exit_adv.to_numpy(), exit_vol.to_numpy()
     member = (
         membership_panel(universe, pd.DatetimeIndex(calendar), instruments).to_numpy()
         if universe is not None
@@ -336,7 +357,7 @@ def run_backtest(
                 delta = want - shares[j]
                 if abs(delta) * px_open[i][j] < 1e-9 * equity_open:
                     continue
-                adv_j, vol_j = ADV[dec_i][j], VOL[dec_i][j]
+                adv_j, vol_j = ADV_EXIT[dec_i][j], VOL_EXIT[dec_i][j]
                 if not (np.isfinite(adv_j) and adv_j > 0 and np.isfinite(vol_j)):
                     trades.append(
                         {
@@ -477,6 +498,7 @@ def run_backtest(
                     & has_close
                     & np.isfinite(ADV[i])
                     & (np.nan_to_num(ADV[i]) > ex.min_adv_dollar)
+                    & np.isfinite(VOL[i])  # a fill's impact cost needs it too
                 )
                 eligible = tradable
                 if traded_close is not None:
