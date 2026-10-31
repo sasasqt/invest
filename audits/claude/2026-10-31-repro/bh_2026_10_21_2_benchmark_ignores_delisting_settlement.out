@@ -1,0 +1,3 @@
+settlement day 2024-01-15: strategy return -0.3333, benchmark return 0.0000
+benchmark total return 0.0 information_ratio {'value': -3.055050463303893, 'unit': 'ratio', 'status': 'ok', 'reason': None}
+DEFECT: A (one of three equal-weight members) settled at 0 on the event date; the strategy returns -33.33% that day but the universe equal-weight benchmark returns 0.00% (expected about -33%): benchmark_total_return, IR, alpha and beta ignore the settlement

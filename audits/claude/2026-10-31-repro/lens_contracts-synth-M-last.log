@@ -1,0 +1,18 @@
+PASS C1 synth-M-last/data/fundamentals: format parquet, columns True
+PASS C2 synth-M-last/data/fundamentals: row_count 1599 stored 1599
+PASS C3 synth-M-last/data/fundamentals: nulls in non-nullable {}, pk ['instrument', 'field', 'period_end', 'available_date'] unique True
+PASS C4 synth-M-last/data/fundamentals: manifest acff7c0c05c04c58 recomputed acff7c0c05c04c58
+PASS C1 synth-M-last/data/market: format parquet, columns True
+PASS C2 synth-M-last/data/market: row_count 42181 stored 42181
+PASS C3 synth-M-last/data/market: nulls in non-nullable {}, pk ['date', 'instrument'] unique True
+PASS C4 synth-M-last/data/market: manifest 8b27d0a14384df22 recomputed 8b27d0a14384df22
+PASS C1 synth-M-last/data/universe: format parquet, columns True
+PASS C2 synth-M-last/data/universe: row_count 71 stored 71
+PASS C3 synth-M-last/data/universe: nulls in non-nullable {}, pk ['universe', 'instrument', 'start_date'] unique True
+PASS C4 synth-M-last/data/universe: manifest ebc56f6b019b1e63 recomputed ebc56f6b019b1e63
+PASS C1 synth-M-last/signals: format parquet, columns True
+PASS C2 synth-M-last/signals: row_count 16287 stored 16287
+PASS C3 synth-M-last/signals: nulls in non-nullable {}, pk ['decision_date', 'instrument'] unique True
+PASS C4 synth-M-last/signals: manifest 13dffcc5fc186e03 recomputed 13dffcc5fc186e03
+PASS C5 synth-M-last: 12 hash references in JSON files, 3 distinct resolve to bundles here; unresolved: {}
+TOTAL FAIL=0

@@ -1,0 +1,14 @@
+bars 2943 -> 2927 (L=SYN002 first bar 2020-01-15, E=SYN003 no bars 2020-04-17..2020-04-21 end 2020-04-22, H=SYN004 halt 2020-02-26..2020-02-28)
+invest-mine freeze: rc 0
+invest-mine export: rc 0
+invest-eval run: rc 0
+daily rows 155 (2020-01-08..2020-08-11); non-finite cells outside benchmark_return NaNs: 0; benchmark NaN sessions 0
+benchmark_return vs independent recomputation: 155 sessions, 0 mismatches
+  H halt SYN004: own rets [None, None, None, None] held [True, True, True, True] on 2020-02-26..2020-03-02
+  E exit SYN003: own rets [0.01851, None, None, None, None, 0.01212] held [True, True, True, True, True, False] on 2020-04-16..2020-04-23
+  L listing SYN002: own rets [None, None, -0.02944] held [True, True, True] on 2020-01-14..2020-01-16
+L before first bar: fills 0 (expected 0), signals 0 (expected 0); L rows in trades by status {'filled': 6}
+E from 2020-04-15: trade rows 0: 
+H around the halt: no trade rows
+benchmark_total_return 0.03620423939454187 rejected_orders 10
+RESULT: PASS (no crash, tables finite, benchmark matches the documented rules, no impossible fill)

@@ -1,0 +1,6 @@
+membership A: [False, True, True, True]
+ts_sum(close,2)[A]     : [nan, 13.0, 25.0, 41.0]
+ts_sum(abs(close),2)[A]: [nan, nan, 25.0, 41.0]
+ts_mean(neg(close),2)[A]: [nan, nan, -12.5, -20.5]
+entry date 2024-01-03: plain=np.float64(13.0) unary=np.float64(nan) expected 13.0 for both
+RESULT: FAIL (unary operator masked by membership, pre-entry history lost)

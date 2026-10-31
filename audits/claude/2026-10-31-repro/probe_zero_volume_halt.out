@@ -1,0 +1,7 @@
+invest-mine freeze: rc 0
+invest-mine export: rc 0
+invest-eval run: rc 0
+daily rows 140, non-finite cells outside benchmark_return NaNs: 0; bench NaN sessions 1
+SYN001 rows after halt 2020-03-25: 0; statuses {}; participation []; reasons []
+rejected_orders 10 participation_capped_fills 13 max_participation 0.05000000000000001
+RESULT: PASS (no crash, tables finite)

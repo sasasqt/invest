@@ -1,0 +1,3492 @@
+{
+ "coverage_unmatched": {
+  "date": "2026-10-31",
+  "paths": [],
+  "run_id": "repo-audit-2026-10-31"
+ },
+ "files": {
+  ".github/workflows/ci.yml": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "ci-parity",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 77,
+   "present": true
+  },
+  ".gitignore": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 40,
+   "present": true
+  },
+  "CI_CD_GUIDELINES.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 60,
+   "present": true
+  },
+  "DESIGN_BY_CONTRACT.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 147,
+   "present": true
+  },
+  "GIT_GUIDELINES.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 137,
+   "present": true
+  },
+  "PYTHON_GUIDELINES.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 126,
+   "present": true
+  },
+  "RAPID_DEVELOPMENT.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 106,
+   "present": true
+  },
+  "README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 184,
+   "present": true
+  },
+  "ROADMAP.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 65,
+   "present": true
+  },
+  "TODO.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 100,
+   "present": true
+  },
+  "data-mining-framework/ALPHA_VALIDATION.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 155,
+   "present": true
+  },
+  "data-mining-framework/LITERATURE_REVIEW.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 282,
+   "present": true
+  },
+  "data-mining-framework/PRIMARY_SOURCE_CATALOG.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 358,
+   "present": true
+  },
+  "data-mining-framework/README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 81,
+   "present": true
+  },
+  "data-mining-framework/pyproject.toml": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 17,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/__init__.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": null,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 0,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 1
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 3,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/artifact.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 75.0,
+    "date": "2026-10-31",
+    "line_pct": 93.1,
+    "missing_branches": 2,
+    "missing_lines": 2,
+    "num_branches": 8,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 50
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 72,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/cli.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 95.83,
+    "date": "2026-10-31",
+    "line_pct": 97.31,
+    "missing_branches": 3,
+    "missing_lines": 7,
+    "num_branches": 72,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 300
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 727,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/diagnostics.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 93.33,
+    "date": "2026-10-31",
+    "line_pct": 97.92,
+    "missing_branches": 2,
+    "missing_lines": 2,
+    "num_branches": 30,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 162
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 315,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/expressions.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 90.62,
+    "date": "2026-10-31",
+    "line_pct": 93.94,
+    "missing_branches": 9,
+    "missing_lines": 11,
+    "num_branches": 96,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 234
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 386,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/inference.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 100.0,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 2,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 20
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 77,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/ledger.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 98.08,
+    "date": "2026-10-31",
+    "line_pct": 98.91,
+    "missing_branches": 1,
+    "missing_lines": 1,
+    "num_branches": 52,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 132
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 249,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/reporting.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": null,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 0,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 49
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 72,
+   "present": true
+  },
+  "data-mining-framework/src/invest_mining/search.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 92.59,
+    "date": "2026-10-31",
+    "line_pct": 96.19,
+    "missing_branches": 4,
+    "missing_lines": 4,
+    "num_branches": 54,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 156
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 359,
+   "present": true
+  },
+  "data-mining-framework/tests/conftest.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 33,
+   "present": true
+  },
+  "data-mining-framework/tests/test_cli.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 258,
+   "present": true
+  },
+  "data-mining-framework/tests/test_diagnostics.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 258,
+   "present": true
+  },
+  "data-mining-framework/tests/test_evidence.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 252,
+   "present": true
+  },
+  "data-mining-framework/tests/test_expressions.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 146,
+   "present": true
+  },
+  "data-mining-framework/tests/test_ledger.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 471,
+   "present": true
+  },
+  "data-mining-framework/tests/test_search_and_inference.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 156,
+   "present": true
+  },
+  "data-pipeline/README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 7,
+   "present": true
+  },
+  "data-pipeline/data-preparation/README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 41,
+   "present": true
+  },
+  "data-pipeline/data-preparation/pyproject.toml": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 13,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/__init__.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": null,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 0,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 1
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 3,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/bundle.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 85.32,
+    "date": "2026-10-31",
+    "line_pct": 88.15,
+    "missing_branches": 32,
+    "missing_lines": 43,
+    "num_branches": 218,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 415
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 630,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/cleaning.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 93.33,
+    "date": "2026-10-31",
+    "line_pct": 96.8,
+    "missing_branches": 2,
+    "missing_lines": 2,
+    "num_branches": 30,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 95
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 155,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/cli.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 81.58,
+    "date": "2026-10-31",
+    "line_pct": 91.3,
+    "missing_branches": 7,
+    "missing_lines": 7,
+    "num_branches": 38,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 123
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 252,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/pit.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 94.44,
+    "date": "2026-10-31",
+    "line_pct": 96.23,
+    "missing_branches": 1,
+    "missing_lines": 1,
+    "num_branches": 18,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 35
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 67,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/schemas.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 90.43,
+    "date": "2026-10-31",
+    "line_pct": 93.33,
+    "missing_branches": 9,
+    "missing_lines": 13,
+    "num_branches": 94,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 236
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 544,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/sources.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 94.74,
+    "date": "2026-10-31",
+    "line_pct": 97.6,
+    "missing_branches": 2,
+    "missing_lines": 2,
+    "num_branches": 38,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 129
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 229,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/testing.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": null,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 0,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 23
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 96,
+   "present": true
+  },
+  "data-pipeline/data-preparation/src/invest_data/yahoo.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 80.77,
+    "date": "2026-10-31",
+    "line_pct": 90.66,
+    "missing_branches": 10,
+    "missing_lines": 14,
+    "num_branches": 52,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 205
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 412,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_bundle.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 229,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 383,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_point_in_time.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 115,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_signal_metadata.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 288,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_yahoo.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 407,
+   "present": true
+  },
+  "docs/ARCHITECTURE.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 146,
+   "present": true
+  },
+  "docs/DATA_CONTRACT.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 83,
+   "present": true
+  },
+  "docs/HISTORICAL_BASELINE.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 69,
+   "present": true
+  },
+  "docs/QUANTILE_ANALYSIS.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 60,
+   "present": true
+  },
+  "docs/REPORTING.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 46,
+   "present": true
+  },
+  "docs/reviews/README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 12,
+   "present": true
+  },
+  "ledgers/yahoo-test.jsonl": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 2,
+   "present": true
+  },
+  "pyproject.toml": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 52,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/README.md": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 24,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 220,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/data/market/manifest.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 1210,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/config.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 39,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/figures/diagnostics.png": {
+   "binary": true,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": null,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/figures/equity_drawdown.png": {
+   "binary": true,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": null,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/figures/scenarios.png": {
+   "binary": true,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": null,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/manifest.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 49,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/metrics.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 628,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/report.md": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 93,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/statistics.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 62,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/tables/scenarios.csv": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 9,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/eval/verdict.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 85,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/config.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 7,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/ic.png": {
+   "binary": true,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": null,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/quantiles.png": {
+   "binary": true,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": null,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/metrics.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 23,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 3775,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/tail_returns.csv": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 10,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/mining/factor.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 21,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/signals/manifest.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 67,
+   "present": true
+  },
+  "runs/yahoo-test/2026-10-07/snapshot/snapshot.json": {
+   "binary": false,
+   "category": "saved-results",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 626,
+   "present": true
+  },
+  "scripts/check_markdown_links.py": {
+   "binary": false,
+   "category": "scripts",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 111,
+   "present": true
+  },
+  "scripts/historical_workflow.sh": {
+   "binary": false,
+   "category": "scripts",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 129,
+   "present": true
+  },
+  "scripts/save_run.py": {
+   "binary": false,
+   "category": "scripts",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 217,
+   "present": true
+  },
+  "scripts/sp100_members.txt": {
+   "binary": false,
+   "category": "scripts",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "inventoried",
+   "lines": 104,
+   "present": true
+  },
+  "scripts/synthetic_workflow.sh": {
+   "binary": false,
+   "category": "scripts",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 35,
+   "present": true
+  },
+  "strategy-evaluation/METRICS.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 191,
+   "present": true
+  },
+  "strategy-evaluation/README.md": {
+   "binary": false,
+   "category": "docs",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "docs-audit",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 85,
+   "present": true
+  },
+  "strategy-evaluation/examples/quantile_long_short.json": {
+   "binary": false,
+   "category": "other",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "benchmark",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 15,
+   "present": true
+  },
+  "strategy-evaluation/pyproject.toml": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 17,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/__init__.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": null,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 0,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 1
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 3,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/cli.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 92.59,
+    "date": "2026-10-31",
+    "line_pct": 95.87,
+    "missing_branches": 4,
+    "missing_lines": 6,
+    "num_branches": 54,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 188
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 378,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/config.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 92.86,
+    "date": "2026-10-31",
+    "line_pct": 96.7,
+    "missing_branches": 3,
+    "missing_lines": 3,
+    "num_branches": 42,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 140
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 226,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/engine.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 89.62,
+    "date": "2026-10-31",
+    "line_pct": 93.69,
+    "missing_branches": 11,
+    "missing_lines": 14,
+    "num_branches": 106,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 290
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 579,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/metrics.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 97.92,
+    "date": "2026-10-31",
+    "line_pct": 98.71,
+    "missing_branches": 1,
+    "missing_lines": 2,
+    "num_branches": 48,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 184
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 491,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/quantiles.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 93.75,
+    "date": "2026-10-31",
+    "line_pct": 97.5,
+    "missing_branches": 3,
+    "missing_lines": 3,
+    "num_branches": 48,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 192
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 429,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/reporting.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 93.55,
+    "date": "2026-10-31",
+    "line_pct": 97.88,
+    "missing_branches": 4,
+    "missing_lines": 1,
+    "num_branches": 62,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 174
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 312,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/robustness.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 91.67,
+    "date": "2026-10-31",
+    "line_pct": 94.87,
+    "missing_branches": 1,
+    "missing_lines": 1,
+    "num_branches": 12,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 27
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 79,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/stats.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 83.33,
+    "date": "2026-10-31",
+    "line_pct": 92.42,
+    "missing_branches": 5,
+    "missing_lines": 5,
+    "num_branches": 30,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 102
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "reviewed",
+   "lines": 213,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/strategies.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 89.47,
+    "date": "2026-10-31",
+    "line_pct": 94.48,
+    "missing_branches": 4,
+    "missing_lines": 4,
+    "num_branches": 38,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 107
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 202,
+   "present": true
+  },
+  "strategy-evaluation/src/invest_evaluation/validation.py": {
+   "binary": false,
+   "category": "source",
+   "coverage": {
+    "branch_pct": 100.0,
+    "date": "2026-10-31",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
+    "num_branches": 26,
+    "run_id": "repo-audit-2026-10-31",
+    "statements": 80
+   },
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 240,
+   "present": true
+  },
+  "strategy-evaluation/tests/conftest.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 19,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_config.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 73,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_engine.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 511,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_metrics.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 186,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_quantiles.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 439,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_stats_and_cli.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 851,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_validation.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 425,
+   "present": true
+  },
+  "tests/test_markdown_links.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 96,
+   "present": true
+  },
+  "tests/test_pipeline.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 390,
+   "present": true
+  },
+  "tests/test_quantile_consistency.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "partially_reviewed"
+    }
+   ],
+   "last_reviewed": "2026-10-31",
+   "last_seen": "2026-10-31",
+   "last_status": "partially_reviewed",
+   "lines": 99,
+   "present": true
+  },
+  "tests/test_save_run.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 211,
+   "present": true
+  },
+  "uv.lock": {
+   "binary": false,
+   "category": "config",
+   "coverage": null,
+   "first_seen": "2026-10-31",
+   "history": [
+    {
+     "date": "2026-10-31",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-10-31",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-10-31",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": null,
+   "last_seen": "2026-10-31",
+   "last_status": "checked_automatically",
+   "lines": 1517,
+   "present": true
+  }
+ },
+ "runs": [
+  {
+   "credited": 143,
+   "date": "2026-10-31",
+   "inventory_files": 110,
+   "run_id": "repo-audit-2026-10-31"
+  }
+ ],
+ "schema": 1,
+ "slices": {
+  "2026-10-31": [
+   ".github/workflows/ci.yml",
+   ".gitignore",
+   "data-mining-framework/pyproject.toml",
+   "data-mining-framework/tests/conftest.py",
+   "data-mining-framework/tests/test_cli.py",
+   "data-mining-framework/tests/test_diagnostics.py",
+   "data-mining-framework/tests/test_evidence.py",
+   "data-mining-framework/tests/test_expressions.py"
+  ]
+ }
+}

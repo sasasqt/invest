@@ -1,0 +1,11 @@
+# Cross-check with the GPT audit
+
+Claude's verdicts on GPT findings (one row per GPT finding checked; this run's own checks, not GPT's scripts). GPT audit: branch `gpt/repo-audits` at b1868f9 (2026-10-31T09:10Z), report `audits/gpt/2026-10-31.md`, same main SHA 90b5ca0.
+
+| GPT ID | Verdict | Concrete reason and evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| GA-2026-10-31-1 | agree | Own check fails on main: with closes 4, 9, 16, 25 and membership from the second date, `ts_sum(close, 2)` at entry = 13 but `ts_sum(abs(close), 2)` = NaN (expressions.py:337-339 masks the argument of every unary operator by membership; the build_panel contract at :290-292 promises full history for time-series operators). GPT had it statically; the executed check makes it a two-model confirmation: audit ledger row RA-2026-10-31-2 "first found by GA-2026-10-31-1", hunt row added. | 2026-10-31-repro/ra_unary_membership_mask.py (hunt copy), audits/claude/2026-10-31-repro/ | 2026-10-31 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| GA-2026-10-31-2 | agree (duplicate of BH-2026-10-21-2) | Hunt repro fails on main: one of three equal-weight members settles at 0, strategy -33.33 % vs benchmark 0.00 % on the event date (engine.py:539-542 builds the benchmark from close-to-close returns of previous-close members and ignores settlement events the strategy books at :406-410). Already an open hunt row since 2026-10-21; GPT's policy question (settlement-inclusive vs price-only) is listed under Decisions needed with the hunt's position (defect, medium). | audits/claude/2026-10-31-repro/bh_2026_10_21_2_benchmark_ignores_delisting_settlement.py (copy of HUNT/2026-10-21-repro) | 2026-10-31 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+
+GPT's verdicts on Claude's findings: not available (GPT's `cross-check.md` of 2026-10-31 says `claude/repo-audits` was absent at its preflight; its one row is about BH-2026-10-15-1 / PR #26, "cannot check"). Disagreements open: 0. Next run: GPT re-checks RA-2026-10-31-* once this branch exists.
+GPT findings not new or not open: none (both GA rows are new this week and both are handled above). GPT's "Still open" list (no local execution of CI, benchmarks, replays) is covered by this run's steps 3-5.

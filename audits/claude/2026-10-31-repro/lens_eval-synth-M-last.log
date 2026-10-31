@@ -1,0 +1,136 @@
+== /tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/synth-M-last (300 sessions 2021-09-22..2022-11-15, A=252, rf=0.0, mar=0.0, V0=1000000.0, delay=0)
+PASS A1 equity_t = equity_t-1 (1+return_t): max abs dev 4.66e-10
+PASS A2a equity_before_costs = equity + cum_costs: max abs dev 4.95e-10
+PASS A2b equity_before_costs_t = ebc_t-1 (1+gross_return_t): max abs dev 4.66e-10
+PASS A3 cum_costs = cumsum(commission+spread+impact+borrow+financing): max abs dev 1.46e-10
+PASS A4 gross = (long+|short|)/equity, net = (long-|short|)/equity: short_value sign: min -0 max 6.33e+05; max dev gross 3.33e-16 net 1.55e-16
+PASS A5 cash + long - |short| = equity: max abs dev 4.66e-10
+PASS A6 turnover_t: 8.881784197001252e-16 == max|turnover - traded_notional/equity_t-1| (0 expected) 0.0
+INFO A7 gross return definition: (gross_return - return)*equity_t-1 vs session costs: max abs dev 2.71e+03 (0 only if gross = net + costs/equity_t-1; the tables define gross through equity_before_costs = equity + cum_costs, see A2a/A2b)
+INFO A8 trade statuses: {'filled': 1031}
+PASS A8a notional = shares x price: 1031 fills
+PASS A8b commission = |notional| bps/1e4, spread = |notional| half_spread_bps/1e4: commission_bps 1.0 half_spread_bps 5.0
+PASS A8c daily traded_notional/commission/spread/impact = sums over that day's fills: max dev tn 6.98e-10 com nan spr nan imp nan
+PASS A8d n_rejected = non-filled trade rows per day: sum rows 0 vs sum n_rejected 0
+PASS A8e n_clipped = fills at participation == max_participation: sum 4 vs n_clipped 4
+PASS A9 trading.total_commission_cost: 11632.74351101405 == recomputed np.float64(11632.743511014047)
+PASS A9 trading.total_spread_cost: 58163.71755507024 == recomputed np.float64(58163.717555070245)
+PASS A9 trading.total_impact_cost: 83840.29550532842 == recomputed np.float64(83840.29550532842)
+PASS A9 trading.total_borrow_cost: 3219.1668564425336 == recomputed np.float64(3219.1668564425336)
+PASS A9 trading.total_financing: 0.0 == recomputed np.float64(0.0)
+PASS A9 trading.total_costs: 156855.92342785525 == recomputed np.float64(156855.92342785525)
+PASS A9 trading.fills: 1031 == recomputed 1031
+PASS A9 trading.rejected_orders: 0 == recomputed 0
+PASS A9 trading.participation_capped_fills: 4 == recomputed 4
+PASS A9 trading.average_gross_exposure: 0.9901239070146957 == recomputed 0.9901239070146957
+PASS A9 trading.max_gross_exposure: 1.0869971068426805 == recomputed 1.0869971068426805
+PASS A9 trading.average_net_exposure: 0.005990868037328919 == recomputed 0.005990868037328898
+PASS A9 trading.average_positions: 9.966666666666667 == recomputed 9.966666666666667
+PASS A9 trading.max_participation: 0.05000000000000001 == recomputed 0.05
+PASS A9 trading.turnover_one_way_annual: 44.504027762558835 == sum(turnover)/2/years np.float64(44.504027762558835)
+PASS S periods: 300 == n 300
+PASS S total_return: 0.16392731082428247 == V_end/V_0-1 np.float64(0.16392731082428202)
+PASS S net_profit: 163927.310824282 == V_end-V_0 np.float64(163927.310824282)
+PASS S cagr: 0.13599840434901567 == (V_end/V_0)^(1/Y)-1, Y=n/A np.float64(0.13599840434901544)
+PASS A9 trading.cost_drag_annual: 0.10561248686540299 == (mean(g)-mean(r))*A 0.10561248686540255
+PASS S mean_return: 0.0005324620498128662 == mean np.float64(0.0005324620498128637)
+PASS S median_return: 0.00017559075745332553 == median 0.0001755907574533
+PASS S geometric_mean_return: 0.0005061277048052926 == (V_end/V_0)^(1/n)-1 np.float64(0.0005061277048052926)
+PASS S annual_arithmetic_mean: 0.13418043655284229 == mean*A np.float64(0.13418043655284165)
+PASS S variance_return: 5.2889081477514746e-05 == var ddof=1 np.float64(5.288908147751421e-05)
+PASS S annual_volatility: 0.11544716771031552 == std ddof=1 * sqrt(A) np.float64(0.11544716771031492)
+PASS S downside_deviation: 0.004759028291661524 == sqrt(mean(min(r-m,0)^2)) all periods, m=mar/A 0.004759028291661498
+PASS S annual_downside_volatility: 0.07554723205234175 == dd*sqrt(A), m=mar/A 0.07554723205234133
+PASS S sharpe: 1.1622670284084666 == mean(e)/std(e,ddof=1)*sqrt(A), rf=rf/A np.float64(1.162267028408467)
+PASS S sortino: 1.776113206369724 == mean(r-m)*A/(dd*sqrt(A)), m=mar/A np.float64(1.7761132063697254)
+PASS S max_drawdown: 0.05911259884853082 == -min(V_t/P_t-1), P includes V_0 np.float64(0.05911259884853104)
+PASS S current_drawdown: 0.0041965714637768325 == -D_N np.float64(0.0041965714637766105)
+PASS S calmar: 2.3006669812893157 == cagr/mdd np.float64(2.300666981289307)
+PASS S ulcer_index: 0.02354379521382591 == sqrt(mean(D_1..N^2)) 0.023543795213825804
+PASS S martin: 5.699184661360198 == mean(r-m)*A/ulcer np.float64(5.6991846613601975)
+PASS S omega: 1.2092939312320388 == sum(max(r-m,0))/sum(max(m-r,0)) np.float64(1.2092939312320397)
+PASS S gain_to_pain: 0.20929393123203885 == sum(r)/sum(|r<0|) np.float64(0.20929393123203974)
+PASS S hit_rate: 0.5233333333333333 == share r>0 0.5233333333333333
+PASS S best_period: 0.02360401029908754 == max np.float64(0.0236040102990875)
+PASS S worst_period: -0.020937002846142416 == min np.float64(-0.0209370028461424)
+PASS S time_under_water: 0.8866666666666667 == share D_t<0 (t=1..N) 0.8866666666666667
+PASS S average_drawdown: 0.018590877674237335 == mean(-D_t) all sessions 0.018590877674237245
+PASS S drawdown_episodes: 19 == count of D_t<0 runs 19
+PASS S max_drawdown_duration: 102 == run+1 (peak to recovery) 102
+PASS S max_recovery_duration: 42 == trough->recovery, recovered episodes 42
+PASS S var_loss_95: 0.010739721908761182 == -quantile(r,0.05,linear) 0.010739721908761145
+PASS S expected_shortfall_95: 0.01493484521423259 == -mean(r<=q_linear) 0.014934845214232549
+PASS S skewness: 0.0782998557447408 == population m3/m2^1.5 0.07829985574474327
+PASS S excess_kurtosis: 0.3232974859715645 == population m4/m2^2-3 0.323297485971592
+PASS S benchmark_total_return: -0.05093756662848126 == prod(1+b)-1 over all n sessions -0.050937566628479036
+PASS S tracking_error: 0.20106566084930372 == std(r-b,ddof=1)*sqrt(A) np.float64(0.20106566084930289)
+PASS S information_ratio: 0.8198784661325649 == mean(r-b)/std(r-b,ddof=1)*sqrt(A) np.float64(0.8198784661325601)
+PASS S correlation: -0.012873759160143987 == corr(r,b) -0.012873759160144469
+PASS S beta: -0.009110246564744334 == cov/var -0.009110246564744663
+PASS S alpha_annual: 0.13390103468285366 == (mean r - beta mean b)*A np.float64(0.13390103468285303)
+INFO S first session: return np.float64(0.0), positions 0, benchmark_return np.float64(-0.0115512354212836) (benchmark compounds from the first session while the portfolio is flat until the first fill)
+PASS S gross total_return: 0.3207832342521375 == prod(1+g)-1 np.float64(0.3207832342521446)
+PASS S gross cagr: 0.2632767401733136 == Y=(V_end/V_0)^(1/Y)-1, Y=n/A np.float64(0.26327674017331937)
+PASS S gross annual_volatility: 0.10958223656436958 == std ddof=1 sqrt(A) np.float64(0.10958223656436897)
+PASS S gross sharpe: 2.188246297358503 == mean(e)/std(e)*sqrt(A) np.float64(2.1882462973585053)
+PASS S gross max_drawdown: 0.03372462772463414 == -min(D), P incl V_0 np.float64(0.033724627724634026)
+PASS S hac lags: 5 == floor(4 (n/100)^(2/9)) 5
+PASS S hac se: 0.00032891772800146426 == Newey-West Bartlett 0.0003289177280014626
+PASS S hac t_stat: 1.6188304991894382 == mean/se 1.6188304991894389
+PASS S hac p_two_sided: 0.10548373796776978 == 2(1-Phi(|t|)) 0.10548373796776955
+PASS S psr: 0.8975444543841873 == Phi((SR-0)sqrt(n-1)/sqrt(1-g3 SR+(g4-1)/4 SR^2)) 0.8975444543841874
+PASS S psr skewness: 0.0782998557447408 == population 0.07829985574474327
+PASS S psr kurtosis (raw): 3.3232974859715645 == population m4/m2^2 3.323297485971592
+PASS S dsr trial_sr_variance: 0.0033444816053511705 == 1/(n-1) 0.0033444816053511705
+PASS S dsr expected max SR: 0.1605836088606779 == sqrt(V)((1-g)Z(1-1/N)+g Z(1-1/(Ne))) 0.1605836088606779
+PASS S dsr: 0.06517659464306919 == PSR(SR0) 0.06517659464306924
+PASS S autocorr lag_1: -0.1450824719543822 == pearson(r_t, r_t-k) -0.14508247195438226
+PASS S autocorr lag_2: -0.06770468885273495 == pearson(r_t, r_t-k) -0.06770468885273442
+PASS S autocorr lag_3: -0.013567658147025758 == pearson(r_t, r_t-k) -0.013567658147026002
+PASS S autocorr lag_4: -0.008792358676009995 == pearson(r_t, r_t-k) -0.008792358676010324
+PASS S autocorr lag_5: -0.10108532893001088 == pearson(r_t, r_t-k) -0.10108532893001118
+PASS R1 report.md metric tables vs metrics.json: 26 rows compared; mismatches []
+PASS R2 verdict check solvency: True == source True
+PASS R2 verdict check net_sharpe_validity: 1.1622670284084666 == source 1.1622670284084666
+PASS R2 verdict check sessions: 300 == source 300
+PASS R2 verdict check net_sharpe_ci: '[-0.0833226192001618, 2.60196248473599]' == source value '[-0.0833226192001618, 2.60196248473599]'
+PASS R2 verdict check deflated_sharpe: 0.06517659464306919 == source 0.06517659464306919
+PASS R2 verdict check stress:costs_x2: 0.14554366786706108 == scenarios.csv sharpe 0.145543667867061
+PASS R2 verdict check stress:delay_1: -0.4776386100325114 == scenarios.csv sharpe -0.4776386100325114
+PASS R3 scenarios base.cagr: 0.1359984043490156 == main run 0.13599840434901567
+PASS R3 scenarios base.sharpe: 1.1622670284084666 == main run 1.1622670284084666
+PASS R3 scenarios base.max_drawdown: 0.0591125988485308 == main run 0.05911259884853082
+PASS R3 scenarios base.total_costs: 156855.92342785525 == main run 156855.92342785525
+PASS R3 scenarios base.turnover_one_way_annual: 44.50402776255884 == main run 44.504027762558835
+PASS R4 verdict.factor == signals manifest factor_evidence: equal True
+PASS R5 figures present and non-empty: ['diagnostics.png', 'equity_drawdown.png', 'scenarios.png']
+INFO A10 episode statuses: {'closed': 524, 'open': 10}
+PASS A10 trades.closed_trades: 524 == from episodes.csv 524
+PASS A10 trades.open_trades: 10 == from episodes.csv 10
+PASS A10 trades.wins: 276 == from episodes.csv 276
+PASS A10 trades.losses: 248 == from episodes.csv 248
+PASS A10 trades.flats: 0 == from episodes.csv 0
+PASS A10 trades.win_rate: 0.5267175572519084 == from episodes.csv 0.5267175572519084
+PASS A10 trades.non_flat_win_rate: 0.5267175572519084 == from episodes.csv 0.5267175572519084
+PASS A10 trades.average_trade_pnl: 389.1794439092434 == from episodes.csv np.float64(389.17944390924333)
+PASS A10 trades.median_trade_pnl: 286.9936886152437 == from episodes.csv 286.9936886152437
+PASS A10 trades.average_win: 4731.234940491601 == from episodes.csv np.float64(4731.234940491601)
+PASS A10 trades.average_loss: -4443.108124867897 == from episodes.csv np.float64(-4443.1081248678975)
+PASS A10 trades.payoff_ratio: 1.0648480314964812 == from episodes.csv np.float64(1.064848031496481)
+PASS A10 trades.profit_factor: 1.185072809246084 == from episodes.csv np.float64(1.1850728092460836)
+PASS A10 trades.expectancy: 389.1794439092434 == from episodes.csv np.float64(389.17944390924276)
+PASS A10 trades.total_closed_trade_pnl: 203930.02860844354 == from episodes.csv np.float64(203930.0286084435)
+PASS A10 trades.best_trade: 17299.61290841004 == from episodes.csv np.float64(17299.61290841004)
+PASS A10 trades.worst_trade: -32297.226772474256 == from episodes.csv np.float64(-32297.226772474256)
+PASS A10 trades.average_holding_sessions: 5.591603053435114 == from episodes.csv 5.591603053435114
+PASS A10 trades.median_holding_sessions: 5.0 == from episodes.csv 5.0
+PASS A10 trades.long_trades: 261 == from episodes.csv 261
+PASS A10 trades.short_trades: 263 == from episodes.csv 263
+PASS T1 fill date = next session after decision_date (+delay): sessions from market bundle; 1031 fills, 0 off-schedule, 0 on/before decision date; examples []
+PASS T2 verdict evaluation_window == daily.csv span: {'start': '2021-09-22', 'end': '2022-11-15'} vs 2021-09-22..2022-11-15
+INFO T3 factor confirmation_window vs evaluation window: {'start': '2021-09-22', 'end': '2022-11-15'} vs {'start': '2021-09-22', 'end': '2022-11-15'}
+PASS T4 signal decision dates are market sessions: 300 dates 2021-09-22..2022-11-15; market 2020-01-01..2022-11-15; first signal is session #450
+PASS T5 market manifest declares timezone/calendar: timezone America/New_York calendar weekdays (synthetic, no holidays)
+INFO T5 signals manifest time semantics: available_at decision_date_close, timezone absent, calendar absent
+INFO T6 data span: market 2020-01-01..2022-11-15; evaluation 2021-09-22..2022-11-15
+TOTAL FAIL=0

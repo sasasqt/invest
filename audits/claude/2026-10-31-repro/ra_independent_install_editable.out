@@ -1,0 +1,16 @@
+invest_data-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/main/data-pipeline/data-preparation editable=False
+editable .pth files: []
+RESULT: pass (all invest_* installed as distributions)
+invest_data-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/main/data-pipeline/data-preparation editable=True
+invest_mining-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/main/data-mining-framework editable=False
+editable .pth files: ['_editable_impl_invest_data.pth']
+RESULT: FAIL (editable source-tree installs: ['invest_data-0.1.0.dist-info'])
+invest_data-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/main/data-pipeline/data-preparation editable=True
+invest_evaluation-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/main/strategy-evaluation editable=False
+editable .pth files: ['_editable_impl_invest_data.pth']
+RESULT: FAIL (editable source-tree installs: ['invest_data-0.1.0.dist-info'])
+invest_data-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/dist/invest_data-0.1.0-py3-none-any.whl editable=False
+invest_evaluation-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/dist/invest_evaluation-0.1.0-py3-none-any.whl editable=False
+invest_mining-0.1.0.dist-info: url=file:///tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/dist/invest_mining-0.1.0-py3-none-any.whl editable=False
+editable .pth files: []
+RESULT: pass (all invest_* installed as distributions)

@@ -1,0 +1,10 @@
+sessions 300, T = 2020-10-06 (index 199), bars 5534
+PASS signals <= T-5 (2020-09-29) identical base vs cut: rows 3179 vs 3179
+PASS fills dated < T identical base vs cut: rows 139 vs 139
+PASS daily rows dated < T identical base vs cut: rows 179 vs 179; differing columns []
+INFO fills dated T: base 0 vs cut 0; signals dated in (T-5, T]: base 95 vs cut 95
+PASS signals <= T-5 (2020-09-29) identical base vs perturbed: rows 3179 vs 3179
+PASS fills dated < T identical base vs perturbed: rows 139 vs 139
+PASS daily rows dated < T identical base vs perturbed: rows 179 vs 179; differing columns []
+INFO fills dated T: base 0 vs perturbed 0; signals dated in (T-5, T]: base 95 vs perturbed 95
+TOTAL FAIL=0

@@ -1,0 +1,3 @@
+quantiles/tables/daily_returns.csv.gz: content identical True (sha256 315af2564263), bytes identical False, gzip MTIME 1793439315 vs 1793439321
+quantiles/tables/memberships.csv.gz: content identical True (sha256 766d087aa937), bytes identical False, gzip MTIME 1793439315 vs 1793439321
+FAIL: byte-different copies of identical content

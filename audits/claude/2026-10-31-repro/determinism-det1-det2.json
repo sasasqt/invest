@@ -1,0 +1,45 @@
+{
+  "counts": {
+    "high": 0,
+    "low": 3,
+    "medium": 1
+  },
+  "differences": [
+    {
+      "key": "",
+      "kind": "text",
+      "path": "mining/ledger.jsonl",
+      "record": "797 bytes sha256:6b4452bf6841",
+      "replay": "797 bytes sha256:b273107c9a4c",
+      "severity": "low"
+    },
+    {
+      "key": "experiment.ledger",
+      "kind": "value",
+      "path": "mining/search/config.json",
+      "record": "\"/tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/det1/mining/le...",
+      "replay": "\"/tmp/claude-0/-home-user-invest/bd7fe297-6548-5dcf-a975-dd35ba7a3f6a/scratchpad/bench-runs/R1/scratch/det2/mining/le...",
+      "severity": "medium"
+    },
+    {
+      "key": "",
+      "kind": "text",
+      "path": "quantiles/tables/daily_returns.csv.gz",
+      "record": "460 bytes sha256:8fe62ee774a4",
+      "replay": "460 bytes sha256:14c665c94e34",
+      "severity": "low"
+    },
+    {
+      "key": "",
+      "kind": "text",
+      "path": "quantiles/tables/memberships.csv.gz",
+      "record": "7286 bytes sha256:829103964655",
+      "replay": "7286 bytes sha256:f0f325a01562",
+      "severity": "low"
+    }
+  ],
+  "extra": [],
+  "figures_checked": 4,
+  "files_compared": 34,
+  "identical": false
+}

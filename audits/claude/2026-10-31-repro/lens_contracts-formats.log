@@ -1,0 +1,56 @@
+PASS C1 formats-csv/data/fundamentals: format csv, columns True
+PASS C2 formats-csv/data/fundamentals: row_count 1599 stored 1599
+PASS C3 formats-csv/data/fundamentals: nulls in non-nullable {}, pk ['instrument', 'field', 'period_end', 'available_date'] unique True
+PASS C4 formats-csv/data/fundamentals: manifest acff7c0c05c04c58 recomputed acff7c0c05c04c58
+PASS C1 formats-csv/data/market: format csv, columns True
+PASS C2 formats-csv/data/market: row_count 42181 stored 42181
+PASS C3 formats-csv/data/market: nulls in non-nullable {}, pk ['date', 'instrument'] unique True
+PASS C4 formats-csv/data/market: manifest 8b27d0a14384df22 recomputed 8b27d0a14384df22
+PASS C1 formats-csv/data/universe: format csv, columns True
+PASS C2 formats-csv/data/universe: row_count 71 stored 71
+PASS C3 formats-csv/data/universe: nulls in non-nullable {}, pk ['universe', 'instrument', 'start_date'] unique True
+PASS C4 formats-csv/data/universe: manifest ebc56f6b019b1e63 recomputed ebc56f6b019b1e63
+PASS C1 formats-csv/signals: format csv, columns True
+PASS C2 formats-csv/signals: row_count 40525 stored 40525
+PASS C3 formats-csv/signals: nulls in non-nullable {}, pk ['decision_date', 'instrument'] unique True
+PASS C4 formats-csv/signals: manifest 08d54831e9308f24 recomputed 08d54831e9308f24
+PASS C5 formats-csv: 0 hash references in JSON files, 0 distinct resolve to bundles here; unresolved: {}
+PASS C1 formats-sqlite/data/fundamentals: format sqlite, columns True
+PASS C2 formats-sqlite/data/fundamentals: row_count 1599 stored 1599
+PASS C3 formats-sqlite/data/fundamentals: nulls in non-nullable {}, pk ['instrument', 'field', 'period_end', 'available_date'] unique True
+PASS C4 formats-sqlite/data/fundamentals: manifest acff7c0c05c04c58 recomputed acff7c0c05c04c58
+PASS C1 formats-sqlite/data/market: format sqlite, columns True
+PASS C2 formats-sqlite/data/market: row_count 42181 stored 42181
+PASS C3 formats-sqlite/data/market: nulls in non-nullable {}, pk ['date', 'instrument'] unique True
+PASS C4 formats-sqlite/data/market: manifest 8b27d0a14384df22 recomputed 8b27d0a14384df22
+PASS C1 formats-sqlite/data/universe: format sqlite, columns True
+PASS C2 formats-sqlite/data/universe: row_count 71 stored 71
+PASS C3 formats-sqlite/data/universe: nulls in non-nullable {}, pk ['universe', 'instrument', 'start_date'] unique True
+PASS C4 formats-sqlite/data/universe: manifest ebc56f6b019b1e63 recomputed ebc56f6b019b1e63
+PASS C1 formats-sqlite/signals: format sqlite, columns True
+PASS C2 formats-sqlite/signals: row_count 40525 stored 40525
+PASS C3 formats-sqlite/signals: nulls in non-nullable {}, pk ['decision_date', 'instrument'] unique True
+PASS C4 formats-sqlite/signals: manifest 08d54831e9308f24 recomputed 08d54831e9308f24
+PASS C5 formats-sqlite: 0 hash references in JSON files, 0 distinct resolve to bundles here; unresolved: {}
+PASS C1 formats-parquet/data/fundamentals: format parquet, columns True
+PASS C2 formats-parquet/data/fundamentals: row_count 1599 stored 1599
+PASS C3 formats-parquet/data/fundamentals: nulls in non-nullable {}, pk ['instrument', 'field', 'period_end', 'available_date'] unique True
+PASS C4 formats-parquet/data/fundamentals: manifest acff7c0c05c04c58 recomputed acff7c0c05c04c58
+PASS C1 formats-parquet/data/market: format parquet, columns True
+PASS C2 formats-parquet/data/market: row_count 42181 stored 42181
+PASS C3 formats-parquet/data/market: nulls in non-nullable {}, pk ['date', 'instrument'] unique True
+PASS C4 formats-parquet/data/market: manifest 8b27d0a14384df22 recomputed 8b27d0a14384df22
+PASS C1 formats-parquet/data/universe: format parquet, columns True
+PASS C2 formats-parquet/data/universe: row_count 71 stored 71
+PASS C3 formats-parquet/data/universe: nulls in non-nullable {}, pk ['universe', 'instrument', 'start_date'] unique True
+PASS C4 formats-parquet/data/universe: manifest ebc56f6b019b1e63 recomputed ebc56f6b019b1e63
+PASS C1 formats-parquet/signals: format parquet, columns True
+PASS C2 formats-parquet/signals: row_count 40525 stored 40525
+PASS C3 formats-parquet/signals: nulls in non-nullable {}, pk ['decision_date', 'instrument'] unique True
+PASS C4 formats-parquet/signals: manifest 08d54831e9308f24 recomputed 08d54831e9308f24
+PASS C5 formats-parquet: 0 hash references in JSON files, 0 distinct resolve to bundles here; unresolved: {}
+PASS F1 data/fundamentals: formats ['csv', 'sqlite', 'parquet']: same content_sha256 True, equal rows True, rows 1599
+PASS F1 data/market: formats ['csv', 'sqlite', 'parquet']: same content_sha256 True, equal rows True, rows 42181
+PASS F1 data/universe: formats ['csv', 'sqlite', 'parquet']: same content_sha256 True, equal rows True, rows 71
+PASS F1 signals: formats ['csv', 'sqlite', 'parquet']: same content_sha256 True, equal rows True, rows 40525
+TOTAL FAIL=0

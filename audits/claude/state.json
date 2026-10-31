@@ -1,0 +1,112 @@
+{
+ "benchmark_fingerprint": "7a47f774559b",
+ "findings": {
+  "confirmed": [
+   "RA-2026-10-31-1",
+   "RA-2026-10-31-2",
+   "RA-2026-10-31-3"
+  ],
+  "dropped_by_both_reviewers": [
+   "C7 ledger path in mining config",
+   "C9 max_participation naming"
+  ],
+  "dropped_by_verifier_b": {
+   "C4": "editable invest-data in independent-install: no contract broken",
+   "C5": "gzip MTIME in quantiles tables: content-hash promises only",
+   "C8": "benchmark first window session: same-window convention documented"
+  },
+  "plausible": [
+   "RA-2026-10-31-4"
+  ]
+ },
+ "gpt_cross_check": {
+  "checked": [
+   "GA-2026-10-31-1",
+   "GA-2026-10-31-2"
+  ],
+  "gpt_sha": "b1868f9",
+  "open_disagreements": []
+ },
+ "helpers": {
+  "report_writer": "none (the run wrote the report)",
+  "reviewer_2": "Fable 5.1 xhigh, started by the owner with the run's prompt file unchanged (harness relay)",
+  "verifier_b": "Fable 5.1 xhigh, started by the owner with the run's prompt file unchanged (harness relay)"
+ },
+ "last_run": "2026-10-31",
+ "last_run_id": "repo-audit-2026-10-31",
+ "last_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+ "open_places": [
+  {
+   "check_when": "a Windows runner or a path/encoding emulation test",
+   "id": "OP-2026-10-31-1",
+   "place": "Windows: data-mining-framework/src/invest_mining/cli.py:237 and :352 write str(args.ledger) into mining/search/config.json (backslash paths); strategy-evaluation/src/invest_evaluation/quantiles.py:310 and :346 write and read the gzip text tables with newline=\"\" through pandas",
+   "source": "reviewer 2 (Fable 5.1 xhigh), 2026-10-31",
+   "why_open": "no Windows in this environment; judged by reading only; TODO.md BUILD-03 tracks the encoding sites"
+  },
+  {
+   "check_when": "next run: quote the convention (or its absence) and keep or drop",
+   "id": "OP-2026-10-31-2",
+   "place": "data-mining-framework/src/invest_mining/reporting.py:54 and :67 fill missing daily IC and quantile-spread values with 0 inside the cumulative figures, while strategy-evaluation/README.md promises its figures never draw a missing value as zero; docs/REPORTING.md:39 asks for missing/undefined-result explanations",
+   "source": "run exploration after reviewer 2 closed, 2026-10-31",
+   "why_open": "found after reviewer 2 closed; a consistency note until a documented convention for mining figures is quoted"
+  },
+  {
+   "check_when": "a CI log that shows editability, or a sandbox with uv 0.12.x",
+   "id": "OP-2026-10-31-3",
+   "place": "uv 0.12.x (what setup-uv v6.8.0 installs on GitHub, unpinned; 0.12.24 in run 37851091069) vs 0.11.32 here: does `uv pip install <member path>` still resolve `[tool.uv.sources] workspace = true` as an editable install?",
+   "source": "verifier B (Fable 5.1 xhigh), 2026-10-31",
+   "why_open": "needs another uv version (outside the allowed installs)"
+  },
+  {
+   "check_when": "next run: a run with cfg.start 60 sessions before the first signal; compare Sharpe/IR with and without the flat prefix and quote the README",
+   "id": "OP-2026-10-31-4",
+   "place": "strategy-evaluation/src/invest_evaluation/engine.py:218: `cfg.start` before the first signal session puts many flat sessions into both the strategy's and the benchmark's statistics by the user's choice; no README warning about the dilution",
+   "source": "verifier B (Fable 5.1 xhigh), 2026-10-31",
+   "why_open": "same convention question as dropped candidate C8; not checked numerically"
+  },
+  {
+   "check_when": "next run: `uv pip install --no-sources ./data-pipeline/data-preparation ./data-mining-framework pytest` + the check + the mining suite",
+   "id": "OP-2026-10-31-5",
+   "place": "the mining independent-install venv was not rebuilt with `--no-sources` (verifier B proved evaluation only; same .pth mechanism)",
+   "source": "verifier B (Fable 5.1 xhigh), 2026-10-31",
+   "why_open": "time; cheap"
+  }
+ ],
+ "pending_second_review": [],
+ "rates_per_1000_lines": {
+  "repo-audit-2026-10-31": {
+   "exploitation": {
+    "confirmed": 2,
+    "lines": 450,
+    "rate": 4.4
+   },
+   "exploration": {
+    "confirmed": 0,
+    "lines": 2300,
+    "plausible": 1,
+    "rate": 0.0
+   }
+  }
+ },
+ "recommendations": [
+  "RA-2026-10-31-5",
+  "RA-2026-10-31-6",
+  "RA-2026-10-31-7",
+  "RA-2026-10-31-8",
+  "RA-2026-10-31-9",
+  "RA-2026-10-31-10",
+  "RA-2026-10-31-11"
+ ],
+ "rehearsal": "R1 (pushed to claude/repo-audits-rehearsal; hunt rows in the run's hunt copy)",
+ "slice_lines_next": 1500,
+ "split": {
+  "next_run": {
+   "exploitation": 70,
+   "exploration": 30
+  },
+  "this_run": {
+   "exploitation": 60,
+   "exploration": 40
+  }
+ }
+}
