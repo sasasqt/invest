@@ -1,0 +1,192 @@
+{
+  "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "date": "2026-10-31",
+  "execution": "blocked: filesystem credential isolation unavailable",
+  "candidates": [
+    {
+      "key": "R1",
+      "id": "GA-2026-10-31-3",
+      "fingerprint": "method:engine-cost-conventions:independent-event-cost-oracle",
+      "bucket": "exploitation",
+      "title": "Bounded independent cost-convention oracle",
+      "sources": [
+        "https://arxiv.org/html/2603.20319v1"
+      ],
+      "claim": "Sections3.1,3.3,7.2,8 motivate cross-implementation comparison with fixed timing/cost specifications. Our candidate is a smaller synthetic oracle, not a replication or a new investment strategy.",
+      "question": "Can an independent decimal cash/share ledger distinguish cost-base conventions without relying on equality to a no-cost rerun?",
+      "rules": "Use a public Strategy.target_weights callback returning explicit desired weights encoded as the supplied scores, restricted to eligible names. Never submit fixed-share orders. Independently compute shares=target_weight*fill-time pre-cost equity/open, then traded delta, costs, cash including financing minus borrow, close marks and settlements. Warmup bars Jan2/3, signals Jan4/5/8/9 of2024; evaluation startsJan4. Jan9 last decision has no in-window fill. OHLC all equal provided closes; volume100000 each bar; all names always members.",
+      "experiment": "After isolation/locked setup, compare untouched engine to audit-only standard-library Decimal ledger for all6 predeclared cases; repeat twice seed20261031. No real market inputs,6cases<=60seconds each,2GiB ceiling; no external engine dependency.",
+      "acceptance": "Exact Decimal oracle arithmetic; repository finite outputs relative tolerance1e-12 (zero absolute except declared exact zeros); timestamps/orders/statuses exact. Negative control deliberately changes fee base to full holdings; it must be detected. All attempted cases retained; any mismatch stays unresolved until trace attributes cause. Every case must have positive executed notional and the intended event: fees>0, borrow>0, explicit settlement trade, or clipped fill respectively; zero-cost case must have fills and zero costs. Oracle values remain independently calculated, not copied from engine. Configs and expected counts are predeclared before execution; recording failure to reach a case rejects the harness. Zero-settlement is deliberately total insolvency: preserve insolvency status and undefined ratios, do not require every ratio finite or replace undefined with0.",
+      "benefit": "Method separates specification differences from accounting failures and tests high-turnover/settlement paths; no runtime or return benefit measured.",
+      "counterargument": "Existing hand-calculated tests and this audit already require independent checks; avoid duplicate testing infrastructure. Cheapest option: extend a few audit-only cases, no production layer or new engine.",
+      "touchpoints": [
+        "strategy-evaluation/src/invest_evaluation/engine.py",
+        "strategy-evaluation/tests/test_engine.py",
+        "strategy-evaluation/METRICS.md"
+      ],
+      "effort": "M estimate",
+      "tier": "literature-only; experiment specified, not run",
+      "novelty": "new explicit queue specification; overlapping existing QUALITY-02 and mandatory audit independent checks; not claimed novel research",
+      "revision": 2,
+      "status": "specified / execution blocked",
+      "fixture": {
+        "dates": [
+          "2024-01-02",
+          "2024-01-03",
+          "2024-01-04",
+          "2024-01-05",
+          "2024-01-08",
+          "2024-01-09"
+        ],
+        "prices": {
+          "A": [
+            10,
+            11,
+            9,
+            12,
+            12,
+            10
+          ],
+          "B": [
+            20,
+            19,
+            21,
+            18,
+            18,
+            20
+          ]
+        },
+        "ohlc": "all equal prices",
+        "volume": 100000,
+        "initial_capital": 10000,
+        "annualization": 252,
+        "adv_window": 1,
+        "vol_window": 2,
+        "delay": 0,
+        "min_price": 0,
+        "min_adv_dollar": 0,
+        "rebalance_every": 1,
+        "min_names": 1,
+        "gross_leverage": 1,
+        "max_participation": 1,
+        "impact_coef": 0,
+        "cash_rate_annual": 0,
+        "base_weights": [
+          [
+            0.5,
+            0.5
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "signal_dates": "last4dates",
+        "base_fees": "all0",
+        "expected_fills_derived_not_executed": {
+          "zero_cost": 6,
+          "commission": 6,
+          "spread": 6,
+          "short_borrow": 6,
+          "partial_fill": 6,
+          "zero_settlement": {
+            "ordinary": 4,
+            "settlement": 1,
+            "total": 5,
+            "expected_status": "insolvent at2024-01-08; undefined exposure/ratio statuses permitted and must remain explicit"
+          }
+        }
+      },
+      "cases": [
+        {
+          "id": "zero_cost",
+          "change": "none"
+        },
+        {
+          "id": "commission",
+          "commission_bps": 10
+        },
+        {
+          "id": "spread",
+          "half_spread_bps": 10
+        },
+        {
+          "id": "short_borrow",
+          "borrow_bps_annual": 200,
+          "weights": [
+            [
+              0.5,
+              -0.5
+            ],
+            [
+              0.25,
+              -0.25
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "zero_settlement",
+          "delisting": {
+            "date": "2024-01-08",
+            "instrument": "A",
+            "settlement_price": 0
+          }
+        },
+        {
+          "id": "partial_fill",
+          "max_participation": 0.0001
+        }
+      ],
+      "review_changes": "Accepted independent feasibility corrections; fixed-share description superseded, explicit warmup and6case definitions added. No execution."
+    },
+    {
+      "key": "R2",
+      "id": "GA-2026-10-31-4",
+      "fingerprint": "strategy:momentum-12-1:causal-capped-monthly-variance-overlay",
+      "bucket": "exploration",
+      "title": "Causal capped variance overlay on a fixed momentum portfolio",
+      "sources": [
+        "https://doi.org/10.1111/jofi.12513",
+        "https://law.yale.edu/sites/default/files/area/workshop/leo/leo17_moreira.pdf",
+        "https://doi.org/10.1016/j.jfineco.2020.04.015",
+        "https://www.lehigh.edu/~xuy219/research/COWY.pdf"
+      ],
+      "claim": "Moreira-Muir supports studying lagged realized-variance scaling, not this exact capped stock-selection strategy; Cederburg etal directly challenges systematic implementable out-of-sample benefit. No edge established.",
+      "hypothesis": "A causal capped variance overlay improves fixed momentum risk-adjusted net performance without fitting leverage to the evaluation interval.",
+      "rules": "US daily total-return-adjusted OHLC and PIT membership incl delisted equities; monthly final-session close signal P(t-21)/P(t-252)-1; average-rank top/bottom10percent, long.5short.5 gross1; next-session open fill, monthly rebalance. At monthend compute previous month's daily gross returns of the SAME unscaled fixed portfolio using data available by t close; variance mean squared demeaned daily returns ddof0; v_ref=median monthly realized variance in earliest120months of authorized exploratory development history. Freeze v_ref before later folds; multiplier=min(1,v_ref/v_t), missing/zero variance=>0cash, held to next monthly rebalance. This is deliberate no-leverage adaptation, not paper reproduction.",
+      "data": "Already-inspected licensed stock OHLC, as-traded prices, PIT membership incl delistings, settlement events and borrow availability/fees before2025 only. Not accessible as raw snapshot in current verified tree. No downloads or reserved data. Model/literature exposure recorded.",
+      "comparator": "Unscaled same portfolio; cash; placebo overlay shifting realized variance by12 months (causal only) as negative/control comparison, counts as an attempted variant. Risk-matched unmanaged comparator scale calibrated solely on development data.",
+      "costs": "Assumptions only, not measured estimates:1bp commission +5bp halfspread per traded notional, existing sqrt impact under fixed participation1percent; borrow200bp/year for available shorts,1000bp stress; double transaction costs and one-session extra delay. All fixed, no tuning to outcomes.",
+      "experiment": "First synthetic mechanics: multiply one month's daily return magnitudes by2=>variance4x=>uncapped multiplier quarter; future perturbations do not change past weights. Historical only if licensed already-inspected pre2025 snapshot available: earliest120months calibrate, next24months evaluate chronologically, roll24months without tuning; final remaining pre2025 is also exploratory. Need >=3 nonoverlapping eval folds; if insufficient history report inconclusive. Parameter family one rule only plus declared controls/stresses; seed20261031, stationary-date-block bootstrap2000,meanblock20.",
+      "acceptance": "Mechanics gate exact/1e-12; exploratory support requires paired net-Sharpe difference>=.1 and95percent paired block CI lower>0 versus risk-matched unmanaged, no higher max drawdown, all cost/delay cases reported, adequate sample3folds. Failure=>not-supported, not retune. No confirmation authorized.",
+      "counterargument": "Volatility management can underperform OOS; v_ref instability, reduced exposure and costs can explain apparent benefit. Capped overlay differs from original inverse-variance leveraged factor strategy. Strategy interface sees scores only, so a new audit adapter needed; production strategy changes not authorized. Cheapest adequate alternative keep unmanaged baseline.",
+      "touchpoints": [
+        "data-mining-framework/src/invest_mining/expressions.py",
+        "strategy-evaluation/src/invest_evaluation/strategies.py",
+        "strategy-evaluation/src/invest_evaluation/engine.py"
+      ],
+      "effort": "L estimate, data license dependency",
+      "tier": "literature-only; experiment specified, not run",
+      "novelty": "new to this audit's published queue, no broader novelty claim; first-run topic history unavailable",
+      "revision": 2,
+      "status": "blocked / specified_with_gaps",
+      "feasibility": "Exact calendar-month rebalancing is unsupported by fixed integer-stride engine. Do not prototype by sparse or forward-filled scores; they liquidate or rebalance daily. Keep original hypothesis blocked; a21-session-block adaptation would require a separate frozen specification and trial record. 120months calibration+72months evaluations+252session warmup requires about17years; saved2010-2024 data is insufficient and raw snapshots unavailable. Tie handling and risk-matched comparator scale still need exact tables before any experiment."
+    }
+  ]
+}

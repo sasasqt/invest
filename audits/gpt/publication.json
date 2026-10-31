@@ -1,0 +1,8 @@
+{
+  "run_id": "GA-2026-10-31T001744Z",
+  "status": "prepared_not_published",
+  "branch": "gpt/repo-audits",
+  "scope": "audits/gpt/ only",
+  "report_path": "audits/gpt/2026-10-31.md",
+  "expected_initial_base": "90b5ca038155b97833b120baa57dfecd05d6f641"
+}

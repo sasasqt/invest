@@ -1,0 +1,52 @@
+{
+  "run_id": "GA-2026-10-31T001744Z",
+  "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+  "executed": false,
+  "seed": 20261031,
+  "planned_cases": {
+    "synth-S": {
+      "instruments": 20,
+      "sessions": 300,
+      "trials": 20,
+      "warmups": 1,
+      "repetitions": 7
+    },
+    "synth-M": {
+      "instruments": 60,
+      "sessions": 750,
+      "trials": 200,
+      "warmups": 1,
+      "repetitions": 7
+    },
+    "synth-L": {
+      "instruments": 120,
+      "sessions": 1500,
+      "trials": 200,
+      "warmups": 1,
+      "repetitions": 3
+    },
+    "synth-XL": {
+      "instruments": 240,
+      "sessions": 3000,
+      "trials": 200,
+      "repetitions": 1,
+      "gate": "Lmedian<90seconds and budgets"
+    },
+    "formats": {
+      "formats": [
+        "csv",
+        "sqlite",
+        "parquet"
+      ],
+      "size": "M",
+      "repetitions": 3
+    }
+  },
+  "timeouts_seconds": 60,
+  "memory_ceiling_bytes": 2147483648,
+  "baseline": "unavailable; no previous published comparable measurements",
+  "semantic_gate": "full equivalent outputs excluding declared creation timestamps only",
+  "measurements": "none; no extrapolated runtime/memory/scaling claims",
+  "environment": "Linux host6.18.57; root UID; 60GiB available disk and~9.7GiB host-visible RAM; actual enforced memory/CPU quotas not established, interpreter/dependencies not installed/verified"
+}

@@ -1,0 +1,780 @@
+[
+  {
+    "path": ".gitignore",
+    "unread_ranges": [
+      [
+        1,
+        40
+      ]
+    ]
+  },
+  {
+    "path": "DESIGN_BY_CONTRACT.md",
+    "unread_ranges": [
+      [
+        91,
+        147
+      ]
+    ]
+  },
+  {
+    "path": "GIT_GUIDELINES.md",
+    "unread_ranges": [
+      [
+        91,
+        95
+      ]
+    ]
+  },
+  {
+    "path": "PYTHON_GUIDELINES.md",
+    "unread_ranges": [
+      [
+        71,
+        126
+      ]
+    ]
+  },
+  {
+    "path": "RAPID_DEVELOPMENT.md",
+    "unread_ranges": [
+      [
+        101,
+        106
+      ]
+    ]
+  },
+  {
+    "path": "README.md",
+    "unread_ranges": [
+      [
+        96,
+        184
+      ]
+    ]
+  },
+  {
+    "path": "TODO.md",
+    "unread_ranges": [
+      [
+        1,
+        15
+      ],
+      [
+        17,
+        28
+      ],
+      [
+        31,
+        41
+      ],
+      [
+        43,
+        59
+      ],
+      [
+        61,
+        64
+      ],
+      [
+        66,
+        100
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/ALPHA_VALIDATION.md",
+    "unread_ranges": [
+      [
+        1,
+        155
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/LITERATURE_REVIEW.md",
+    "unread_ranges": [
+      [
+        1,
+        282
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/PRIMARY_SOURCE_CATALOG.md",
+    "unread_ranges": [
+      [
+        1,
+        358
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/README.md",
+    "unread_ranges": [
+      [
+        1,
+        6
+      ],
+      [
+        8,
+        81
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/__init__.py",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/artifact.py",
+    "unread_ranges": [
+      [
+        1,
+        72
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "unread_ranges": [
+      [
+        1,
+        727
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+    "unread_ranges": [
+      [
+        1,
+        315
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/ledger.py",
+    "unread_ranges": [
+      [
+        1,
+        249
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/reporting.py",
+    "unread_ranges": [
+      [
+        1,
+        72
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/search.py",
+    "unread_ranges": [
+      [
+        1,
+        129
+      ],
+      [
+        321,
+        359
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/conftest.py",
+    "unread_ranges": [
+      [
+        1,
+        33
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/test_cli.py",
+    "unread_ranges": [
+      [
+        1,
+        258
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/test_diagnostics.py",
+    "unread_ranges": [
+      [
+        1,
+        258
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/test_evidence.py",
+    "unread_ranges": [
+      [
+        1,
+        252
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/test_ledger.py",
+    "unread_ranges": [
+      [
+        1,
+        471
+      ]
+    ]
+  },
+  {
+    "path": "data-mining-framework/tests/test_search_and_inference.py",
+    "unread_ranges": [
+      [
+        1,
+        156
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+    "unread_ranges": [
+      [
+        1,
+        252
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+    "unread_ranges": [
+      [
+        1,
+        544
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+    "unread_ranges": [
+      [
+        1,
+        229
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+    "unread_ranges": [
+      [
+        1,
+        96
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+    "unread_ranges": [
+      [
+        211,
+        229
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+    "unread_ranges": [
+      [
+        1,
+        383
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+    "unread_ranges": [
+      [
+        1,
+        115
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+    "unread_ranges": [
+      [
+        1,
+        288
+      ]
+    ]
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+    "unread_ranges": [
+      [
+        1,
+        407
+      ]
+    ]
+  },
+  {
+    "path": "docs/DATA_CONTRACT.md",
+    "unread_ranges": [
+      [
+        41,
+        83
+      ]
+    ]
+  },
+  {
+    "path": "docs/HISTORICAL_BASELINE.md",
+    "unread_ranges": [
+      [
+        1,
+        69
+      ]
+    ]
+  },
+  {
+    "path": "docs/QUANTILE_ANALYSIS.md",
+    "unread_ranges": [
+      [
+        1,
+        60
+      ]
+    ]
+  },
+  {
+    "path": "docs/reviews/README.md",
+    "unread_ranges": [
+      [
+        1,
+        12
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/README.md",
+    "unread_ranges": [
+      [
+        1,
+        24
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json",
+    "unread_ranges": [
+      [
+        1,
+        220
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/data/market/manifest.json",
+    "unread_ranges": [
+      [
+        1,
+        1210
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/config.json",
+    "unread_ranges": [
+      [
+        1,
+        39
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/manifest.json",
+    "unread_ranges": [
+      [
+        1,
+        49
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/metrics.json",
+    "unread_ranges": [
+      [
+        1,
+        628
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/report.md",
+    "unread_ranges": [
+      [
+        1,
+        93
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/statistics.json",
+    "unread_ranges": [
+      [
+        1,
+        62
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/tables/scenarios.csv",
+    "unread_ranges": [
+      [
+        1,
+        9
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/verdict.json",
+    "unread_ranges": [
+      [
+        1,
+        85
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/config.json",
+    "unread_ranges": [
+      [
+        1,
+        7
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/metrics.json",
+    "unread_ranges": [
+      [
+        1,
+        23
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv",
+    "unread_ranges": [
+      [
+        1,
+        3775
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/tail_returns.csv",
+    "unread_ranges": [
+      [
+        1,
+        10
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/factor.json",
+    "unread_ranges": [
+      [
+        1,
+        21
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/signals/manifest.json",
+    "unread_ranges": [
+      [
+        1,
+        67
+      ]
+    ]
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/snapshot/snapshot.json",
+    "unread_ranges": [
+      [
+        1,
+        626
+      ]
+    ]
+  },
+  {
+    "path": "scripts/save_run.py",
+    "unread_ranges": [
+      [
+        216,
+        217
+      ]
+    ]
+  },
+  {
+    "path": "scripts/sp100_members.txt",
+    "unread_ranges": [
+      [
+        1,
+        104
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/METRICS.md",
+    "unread_ranges": [
+      [
+        141,
+        191
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/README.md",
+    "unread_ranges": [
+      [
+        1,
+        17
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/examples/quantile_long_short.json",
+    "unread_ranges": [
+      [
+        1,
+        15
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+    "unread_ranges": [
+      [
+        1,
+        378
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "unread_ranges": [
+      [
+        116,
+        226
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "unread_ranges": [
+      [
+        1,
+        249
+      ],
+      [
+        338,
+        491
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+    "unread_ranges": [
+      [
+        1,
+        429
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "unread_ranges": [
+      [
+        1,
+        312
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+    "unread_ranges": [
+      [
+        1,
+        79
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+    "unread_ranges": [
+      [
+        156,
+        213
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+    "unread_ranges": [
+      [
+        176,
+        202
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+    "unread_ranges": [
+      [
+        101,
+        174
+      ],
+      [
+        204,
+        240
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/conftest.py",
+    "unread_ranges": [
+      [
+        1,
+        19
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_config.py",
+    "unread_ranges": [
+      [
+        1,
+        73
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_engine.py",
+    "unread_ranges": [
+      [
+        206,
+        439
+      ],
+      [
+        491,
+        511
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_metrics.py",
+    "unread_ranges": [
+      [
+        1,
+        186
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_quantiles.py",
+    "unread_ranges": [
+      [
+        1,
+        439
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+    "unread_ranges": [
+      [
+        1,
+        851
+      ]
+    ]
+  },
+  {
+    "path": "strategy-evaluation/tests/test_validation.py",
+    "unread_ranges": [
+      [
+        1,
+        425
+      ]
+    ]
+  },
+  {
+    "path": "tests/test_markdown_links.py",
+    "unread_ranges": [
+      [
+        1,
+        96
+      ]
+    ]
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "unread_ranges": [
+      [
+        1,
+        390
+      ]
+    ]
+  },
+  {
+    "path": "tests/test_quantile_consistency.py",
+    "unread_ranges": [
+      [
+        1,
+        99
+      ]
+    ]
+  },
+  {
+    "path": "tests/test_save_run.py",
+    "unread_ranges": [
+      [
+        1,
+        211
+      ]
+    ]
+  },
+  {
+    "path": "uv.lock",
+    "unread_ranges": [
+      [
+        1,
+        1517
+      ]
+    ]
+  }
+]

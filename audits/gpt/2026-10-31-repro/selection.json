@@ -1,0 +1,26 @@
+{
+  "seed_method": "int.from_bytes(sha256(Berlin date UTF8),big)",
+  "date": "2026-10-31",
+  "seed": "67764745909170282274544890740121412302298899170212194471678358227477569304021",
+  "eligible_source": [
+    "data-pipeline/data-preparation/src/invest_data/bundle.py",
+    "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+    "data-pipeline/data-preparation/src/invest_data/cli.py",
+    "data-pipeline/data-preparation/src/invest_data/schemas.py",
+    "data-pipeline/data-preparation/src/invest_data/sources.py",
+    "data-pipeline/data-preparation/src/invest_data/testing.py",
+    "data-pipeline/data-preparation/src/invest_data/yahoo.py"
+  ],
+  "source_draw": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+  "lens": "partial failure and recoverability",
+  "prior_lenses": "unavailable; no published state",
+  "eligible_topics": [
+    "carry",
+    "cost_capacity",
+    "negative_replication",
+    "portfolio_volatility_management",
+    "trend_vs_reversal"
+  ],
+  "topic_draw": "portfolio_volatility_management",
+  "peer_review_age": "unknown: counterpart branch absent"
+}

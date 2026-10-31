@@ -1,0 +1,2 @@
+date,routine,check_lens_case,minutes,findings,already_known_findings,unique_findings,twin_last7days,status
+2026-10-31,"PR review / accessible PR26,27 discussions",known gross-cost root cause and recorder/test leads,unavailable,BH-2026-10-15-1 lead shared; INV-COMMON-001 known,1same gross-cost root cause,not comparable,"prior PR reviews accessible; different scope/isolation, not comparable audit benchmark",read-only lead deduplication; no cadence change
