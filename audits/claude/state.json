@@ -3,6 +3,7 @@
  "findings": {
   "confirmed": [
    "RA-2026-10-31-1",
+   "RA-2026-10-31-12",
    "RA-2026-10-31-2",
    "RA-2026-10-31-3"
   ],
@@ -15,8 +16,18 @@
    "C5": "gzip MTIME in quantiles tables: content-hash promises only",
    "C8": "benchmark first window session: same-window convention documented"
   },
+  "dropped_run_2": {
+   "C1": "already tracked: S3-1 / K2 / PR #27 (both reviewers)",
+   "C2": "start before first signal: dropped as a finding (rule 6, no concrete keep reason); RA-2026-10-31-14",
+   "C3": "16-session warm-up flat prefix: dropped as a finding (rule 6); RA-2026-10-31-14"
+  },
   "plausible": [
    "RA-2026-10-31-4"
+  ],
+  "re_found_run_2": [
+   "RA-2026-10-31-1",
+   "RA-2026-10-31-2",
+   "RA-2026-10-31-3"
   ]
  },
  "gpt_cross_check": {
@@ -25,15 +36,16 @@
    "GA-2026-10-31-2"
   ],
   "gpt_sha": "b1868f9",
-  "open_disagreements": []
+  "open_disagreements": [],
+  "run_2_note": "GPT branch unchanged; no new GA rows; GPT verdicts on RA rows still not available"
  },
  "helpers": {
   "report_writer": "none (the run wrote the report)",
-  "reviewer_2": "Fable 5.1 xhigh, started by the owner with the run's prompt file unchanged (harness relay)",
-  "verifier_b": "Fable 5.1 xhigh, started by the owner with the run's prompt file unchanged (harness relay)"
+  "reviewer_2": "Fable 5.1, xhigh requested; session reports high; started by the owner thread with the run's prompt file unchanged (harness relay)",
+  "verifier_b": "none (no disagreement with a concrete keep reason; rule 6)"
  },
  "last_run": "2026-10-31",
- "last_run_id": "repo-audit-2026-10-31",
+ "last_run_id": "repo-audit-2026-10-31-2",
  "last_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
  "open_places": [
   {
@@ -44,13 +56,6 @@
    "why_open": "no Windows in this environment; judged by reading only; TODO.md BUILD-03 tracks the encoding sites"
   },
   {
-   "check_when": "next run: quote the convention (or its absence) and keep or drop",
-   "id": "OP-2026-10-31-2",
-   "place": "data-mining-framework/src/invest_mining/reporting.py:54 and :67 fill missing daily IC and quantile-spread values with 0 inside the cumulative figures, while strategy-evaluation/README.md promises its figures never draw a missing value as zero; docs/REPORTING.md:39 asks for missing/undefined-result explanations",
-   "source": "run exploration after reviewer 2 closed, 2026-10-31",
-   "why_open": "found after reviewer 2 closed; a consistency note until a documented convention for mining figures is quoted"
-  },
-  {
    "check_when": "a CI log that shows editability, or a sandbox with uv 0.12.x",
    "id": "OP-2026-10-31-3",
    "place": "uv 0.12.x (what setup-uv v6.8.0 installs on GitHub, unpinned; 0.12.24 in run 37851091069) vs 0.11.32 here: does `uv pip install <member path>` still resolve `[tool.uv.sources] workspace = true` as an editable install?",
@@ -58,18 +63,35 @@
    "why_open": "needs another uv version (outside the allowed installs)"
   },
   {
-   "check_when": "next run: a run with cfg.start 60 sessions before the first signal; compare Sharpe/IR with and without the flat prefix and quote the README",
-   "id": "OP-2026-10-31-4",
-   "place": "strategy-evaluation/src/invest_evaluation/engine.py:218: `cfg.start` before the first signal session puts many flat sessions into both the strategy's and the benchmark's statistics by the user's choice; no README warning about the dilution",
-   "source": "verifier B (Fable 5.1 xhigh), 2026-10-31",
-   "why_open": "same convention question as dropped candidate C8; not checked numerically"
+   "check_when": "next run: a synthetic market with a zero-volume stale-open bar inside the label window; compare daily IC with and without masking that bar",
+   "id": "OP-2026-10-31-6",
+   "place": "data-mining-framework/src/invest_mining/diagnostics.py:44-45 builds the forward label from open_.shift(-1) / shift(-(1+h)) without checking that the instrument traded on those sessions: a zero-volume bar with a stale open is a defined label (run 1's probe_zero_volume_halt.py covered the evaluation engine, not the mining label)",
+   "source": "reviewer 2 (Fable 5.1, xhigh requested; session reports high), 2026-10-31 run 2",
+   "why_open": "not checked this run (min-budget time)"
   },
   {
-   "check_when": "next run: `uv pip install --no-sources ./data-pipeline/data-preparation ./data-mining-framework pytest` + the check + the mining suite",
-   "id": "OP-2026-10-31-5",
-   "place": "the mining independent-install venv was not rebuilt with `--no-sources` (verifier B proved evaluation only; same .pth mechanism)",
-   "source": "verifier B (Fable 5.1 xhigh), 2026-10-31",
-   "why_open": "time; cheap"
+   "check_when": "next run: publish a bundle with tz-aware dates (if the contract allows it) and run invest-eval with start/end set; else document that dates are naive",
+   "id": "OP-2026-10-31-7",
+   "place": "strategy-evaluation/src/invest_evaluation/engine.py:218 and :224 compare calendar >= pd.Timestamp(cfg.start) / <= pd.Timestamp(cfg.end) against a tz-naive calendar; a market bundle whose date column carries a time zone would raise or misalign; DATA_CONTRACT.md:44 lists calendar metadata only and no doc says dates are naive by contract",
+   "source": "reviewer 2 (Fable 5.1, xhigh requested; session reports high), 2026-10-31 run 2",
+   "why_open": "not checked this run"
+  }
+ ],
+ "open_places_closed": [
+  {
+   "closed": "2026-10-31",
+   "how": "checked run 2: already tracked as hunt rows S3-1 and K2 (fix proposed in PR #27)",
+   "id": "OP-2026-10-31-2"
+  },
+  {
+   "closed": "2026-10-31",
+   "how": "checked run 2: probe 2026-10-31-2-repro/op4_start_dilution.py (candidate C2)",
+   "id": "OP-2026-10-31-4"
+  },
+  {
+   "closed": "2026-10-31",
+   "how": "checked run 2: --no-sources mining venv non-editable, 129 passed",
+   "id": "OP-2026-10-31-5"
   }
  ],
  "pending_second_review": [],
@@ -86,6 +108,22 @@
     "plausible": 1,
     "rate": 0.0
    }
+  },
+  "repo-audit-2026-10-31-2": {
+   "exploitation": {
+    "confirmed": 1,
+    "lines": 190,
+    "note": "RA-2026-10-31-12 came from reviewer 2 open-question probing around exploitation site OP-4 (engine window code)",
+    "plausible": 0,
+    "rate": 5.3
+   },
+   "exploration": {
+    "confirmed": 0,
+    "lines": 115,
+    "plausible": 0,
+    "rate": 0.0
+   },
+   "note": "min-budget test (400-line budget)"
   }
  },
  "recommendations": [
@@ -95,18 +133,21 @@
   "RA-2026-10-31-8",
   "RA-2026-10-31-9",
   "RA-2026-10-31-10",
-  "RA-2026-10-31-11"
+  "RA-2026-10-31-11",
+  "RA-2026-10-31-13",
+  "RA-2026-10-31-14"
  ],
- "rehearsal": "R1 (pushed to claude/repo-audits-rehearsal; hunt rows in the run's hunt copy)",
+ "rehearsal": "R1 (run 1) and R2min (run 2, min-budget test of the proposed instructions), both pushed to claude/repo-audits-rehearsal",
  "slice_lines_next": 1500,
  "split": {
   "next_run": {
    "exploitation": 70,
    "exploration": 30
   },
+  "rule_note": "exploitation rate 5.3 per 1,000 lines (1 confirmed low) vs exploration 0: the rule moves 10 points toward exploitation, capped at 70",
   "this_run": {
-   "exploitation": 60,
-   "exploration": 40
+   "exploitation": 70,
+   "exploration": 30
   }
  }
 }

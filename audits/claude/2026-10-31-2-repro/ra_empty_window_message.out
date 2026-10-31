@@ -1,0 +1,3 @@
+end=2020-09-02 first signal=2020-09-09 sessions on or before end=176 rc=1
+message: evaluation window has fewer than two sessions
+RESULT: FAIL (refusal does not name the cause: the calendar has sessions before end; none carries a signal)

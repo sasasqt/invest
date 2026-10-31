@@ -1,0 +1,76 @@
+11:33:13
+first signal session: 2020-09-09 | 60 sessions earlier: 2020-06-17 | calendar 2020-01-01 .. 2021-02-23 (300 sessions)
+{
+ "default": {
+  "start": null,
+  "sessions": 120,
+  "first_daily_date": "2020-09-09",
+  "flat_sessions(gross_exposure==0)": 1,
+  "sharpe": [
+   -0.7707660190382388,
+   "ok"
+  ],
+  "cagr": [
+   -0.15835227844673383,
+   "ok"
+  ],
+  "annual_volatility": [
+   0.19823802995394904,
+   "ok"
+  ],
+  "benchmark_total_return": [
+   0.04070281336285397,
+   "ok"
+  ],
+  "information_ratio": [
+   -0.9807243052173015,
+   "ok"
+  ],
+  "alpha_annual": [
+   -0.1577889851164635,
+   "ok"
+  ],
+  "evaluation_window": {
+   "start": "2020-09-09",
+   "end": "2021-02-23"
+  },
+  "portfolio_status": "insufficient_data"
+ },
+ "start_minus_60": {
+  "start": "2020-06-17",
+  "sessions": 180,
+  "first_daily_date": "2020-06-17",
+  "flat_sessions(gross_exposure==0)": 61,
+  "sharpe": [
+   -0.6299590664720655,
+   "ok"
+  ],
+  "cagr": [
+   -0.10857070664995272,
+   "ok"
+  ],
+  "annual_volatility": [
+   0.1616984820143748,
+   "ok"
+  ],
+  "benchmark_total_return": [
+   0.03197440926779804,
+   "ok"
+  ],
+  "information_ratio": [
+   -0.6967395383746207,
+   "ok"
+  ],
+  "alpha_annual": [
+   -0.10383904202932938,
+   "ok"
+  ],
+  "evaluation_window": {
+   "start": "2020-06-17",
+   "end": "2021-02-23"
+  },
+  "portfolio_status": "insufficient_data"
+ }
+}
+rc=0
+11:33:17

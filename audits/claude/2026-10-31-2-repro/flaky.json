@@ -1,0 +1,17 @@
+{
+ "outcome_differs": {},
+ "repeat": {
+  "collected": 586,
+  "failed": 0,
+  "passed": 586,
+  "skipped": 0,
+  "xfailed": 0
+ },
+ "run1": {
+  "collected": 586,
+  "failed": 0,
+  "passed": 586,
+  "skipped": 0,
+  "xfailed": 0
+ }
+}

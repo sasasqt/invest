@@ -1,0 +1,13 @@
+job,command,environment,revision,outcome,collected,passed,failed,skipped,xfailed,warnings,duration_s,exit_code,evidence_path
+checks (3.13),uv run ruff format --check .,"scratch/main/.venv (uv sync --frozen, py3.13.17)",90b5ca038155b97833b120baa57dfecd05d6f641,passed,,,,,,,0,0,tests/checks313-lint.log
+checks (3.13),uv run ruff check .,"scratch/main/.venv (uv sync --frozen, py3.13.17)",90b5ca038155b97833b120baa57dfecd05d6f641,passed,,,,,,,0,0,tests/checks313-lint.log
+checks (3.13),uv run mypy <3 src trees>,"scratch/main/.venv (uv sync --frozen, py3.13.17)",90b5ca038155b97833b120baa57dfecd05d6f641,passed,,,,,,,7,0,tests/checks313-lint.log
+checks (3.13),uv run pytest --cov=... --cov-branch --cov-report=term-missing (+ --cov-report=json --durations=25 --junitxml),scratch/main/.venv py3.13.17,90b5ca038155b97833b120baa57dfecd05d6f641,passed,586,586,0,0,0,0,268,0,tests/checks313-pytest.log; tests/cov313.json
+checks (3.13),uv run python scripts/check_markdown_links.py,scratch/main/.venv py3.13.17,90b5ca038155b97833b120baa57dfecd05d6f641,passed,,,,,,,0,0,tests/checks313-mdlinks.log
+checks (3.11),ci.yml job,-,90b5ca038155b97833b120baa57dfecd05d6f641,not run (min-budget test),,,,,,,,,
+wheels,ci.yml job,-,90b5ca038155b97833b120baa57dfecd05d6f641,not run (min-budget test),,,,,,,,,
+independent-install (data-pipeline/data-preparation),ci.yml job,-,90b5ca038155b97833b120baa57dfecd05d6f641,not run (min-budget test),,,,,,,,,
+independent-install (data-mining-framework),ci.yml job,-,90b5ca038155b97833b120baa57dfecd05d6f641,not run (min-budget test),,,,,,,,,
+independent-install (strategy-evaluation),ci.yml job,-,90b5ca038155b97833b120baa57dfecd05d6f641,not run (min-budget test),,,,,,,,,
+repeat run,PYTHONHASHSEED=12345 uv run pytest -p no:cacheprovider,scratch/main/.venv py3.13.17 (concurrent with checks 3.13),90b5ca038155b97833b120baa57dfecd05d6f641,passed,586,586,0,0,0,0,166,0,tests/repeat-pytest.log
+repeat run,outcome comparison run 1 vs PYTHONHASHSEED=12345,-,90b5ca038155b97833b120baa57dfecd05d6f641,passed (no outcome differs),,,0,,,,,,tests/flaky.json

@@ -1,0 +1,3 @@
+files sha256 equal: True n_record: 101 n_archive: 101
+request/other keys differing: none | keys: ['snapshot_version', 'source', 'url_template', 'request', 'retrieved_at', 'failures', 'test_only']
+rc=0

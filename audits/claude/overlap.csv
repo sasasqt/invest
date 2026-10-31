@@ -19,3 +19,14 @@ date,check,minutes,findings,findings_another_routine_already_had,unique_findings
 2026-10-31,GPT cross-check (GA-2026-10-31-1 and -2 re-verified with own checks) (s6),8,2,2 (GA-2026-10-31-1; BH-2026-10-21-2 = GA-2026-10-31-2),0,GPT audit 2026-10-31 (static); bug hunt 2026-10-21 (BH-2026-10-21-2)
 2026-10-31,exploration reading: invest_data/testing.py (random draw seed 2026-10-31) robustness.py stats.py bundle.py parts (s6),8,0,0,0,none
 2026-10-31,edge-input probes: zero-volume halt + delisted synthetic name; membership edges without bars (late listing / exit on a no-bar session / mid-membership halt; reviewer 2 open place 1) (s6),10,0,0,0,bug hunt edge cases: not comparable
+2026-10-31,run 2 (min-budget test): config and CI-file checks (s2: ci.yml vs guideline commands; pins; portability scan; uv lock --check; deps vs imports),3,0,0 (README:118 = DA-2026-10-31-12 re-seen),0,docs audit 2026-10-31 (CI-command check); bug hunt: not comparable (off since 2026-10-27)
+2026-10-31,run 2: GitHub CI results for the audited SHA + open PR bodies (s2),2,1 (RA-2026-10-31-1 re-found),1 (INV-COMMON-001 / REVIEW-22 / PR #31),0,GPT audit 2026-10-31 (read CI; did not run); bug hunt: not comparable
+2026-10-31,run 2: checks (3.13): ruff format/check mypy pytest+coverage mdlinks (s3),5,0,0,0,bug hunt step 2 (same commands): not comparable; GPT: not run; run 1 of today: same result
+2026-10-31,run 2: repeat run with PYTHONHASHSEED (s3),3,0,0,0,none
+2026-10-31,run 2: checks (3.11) / wheels / independent-install x3 (s3),0,not run (min-budget test),not run,not run,-
+2026-10-31,run 2: replay at main vs record + snapshot provenance + ledger validity (s4),3,0 (1 recommendation: stale doc numbers),0,0,bug hunt real-data replay: not comparable; GPT: not run; run 1 of today (same diffs; doc numbers judged a match there)
+2026-10-31,run 2: replay at the record's revision (s4),0,not run (min-budget test),not run,not run,-
+2026-10-31,run 2: benchmarks synth-S/M x3 (s5),2,0,0,0,none (run 1 of today is the reference)
+2026-10-31,run 2: exploitation of prior open places OP-2/OP-4/OP-5 (s6),8,0 (OP-2 already tracked S3-1/K2 PR #27; OP-4 1 plausible doc gap pending review 2),1 (S3-1 / K2),0,bug hunt 2026-10-08 (S3-1, K2): not comparable this week
+2026-10-31,run 2: test-quality read test_point_in_time.py (s6),2,0,0,0,none
+2026-10-31,run 2: GPT cross-check (no new GA rows since b1868f9) (s6),1,0,0,0,GPT audit unchanged

@@ -1,0 +1,102 @@
+{
+ "data-mining-framework/src/invest_mining/artifact.py": {
+  "read_text_no_encoding": 1,
+  "write_text_no_encoding": 1
+ },
+ "data-mining-framework/src/invest_mining/cli.py": {
+  "read_text_no_encoding": 1,
+  "write_text_no_encoding": 2
+ },
+ "data-mining-framework/src/invest_mining/diagnostics.py": {
+  "open_no_encoding": 1
+ },
+ "data-mining-framework/src/invest_mining/ledger.py": {
+  "open_no_encoding": 1,
+  "read_text_no_encoding": 1
+ },
+ "data-mining-framework/src/invest_mining/reporting.py": {
+  "write_text_no_encoding": 1
+ },
+ "data-mining-framework/tests/test_cli.py": {
+  "read_text_no_encoding": 6
+ },
+ "data-mining-framework/tests/test_evidence.py": {
+  "read_text_no_encoding": 3,
+  "write_text_no_encoding": 1
+ },
+ "data-mining-framework/tests/test_ledger.py": {
+  "read_text_no_encoding": 9,
+  "write_text_no_encoding": 2
+ },
+ "data-mining-framework/tests/test_search_and_inference.py": {
+  "read_text_no_encoding": 1,
+  "write_text_no_encoding": 2
+ },
+ "data-pipeline/data-preparation/src/invest_data/bundle.py": {
+  "os_rename": 1,
+  "write_text_no_encoding": 1
+ },
+ "data-pipeline/data-preparation/src/invest_data/cli.py": {
+  "read_text_no_encoding": 1
+ },
+ "data-pipeline/data-preparation/src/invest_data/yahoo.py": {
+  "read_text_no_encoding": 1
+ },
+ "data-pipeline/data-preparation/tests/test_bundle.py": {
+  "read_text_no_encoding": 4,
+  "write_text_no_encoding": 3
+ },
+ "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py": {
+  "write_text_no_encoding": 5
+ },
+ "data-pipeline/data-preparation/tests/test_signal_metadata.py": {
+  "read_text_no_encoding": 5,
+  "write_text_no_encoding": 5
+ },
+ "data-pipeline/data-preparation/tests/test_yahoo.py": {
+  "write_text_no_encoding": 1
+ },
+ "scripts/save_run.py": {
+  "read_text_no_encoding": 1,
+  "write_text_no_encoding": 1
+ },
+ "strategy-evaluation/src/invest_evaluation/cli.py": {
+  "read_text_no_encoding": 1
+ },
+ "strategy-evaluation/src/invest_evaluation/config.py": {
+  "read_text_no_encoding": 1
+ },
+ "strategy-evaluation/src/invest_evaluation/quantiles.py": {
+  "open_no_encoding": 1,
+  "read_text_no_encoding": 1,
+  "write_text_no_encoding": 1
+ },
+ "strategy-evaluation/src/invest_evaluation/reporting.py": {
+  "read_text_no_encoding": 4,
+  "write_text_no_encoding": 2
+ },
+ "strategy-evaluation/tests/test_quantiles.py": {
+  "open_no_encoding": 1,
+  "read_text_no_encoding": 4,
+  "write_text_no_encoding": 1
+ },
+ "strategy-evaluation/tests/test_stats_and_cli.py": {
+  "read_text_no_encoding": 24,
+  "write_text_no_encoding": 17
+ },
+ "strategy-evaluation/tests/test_validation.py": {
+  "read_text_no_encoding": 8,
+  "write_text_no_encoding": 4
+ },
+ "tests/test_markdown_links.py": {
+  "write_text_no_encoding": 5
+ },
+ "tests/test_pipeline.py": {
+  "read_text_no_encoding": 28,
+  "write_text_no_encoding": 2
+ },
+ "tests/test_save_run.py": {
+  "read_text_no_encoding": 4,
+  "write_text_no_encoding": 8
+ }
+}

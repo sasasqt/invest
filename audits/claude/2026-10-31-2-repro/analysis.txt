@@ -1,0 +1,24 @@
+identical: False counts: {'high': 86, 'low': 1, 'medium': 3887} files_compared: 15 figures_checked: 5 extra: 16
+by file: {'README.md': 1, 'eval/config.json': 1, 'eval/manifest.json': 2, 'eval/metrics.json': 84, 'eval/report.md': 1, 'eval/statistics.json': 22, 'eval/tables/scenarios.csv': 62, 'eval/verdict.json': 6, 'mining/diagnostics/config.json': 5, 'mining/diagnostics/metrics.json': 8, 'mining/diagnostics/tables/daily_ic.csv': 3763, 'mining/diagnostics/tables/tail_returns.csv': 18, 'snapshot/snapshot.json': 1}
+by kind: {'missing': 2, 'value': 3947, 'extra-key': 7, 'text': 1, 'header': 2, 'width': 14, 'rows': 1}
+by severity: {'medium': 3887, 'high': 86, 'low': 1}
+  medium value      eval/config.json execution.min_price: 1.0 -> 0.0
+  medium extra-key  eval/manifest.json code_dirty: <absent> -> false
+  medium value      eval/manifest.json code_revision: "c6f29611fb4f3c9649ef188276666078130f96f0" -> "90b5ca038155b97833b120baa57dfecd05d6f641"
+  high   value      eval/metrics.json performance.cagr.value: -0.05641859789352599 -> -0.05654224326413826
+  high   value      eval/metrics.json performance.max_drawdown.extra.peak_date: "2011-02-24" -> "2010-07-27"
+  high   value      eval/metrics.json performance.max_drawdown.value: 0.6175616038808232 -> 0.6154098771964479
+  high   value      eval/metrics.json performance.max_drawdown_duration.value: 3485 -> 3632
+  high   value      eval/metrics.json performance.sharpe.value: -0.4668053245835952 -> -0.46620798582960077
+  high   value      eval/metrics.json performance.total_return.value: -0.5804425024693105 -> -0.5812640231332753
+  high   value      eval/metrics.json trades.closed_trades.value: 11720 -> 11746
+  medium extra-key  mining/diagnostics/config.json orientation: <absent> -> -1
+  medium extra-key  mining/diagnostics/metrics.json orientation: <absent> -> -1
+verdict.json differences: [('portfolio.checks[1].value', '-0.4668053245835952', '-0.46620798582960077'), ('portfolio.checks[3].value[0]', '-0.9735674131321063', '-0.9670749593649011'), ('portfolio.checks[3].value[1]', '0.0346095612556118', '0.035794357175198036'), ('portfolio.checks[4].value', '0.036453611210648384', '0.036623614156640116'), ('portfolio.checks[5].value', '-1.0056010945610911', '-1.0025730924277052'), ('portfolio.checks[6].value', '-0.6457554051588722', '-0.657426604100196')]
+
+commits between the recorded revision and main touching producers:
+  ['strategy-evaluation/src'] -> 8be0856 Fix evaluation report findings from the 2026-10-08 bug hunt (REVIEW-14, stage 3) (#23) | 009fd1d Stage 2 bug fixes: price floor on as-traded closes, total-return bars only (K11, N1) (#19) | ac24872 Keep search-evidence exports out of sample (bug hunt K1, K8) and refresh docs (#18) | 4e590a3 Mirror quantile buckets and tails; add review checkpoints (#17) | adfc5ec Backtest decile and tail portfolios with robust diagnostics (#16) | 6b2ed6e Make run records safe: own staging, true code revision, complete outputs (#14)
+  ['data-mining-framework/src'] -> 8be0856 Fix evaluation report findings from the 2026-10-08 bug hunt (REVIEW-14, stage 3) (#23) | 009fd1d Stage 2 bug fixes: price floor on as-traded closes, total-return bars only (K11, N1) (#19) | ac24872 Keep search-evidence exports out of sample (bug hunt K1, K8) and refresh docs (#18) | 4e590a3 Mirror quantile buckets and tails; add review checkpoints (#17) | adfc5ec Backtest decile and tail portfolios with robust diagnostics (#16)
+  ['data-pipeline/data-preparation/src'] -> 8be0856 Fix evaluation report findings from the 2026-10-08 bug hunt (REVIEW-14, stage 3) (#23) | 009fd1d Stage 2 bug fixes: price floor on as-traded closes, total-return bars only (K11, N1) (#19) | ac24872 Keep search-evidence exports out of sample (bug hunt K1, K8) and refresh docs (#18)
+  ['scripts/historical_workflow.sh', 'scripts/save_run.py'] -> 009fd1d Stage 2 bug fixes: price floor on as-traded closes, total-return bars only (K11, N1) (#19) | 4e590a3 Mirror quantile buckets and tails; add review checkpoints (#17) | adfc5ec Backtest decile and tail portfolios with robust diagnostics (#16) | 6b2ed6e Make run records safe: own staging, true code revision, complete outputs (#14) | bd1acd3 Commit historical run records, starting with the 2026-10-07 Yahoo run (#13)
+  ['strategy-evaluation/examples'] -> none
