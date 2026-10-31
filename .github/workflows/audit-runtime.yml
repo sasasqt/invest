@@ -1,0 +1,68 @@
+name: Isolated audit runtime
+
+on:
+  workflow_dispatch:
+    inputs:
+      audited_sha:
+        description: Exact audited commit to test
+        required: true
+        default: 90b5ca038155b97833b120baa57dfecd05d6f641
+      control_sha:
+        description: Exact test-fix control commit
+        required: true
+        default: a943dbf4a318fc2cb12f93b1d2a875ee51774572
+  pull_request:
+    paths:
+      - .github/workflows/audit-runtime.yml
+      - audits/gpt/runner/**
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-audit:
+    name: isolated-audit (${{ matrix.kind }}, Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - {python: '3.11', kind: audited}
+          - {python: '3.13', kind: audited}
+          - {python: '3.11', kind: control}
+    steps:
+      - name: Read runner implementation
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          path: runner-code
+      - name: Read pinned audited source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ matrix.kind == 'control' && (inputs.control_sha || 'a943dbf4a318fc2cb12f93b1d2a875ee51774572') || (inputs.audited_sha || '90b5ca038155b97833b120baa57dfecd05d6f641') }}
+          persist-credentials: false
+          path: audited-source
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Execute offline container workload
+        env:
+          AUDITED_SHA: ${{ matrix.kind == 'control' && (inputs.control_sha || 'a943dbf4a318fc2cb12f93b1d2a875ee51774572') || (inputs.audited_sha || '90b5ca038155b97833b120baa57dfecd05d6f641') }}
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+          AUDIT_KIND: ${{ matrix.kind }}
+        run: |
+          python runner-code/audits/gpt/runner/isolated_runner.py \
+            --source "$GITHUB_WORKSPACE/audited-source" \
+            --expected-sha "$AUDITED_SHA" \
+            --python-version "$AUDIT_PYTHON_VERSION" \
+            --output "$RUNNER_TEMP/audit-$AUDIT_KIND-$AUDIT_PYTHON_VERSION"
+      - name: Preserve audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-${{ matrix.kind }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results
+          if-no-files-found: warn
+          retention-days: 30
