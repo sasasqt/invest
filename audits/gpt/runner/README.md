@@ -30,7 +30,23 @@ The workflow uses two Python versions and read-only repository permissions; chec
 
 Metadata-only uv checks explicitly select the host interpreter, avoiding inherited UV_PYTHON values for an interpreter absent from that host. Test and build temporary files use disk-backed `/work/tmp` inside the private writable workspace, while the 2 GiB memory, two-CPU and 256-process limits remain enforced. This avoids exhausting the separate 256 MiB `/tmp` mount across repeated test suites.
 
-## Limitations and activation
+## Semantic output gate, version 2
+
+Every benchmark invocation saves a per-file semantic manifest after timing. Compressed CSV
+tables are decompressed and hashed; their gzip header timestamps are excluded. JSON and JSONL
+retain numeric values, identities, row order and substantive fields, while the predeclared
+`created_at`, `recorded_at`, `retrieved_at` and `created_utc` fields and output-root strings are
+normalized. Plain CSV bytes are hashed. Markdown and other declared UTF-8 text normalize only
+the output root. Other file types receive a raw-byte comparison rather than being silently
+skipped. PNGs must exist and be nonempty; rendered pixels are not compared, while source tables
+participate in the gate. Invalid compressed data fails the gate with its evidence retained.
+
+Samples and summaries identify semantic-gate version 2. Earlier version-1 timing samples remain
+historical measurements, with a narrower gate that omitted compressed tables and other
+unrecognized artifacts. Do not claim those samples prove equality of the omitted files or pool
+them into a matched version-2 comparison without a fresh equivalent run.
+
+## Execution limits
 
 Local guard tests verify command construction, source staging, hash checks and classification behavior. Each actual execution must also pass its kernel/file/network/process denial probes before product imports. A previous successful trial does not certify another host. Keep runner-code identity separate from audited-source identity; pull-request checkout merge commits must have matching runner blobs before attributing evidence to a PR head.
 
