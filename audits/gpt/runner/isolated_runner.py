@@ -11,12 +11,18 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import uuid
 from pathlib import Path
 
 
 def checked(argv, **kwargs):
-    return subprocess.run(argv, check=True, text=True, capture_output=True, **kwargs).stdout.strip()
+    result = subprocess.run(argv, text=True, capture_output=True, **kwargs)
+    if result.returncode:
+        raise RuntimeError(
+            f"{Path(argv[0]).name} exited {result.returncode}: {result.stderr.strip()}"
+        )
+    return result.stdout.strip()
 
 
 def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid):
@@ -205,7 +211,15 @@ def main():
     uv = shutil.which("uv")
     if not uv:
         raise RuntimeError("Trusted setup requires uv for metadata-only export")
-    common = ["--offline", "--no-build", "--no-python-downloads", "--directory", str(metadata)]
+    common = [
+        "--offline",
+        "--no-build",
+        "--no-python-downloads",
+        "--python",
+        sys.executable,
+        "--directory",
+        str(metadata),
+    ]
     checked([uv, "lock", "--check", *common])
     checked(
         [

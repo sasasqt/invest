@@ -46,6 +46,7 @@ jobs:
           path: audited-source
       - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
         with:
+          version: 0.13.6
           python-version: ${{ matrix.python }}
       - name: Execute offline container workload
         env:
