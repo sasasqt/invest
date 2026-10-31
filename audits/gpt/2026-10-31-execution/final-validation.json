@@ -1,0 +1,44 @@
+[
+  {
+    "command": [
+      "format",
+      "--check",
+      "--config",
+      "/workspace/scratch/deb477471b9d/audit-2026-10-31/source/pyproject.toml",
+      "/workspace/scratch/deb477471b9d/audit-execution-fix-2026-10-31"
+    ],
+    "exit": 0,
+    "stdout": "9 files already formatted\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "check",
+      "--config",
+      "/workspace/scratch/deb477471b9d/audit-2026-10-31/source/pyproject.toml",
+      "/workspace/scratch/deb477471b9d/audit-execution-fix-2026-10-31"
+    ],
+    "exit": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "unittest",
+      "test_guards"
+    ],
+    "exit": 0,
+    "summary": "_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 30 tests in 0.037s\n\nOK\n"
+  },
+  {
+    "command": [
+      "snapshot availability"
+    ],
+    "exit": 2,
+    "stdout": "{\n  \"status\": \"blocked\",\n  \"reason\": \"matching snapshot directory unavailable\"\n}\n"
+  },
+  {
+    "source_files": 110,
+    "mismatches": []
+  }
+]

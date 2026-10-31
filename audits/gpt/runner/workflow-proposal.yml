@@ -1,0 +1,58 @@
+name: Isolated audit runtime
+
+on:
+  workflow_dispatch:
+    inputs:
+      audited_sha:
+        description: Exact commit to test
+        required: true
+        default: 90b5ca038155b97833b120baa57dfecd05d6f641
+  pull_request:
+    paths:
+      - .github/workflows/audit-runtime.yml
+      - audits/gpt/runner/**
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - name: Read runner implementation
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          path: runner-code
+      - name: Read pinned audited source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.audited_sha || '90b5ca038155b97833b120baa57dfecd05d6f641' }}
+          persist-credentials: false
+          path: audited-source
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Execute offline container workload
+        env:
+          AUDITED_SHA: ${{ inputs.audited_sha || '90b5ca038155b97833b120baa57dfecd05d6f641' }}
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+        run: |
+          python runner-code/audits/gpt/runner/isolated_runner.py \
+            --source "$GITHUB_WORKSPACE/audited-source" \
+            --expected-sha "$AUDITED_SHA" \
+            --python-version "$AUDIT_PYTHON_VERSION" \
+            --output "$RUNNER_TEMP/audit-$AUDIT_PYTHON_VERSION"
+      - name: Preserve audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: audit-${{ matrix.python }}
+          path: ${{ runner.temp }}/audit-${{ matrix.python }}/results
+          if-no-files-found: warn
+          retention-days: 30
