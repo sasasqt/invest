@@ -1,6 +1,7 @@
 """Exported signals carry the factor's confirmation evidence without being chosen by it."""
 
 import json
+import re
 
 import pandas as pd
 import pytest
@@ -112,15 +113,51 @@ def test_fixed_formula_takes_evidence_from_its_confirm_run(tmp_path, data):
     assert not (tmp_path / "x").exists()
 
 
-def test_factor_from_another_experiment_is_refused(tmp_path, data):
+def _two_searches(tmp_path, data):
+    """Run two searches with different seeds into one ledger; return each one's factor ids."""
     book = tmp_path / "ledger.jsonl"
     assert _search(data, tmp_path / "first", book) == 0
     assert _search(data, tmp_path / "other", book, seed=5) == 0
-    member = next((tmp_path / "first" / "factors").glob("*.json"))
-    with pytest.raises(SystemExit, match="was selected in experiment"):
+    return [
+        set(pd.read_csv(tmp_path / name / "confirmation.csv")["factor_id"])
+        for name in ("first", "other")
+    ]
+
+
+def _experiment_id(root):
+    return json.loads((root / "config.json").read_text(encoding="utf-8"))["experiment"][
+        "experiment_id"
+    ]
+
+
+def test_factor_from_another_experiment_is_refused(tmp_path, data):
+    # A factor both searches selected reaches the experiment-identity guard; picking a file
+    # by directory order could pick one the other search never tested (REVIEW-22).
+    first, other = _two_searches(tmp_path, data)
+    shared = sorted(first & other)
+    assert shared, "the two searches share no factor; the test needs one"
+    first_id, other_id = _experiment_id(tmp_path / "first"), _experiment_id(tmp_path / "other")
+    assert first_id != other_id
+    member = tmp_path / "first" / "factors" / f"{shared[0]}.json"
+    with pytest.raises(
+        SystemExit, match=re.escape(f"was selected in experiment {first_id}, not {other_id}")
+    ):
         _export(
             data, tmp_path / "x", "--factor", str(member), "--confirmation", str(tmp_path / "other")
         )
+    assert not (tmp_path / "x").exists()
+
+
+def test_factor_another_search_never_tested_is_refused(tmp_path, data):
+    first, other = _two_searches(tmp_path, data)
+    only_first = sorted(first - other)
+    assert only_first, "every factor of the first search was also tested by the other"
+    member = tmp_path / "first" / "factors" / f"{only_first[0]}.json"
+    with pytest.raises(SystemExit, match="was not confirmed in this output"):
+        _export(
+            data, tmp_path / "x", "--factor", str(member), "--confirmation", str(tmp_path / "other")
+        )
+    assert not (tmp_path / "x").exists()
 
 
 def test_fixed_formula_evidence_cannot_be_reused_at_another_horizon(tmp_path, data):
