@@ -66,8 +66,9 @@ def total_return_adjust(raw: pd.DataFrame, adjusted_close: str = "adjclose") -> 
 def iso_dates(values: pd.Series) -> pd.Series:
     """Parse ISO 8601 dates, NaT where unreadable; refuse text that mixes time zones.
 
-    pandas 3 raises on mixed offsets even when coercing; pandas 2 returns an object column
-    of datetimes instead, so the result's dtype is checked as well.
+    pandas 3 raises on mixed offsets even when coercing. The result's dtype is checked as
+    well, because pandas 2 (below this package's ``pandas>=3`` floor) returns an object
+    column of datetimes instead.
     """
     try:
         dates = pd.to_datetime(values, format="ISO8601", errors="coerce")
