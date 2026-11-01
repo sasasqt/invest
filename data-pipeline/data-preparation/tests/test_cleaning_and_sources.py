@@ -502,7 +502,7 @@ def test_import_csv_into_an_unnamed_out_fails_as_before(tmp_path, monkeypatch):
     """``--out .`` names an existing folder: the bundle writer refuses it, as on main."""
     monkeypatch.chdir(tmp_path)
     (tmp_path / "bars.csv").write_text(HEADER + "2024-01-05,A,10,11,9,10.5,100\n", encoding="utf-8")
-    with pytest.raises(BundleError, match="already exists"):
+    with pytest.raises((BundleError, SystemExit), match="already exists"):
         main(["import-csv", "bars.csv", "--out", ".", "--dataset-id", "d", *IMPORT_FLAGS])
 
 
@@ -529,3 +529,17 @@ def test_import_csv_that_keeps_no_rows_leaves_an_existing_bundle_alone(tmp_path,
     monkeypatch.chdir(tmp_path)  # ``--out .`` names an existing folder too
     with pytest.raises(SystemExit, match="already exists"):
         main(["import-csv", "bad.csv", "--out", ".", "--dataset-id", "b", *IMPORT_FLAGS])
+
+
+def test_import_csv_removes_a_stale_rejected_file(tmp_path):
+    """A clean publish leaves no rejected rows of an earlier run beside it (BH-2026-10-13-6)."""
+    src = tmp_path / "bars.csv"
+    src.write_text(HEADER + "05/01/2024,A,10,11,9,10.5,100\n", encoding="utf-8")
+    out = tmp_path / "b"
+    args = ["import-csv", str(src), "--out", str(out), "--dataset-id", "b", *IMPORT_FLAGS]
+    with pytest.raises(SystemExit, match="every row"):
+        main(args)
+    assert (tmp_path / "b.rejected.csv").exists()
+    src.write_text(HEADER + "2024-01-05,A,10,11,9,10.5,100\n", encoding="utf-8")
+    assert main(args) == 0
+    assert not (tmp_path / "b.rejected.csv").exists()

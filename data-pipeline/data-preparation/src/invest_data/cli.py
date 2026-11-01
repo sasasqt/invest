@@ -147,8 +147,11 @@ def _publish(
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
     )
+    rejected_csv = _rejected_csv(out)
     if len(report.rejected):
-        report.rejected.to_csv(_rejected_csv(out), index=False)
+        report.rejected.to_csv(rejected_csv, index=False)
+    elif rejected_csv.is_file():  # rejected rows of an earlier run (BH-2026-10-13-6)
+        rejected_csv.unlink()
     print(json.dumps({"bundle": str(out), "rows": manifest.row_count, **report.summary()}))
     if metadata["price_adjustment"] not in ADJUSTED_PRICES:
         print(
