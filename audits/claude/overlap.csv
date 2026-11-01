@@ -1,0 +1,23 @@
+date,check,minutes,findings,findings another routine already had,unique findings,twin check elsewhere
+2026-11-01,s2 uv lock --check + pyproject consistency + dependency declarations,3,0,0,0,none (bug hunt not comparable: switched off since 2026-10-27; GPT audit 2026-10-31 read pyprojects statically)
+2026-11-01,s2 ci.yml pins/permissions + docs commands vs ci.yml,2,0,0,0,docs audit 2026-10-31 CI-command check (DA-2026-10-31-12 already recorded by the docs audit)
+2026-11-01,s2 portability static scan (encoding/newline/rename/python literal),2,0 (174 sites = BUILD-03 class),1 (BUILD-03),0,GPT audit 2026-10-31 static scan (same 174 count)
+2026-11-01,s3 checks (3.13) ruff/mypy/pytest --cov/links,7,0,0,0,none (bug hunt not comparable); GitHub CI same SHA (red on attempts 2/3)
+2026-11-01,s3 checks (3.11),7,0,0,0,GitHub CI same SHA
+2026-11-01,s3 wheels job (build + fresh venv + pytest),5,1 (pandas-4 deprecations),0,1,GitHub CI same SHA (green; warnings not surfaced)
+2026-11-01,s3 independent installs x3,3,0 (same pandas warnings),0,0,GitHub CI same SHA
+2026-11-01,s3 flaky detection (hash-seed repeat; outcome diff),4,0 (INV-COMMON-001 did not reproduce locally),1 (INV-COMMON-001 from GitHub's red attempts),0,none
+2026-11-01,s3 GitHub parity (same SHA runs/attempts),2,1 (red check on main),1 (INV-COMMON-001 / PR #31),0,none
+2026-11-01,s4 replay at recorded revision + compare_record,4,0,0,0,bug hunt real-data replay (not comparable this week)
+2026-11-01,s4 replay at main + drift explanation + doc numbers,6,0,0,0,bug hunt real-data replay (not comparable); docs audit numbers check (DA ledger: none on these)
+2026-11-01,s4 ledger validity,1,0,0,0,none
+2026-11-01,s5 benchmarks (synth S/M/L/XL formats real-replay),22,0 (baseline),0,0,none
+2026-11-01,s6 contracts lens,2,0,0,0,none
+2026-11-01,s6 timing lens (prefix invariance executed),3,0,0,0,bug hunt causality tests (test_random_expressions_are_causal; not comparable)
+2026-11-01,s6 accounting lens,2,0,0,0,none
+2026-11-01,s6 statistics lens,2,0,0,0,bug hunt Wednesday statistics cross-check (not comparable this week)
+2026-11-01,s6 reported outputs lens,2,1 (censored duration unmarked),0,1,none
+2026-11-01,s6 quantile membership lens,2,0,0,0,none
+2026-11-01,s6 test-quality deep read (mining tests slice),10,0 (gap noted: no ts-op-over-universe test),0,0,"GPT audit 2026-10-31 (its coverage.csv: test_expressions.py reviewed in full, test_engine.py partially, the other test files inventoried only)"
+2026-11-01,s6 GPT cross-check (GA-1 own check; GA-2 hunt repro),8,1 (GA-1 two-model confirmation),2 (GA-1 by GPT; GA-2 = BH-2026-10-21-2),0,GPT audit 2026-10-31
+2026-11-01,s6 exploration: gzip artifact bytes; CLI defaults vs docs,3,1 (gzip MTIME),0,1,none
