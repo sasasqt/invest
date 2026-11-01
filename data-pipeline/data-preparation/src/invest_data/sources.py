@@ -17,7 +17,7 @@ from dataclasses import asdict, dataclass
 import numpy as np
 import pandas as pd
 
-from invest_data.cleaning import REQUIRED
+from invest_data.cleaning import REQUIRED, iso_dates
 from invest_data.schemas import AS_TRADED_CLOSE
 
 
@@ -165,11 +165,7 @@ def load_csv_bars(
     if date_format is None:
         text = raw["date"].str.strip()
         # ISO 8601 also reads "2024-01" or "2024" as its first day; a daily bar needs its day.
-        text = text.where(text.str.match(_ISO_DAY_PREFIX), "")
-        try:
-            dates = pd.to_datetime(text, format="ISO8601", errors="coerce")
-        except ValueError as exc:  # pandas 3 refuses mixed offsets even when coercing
-            raise ValueError(f"dates mix time zones; give plain YYYY-MM-DD dates ({exc})") from exc
+        dates = iso_dates(text.where(text.str.match(_ISO_DAY_PREFIX), ""))
     else:
         dates = pd.to_datetime(raw["date"], format=date_format, errors="coerce")
     out = pd.DataFrame({"date": dates, "instrument": raw["instrument"].str.strip()})

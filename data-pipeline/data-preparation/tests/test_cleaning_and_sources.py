@@ -543,3 +543,86 @@ def test_import_csv_removes_a_stale_rejected_file(tmp_path):
     src.write_text(HEADER + "2024-01-05,A,10,11,9,10.5,100\n", encoding="utf-8")
     assert main(args) == 0
     assert not (tmp_path / "b.rejected.csv").exists()
+
+
+def _pandas2_to_datetime(monkeypatch):
+    """Give ``pd.to_datetime`` pandas 2's documented answer to text that mixes time zones.
+
+    pandas 2.x returns an object column of ``Timestamp``s with a FutureWarning where pandas 3
+    raises ``ValueError`` (pandas 2.2.3 ``to_datetime`` docs, "mixed time zones"). CI runs
+    pandas 3, so this stands in for the oldest versions ``pandas>=2.1`` allows (INV-PR33-001).
+    """
+    real = pd.to_datetime
+
+    def to_datetime(arg, *args, **kwargs):
+        if isinstance(arg, pd.Series) and all(isinstance(v, str) for v in arg):
+            parsed = [real(v) if v else pd.NaT for v in arg]
+            zones = {str(v.tzinfo) for v in parsed if v is not pd.NaT}
+            if len(zones) > 1:
+                return pd.Series(parsed, index=arg.index, dtype=object)
+        return real(arg, *args, **kwargs)
+
+    monkeypatch.setattr(pd, "to_datetime", to_datetime)
+
+
+def _rows(*dates):
+    return "".join(f"{d},A,10,11,9,10.5,100\n" for d in dates)
+
+
+MIXED_ZONE_ROWS = {
+    "naive_and_offset": _rows("2024-01-05", "2024-01-08T00:00:00+01:00"),
+    "two_offsets": _rows("2024-01-05T00:00:00+01:00", "2024-01-08T00:00:00+02:00"),
+}
+
+
+@pytest.mark.parametrize("case", sorted(MIXED_ZONE_ROWS))
+def test_mixed_time_zones_are_refused_on_pandas_2_too(tmp_path, monkeypatch, case):
+    """The refusal holds where ``to_datetime`` returns an object column (INV-PR33-001)."""
+    _pandas2_to_datetime(monkeypatch)
+    with pytest.raises(SystemExit, match="mix time zones"):
+        _import_csv(tmp_path, case, MIXED_ZONE_ROWS[case])
+    assert not (tmp_path / case).exists()
+    assert not (tmp_path / f"{case}.rejected.csv").exists()
+    text = [line.split(",")[0] for line in MIXED_ZONE_ROWS[case].splitlines()]
+    raw = pd.DataFrame([[d, "A", 10, 11, 9, 10.5, 100] for d in text], columns=raw_rows().columns)
+    with pytest.raises(ValueError, match="mix time zones"):
+        clean_bars(raw)
+
+
+def test_dates_in_one_time_zone_still_parse_on_pandas_2(tmp_path, monkeypatch):
+    """Controls for the stand-in: plain dates and one shared offset keep every row."""
+    _pandas2_to_datetime(monkeypatch)
+    assert _import_csv(tmp_path, "plain", _rows("2024-01-05", "2024-01-08")) == 0
+    same = _rows("2024-01-05T00:00:00+01:00", "2024-01-08T00:00:00+01:00")
+    assert _import_csv(tmp_path, "same", same) == 0
+    for name in ("plain", "same"):
+        dates = read_market_bars(tmp_path / name)[1]["date"]
+        assert [str(d.date()) for d in dates] == ["2024-01-05", "2024-01-08"]
+
+
+@pytest.mark.parametrize(
+    "rows",
+    ["2024-01-05,A,10,11,9,10.5,100\n", "05/01/2024,A,10,11,9,10.5,100\n"],
+    ids=["valid_rows", "every_row_rejected"],
+)
+def test_import_csv_refuses_the_rejected_rows_file_of_its_own_out(tmp_path, monkeypatch, rows):
+    """The import rewrites or removes ``<out>.rejected.csv``: it is no source (INV-PR33-002).
+
+    On e719d76 a valid file was published and then deleted as a stale report, and a file
+    whose rows were all rejected was overwritten with the rejected rows.
+    """
+    src = tmp_path / "b.rejected.csv"
+    src.write_text(HEADER + rows, encoding="utf-8")
+    before = src.read_bytes()
+    (tmp_path / "x").mkdir()
+    monkeypatch.chdir(tmp_path)
+    spellings = [
+        (str(src), str(tmp_path / "b")),
+        ("b.rejected.csv", "b"),
+        (str(tmp_path / "x" / ".." / "b.rejected.csv"), str(tmp_path / "b")),
+    ]
+    for source, out in spellings:
+        with pytest.raises(SystemExit, match="file of rejected rows"):
+            main(["import-csv", source, "--out", out, "--dataset-id", "b", *IMPORT_FLAGS])
+        assert src.read_bytes() == before
+        assert not (tmp_path / "b").exists()

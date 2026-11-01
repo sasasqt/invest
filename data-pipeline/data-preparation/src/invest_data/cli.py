@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -266,6 +267,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.adjusted_close is not None:
         _check_convertible(args.price_adjustment)  # before reading the CSV
         extra = [args.adjusted_close]
+    # The import rewrites or removes <out>.rejected.csv (INV-PR33-002); an --out without a
+    # name, such as ".", has no such file and is refused by the bundle writer as before.
+    rejected_csv = _rejected_csv(args.out) if args.out.name else None
+    if (
+        rejected_csv is not None
+        and rejected_csv.exists()
+        and args.source.exists()
+        and os.path.samefile(args.source, rejected_csv)
+    ):
+        raise SystemExit(
+            f"{args.source} is the file of rejected rows of --out {args.out}, which this import "
+            "rewrites or removes; copy it to another name and import the copy"
+        )
     try:
         bars = load_csv_bars(args.source, extra_columns=extra)
     except ValueError as exc:
