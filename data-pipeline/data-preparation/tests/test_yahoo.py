@@ -407,7 +407,10 @@ def test_cli_download_without_symbols_or_results_fails(tmp_path, monkeypatch):
     )
 
 
-@pytest.mark.parametrize("start, end", [("2024-1-2", "2024-01-03"), ("2024-01-02", "20240103")])
+@pytest.mark.parametrize(
+    "start, end",
+    [("2024-1-2", "2024-01-03"), ("2024-01-02", "20240103"), ("2024/01/02", "2024-01-03")],
+)
 def test_download_refuses_dates_that_are_not_yyyy_mm_dd(tmp_path, start, end):
     """A snapshot's request bounds must replay by default (BH-2026-10-13-4).
 
@@ -421,6 +424,10 @@ def test_download_refuses_dates_that_are_not_yyyy_mm_dd(tmp_path, start, end):
     with pytest.raises(ValueError, match="YYYY-MM-DD"):
         download_snapshot(["AAA"], start, end, tmp_path / "snap", fetcher=never)
     assert not (tmp_path / "snap").exists()
+    # Refused before the destination is reserved: a taken one would be refused otherwise.
+    (tmp_path / "taken").mkdir()
+    with pytest.raises(ValueError, match="YYYY-MM-DD"):
+        download_snapshot(["AAA"], start, end, tmp_path / "taken", fetcher=never)
     with pytest.raises(ValueError, match="YYYY-MM-DD"):
         chart_url("AAA", start, end)
 

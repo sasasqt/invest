@@ -135,14 +135,14 @@ def _publish(
     if clean.empty:  # an empty market bundle is never what an import or replay is for
         if not len(report.rejected):
             raise SystemExit(f"{dataset_id}: the input has no rows; nothing was published")
+        reasons = report.summary()["rejected_by_reason"]
+        refused = f"{dataset_id}: every row was rejected ({reasons}); nothing was published"
+        if out.exists():  # a published bundle keeps its own rejected rows
+            raise SystemExit(f"{refused}, and {out} already exists")
         rejected_csv = _rejected_csv(out)
         rejected_csv.parent.mkdir(parents=True, exist_ok=True)  # publishing would have made it
         report.rejected.to_csv(rejected_csv, index=False)
-        reasons = report.summary()["rejected_by_reason"]
-        raise SystemExit(
-            f"{dataset_id}: every row was rejected ({reasons}); nothing was published. "
-            f"The rejected rows are in {rejected_csv}"
-        )
+        raise SystemExit(f"{refused}. The rejected rows are in {rejected_csv}")
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
