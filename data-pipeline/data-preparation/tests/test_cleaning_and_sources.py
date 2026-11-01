@@ -464,3 +464,43 @@ def test_import_csv_that_keeps_no_rows_publishes_nothing(tmp_path):
         _import_csv(tmp_path, "header_only", "")
     assert not (tmp_path / "header_only").exists()
     assert not (tmp_path / "header_only.rejected.csv").exists()
+
+
+def test_import_csv_that_keeps_no_rows_reports_into_a_new_folder(tmp_path):
+    """The rejected rows are written even when ``--out``'s folder does not exist yet."""
+    out = tmp_path / "new" / "sub" / "bundle"
+    src = tmp_path / "dayfirst.csv"
+    src.write_text(HEADER + "05/01/2024,A,10,11,9,10.5,100\n", encoding="utf-8")
+    with pytest.raises(SystemExit, match="every row"):
+        main(["import-csv", str(src), "--out", str(out), "--dataset-id", "d", *IMPORT_FLAGS])
+    assert not out.exists()
+    rejected = pd.read_csv(out.with_name("bundle.rejected.csv"))
+    assert rejected["reason"].tolist() == ["invalid_date"]
+
+
+def test_import_csv_rejects_dates_without_a_day(tmp_path):
+    """ISO 8601 reads ``2024-01`` and ``2024`` as their first day; a daily bar needs its day."""
+    rows = "2024-01,A,10,11,9,10.5,100\n2024-01-05,A,10,11,9,10.6,100\n"
+    rows += "2025,A,10,11,9,10.7,100\n202402,A,10,11,9,10.8,100\n"
+    assert _import_csv(tmp_path, "noday", rows) == 0
+    _, frame = read_market_bars(tmp_path / "noday")
+    assert [str(d.date()) for d in frame["date"]] == ["2024-01-05"]
+    rejected = pd.read_csv(tmp_path / "noday.rejected.csv")
+    assert rejected["close"].tolist() == [10.5, 10.7, 10.8]
+    assert set(rejected["reason"]) == {"invalid_date"}
+
+
+def test_load_csv_bars_leaves_an_explicit_format_error_as_pandas_gives_it(tmp_path):
+    src = tmp_path / "bars.csv"
+    src.write_text(HEADER + "05/01/2024,A,10,11,9,10.5,100\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="bad directive") as info:
+        load_csv_bars(src, date_format="%Q")
+    assert "time zones" not in str(info.value)
+
+
+def test_import_csv_into_an_unnamed_out_fails_as_before(tmp_path, monkeypatch):
+    """``--out .`` names an existing folder: the bundle writer refuses it, as on main."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "bars.csv").write_text(HEADER + "2024-01-05,A,10,11,9,10.5,100\n", encoding="utf-8")
+    with pytest.raises(BundleError, match="already exists"):
+        main(["import-csv", "bars.csv", "--out", ".", "--dataset-id", "d", *IMPORT_FLAGS])

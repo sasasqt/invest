@@ -101,6 +101,10 @@ def _check_convertible(adjustment: str) -> None:
         raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
 
 
+def _rejected_csv(out: Path) -> Path:
+    return out.with_name(out.name + ".rejected.csv")
+
+
 def _publish(
     raw: pd.DataFrame,
     out: Path,
@@ -128,10 +132,11 @@ def _publish(
         )
     except ValueError as exc:
         raise SystemExit(f"{dataset_id}: {exc}") from exc
-    rejected_csv = out.with_name(out.name + ".rejected.csv")
     if clean.empty:  # an empty market bundle is never what an import or replay is for
         if not len(report.rejected):
             raise SystemExit(f"{dataset_id}: the input has no rows; nothing was published")
+        rejected_csv = _rejected_csv(out)
+        rejected_csv.parent.mkdir(parents=True, exist_ok=True)  # publishing would have made it
         report.rejected.to_csv(rejected_csv, index=False)
         reasons = report.summary()["rejected_by_reason"]
         raise SystemExit(
@@ -143,7 +148,7 @@ def _publish(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
     )
     if len(report.rejected):
-        report.rejected.to_csv(rejected_csv, index=False)
+        report.rejected.to_csv(_rejected_csv(out), index=False)
     print(json.dumps({"bundle": str(out), "rows": manifest.row_count, **report.summary()}))
     if metadata["price_adjustment"] not in ADJUSTED_PRICES:
         print(
