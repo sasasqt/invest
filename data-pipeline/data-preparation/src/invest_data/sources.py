@@ -142,6 +142,12 @@ def load_csv_bars(
 
     ``extra_columns`` (not bar columns) are kept as given, for example an adjusted close
     for ``clean_bars(bars, adjusted_close=...)``.
+
+    Without ``date_format`` dates are read as ISO 8601 (year first, as
+    :func:`clean_bars` reads text dates). Day-first and month-first dates such as
+    ``05/01/2024`` are ambiguous, so they become NaT, which cleaning rejects as
+    ``invalid_date``, instead of being guessed. Dates that mix time-zone offsets raise
+    ``ValueError``.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -149,12 +155,13 @@ def load_csv_bars(
     missing = [c for c in REQUIRED if c not in raw.columns]
     if missing:
         raise ValueError(f"CSV is missing required columns {missing}")
-    out = pd.DataFrame(
-        {
-            "date": pd.to_datetime(raw["date"], format=date_format, errors="coerce"),
-            "instrument": raw["instrument"].str.strip(),
-        }
-    )
+    try:
+        dates = pd.to_datetime(
+            raw["date"].str.strip(), format=date_format or "ISO8601", errors="coerce"
+        )
+    except ValueError as exc:  # pandas refuses mixed offsets even when coercing
+        raise ValueError(f"dates mix time zones; give plain YYYY-MM-DD dates ({exc})") from exc
+    out = pd.DataFrame({"date": dates, "instrument": raw["instrument"].str.strip()})
     for col in REQUIRED[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
     # Parsed by cleaning, which judges null markers.

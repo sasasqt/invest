@@ -381,3 +381,86 @@ def test_clean_bars_judges_dtypes_not_only_values():
     validate_market_frame(clean.astype({"volume": "category", "close_as_traded": "category"}))
     with pytest.raises(BundleError, match="volume must hold real numbers"):
         validate_market_frame(clean.assign(volume=["a", "a"]).astype({"volume": "category"}))
+
+
+IMPORT_FLAGS = [
+    "--currency",
+    "EUR",
+    "--calendar",
+    "XETR",
+    "--price-adjustment",
+    "total_return_adjusted",
+]
+HEADER = "date,instrument,open,high,low,close,volume\n"
+
+
+def _import_csv(tmp_path, name, rows):
+    src = tmp_path / f"{name}.csv"
+    src.write_text(HEADER + rows, encoding="utf-8")
+    out = tmp_path / name
+    return main(["import-csv", str(src), "--out", str(out), "--dataset-id", name, *IMPORT_FLAGS])
+
+
+def test_import_csv_rejects_day_first_and_month_first_dates(tmp_path):
+    """Dates are ISO 8601 (DATA_CONTRACT); ambiguous ones are not guessed (K13).
+
+    On ``main`` the first two rows were published as 1 May and 1 August 2024 and the third
+    was dropped, with exit 0.
+    """
+    rows = "05/01/2024,A,10,11,9,10.5,100\n08/01/2024,A,10.5,11,10,10.8,100\n"
+    rows += "13/01/2024,A,10.8,11,10,10.9,100\n"
+    with pytest.raises(SystemExit, match="every row"):
+        _import_csv(tmp_path, "dayfirst", rows)
+    assert not (tmp_path / "dayfirst").exists()
+    rejected = pd.read_csv(tmp_path / "dayfirst.rejected.csv")
+    assert rejected["close"].tolist() == [10.5, 10.8, 10.9]
+    assert rejected["reason"].tolist() == ["invalid_date"] * 3
+    # A mixed file publishes its ISO rows on their own dates and rejects the others.
+    rows = "2024-01-05,A,10,11,9,10.5,100\n01/08/2024,A,10.5,11,10,10.8,100\n"
+    rows += "Jan 9 2024,A,10.8,11,10,10.9,100\n"
+    assert _import_csv(tmp_path, "mixed", rows) == 0
+    _, frame = read_market_bars(tmp_path / "mixed")
+    assert [str(d.date()) for d in frame["date"]] == ["2024-01-05"]
+    rejected = pd.read_csv(tmp_path / "mixed.rejected.csv")
+    assert rejected["close"].tolist() == [10.8, 10.9]
+    assert rejected["reason"].tolist() == ["invalid_date"] * 2
+
+
+def test_import_csv_keeps_year_first_dates_and_an_explicit_format(tmp_path):
+    """Year-first forms cannot be misread, so they still import on their own dates."""
+    rows = "2024-01-08,A,10,11,9,10.5,100\n 2024-01-09 ,A,10,11,9,10.5,100\n"
+    rows += "2024-1-10,A,10,11,9,10.5,100\n20240111,A,10,11,9,10.5,100\n"
+    rows += "2024-01-12 00:00:00,A,10,11,9,10.5,100\n"
+    assert _import_csv(tmp_path, "iso", rows) == 0
+    _, frame = read_market_bars(tmp_path / "iso")
+    got = [str(d.date()) for d in frame["date"]]
+    assert got == ["2024-01-08", "2024-01-09", "2024-01-10", "2024-01-11", "2024-01-12"]
+    assert not (tmp_path / "iso.rejected.csv").exists()
+    # A Python caller that names the format still reads day-first dates.
+    src = tmp_path / "dayfirst.csv"
+    src.write_text(HEADER + "05/01/2024,A,10,11,9,10.5,100\n", encoding="utf-8")
+    assert load_csv_bars(src, date_format="%d/%m/%Y")["date"].tolist() == [
+        pd.Timestamp("2024-01-05")
+    ]
+
+
+def test_import_csv_refuses_dates_that_mix_time_zones(tmp_path):
+    """pandas cannot parse mixed offsets one by one; the refusal says why."""
+    rows = "2024-01-05,A,10,11,9,10.5,100\n2024-01-08T00:00:00+01:00,A,10,11,9,10.5,100\n"
+    with pytest.raises(SystemExit, match="mix time zones"):
+        _import_csv(tmp_path, "tz", rows)
+    assert not (tmp_path / "tz").exists()
+
+
+def test_import_csv_that_keeps_no_rows_publishes_nothing(tmp_path):
+    """An empty market bundle is never published with exit 0 (BH-2026-10-13-3)."""
+    rows = "2024-01-02,AAA,0,0,0,0,100\n2024-01-03,AAA,10,9,8,11,100\n"
+    with pytest.raises(SystemExit, match=r"every row .*rejected"):
+        _import_csv(tmp_path, "bad", rows)
+    assert not (tmp_path / "bad").exists()
+    rejected = pd.read_csv(tmp_path / "bad.rejected.csv")
+    assert sorted(rejected["reason"]) == ["high_below_open_close", "non_positive_price"]
+    with pytest.raises(SystemExit, match="no rows"):
+        _import_csv(tmp_path, "header_only", "")
+    assert not (tmp_path / "header_only").exists()
+    assert not (tmp_path / "header_only.rejected.csv").exists()

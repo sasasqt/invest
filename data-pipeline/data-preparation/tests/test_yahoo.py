@@ -405,3 +405,53 @@ def test_cli_download_without_symbols_or_results_fails(tmp_path, monkeypatch):
         )
         == 1
     )
+
+
+@pytest.mark.parametrize("start, end", [("2024-1-2", "2024-01-03"), ("2024-01-02", "20240103")])
+def test_download_refuses_dates_that_are_not_yyyy_mm_dd(tmp_path, start, end):
+    """A snapshot's request bounds must replay by default (BH-2026-10-13-4).
+
+    On ``main`` ``2024-1-2`` was saved as given and the default replay then failed with
+    ``Invalid isoformat string``.
+    """
+
+    def never(url, timeout):
+        raise AssertionError("no request may be sent")
+
+    with pytest.raises(ValueError, match="YYYY-MM-DD"):
+        download_snapshot(["AAA"], start, end, tmp_path / "snap", fetcher=never)
+    assert not (tmp_path / "snap").exists()
+    with pytest.raises(ValueError, match="YYYY-MM-DD"):
+        chart_url("AAA", start, end)
+
+
+def test_cli_date_errors_exit_without_a_traceback(tmp_path, monkeypatch):
+    def never(url, timeout):
+        raise AssertionError("no request may be sent")
+
+    monkeypatch.setattr("invest_data.yahoo.http_get", never)
+    args = ["--snapshot", str(tmp_path / "s"), "--symbols", "AAA"]
+    with pytest.raises(SystemExit, match="YYYY-MM-DD"):
+        main(["yahoo", "download", *args, "--start", "2024-1-2", "--end", "2024-01-03"])
+    assert not (tmp_path / "s").exists()
+    write_fake_snapshot(bars(1, 20), tmp_path / "snap")
+    out = ["--out", str(tmp_path / "b"), "--dataset-id", "y"]
+    with pytest.raises(SystemExit, match="YYYY-MM-DD"):
+        main(
+            ["yahoo", "publish", "--snapshot", str(tmp_path / "snap"), *out, "--start", "2020-1-6"]
+        )
+    assert not (tmp_path / "b").exists()
+
+
+def test_cli_publish_that_keeps_no_rows_publishes_nothing(tmp_path):
+    """Every bar null (a delisted symbol, say): nothing is published (BH-2026-10-13-3)."""
+    src = bars(1, 10)
+    src["close"] = np.nan
+    write_fake_snapshot(src, tmp_path / "snap")
+    out = tmp_path / "b"
+    args = ["--snapshot", str(tmp_path / "snap"), "--out", str(out), "--dataset-id", "y"]
+    with pytest.raises(SystemExit, match=r"every row .*rejected"):
+        main(["yahoo", "publish", *args])
+    assert not out.exists()
+    rejected = pd.read_csv(tmp_path / "b.rejected.csv")
+    assert len(rejected) == 10 and set(rejected["reason"]) == {"missing_or_nonfinite_value"}

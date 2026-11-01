@@ -51,15 +51,18 @@ def _yahoo(args: argparse.Namespace) -> int:
     if args.yahoo_command == "download":
         if not symbols:
             raise SystemExit("give --symbols or --symbols-file")
-        snap = download_snapshot(
-            symbols,
-            args.start,
-            args.end,
-            args.snapshot,
-            timeout=args.timeout,
-            retry=RetryPolicy(attempts=args.attempts),
-            pause_seconds=args.pause,
-        )
+        try:
+            snap = download_snapshot(
+                symbols,
+                args.start,
+                args.end,
+                args.snapshot,
+                timeout=args.timeout,
+                retry=RetryPolicy(attempts=args.attempts),
+                pause_seconds=args.pause,
+            )
+        except ValueError as exc:
+            raise SystemExit(f"{args.snapshot}: {exc}") from exc
         print(
             json.dumps(
                 {
@@ -74,7 +77,10 @@ def _yahoo(args: argparse.Namespace) -> int:
         if symbols is None:
             symbols = list(read_snapshot_manifest(args.snapshot)["files"])
         symbols = [s for s in symbols if s not in set(args.exclude)]
-    raw, provenance = load_snapshot(args.snapshot, symbols, start=args.start, end=args.end)
+    try:
+        raw, provenance = load_snapshot(args.snapshot, symbols, start=args.start, end=args.end)
+    except ValueError as exc:
+        raise SystemExit(f"{args.snapshot}: {exc}") from exc
     currencies = set(provenance["currencies"].values())
     if len(currencies) != 1 or None in currencies:
         raise SystemExit(
@@ -122,12 +128,22 @@ def _publish(
         )
     except ValueError as exc:
         raise SystemExit(f"{dataset_id}: {exc}") from exc
+    rejected_csv = out.with_name(out.name + ".rejected.csv")
+    if clean.empty:  # an empty market bundle is never what an import or replay is for
+        if not len(report.rejected):
+            raise SystemExit(f"{dataset_id}: the input has no rows; nothing was published")
+        report.rejected.to_csv(rejected_csv, index=False)
+        reasons = report.summary()["rejected_by_reason"]
+        raise SystemExit(
+            f"{dataset_id}: every row was rejected ({reasons}); nothing was published. "
+            f"The rejected rows are in {rejected_csv}"
+        )
     provenance = {**provenance, "cleaning": report.summary()}
     manifest = publish_market_bars(
         clean, out, dataset_id=dataset_id, metadata=metadata, provenance=provenance, fmt=fmt
     )
     if len(report.rejected):
-        report.rejected.to_csv(out.with_name(out.name + ".rejected.csv"), index=False)
+        report.rejected.to_csv(rejected_csv, index=False)
     print(json.dumps({"bundle": str(out), "rows": manifest.row_count, **report.summary()}))
     if metadata["price_adjustment"] not in ADJUSTED_PRICES:
         print(
@@ -184,8 +200,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     ypub.add_argument("--out", type=Path, required=True)
     ypub.add_argument("--dataset-id", required=True)
     ypub.add_argument("--format", choices=["csv", "sqlite", "parquet"], default="csv")
-    ypub.add_argument("--start", help="inclusive subset start (defaults to snapshot request)")
-    ypub.add_argument("--end", help="inclusive subset end (defaults to snapshot request)")
+    ypub.add_argument(
+        "--start", help="inclusive subset start, YYYY-MM-DD (defaults to the snapshot request)"
+    )
+    ypub.add_argument(
+        "--end", help="inclusive subset end, YYYY-MM-DD (defaults to the snapshot request)"
+    )
     ypub.add_argument(
         "--universe-note",
         default="symbols chosen today and applied to all history (survivorship-biased)",
