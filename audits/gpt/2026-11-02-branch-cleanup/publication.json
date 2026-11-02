@@ -1,0 +1,58 @@
+{
+  "kind": "Post-publication verification of in-place audit-only cleanup",
+  "branch": "gpt/repo-audits",
+  "layout_commit": "4392be9bf11b217069fc4d256a3ef430af6c6968",
+  "layout_parent": "18a3bb690ec92263f6c714ebb19ce333983b4683",
+  "layout_tree": "45197ce5c861461d355993b871b2d4d929ff5091",
+  "remote_layout_ref_verified": true,
+  "normal_single_parent_commit": true,
+  "force_push": false,
+  "verified_parent_diff": {
+    "removed_inherited_files": 109,
+    "replaced_root_readme": 1,
+    "modified_existing_audit_protocol_files": 4,
+    "added_audit_evidence_files": 3,
+    "unexpected_paths": []
+  },
+  "preservation": {
+    "all_original_audit_paths_retained": 170,
+    "byte_and_mode_identical_original_audit_files": 166,
+    "state_blob": "5b1c64891c144f55a771897b2745132e4c0ebf37",
+    "checkpoint_blob": "02a3b70a9737a06993e32d35023d7cdcb6a2ac98",
+    "findings_coverage_queues_reports_tools_and_research_histories": "unchanged",
+    "source_commit_for_checkpoint_paths": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+  },
+  "protocol": {
+    "commit": "4392be9bf11b217069fc4d256a3ef430af6c6968",
+    "index_sha256": "3971f1368371353c060884292e0e2cc199abd1ee82f538d6d73dc725f1ad0606",
+    "all_18_local_method_digests_and_remote_git_blob_ids_verified": true,
+    "source_scope_and_publication_rules_updated": true,
+    "readonly_root_readme": true,
+    "root_readme_relative_links_resolve": true
+  },
+  "settings": {
+    "main": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "gpt/isolated-audit-runner": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "claude/repo-audits": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+    "audit_task": {
+      "prompt_exact": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Berlin:20261101T030000\nRRULE:FREQ=DAILY;BYHOUR=3;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "is_enabled": true
+    },
+    "pr_task": {
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Berlin:20261031T210000\nRRULE:FREQ=DAILY;BYHOUR=21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "is_enabled": true
+    },
+    "library": {
+      "library_file_id": "libfile_10a906ccde108191a2419e40fcb8bfef",
+      "version_id": "3",
+      "prompt_exact_except_read_terminal_newline": true
+    }
+  },
+  "runtime": {
+    "product_execution": "none",
+    "new_audit_dispatch": "none",
+    "runner_blocker": "INV-PR32-001 unresolved; no unsafe runner dispatched"
+  },
+  "rollback": "See manifest.json and ../2026-11-02-branch-cleanup.md; use a new normal commit, preserve later audit progress, and never reset or force-push."
+}
