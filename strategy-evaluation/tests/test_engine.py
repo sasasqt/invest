@@ -1061,6 +1061,37 @@ def test_a_session_without_orders_that_opens_insolvent_is_flagged():
     assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
 
 
+def test_an_open_stop_row_has_no_borrow_or_cash_interest():
+    """The run never reaches the close of the session it stops at, so that row carries no
+    borrow and no cash interest. Borrow 2500 bp and cash interest 25% a year over 250
+    sessions are 0.001 a day each. The window starts on 2024-01-03: interest 1, cash 1001.
+    The fill on 2024-01-04 is sized on 1001 (A +50.05, B -25.025); that close and the next
+    pay borrow 25.025 * 20 * 0.001 = 0.5005 each and earn 1.001 and 1.0015005: cash
+    1002.0015005. B opens at 100 on 2024-01-08: equity 1002.0015005 + 500.5 - 2502.5 =
+    -999.9984995, cum_costs 2 * 0.5005 = 1.001. Both positions, entered on 2024-01-04, end
+    open after 2 sessions."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    config = replace(
+        long_short_config(rebalance_every=100, borrow_bps_annual=2500, cash_rate_annual=0.25),
+        annualization=250,
+    )
+    res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    last, before = res.daily.iloc[-1], res.daily.iloc[-2]
+    assert res.daily.index[-1] == dates[5]
+    assert last["equity"] == pytest.approx(-999.9984995)
+    assert last["borrow_cost"] == 0.0 and last["financing"] == 0.0
+    assert last["traded_notional"] == 0.0
+    assert last["cum_costs"] == pytest.approx(1.001)
+    assert last["cum_costs"] == before["cum_costs"]
+    assert last["equity_before_costs"] == pytest.approx(
+        before["equity_before_costs"] * last["equity"] / before["equity"]
+    )
+    held = res.episodes.set_index("instrument")
+    assert held["status"].tolist() == ["open", "open"]
+    assert held["holding_sessions"].tolist() == [2, 2]
+
+
 def test_equity_of_exactly_zero_at_the_open_stops_without_liquidating():
     """B opens at 60: equity at the open is 1000 + 500 - 25 * 60 = 0. Sizing on it would sell
     every position (targets times zero equity); the run stops at that open instead."""
@@ -1128,6 +1159,12 @@ def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
     assert fills.set_index("instrument")["shares"].to_dict() == pytest.approx(
         {"A": -49.95, "B": 150.0 / 59.36}
     )
+    # Gross of costs, the stop row's return is (-8.7425 + 9.7425) / 985 - 1 on a gross path
+    # still at 1000 (the first fill's 15 is added back that day).
+    assert last["equity_before_costs"] == pytest.approx(1000.0 / 985.0)
+    held = res.episodes.set_index("instrument")
+    assert held["status"].tolist() == ["open", "open"]
+    assert held["holding_sessions"].tolist() == [2, 2]
     assert compute_metrics(res)["performance"]["insolvency"]["value"] == "2024-01-08"
 
 

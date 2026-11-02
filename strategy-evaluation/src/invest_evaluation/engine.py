@@ -9,7 +9,7 @@ Event order within each session ``t``:
 2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
-   shorts and interest on cash accrue.
+   shorts and interest on cash accrue. If equity is then not positive, the run stops.
 3. **Decision.** On rebalance dates, scores dated ``t`` (available after the close of
    ``t``) are turned into target weights. They fill at the open of ``t + 1 + delay``.
 
