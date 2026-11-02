@@ -1,0 +1,78 @@
+{
+  "run_id": "GA-2026-10-31T001744Z",
+  "planned_percent": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "actual_primary_unique_lines": {
+    "exploitation": 3616,
+    "exploration": 1407
+  },
+  "actual_percent": {
+    "exploitation": 71.98885128409317,
+    "exploration": 28.011148715906828
+  },
+  "scope": "Primary repository reading only; helpers tracked separately; research excluded",
+  "allocation_deviation": "Candidate verification and contract/caller reads increased exploitation beyond plan; no lines inferred from scans. Static slice closed at5023primary lines after runtime preflight failed.",
+  "seed_draw": {
+    "seed_method": "int.from_bytes(sha256(Berlin date UTF8),big)",
+    "date": "2026-10-31",
+    "seed": "67764745909170282274544890740121412302298899170212194471678358227477569304021",
+    "eligible_source": [
+      "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "data-pipeline/data-preparation/src/invest_data/yahoo.py"
+    ],
+    "source_draw": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+    "lens": "partial failure and recoverability",
+    "prior_lenses": "unavailable; no published state",
+    "eligible_topics": [
+      "carry",
+      "cost_capacity",
+      "negative_replication",
+      "portfolio_volatility_management",
+      "trend_vs_reversal"
+    ],
+    "topic_draw": "portfolio_volatility_management",
+    "peer_review_age": "unknown: counterpart branch absent"
+  },
+  "new_verified_distinct_root_causes": {
+    "exploitation": 0,
+    "exploration": 0
+  },
+  "static_contradictions_separate": {
+    "exploitation": [
+      "GA-2026-10-31-1"
+    ],
+    "exploration": []
+  },
+  "pooled_rates_per_1000_lines": {
+    "exploitation": 0.0,
+    "exploration": 0.0
+  },
+  "runs": 1,
+  "completed_full_audits": 0,
+  "eligibility": "Completed run with incomplete audit; actual static reading denominators saved. No new locally confirmed root cause credited: static contradiction was already present in28October unpublished notes; runtime impact remains unexecuted.",
+  "next_planned_percent": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "tie_policy": "Both pooled measured new-confirmation rates0: increase exploration10percentage points from40to50 per supplied tie rule.",
+  "last_four_completed_runs": [
+    {
+      "run_id": "GA-2026-10-31T001744Z",
+      "audit_complete": false,
+      "exploitation_lines": 3616,
+      "exploration_lines": 1407,
+      "new_verified_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "static_contradiction_rechecked": "GA-2026-10-31-1; present in unpublished28October evidence, not newly confirmed yield"
+    }
+  ]
+}

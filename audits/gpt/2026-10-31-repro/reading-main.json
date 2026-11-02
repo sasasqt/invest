@@ -1,0 +1,462 @@
+[
+  {
+    "path": "pyproject.toml",
+    "ranges": [
+      [
+        1,
+        52
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": ".github/workflows/ci.yml",
+    "ranges": [
+      [
+        1,
+        77
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "docs/ARCHITECTURE.md",
+    "ranges": [
+      [
+        1,
+        146
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "docs/DATA_CONTRACT.md",
+    "ranges": [
+      [
+        1,
+        40
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "ROADMAP.md",
+    "ranges": [
+      [
+        1,
+        65
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "README.md",
+    "ranges": [
+      [
+        1,
+        95
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "PYTHON_GUIDELINES.md",
+    "ranges": [
+      [
+        1,
+        70
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "CI_CD_GUIDELINES.md",
+    "ranges": [
+      [
+        1,
+        60
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "GIT_GUIDELINES.md",
+    "ranges": [
+      [
+        1,
+        90
+      ],
+      [
+        96,
+        137
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "DESIGN_BY_CONTRACT.md",
+    "ranges": [
+      [
+        1,
+        90
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "RAPID_DEVELOPMENT.md",
+    "ranges": [
+      [
+        1,
+        100
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-mining-framework/pyproject.toml",
+    "ranges": [
+      [
+        1,
+        17
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/pyproject.toml",
+    "ranges": [
+      [
+        1,
+        17
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/pyproject.toml",
+    "ranges": [
+      [
+        1,
+        13
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/expressions.py",
+    "ranges": [
+      [
+        1,
+        386
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+    "ranges": [
+      [
+        1,
+        67
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/inference.py",
+    "ranges": [
+      [
+        1,
+        77
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-mining-framework/tests/test_expressions.py",
+    "ranges": [
+      [
+        1,
+        146
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+    "ranges": [
+      [
+        1,
+        245
+      ],
+      [
+        250,
+        486
+      ],
+      [
+        490,
+        560
+      ],
+      [
+        565,
+        579
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "ranges": [
+      [
+        250,
+        325
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+    "ranges": [
+      [
+        1,
+        100
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+    "ranges": [
+      [
+        1,
+        175
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+    "ranges": [
+      [
+        1,
+        155
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "ranges": [
+      [
+        1,
+        115
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/search.py",
+    "ranges": [
+      [
+        130,
+        320
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "scripts/check_markdown_links.py",
+    "ranges": [
+      [
+        1,
+        111
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "scripts/save_run.py",
+    "ranges": [
+      [
+        1,
+        215
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "scripts/synthetic_workflow.sh",
+    "ranges": [
+      [
+        1,
+        35
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "scripts/historical_workflow.sh",
+    "ranges": [
+      [
+        1,
+        129
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "docs/REPORTING.md",
+    "ranges": [
+      [
+        1,
+        46
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/README.md",
+    "ranges": [
+      [
+        1,
+        7
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/README.md",
+    "ranges": [
+      [
+        1,
+        41
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "ledgers/yahoo-test.jsonl",
+    "ranges": [
+      [
+        1,
+        2
+      ]
+    ],
+    "bucket": "exploitation",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+    "ranges": [
+      [
+        1,
+        412
+      ]
+    ],
+    "bucket": "exploration",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+    "ranges": [
+      [
+        1,
+        630
+      ]
+    ],
+    "bucket": "exploration",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+    "ranges": [
+      [
+        1,
+        155
+      ]
+    ],
+    "bucket": "exploration",
+    "producer": "main",
+    "date": "2026-10-31"
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+    "ranges": [
+      [
+        1,
+        210
+      ]
+    ],
+    "bucket": "exploration",
+    "producer": "main",
+    "date": "2026-10-31"
+  }
+]

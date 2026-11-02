@@ -1,0 +1,100 @@
+{
+  "run_id": "GA-2026-10-31T001744Z",
+  "start_date": "2026-10-31",
+  "started_utc": "2026-10-31T00:17:44Z",
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "tree": "9b48fbc155c6f5006969241585f48953f63e809e",
+  "profile": "full_repository_audit_attempt",
+  "setup_budget_seconds": 900,
+  "total_budget_seconds": 10800,
+  "per_case_timeout_seconds": 60,
+  "memory_ceiling_bytes": 2147483648,
+  "research_budget_seconds": 1800,
+  "reading_split": {
+    "planned": [
+      60,
+      40
+    ],
+    "actual_lines": {
+      "exploitation": 3616,
+      "exploration": 1407
+    },
+    "next": [
+      50,
+      50
+    ]
+  },
+  "research_split": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "model_effort": "model/effort unavailable; audit continued as authorized.",
+  "preflight": {
+    "access": "passed GitHub connector",
+    "identity": "110 tracked files verified against recursive remote manifest; no Git checkout",
+    "isolation": "failed: bwrap open /proc/8/ns/ns ENOENT; unshare uid_map EPERM",
+    "dependencies": "blocked before install: no verified execution isolation",
+    "platforms": "Linux host; no repository platform execution",
+    "own_state": "gpt/repo-audits absent at preflight; old scratch 2026-10-28 treated as untrusted unpublished leads",
+    "peer": "claude/repo-audits absent",
+    "persistence": "local artifacts prepared; remote publication pending",
+    "publication": "not started"
+  },
+  "steps": {
+    "preflight": "partial; isolationblocked",
+    "inventory": "done110exactblobs",
+    "static_analysis": "partial; savedranges",
+    "independent_review": "doneC1C2C3andR1R2static/literatureonly",
+    "tests": "blocked",
+    "workflows": "blocked",
+    "benchmarks": "blocked",
+    "research": "partial5screened2specified0run",
+    "publication": "prepared_not_published"
+  },
+  "status": "audit_incomplete",
+  "last_audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "last_audited_date": "2026-10-31",
+  "last_run_id": "GA-2026-10-31T001744Z",
+  "coverage_counts": {
+    "reviewed": 23,
+    "inventoried": 27,
+    "partially_reviewed": 19,
+    "checked_automatically": 41
+  },
+  "last_four_completed_runs": [
+    {
+      "run_id": "GA-2026-10-31T001744Z",
+      "audit_complete": false,
+      "exploitation_lines": 3616,
+      "exploration_lines": 1407,
+      "new_verified_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "static_contradiction_rechecked": "GA-2026-10-31-1; present in unpublished28October evidence, not newly confirmed yield"
+    }
+  ],
+  "last_peer_revision": null,
+  "peer_fingerprints": [],
+  "remaining_work": [
+    "Establish existing enforced credential filesystem isolation and sentinel/denied-operation evidence",
+    "Exact locked environment+uv lock --check and resolved installed graph",
+    "Six distinct CI jobs locally,coverageJSON,slowest25,hashseedrepeat,wheel importpaths",
+    "Full remaining semantic intervals in dated-repro/remaining-semantic-ranges.json",
+    "GA1/GA2tworepeats+controls and policy clarification",
+    "Actualpublishedboundarysyntheticworkflow+3formats+recordrecovery",
+    "Matchpermittedrawsnapshot; original/mainreplay; noreserveddata",
+    "Allsoftwarebenchmarkssemanticgates+comparablebaseline",
+    "Remainingtestquality,portability,advisory,artifact/schema/CLIcallerreview",
+    "Researchoracleexecution; monthlyhypothesisremainsscheduling/data blocked"
+  ],
+  "publication": {
+    "status": "prepared_not_published",
+    "branch": "gpt/repo-audits",
+    "base_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "report_path": "audits/gpt/2026-10-31.md",
+    "run_id": "GA-2026-10-31T001744Z"
+  },
+  "safe_resume": "First reconcile remote publication/runID; verify immutable110blobscope and all currentdatarestrictions. Reuse only originalsamecontentstatic evidence, never claimblockedchecks passed. Resume checkpointless7days only if immutable snapshot/evidence usable; otherwise supersede with reason.",
+  "research_state": "research/state.json"
+}

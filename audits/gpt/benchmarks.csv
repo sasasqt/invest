@@ -1,0 +1,2 @@
+run_id,case,status,wall_seconds,cpu_seconds,peak_rss_bytes,samples,reason
+GA-2026-10-31T001744Z,all required software workloads,blocked,,,,0,No verified execution boundary or locked local environment

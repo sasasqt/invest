@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "run_id": "GA-2026-10-31T001744Z",
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "findings": [
+    {
+      "id": "GA-2026-10-31-1",
+      "fingerprint": "contract:data-mining-framework/src/invest_mining/expressions.py:unary-membership-mask-truncates-full-history",
+      "category": "contract/implementation consistency",
+      "severity": "medium",
+      "priority": "P2",
+      "status": "new",
+      "confidence": "high for static contradiction; runtime unverified",
+      "evidence_label": "verified_static_contract_contradiction",
+      "runtime_label": "plausible",
+      "title": "Unary membership masking contradicts the full-history time-series contract",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/data-mining-framework/src/invest_mining/expressions.py#L290",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/data-mining-framework/src/invest_mining/expressions.py#L337",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/data-mining-framework/src/invest_mining/inference.py#L29"
+      ],
+      "expected": "Membership restricts cross-sections; pointwise unary transforms preserve the historical inputs used by subsequent time-series operators.",
+      "observed_static": "Unary operators share the membership-masking else branch with cross-sectional operators; binary and TS branches do not.",
+      "synthetic_example": {
+        "dates": [
+          "2024-01-02",
+          "2024-01-03",
+          "2024-01-04"
+        ],
+        "close": [
+          4,
+          9,
+          16
+        ],
+        "membership": [
+          false,
+          true,
+          true
+        ],
+        "expression": "ts_sum(abs(close),2)",
+        "contract_expected_at_entry": 13,
+        "static_trace_at_entry": "NaN",
+        "control": "ts_sum(close,2), no-universe/all-True membership =>13; next member date25"
+      },
+      "impact": "Entry/re-entry score missingness can propagate to selection, diagnostic coverage and signal export; no actual historical/default verdict change observed.",
+      "runtime_repeats": 0,
+      "negative_control_execution": "blocked",
+      "evidence": [
+        "2026-10-31-repro/verifier-a.md",
+        "2026-10-31-repro/reviewer1-initial.json"
+      ],
+      "correction_boundary": "Investigate masking only true cross-sectional operators; preserve final eligibility masking; consider OPERATOR_VERSION and artifact migration. No fix implemented.",
+      "acceptance": "Untouched-revision repeated reproduction+passing controls after isolation; entrant/re-entry unary identities; CS exclusions remain; explicit version decision.",
+      "effort": "M estimate",
+      "owner": "mining maintainer; user decides",
+      "also_found_by": [],
+      "novelty": "No exact match in accessible main TODO/open PRs; unpublished2026-10-28 scratch lead, first published here; unavailable private stores unknown",
+      "history": [
+        {
+          "date": "2026-10-31",
+          "status": "new",
+          "evidence": "independently corroborated static scope only"
+        }
+      ],
+      "first_seen_unpublished": "2026-10-28",
+      "first_published_date": "2026-10-31"
+    },
+    {
+      "id": "GA-2026-10-31-2",
+      "fingerprint": "benchmark:strategy-evaluation/src/invest_evaluation/engine.py:universe-ew-omits-explicit-settlement",
+      "category": "financial benchmark",
+      "severity": "medium if policy confirmed",
+      "priority": "P2",
+      "status": "new",
+      "confidence": "high source omission; medium intended-policy interpretation",
+      "evidence_label": "plausible",
+      "title": "Universe benchmark omits explicit cash settlements",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/engine.py#L539",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/engine.py#L406",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/metrics.py#L282"
+      ],
+      "expected": "Declare whether gross universe EW total returns incorporate valid settlement/retirement events consistently with portfolio economics.",
+      "observed_static": "Benchmark uses close ratios and prior membership only; no settlement_events/retired input.",
+      "synthetic_example": {
+        "previous_closes": [
+          20,
+          20
+        ],
+        "current_closes": [
+          20,
+          20
+        ],
+        "settlement_A": 5,
+        "prior_EW_wealth": 100,
+        "settlement_inclusive_expected_return": -0.375,
+        "price_only_static_result": 0,
+        "control": "No settlement or settlement equals close =>0"
+      },
+      "impact": "Relative metrics and optional universe-IR rule can change under settlements; default benchmark validation is none. Actual metric/verdict flip unobserved.",
+      "runtime_repeats": 0,
+      "negative_control_execution": "blocked",
+      "evidence": [
+        "2026-10-31-repro/verifier-a.md"
+      ],
+      "correction_boundary": "Clarify intended policy before implementation; if intentional price-only proxy, label and restrict comparability. External benchmark not subject to strategy delisting events.",
+      "acceptance": "Explicit policy; twice-repeated event/control checks; >=20-session relative-metric fixture; retirement and prefix causality; preserve missing-value statuses.",
+      "effort": "M estimate",
+      "owner": "evaluation maintainer; user decides",
+      "also_found_by": [],
+      "history": [
+        {
+          "date": "2026-10-31",
+          "status": "new",
+          "evidence": "plausible; no runtime or authoritative policy resolution"
+        }
+      ],
+      "first_seen_unpublished": "2026-10-28",
+      "first_published_date": "2026-10-31"
+    }
+  ],
+  "known_external": [
+    {
+      "peer_id": "BH-2026-10-15-1",
+      "aliases": [
+        "REVIEW-19"
+      ],
+      "status": "known/open on audited main",
+      "root_cause": "gross addback denominator uses prior equity plus past costs",
+      "pr": 26,
+      "head": "785b20c468a58117862cffe1fec480c253b5d939",
+      "evidence": "open-prs.json plus PR26 primary description; engine525-526 static trace",
+      "not_new": true,
+      "fix_verification": "not locally executed; unmerged PR is not fixed main"
+    },
+    {
+      "peer_id": "INV-COMMON-001",
+      "aliases": [
+        "REVIEW-22 on PR27 branch"
+      ],
+      "status": "known/open; not independently reproduced in this audit",
+      "root_cause": "refusal test factor chosen by directory iteration order",
+      "pr": 27,
+      "head": "4ccb3ab2732b55ff97fad5229232a8a1cfe051dd",
+      "not_new": true
+    }
+  ],
+  "dropped_candidates": [
+    {
+      "key": "C3",
+      "reason": "same gross-cost root cause already tracked by BH-2026-10-15-1/PR26; no new GA discovery",
+      "counterfactual": "A distinct failing invariant beyond PR26 would warrant a separate item",
+      "evidence": "2026-10-31-repro/verifier-a.md"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+id,command,sha,environment,outcome,counts,duration_seconds,evidence
+V01,GitHub recursive tree + SHA1(blob header+bytes),90b5ca038155b97833b120baa57dfecd05d6f641,trusted local parser,passed,"{""files"": 110}",,"110original blobs; no omitted files,extras,submodules,symlinks,LFS; static-checks.json"
+V02,bwrap namespace launch; unshare uid_map,90b5ca038155b97833b120baa57dfecd05d6f641,host tooling,blocked,,,bwrap ENOENT/proc namespace; unshare EPERM; no working boundary or sentinel pass
+V03,ast.parse on every tracked Python file,90b5ca038155b97833b120baa57dfecd05d6f641,trusted standard-library parser,passed,"{""python_files"": 54}",0.34730568800000583,static-checks.json
+V040,bash -n scripts/historical_workflow.sh,90b5ca038155b97833b120baa57dfecd05d6f641,bash syntax parser,passed,"{""exit_code"": 0}",,exit0; set-euo-pipefail present; never sourced
+V041,bash -n scripts/synthetic_workflow.sh,90b5ca038155b97833b120baa57dfecd05d6f641,bash syntax parser,passed,"{""exit_code"": 0}",,exit0; set-euo-pipefail present; never sourced
+V05,uv lock --check,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V06,uv sync --frozen; resolved dependency graph check,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V07,ruff format --check .; ruff check .; mypy three src paths,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V08,pytest branch coverage JSON +25slowest,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V09,PYTHONHASHSEED=12345 full pytest repeat,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V10,build3wheels; clean installed wheel+independence+CLI jobs,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V11,scripts/check_markdown_links.py,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V12,published-boundary deterministic synthetic workflow; csv/sqlite/parquet,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V13,candidate reproductions twice +negative controls,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V14,software benchmark S/M/L/XL/formats,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable
+V15,historical replay original+main at matching locked environments,90b5ca038155b97833b120baa57dfecd05d6f641,local repository execution,blocked,,,credential filesystem isolation unavailable; matching raw snapshot absent; manifest-only record
+CI-113563881883,wheels,90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069
+CI-113563882148,independent-install (data-mining-framework),90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069
+CI-113563882172,checks (3.13),90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069
+CI-113563882202,checks (3.11),90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069
+CI-113563882285,independent-install (data-pipeline/data-preparation),90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069
+CI-113563882320,independent-install (strategy-evaluation),90b5ca038155b97833b120baa57dfecd05d6f641,"GitHub Actions ubuntu-latest,8October2026",success,"{""job_success"": 1}",,https://github.com/sasasqt/invest/actions/runs/37851091069

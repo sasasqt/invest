@@ -1,0 +1,42 @@
+[
+  {
+    "number": 29,
+    "title": "Docs: deliver review fixes in the existing pull request or a recreated one",
+    "url": "https://github.com/sasasqt/invest/pull/29",
+    "head": "650f9c8cc407bfeabc7e023ba4d9ff1f77b1684d",
+    "base": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "state": "open",
+    "draft": false,
+    "updated_at": "2026-10-30T01:01:55Z"
+  },
+  {
+    "number": 28,
+    "title": "Docs: extra full-diff review round when results change or the change is large",
+    "url": "https://github.com/sasasqt/invest/pull/28",
+    "head": "5596b4a31dba531d2878cf09e77ab4e0cdd439de",
+    "base": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "state": "open",
+    "draft": false,
+    "updated_at": "2026-10-30T01:01:53Z"
+  },
+  {
+    "number": 27,
+    "title": "Fix mining diagnostics: decile coverage, staggered spread, evaluate ordering (REVIEW-15)",
+    "url": "https://github.com/sasasqt/invest/pull/27",
+    "head": "4ccb3ab2732b55ff97fad5229232a8a1cfe051dd",
+    "base": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "state": "open",
+    "draft": false,
+    "updated_at": "2026-10-30T01:01:49Z"
+  },
+  {
+    "number": 26,
+    "title": "Compute gross-of-costs returns from each session's own costs (REVIEW-19)",
+    "url": "https://github.com/sasasqt/invest/pull/26",
+    "head": "785b20c468a58117862cffe1fec480c253b5d939",
+    "base": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "state": "open",
+    "draft": false,
+    "updated_at": "2026-10-30T01:01:57Z"
+  }
+]

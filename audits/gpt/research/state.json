@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "run_id": "GA-2026-10-31T001744Z",
+  "search_cutoff": "2026-10-31",
+  "search_range": "first published run: emphasize last12months; add older foundational and contrary work; not exhaustive",
+  "papers_screened": 5,
+  "primary_bibliographies_verified": 4,
+  "qualified_new_explicit_queue_candidates": 2,
+  "experiments_run": 0,
+  "planned_minutes": 30,
+  "actual_exclusive_minutes": null,
+  "actual_timing_limitation": "Main source reads were interleaved; do not manufacture per-bucket minutes/rates. Research helper measured38seconds initial read window only; note writing/research total unavailable.",
+  "planned_split": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "actual_split": "not reliably measured by exclusive time",
+  "advances": [
+    {
+      "id": "ADV-2026-10-31-1",
+      "candidate": "GA-2026-10-31-3",
+      "bucket": "exploitation",
+      "question": "Does the proposed fixed-share six-session oracle reach the supported boundary?",
+      "resolution": "No; independent source trace found public weights API and warmup gaps; version2 revises specification",
+      "evidence": "../2026-10-31-repro/research-verifier.md"
+    },
+    {
+      "id": "ADV-2026-10-31-2",
+      "candidate": "GA-2026-10-31-4",
+      "bucket": "exploration",
+      "question": "Can exact monthly overlay be run through current fixed-stride strategy interface?",
+      "resolution": "No; keep blocked rather than emulate with daily rebalance",
+      "evidence": "../2026-10-31-repro/research-verifier.md"
+    }
+  ],
+  "rates_advances_per_hour": {
+    "exploitation": null,
+    "exploration": null
+  },
+  "next_split": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "reason": "insufficient reliable per-category measured time/completed eligible-run evidence",
+  "last_four_completed_runs": [],
+  "queued_ids": [
+    "GA-2026-10-31-3",
+    "GA-2026-10-31-4"
+  ],
+  "query_history": "queries.jsonl",
+  "source_history": "papers.jsonl",
+  "seed_draw": "portfolio_volatility_management",
+  "preexisting_unpublished_leads": [
+    "cohort accounting",
+    "lineage balancing",
+    "VIX-gated reversal"
+  ],
+  "experiments_status": "all blocked; zero attempted variants; no confirmation data consumed"
+}

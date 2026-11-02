@@ -1,0 +1,661 @@
+{
+  "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "run_url": "https://github.com/sasasqt/invest/actions/runs/37851091069",
+  "run_date": "2026-10-08",
+  "jobs": [
+    {
+      "id": 113563881883,
+      "name": "wheels",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:08:06Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563881883",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv build --all-packages --out-dir \"$RUNNER_TEMP/dist\"",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install the built wheels into a clean venv",
+          "conclusion": "success"
+        },
+        {
+          "name": "CLI smoke test",
+          "conclusion": "success"
+        },
+        {
+          "name": "Component and end-to-end tests against the installed wheels",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 113563882148,
+      "name": "independent-install (data-mining-framework)",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:05:06Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563882148",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install component alone (plus the data contract package it depends on)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Mining must not be importable from evaluation",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run /tmp/venv/bin/python -m pytest -p no:cacheprovider data-mining-framework/tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 113563882172,
+      "name": "checks (3.13)",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:08:06Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563882172",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv sync --frozen",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run ruff format --check .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run ruff check .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run python scripts/check_markdown_links.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 113563882202,
+      "name": "checks (3.11)",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:11:15Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563882202",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv sync --frozen",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run ruff format --check .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run ruff check .",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run python scripts/check_markdown_links.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 113563882285,
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:04:36Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563882285",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install component alone (plus the data contract package it depends on)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Mining must not be importable from evaluation",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Run /tmp/venv/bin/python -m pytest -p no:cacheprovider data-pipeline/data-preparation/tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 113563882320,
+      "name": "independent-install (strategy-evaluation)",
+      "conclusion": "success",
+      "started_at": "2026-10-08T22:04:20Z",
+      "completed_at": "2026-10-08T22:05:49Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/113563882320",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install component alone (plus the data contract package it depends on)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Mining must not be importable from evaluation",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run /tmp/venv/bin/python -m pytest -p no:cacheprovider strategy-evaluation/tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "excerpts": [
+    {
+      "job_id": 113563882202,
+      "lines": [
+        "2026-10-08T22:04:29.9557078Z  + mypy==2.4.0",
+        "2026-10-08T22:04:29.9557507Z  + mypy-extensions==1.1.0",
+        "2026-10-08T22:04:30.1317921Z All checks passed!",
+        "2026-10-08T22:04:30.1361041Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src",
+        "2026-10-08T22:04:30.1361838Z \u001b[36;1muv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src\u001b[0m",
+        "2026-10-08T22:11:09.4575402Z data-mining-framework/src/invest_mining/__init__.py              1      0      0      0   100%",
+        "2026-10-08T22:11:09.4577257Z data-mining-framework/src/invest_mining/artifact.py             50      2      8      2    93%   31, 62",
+        "2026-10-08T22:11:09.4579457Z data-mining-framework/src/invest_mining/cli.py                 300      7     72      3    97%   410-411, 422, 518, 533-534, 727",
+        "2026-10-08T22:11:09.4581459Z data-mining-framework/src/invest_mining/diagnostics.py         162      2     30      2    98%   42, 60",
+        "2026-10-08T22:11:09.4583543Z data-mining-framework/src/invest_mining/expressions.py         234     11     96      5    94%   168, 193, 195, 201, 220-223, 260-262",
+        "2026-10-08T22:11:09.4585583Z data-mining-framework/src/invest_mining/inference.py            20      0      2      0   100%",
+        "2026-10-08T22:11:09.4587432Z data-mining-framework/src/invest_mining/ledger.py              132      1     52      1    99%   102",
+        "2026-10-08T22:11:09.4589397Z data-mining-framework/src/invest_mining/reporting.py            49      0      0      0   100%",
+        "2026-10-08T22:11:09.4591366Z data-mining-framework/src/invest_mining/search.py              156      4     54      4    96%   103, 112, 175-176, 266->278",
+        "2026-10-08T22:11:09.4593333Z data-pipeline/data-preparation/src/invest_data/__init__.py       1      0      0      0   100%",
+        "2026-10-08T22:11:09.4596472Z data-pipeline/data-preparation/src/invest_data/bundle.py       415     43    218     30    88%   86-87, 91, 128->130, 165, 167, 173, 185, 198, 202, 211, 215, 220, 226, 267, 269, 273, 275, 294-298, 314, 323, 329, 358, 360, 363, 402-404, 466, 495, 516, 518, 527->533, 541-542, 544, 548, 563, 620-621, 623",
+        "2026-10-08T22:11:09.4599844Z data-pipeline/data-preparation/src/invest_data/cleaning.py      95      2     30      2    97%   80, 86",
+        "2026-10-08T22:11:09.4601897Z data-pipeline/data-preparation/src/invest_data/cli.py          123      7     38      5    91%   74-76, 80, 208, 216, 252",
+        "2026-10-08T22:11:09.4604213Z data-pipeline/data-preparation/src/invest_data/pit.py           35      1     18      1    96%   55",
+        "2026-10-08T22:11:09.4606445Z data-pipeline/data-preparation/src/invest_data/schemas.py      236     13     94      9    93%   117, 164, 266-267, 274-275, 403, 432, 450, 454, 500, 510, 541",
+        "2026-10-08T22:11:09.4608889Z data-pipeline/data-preparation/src/invest_data/sources.py      129      2     38      2    98%   151, 190",
+        "2026-10-08T22:11:09.4610828Z data-pipeline/data-preparation/src/invest_data/testing.py       23      0      0      0   100%",
+        "2026-10-08T22:11:09.4612944Z data-pipeline/data-preparation/src/invest_data/yahoo.py        205     14     52     10    91%   63, 65, 73-76, 189, 249, 258, 283, 314, 341, 372, 398",
+        "2026-10-08T22:11:09.4615062Z strategy-evaluation/src/invest_evaluation/__init__.py            1      0      0      0   100%",
+        "2026-10-08T22:11:09.4616997Z strategy-evaluation/src/invest_evaluation/cli.py               188      6     54      4    96%   104, 141-142, 206, 238, 378",
+        "2026-10-08T22:11:09.4619139Z strategy-evaluation/src/invest_evaluation/config.py            140      3     42      3    97%   112, 175, 203",
+        "2026-10-08T22:11:09.4621341Z strategy-evaluation/src/invest_evaluation/engine.py            290     14    106      9    94%   122, 127, 132-133, 223, 226, 229, 253-254, 312-322, 409, 535",
+        "2026-10-08T22:11:09.4623546Z strategy-evaluation/src/invest_evaluation/metrics.py           184      2     48      1    99%   38-39",
+        "2026-10-08T22:11:09.4624750Z strategy-evaluation/src/invest_evaluation/quantiles.py         192      3     48      3    98%   85, 204, 304",
+        "2026-10-08T22:11:09.4625929Z strategy-evaluation/src/invest_evaluation/reporting.py         174      1     62      4    98%   39, 58->60, 237->239, 288->297",
+        "2026-10-08T22:11:09.4627050Z strategy-evaluation/src/invest_evaluation/robustness.py         27      1     12      1    95%   42",
+        "2026-10-08T22:11:09.4628287Z strategy-evaluation/src/invest_evaluation/stats.py             102      5     30      5    92%   88, 90, 93, 124, 135",
+        "2026-10-08T22:11:09.4629656Z strategy-evaluation/src/invest_evaluation/strategies.py        107      4     38      4    94%   39, 61, 176, 198",
+        "2026-10-08T22:11:09.4630716Z strategy-evaluation/src/invest_evaluation/validation.py         80      0     26      0   100%",
+        "2026-10-08T22:11:09.4632501Z TOTAL                                                         3851    148   1268    110    95%",
+        "2026-10-08T22:11:09.4633110Z 586 passed in 393.21s (0:06:33)",
+        "2026-10-08T22:11:10.2305270Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ]
+    },
+    {
+      "job_id": 113563882172,
+      "lines": [
+        "2026-10-08T22:04:34.1993837Z  + mypy==2.4.0",
+        "2026-10-08T22:04:34.1994142Z  + mypy-extensions==1.1.0",
+        "2026-10-08T22:04:34.3543503Z All checks passed!",
+        "2026-10-08T22:04:34.3580404Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src",
+        "2026-10-08T22:04:34.3580865Z \u001b[36;1muv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src\u001b[0m",
+        "2026-10-08T22:08:02.8136327Z data-mining-framework/src/invest_mining/__init__.py              1      0      0      0   100%",
+        "2026-10-08T22:08:02.8137074Z data-mining-framework/src/invest_mining/artifact.py             50      2      8      2    93%   31, 62",
+        "2026-10-08T22:08:02.8137674Z data-mining-framework/src/invest_mining/cli.py                 300      7     72      3    97%   410-411, 422, 518, 533-534, 727",
+        "2026-10-08T22:08:02.8138287Z data-mining-framework/src/invest_mining/diagnostics.py         162      2     30      2    98%   42, 60",
+        "2026-10-08T22:08:02.8138911Z data-mining-framework/src/invest_mining/expressions.py         234     11     96      5    94%   168, 193, 195, 201, 220-223, 260-262",
+        "2026-10-08T22:08:02.8139510Z data-mining-framework/src/invest_mining/inference.py            20      0      2      0   100%",
+        "2026-10-08T22:08:02.8140075Z data-mining-framework/src/invest_mining/ledger.py              132      1     52      1    99%   102",
+        "2026-10-08T22:08:02.8140636Z data-mining-framework/src/invest_mining/reporting.py            49      0      0      0   100%",
+        "2026-10-08T22:08:02.8141218Z data-mining-framework/src/invest_mining/search.py              156      4     54      4    96%   103, 112, 175-176, 266->278",
+        "2026-10-08T22:08:02.8141800Z data-pipeline/data-preparation/src/invest_data/__init__.py       1      0      0      0   100%",
+        "2026-10-08T22:08:02.8142709Z data-pipeline/data-preparation/src/invest_data/bundle.py       415     43    218     30    88%   86-87, 91, 128->130, 165, 167, 173, 185, 198, 202, 211, 215, 220, 226, 267, 269, 273, 275, 294-298, 314, 323, 329, 358, 360, 363, 402-404, 466, 495, 516, 518, 527->533, 541-542, 544, 548, 563, 620-621, 623",
+        "2026-10-08T22:08:02.8143666Z data-pipeline/data-preparation/src/invest_data/cleaning.py      95      2     30      2    97%   80, 86",
+        "2026-10-08T22:08:02.8144275Z data-pipeline/data-preparation/src/invest_data/cli.py          123      7     38      5    91%   74-76, 80, 208, 216, 252",
+        "2026-10-08T22:08:02.8145301Z data-pipeline/data-preparation/src/invest_data/pit.py           35      1     18      1    96%   55",
+        "2026-10-08T22:08:02.8145974Z data-pipeline/data-preparation/src/invest_data/schemas.py      236     13     94      9    93%   117, 164, 266-267, 274-275, 403, 432, 450, 454, 500, 510, 541",
+        "2026-10-08T22:08:02.8146884Z data-pipeline/data-preparation/src/invest_data/sources.py      129      2     38      2    98%   151, 190",
+        "2026-10-08T22:08:02.8147472Z data-pipeline/data-preparation/src/invest_data/testing.py       23      0      0      0   100%",
+        "2026-10-08T22:08:02.8148158Z data-pipeline/data-preparation/src/invest_data/yahoo.py        205     14     52     10    91%   63, 65, 73-76, 189, 249, 258, 283, 314, 341, 372, 398",
+        "2026-10-08T22:08:02.8148826Z strategy-evaluation/src/invest_evaluation/__init__.py            1      0      0      0   100%",
+        "2026-10-08T22:08:02.8149427Z strategy-evaluation/src/invest_evaluation/cli.py               188      6     54      4    96%   104, 141-142, 206, 238, 378",
+        "2026-10-08T22:08:02.8150046Z strategy-evaluation/src/invest_evaluation/config.py            140      3     42      3    97%   112, 175, 203",
+        "2026-10-08T22:08:02.8150734Z strategy-evaluation/src/invest_evaluation/engine.py            290     14    106      9    94%   122, 127, 132-133, 223, 226, 229, 253-254, 312-322, 409, 535",
+        "2026-10-08T22:08:02.8151405Z strategy-evaluation/src/invest_evaluation/metrics.py           184      2     48      1    99%   38-39",
+        "2026-10-08T22:08:02.8151997Z strategy-evaluation/src/invest_evaluation/quantiles.py         192      3     48      3    98%   85, 204, 304",
+        "2026-10-08T22:08:02.8152622Z strategy-evaluation/src/invest_evaluation/reporting.py         174      1     62      4    98%   39, 58->60, 237->239, 288->297",
+        "2026-10-08T22:08:02.8153241Z strategy-evaluation/src/invest_evaluation/robustness.py         27      1     12      1    95%   42",
+        "2026-10-08T22:08:02.8153834Z strategy-evaluation/src/invest_evaluation/stats.py             102      5     30      5    92%   88, 90, 93, 124, 135",
+        "2026-10-08T22:08:02.8154681Z strategy-evaluation/src/invest_evaluation/strategies.py        107      4     38      4    94%   39, 61, 176, 198",
+        "2026-10-08T22:08:02.8155257Z strategy-evaluation/src/invest_evaluation/validation.py         80      0     26      0   100%",
+        "2026-10-08T22:08:02.8156217Z TOTAL                                                         3851    148   1268    110    95%",
+        "2026-10-08T22:08:02.8156667Z 586 passed in 204.15s (0:03:24)",
+        "2026-10-08T22:08:03.3665925Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/"
+      ]
+    }
+  ],
+  "recent_main_runs": [
+    {
+      "id": 37851091069,
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T22:04:17Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069"
+    },
+    {
+      "id": 37846843052,
+      "sha": "0963ab283ff531ebabe869c28564382162d1bf04",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T21:26:56Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37846843052"
+    },
+    {
+      "id": 37845797168,
+      "sha": "8be0856a9cf1e036b9bb523b527eb7dcfb5fce18",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T21:18:08Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37845797168"
+    },
+    {
+      "id": 37840894998,
+      "sha": "1d537daf6c6e15f55cad94b0467aee0ee8ff7a8f",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T20:38:02Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37840894998"
+    },
+    {
+      "id": 37828817366,
+      "sha": "08ce5945de98fb6c40348e49718a8b035c0b49b7",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T19:01:35Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37828817366"
+    },
+    {
+      "id": 37826580569,
+      "sha": "a6145c6b4257206aeb478e3d188c632035bafa95",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T18:44:14Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37826580569"
+    },
+    {
+      "id": 37825963373,
+      "sha": "009fd1d5db2113ac00ac752fb7efea22ee385c71",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T18:39:25Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37825963373"
+    },
+    {
+      "id": 37782739877,
+      "sha": "ac2487209aaab433482c58e56b3d55f07533f8d1",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-08T13:14:01Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37782739877"
+    },
+    {
+      "id": 37664509217,
+      "sha": "4e590a3f16123d41c42383359497910fcad2e55c",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T18:08:22Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37664509217"
+    },
+    {
+      "id": 37643969507,
+      "sha": "adfc5ec5d90028939df47195e8852e1e746de645",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T15:26:41Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37643969507"
+    },
+    {
+      "id": 37620047213,
+      "sha": "e5e2e421740b3be1377a24a4e0f8d0815a7544ee",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T12:18:24Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37620047213"
+    },
+    {
+      "id": 37618498521,
+      "sha": "6b2ed6e19c0343f7eb699c089529c0544a0f824f",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T12:05:03Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37618498521"
+    },
+    {
+      "id": 37613104902,
+      "sha": "bd1acd3667aac283b2985fe3893d799705db2028",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T11:17:43Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37613104902"
+    },
+    {
+      "id": 37609750113,
+      "sha": "c6f29611fb4f3c9649ef188276666078130f96f0",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T10:47:44Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37609750113"
+    },
+    {
+      "id": 37605258805,
+      "sha": "4e439f0c48fe612e214fa1db5b9c06b4924a3c22",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T10:07:09Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37605258805"
+    },
+    {
+      "id": 37601298394,
+      "sha": "a1f77f5ffa3a89d3b45c0a3041db3ce2471e3541",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T09:32:18Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37601298394"
+    },
+    {
+      "id": 37598708071,
+      "sha": "bee6ed79008ee4109993eb6e2ee6fe6b97743e26",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-07T09:09:56Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37598708071"
+    },
+    {
+      "id": 37537122658,
+      "sha": "67b5f3e71dc873eaf784d1da4e373516ba566826",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T21:54:31Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37537122658"
+    },
+    {
+      "id": 37472265393,
+      "sha": "e74761d10fd0d5a9eb3218743ce9ff68b04fbfe6",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T13:37:25Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37472265393"
+    },
+    {
+      "id": 37464733112,
+      "sha": "d750df024f6980a9e30a6f8a3bf571cff814b861",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T12:38:38Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37464733112"
+    },
+    {
+      "id": 37463060212,
+      "sha": "75fb13fa4abca4c408b76099539678e9fff5daf7",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T12:24:49Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37463060212"
+    },
+    {
+      "id": 37402534790,
+      "sha": "b99f1cdf44ff8e8569223b07aa18d17e33cee4b9",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T02:06:40Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37402534790"
+    },
+    {
+      "id": 37401823020,
+      "sha": "8c88ffba7aaa2dd22a8d6e6e4ce83750c333567a",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T01:58:11Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37401823020"
+    },
+    {
+      "id": 37400264838,
+      "sha": "c4b3f1b0c0520f1271d7ae06cb4839434f652454",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T01:39:28Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37400264838"
+    },
+    {
+      "id": 37394111332,
+      "sha": "da1e51e5fd086fe91e0b47038824ff95640b23ab",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T00:27:33Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37394111332"
+    },
+    {
+      "id": 37393556117,
+      "sha": "eeeac706a706a51e0b0abcf4ab3ecb3bf8d112e1",
+      "status": "completed",
+      "conclusion": "success",
+      "event": "push",
+      "attempt": 1,
+      "date": "2026-10-06T00:21:17Z",
+      "url": "https://github.com/sasasqt/invest/actions/runs/37393556117"
+    }
+  ],
+  "coverage_json_artifacts": 0,
+  "scope": "Remote GitHub evidence only; no local execution or benchmark inference"
+}

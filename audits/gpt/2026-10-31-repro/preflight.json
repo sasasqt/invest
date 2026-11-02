@@ -1,0 +1,45 @@
+{
+  "run_id": "GA-2026-10-31T001744Z",
+  "start_date": "2026-10-31",
+  "started_utc": "2026-10-31T00:17:44Z",
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "tree": "9b48fbc155c6f5006969241585f48953f63e809e",
+  "profile": "full_repository_audit_attempt",
+  "setup_budget_seconds": 900,
+  "total_budget_seconds": 10800,
+  "per_case_timeout_seconds": 60,
+  "memory_ceiling_bytes": 2147483648,
+  "research_budget_seconds": 1800,
+  "reading_split": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "research_split": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "model_effort": "model/effort unavailable; audit continued as authorized.",
+  "preflight": {
+    "access": "passed GitHub connector",
+    "identity": "110 tracked files verified against recursive remote manifest; no Git checkout",
+    "isolation": "failed: bwrap open /proc/8/ns/ns ENOENT; unshare uid_map EPERM",
+    "dependencies": "blocked before install: no verified execution isolation",
+    "platforms": "Linux host; no repository platform execution",
+    "own_state": "gpt/repo-audits absent at preflight; old scratch 2026-10-28 treated as untrusted unpublished leads",
+    "peer": "claude/repo-audits absent",
+    "persistence": "started",
+    "publication": "not started"
+  },
+  "steps": {
+    "static_analysis": {
+      "status": "started"
+    },
+    "research": {
+      "status": "not_started"
+    },
+    "runtime_checks": {
+      "status": "blocked",
+      "reason": "credential filesystem isolation unavailable"
+    }
+  }
+}
