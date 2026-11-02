@@ -186,7 +186,9 @@ def run_search(
             row.update(status="rejected", reason="complexity_limit")
             continue
         values = restrict(evaluate(node, panel), panel).loc[split.dev_dates]
-        coverage = float(values.notna().sum().sum() / max(dev_label.notna().sum().sum(), 1))
+        # Share of labelled development cells the candidate scores; at most 1.
+        scored = values.notna() & dev_label.notna()
+        coverage = float(scored.sum().sum() / max(dev_label.notna().sum().sum(), 1))
         row["dev_coverage"] = coverage
         if coverage < min_coverage:
             row.update(status="rejected", reason="low_coverage")
