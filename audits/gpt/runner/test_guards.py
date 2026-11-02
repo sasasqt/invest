@@ -207,6 +207,27 @@ class SnapshotTests(unittest.TestCase):
                     with self.assertRaises(SnapshotError):
                         verify(self.reference, snapshot)
 
+    def test_entry_that_could_never_verify_is_rejected_even_without_a_snapshot(self):
+        """Review round 8 (W3): a digest that is not 64 lower-case hex digits, a negative
+        size, the raw folder itself or a NUL in the path passed the type check, so such
+        a manifest was reported as blocked while its snapshot or raw file was missing."""
+        request = self.expected["request"]
+        entry = {"path": "raw/a", "bytes": 1, "sha256": "0" * 64}
+        cases = {
+            "short digest": dict(entry, sha256="abc"),
+            "upper-case digest": dict(entry, sha256="A" * 64),
+            "negative size": dict(entry, bytes=-1),
+            "raw folder itself": dict(entry, path="raw"),
+            "NUL in path": dict(entry, path="raw/a\0b"),
+        }
+        for case, value in cases.items():
+            for snapshot in (self.snapshot, self.root / "missing"):
+                with self.subTest(case=case, snapshot=snapshot.name):
+                    self.expected = {"request": request, "files": {"AAA": value}}
+                    self.save()
+                    with self.assertRaises(SnapshotError):
+                        verify(self.reference, snapshot)
+
     def test_raw_paths_windows_reads_as_rooted_or_drive_paths_are_rejected(self):
         """Review round 6 (C1): on Windows these made the symlink walk loop forever."""
         for raw in ("raw/\\x", "raw/C:x", "raw/sub\\..\\x", "raw/name:stream"):
@@ -410,6 +431,7 @@ class SnapshotTests(unittest.TestCase):
             "Manifest must be an object with a files object": manifest(
                 lambda m: m.update(files=[])
             ),
+            "Manifest lists no raw files": manifest(lambda m: m.update(files={})),
             "Manifest request must name its start and end dates": manifest(
                 lambda m: m.pop("request")
             ),
@@ -547,6 +569,9 @@ class RunnerContractTests(unittest.TestCase):
             "--memory=2g",
             "--pids-limit=256",
             "TMPDIR=/work/tmp",
+            # Review round 8: the workload must be PID 1 for its cleanup (W2), whatever
+            # the daemon's default for an init process.
+            "--init=false",
         ):
             self.assertIn(required, command)
         self.assertNotIn("--privileged", command)
@@ -1350,6 +1375,44 @@ class StagingSafetyTests(unittest.TestCase):
                 self.assertFalse(self.process_runs(pid), "the step's grouped process still runs")
             finally:
                 if self.process_runs(pid):
+                    os.kill(pid, 9)
+
+    @unittest.skipUnless(sys.platform.startswith("linux"), "sessions, threads and /proc")
+    def test_a_process_whose_main_thread_exited_does_not_outlive_its_step(self):
+        """Review round 8 (W2): when a process's main thread exits while another thread
+        runs, /proc shows its leader as a zombie, so the session scan passed it over."""
+        child = (
+            "import ctypes, os, sys, threading, time\n"
+            "if os.fork() == 0:\n"
+            "    os.setpgid(0, 0)\n"
+            "    threading.Thread(target=time.sleep, args=(60,)).start()\n"
+            "    open(sys.argv[1], 'w').write(str(os.getpid()))\n"
+            "    ctypes.CDLL(None).pthread_exit(None)\n"
+            "time.sleep(0.3)\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results"
+            results.mkdir()
+            pidfile = Path(directory) / "threaded.pid"
+            runner_workload.execute(
+                "threaded", [sys.executable, "-c", child, str(pidfile)], directory, results, 60
+            )
+            pid = int(pidfile.read_text())
+
+            def threads_run():
+                try:
+                    tasks = os.listdir(f"/proc/{pid}/task")
+                except OSError:
+                    return False
+                return any(self.process_runs(f"{pid}/task/{task}") for task in tasks)
+
+            try:
+                deadline = time.monotonic() + 5
+                while threads_run() and time.monotonic() < deadline:
+                    time.sleep(0.05)
+                self.assertFalse(threads_run(), "the step's threaded process still runs")
+            finally:
+                if threads_run():
                     os.kill(pid, 9)
 
     @staticmethod

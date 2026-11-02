@@ -75,17 +75,21 @@ controls exercise W1 and W2 in a real container.
   every step runs in its own session, and every process left in that session is
   killed once the step ends, also one that made its own process group (GNU
   `timeout`, a shell with job control). In the container, where the workload is
-  PID 1, every other process is then killed and reaped as well, so one that started
-  a new session (`setsid`) is stopped too and no zombie holds a slot of
-  `--pids-limit`. Outside a container (host tests) a process that starts a new
-  session escapes. Checked in `runner_workload.execute`.
+  PID 1 (the runner passes `--init=false`, so a daemon set to add an init process
+  cannot take that place), every other process is then killed and reaped as well,
+  so one that started a new session (`setsid`) is stopped too and no zombie holds a
+  slot of `--pids-limit`. Outside a container (host tests) the session scan is best effort:
+  a process that starts a new session escapes, and so can a chain that keeps forking
+  with each parent exiting at once, since a scan sees only the process IDs listed
+  when it began. Checked in `runner_workload.execute`.
 - **W3** `verify_snapshot` reports a missing snapshot folder, `snapshot.json` or raw
   file as `blocked` (exit 2) and every other wrong input (a missing or unreadable
-  `--expected` manifest, a manifest or entry of the wrong shape, an unsafe,
-  Windows-rooted or repeated raw path, an entry that exists but is not a regular
-  file, a hash mismatch) as `rejected` (exit 2). The manifest's own entries are
-  checked before the snapshot is looked at, so a bad manifest is rejected even when
-  the snapshot is missing. It never ends with a traceback.
+  `--expected` manifest, a manifest or entry of the wrong shape, including a
+  negative size or a SHA-256 that is not 64 lower-case hex digits, an empty `files`
+  object, an unsafe, Windows-rooted or repeated raw path, an entry that exists but
+  is not a regular file, a hash mismatch) as `rejected` (exit 2). The manifest's own
+  entries are checked before the snapshot is looked at, so a bad manifest is
+  rejected even when the snapshot is missing. It never ends with a traceback.
 - **W4** The evidence uploads in `audit-runtime.yml` keep names that start with a
   dot but never take a collection's unfinished snapshot (`.collect-*` beside the
   destination), which a host process killed during collection leaves behind and

@@ -188,7 +188,10 @@ def stop_session(session):
                     fields = stream.read().rsplit(")", 1)[1].split()
             except (OSError, IndexError):
                 continue
-            if int(fields[3]) == session and fields[0] not in ("Z", "X"):
+            # A leader whose main thread exited reads "Z" while its other threads
+            # (num_threads) still run; a signal to its ID still reaches them.
+            live = fields[0] not in ("Z", "X") or int(fields[17]) > 1
+            if int(fields[3]) == session and live:
                 found = True
                 try:
                     os.kill(int(entry), signal.SIGKILL)
@@ -543,7 +546,10 @@ def main():
                 "comparison_baseline": None,
                 "regression_claim": "unavailable",
                 "memory_peak": "not measured",
-                "scope": "subprocess wall/CPU, startup included; hashing excluded",
+                "scope": (
+                    "subprocess wall/CPU, startup and leftover-process cleanup included; "
+                    "hashing excluded"
+                ),
                 "test_failures_retained": [x["name"] for x in checks if x["exit"]],
             },
             indent=2,

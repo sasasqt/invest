@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 from datetime import date
 from pathlib import Path, PurePosixPath
 
@@ -29,11 +30,15 @@ def _json(path):
 
 def _entry(symbol, entry):
     """The safe relative raw path of one manifest entry; reject a malformed entry."""
+    # An entry that could never verify (a negative size, a digest that is not 64
+    # lower-case hex digits, the raw folder itself) is malformed, not "blocked".
     if (
         not isinstance(entry, dict)
         or not isinstance(entry.get("path"), str)
         or type(entry.get("bytes")) is not int
+        or entry["bytes"] < 0
         or not isinstance(entry.get("sha256"), str)
+        or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"])
     ):
         raise SnapshotError(f"Malformed manifest entry for {symbol}")
     relative = PurePosixPath(entry["path"])
@@ -42,7 +47,8 @@ def _entry(symbol, entry):
         relative.is_absolute()
         or ".." in relative.parts
         or relative.parts[:1] != ("raw",)
-        or any("\\" in part or ":" in part for part in relative.parts)
+        or len(relative.parts) < 2
+        or any("\\" in part or ":" in part or "\0" in part for part in relative.parts)
     ):
         raise SnapshotError(f"Unsafe raw path for {symbol}")
     return relative, entry
@@ -53,6 +59,8 @@ def verify(expected_path, snapshot):
     expected = _json(expected_path)
     if not isinstance(expected, dict) or not isinstance(expected.get("files"), dict):
         raise SnapshotError("Manifest must be an object with a files object")
+    if not expected["files"]:
+        raise SnapshotError("Manifest lists no raw files")
     request = expected.get("request")
     if not isinstance(request, dict) or not all(
         isinstance(request.get(key), str) for key in ("start", "end")

@@ -255,6 +255,9 @@ def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid
     command = docker_command(
         "run",
         "--rm",
+        # The workload must be the container's first process (CONTRACT.md W2); a daemon
+        # configured with "init": true would put docker-init there instead.
+        "--init=false",
         "--network=none",
         "--read-only",
         "--cap-drop=ALL",

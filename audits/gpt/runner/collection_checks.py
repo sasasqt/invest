@@ -163,7 +163,16 @@ def main():
         rows.append(row)
         print("COLLECTION_CASE " + json.dumps(row), flush=True)
         (evidence / "acceptance.json").write_text(
-            json.dumps({"image_id": image, "base_digest": digest, "cases": rows}, indent=2),
+            json.dumps(
+                {
+                    "image_id": image,
+                    "base_digest": digest,
+                    # False until every case passed: a failed case stops the run early.
+                    "complete": len(rows) == len(cases),
+                    "cases": rows,
+                },
+                indent=2,
+            ),
             encoding="utf-8",
         )
     return 0
