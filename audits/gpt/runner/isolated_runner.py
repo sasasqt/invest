@@ -9,11 +9,15 @@ import hashlib
 import json
 import os
 import re
+import selectors
 import shutil
 import subprocess
 import sys
+import time
 import uuid
 from pathlib import Path
+
+from output_collection import collect_workload
 
 
 def checked(argv, **kwargs):
@@ -23,6 +27,73 @@ def checked(argv, **kwargs):
             f"{Path(argv[0]).name} exited {result.returncode}: {result.stderr.strip()}"
         )
     return result.stdout.strip()
+
+
+def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
+    """Bound host memory while retaining a failed container's available log."""
+    if timeout <= 0 or max_log_bytes <= 0:
+        raise ValueError("execution limits must be positive")
+    deadline = time.monotonic() + timeout
+    chunks, size, reason = [], 0, None
+    with subprocess.Popen(
+        argv, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+    ) as process:
+        with selectors.DefaultSelector() as selector:
+            selector.register(process.stdout, selectors.EVENT_READ)
+            while selector.get_map() or process.poll() is None:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    reason = "timeout"
+                    break
+                for key, _ in selector.select(min(0.1, remaining)):
+                    data = os.read(key.fd, min(65536, max_log_bytes - size + 1))
+                    if not data:
+                        selector.unregister(key.fd)
+                        continue
+                    chunks.append(data[: max_log_bytes - size])
+                    size += len(data)
+                    if size > max_log_bytes:
+                        reason = "log_limit"
+                        break
+                if reason:
+                    break
+                if not selector.get_map() and process.poll() is None:
+                    time.sleep(min(0.05, remaining))
+        if reason and process.poll() is None:
+            process.kill()
+        status = process.wait(timeout=30)
+    if reason:
+        status = 124 if reason == "timeout" else 125
+    return subprocess.CompletedProcess(
+        argv, status, b"".join(chunks).decode(errors="replace"), ""
+    ), reason
+
+
+def remove_container(name, env):
+    """Do not collect a bind mount while a container could still write it."""
+    subprocess.run(
+        ["docker", "--host=unix:///var/run/docker.sock", "container", "rm", "--force", name],
+        env=env,
+        capture_output=True,
+        timeout=30,
+    )
+    remaining = checked(
+        [
+            "docker",
+            "--host=unix:///var/run/docker.sock",
+            "container",
+            "ls",
+            "--all",
+            "--filter",
+            "name=^/" + name + "$",
+            "--format",
+            "{{.ID}}",
+        ],
+        env=env,
+        timeout=30,
+    )
+    if remaining:
+        raise RuntimeError("Container removal unverified; output collection blocked")
 
 
 def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid):
@@ -290,36 +361,29 @@ def main():
         )
     )
     try:
-        execution = subprocess.run(command, env=env, capture_output=True, text=True, timeout=6600)
+        execution, termination = run_bounded(command, env=env)
     finally:
-        subprocess.run(
-            [
-                "docker",
-                "--host=unix:///var/run/docker.sock",
-                "container",
-                "rm",
-                "--force",
-                container_name,
-            ],
-            env=env,
-            capture_output=True,
-            timeout=30,
-        )
+        remove_container(container_name, env)
     (results / "execution.log").write_text(execution.stdout + execution.stderr)
-    print(execution.stdout + execution.stderr, flush=True)
-    if (work / "results").is_dir():
-        shutil.copytree(work / "results", results / "workload")
-        for name in ("boundary.json", "environment.json", "benchmark-summary.json"):
-            path = work / "results" / name
-            if path.is_file():
-                print("AUDIT_EVIDENCE " + name + " " + path.read_text(), flush=True)
+    # Container text is data, never a GitHub workflow command. Only the host's
+    # private, validated snapshot can supply evidence or uploaded output.
+    print("AUDIT_CONTAINER_STDOUT " + json.dumps(execution.stdout), flush=True)
+    print("AUDIT_CONTAINER_STDERR " + json.dumps(execution.stderr), flush=True)
+    collection = collect_workload(work, results)
     (results / "runner.json").write_text(
         json.dumps(
-            {"exit": execution.returncode, "image_id": image, "sha": args.expected_sha}, indent=2
+            {
+                "exit": execution.returncode,
+                "collection_status": collection["status"],
+                "termination_reason": termination,
+                "image_id": image,
+                "sha": args.expected_sha,
+            },
+            indent=2,
         )
     )
     print(f"Container audit exited {execution.returncode}; evidence: {results}")
-    return execution.returncode
+    return execution.returncode or int(collection["status"] != "collected")
 
 
 if __name__ == "__main__":

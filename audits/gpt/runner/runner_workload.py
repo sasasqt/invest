@@ -195,7 +195,15 @@ def main():
     prove_boundary(args.sentinel, args.host_pid, results)
     if execute(
         "audit-guard-tests",
-        [sys.executable, "-m", "unittest", "-v", "test_guards"],
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "-v",
+            "test_guards",
+            "test_output_collection",
+            "test_execution_logs",
+        ],
         Path("/audit"),
         results,
         timeout=60,
