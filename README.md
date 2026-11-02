@@ -182,8 +182,8 @@ Update this README with changes to project status, supported capabilities, layou
 ## Isolated audit runner
 
 The [conditional audit workflow](.github/workflows/audit-runtime.yml) tests
-[Linux/Docker audit tooling](audits/gpt/runner/README.md) separately from normal
-CI. It checks hostile output collection before running the full isolated audit
+[Docker audit tooling](audits/gpt/runner/README.md) separately from normal
+CI: Docker checks on Linux, host-side tests on Linux and Windows. It checks hostile output collection before running the full isolated audit
 against one pinned source revision. See the
 [CI audit checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks) for triggers,
 evidence and limitations. It does not access live vendor data or publish results

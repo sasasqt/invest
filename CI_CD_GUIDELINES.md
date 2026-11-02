@@ -18,7 +18,8 @@ A PR is mergeable only when all jobs are green on its latest commit.
 
 Changes to the [audit workflow](.github/workflows/audit-runtime.yml) or its
 [runner tools](audits/gpt/runner/README.md) also run Linux/Docker collection-boundary
-checks on Python 3.11 and 3.13. Generated containers try file, directory, results-root
+checks on Python 3.11 and 3.13, and the runner's host-side tests on Windows
+(`windows-2025`, no Docker) with the same two Python versions. Generated containers try file, directory, results-root
 and all printed-summary links to harmless host-only canaries, plus hard links,
 special files and oversized output. Ordinary output must still collect. Only a
 bounded, link-free host snapshot is uploaded; rejection is a failed runner result.
@@ -30,8 +31,8 @@ After those checks pass, the workflow runs both full isolated audit jobs. Curren
 `main` is resolved once and pinned for the complete matrix; manual runs may instead
 specify an exact source SHA and an optional historical control SHA. Old failing
 trials remain historical failures. These jobs supplement the normal six CI jobs;
-they do not replace their tests or establish Windows execution or historical
-investment results. See the [Python checks](PYTHON_GUIDELINES.md#development-checks)
+they do not replace their tests or establish a Docker audit on a Windows host or
+historical investment results. See the [Python checks](PYTHON_GUIDELINES.md#development-checks)
 for local commands and the runner README for limits.
 
 ## Principles
