@@ -139,11 +139,21 @@ def identity(info):
     return info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns
 
 
-def read_opened(fd, info, device, maximum, changed, consume):
+def same_identity(info, opened):
+    return identity(info) == identity(opened)
+
+
+def same_file(info, opened):
+    """Windows: a by-name stat can carry the folder entry's older times and size, so
+    only the file ID ties it to the open handle; size and times come from the handle."""
+    return (info.st_dev, info.st_ino) == (opened.st_dev, opened.st_ino)
+
+
+def read_opened(fd, info, device, maximum, changed, consume, same=same_identity):
     """Read an opened entry only while it is the regular file that was checked by name."""
     opened = os.fstat(fd)
     regular_file(opened, device, maximum)
-    if identity(info) != identity(opened):
+    if not same(info, opened):
         raise RejectedOutput(changed)
     if contract.enabled():
         contract.require(
@@ -159,6 +169,8 @@ def read_opened(fd, info, device, maximum, changed, consume):
 
 class DescriptorFolder:
     """A folder reached only through open no-follow directory descriptors (POSIX)."""
+
+    same = staticmethod(same_identity)
 
     def __init__(self, fd):
         self.fd = fd
@@ -185,6 +197,8 @@ class DescriptorFolder:
 
 class PathFolder:
     """A folder reached by path after each component was checked to be no link (Windows)."""
+
+    same = staticmethod(same_file)
 
     def __init__(self, path, base):
         self.path, self.base = path, base
@@ -299,6 +313,7 @@ def read_summaries(snapshot, method=None):
                     SUMMARY_MAX_BYTES,
                     "summary changed during collection",
                     consume,
+                    folder.same,
                 )
             finally:
                 os.close(fd)
@@ -306,7 +321,7 @@ def read_summaries(snapshot, method=None):
     return summaries
 
 
-def copy_opened(fd, info, device, destination, limits, counts):
+def copy_opened(fd, info, device, destination, limits, counts, same):
     """Copy one checked, opened file into the snapshot; return its size and SHA-256."""
     digest, copied = hashlib.sha256(), 0
     with destination.open("xb") as output:
@@ -321,7 +336,13 @@ def copy_opened(fd, info, device, destination, limits, counts):
             digest.update(chunk)
 
         read_opened(
-            fd, info, device, limits.file_bytes, "output file changed during collection", consume
+            fd,
+            info,
+            device,
+            limits.file_bytes,
+            "output file changed during collection",
+            consume,
+            same,
         )
     return copied, digest.hexdigest()
 
@@ -352,7 +373,9 @@ def copy_tree(work, snapshot, limits, method):
             regular_file(info, device, limits.file_bytes)
             fd = folder.open_file(name)
             try:
-                copied, digest = copy_opened(fd, info, device, target / name, limits, counts)
+                copied, digest = copy_opened(
+                    fd, info, device, target / name, limits, counts, folder.same
+                )
             finally:
                 os.close(fd)
             records.append({"path": relative.as_posix(), "bytes": copied, "sha256": digest})

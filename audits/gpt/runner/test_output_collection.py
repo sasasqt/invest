@@ -10,6 +10,7 @@ import socket
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 os.environ.setdefault("CONTRACT_CHECKS", "1")
@@ -313,6 +314,32 @@ class DescriptorCollectionTests(CollectionCases, unittest.TestCase):
 
 class PathCollectionTests(CollectionCases, unittest.TestCase):
     method = "path"
+
+    def stale_lstat(self, change):
+        """Python 3.13 on Windows can stat by name from the folder entry, whose times and
+        size may lag the open handle's; only the file ID must match."""
+        real = os.lstat
+
+        def lstat(path, *args, **kwargs):
+            info = real(path, *args, **kwargs)
+            if os.path.basename(path) != "table.csv":
+                return info
+            fields = {name: getattr(info, name) for name in dir(info) if name.startswith("st_")}
+            return SimpleNamespace(**dict(fields, **change(info)))
+
+        return patch("output_collection.os.lstat", side_effect=lstat)
+
+    def test_stale_times_and_size_in_a_by_name_stat_are_tolerated(self):
+        (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+        older = {"st_mtime_ns": 1, "st_ctime_ns": 2, "st_size": 3}
+        with self.stale_lstat(lambda info: older):
+            result = self.collect()
+        self.assertEqual(result["files"][0]["bytes"], len(b"ordinary output\n"))
+
+    def test_a_different_file_id_at_open_is_rejected(self):
+        (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+        with self.stale_lstat(lambda info: {"st_ino": info.st_ino + 1}):
+            self.rejected()
 
 
 if __name__ == "__main__":

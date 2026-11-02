@@ -20,7 +20,7 @@ HOLDER = (
 class ExecutionLogTests(unittest.TestCase):
     def test_normal_output_and_status_are_retained(self):
         result, reason = run_bounded(
-            [sys.executable, "-c", "print('ordinary');raise SystemExit(7)"]
+            [sys.executable, "-c", "import sys;sys.stdout.buffer.write(b'ordinary\\n');sys.exit(7)"]
         )
         self.assertEqual((result.returncode, reason), (7, None))
         self.assertEqual(result.stdout, "ordinary\n")
