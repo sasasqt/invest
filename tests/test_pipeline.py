@@ -301,7 +301,11 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
     assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved
-    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv", ".gz")) for p in saved)
+    # Bundles, trade and daily ledgers and the quantile membership and daily-return tables
+    # stay out; only a record file over the size limit may end in .gz (none does here).
+    assert not any(p.endswith((".parquet", "trades.csv", "daily.csv")) for p in saved)
+    assert not any(p.endswith(("memberships.csv.gz", "daily_returns.csv.gz")) for p in saved)
+    assert not any(p.endswith(".gz") for p in saved)
     assert not any(p.startswith("snapshot/") and p != "snapshot/snapshot.json" for p in saved)
     assert json.loads((record / "eval/verdict.json").read_text()) == verdict
     readme = (record / "README.md").read_text()

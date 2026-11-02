@@ -154,3 +154,11 @@ def test_scores_respect_universe(bars):
         )
         assert inside.any()
     assert len(scores) < len(compute_scores(_factor(), bars))
+
+
+def test_development_coverage_is_a_share_of_labelled_cells(bars):
+    """K18: scored cells without a forward label must not push coverage above 1."""
+    result = run_search(build_panel(bars), n_trials=20, seed=1, top_k=2, horizon=5)
+    coverage = result.ledger["dev_coverage"].dropna()
+    assert len(coverage) and (coverage <= 1).all()
+    assert coverage.max() == pytest.approx(1.0, abs=0.02)

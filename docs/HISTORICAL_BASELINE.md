@@ -37,6 +37,8 @@ Mean daily rank IC of the raw 5-day return against the next 5-day open-to-open r
 | Sharpe | −0.47 | 0.11 |
 | Max drawdown | 61.8% | 20.6% |
 
+The gross-of-costs column and the cost drag below were understated by a bug that REVIEW-19 fixed; see [Limitations](#limitations) for the corrected figures.
+
 - Costs: 5.9% a year of drag at about 44× one-way annual turnover; the gross edge does not cover them. Doubling costs gives a Sharpe of −1.01; a one-session delay gives −0.65.
 - Statistics: Sharpe 95% stationary-bootstrap CI [−0.97, 0.03]; HAC t of the mean daily return −1.80 (p = 0.072); PSR/DSR versus zero 0.036.
 - Benchmarks: the universe equal-weight portfolio (gross) returned 1,210% and SPY returned 574% over the same sessions. Against SPY the strategy has beta 0.11, correlation 0.17, annual alpha −6.8% and information ratio −1.04.
@@ -53,6 +55,8 @@ A fresh download on this branch reproduced the metrics above to the shown precis
 
 Another fresh download on 2026-10-07 (retrieved 10:32 UTC), on main at `4e439f0` after the version 2 verdict and evidence changes, again published 100 names and 363,015 market rows with no rejections (SNDK again HTTP 400; market `content_sha256` `1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129`, SPY `02cd765d1fb1b02cfa24587d07fd2dc7083caee3d8fa2c865f7b3b5878b7cf6c`). Every metric above matched to the shown precision and both verdicts were unchanged. The new mandatory checks passed: the wealth path stayed solvent and the base net Sharpe (−0.47) was valid, so the portfolio stays `inconclusive` for the reasons above. The run used a temporary copy of the ledger, so the committed ledger is unchanged. An offline replay of that snapshot on a clean checkout of `c6f2961` published the same hashes and results; its reports, metrics, verdicts, figures and manifests are saved in [runs/yahoo-test/2026-10-07](../runs/yahoo-test/2026-10-07/README.md). A later offline replay of the same snapshot on main at `6b2ed6e` (after the run-record fixes) gave identical metrics and verdicts and recorded that revision with `code_dirty = false`.
 
+A replay of the same snapshot after REVIEW-23 (liquidity estimates) makes a name eligible only when both trailing estimates its fill needs are known. GEV, first traded on 2024-03-27, has 20 bars at the 2024-04-24 decision (19 daily returns, one short of `vol_window`) and is no longer eligible there; the old code gave it weight and then rejected its order `no_liquidity_estimate`, the replay's only rejection. Net CAGR moves from −5.65% (the figure after REVIEW-13, see [Limitations](#limitations)) to −5.67% and max drawdown from 61.5% to 61.6% (Sharpe −0.47 either way); both verdicts and the status of the six `insufficient_data` tail portfolios are unchanged (the 5% tails' reasons now count 717 instead of 716 of 751 decisions).
+
 **Conclusion:** the workflow runs end to end on real prices with recorded data identity. The fixed 5-day reversal rule loses money after realistic costs on this universe, and the equal-weight benchmark's return is inflated by survivorship bias.
 
 ## Confirmation use
@@ -64,6 +68,7 @@ Both runs requested 2010-01-01 to 2024-12-31 and inspected all of it (full-sampl
 ## Limitations
 
 - Price floor: the runs above used the example config's `min_price = 1.0` on back-adjusted closes, so splits and dividends after a date decided which names were eligible on it. REVIEW-13 fixed this look-ahead; Yahoo bars have no as-traded close, so the workflow now evaluates without a price floor (`min_price = 0`). A replay of the 2026-10-07 snapshot after the fix publishes the same market bundle (`content_sha256` `1fc2a8037ffe0674986adf07491ef6f89df765b135c10e94bec68edaff441129`) and adds 343 eligible name-decisions (NVDA 317, ineligible until 2016 before; NFLX 26) and gives a net CAGR of −5.65% (Sharpe −0.47, max drawdown 61.5%); both verdicts and the six `insufficient_data` tail portfolios are unchanged.
+- Gross-of-costs figures: the runs above added cumulative costs back to equity to get gross returns, which understated gross returns and the cost drag (REVIEW-19). On the current code (after REVIEW-19 and REVIEW-23) the same replay reports a gross CAGR of 0.54%, gross Sharpe 0.10, gross max drawdown 23.2% and a cost drag of 6.4% a year, in line with the `no_costs` scenario (0.54%, 0.10, 23.2%). Net figures and both verdicts are unchanged, and the gross edge still does not cover costs. The long-only bucket portfolios show larger corrections: q1's cost drag is 7.0% a year (1.3% before) and its gross CAGR 18.8% (13.6% before).
 - Survivorship bias: only companies that are S&P 100 members today; failed and removed companies are missing, and late listings (for example META, ABBV, UBER, PLTR) enter when their history starts.
 - Yahoo adjusted prices are revised after each dividend and split; the snapshot, not the vendor, defines the data. Total-return adjustment scales open/high/low/close by `adjclose / close`.
 - No point-in-time membership, fundamentals, delisting events or borrow availability.

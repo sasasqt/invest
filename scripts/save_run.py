@@ -12,17 +12,24 @@ overwritten.
 The output must be complete (every file the workflow writes and the README describes) and
 must come from committed code: the evaluation and quantile-portfolio manifests need a code
 revision and no uncommitted changes to tracked files.
+
+A record file over ``MAX_FILE_BYTES`` (a long history's daily decile table, for example) is
+stored gzip-compressed as ``<name>.gz``, and the README lists its uncompressed size and
+SHA-256 so it can be recovered and checked exactly. A file still over the limit when
+compressed is refused.
 """
 
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import json
 import shutil
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 # Paths relative to the workflow output directory. Nothing else is copied.
 RECORD_GLOBS = (
@@ -32,6 +39,8 @@ RECORD_GLOBS = (
     "mining/diagnostics/*.json",
     "mining/diagnostics/figures/*.png",
     "mining/diagnostics/tables/daily_ic.csv",
+    "mining/diagnostics/tables/quantile_returns.csv",
+    "mining/diagnostics/tables/quantile_summary.csv",
     "mining/diagnostics/tables/tail_returns.csv",
     "eval/*.json",
     "eval/report.md",
@@ -53,6 +62,8 @@ REQUIRED = (
     "mining/diagnostics/figures/ic.png",
     "mining/diagnostics/figures/quantiles.png",
     "mining/diagnostics/tables/daily_ic.csv",
+    "mining/diagnostics/tables/quantile_returns.csv",
+    "mining/diagnostics/tables/quantile_summary.csv",
     "mining/diagnostics/tables/tail_returns.csv",
     "eval/config.json",
     "eval/manifest.json",
@@ -73,16 +84,52 @@ REQUIRED = (
 )
 # Outputs whose code revision must be recorded and clean.
 CODE_MANIFESTS = ("eval/manifest.json", "quantiles/manifest.json")
+# Larger record files are stored gzip-compressed (see ``compressed_files``); a file still
+# larger than this when compressed is refused.
 MAX_FILE_BYTES = 1_000_000
 
 
 def _load(path: Path) -> Any:
-    return json.loads(path.read_text())
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+class Compressed(NamedTuple):
+    """A record file stored gzip-compressed: its stored bytes and what it uncompresses to."""
+
+    gz: bytes
+    size: int
+    sha256: str
+
+
+def _gzip(data: bytes) -> bytes:
+    # No timestamp or file name in the header, so the same input gives the same bytes on
+    # every run with the same zlib build, and a committed record stays diff-stable.
+    return gzip.compress(data, compresslevel=9, mtime=0)
+
+
+def compressed_files(out: Path, files: list[Path]) -> dict[Path, Compressed]:
+    """The record files over ``MAX_FILE_BYTES``, compressed, by relative path.
+
+    The size and SHA-256 describe the very bytes that were compressed, so the README's
+    recovery check cannot drift from the stored file. Refuses a file that is still over the
+    limit when compressed, before anything is staged.
+    """
+    compressed = {}
+    for rel in files:
+        if (out / rel).stat().st_size > MAX_FILE_BYTES:
+            data = (out / rel).read_bytes()
+            compressed[rel] = Compressed(_gzip(data), len(data), hashlib.sha256(data).hexdigest())
+    large = [rel.as_posix() for rel, c in compressed.items() if len(c.gz) > MAX_FILE_BYTES]
+    if large:
+        raise SystemExit(
+            f"refusing files over {MAX_FILE_BYTES} bytes even compressed: {', '.join(large)}"
+        )
+    return compressed
 
 
 def record_files(out: Path) -> list[Path]:
-    """Relative paths of the files that belong in a run record, checked for completeness,
-    provenance and size."""
+    """Relative paths of the files that belong in a run record, checked for completeness
+    and provenance."""
     if not (out / "eval/manifest.json").is_file():
         raise SystemExit(f"{out}: not a finished workflow output (missing eval/manifest.json)")
     manifest = _load(out / "eval/manifest.json")
@@ -101,14 +148,10 @@ def record_files(out: Path) -> list[Path]:
                 f"{out}: the code behind {rel} had uncommitted changes (or did not record "
                 "whether it had); rerun from a clean checkout"
             )
-    files = sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
-    large = [str(rel) for rel in files if (out / rel).stat().st_size > MAX_FILE_BYTES]
-    if large:
-        raise SystemExit(f"refusing files over {MAX_FILE_BYTES} bytes: {', '.join(large)}")
-    return files
+    return sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
 
 
-def _readme(out: Path, snapshot: dict[str, Any] | None) -> str:
+def _readme(out: Path, snapshot: dict[str, Any] | None, compressed: dict[Path, Compressed]) -> str:
     manifest = _load(out / "eval/manifest.json")
     verdict = _load(out / "eval/verdict.json")
     market = manifest["market_dataset"]
@@ -154,12 +197,27 @@ def _readme(out: Path, snapshot: dict[str, Any] | None) -> str:
         "`SNAPSHOT=<dir> uv run scripts/historical_workflow.sh <out>`.",
         "",
     ]
+    if compressed:
+        lines += [
+            "## Compressed files",
+            "",
+            f"Files over {MAX_FILE_BYTES} bytes are stored gzip-compressed with a `.gz` suffix "
+            "(`python -m gzip -d FILE.gz`, or `gzip -dk FILE.gz`, recovers the file next to "
+            "it). The recovered file must have the size and SHA-256 listed here.",
+            "",
+            "| file | bytes | sha256 |",
+            "|---|---|---|",
+        ]
+        for rel, c in sorted(compressed.items()):
+            lines.append(f"| `{rel.as_posix()}` | {c.size} | `{c.sha256}` |")
+        lines.append("")
     return "\n".join(lines)
 
 
 def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Path]:
     """Copy the run record from ``out`` into a new directory ``dest``."""
     files = record_files(out)
+    compressed = compressed_files(out, files)
     snapshot = None
     if snapshot_dir is not None:
         snapshot_manifest = snapshot_dir / "snapshot.json"
@@ -179,11 +237,16 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
     try:
         for rel in files:
             (stage / rel).parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(out / rel, stage / rel)
+            if rel in compressed:
+                (stage / f"{rel}.gz").write_bytes(compressed[rel].gz)
+            else:
+                shutil.copyfile(out / rel, stage / rel)
         if snapshot_dir is not None:
             (stage / "snapshot").mkdir(parents=True, exist_ok=True)
             shutil.copyfile(snapshot_dir / "snapshot.json", stage / "snapshot/snapshot.json")
-        (stage / "README.md").write_text(_readme(out, snapshot))
+        (stage / "README.md").write_text(
+            _readme(out, snapshot, compressed), encoding="utf-8", newline="\n"
+        )
         # Windows rename already refuses any existing destination. POSIX rename can
         # replace an empty directory, so reserve DEST exclusively on POSIX first.
         try:
