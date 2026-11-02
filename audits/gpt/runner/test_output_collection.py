@@ -1,6 +1,7 @@
 """Collector tests, run against both walks: descriptors (POSIX) and paths (all hosts)."""
 
 import contextlib
+import errno
 import hashlib
 import io
 import json
@@ -16,6 +17,7 @@ from unittest.mock import patch
 
 os.environ.setdefault("CONTRACT_CHECKS", "1")
 
+import output_collection
 from contract import ContractViolation
 from output_collection import (
     DEFAULT_LIMITS,
@@ -716,6 +718,124 @@ class RoundEightCheckTests(unittest.TestCase):
                         sorted(path.name for path in destination.parent.iterdir()),
                         ["workload"] if case == "collected" else [],
                     )
+
+
+class RoundNineCheckTests(unittest.TestCase):
+    """Review round 9: the snapshot folders' spelling and a full output volume."""
+
+    @POSIX_ONLY
+    def test_a_destination_reached_through_a_link_and_dotdot_collects(self):
+        """Python 3.12+ mkdtemp returns abspath, which drops 'link/..' by text, so the
+        snapshot named another folder than the one made: FileNotFoundError, no
+        collection.json, and an empty .collect-* left beside the real destination."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+            (root / "real/deep").mkdir(parents=True)
+            (root / "x").mkdir()
+            (root / "x/link").symlink_to(root / "real/deep", target_is_directory=True)
+            results = root / "x/link/../evidence"  # the kernel reads real/evidence
+            for method in ("descriptor", "path"):
+                with self.subTest(method=method):
+                    target = results / method
+                    report = collect_workload(root / "work", target, method=method)
+                    self.assertEqual(report["status"], "collected")
+                    self.assertEqual(
+                        (root / "real/evidence" / method / "workload/table.csv").read_text(
+                            encoding="utf-8"
+                        ),
+                        "a\n",
+                    )
+                    self.assertEqual(
+                        sorted(path.name for path in (target).iterdir()),
+                        ["collection.json", "workload"],
+                    )
+            self.assertEqual(list(root.rglob(".collect-*")), [])
+
+    def reference_fails(self, error):
+        """Let the real snapshot fill; fail every write into any later .collect-* folder."""
+        first = []
+        real_copy = output_collection.copy_opened
+
+        def copy(fd, info, device, destination, limits, counts, same):
+            folder = next(p for p in destination.parents if p.name.startswith(".collect-"))
+            first[:] = first or [folder]
+            if folder != first[0]:
+                raise error(destination)
+            return real_copy(fd, info, device, destination, limits, counts, same)
+
+        return patch("output_collection.copy_opened", side_effect=copy)
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_a_full_volume_under_the_reference_snapshot_is_no_i2_break(self):
+        """A full volume fails a write with no file name, so the reference copy's own
+        failure became the outcome 'rejected' and a false 'I2: the two walks copied
+        different data'. It must surface as the OSError it is."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+
+            def full(destination):
+                return OSError(errno.ENOSPC, os.strerror(errno.ENOSPC))
+
+            with self.reference_fails(full):
+                with self.assertRaises(OSError) as caught:
+                    try:
+                        collect_results(root / "work", root / "ev/workload", method="descriptor")
+                    except ContractViolation as violation:
+                        self.fail(f"false contract violation: {violation}")
+            self.assertEqual(caught.exception.errno, errno.ENOSPC)
+            self.assertEqual(sorted(path.name for path in (root / "ev").iterdir()), ["workload"])
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_a_reference_error_is_recognised_in_a_relative_destination(self):
+        """Python 3.11 mkdtemp(dir='.') returns './.collect-X', but copy_tree names its
+        files '.collect-X/...' (pathlib drops './'), so an error there was no longer
+        seen as the reference snapshot's own and became a false I2 report."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+
+            def unwritable(destination):
+                return OSError(errno.EIO, os.strerror(errno.EIO), os.fspath(destination))
+
+            previous = os.getcwd()
+            os.chdir(root)
+            try:
+                with self.reference_fails(unwritable):
+                    with self.assertRaises(OSError) as caught:
+                        try:
+                            collect_results(Path("work"), Path("workload"), method="descriptor")
+                        except ContractViolation as violation:
+                            self.fail(f"false contract violation: {violation}")
+            finally:
+                os.chdir(previous)
+            self.assertEqual(caught.exception.errno, errno.EIO)
+            self.assertEqual(list(root.glob(".collect-*")), [])
+
+    def test_a_full_host_volume_is_named_as_such(self):
+        """Review round 9 (cosmetic): a full host volume during collection was reported
+        as "unreadable or changing output entry", which blames the audited output."""
+        methods = ("descriptor", "path") if DESCRIPTOR_APIS else ("path",)
+        for method in methods:
+            with self.subTest(method=method), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "work/results").mkdir(parents=True)
+                (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+                full = OSError(errno.ENOSPC, os.strerror(errno.ENOSPC))
+                with patch("output_collection.copy_opened", side_effect=full):
+                    with contextlib.redirect_stdout(io.StringIO()):
+                        report = collect_workload(root / "work", root / "ev", method=method)
+                self.assertEqual(report["status"], "rejected")
+                self.assertEqual(report["reason"], "host volume full during collection")
+                self.assertEqual(
+                    sorted(path.name for path in (root / "ev").iterdir()), ["collection.json"]
+                )
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")

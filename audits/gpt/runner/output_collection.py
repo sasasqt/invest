@@ -415,6 +415,18 @@ def copy_tree(work, snapshot, limits, method):
     return records, counts["entries"], counts["bytes"]
 
 
+# A full host volume (or quota): the snapshot's problem, never the output's.
+VOLUME_FULL = {errno.ENOSPC, getattr(errno, "EDQUOT", errno.ENOSPC)}
+
+
+def private_folder(parent):
+    """A new ``.collect-*`` folder in ``parent``, named the way ``parent`` is spelled.
+
+    Python 3.12+ mkdtemp returns os.path.abspath of the folder it made, which on POSIX
+    drops 'link/..' by text and so can name a folder elsewhere than the one it made."""
+    return Path(parent, Path(tempfile.mkdtemp(prefix=".collect-", dir=parent)).name)
+
+
 def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
     """Reject unsafe output atomically; return data only from the safe snapshot.
 
@@ -436,7 +448,7 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
     if destination.exists() or destination.is_symlink():
         raise ValueError("collection destination already exists")
     destination.parent.mkdir(parents=True, exist_ok=True)
-    snapshot = Path(tempfile.mkdtemp(prefix=".collect-", dir=destination.parent))
+    snapshot = private_folder(destination.parent)
     try:
         records, entries, byte_count = copy_tree(work, snapshot, limits, method)
         summaries = read_summaries(snapshot, method)
@@ -447,6 +459,8 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
             check_rejected(work, destination, snapshot, limits, method, exc)
         if isinstance(exc, RejectedOutput):
             raise
+        if exc.errno in VOLUME_FULL:
+            raise RejectedOutput("host volume full during collection") from exc
         raise RejectedOutput("unreadable or changing output entry") from exc
     except BaseException:
         shutil.rmtree(snapshot)
@@ -493,20 +507,25 @@ def other_method_outcome(work, limits, method, beside):
     length, so it fits the path limit wherever the real snapshot did; one in TMPDIR
     could be longer and fail on a tree the real walk collected."""
     other = "path" if method == "descriptor" else "descriptor"
-    with tempfile.TemporaryDirectory(prefix=".collect-", dir=beside) as scratch:
-        snapshot = Path(scratch)
-        try:
-            records, entries, byte_count = copy_tree(work, snapshot, limits, other)
-            summaries = read_summaries(snapshot, other)
-        except (OSError, RejectedOutput) as exc:
-            # A failure on the reference snapshot's own path (a full disk) says
-            # nothing about the tree; as an outcome it could pass for path_too_long.
-            name = getattr(exc, "filename", None)
-            if isinstance(name, (str, bytes)) and (
-                os.fsdecode(name) == scratch or os.fsdecode(name).startswith(scratch + os.sep)
-            ):
-                raise
-            return "rejected", exc
+    snapshot = private_folder(beside)
+    # The spelling copy_tree gives its errors (pathlib drops a leading './').
+    scratch = os.fspath(snapshot)
+    try:
+        records, entries, byte_count = copy_tree(work, snapshot, limits, other)
+        summaries = read_summaries(snapshot, other)
+    except (OSError, RejectedOutput) as exc:
+        # A failure on the reference snapshot's own path says nothing about the tree;
+        # as an outcome it could pass for path_too_long. A full volume (a write or
+        # close carries no file name) can only be the snapshot's: the tree is only read.
+        name = getattr(exc, "filename", None)
+        if getattr(exc, "errno", None) in VOLUME_FULL or (
+            isinstance(name, (str, bytes))
+            and (os.fsdecode(name) == scratch or os.fsdecode(name).startswith(scratch + os.sep))
+        ):
+            raise
+        return "rejected", exc
+    finally:
+        shutil.rmtree(snapshot)
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
 
 

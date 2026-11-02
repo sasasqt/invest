@@ -58,14 +58,17 @@ rejection.
   fit the host's path length limit (the path walk cannot open a longer path; the
   descriptor walk can). Checked after every collection with the descriptor walk,
   except a rejection for a change during the walk (only tests can cause one, since
-  P1 excludes a writer) or for an `OSError`.
+  P1 excludes a writer) or for an `OSError`. A failure of the check's own reference
+  snapshot (beside the real one; its own path, or a full volume) is raised as that
+  `OSError`, never reported as an I2 break.
 
 ## Container workload and snapshot check (checked by the suites)
 
 W1-W3 run inside the Linux container or on raw input, and W4 is a property of the
 workflow, not of the host process, so `contract.py` does not check them;
-`test_guards.py` checks W1-W3, `test_host_safety.py` checks W4, and the CI Docker
-controls exercise W1 and W2 in a real container.
+`test_guards.py` checks W1-W3 and `test_host_safety.py` checks W4. In a real
+container the CI Docker controls exercise W1 (they run only the boundary probe), and
+the full isolated audit jobs exercise W1 and W2.
 
 - **W1** `boundary.json` reports `no_capabilities` true only when the permitted,
   effective and bounding capability sets are all empty (and the ambient set, where
