@@ -1223,20 +1223,33 @@ class StagingSafetyTests(unittest.TestCase):
                     stage_source(source, staged, revision)
 
     def test_replace_refs_do_not_change_the_staged_tree(self):
-        """R3-2: Git honours refs/replace/ unless told not to."""
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            source, revision = fixture_repository(root, {"README": b"committed\n"})
-            (source / "README").write_bytes(b"replacement\n")
-            git_in(source, "commit", "-qam", "other")
-            other = git_in(source, "rev-parse", "HEAD")
-            git_in(source, "reset", "-q", "--hard", revision)
-            git_in(source, "replace", revision, other)
-            records = stage_source(source, root / "staged", revision)
-            self.assertEqual((root / "staged/README").read_bytes(), b"committed\n")
-            self.assertEqual(records[0]["git_blob"], blob_digest(b"committed\n"))
-            status = git_in(root / "staged", "status", "--porcelain", "--untracked-files=no")
-            self.assertEqual(status, "")
+        """R3-2: Git honours refs/replace/ unless told not to. Review round 8: before
+        Git 2.43 a configured core.useReplaceRefs=true overrode GIT_NO_REPLACE_OBJECTS
+        (this host's Git is newer, so the configured case shows only on an older one)."""
+        for configured in (False, True):
+            with self.subTest(configured=configured), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                source, revision = fixture_repository(root, {"README": b"committed\n"})
+                (source / "README").write_bytes(b"replacement\n")
+                git_in(source, "commit", "-qam", "other")
+                other = git_in(source, "rev-parse", "HEAD")
+                git_in(source, "reset", "-q", "--hard", revision)
+                git_in(source, "replace", revision, other)
+                if configured:
+                    git_in(source, "config", "core.useReplaceRefs", "true")
+                records = stage_source(source, root / "staged", revision)
+                self.assertEqual((root / "staged/README").read_bytes(), b"committed\n")
+                self.assertEqual(records[0]["git_blob"], blob_digest(b"committed\n"))
+                status = git_in(root / "staged", "status", "--porcelain", "--untracked-files=no")
+                self.assertEqual(status, "")
+        env = isolated_runner.git_environment()
+        self.assertEqual(
+            [
+                env.get(key)
+                for key in ("GIT_CONFIG_COUNT", "GIT_CONFIG_KEY_0", "GIT_CONFIG_VALUE_0")
+            ],
+            ["1", "core.useReplaceRefs", "false"],
+        )
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -326,10 +326,15 @@ def git_environment(isolated=False):
 
     Inherited GIT_* variables (GIT_DIR, GIT_INDEX_FILE, GIT_OBJECT_DIRECTORY...) would
     point Git at another repository, and replace refs would swap the commit's tree
-    for another one. ``isolated`` also drops system and global configuration.
+    for another one. Git before 2.43 let a configured core.useReplaceRefs=true win
+    over GIT_NO_REPLACE_OBJECTS, so the setting is also passed as command-line
+    configuration, which every Git reads last. ``isolated`` also drops system and
+    global configuration.
     """
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
     env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0")
+    env.update(GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="core.useReplaceRefs")
+    env.update(GIT_CONFIG_VALUE_0="false")
     if isolated:
         env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
     return env
