@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import json
 import os
+import stat
 import subprocess
 import sys
 import tempfile
@@ -231,7 +232,21 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(item["conclusion"], "failure")
 
 
+REAL_HOST_TOOL = isolated_runner.host_tool
+
+
+def docker_anywhere(name):
+    """Tests that only build a Docker command must also run where Docker is not
+    installed, such as inside the audit container (CI on b27cf37)."""
+    return "/abs/docker" if name == "docker" else REAL_HOST_TOOL(name)
+
+
 class RunnerContractTests(unittest.TestCase):
+    def setUp(self):
+        stub = patch("isolated_runner.host_tool", side_effect=docker_anywhere)
+        stub.start()
+        self.addCleanup(stub.stop)
+
     def test_root_container_identity_rejected(self):
         with self.assertRaisesRegex(ValueError, "unprivileged"):
             execution_command(
@@ -597,7 +612,10 @@ class StagingSafetyTests(unittest.TestCase):
             root = Path(directory)
             source, revision = fixture_repository(root, {"top.txt": b"root\n"})
             tree = git_in(source, "rev-parse", revision + "^{tree}")
-            (source / ".git/objects" / tree[:2] / tree[2:]).unlink()
+            loose = source / ".git/objects" / tree[:2] / tree[2:]
+            # Git writes object files read-only, and Windows refuses to delete those.
+            loose.chmod(stat.S_IREAD | stat.S_IWRITE)
+            loose.unlink()
             with self.assertRaisesRegex(RuntimeError, r"git exited \d+: fatal: \S"):
                 stage_source(source, root / "staged", revision)
 
@@ -733,7 +751,10 @@ class StagingSafetyTests(unittest.TestCase):
         self.assertEqual(isolated_runner.boundary_arguments(sentinel, 4242, windows=True), [])
         for partial in ((sentinel, None), (None, 4242)):
             self.assertEqual(isolated_runner.boundary_arguments(*partial, windows=False), [])
-        command = execution_command("sha256:" + "0" * 64, ".", ".", ".", None, None, 65534, 65534)
+        with patch("isolated_runner.host_tool", side_effect=docker_anywhere):
+            command = execution_command(
+                "sha256:" + "0" * 64, ".", ".", ".", None, None, 65534, 65534
+            )
         self.assertNotIn("--sentinel", command)
         self.assertNotIn("--host-pid", command)
 
