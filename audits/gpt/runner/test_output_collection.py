@@ -273,39 +273,48 @@ class CollectionCases:
     def test_directory_replaced_by_link_between_stat_and_open_is_rejected(self):
         target = self.produced / "replace-me"
         target.mkdir()
-        self.link(self.root / "probe", self.root, directory=True)
+        outside = self.root / "outside"
+        outside.mkdir()
+        (outside / "large.bin").write_bytes(b"x" * 64)
+        self.link(self.root / "probe", outside, directory=True)
         # The descriptor walk opens the folder; the path walk lists it.
         name = "open" if self.method == "descriptor" else "scandir"
-        real = getattr(os, name)
+        real, fired = getattr(os, name), []
 
         def switched(path, *args, **kwargs):
-            if isinstance(path, str) and os.path.basename(path) == "replace-me":
+            if not fired and isinstance(path, str) and os.path.basename(path) == "replace-me":
+                fired.append(path)
                 target.rmdir()
-                target.symlink_to(self.root, target_is_directory=True)
+                target.symlink_to(outside, target_is_directory=True)
             return real(path, *args, **kwargs)
 
+        # The path walk must notice the link as soon as it lists the folder, before it
+        # looks at any entry reached through it (here, one over the size limit).
         with patch(f"output_collection.os.{name}", side_effect=switched):
             self.rejected(
-                {"descriptor": MISSING, "path": "linked, special|output directory changed"}[
-                    self.method
-                ]
+                {"descriptor": MISSING, "path": "output directory changed"}[self.method],
+                limits=CollectionLimits(file_bytes=4),
             )
+        self.assertTrue(fired)
 
     def test_directory_replaced_by_another_directory_is_rejected(self):
         target = self.produced / "replace-me"
         target.mkdir()
         # The descriptor walk opens the folder; the path walk lists it.
         name = "open" if self.method == "descriptor" else "scandir"
-        real = getattr(os, name)
+        real, fired = getattr(os, name), []
 
         def switched(path, *args, **kwargs):
-            if isinstance(path, str) and os.path.basename(path) == "replace-me":
+            # Once only: shutil.rmtree lists folders with os.scandir on Windows too.
+            if not fired and isinstance(path, str) and os.path.basename(path) == "replace-me":
+                fired.append(path)
                 target.rename(self.work / "moved")
                 target.mkdir()
             return real(path, *args, **kwargs)
 
         with patch(f"output_collection.os.{name}", side_effect=switched):
             self.rejected("output directory changed during collection")
+        self.assertTrue(fired)
 
     def test_file_growing_while_it_is_read_is_rejected(self):
         source = self.produced / "growing.log"

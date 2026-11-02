@@ -549,6 +549,12 @@ class StagingSafetyTests(unittest.TestCase):
         rows = [("100644", "blob", path) for path in (".github/x", ".gitignore", "a.git/b")]
         self.assertEqual(len(source_entries(listing(*rows))), 3)
 
+    def test_a_path_listed_twice_is_refused(self):
+        """Fuzzing (Atheris) shrank this: a crafted tree object can list one path twice."""
+        rows = [("100644", "blob", "A"), ("100644", "blob", "A")]
+        with self.assertRaisesRegex(ValueError, "listed twice"):
+            source_entries(listing(*rows))
+
     def test_names_windows_could_read_as_a_short_name_are_refused(self):
         """R3-3: on NTFS, AAAAAA~1 can name the folder AAAAAAAAAA."""
         for path in ("AAAAAA~1/b.py", "PROGRA~1", "dir/AB12~3.TXT", "x~1.py"):

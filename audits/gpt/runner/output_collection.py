@@ -206,11 +206,14 @@ class PathFolder:
 
     same = staticmethod(same_file)
 
-    def __init__(self, path, base):
-        self.path, self.base = path, base
+    def __init__(self, path, base, info):
+        self.path, self.base, self.info = path, base, info
 
     def names(self):
         with os.scandir(self.path) as children:
+            # scandir lists the folder the path named when it opened; make sure that
+            # is still the folder checked by name before using any of its entries.
+            unchanged_folder(self.path, self.info)
             for entry in children:
                 yield entry.name
 
@@ -231,10 +234,15 @@ class PathFolder:
     @contextmanager
     def child(self, name, info):
         path = os.path.join(self.path, name)
-        yield PathFolder(path, self.base)
-        after = os.lstat(path)
-        if is_link(after) or (info.st_dev, info.st_ino) != (after.st_dev, after.st_ino):
-            raise RejectedOutput("output directory changed during collection")
+        yield PathFolder(path, self.base, info)
+        unchanged_folder(path, info)
+
+
+def unchanged_folder(path, info):
+    """Reject unless ``path`` still names the folder ``info`` was taken from, as no link."""
+    after = os.lstat(path)
+    if is_link(after) or (info.st_dev, info.st_ino) != (after.st_dev, after.st_ino):
+        raise RejectedOutput("output directory changed during collection")
 
 
 def path_directory(path):
@@ -263,7 +271,7 @@ def open_folder(path, method, child=None):
     path_directory(base)
     folder = base if child is None else os.path.join(base, child)
     info = path_directory(folder)
-    yield PathFolder(folder, base), info.st_dev
+    yield PathFolder(folder, base, info), info.st_dev
     after = path_directory(folder)
     if (info.st_dev, info.st_ino) != (after.st_dev, after.st_ino):
         raise RejectedOutput("output directory changed during collection")

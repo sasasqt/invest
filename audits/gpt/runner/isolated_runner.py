@@ -291,6 +291,9 @@ def source_entries(listing):
             raise ValueError(f"Source path enters Git metadata: {path}")
         if not all(portable_name(part) for part in parts):
             raise ValueError(f"Source path is not portable to Windows and Linux: {path}")
+        # A crafted tree object can list one path twice.
+        if path.casefold() in kinds:
+            raise ValueError(f"Source path listed twice, or clash when case is ignored: {path}")
         # Windows folds case: two paths that differ only by case would overwrite each
         # other there, so both hosts refuse them.
         for depth in range(1, len(parts) + 1):
