@@ -1,0 +1,463 @@
+{
+  "kind": "manual PR #32 security fix and fresh CI verification; not a scheduled audit field visit",
+  "pr": "https://github.com/sasasqt/invest/pull/32",
+  "runner_head": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "ci_merge_preview": "6ae42e0c25a77c202bc4575e20e2ec9348af8293",
+  "runner_workflow_blobs_match_merge_preview": true,
+  "findings": [
+    {
+      "id": "INV-PR32-001",
+      "implementation": "fixed on stated head",
+      "validation": "local regressions, real Docker controls, uploaded artifact inspection and full CI pass",
+      "independent_review": "pending; no independent model/human approval claimed"
+    },
+    {
+      "id": "INV-PR32-O1",
+      "implementation": "root README, CI and Python guidance updated",
+      "validation": "full standard-CI link check passed"
+    }
+  ],
+  "local": {
+    "passed": 69,
+    "permission_blocked": [
+      "Unix socket fixture; enabled and passing in CI"
+    ],
+    "ruff_format": "passed",
+    "ruff_lint": "passed"
+  },
+  "ci": {
+    "head": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "checks": [
+      {
+        "id": 125306614388,
+        "name": "isolated-audit (audited, Python 3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:35:02Z",
+        "completed_at": "2026-11-02T13:44:33Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369/job/125306614388"
+      },
+      {
+        "id": 125306614289,
+        "name": "isolated-audit (audited, Python 3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:52Z",
+        "completed_at": "2026-11-02T13:52:16Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369/job/125306614289"
+      },
+      {
+        "id": 125306273194,
+        "name": "collection-boundary (Python 3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:30Z",
+        "completed_at": "2026-11-02T13:34:49Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369/job/125306273194"
+      },
+      {
+        "id": 125306272980,
+        "name": "collection-boundary (Python 3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:10Z",
+        "completed_at": "2026-11-02T13:34:31Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369/job/125306272980"
+      },
+      {
+        "id": 125306272898,
+        "name": "independent-install (strategy-evaluation)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:09Z",
+        "completed_at": "2026-11-02T13:35:23Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272898"
+      },
+      {
+        "id": 125306272880,
+        "name": "wheels",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:09Z",
+        "completed_at": "2026-11-02T13:38:08Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272880"
+      },
+      {
+        "id": 125306272874,
+        "name": "independent-install (data-mining-framework)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:10Z",
+        "completed_at": "2026-11-02T13:35:02Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272874"
+      },
+      {
+        "id": 125306272814,
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:10Z",
+        "completed_at": "2026-11-02T13:40:37Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272814"
+      },
+      {
+        "id": 125306272811,
+        "name": "independent-install (data-pipeline/data-preparation)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:10Z",
+        "completed_at": "2026-11-02T13:34:25Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272811"
+      },
+      {
+        "id": 125306272495,
+        "name": "resolve-source",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:09Z",
+        "completed_at": "2026-11-02T13:34:14Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369/job/125306272495"
+      },
+      {
+        "id": 125306272362,
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-02T13:34:09Z",
+        "completed_at": "2026-11-02T13:41:14Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278/job/125306272362"
+      }
+    ],
+    "runs": [
+      {
+        "id": 41454094369,
+        "name": "Isolated audit runtime",
+        "head_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "event": "pull_request",
+        "created_at": "2026-11-02T13:34:07Z",
+        "updated_at": "2026-11-02T13:52:17Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094369"
+      },
+      {
+        "id": 41454094278,
+        "name": "CI",
+        "head_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "event": "pull_request",
+        "created_at": "2026-11-02T13:34:07Z",
+        "updated_at": "2026-11-02T13:41:15Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/41454094278"
+      }
+    ]
+  },
+  "security_artifacts": [
+    {
+      "python": "3.11",
+      "artifact_id": 13145787004,
+      "zip_sha256": "9fb9c59f563397fe02ba39726e2adf92682ff0983cddcef90bf995e8a9d5b58a",
+      "cases": 10,
+      "boundary_checks": 12,
+      "unsafe_links_or_outside_marker_in_zip": false,
+      "ordinary_evidence_preserved": true,
+      "zip_entries": 15
+    },
+    {
+      "python": "3.13",
+      "artifact_id": 13146392187,
+      "zip_sha256": "e48254e7b11f0d141130acf299d5b954b61f67ab7129547d7fa6f616008cdadd",
+      "cases": 10,
+      "boundary_checks": 12,
+      "unsafe_links_or_outside_marker_in_zip": false,
+      "ordinary_evidence_preserved": true,
+      "zip_entries": 15
+    }
+  ],
+  "runtime_artifacts": [
+    {
+      "python": "3.11",
+      "artifact_id": 13146479594,
+      "zip_sha256": "5a8687e67ec1d1769a40519c911f276ad6309ffec74ea977b7e44a74b840ea51",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_files": 111,
+      "all_collected_file_digests_match": true,
+      "boundary_checks": 12,
+      "runner_checks": 70,
+      "product_tests": 652,
+      "installed_graph_keys": [
+        "resolved",
+        "origins",
+        "python"
+      ],
+      "installed_runtime_count": 26,
+      "extra_test_counts": {
+        "hash-seed-repeat": 652,
+        "data-preparation-tests": 162,
+        "data-mining-framework-tests": 143,
+        "strategy-evaluation-tests": 289
+      },
+      "validation_stages": [
+        {
+          "name": "audit-guard-tests",
+          "exit": 0
+        },
+        {
+          "name": "build-workspace",
+          "exit": 0
+        },
+        {
+          "name": "create-environment",
+          "exit": 0
+        },
+        {
+          "name": "install-workspace",
+          "exit": 0
+        },
+        {
+          "name": "installed-graph",
+          "exit": 0
+        },
+        {
+          "name": "format",
+          "exit": 0
+        },
+        {
+          "name": "lint",
+          "exit": 0
+        },
+        {
+          "name": "types",
+          "exit": 0
+        },
+        {
+          "name": "tests",
+          "exit": 0
+        },
+        {
+          "name": "links",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-data",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-mine",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-eval",
+          "exit": 0
+        },
+        {
+          "name": "hash-seed-repeat",
+          "exit": 0
+        },
+        {
+          "name": "data-preparation-venv",
+          "exit": 0
+        },
+        {
+          "name": "data-preparation-install",
+          "exit": 0
+        },
+        {
+          "name": "data-preparation-tests",
+          "exit": 0
+        },
+        {
+          "name": "data-mining-framework-venv",
+          "exit": 0
+        },
+        {
+          "name": "data-mining-framework-install",
+          "exit": 0
+        },
+        {
+          "name": "data-mining-framework-tests",
+          "exit": 0
+        },
+        {
+          "name": "strategy-evaluation-venv",
+          "exit": 0
+        },
+        {
+          "name": "strategy-evaluation-install",
+          "exit": 0
+        },
+        {
+          "name": "evaluation-independent-import",
+          "exit": 0
+        },
+        {
+          "name": "strategy-evaluation-tests",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-0",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-1",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-2",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-3",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-4",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-5",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-6",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-7",
+          "exit": 0
+        }
+      ],
+      "measured_benchmark_samples": 7,
+      "median_seconds": 9.540875699000026,
+      "semantic_gate_version": 2,
+      "unsafe_links_or_outside_marker_in_zip": false,
+      "numerical_oracle": "repeatability under declared semantic gate; no external numerical oracle",
+      "speed_comparison": "none; hardware/interpreter differ"
+    },
+    {
+      "python": "3.13",
+      "artifact_id": 13145688498,
+      "zip_sha256": "b0ec2d49b18f09ffe5b39feb8971f46bc4d95ab7f88985782138345fcd9657a7",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_files": 111,
+      "all_collected_file_digests_match": true,
+      "boundary_checks": 12,
+      "runner_checks": 70,
+      "product_tests": 652,
+      "installed_graph_keys": [
+        "resolved",
+        "origins",
+        "python"
+      ],
+      "installed_runtime_count": 26,
+      "extra_test_counts": {},
+      "validation_stages": [
+        {
+          "name": "audit-guard-tests",
+          "exit": 0
+        },
+        {
+          "name": "build-workspace",
+          "exit": 0
+        },
+        {
+          "name": "create-environment",
+          "exit": 0
+        },
+        {
+          "name": "install-workspace",
+          "exit": 0
+        },
+        {
+          "name": "installed-graph",
+          "exit": 0
+        },
+        {
+          "name": "format",
+          "exit": 0
+        },
+        {
+          "name": "lint",
+          "exit": 0
+        },
+        {
+          "name": "types",
+          "exit": 0
+        },
+        {
+          "name": "tests",
+          "exit": 0
+        },
+        {
+          "name": "links",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-data",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-mine",
+          "exit": 0
+        },
+        {
+          "name": "cli-invest-eval",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-0",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-1",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-2",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-3",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-4",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-5",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-6",
+          "exit": 0
+        },
+        {
+          "name": "synth-S-7",
+          "exit": 0
+        }
+      ],
+      "measured_benchmark_samples": 7,
+      "median_seconds": 9.085426384000016,
+      "semantic_gate_version": 2,
+      "unsafe_links_or_outside_marker_in_zip": false,
+      "numerical_oracle": "repeatability under declared semantic gate; no external numerical oracle",
+      "speed_comparison": "none; hardware/interpreter differ"
+    }
+  ],
+  "source_identity": "All 111 source blobs checked against the immutable remote source tree.",
+  "source_update": "PR #31 is already merged into main; current main pinned once instead of old failing 90b5ca03 source. Historical failures remain failures.",
+  "scope": "No product source, assertions, lockfile, reserved observations, audit state or schedules changed. No merge performed.",
+  "review": "Full runner self-review and a second pass on corrected host sinks; explicit summary-depth limit added after failing regression. Requested external model/effort metadata unavailable; no delegated or independent review claimed.",
+  "limits": [
+    "Linux/POSIX collector only; no Windows runner execution",
+    "No enforced quota on the live writable workspace disk",
+    "Semantic output gate tests repeatability, not an external numerical oracle",
+    "No matched performance comparison, memory peaks, larger benchmarks or historical raw replay",
+    "Recurring audit independent-verification gate and overall audit completion are not changed"
+  ]
+}
