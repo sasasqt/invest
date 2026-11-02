@@ -114,7 +114,8 @@ def forged_lines(output):
 
 
 def upload_path_lines(step):
-    """The lines of an upload step's `path:` input (one line, or a `|` block)."""
+    """The pattern lines of an upload step's `path:` input (one line, or a `|` block);
+    @actions/glob skips lines that start with `#`."""
     lines = step.splitlines()
     for number, line in enumerate(lines):
         key, _, value = line.strip().partition(":")
@@ -126,27 +127,39 @@ def upload_path_lines(step):
             for item in lines[number + 1 :]:
                 if item.strip() and len(item) - len(item.lstrip()) <= indent:
                     break
-                if item.strip():
+                if item.strip() and not item.strip().startswith("#"):
                     block.append(item.strip())
             return block
     raise AssertionError("upload step without path")
 
 
+def upload_root(test, lines):
+    """The one include line: a plain folder, so the emulator below sees all it takes."""
+    includes = [line for line in lines if not line.startswith("!")]
+    test.assertEqual(len(includes), 1, f"one evidence folder per upload: {includes}")
+    test.assertFalse(set("*?[") & set(includes[0]), f"a plain folder: {includes[0]}")
+    test.assertTrue(includes[0].endswith("/results"), f"the evidence folder: {includes[0]}")
+    return includes
+
+
 def covered(parts, pieces):
     """`*` stays within one path segment, `**` spans zero or more (dot: true); an
-    exclude that matches a folder also covers everything in it (implicitDescendants)."""
+    exclude that matches a folder also covers everything in it (implicitDescendants).
+    minimatch reads `[^...]` as `[!...]`; a trailing `/` matches folders only."""
     if not pieces:
         return True
     if pieces[0] == "**":
         return any(covered(parts[skip:], pieces[1:]) for skip in range(len(parts) + 1))
-    return (
-        bool(parts) and fnmatch.fnmatchcase(parts[0], pieces[0]) and covered(parts[1:], pieces[1:])
-    )
+    piece = pieces[0].replace("[^", "[!")
+    return bool(parts) and fnmatch.fnmatchcase(parts[0], piece) and covered(parts[1:], pieces[1:])
 
 
 def upload_excludes(path, excludes):
     """@actions/glob: does one of the `!` patterns leave ``path`` out of the upload?"""
-    return any(covered(path.split("/"), pattern.split("/")) for pattern in excludes)
+    patterns = [
+        pattern[:-1] + "/*/**" if pattern.endswith("/") else pattern for pattern in excludes
+    ]
+    return any(covered(path.split("/"), pattern.split("/")) for pattern in patterns)
 
 
 class HostErrorTests(unittest.TestCase):
@@ -290,6 +303,23 @@ class HostSafetyTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("ordinary build step", output)
         self.assertEqual(forged_lines(output), [], quoted(output))
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_the_last_line_names_the_collection_as_well_as_the_exit(self):
+        """Review round 10: a container that exited 0 with nothing collected ended the
+        log with "Container audit exited 0", and the README called the exit in
+        runner.json the verdict, although the run itself fails (exit 1)."""
+        revision = self.workspace()
+        result = self.run_runner(revision)
+        record = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
+        self.assertEqual((record["exit"], record["collection_status"]), (0, "rejected"))
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(
+            result.stdout.splitlines()[-1].startswith(
+                "Container audit exited 0; collection rejected; evidence: "
+            ),
+            quoted(result.stdout),
+        )
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")
     def test_container_output_cannot_start_workflow_commands(self):
@@ -513,10 +543,27 @@ class DockerCliTests(unittest.TestCase):
                 isolated_runner.DOCKER_ENDPOINT = endpoint
             env = {k: v for k, v in os.environ.items() if not k.startswith("DOCKER_")}
             env["DOCKER_CONFIG"] = str(config)
-            done = subprocess.run(command, env=env, capture_output=True, text=True, timeout=60)
-        self.assertTrue(seen, f"no create request reached the stand-in daemon: {done.stderr}")
-        leaked = [item for item in seen[0].get("Env") or [] if "proxy" in item.lower()]
-        self.assertTrue(leaked, "the CLI sent no proxy variable at all; the test proves nothing")
+            # Control (review round 10): the same command without the runner's own proxy
+            # entries must receive the config's proxies, or this CLI applies none and the
+            # check below proves nothing (the runner's empty entries alone would pass it).
+            names = [f"{name}_proxy" for name in ("http", "https", "ftp", "all", "no")]
+            names += [name.upper() for name in names]
+            own = {f"{name}=" for name in names}
+            control = [
+                value
+                for index, value in enumerate(command)
+                if value not in own and not (value == "--env" and command[index + 1] in own)
+            ]
+            done = [
+                subprocess.run(argv, env=env, capture_output=True, text=True, timeout=60)
+                for argv in (control, command)
+            ]
+        self.assertEqual(len(seen), 2, f"create requests missing: {done[-1].stderr}")
+        values = {"no_proxy": "proxy.invalid", "NO_PROXY": "proxy.invalid"}
+        applied = set(seen[0].get("Env") or [])
+        expected = {f"{name}={values.get(name, proxy)}" for name in names}
+        self.assertEqual(expected - applied, set(), "this CLI applies no config.json proxy")
+        leaked = [item for item in seen[1].get("Env") or [] if "proxy" in item.lower()]
         self.assertEqual([item for item in leaked if not item.endswith("=")], [])
 
 
@@ -567,7 +614,7 @@ class WorkflowTests(unittest.TestCase):
 
                 lines = upload_path_lines(step)
                 root = runner_temp.as_posix()
-                includes = [expand(line, root) for line in lines if not line.startswith("!")]
+                includes = [expand(line, root) for line in upload_root(self, lines)]
                 excludes = [
                     expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
                 ]
@@ -615,7 +662,7 @@ class WorkflowTests(unittest.TestCase):
 
                 lines = upload_path_lines(step)
                 root = runner_temp.as_posix()
-                includes = [expand(line, root) for line in lines if not line.startswith("!")]
+                includes = [expand(line, root) for line in upload_root(self, lines)]
                 excludes = [
                     expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
                 ]
@@ -640,6 +687,29 @@ class WorkflowTests(unittest.TestCase):
                     if path.is_file() and not upload_excludes(path.as_posix(), excludes)
                 }
                 self.assertEqual(taken, listed, "the upload would drop collected evidence")
+
+    def test_upload_emulator_reads_paths_as_actions_glob_does(self):
+        """Review round 10: the emulator above read `[^.]*` as a literal caret (minimatch
+        negates it, so `!.../results/[^.]*` uploads only an unfinished snapshot and
+        passed W4), ignored every include but the first (an added raw `work` folder
+        passed), and failed a correct trailing-slash exclude or a `#` comment line."""
+        cases = [
+            ("/r/results/.collect-x/f", "/r/results/.collect-*", True),
+            ("/r/results/.collect-x/f", "/r/results/.collect-*/", True),
+            ("/r/results/.collect-x", "/r/results/.collect-*/", False),  # a file: kept
+            ("/r/results/collection.json", "/r/results/[^.]*", True),
+            ("/r/results/.collect-x/f", "/r/results/[^.]*", False),
+            ("/r/results/workload/a/.h", "/r/results/**/.*", True),
+        ]
+        for path, exclude, expected in cases:
+            with self.subTest(path=path, exclude=exclude):
+                self.assertEqual(upload_excludes(path, [exclude]), expected)
+        step = "x\n  path: |\n    # a comment\n    /r/results\n    !/r/results/.c*\n  y: z"
+        self.assertEqual(upload_path_lines(step), ["/r/results", "!/r/results/.c*"])
+        self.assertEqual(upload_root(self, ["/r/results", "!/r/results/.c*"]), ["/r/results"])
+        for lines in (["/r/results", "/r/work"], ["/r/results/*.json"], ["/r/other"]):
+            with self.subTest(lines=lines), self.assertRaises(AssertionError):
+                upload_root(self, lines)
 
 
 if __name__ == "__main__":

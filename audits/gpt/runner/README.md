@@ -83,8 +83,10 @@ step ends; in the container, where the workload is the first process, every othe
 then stopped and reaped too, also one that started a new session (`setsid`). So
 `"parallel_benchmarks": false` holds, and no leftover holds a slot of the process limit. `boundary.json`, `coverage.json` and the other workload records are written inside
 the container while audited code runs, so they are evidence, not the verdict: the verdict is the
-exit code in `runner.json`, computed by the container's first process (or set by the host to 124
-or 125 when the run reaches its deadline or log limit, with `termination_reason` saying which).
+runner's exit status, 0 only when both the `exit` in `runner.json` is 0 and its `collection_status`
+is `collected`. `exit` is computed by the container's first process (or set by the host to 124 or
+125 when the run reaches its deadline or log limit, with `termination_reason` saying which); a
+rejected collection fails the run even after `exit` 0.
 
 Samples and summaries identify semantic-gate version 2. Earlier version-1 timing samples remain
 historical measurements, with a narrower gate that omitted compressed tables and other

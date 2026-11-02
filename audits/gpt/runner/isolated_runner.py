@@ -745,7 +745,11 @@ def main():
             indent=2,
         ),
     )
-    print(f"Container audit exited {execution.returncode}; evidence: {results}")
+    # The run fails when either the container or the collection did (README, verdict).
+    print(
+        f"Container audit exited {execution.returncode}; "
+        f"collection {collection['status']}; evidence: {results}"
+    )
     return execution.returncode or int(collection["status"] != "collected")
 
 
