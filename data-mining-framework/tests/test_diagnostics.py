@@ -12,6 +12,7 @@ from invest_mining.diagnostics import (
     holm_adjust,
     newey_west_mean_test,
     quantile_returns,
+    quantile_summary,
     tail_masks,
     tail_percentiles,
     tail_returns,
@@ -256,3 +257,39 @@ def test_bucket_boundaries_do_not_round_exact_ranks_into_the_next_bucket(n):
     )
     factor = pd.DataFrame([range(n)], dtype=float)
     np.testing.assert_array_equal(assign_buckets(factor, 25).iloc[0], expected)
+
+
+def test_decile_means_need_enough_observed_outcomes_and_the_summary_says_why():
+    """K7: a ten-name decile with one observed label is not reported as that label's return."""
+    f = pd.DataFrame([range(100)] * 2, dtype=float)
+    y = f / 100
+    y.iloc[0, 91:] = np.nan  # Top decile: one observed outcome of ten on the first date.
+    y.iloc[1, :] = np.nan  # The final date has no observable outcome anywhere.
+    assert quantile_returns(f, y, 10).loc[0, "q10"] == pytest.approx(0.90)  # no minimum
+    daily = quantile_returns(f, y, 10, min_names=5)
+    assert pd.isna(daily.loc[0, "q10"]) and daily.loc[0, "q1"] == pytest.approx(0.045)
+    summary = quantile_summary(f, y, 10, min_names=5)
+    assert list(summary.index) == [f"q{k}" for k in range(1, 11)]
+    top, bottom = summary.loc["q10"], summary.loc["q1"]
+    assert top["status"] == "insufficient_data" and top["reason"] == "too_few_observed_outcomes"
+    assert pd.isna(top["mean_forward_return"]) and top["n_dates"] == 0
+    assert top["min_names"] == 10 and top["min_observed_names"] == 1
+    assert bottom["status"] == "ok" and bottom["mean_forward_return"] == pytest.approx(0.045)
+    assert bottom["n_dates"] == 1 and bottom["missing_label_dates"] == 1
+
+
+def test_decile_summary_flags_buckets_with_too_few_assigned_names():
+    f = pd.DataFrame([range(20)], dtype=float)
+    summary = quantile_summary(f, f / 100, 10, min_names=3)  # two names per decile
+    assert (summary["status"] == "insufficient_data").all()
+    assert (summary["reason"] == "too_few_assigned_names").all()
+    assert summary["mean_forward_return"].isna().all() and (summary["min_names"] == 2).all()
+    assert (quantile_summary(f, f / 100, 10, min_names=2)["status"] == "ok").all()
+
+
+def test_an_empty_tail_is_not_a_missing_label_date():
+    """N2: missing labels mean none observable among scored names, not an empty slice."""
+    f = pd.DataFrame([np.arange(97, dtype=float)] * 4)  # bottom 1% of 97 holds no name
+    tails = tail_returns(f, f * 0 + 0.01, (0.01,), min_names=1)
+    assert tails.loc["bottom_0.01", "min_names"] == 0
+    assert (tails["missing_label_dates"] == 0).all()
