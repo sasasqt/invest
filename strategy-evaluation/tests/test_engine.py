@@ -7,6 +7,7 @@ import pytest
 
 from invest_evaluation.config import BacktestConfig, CostModel, ExecutionConfig, StrategyConfig
 from invest_evaluation.engine import InputError, check_price_rules, run_backtest
+from invest_evaluation.metrics import compute_metrics
 
 
 class Fixed:
@@ -115,11 +116,82 @@ def test_accounting_reconciles_with_all_costs(market, reversal_signals):
     res = run_backtest(market, reversal_signals, cfg)
     net = res.daily["equity"].iloc[-1] - cfg.initial_capital
     assert res.episodes["pnl"].sum() + res.daily["financing"].sum() == pytest.approx(net)
-    costs = res.daily[["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]].sum()
-    assert costs.sum() == pytest.approx(res.daily["cum_costs"].iloc[-1])
-    assert (res.daily["equity_before_costs"] - res.daily["equity"]).iloc[-1] == pytest.approx(
-        costs.sum()
+    costs = res.daily[["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]]
+    assert costs.sum().sum() == pytest.approx(res.daily["cum_costs"].iloc[-1])
+    # Each session's gross return is its net return plus that session's costs over the
+    # previous close's equity, and the gross path compounds those returns.
+    prev = res.daily["equity"].shift(1).fillna(cfg.initial_capital)
+    np.testing.assert_allclose(
+        res.gross_returns, res.returns + costs.sum(axis=1) / prev, rtol=0, atol=1e-12
     )
+    assert res.daily["equity_before_costs"].iloc[-1] == pytest.approx(
+        cfg.initial_capital * float(np.prod(1 + res.gross_returns))
+    )
+
+
+def test_gross_of_costs_metrics_are_not_diluted_by_past_costs():
+    # Two names that rise 0.2% every session between the open and the close; the long-only
+    # book flips between them every session, so it is always fully invested and pays 10 bp
+    # commission on its whole book twice a session. Before costs it earns about 0.2% a
+    # session whatever it pays, like the same backtest with no costs.
+    n, growth = 300, 1.002
+    dates = pd.bdate_range("2020-01-01", periods=n)
+    closes = 100.0 * growth ** np.arange(1, n + 1)
+    bars = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "date": dates,
+                    "instrument": name,
+                    "open": closes * scale / growth,
+                    "high": closes * scale,
+                    "low": closes * scale / growth,
+                    "close": closes * scale,
+                    "volume": 1e12,
+                }
+            )
+            for name, scale in (("A", 1.0), ("B", 0.5))
+        ],
+        ignore_index=True,
+    )
+    flip = (np.arange(n) % 2).astype(float)
+    signals = pd.concat(
+        [
+            pd.DataFrame({"decision_date": dates, "instrument": "A", "score": flip}),
+            pd.DataFrame({"decision_date": dates, "instrument": "B", "score": 1.0 - flip}),
+        ],
+        ignore_index=True,
+    )
+
+    def config(commission_bps: float) -> BacktestConfig:
+        return BacktestConfig(
+            strategy=StrategyConfig(
+                long_fraction=0.5, short_fraction=0.0, rebalance_every=1, min_names=2
+            ),
+            execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+            costs=CostModel(
+                commission_bps=commission_bps,
+                half_spread_bps=0,
+                impact_coef=0,
+                borrow_bps_annual=0,
+                adv_window=1,
+                vol_window=2,
+            ),
+        )
+
+    res = run_backtest(bars, signals, config(10.0))
+    free = run_backtest(bars, signals, config(0.0))
+    metrics, free_metrics = compute_metrics(res), compute_metrics(free)
+    gross_cagr = metrics["gross_of_costs"]["cagr"]["value"]
+    free_cagr = free_metrics["performance"]["cagr"]["value"]
+    assert free_cagr > 0.6
+    assert gross_cagr == pytest.approx(free_cagr, abs=0.005)
+    # The cost drag is the costs paid as a fraction of the previous close's equity, per year.
+    costs = res.daily[["commission_cost", "spread_cost", "impact_cost", "borrow_cost"]]
+    prev = res.daily["equity"].shift(1).fillna(res.config.initial_capital)
+    paid = float((costs.sum(axis=1) / prev).mean() * res.config.annualization)
+    assert paid > 0.4
+    assert metrics["trading"]["cost_drag_annual"]["value"] == pytest.approx(paid, rel=1e-9)
 
 
 def test_fills_happen_strictly_after_decisions(market, reversal_signals):
