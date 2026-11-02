@@ -643,6 +643,16 @@ class StagingSafetyTests(unittest.TestCase):
                 stage_source(repo, root / "staged", commit)
             self.assertFalse(marker.exists(), "the host ran a command from the commit")
 
+    def test_paths_with_spaces_stage_at_the_committed_path(self):
+        """Mutation testing: a path must be split only at "/", never at whitespace."""
+        files = {"dir name/file name.txt": b"spaced\n", "top level.txt": b"top\n"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, files)
+            stage_source(source, root / "staged", revision)
+            for name, payload in files.items():
+                self.assertEqual((root / "staged" / name).read_bytes(), payload)
+
     def test_staged_files_keep_the_committed_modes(self):
         """Mutation testing: nothing checked the staged file modes or Git's filemode."""
         with tempfile.TemporaryDirectory() as directory:
