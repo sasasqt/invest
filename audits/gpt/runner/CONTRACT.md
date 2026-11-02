@@ -114,6 +114,11 @@ controls exercise W1 and W2 in a real container.
   refused before staging.
 - A Docker daemon that cannot be reached, or does not report Linux containers,
   gives a `blocked` result (exit 2) before any source is read.
+- The audit container gets no proxy setting from the host's Docker CLI
+  configuration: the run sets every proxy variable that the CLI would copy from the
+  `proxies` of its `config.json` (HTTP, HTTPS, FTP, ALL and NO_PROXY, in upper and
+  lower case) to an empty value. PR #32 left FTP_PROXY out, so a proxy URL, which can
+  hold a password, reached the audited code and could be written to its output.
 - `git`, `uv` and `docker` are run only from absolute `PATH` folders, never from the
   current folder or a relative `PATH` entry (Windows searches the current folder
   first), so a program committed in the audited checkout cannot run on the host.
@@ -131,9 +136,11 @@ controls exercise W1 and W2 in a real container.
   `host_process_not_visible`, and its child check is named
   `child_inherits_env_denial`: a Windows path or process ID names nothing inside
   the Linux container, so those checks would pass whatever leaked.
-- Every host program runs with captured output through `run_captured`, which kills
-  it at its timeout and returns at once. `subprocess.run` on Windows reads the pipes
-  to their end after the kill, so a child that a launcher started (Git for Windows'
-  `cmd\git.exe`, a Docker CLI plugin such as buildx) kept it waiting.
+- Every host program but the container run (`run_bounded`, which reads the log on a
+  thread with its own deadline) runs with captured output through `run_captured`,
+  which kills it at its timeout and returns at once. `subprocess.run` on Windows
+  reads the pipes to their end after the kill, so a child that a launcher started
+  (Git for Windows' `cmd\git.exe`, a Docker CLI plugin such as buildx) kept it
+  waiting.
 - `verify_snapshot` refuses raw paths with `\` or `:` in any part on every host;
   on Windows such a path would name a drive, a share or a stream.

@@ -576,6 +576,11 @@ class RunnerContractTests(unittest.TestCase):
             self.assertIn(required, command)
         self.assertNotIn("--privileged", command)
         self.assertNotIn("--env-file", command)
+        # Review round 9: the Docker CLI fills in every proxy variable that config.json
+        # names (httpProxy, httpsProxy, ftpProxy, noProxy, allProxy) and the run leaves unset.
+        for name in ("HTTP_PROXY", "HTTPS_PROXY", "FTP_PROXY", "NO_PROXY", "ALL_PROXY"):
+            for variant in (name, name.lower()):
+                self.assertIn(variant + "=", command)
         self.assertFalse(any("AUDIT_HOST_CANARY=" in item for item in command))
         self.assertTrue(any("dst=/input,readonly" in item for item in command))
         self.assertTrue(any("dst=/audit,readonly" in item for item in command))

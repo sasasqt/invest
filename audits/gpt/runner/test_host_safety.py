@@ -8,19 +8,24 @@ Windows. Tests that need uv skip when it is not installed.
 import contextlib
 import fnmatch
 import glob
+import http.server
 import io
 import json
 import os
 import shutil
+import socket
+import socketserver
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 
 os.environ.setdefault("CONTRACT_CHECKS", "1")
 
 from isolated_runner import report_host_error
+from output_collection import collect_workload
 
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / "isolated_runner.py"
@@ -127,18 +132,21 @@ def upload_path_lines(step):
     raise AssertionError("upload step without path")
 
 
+def covered(parts, pieces):
+    """`*` stays within one path segment, `**` spans zero or more (dot: true); an
+    exclude that matches a folder also covers everything in it (implicitDescendants)."""
+    if not pieces:
+        return True
+    if pieces[0] == "**":
+        return any(covered(parts[skip:], pieces[1:]) for skip in range(len(parts) + 1))
+    return (
+        bool(parts) and fnmatch.fnmatchcase(parts[0], pieces[0]) and covered(parts[1:], pieces[1:])
+    )
+
+
 def upload_excludes(path, excludes):
-    """@actions/glob with implicitDescendants: an exclude that matches a folder
-    also covers everything in it; `*` stays within one path segment; dot: true."""
-    parts = path.split("/")
-    for pattern in excludes:
-        wanted = pattern.split("/")
-        if len(parts) >= len(wanted) and all(
-            fnmatch.fnmatchcase(part, piece)
-            for part, piece in zip(parts[: len(wanted)], wanted, strict=True)
-        ):
-            return True
-    return False
+    """@actions/glob: does one of the `!` patterns leave ``path`` out of the upload?"""
+    return any(covered(path.split("/"), pattern.split("/")) for pattern in excludes)
 
 
 class HostErrorTests(unittest.TestCase):
@@ -416,6 +424,102 @@ class DockerfileTests(unittest.TestCase):
                 self.assertIn("@sha256:", directive, "pin the frontend image by digest")
 
 
+@unittest.skipUnless(
+    os.name == "posix" and hasattr(socket, "AF_UNIX") and shutil.which("docker"),
+    "needs a Docker CLI and Unix sockets",
+)
+class DockerCliTests(unittest.TestCase):
+    def test_no_proxy_from_the_cli_config_reaches_the_container(self):
+        """Review round 9: the real Docker CLI adds every proxy that its config.json
+        names (a proxy URL can hold a password) unless the run sets the variable, and
+        FTP_PROXY was not set. A stand-in daemon on a Unix socket records the create
+        request the CLI sends and refuses it, so no container is made."""
+        import isolated_runner
+
+        seen = []
+
+        class Daemon(http.server.BaseHTTPRequestHandler):
+            protocol_version = "HTTP/1.1"
+
+            def log_message(self, *args):
+                pass
+
+            def reply(self, code, body):
+                data = body.encode()
+                self.send_response(code)
+                self.send_header("Api-Version", "1.51")
+                self.send_header("OSType", "linux")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                if self.command != "HEAD":
+                    self.wfile.write(data)
+
+            def do_HEAD(self):
+                self.reply(200, "OK")
+
+            def do_GET(self):
+                self.reply(200 if self.path.endswith("/_ping") else 404, "OK")
+
+            def do_POST(self):
+                body = self.rfile.read(int(self.headers.get("Content-Length") or 0))
+                if "/containers/create" in self.path:
+                    seen.append(json.loads(body or b"{}"))
+                self.reply(500, json.dumps({"message": "stand-in daemon: refused"}))
+
+        class Server(socketserver.ThreadingMixIn, socketserver.UnixStreamServer):
+            daemon_threads = True
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            server = Server(str(root / "d.sock"), Daemon)
+            threading.Thread(target=server.serve_forever, daemon=True).start()
+            self.addCleanup(server.server_close)
+            self.addCleanup(server.shutdown)
+            proxy = "http://user:NOT_A_SECRET@proxy.invalid:1"
+            config = root / "dockercfg"
+            config.mkdir()
+            (config / "config.json").write_text(
+                json.dumps(
+                    {
+                        "proxies": {
+                            "default": {
+                                "httpProxy": proxy,
+                                "httpsProxy": proxy,
+                                "ftpProxy": proxy,
+                                "allProxy": proxy,
+                                "noProxy": "proxy.invalid",
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            for name in ("src", "tools", "out"):
+                (root / name).mkdir()
+            endpoint = isolated_runner.DOCKER_ENDPOINT
+            isolated_runner.DOCKER_ENDPOINT = f"unix://{root / 'd.sock'}"
+            try:
+                command = isolated_runner.execution_command(
+                    "sha256:" + "0" * 64,
+                    root / "src",
+                    root / "out",
+                    root / "tools",
+                    None,
+                    None,
+                    1000,
+                    1000,
+                )
+            finally:
+                isolated_runner.DOCKER_ENDPOINT = endpoint
+            env = {k: v for k, v in os.environ.items() if not k.startswith("DOCKER_")}
+            env["DOCKER_CONFIG"] = str(config)
+            done = subprocess.run(command, env=env, capture_output=True, text=True, timeout=60)
+        self.assertTrue(seen, f"no create request reached the stand-in daemon: {done.stderr}")
+        leaked = [item for item in seen[0].get("Env") or [] if "proxy" in item.lower()]
+        self.assertTrue(leaked, "the CLI sent no proxy variable at all; the test proves nothing")
+        self.assertEqual([item for item in leaked if not item.endswith("=")], [])
+
+
 class WorkflowTests(unittest.TestCase):
     def test_every_evidence_upload_keeps_hidden_files(self):
         """Review round 7: upload-artifact (v4.4.0 and later) leaves out names that
@@ -488,6 +592,54 @@ class WorkflowTests(unittest.TestCase):
                     if path.is_file() and not upload_excludes(path.as_posix(), excludes)
                 ]
                 self.assertEqual(taken, [], "the upload would take an unfinished snapshot")
+
+    def test_every_evidence_upload_takes_every_collected_file(self):
+        """Review round 9: W4 also keeps names that start with a dot, but an exclude that
+        dropped them (`!.../results/workload/.*`) passed both tests above. A finished
+        collection, with dot names and a name shaped like a snapshot's, must reach the
+        artifact whole: every file collection.json lists, and collection.json itself."""
+        workflow = HERE.parents[2] / ".github/workflows/audit-runtime.yml"
+        steps = workflow.read_text(encoding="utf-8").split("\n      - ")
+        uploads = [step for step in steps if "actions/upload-artifact@" in step]
+        self.assertTrue(uploads, "no upload step found")
+        for step in uploads:
+            with self.subTest(step=step.splitlines()[0]), tempfile.TemporaryDirectory() as temp:
+                runner_temp = Path(temp)
+
+                def expand(line, root):
+                    return (
+                        line.replace("${{ runner.temp }}", root)
+                        .replace("${{ matrix.python }}", "3.11")
+                        .replace("${{ matrix.kind }}", "audited")
+                    )
+
+                lines = upload_path_lines(step)
+                root = runner_temp.as_posix()
+                includes = [expand(line, root) for line in lines if not line.startswith("!")]
+                excludes = [
+                    expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
+                ]
+                results = Path(includes[0])
+                sink = results / "ordinary" if "name: collection-" in step else results
+                sink.mkdir(parents=True)
+                folder = runner_temp / "work" / "results"
+                (folder / "nested").mkdir(parents=True)
+                for name in (".hidden", ".collect-notes", "nested/.collect-x", "plain.txt"):
+                    (folder / name).write_text("evidence", encoding="utf-8")
+                with contextlib.redirect_stdout(io.StringIO()):
+                    report = collect_workload(runner_temp / "work", sink)
+                self.assertEqual(report["status"], "collected")
+                listed = {(sink / "collection.json").relative_to(results).as_posix()}
+                listed |= {
+                    (sink / "workload" / row["path"]).relative_to(results).as_posix()
+                    for row in report["files"]
+                }
+                taken = {
+                    path.relative_to(results).as_posix()
+                    for path in results.rglob("*")
+                    if path.is_file() and not upload_excludes(path.as_posix(), excludes)
+                }
+                self.assertEqual(taken, listed, "the upload would drop collected evidence")
 
 
 if __name__ == "__main__":

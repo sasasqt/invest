@@ -79,12 +79,13 @@ def write_text(path, text):
 def run_captured(argv, *, timeout=None, input=None, **kwargs):
     """Run ``argv`` with captured output; on a timeout kill it and raise at once.
 
-    Every host program goes through here, not subprocess.run: on Windows, run reads
-    the pipes to their end after the kill, so a launcher's child that still holds
-    them (Git for Windows' cmd\\git.exe, a Docker CLI plugin such as buildx) would
-    keep it waiting past the timeout. ``input`` (bytes) is passed as a file, not a
-    pipe: Python 3.11 on Windows writes a pipe's input before it starts timing, so a
-    program that stopped reading would hold it past the timeout too.
+    Every host program but the container run (``run_bounded``, which reads its log on
+    a thread with its own deadline) goes through here, not subprocess.run: on
+    Windows, run reads the pipes to their end after the kill, so a launcher's child
+    that still holds them (Git for Windows' cmd\\git.exe, a Docker CLI plugin such
+    as buildx) would keep it waiting past the timeout. ``input`` (bytes) is passed as
+    a file, not a pipe: Python 3.11 on Windows writes a pipe's input before it starts
+    timing, so a program that stopped reading would hold it past the timeout too.
     """
     feed = None
     if input is not None:
@@ -291,12 +292,16 @@ def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid
         "OMP_NUM_THREADS": "1",
         "MKL_NUM_THREADS": "1",
         "PYTHONHASHSEED": "0",
+        # The Docker CLI adds each of these, in both cases, from the `proxies` of its
+        # config.json (a proxy URL can hold a password) unless the run sets it.
         "HTTP_PROXY": "",
         "HTTPS_PROXY": "",
+        "FTP_PROXY": "",
         "ALL_PROXY": "",
         "NO_PROXY": "",
         "http_proxy": "",
         "https_proxy": "",
+        "ftp_proxy": "",
         "all_proxy": "",
         "no_proxy": "",
     }.items():
@@ -328,8 +333,8 @@ def git_environment(isolated=False):
     point Git at another repository, and replace refs would swap the commit's tree
     for another one. Git before 2.43 let a configured core.useReplaceRefs=true win
     over GIT_NO_REPLACE_OBJECTS, so the setting is also passed as command-line
-    configuration, which every Git reads last. ``isolated`` also drops system and
-    global configuration.
+    configuration, which Git 2.31 and later (every Git that require_git accepts)
+    reads last. ``isolated`` also drops system and global configuration.
     """
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
     env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0")
