@@ -115,6 +115,7 @@
     "RA-2026-11-01-11"
   ],
   "remaining_work": [
+    "Revalidate changed files/consumers and claimed fixes on new main 18bc3bf4c232816c91ad1b3b2f4e022f35469dde; this run remains pinned to 90b5ca038155b97833b120baa57dfecd05d6f641",
     "Existing INV-PR32-001: verify safe hostile-output collection before treating a731 runner as usable",
     "17827unread text lines across69paths; binary/saved-data provenance gaps",
     "Verified credential-free boundary + exact installed runtime graph",
@@ -187,8 +188,6 @@
       "base_tree": "4acef03c2f2b6cc8a8551b68a7b06b94dfe61824",
       "tree": "794e4108c0cca09aa36c0871dde2fb837e348342"
     },
-    "final_source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-    "main_advanced": false,
     "concurrent_rotation_preserved": true,
     "model_effort": "model/effort unavailable; audit continued as authorized.",
     "source_final": {
@@ -196,7 +195,11 @@
       "changed": [],
       "extra_unignored": [],
       "metadata_only_check_source_unchanged": true
-    }
+    },
+    "source_at_earlier_publication_check": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "main_advanced_at_earlier_publication_check": false,
+    "delivery_main_sha": "18bc3bf4c232816c91ad1b3b2f4e022f35469dde",
+    "main_advanced_at_delivery": true
   },
   "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
@@ -1352,5 +1355,14 @@
   },
   "prepared_utc": "2026-11-02T02:22:37.122936+00:00",
   "elapsed_wall_seconds_from_supplied_run_context": 1426.201706,
-  "elapsed_clock_limitation": "Wall-clock difference from supplied run-context timestamp; not exclusive model/tool CPU or monotonic full-audit timing"
+  "elapsed_clock_limitation": "Wall-clock difference from supplied run-context timestamp; not exclusive model/tool CPU or monotonic full-audit timing",
+  "delivery_observation": {
+    "sha": "18bc3bf4c232816c91ad1b3b2f4e022f35469dde",
+    "commit_date": "2026-11-02T02:25:24Z",
+    "message": "Compute gross-of-costs returns from each session's own costs (REVIEW-19) (#26)\n\n* Compute gross-of-costs returns from each session's own costs (REVIEW-19)\n\nGross returns divided each session's P&L by equity plus every cost paid so\nfar, so the gross CAGR, Sharpe and drawdown, the cost drag, the quantile\ntable's gross and cost-drag columns and the \"before costs\" equity line all\nunderstated costs as they accumulated (BH-2026-10-15-1). A session's gross\nreturn is now its net return plus that session's trading and borrow costs\nover the previous close's equity, compounded from the initial capital, so\nthe cost drag equals the costs paid per year as a fraction of equity.\n\nAlso record the open medium bug-hunt findings BH-2026-10-09-1, -2 and\nBH-2026-10-15-2 as REVIEW-20 and REVIEW-21, and refresh the docs that\nquote gross figures.\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P7iMd5cnsp8cfBUjhbQtRo\n\n* Sum each session's cost columns for gross returns; note corrected gross figures (REVIEW-19)\n\nRound 3 review follow-ups: read per-session costs from the cost columns rather\nthan differencing the running total, drop a test assertion the old code also\nmet, point the historical results table to the corrected gross figures, and\nrecord the quantile part of BH-2026-10-09-2 in REVIEW-20.\n\nCo-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P7iMd5cnsp8cfBUjhbQtRo\n\n---------\n\nCo-authored-by: Claude <noreply@anthropic.com>",
+    "observed_utc": "2026-11-02 02:25:45 UTC",
+    "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "main_advanced": true,
+    "scope": "New main not audited; all conclusions and counts remain on pinned prior source. Do not assume old failures persist or fixes resolved at the new head."
+  }
 }
