@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import time
+import traceback
 import uuid
 from pathlib import Path
 
@@ -283,7 +284,10 @@ def main():
     uv = shutil.which("uv")
     if not uv:
         raise RuntimeError("Trusted setup requires uv for metadata-only export")
+    # --no-config: [tool.uv] settings in the audited pyproject.toml (such as
+    # cache-dir) must not steer where the host reads or writes.
     common = [
+        "--no-config",
         "--offline",
         "--no-build",
         "--no-python-downloads",
@@ -336,7 +340,8 @@ def main():
     built = subprocess.run(build, env=env, capture_output=True, text=True, timeout=900)
     (results / "image-build.log").write_text(built.stdout + built.stderr)
     if built.returncode:
-        print(built.stdout + built.stderr, flush=True)
+        # Build output can echo audited metadata; keep it to one escaped line.
+        print("AUDIT_IMAGE_BUILD_LOG " + json.dumps(built.stdout + built.stderr), flush=True)
     built.check_returncode()
     image = (output / "image-id").read_text().strip()
     work = output / "work"
@@ -386,5 +391,16 @@ def main():
     return execution.returncode or int(collection["status"] != "collected")
 
 
+def report_host_error(error):
+    """Host errors can quote audited names; print them as one JSON-escaped line."""
+    text = "".join(traceback.format_exception(error))
+    print("AUDIT_RUNNER_ERROR " + json.dumps(text), file=sys.stderr, flush=True)
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        status = main()
+    except Exception as error:
+        report_host_error(error)
+        status = 1
+    raise SystemExit(status)

@@ -93,7 +93,7 @@ Use pytest. Test observable behavior and business requirements rather than priva
 ## Development checks
 
 Audit-runner changes also require the [conditional Linux/Docker checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks).
-From `audits/gpt/runner`, run `python -m unittest -v test_guards test_output_collection test_execution_logs`.
+From `audits/gpt/runner`, run `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety`.
 On a disposable Linux/Docker host, run `python collection_checks.py --python-version 3.11 --output /path/to/new-collection-check`
 and repeat with `--python-version 3.13` and a separate new output directory. This
 uses generated fixtures and records the Docker image identity; it is not a

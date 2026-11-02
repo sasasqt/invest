@@ -44,6 +44,7 @@ tests/                             # cross-component tests through published art
 scripts/                           # one-command workflows, run records, Markdown link check
 ledgers/                           # committed confirmation-use ledgers, one per market
 runs/                              # committed records of reported historical runs
+audits/gpt/runner/                 # optional Linux/Docker isolated audit runner (see its README)
 docs/
 ```
 

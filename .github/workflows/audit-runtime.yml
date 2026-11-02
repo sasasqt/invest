@@ -67,7 +67,7 @@ jobs:
           version: 0.13.6
       - name: Host collector and bounded-log regression tests
         working-directory: audits/gpt/runner
-        run: uv run --no-project --no-config --python "${{ matrix.python }}" python -m unittest -v test_output_collection test_execution_logs
+        run: uv run --no-project --no-config --python "${{ matrix.python }}" python -m unittest -v test_output_collection test_execution_logs test_host_safety
       - name: Hostile Docker output and ordinary collection controls
         env:
           AUDIT_PYTHON_VERSION: ${{ matrix.python }}

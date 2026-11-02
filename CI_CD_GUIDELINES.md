@@ -22,6 +22,8 @@ checks on Python 3.11 and 3.13. Generated containers try file, directory, result
 and all printed-summary links to harmless host-only canaries, plus hard links,
 special files and oversized output. Ordinary output must still collect. Only a
 bounded, link-free host snapshot is uploaded; rejection is a failed runner result.
+Host unit tests also check that `[tool.uv]` settings, file names and build output
+from the audited source cannot steer host-side uv or start workflow commands.
 
 After those checks pass, the workflow runs both full isolated audit jobs. Current
 `main` is resolved once and pinned for the complete matrix; manual runs may instead
