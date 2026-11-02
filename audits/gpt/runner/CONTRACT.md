@@ -28,8 +28,10 @@ CI host-test steps set it, production runs do not. A failed check raises
   `#`, does not start with `::`, and its JSON part decodes to the original value.
   Checked in `log_line`.
 - **Q4** Every staged source file's Git blob hash equals the commit's entry, on
-  every host. Always enforced for the bytes read from Git; checked again on the
-  written file in `stage_source`.
+  every host, and the staged tree holds exactly the commit's paths. Always enforced
+  for the bytes read from Git (with replace refs and inherited `GIT_*` variables
+  ignored); checked again on the written file in `stage_source`. No path enters
+  `.git`, and no two committed paths may reach the same staged file or folder.
 - **Q5** Host-side uv runs with `--no-config`. Checked in `host_uv`.
 
 ## Invariants
@@ -55,4 +57,19 @@ CI host-test steps set it, production runs do not. A failed check raises
 - Source paths and output names that Windows or an artifact zip would read
   differently are refused on every host: reserved device names (`CON`, `NUL`,
   `COM1`...), names ending in a dot or space, `\ / : * ? " < > |`, control
-  characters, non-UTF-8 names, and source paths that differ only by case.
+  characters, non-UTF-8 names, names shaped like an NTFS short name (`PROGRA~1`),
+  and source paths that clash when case is ignored.
+- Source paths that enter Git's own folder (`.git` in any case, or `GIT~1`) are
+  refused before anything is written. PR #32 failed later on such a commit, when
+  the checked-out bytes did not match.
+- The staged copy's index is built with no inherited `GIT_*` variables, no
+  system or global Git configuration, no file system monitor and an empty hooks
+  folder.
+- A Docker daemon that does not report Linux containers gives a `blocked` result
+  (exit 2) before any source is read.
+- The CA bundle for the image build comes from the system bundle, else Python's
+  default CA file, else (Windows) the certificate store exported as PEM.
+- On a Windows host the container's outside-file and host-process probes are not
+  run, so `boundary.json` lacks `outside_fixture_absent` and
+  `host_process_not_visible`: a Windows path or process ID names nothing inside the
+  Linux container, so both checks would pass whatever leaked.

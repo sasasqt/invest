@@ -109,8 +109,14 @@ def prove_boundary(sentinel, host_pid, results):
         "unprivileged_uid": os.getuid() != 0,
         "no_new_privileges": no_new_privs == "1",
         "no_capabilities": int(capabilities, 16) == 0,
-        "outside_fixture_absent": not Path(sentinel).exists(),
-        "host_process_not_visible": not Path(f"/proc/{host_pid}/environ").exists(),
+    }
+    # A Windows host passes neither probe: its paths and process IDs name nothing
+    # inside the Linux container, so the checks would pass vacuously.
+    if sentinel is not None:
+        checks["outside_fixture_absent"] = not Path(sentinel).exists()
+    if host_pid is not None:
+        checks["host_process_not_visible"] = not Path(f"/proc/{host_pid}/environ").exists()
+    checks |= {
         "host_canary_env_absent": "AUDIT_HOST_CANARY" not in os.environ,
         "container_socket_absent": not Path("/var/run/docker.sock").exists(),
         "source_readable": Path("/input/pyproject.toml").is_file(),
@@ -130,9 +136,9 @@ def prove_boundary(sentinel, host_pid, results):
             sys.executable,
             "-I",
             "-c",
-            "import os,pathlib,sys; print(int(not pathlib.Path(sys.argv[1]).exists() "
-            "and 'AUDIT_HOST_CANARY' not in os.environ))",
-            sentinel,
+            "import os,pathlib,sys; print(int(not any(pathlib.Path(p).exists() for p in "
+            "sys.argv[1:]) and 'AUDIT_HOST_CANARY' not in os.environ))",
+            *([] if sentinel is None else [sentinel]),
         ],
         capture_output=True,
         text=True,
@@ -185,8 +191,9 @@ def execute(name, argv, cwd, results, timeout=1200, env=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sentinel", required=True)
-    parser.add_argument("--host-pid", required=True, type=int)
+    # Both are left out on a Windows host (isolated_runner.boundary_arguments).
+    parser.add_argument("--sentinel")
+    parser.add_argument("--host-pid", type=int)
     args = parser.parse_args()
     work = Path("/work")
     results = work / "results"

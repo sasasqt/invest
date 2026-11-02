@@ -14,6 +14,7 @@ import shutil
 import ssl
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import traceback
@@ -109,14 +110,16 @@ def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
         if over.is_set():
             reason = "log_limit"
     finally:
-        if process.poll() is None:
-            process.kill()
-        status = process.wait(timeout=30)
-        if reader.ident is None:  # the thread never started
-            finish("reader")
-        else:
-            reader.join(timeout=5)
-        finish("caller")
+        try:
+            if process.poll() is None:
+                process.kill()
+            status = process.wait(timeout=30)
+        finally:
+            if reader.ident is None:  # the thread never started
+                finish("reader")
+            else:
+                reader.join(timeout=5)
+            finish("caller")
     if failure:
         raise RuntimeError("container log reader failed") from failure[0]
     if reason:
@@ -228,20 +231,43 @@ def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid
         "no_proxy": "",
     }.items():
         command += ["--env", f"{name}={value}"]
-    command += [
-        image,
-        "python",
-        "/audit/runner_workload.py",
-        "--sentinel",
-        str(sentinel),
-        "--host-pid",
-        str(host_pid),
-    ]
-    return command
+    command += [image, "python", "/audit/runner_workload.py"]
+    return command + boundary_arguments(sentinel, host_pid)
+
+
+def boundary_arguments(sentinel, host_pid, windows=os.name == "nt"):
+    """Arguments for the container's outside-file and host-process probes.
+
+    Both probes name a host object as the Linux container would see it. On a Windows
+    host, a path such as C:\\... or a Windows process ID names nothing inside the
+    Linux VM, so the probes would pass whatever leaked; they are not run there.
+    """
+    if windows or sentinel is None or host_pid is None:
+        return []
+    return ["--sentinel", str(sentinel), "--host-pid", str(host_pid)]
 
 
 def blob_digest(payload):
     return hashlib.sha1(b"blob " + str(len(payload)).encode() + b"\0" + payload).hexdigest()
+
+
+def git_environment(isolated=False):
+    """Environment for every Git call that reads the source or builds the staged copy.
+
+    Inherited GIT_* variables (GIT_DIR, GIT_INDEX_FILE, GIT_OBJECT_DIRECTORY...) would
+    point Git at another repository, and replace refs would swap the commit's tree
+    for another one. ``isolated`` also drops system and global configuration.
+    """
+    env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
+    env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0")
+    if isolated:
+        env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
+    return env
+
+
+def git_metadata_name(name):
+    """True for ``.git`` in any case, and for its Windows short name ``GIT~1``."""
+    return name.casefold() in (".git", "git~1")
 
 
 def source_entries(listing):
@@ -259,6 +285,10 @@ def source_entries(listing):
         except UnicodeDecodeError:
             raise ValueError("Source path is not valid UTF-8") from None
         parts = path.split("/")
+        if any(git_metadata_name(part) for part in parts):
+            # Git refuses such paths in a checkout; written into the staged copy, they
+            # could give the host's own Git commands configuration from the commit.
+            raise ValueError(f"Source path enters Git metadata: {path}")
         if not all(portable_name(part) for part in parts):
             raise ValueError(f"Source path is not portable to Windows and Linux: {path}")
         # Windows folds case: two paths that differ only by case would overwrite each
@@ -267,7 +297,7 @@ def source_entries(listing):
             prefix = "/".join(parts[:depth])
             kind_of = (prefix, depth == len(parts))
             if kinds.setdefault(prefix.casefold(), kind_of) != kind_of:
-                raise ValueError(f"Source paths differ only by case: {path}")
+                raise ValueError(f"Source paths clash when case is ignored: {path}")
         entries.append((path, mode, digest))
     return entries
 
@@ -283,6 +313,7 @@ def read_blobs(source, digests):
         ["git", "-C", str(source), "cat-file", "--batch"],
         input=request,
         capture_output=True,
+        env=git_environment(),
         timeout=GIT_TIMEOUT,
     )
     if result.returncode:
@@ -306,27 +337,55 @@ def read_blobs(source, digests):
     return blobs
 
 
+def make_folders(folder, created):
+    """Create each staged folder exactly once.
+
+    A folder that already exists means two committed paths name the same folder on
+    this host (an NTFS short name, for example); merging them would stage a layout
+    that is not the commit.
+    """
+    missing = []
+    while folder not in created:
+        missing.append(folder)
+        folder = folder.parent
+    for folder in reversed(missing):
+        try:
+            folder.mkdir()
+        except FileExistsError:
+            raise ValueError(f"Source paths alias each other on this host: {folder}") from None
+        created.add(folder)
+
+
 def stage_source(source, staged, expected_sha):
     if not re.fullmatch(r"[0-9a-f]{40}", expected_sha):
         raise ValueError("Expected revision must be a full Git SHA")
-    actual = checked(["git", "-C", str(source), "rev-parse", "HEAD"], timeout=GIT_TIMEOUT)
+    env = git_environment()
+    actual = checked(["git", "-C", str(source), "rev-parse", "HEAD"], env=env, timeout=GIT_TIMEOUT)
     if actual != expected_sha:
         raise ValueError("Source HEAD differs from the expected revision")
     listing = subprocess.run(
         ["git", "-C", str(source), "ls-tree", "-rz", expected_sha],
         capture_output=True,
         check=True,
+        env=env,
         timeout=GIT_TIMEOUT,
     ).stdout
     entries = source_entries(listing)
     staged.mkdir()
-    records = []
+    # Git's own folder exists before any source file is written, so no committed path
+    # can land in it, even one that a name check above missed.
+    (staged / ".git").mkdir()
+    created, records = {staged}, []
     for (path, mode, digest), payload in zip(
         entries, read_blobs(source, [digest for _, _, digest in entries]), strict=True
     ):
         destination = staged.joinpath(*path.split("/"))
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        with destination.open("xb") as stream:  # never overwrite: a case clash fails here too
+        make_folders(destination.parent, created)
+        try:
+            stream = destination.open("xb")  # never overwrite another committed path
+        except FileExistsError:
+            raise ValueError(f"Source paths alias each other on this host: {path}") from None
+        with stream:
             stream.write(payload)
         destination.chmod(0o755 if mode == "100755" else 0o644)
         if contract.enabled():
@@ -335,11 +394,15 @@ def stage_source(source, staged, expected_sha):
     # Keep genuine commit provenance, but never copy Git credentials, config,
     # hooks, logs, alternates or global/home files into the execution boundary.
     git_dir = Path(
-        checked(["git", "-C", str(source), "rev-parse", "--absolute-git-dir"], timeout=GIT_TIMEOUT)
+        checked(
+            ["git", "-C", str(source), "rev-parse", "--absolute-git-dir"],
+            env=env,
+            timeout=GIT_TIMEOUT,
+        )
     )
     if (git_dir / "objects/info/alternates").exists():
         raise ValueError("Materialize Git objects locally before staging")
-    (staged / ".git/objects").mkdir(parents=True)
+    (staged / ".git/objects").mkdir()
     for path in (git_dir / "objects").rglob("*"):
         rel = path.relative_to(git_dir / "objects")
         if is_link(path.lstat()):  # symbolic links, and junctions on Windows
@@ -370,10 +433,26 @@ def stage_source(source, staged, expected_sha):
         if not all(re.fullmatch(r"[0-9a-f]{40}", x) for x in shallow.splitlines()):
             raise ValueError("Invalid shallow-boundary metadata")
         write_text(staged / ".git/shallow", shallow)
-    env = dict(os.environ, GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
-    checked(
-        ["git", "-C", str(staged), "reset", "--mixed", expected_sha], env=env, timeout=GIT_TIMEOUT
-    )
+    # The index is built with no inherited, system or global configuration, no file
+    # system monitor command and an empty hooks folder: nothing from the commit or
+    # the host user's setup runs here.
+    with tempfile.TemporaryDirectory() as hooks:
+        checked(
+            [
+                "git",
+                "-C",
+                str(staged),
+                "-c",
+                "core.fsmonitor=false",
+                "-c",
+                f"core.hooksPath={Path(hooks).as_posix()}",
+                "reset",
+                "--mixed",
+                expected_sha,
+            ],
+            env=git_environment(isolated=True),
+            timeout=GIT_TIMEOUT,
+        )
     return records
 
 

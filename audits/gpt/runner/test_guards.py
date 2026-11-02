@@ -378,7 +378,17 @@ class PortableHostTests(unittest.TestCase):
         )
 
     def test_paths_other_hosts_would_read_differently_are_refused(self):
-        for path in ("CON", "dir/nul.txt", "trailing.", "dir./file", "a:b", "back\\slash", "a\nb"):
+        paths = (
+            "CON",
+            "dir/nul.txt",
+            "trailing.",
+            "dir./file",
+            "a:b",
+            "back\\slash",
+            "a\nb",
+            "a\tb",
+        )
+        for path in paths:
             with self.subTest(path=path):
                 with self.assertRaisesRegex(ValueError, "not portable"):
                     source_entries(listing(("100644", "blob", path)))
@@ -395,7 +405,7 @@ class PortableHostTests(unittest.TestCase):
         for pair in (("Readme", "README"), ("a", "A/b"), ("Dir/x", "dir/y")):
             with self.subTest(pair=pair):
                 rows = [("100644", "blob", path) for path in pair]
-                with self.assertRaisesRegex(ValueError, "differ only by case"):
+                with self.assertRaisesRegex(ValueError, "clash when case is ignored"):
                     source_entries(listing(*rows))
         rows = [("100644", "blob", "dir/x"), ("100644", "blob", "dir/y")]
         self.assertEqual(len(source_entries(listing(*rows))), 2)
@@ -444,6 +454,178 @@ class PortableHostTests(unittest.TestCase):
                 else:
                     with self.assertRaisesRegex(RuntimeError, "No CA bundle"):
                         ca_bundle(Path(directory))
+
+
+FIXTURE_GIT = dict(
+    os.environ,
+    GIT_AUTHOR_NAME="Audit Fixture",
+    GIT_AUTHOR_EMAIL="audit@example.invalid",
+    GIT_COMMITTER_NAME="Audit Fixture",
+    GIT_COMMITTER_EMAIL="audit@example.invalid",
+    GIT_CONFIG_GLOBAL=os.devnull,
+    GIT_CONFIG_NOSYSTEM="1",
+)
+
+
+def git_in(repo, *args, data=None, env=None):
+    return (
+        subprocess.run(
+            ["git", "-C", str(repo), *args],
+            input=data,
+            env=env or FIXTURE_GIT,
+            capture_output=True,
+            check=True,
+        )
+        .stdout.decode()
+        .strip()
+    )
+
+
+def write_tree(repo, node):
+    """Write nested {name: bytes or dict} into the object store; return the tree ID."""
+    rows = []
+    for name, value in sorted(node.items()):
+        if isinstance(value, dict):
+            rows.append(f"040000 tree {write_tree(repo, value)}\t{name}")
+        else:
+            digest = git_in(repo, "hash-object", "-w", "--stdin", data=value)
+            rows.append(f"100644 blob {digest}\t{name}")
+    return git_in(repo, "mktree", data=("\n".join(rows) + "\n").encode())
+
+
+def crafted_commit(root, files):
+    """A repository whose checked-out HEAD is a commit built straight from ``files``.
+
+    ``git add`` refuses paths such as ``.git/index``; a commit made with plumbing
+    holds them, and a fetched commit could too.
+    """
+    repo = root / "crafted"
+    git_in(root, "init", "-q", str(repo))
+    commit = git_in(repo, "commit-tree", "-m", "crafted", write_tree(repo, files))
+    git_in(repo, "update-ref", "refs/heads/main", commit)
+    git_in(repo, "symbolic-ref", "HEAD", "refs/heads/main")
+    return repo, commit
+
+
+class StagingSafetyTests(unittest.TestCase):
+    """Review round 1 findings R3-1 to R3-3: staging must stage exactly the commit."""
+
+    def test_commit_cannot_run_a_host_command_while_staging(self):
+        """R3-1: committed .git/commondir pointed Git at committed config (fsmonitor)."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            marker = root / "MARKER"
+            empty_index = root / "empty-index"
+            git_in(root, "init", "-q", str(root / "scratch"))
+            git_in(
+                root / "scratch",
+                "read-tree",
+                "--empty",
+                env=dict(FIXTURE_GIT, GIT_INDEX_FILE=str(empty_index)),
+            )
+            repo, commit = crafted_commit(
+                root,
+                {
+                    ".git": {"commondir": b"../evil\n", "index": empty_index.read_bytes()},
+                    "evil": {
+                        "config": b"[core]\n\trepositoryformatversion = 0\n"
+                        b"\tbare = false\n\tfsmonitor = sh evil/fsm.sh\n",
+                        "fsm.sh": f'echo ran > "{marker.as_posix()}"\n'.encode(),
+                        "objects": {"info": {"alternates": b"../../.git/objects\n"}},
+                        "refs": {"keep": b""},
+                    },
+                    "README": b"ordinary\n",
+                },
+            )
+            with self.assertRaisesRegex(ValueError, "Git metadata"):
+                stage_source(repo, root / "staged", commit)
+            self.assertFalse(marker.exists(), "the host ran a command from the commit")
+
+    def test_paths_into_git_metadata_are_refused(self):
+        for path in (".git/config", ".GIT/config", "sub/.Git/hooks/x", "GIT~1/config", "git~1"):
+            with self.subTest(path=path):
+                with self.assertRaisesRegex(ValueError, "Git metadata"):
+                    source_entries(listing(("100644", "blob", path)))
+        rows = [("100644", "blob", path) for path in (".github/x", ".gitignore", "a.git/b")]
+        self.assertEqual(len(source_entries(listing(*rows))), 3)
+
+    def test_names_windows_could_read_as_a_short_name_are_refused(self):
+        """R3-3: on NTFS, AAAAAA~1 can name the folder AAAAAAAAAA."""
+        for path in ("AAAAAA~1/b.py", "PROGRA~1", "dir/AB12~3.TXT", "x~1.py"):
+            with self.subTest(path=path):
+                with self.assertRaisesRegex(ValueError, "not portable"):
+                    source_entries(listing(("100644", "blob", path)))
+        rows = [
+            ("100644", "blob", path)
+            for path in ("notes~", "a~b", "backup~1.toml", "LONGNAME9~1", "x~1y.toolong")
+        ]
+        self.assertEqual(len(source_entries(listing(*rows))), 5)
+
+    def test_folders_that_alias_on_the_host_are_refused(self):
+        """R3-3: a folder that already exists is never merged into another path."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"Alpha/a.py": b"a\n", "beta/b.py": b"b\n"})
+            staged = root / "staged"
+            real_mkdir = Path.mkdir
+
+            def mkdir(self, *args, **kwargs):  # emulate a host that also names Alpha "beta"
+                real_mkdir(self, *args, **kwargs)
+                if self == staged / "Alpha":
+                    os.symlink("Alpha", staged / "beta", target_is_directory=True)
+
+            try:
+                os.symlink(root, root / "probe", target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            with patch.object(Path, "mkdir", mkdir):
+                with self.assertRaisesRegex(ValueError, "alias"):
+                    stage_source(source, staged, revision)
+
+    def test_replace_refs_do_not_change_the_staged_tree(self):
+        """R3-2: Git honours refs/replace/ unless told not to."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"README": b"committed\n"})
+            (source / "README").write_bytes(b"replacement\n")
+            git_in(source, "commit", "-qam", "other")
+            other = git_in(source, "rev-parse", "HEAD")
+            git_in(source, "reset", "-q", "--hard", revision)
+            git_in(source, "replace", revision, other)
+            records = stage_source(source, root / "staged", revision)
+            self.assertEqual((root / "staged/README").read_bytes(), b"committed\n")
+            self.assertEqual(records[0]["git_blob"], blob_digest(b"committed\n"))
+            status = git_in(root / "staged", "status", "--porcelain", "--untracked-files=no")
+            self.assertEqual(status, "")
+
+    def test_inherited_git_variables_do_not_redirect_staging(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            other = root / "other"
+            git_in(root, "init", "-q", str(other))
+            redirect = {
+                "GIT_DIR": str(other / ".git"),
+                "GIT_INDEX_FILE": str(root / "elsewhere-index"),
+                "GIT_OBJECT_DIRECTORY": str(other / ".git/objects"),
+            }
+            with patch.dict(os.environ, redirect):
+                records = stage_source(source, root / "staged", revision)
+            self.assertEqual(records, [{"path": "a.txt", "git_blob": blob_digest(b"a\n")}])
+            self.assertFalse((root / "elsewhere-index").exists())
+            self.assertTrue((root / "staged/.git/index").is_file())
+
+    def test_windows_host_skips_probes_that_mean_nothing_in_the_container(self):
+        """R3-4: a Windows path or PID names nothing inside the Linux container."""
+        sentinel = Path("out") / "host-only-sentinel"
+        self.assertEqual(
+            isolated_runner.boundary_arguments(sentinel, 4242, windows=False),
+            ["--sentinel", str(sentinel), "--host-pid", "4242"],
+        )
+        self.assertEqual(isolated_runner.boundary_arguments(sentinel, 4242, windows=True), [])
+        command = execution_command("sha256:" + "0" * 64, ".", ".", ".", None, None, 65534, 65534)
+        self.assertNotIn("--sentinel", command)
+        self.assertNotIn("--host-pid", command)
 
 
 def git_output(*items):
@@ -513,6 +695,15 @@ class RunnerBranchTests(unittest.TestCase):
             ),
             "Unexpected": subprocess.CompletedProcess(
                 [], 0, git_output((digest, good)) + b"x", b""
+            ),
+            "missing or not a blob(?# wrong object ID)": subprocess.CompletedProcess(
+                [], 0, git_output(("1" * 40, good)), b""
+            ),
+            "missing or not a blob(?# size not a number)": subprocess.CompletedProcess(
+                [], 0, git_output((digest, good)).replace(b" 8\n", b" eight\n", 1), b""
+            ),
+            "ended early(?# no newline after the payload)": subprocess.CompletedProcess(
+                [], 0, git_output((digest, good))[:-1] + b"!", b""
             ),
         }
         for message, result in cases.items():

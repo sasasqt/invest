@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import socket
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -18,21 +19,29 @@ os.environ.setdefault("CONTRACT_CHECKS", "1")
 from output_collection import (
     DEFAULT_METHOD,
     DESCRIPTOR_APIS,
+    SUMMARY_MAX_BYTES,
     SUMMARY_NAMES,
     CollectionLimits,
     RejectedOutput,
     collect_results,
     collect_workload,
+    is_link,
+    log_line,
     portable_name,
     read_summaries,
 )
 
 POSIX_ONLY = unittest.skipUnless(os.name == "posix", "POSIX file types and names")
+LINKED = "linked, special or cross-device output entry"
+MISSING = "missing, linked or unreadable output directory"
 
 
 class NameTests(unittest.TestCase):
     def test_portable_names_are_accepted(self):
-        for name in ("table.csv", "boundary.json", ".hidden", "a b", "CONSOLE", "con-1", "Ünïcode"):
+        names = ("table.csv", "boundary.json", ".hidden", "a b", "CONSOLE", "con-1", "Ünïcode")
+        names += ("nameX", "CONX.txt", "CON\u3000.txt", "a.b.CON")
+        names += ("notes~", "backup~1.toml", "LONGNAME9~1", "x~1y")
+        for name in names:
             with self.subTest(name=name):
                 self.assertTrue(portable_name(name))
 
@@ -40,9 +49,31 @@ class NameTests(unittest.TestCase):
         names = ["", ".", "..", "a\\b", "a/b", "c:d", "x*", "q?", 'quote"', "<", ">", "pipe|"]
         names += ["line\nbreak", "tab\tname", "del\x7f", "trailing.", "trailing ", "CON", "nul"]
         names += ["Aux.txt", "com1", "LPT9.tar.gz", "COM\u00b9", "conin$", "CON .txt", "bad\udcff"]
+        names += ["PROGRA~1", "AAAAAA~1", "x~12.py", "AB12~3.TXT"]  # NTFS short-name forms
         for name in names:
             with self.subTest(name=name):
                 self.assertFalse(portable_name(name))
+
+    def test_every_reparse_point_counts_as_a_link(self):
+        reparse = SimpleNamespace(
+            st_mode=stat.S_IFDIR, st_file_attributes=stat.FILE_ATTRIBUTE_REPARSE_POINT
+        )
+        plain = SimpleNamespace(
+            st_mode=stat.S_IFREG, st_file_attributes=stat.FILE_ATTRIBUTE_ARCHIVE
+        )
+        self.assertTrue(is_link(reparse))
+        self.assertFalse(is_link(plain))
+        self.assertFalse(is_link(SimpleNamespace(st_mode=stat.S_IFREG)))
+
+    def test_log_lines_are_ascii_even_for_lone_surrogates(self):
+        """JSON summaries may decode to lone surrogates, which a UTF-8 stream cannot write."""
+        stream = io.TextIOWrapper(io.BytesIO(), encoding="utf-8")
+        log_line("AUDIT_TEST", {"note": "\udcff caf\u00e9 \u2028"}, stream)
+        stream.flush()
+        line = stream.buffer.getvalue().decode("ascii")
+        self.assertEqual(
+            json.loads(line.removeprefix("AUDIT_TEST ")), {"note": "\udcff caf\u00e9 \u2028"}
+        )
 
     def test_default_walk_matches_the_host(self):
         self.assertEqual(DEFAULT_METHOD, "descriptor" if DESCRIPTOR_APIS else "path")
@@ -77,8 +108,9 @@ class CollectionCases:
         self.marker = b"NON_SECRET_OUTSIDE_FIXTURE"
         self.canary.write_bytes(self.marker)
 
-    def rejected(self, **kwargs):
-        with self.assertRaises(RejectedOutput):
+    def rejected(self, reason, **kwargs):
+        """The collection must fail for ``reason`` (a regex), leaving nothing behind."""
+        with self.assertRaisesRegex(RejectedOutput, reason):
             self.collect(**kwargs)
         self.assertFalse(self.destination.exists())
         self.assertEqual(list(self.evidence.iterdir()), [])
@@ -104,35 +136,35 @@ class CollectionCases:
         copied = self.root / "old-copy-control"
         shutil.copytree(self.produced, copied)
         self.assertEqual((copied / "escape").read_bytes(), self.marker)
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_file_symlink_is_rejected(self):
         self.link(self.produced / "escape", self.canary)
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_directory_symlink_is_rejected(self):
         self.link(self.produced / "escape", self.root, directory=True)
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_results_root_symlink_is_rejected(self):
         self.produced.rmdir()
         self.link(self.produced, self.root, directory=True)
-        self.rejected()
+        self.rejected(MISSING)
 
     def test_work_root_symlink_is_rejected(self):
         replacement = self.root / "replacement"
         self.work.rename(replacement)
         self.link(self.work, replacement, directory=True)
-        self.rejected()
+        self.rejected(MISSING)
 
     def test_dangling_symlink_is_rejected(self):
         self.link(self.produced / "escape", self.root / "missing")
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_internal_symlink_is_also_rejected(self):
         (self.produced / "real").write_text("ordinary")
         self.link(self.produced / "alias", "real")
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_all_summary_link_sinks_fail_without_logging_canary(self):
         for name in SUMMARY_NAMES:
@@ -161,40 +193,40 @@ class CollectionCases:
 
     def test_hard_link_is_rejected(self):
         os.link(self.canary, self.produced / "escape")
-        self.rejected()
+        self.rejected(LINKED)
 
     @POSIX_ONLY
     def test_fifo_is_rejected_without_opening_it(self):
         os.mkfifo(self.produced / "pipe")
-        self.rejected()
+        self.rejected(LINKED)
 
     @unittest.skipUnless(hasattr(socket, "AF_UNIX") and os.name == "posix", "POSIX sockets")
     def test_socket_is_rejected(self):
         with socket.socket(socket.AF_UNIX) as listener:
             listener.bind(str(self.produced / "socket"))
-            self.rejected()
+            self.rejected(LINKED)
 
     def test_missing_results_are_rejected(self):
         self.produced.rmdir()
-        self.rejected()
+        self.rejected(MISSING)
 
     def test_file_size_limit_is_enforced(self):
         (self.produced / "large").write_bytes(b"12345")
-        self.rejected(limits=CollectionLimits(file_bytes=4))
+        self.rejected("output file size limit exceeded", limits=CollectionLimits(file_bytes=4))
 
     def test_total_size_limit_is_enforced_atomically(self):
         (self.produced / "one").write_bytes(b"1234")
         (self.produced / "two").write_bytes(b"5678")
-        self.rejected(limits=CollectionLimits(total_bytes=7))
+        self.rejected("output byte limit exceeded", limits=CollectionLimits(total_bytes=7))
 
     def test_entry_count_limit_includes_empty_directories(self):
         (self.produced / "one").mkdir()
         (self.produced / "two").mkdir()
-        self.rejected(limits=CollectionLimits(entries=1))
+        self.rejected("output entry count limit exceeded", limits=CollectionLimits(entries=1))
 
     def test_directory_depth_limit_is_enforced(self):
         (self.produced / "one/two").mkdir(parents=True)
-        self.rejected(limits=CollectionLimits(depth=1))
+        self.rejected("output directory depth limit exceeded", limits=CollectionLimits(depth=1))
 
     def test_invalid_or_nonobject_summary_is_rejected(self):
         for text in (
@@ -206,11 +238,11 @@ class CollectionCases:
         ):
             with self.subTest(text=text):
                 (self.produced / "boundary.json").write_text(text)
-                self.rejected()
+                self.rejected("invalid JSON summary")
 
     def test_summary_limit_is_enforced(self):
         (self.produced / "boundary.json").write_text(json.dumps({"large": "x" * 65536}))
-        self.rejected()
+        self.rejected("output file size limit exceeded")
 
     def test_summary_workflow_commands_are_escaped(self):
         (self.produced / "boundary.json").write_text(
@@ -236,7 +268,7 @@ class CollectionCases:
             return real_open(path, flags, *args, **kwargs)
 
         with patch("output_collection.os.open", side_effect=switched):
-            self.rejected()
+            self.rejected("unreadable or changing|output file changed")
 
     def test_directory_replaced_by_link_between_stat_and_open_is_rejected(self):
         target = self.produced / "replace-me"
@@ -253,7 +285,11 @@ class CollectionCases:
             return real(path, *args, **kwargs)
 
         with patch(f"output_collection.os.{name}", side_effect=switched):
-            self.rejected()
+            self.rejected(
+                {"descriptor": MISSING, "path": "linked, special|output directory changed"}[
+                    self.method
+                ]
+            )
 
     def test_directory_replaced_by_another_directory_is_rejected(self):
         target = self.produced / "replace-me"
@@ -269,7 +305,7 @@ class CollectionCases:
             return real(path, *args, **kwargs)
 
         with patch(f"output_collection.os.{name}", side_effect=switched):
-            self.rejected()
+            self.rejected("output directory changed during collection")
 
     def test_file_growing_while_it_is_read_is_rejected(self):
         source = self.produced / "growing.log"
@@ -285,7 +321,39 @@ class CollectionCases:
             return data
 
         with patch("output_collection.os.read", side_effect=growing):
-            self.rejected()
+            self.rejected("output file changed during collection")
+
+    def test_output_exactly_at_each_limit_is_collected(self):
+        (self.produced / "one").mkdir()
+        (self.produced / "one/four").write_bytes(b"1234")
+        (self.produced / "three").write_bytes(b"567")
+        limits = CollectionLimits(file_bytes=4, total_bytes=7, entries=3, depth=1)
+        result = self.collect(limits=limits)
+        self.assertEqual((result["entries"], result["bytes"]), (3, 7))
+
+    def test_results_that_are_a_file_are_rejected(self):
+        self.produced.rmdir()
+        self.produced.write_text("not a folder")
+        self.rejected(MISSING)
+
+    def test_summary_exactly_at_its_limits_is_accepted(self):
+        filler = SUMMARY_MAX_BYTES - len(json.dumps({"large": ""}))
+        nested = {"deep": json.loads("[" * 31 + "0" + "]" * 31)}  # deepest value at depth 32
+        for value in ({"large": "x" * filler}, nested, {"nodes": [0] * 4094}):  # 4096 nodes
+            with self.subTest(size=len(json.dumps(value))):
+                shutil.rmtree(self.evidence)
+                self.evidence.mkdir()
+                (self.produced / "boundary.json").write_text(json.dumps(value), encoding="utf-8")
+                self.assertEqual(self.collect()["summaries"]["boundary.json"], value)
+
+    def test_summary_one_past_its_limits_is_rejected(self):
+        filler = SUMMARY_MAX_BYTES + 1 - len(json.dumps({"large": ""}))
+        nested = {"deep": json.loads("[" * 32 + "0" + "]" * 32)}
+        cases = (({"large": "x" * filler}, "output file size limit"), (nested, "invalid JSON"))
+        for value, reason in (*cases, ({"nodes": [0] * 4095}, "invalid JSON")):
+            with self.subTest(reason=reason):
+                (self.produced / "boundary.json").write_text(json.dumps(value), encoding="utf-8")
+                self.rejected(reason)
 
     def test_unknown_method_and_non_positive_limits_are_refused(self):
         with self.assertRaisesRegex(ValueError, "unknown collection method"):
@@ -318,7 +386,7 @@ class CollectionCases:
             with self.subTest(name=name):
                 path = self.produced / name
                 path.write_text("ordinary generated content")
-                self.rejected()
+                self.rejected("unsafe artifact filename")
                 path.unlink()
 
     def test_existing_destination_is_preserved(self):
@@ -333,7 +401,7 @@ class CollectionCases:
         """Finding F4: the artifact upload cannot name a file whose bytes are not UTF-8."""
         fd = os.open(os.fsencode(self.produced) + b"/bad-\xff-name", os.O_CREAT | os.O_WRONLY)
         os.close(fd)
-        self.rejected()
+        self.rejected("unsafe artifact filename")
 
     @unittest.skipUnless(os.name == "nt", "Windows junctions")
     def test_junction_is_rejected(self):
@@ -343,7 +411,7 @@ class CollectionCases:
         outside.mkdir()
         (outside / "canary").write_bytes(self.marker)
         _winapi.CreateJunction(str(outside), str(self.produced / "junction"))
-        self.rejected()
+        self.rejected(LINKED)
 
     def test_binary_bytes_are_copied_exactly(self):
         payload = b"line\r\nnext\n\x1a\x00tail"
@@ -402,7 +470,7 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
             return real(path, *args, **kwargs)
 
         with patch("output_collection.os.scandir", side_effect=switched):
-            self.rejected()
+            self.rejected("output directory changed during collection")
 
     @POSIX_ONLY
     def test_parent_replaced_by_link_before_a_file_open_is_rejected(self):
@@ -419,13 +487,13 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
             return real(path, *args, **kwargs)
 
         with patch("output_collection.os.lstat", side_effect=lstat):
-            self.rejected()
+            self.rejected(LINKED)
         self.assertTrue(swapped)
 
     def test_a_different_file_id_at_open_is_rejected(self):
         (self.produced / "table.csv").write_bytes(b"ordinary output\n")
         with self.stale_lstat(lambda info: {"st_ino": info.st_ino + 1}):
-            self.rejected()
+            self.rejected("output file changed during collection")
 
 
 if __name__ == "__main__":

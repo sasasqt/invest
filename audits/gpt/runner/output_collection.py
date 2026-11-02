@@ -12,6 +12,7 @@ container's own execution boundary.
 import hashlib
 import json
 import os
+import re
 import shutil
 import stat
 import sys
@@ -30,6 +31,8 @@ WINDOWS_RESERVED = frozenset(
     + [port + digit for port in ("COM", "LPT") for digit in "0123456789¹²³"]
 )
 UNSAFE_CHARACTERS = frozenset('\\/:*?"<>|')
+# An NTFS short name: at most 8 characters ending in ~digits, then up to 3 after a dot.
+SHORT_NAME = re.compile(r"[^.]{0,7}~[0-9]+(\.[^.]{0,3})?")
 DESCRIPTOR_APIS = (
     all(hasattr(os, name) for name in ("O_NOFOLLOW", "O_DIRECTORY", "O_NONBLOCK"))
     and os.open in os.supports_dir_fd
@@ -72,7 +75,8 @@ def portable_name(name):
     """True for one path component that Linux, Windows and artifact zips read as written.
 
     Windows opens a reserved name such as NUL as a device in any folder, and drops a
-    trailing dot or space, so such names would reach a different file there.
+    trailing dot or space, so such names would reach a different file there. A name
+    shaped like an NTFS short name (``PROGRA~1``) can name another file or folder.
     """
     if not name or any(
         character in UNSAFE_CHARACTERS or ord(character) < 32 or ord(character) == 127
@@ -80,6 +84,8 @@ def portable_name(name):
     ):
         return False
     if name[-1] in ". " or name.split(".", 1)[0].rstrip(" ").upper() in WINDOWS_RESERVED:
+        return False
+    if len(name.split(".", 1)[0]) <= 8 and SHORT_NAME.fullmatch(name):
         return False
     try:
         name.encode("utf-8")
@@ -278,9 +284,8 @@ def parse_summary(payload):
                 pending.extend((child, depth + 1) for child in item.values())
             elif isinstance(item, list):
                 pending.extend((child, depth + 1) for child in item)
-        # Also reject non-finite JSON constants, and ensure log output
-        # escapes newlines instead of interpreting workflow commands.
-        json.dumps(value, ensure_ascii=True, allow_nan=False)
+        # json.loads accepts NaN and Infinity; they are not JSON, so reject them.
+        json.dumps(value, allow_nan=False)
     except (ValueError, UnicodeError, RecursionError) as exc:
         raise RejectedOutput("invalid JSON summary") from exc
     return value
@@ -444,6 +449,9 @@ def collect_workload(work, results, limits=DEFAULT_LIMITS, method=None):
     (results / "collection.json").write_text(
         json.dumps(report, indent=2), encoding="utf-8", newline="\n"
     )
+    if contract.enabled():
+        recorded = json.loads((results / "collection.json").read_text(encoding="utf-8"))
+        contract.require("Q2", recorded["status"] == report["status"], "collection.json differs")
     log_line("AUDIT_COLLECTION", {"status": report["status"]})
     for name, value in report.get("summaries", {}).items():
         log_line("AUDIT_EVIDENCE " + name, value)
