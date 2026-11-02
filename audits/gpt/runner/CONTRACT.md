@@ -90,11 +90,12 @@ the full isolated audit jobs exercise W1 and W2.
   file as `blocked` (exit 2) and every other wrong input (a missing or unreadable
   `--expected` manifest, a manifest or entry of the wrong shape, including a
   negative size or a SHA-256 that is not 64 lower-case hex digits, an empty `files`
-  object, an unsafe, Windows-rooted or repeated raw path, a raw path that can never
-  verify (another entry's folder, or 4096 UTF-8 bytes or more, which no Linux path
-  call opens), a raw path name refused on every host (over 255 UTF-8 bytes, or not
-  valid UTF-8: a lone surrogate), an entry that exists but is not a regular file, a
-  hash mismatch) as
+  object, an unsafe, Windows-rooted or repeated raw path, a raw path name with a
+  character no Windows file name holds (`? * " < > |` or a control character), a raw
+  path that can never verify (another entry's folder, or 4096 UTF-8 bytes or more,
+  which no Linux path call opens), a raw path name refused on every host (over 255
+  UTF-8 bytes, or not valid UTF-8: a lone surrogate), an entry that exists but is not
+  a regular file, a hash mismatch) as
   `rejected` (exit 2). The manifest's own entries are checked before the snapshot
   is looked at, so a bad manifest is rejected even when the snapshot is missing. It never ends with a traceback.
 - **W4** The evidence uploads in `audit-runtime.yml` keep names that start with a
@@ -150,7 +151,10 @@ the full isolated audit jobs exercise W1 and W2.
   (Git for Windows' `cmd\git.exe`, a Docker CLI plugin such as buildx) kept it
   waiting.
 - `verify_snapshot` refuses raw paths with `\` or `:` in any part on every host;
-  on Windows such a path would name a drive, a share or a stream.
+  on Windows such a path would name a drive, a share or a stream. It also refuses
+  `* ? " < > |` and control characters (U+0000 to U+001F and U+007F) on every host,
+  as output names are: no Windows file can have such a name, and Windows reads one
+  as absent, so PR #32 reported it as blocked there with every file in place.
 - `verify_snapshot` also refuses a raw path name that is not valid UTF-8 (a lone
   surrogate in the manifest, such as `\udcff`), as source paths and output names are
   refused. PR #32 verified such a name on Linux, where Python reads U+DC80-U+DCFF as

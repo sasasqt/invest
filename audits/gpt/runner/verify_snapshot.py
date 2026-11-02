@@ -42,13 +42,19 @@ def _entry(symbol, entry):
     ):
         raise SnapshotError(f"Malformed manifest entry for {symbol}")
     relative = PurePosixPath(entry["path"])
-    # A backslash or colon makes a Windows path rooted, drive-relative or a stream.
+    # A backslash or colon makes a Windows path rooted, drive-relative or a stream. No
+    # Windows file name holds ? * " < > | or a control character (its stat fails, which
+    # pathlib reads as "absent"), so those are refused on every host, as output names are.
     if (
         relative.is_absolute()
         or ".." in relative.parts
         or relative.parts[:1] != ("raw",)
         or len(relative.parts) < 2
-        or any("\\" in part or ":" in part or "\0" in part for part in relative.parts)
+        or any(
+            character in '\\:*?"<>|' or ord(character) < 32 or ord(character) == 127
+            for part in relative.parts
+            for character in part
+        )
         or not all(_name_fits(part) for part in relative.parts)
         # No Linux path call opens a path of PATH_MAX (4096) bytes or more, wherever
         # the snapshot is, so such an entry could never verify.

@@ -294,11 +294,11 @@ class SnapshotTests(unittest.TestCase):
                 with self.assertRaisesRegex(SnapshotError, "Unsafe raw path"):
                     verify(self.reference, self.snapshot)
 
-    @unittest.skipUnless(os.name == "nt", "names no Windows file can have (fail-first on Windows)")
     def test_raw_names_no_windows_file_can_have_are_rejected(self):
         """Review round 10 (C1, W3): no Windows file name holds ? * " < > | or a control
         character. Windows' stat fails with error 123, which pathlib and os.path read as
-        "absent", so such an entry was reported as blocked with every file in place."""
+        "absent", so such an entry was reported as blocked with every file in place (shown
+        on the windows-2025 job). They are refused on every host, as output names are."""
         request = self.expected["request"]
         good = self.expected["files"]["AAA"]
         for name in ("a?b", "a*b", 'a"b', "a<b", "a>b", "a|b", "a\x01b", "a\x1fb", "a\x7fb"):
