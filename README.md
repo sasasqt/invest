@@ -177,6 +177,16 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 
 Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
 
+## Isolated audit runner
+
+The [conditional audit workflow](.github/workflows/audit-runtime.yml) tests
+[Linux/Docker audit tooling](audits/gpt/runner/README.md) separately from normal
+CI. It checks hostile output collection before running the full isolated audit
+against one pinned source revision. See the
+[CI audit checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks) for triggers,
+evidence and limitations. It does not access live vendor data or publish results
+to the repository.
+
 ## Local files
 
 The `.gitignore` excludes virtual environments, Python caches, build outputs, coverage reports, and local environment files. Keep credentials out of Git. A sanitized `.env.example` may be committed to document required configuration; dependency lockfiles should also be committed.
