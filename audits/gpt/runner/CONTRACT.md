@@ -89,10 +89,11 @@ the full isolated audit jobs exercise W1 and W2.
   file as `blocked` (exit 2) and every other wrong input (a missing or unreadable
   `--expected` manifest, a manifest or entry of the wrong shape, including a
   negative size or a SHA-256 that is not 64 lower-case hex digits, an empty `files`
-  object, an unsafe, Windows-rooted or repeated raw path, an entry that exists but
-  is not a regular file, a hash mismatch) as `rejected` (exit 2). The manifest's own
-  entries are checked before the snapshot is looked at, so a bad manifest is
-  rejected even when the snapshot is missing. It never ends with a traceback.
+  object, an unsafe, Windows-rooted or repeated raw path, a raw path no file can
+  have (also another entry's folder, a name over 255 UTF-8 bytes or with a lone
+  surrogate), an entry that exists but is not a regular file, a hash mismatch) as
+  `rejected` (exit 2). The manifest's own entries are checked before the snapshot
+  is looked at, so a bad manifest is rejected even when the snapshot is missing. It never ends with a traceback.
 - **W4** The evidence uploads in `audit-runtime.yml` keep names that start with a
   dot but never take a collection's unfinished snapshot (`.collect-*` beside the
   destination), which a host process killed during collection leaves behind and

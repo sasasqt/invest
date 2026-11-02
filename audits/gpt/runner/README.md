@@ -52,8 +52,11 @@ container's outside-file and host-process probes are not run from a Windows host
 since a Windows path or process ID names nothing inside the Linux container, so
 `boundary.json` lacks `outside_fixture_absent` and `host_process_not_visible`
 there, and its child check (`child_inherits_env_denial`) covers the environment
-only. The `host-tests-windows` job runs the four host test modules on
-`windows-2025` with Python 3.11 and 3.13.
+only. The same two probes cannot see the host from a Linux or macOS host whose
+`/var/run/docker.sock` leads to a daemon in a virtual machine (Docker Desktop), so
+there they would pass whatever leaked; run audits whose `boundary.json` you rely on
+against a native Linux daemon, as CI does. The `host-tests-windows` job runs the four
+host test modules on `windows-2025` with Python 3.11 and 3.13.
 
 ## Semantic output gate, version 2
 
@@ -63,7 +66,8 @@ with an external reference, so it shows repeatability, not correctness. Compress
 tables are decompressed and hashed; their gzip header timestamps are excluded. JSON and JSONL
 retain numeric values, identities, row order and substantive fields, while the predeclared
 `created_at`, `recorded_at`, `retrieved_at` and `created_utc` fields and output-root strings are
-normalized. JSON and JSONL are compared after parsing, so whitespace and key order do not
+normalized (in string values, not in object keys: an output keyed by its own path fails the
+gate, which is safe). JSON and JSONL are compared after parsing, so whitespace and key order do not
 count and a repeated key keeps its last value; a JSONL row ends only at a line feed. Plain CSV
 bytes are hashed. Markdown and other declared UTF-8 text normalize the output root, and reading
 them as text also turns CRLF and lone CR line ends into LF. Other file types receive a raw-byte

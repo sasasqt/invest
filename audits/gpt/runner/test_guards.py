@@ -18,6 +18,7 @@ os.environ.setdefault("CONTRACT_CHECKS", "1")
 
 import isolated_runner
 import runner_workload
+import verify_snapshot
 from ci_evidence import classify
 from isolated_runner import (
     blob_digest,
@@ -227,6 +228,30 @@ class SnapshotTests(unittest.TestCase):
                     self.save()
                     with self.assertRaises(SnapshotError):
                         verify(self.reference, snapshot)
+
+    def test_raw_paths_that_no_file_can_have_are_rejected(self):
+        """Review round 9 (W3): a raw path that is also another entry's folder, a name
+        over 255 bytes or a lone surrogate can never verify, yet was reported as
+        blocked: without a snapshot, and for the folder clash even with every file that
+        can exist in place."""
+        request = self.expected["request"]
+        good = self.expected["files"]["AAA"]
+        entry = {"bytes": 1, "sha256": "0" * 64}
+        cases = {
+            "file and folder": {"AAA": good, "BBB": dict(entry, path="raw/AAA.json/x")},
+            "name over 255 bytes": {"AAA": dict(entry, path="raw/" + "a" * 256)},
+            "lone surrogate": {"AAA": dict(entry, path="raw/\ud800")},
+        }
+        for case, files in cases.items():
+            for snapshot in (self.snapshot, self.root / "missing"):
+                with self.subTest(case=case, snapshot=snapshot.name):
+                    self.expected = {"request": request, "files": files}
+                    self.save()
+                    with self.assertRaises(SnapshotError):
+                        verify(self.reference, snapshot)
+        # A 255-byte name is still a name (checked without the file system, since a
+        # Windows host may not open a path over 260 characters).
+        self.assertTrue(verify_snapshot._name_fits("a" * 255))
 
     def test_raw_paths_windows_reads_as_rooted_or_drive_paths_are_rejected(self):
         """Review round 6 (C1): on Windows these made the symlink walk loop forever."""
