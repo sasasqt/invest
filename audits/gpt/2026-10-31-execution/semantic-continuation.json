@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-31",
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "source_tree": "9b48fbc155c6f5006969241585f48953f63e809e",
+  "base_checkpoint": "audits/gpt/checkpoint.json at b57bd4334bd702d4649982f616d9bdaaefb728ce",
+  "newly_read_lines": 318,
+  "reading": [
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "reviewed_ranges": [
+        [
+          1,
+          249
+        ]
+      ],
+      "sha256": "cac727b03eeada7d3fb3a8c3df640c95687fe8480b45fb6336ab94d5d61c7168",
+      "scope": "static semantic reading only; no execution/tests"
+    },
+    {
+      "path": "docs/HISTORICAL_BASELINE.md",
+      "reviewed_ranges": [
+        [
+          1,
+          69
+        ]
+      ],
+      "sha256": "c06548bb6f4134abf40c199859d5cbab92a5f5d7b68315b565e4bba2a2f824cd",
+      "scope": "static semantic reading only; no execution/tests"
+    }
+  ],
+  "remaining_paths": 80,
+  "remaining_lines": 20067,
+  "runtime_tests": "not executed",
+  "benchmarks": "zero samples",
+  "publication": "supplemental investigation only; maintained repository checkpoint unchanged"
+}

@@ -1,0 +1,122 @@
+{
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "fresh_evidence_cutoff": "2026-10-31T07:40:27Z",
+  "cutoff_basis": "first confirmed new job start",
+  "workflow_run": 37851091069,
+  "fresh_jobs": [
+    {
+      "python": "3.11.18",
+      "job_id": 124479741062,
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124479741062",
+      "passed": 585,
+      "failed": 1,
+      "test_seconds": 305.57
+    },
+    {
+      "python": "3.13.18",
+      "job_id": 124480821393,
+      "url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480821393",
+      "passed": 585,
+      "failed": 1,
+      "test_seconds": 346.04
+    }
+  ],
+  "failure": {
+    "existing_id": "INV-COMMON-001 / REVIEW-22",
+    "test": "data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused",
+    "expected_message": "was selected in experiment",
+    "actual_message": "factor f_a763c814692c was not confirmed in this output",
+    "root": "Directory iteration picks a factor that the second experiment did not test, so the membership guard fires before the experiment-identity guard."
+  },
+  "fix_control": {
+    "pr": 31,
+    "head_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "merged": false,
+    "url": "https://github.com/sasasqt/invest/pull/31",
+    "checks": 6,
+    "checks_all_success": true,
+    "results": [
+      {
+        "python": "3.11.18",
+        "passed": 587,
+        "test_seconds": 388.17,
+        "job_id": 124478467273
+      },
+      {
+        "python": "3.13.18",
+        "passed": 587,
+        "test_seconds": 360.3,
+        "job_id": 124478467031
+      }
+    ],
+    "scope": "Existing same-day GitHub CI read and verified; these control jobs were not launched by this task."
+  },
+  "latest_attempt_jobs": [
+    {
+      "id": 124480821393,
+      "name": "checks (3.13)",
+      "started_at": "2026-10-31T07:46:08Z",
+      "conclusion": "failure",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480821393"
+    },
+    {
+      "id": 124480822205,
+      "name": "wheels",
+      "started_at": "2026-10-08T22:04:20Z",
+      "conclusion": "success",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480822205"
+    },
+    {
+      "id": 124480822391,
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "started_at": "2026-10-08T22:04:20Z",
+      "conclusion": "success",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480822391"
+    },
+    {
+      "id": 124480840960,
+      "name": "independent-install (strategy-evaluation)",
+      "started_at": "2026-10-08T22:04:20Z",
+      "conclusion": "success",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480840960"
+    },
+    {
+      "id": 124480843147,
+      "name": "checks (3.11)",
+      "started_at": "2026-10-31T07:40:27Z",
+      "conclusion": "failure",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480843147"
+    },
+    {
+      "id": 124480844283,
+      "name": "independent-install (data-mining-framework)",
+      "started_at": "2026-10-08T22:04:20Z",
+      "conclusion": "success",
+      "run_attempt": 3,
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/37851091069/job/124480844283"
+    }
+  ],
+  "local": {
+    "guard_tests": 30,
+    "guard_test_status": "passed",
+    "format": "passed",
+    "lint": "passed",
+    "workflow_yaml": "parsed; matrix and read-only contents permission checked",
+    "docker_runner": "blocked: Docker executable absent",
+    "full_runner_tested": false,
+    "software_benchmark_samples": 0
+  },
+  "snapshot": {
+    "located": false,
+    "expected_raw_files": 101,
+    "expected_raw_bytes": 40077185,
+    "request_start": "2010-01-01",
+    "request_end": "2024-12-31",
+    "scope": "Repository README, complete /invest Library inventory, earlier title/content searches and Personal Context yielded no accessible original archive."
+  }
+}

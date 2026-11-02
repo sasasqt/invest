@@ -1,0 +1,107 @@
+[
+  {
+    "path": "audits/gpt/runner/ci_evidence.py",
+    "sha256": "d6ef4557f4d4cddeb81ba77c1a50602f2ace54b6ec05904374ced93f8cee8a64",
+    "bytes": 1991
+  },
+  {
+    "path": "audits/gpt/runner/isolated_runner.py",
+    "sha256": "8bb88a17f1dec17013df61bee390f84cd3f97ae445299f38835d4421b4bf866b",
+    "bytes": 10790
+  },
+  {
+    "path": "audits/gpt/runner/runner_workload.py",
+    "sha256": "5df90f07a4bc8d3501da91320a1b91bb128737af44430138ed87581f22516058",
+    "bytes": 14661
+  },
+  {
+    "path": "audits/gpt/runner/test_guards.py",
+    "sha256": "f49c88a8c2e7daf303281becc4f6be620c30753a2a74048e8ca3fefd7c7e125d",
+    "bytes": 13038
+  },
+  {
+    "path": "audits/gpt/runner/verify_installed.py",
+    "sha256": "97916ae1de139cd87271f68afd60ba8534baf379f6d248291b4833796cf76b3c",
+    "bytes": 1955
+  },
+  {
+    "path": "audits/gpt/runner/verify_snapshot.py",
+    "sha256": "1d739be975b3c49d0dff0a31dd5e16b2e26b17436d37b03c80ba17fef7b0f78b",
+    "bytes": 3746
+  },
+  {
+    "path": "audits/gpt/runner/Dockerfile",
+    "sha256": "984ad61352bb19ebb78711928a9c2dd6ff3b54c79ea402686dafdf6af25d78d5",
+    "bytes": 1085
+  },
+  {
+    "path": "audits/gpt/runner/build-requirements.txt",
+    "sha256": "0879df81725771a01164cbc6cb7a714b91623dc4991566bb51e60c116bb7d7b0",
+    "bytes": 586
+  },
+  {
+    "path": "audits/gpt/runner/README.md",
+    "sha256": "4fe85cdee4b545b579b8c4dbdb439c4b57627834c7530e6b5d00d2621e686a8a",
+    "bytes": 4202
+  },
+  {
+    "path": "audits/gpt/runner/workflow-proposal.yml",
+    "sha256": "a7f8d14aae146095174cf4acd8b9a0606f6c0005ea29a5ac15a8fd2d6d5301f9",
+    "bytes": 1962
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution-recovery.md",
+    "sha256": "1835e1e93db4c393ca59999f1218593f013ae473d0c310a29ccde4ab8126b3e5",
+    "bytes": 6194
+  },
+  {
+    "path": "audits/gpt/execution-recovery-addendum.md",
+    "sha256": "9228ef95dc13e241c2f0d96d602524e6ea17ef1b3fee9a05943c4fff7e14ebb9",
+    "bytes": 3566
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/execution-evidence.json",
+    "sha256": "6352c4f85470151b32d891d8fa49b432eda73eb2499614f928559f591cefb268",
+    "bytes": 4154
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/build-tool-verification.json",
+    "sha256": "c51aaef454d664a41468c314c24eb51b6e05864dbde42a640107d9a7784063e5",
+    "bytes": 2068
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/build-closure.json",
+    "sha256": "0e7cf4eeb0d9204749dd2068e3ca4e045bd6e4ed6c19bcd9ccb854f8fd6e522e",
+    "bytes": 68
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/guard-tests.log",
+    "sha256": "932ebb9fa4fa12db7a836a303a302092fd8da4800e995687ef115584b64668fc",
+    "bytes": 3457
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/final-validation.json",
+    "sha256": "5c722f931493c73ac96a9ba90deb18cbdbe78833e8cb0921e99b4b5b32e65fba",
+    "bytes": 1074
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/snapshot-availability.json",
+    "sha256": "69530d32e880eb7afa0c183e542eb92bf8077b252f230b610513783668785448",
+    "bytes": 81
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/local-runner-control.json",
+    "sha256": "ab83eaf2a53b8b5a139ce17363735c5202a2bff956dc9201b628d903752855d6",
+    "bytes": 70
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/semantic-continuation.json",
+    "sha256": "93b3f22b39509909dda19c045488836947c4ca948e18c01604a51fe63fc68442",
+    "bytes": 1109
+  },
+  {
+    "path": "audits/gpt/2026-10-31-execution/remaining-semantic-ranges.json",
+    "sha256": "49ab775b749a3f5f9ae4ec1bede5eb703ec8d9ed6c8e67535546220d7591a450",
+    "bytes": 11245
+  }
+]

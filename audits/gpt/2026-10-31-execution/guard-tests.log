@@ -1,0 +1,35 @@
+test_copied_attempt_number_does_not_make_old_job_fresh (test_guards.EvidenceTests.test_copied_attempt_number_does_not_make_old_job_fresh) ... ok
+test_fresh_failure_is_retained (test_guards.EvidenceTests.test_fresh_failure_is_retained) ... ok
+test_newest_job_wins_without_hiding_failure (test_guards.EvidenceTests.test_newest_job_wins_without_hiding_failure) ... ok
+test_queued_job_is_pending_not_fresh_execution (test_guards.EvidenceTests.test_queued_job_is_pending_not_fresh_execution) ... ok
+test_unrun_jobs_remain_missing (test_guards.EvidenceTests.test_unrun_jobs_remain_missing) ... ok
+test_wrong_revision_is_rejected (test_guards.EvidenceTests.test_wrong_revision_is_rejected) ... ok
+test_actual_version_drift_is_rejected (test_guards.InstalledGraphTests.test_actual_version_drift_is_rejected) ... ok
+test_continuation_and_hashes_are_parsed (test_guards.InstalledGraphTests.test_continuation_and_hashes_are_parsed) ... ok
+test_matching_version_is_recorded (test_guards.InstalledGraphTests.test_matching_version_is_recorded) ... ok
+test_python_specific_versions_are_selected (test_guards.InstalledGraphTests.test_python_specific_versions_are_selected) ... ok
+test_genuine_revision_preserved_without_git_credential_config (test_guards.RunnerContractTests.test_genuine_revision_preserved_without_git_credential_config) ... ok
+test_missing_semantic_outputs_rejected (test_guards.RunnerContractTests.test_missing_semantic_outputs_rejected) ... ok
+test_mount_option_injection_rejected (test_guards.RunnerContractTests.test_mount_option_injection_rejected) ... ok
+test_mutable_image_tag_rejected (test_guards.RunnerContractTests.test_mutable_image_tag_rejected) ... ok
+test_offline_restricted_command (test_guards.RunnerContractTests.test_offline_restricted_command) ... ok
+test_root_container_identity_rejected (test_guards.RunnerContractTests.test_root_container_identity_rejected) ... ok
+test_semantic_gate_preserves_numeric_changes (test_guards.RunnerContractTests.test_semantic_gate_preserves_numeric_changes) ... ok
+test_absolute_path_is_rejected (test_guards.SnapshotTests.test_absolute_path_is_rejected) ... ok
+test_changed_request_is_rejected (test_guards.SnapshotTests.test_changed_request_is_rejected) ... ok
+test_duplicate_manifest_key_is_rejected (test_guards.SnapshotTests.test_duplicate_manifest_key_is_rejected) ... ok
+test_json_formatting_is_not_data_identity (test_guards.SnapshotTests.test_json_formatting_is_not_data_identity) ... ok
+test_matching_fixture (test_guards.SnapshotTests.test_matching_fixture) ... ok
+test_missing_directory_is_blocked (test_guards.SnapshotTests.test_missing_directory_is_blocked) ... ok
+test_missing_manifest_is_blocked (test_guards.SnapshotTests.test_missing_manifest_is_blocked) ... ok
+test_missing_raw_file_is_blocked (test_guards.SnapshotTests.test_missing_raw_file_is_blocked) ... ok
+test_parent_escape_is_rejected (test_guards.SnapshotTests.test_parent_escape_is_rejected) ... ok
+test_raw_symlink_is_rejected (test_guards.SnapshotTests.test_raw_symlink_is_rejected) ... ok
+test_reserved_window_rejected_before_raw_read (test_guards.SnapshotTests.test_reserved_window_rejected_before_raw_read) ... ok
+test_tampering_same_length_is_rejected (test_guards.SnapshotTests.test_tampering_same_length_is_rejected) ... ok
+test_wrong_size_is_rejected (test_guards.SnapshotTests.test_wrong_size_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.037s
+
+OK
