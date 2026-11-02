@@ -13,6 +13,7 @@ from unittest.mock import patch
 os.environ.setdefault("CONTRACT_CHECKS", "1")
 
 import isolated_runner
+import runner_workload
 from ci_evidence import classify
 from isolated_runner import (
     blob_digest,
@@ -21,6 +22,7 @@ from isolated_runner import (
     container_user,
     docker_command,
     execution_command,
+    git_environment,
     read_blobs,
     run_bounded,
     source_entries,
@@ -392,7 +394,7 @@ class PortableHostTests(unittest.TestCase):
             with self.subTest(path=path):
                 with self.assertRaisesRegex(ValueError, "not portable"):
                     source_entries(listing(("100644", "blob", path)))
-        with self.assertRaisesRegex(ValueError, "UTF-8"):
+        with self.assertRaisesRegex(ValueError, "not valid UTF-8"):
             source_entries(listing(("100644", "blob", b"bad-\xff")))
 
     def test_links_and_submodules_are_refused(self):
@@ -621,6 +623,48 @@ class StagingSafetyTests(unittest.TestCase):
             self.assertFalse((root / "elsewhere-index").exists())
             self.assertTrue((root / "staged/.git/index").is_file())
 
+    def test_git_environment_drops_inherited_variables(self):
+        inherited = {"GIT_DIR": "elsewhere", "GIT_CONFIG_PARAMETERS": "'core.fsmonitor'='x'"}
+        with patch.dict(os.environ, inherited):
+            plain, isolated = git_environment(), git_environment(isolated=True)
+        for env in (plain, isolated):
+            self.assertFalse(set(inherited) & set(env))
+            self.assertEqual(
+                (env["GIT_NO_REPLACE_OBJECTS"], env["GIT_TERMINAL_PROMPT"]), ("1", "0")
+            )
+        # The source checkout still sees the host's own Git settings (safe.directory).
+        self.assertFalse({"GIT_CONFIG_GLOBAL", "GIT_CONFIG_NOSYSTEM"} & set(plain))
+        self.assertEqual(
+            (isolated["GIT_CONFIG_NOSYSTEM"], isolated["GIT_CONFIG_GLOBAL"]), ("1", os.devnull)
+        )
+
+    @unittest.skipUnless(
+        sys.platform.startswith("linux") and not Path("/input").exists(),
+        "reads /proc/self/status; /input must not exist on the test host",
+    )
+    def test_boundary_record_names_only_the_probes_that_ran(self):
+        """Round 2 (R4-1): without a sentinel, no key may claim an outside-file check."""
+
+        def no_network(*args, **kwargs):
+            raise OSError("no network in this test")
+
+        for sentinel, child_key in (
+            (None, "child_inherits_env_denial"),
+            ("host-only-sentinel", "child_inherits_outside_file_and_env_denial"),
+        ):
+            with self.subTest(sentinel=sentinel), tempfile.TemporaryDirectory() as directory:
+                results = Path(directory)
+                with patch.object(runner_workload.socket, "create_connection", no_network):
+                    with self.assertRaisesRegex(RuntimeError, "boundary probe failed"):
+                        # source_readable fails here: the host has no /input.
+                        runner_workload.prove_boundary(sentinel, None, results)
+                checks = json.loads((results / "boundary.json").read_text(encoding="utf-8"))
+                self.assertIn(child_key, checks)
+                self.assertTrue(checks[child_key])
+                self.assertEqual(sentinel is not None, "outside_fixture_absent" in checks)
+                if sentinel is None:
+                    self.assertFalse([key for key in checks if "outside" in key])
+
     def test_windows_host_skips_probes_that_mean_nothing_in_the_container(self):
         """R3-4: a Windows path or PID names nothing inside the Linux container."""
         sentinel = Path("out") / "host-only-sentinel"
@@ -629,6 +673,8 @@ class StagingSafetyTests(unittest.TestCase):
             ["--sentinel", str(sentinel), "--host-pid", "4242"],
         )
         self.assertEqual(isolated_runner.boundary_arguments(sentinel, 4242, windows=True), [])
+        for partial in ((sentinel, None), (None, 4242)):
+            self.assertEqual(isolated_runner.boundary_arguments(*partial, windows=False), [])
         command = execution_command("sha256:" + "0" * 64, ".", ".", ".", None, None, 65534, 65534)
         self.assertNotIn("--sentinel", command)
         self.assertNotIn("--host-pid", command)
@@ -710,6 +756,9 @@ class RunnerBranchTests(unittest.TestCase):
             ),
             "ended early(?# no newline after the payload)": subprocess.CompletedProcess(
                 [], 0, git_output((digest, good))[:-1] + b"!", b""
+            ),
+            "missing or not a blob(?# non-ASCII header)": subprocess.CompletedProcess(
+                [], 0, git_output((digest, good)).replace(b" blob ", b" bl\xffb ", 1), b""
             ),
         }
         for message, result in cases.items():

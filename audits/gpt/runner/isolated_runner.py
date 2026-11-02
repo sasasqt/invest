@@ -446,7 +446,7 @@ def stage_source(source, staged, expected_sha):
                 "-C",
                 str(staged),
                 "-c",
-                "core.fsmonitor=false",
+                "core.fsmonitor=",  # empty is "off" on every Git version
                 "-c",
                 f"core.hooksPath={Path(hooks).as_posix()}",
                 "reset",

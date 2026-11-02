@@ -45,7 +45,8 @@ Linux containers gives a `blocked` result (exit 2) before any source is read. Th
 container's outside-file and host-process probes are not run from a Windows host,
 since a Windows path or process ID names nothing inside the Linux container, so
 `boundary.json` lacks `outside_fixture_absent` and `host_process_not_visible`
-there. The `host-tests-windows` job runs the four host test modules on
+there, and its child check (`child_inherits_env_denial`) covers the environment
+only. The `host-tests-windows` job runs the four host test modules on
 `windows-2025` with Python 3.11 and 3.13.
 
 ## Semantic output gate, version 2

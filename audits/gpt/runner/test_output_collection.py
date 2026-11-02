@@ -40,7 +40,7 @@ class NameTests(unittest.TestCase):
     def test_portable_names_are_accepted(self):
         names = ("table.csv", "boundary.json", ".hidden", "a b", "CONSOLE", "con-1", "Ünïcode")
         names += ("nameX", "CONX.txt", "CON\u3000.txt", "a.b.CON")
-        names += ("notes~", "backup~1.toml", "LONGNAME9~1", "x~1y")
+        names += ("notes~", "backup~1.toml", "LONGNAME9~1", "x~1y", "ABCDEF~12")
         for name in names:
             with self.subTest(name=name):
                 self.assertTrue(portable_name(name))
@@ -130,6 +130,18 @@ class CollectionCases:
         row = next(x for x in result["files"] if x["path"] == "nested/table.csv")
         self.assertEqual(row["sha256"], hashlib.sha256(payload).hexdigest())
         self.assertEqual(set(result["summaries"]), set(SUMMARY_NAMES))
+
+    def test_file_larger_than_one_read_is_recorded_whole(self):
+        payload = bytes(range(256)) * 800  # 204,800 bytes: several reads
+        (self.produced / "nested").mkdir()
+        (self.produced / "nested/large.bin").write_bytes(payload)
+        result = self.collect()
+        row = next(x for x in result["files"] if x["path"] == "nested/large.bin")
+        self.assertEqual(row["bytes"], len(payload))
+        self.assertEqual(row["sha256"], hashlib.sha256(payload).hexdigest())
+        self.assertEqual((self.destination / "nested/large.bin").read_bytes(), payload)
+        if os.name != "nt":  # the private snapshot's folders are owner-only
+            self.assertEqual(stat.S_IMODE((self.destination / "nested").stat().st_mode), 0o700)
 
     def test_previous_copy_primitive_leaks_only_the_generated_control(self):
         self.link(self.produced / "escape", self.canary)

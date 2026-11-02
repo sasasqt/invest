@@ -144,9 +144,9 @@ def prove_boundary(sentinel, host_pid, results):
         text=True,
         timeout=10,
     )
-    checks["child_inherits_outside_file_and_env_denial"] = (
-        child.returncode == 0 and child.stdout.strip() == "1"
-    )
+    # Without a sentinel (Windows host) the child checks only the environment.
+    child_key = "child_inherits_" + ("env" if sentinel is None else "outside_file_and_env")
+    checks[child_key + "_denial"] = child.returncode == 0 and child.stdout.strip() == "1"
     fixture = results / "write-positive-control"
     fixture.write_text("allowed")
     checks["output_writable"] = fixture.read_text() == "allowed"

@@ -71,5 +71,6 @@ CI host-test steps set it, production runs do not. A failed check raises
   default CA file, else (Windows) the certificate store exported as PEM.
 - On a Windows host the container's outside-file and host-process probes are not
   run, so `boundary.json` lacks `outside_fixture_absent` and
-  `host_process_not_visible`: a Windows path or process ID names nothing inside the
-  Linux container, so both checks would pass whatever leaked.
+  `host_process_not_visible`, and its child check is named
+  `child_inherits_env_denial`: a Windows path or process ID names nothing inside
+  the Linux container, so those checks would pass whatever leaked.

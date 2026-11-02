@@ -25,6 +25,29 @@ class ExecutionLogTests(unittest.TestCase):
         self.assertEqual((result.returncode, reason), (7, None))
         self.assertEqual(result.stdout, "ordinary\n")
 
+    def test_environment_is_passed_and_stderr_is_kept(self):
+        script = (
+            "import os,sys;print(os.environ['AUDIT_MARK'],flush=True);sys.stderr.write('to err')"
+        )
+        argv = [sys.executable, "-c", script]
+        result, reason = run_bounded(argv, env=dict(os.environ, AUDIT_MARK="from-env"))
+        self.assertEqual((result.returncode, reason), (0, None))
+        self.assertEqual(result.stdout.split(), ["from-env", "to", "err"])
+        self.assertEqual((result.args, result.stderr), (argv, ""))
+
+    def test_log_crossing_the_limit_keeps_exactly_the_limit(self):
+        script = (
+            "import sys, time; o = sys.stdout.buffer;"
+            "o.write(b'a' * 600); o.flush(); time.sleep(0.3); o.write(b'b' * 1000); o.flush()"
+        )
+        result, reason = run_bounded([sys.executable, "-c", script], max_log_bytes=1024)
+        self.assertEqual((result.returncode, reason), (125, "log_limit"))
+        self.assertEqual(result.stdout, "a" * 600 + "b" * 424)
+
+    def test_smallest_log_limit_is_accepted(self):
+        result, reason = run_bounded([sys.executable, "-c", "pass"], max_log_bytes=1)
+        self.assertEqual((result.returncode, reason), (0, None))
+
     def test_large_stdout_is_bounded_and_fails(self):
         result, reason = run_bounded(
             [sys.executable, "-c", "import sys;sys.stdout.write('x'*100000)"], max_log_bytes=1024
