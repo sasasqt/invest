@@ -150,6 +150,7 @@ def main():
     results = work / "results"
     results.mkdir()
     (work / "home").mkdir()
+    (work / "tmp").mkdir()
     prove_boundary(args.sentinel, args.host_pid, results)
     if execute(
         "audit-guard-tests",

@@ -1,0 +1,110 @@
+{
+  "run_id": 41186347454,
+  "workflow_head": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+  "jobs": [
+    {
+      "id": 124493939333,
+      "name": "checks (3.11)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:57:35Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493939333"
+    },
+    {
+      "id": 124493939419,
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:52:34Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493939419"
+    },
+    {
+      "id": 124493939488,
+      "name": "checks (3.13)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:56:20Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493939488"
+    },
+    {
+      "id": 124493939496,
+      "name": "wheels",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:55:03Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493939496"
+    },
+    {
+      "id": 124493939516,
+      "name": "independent-install (data-mining-framework)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:53:03Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493939516"
+    },
+    {
+      "id": 124493940311,
+      "name": "independent-install (strategy-evaluation)",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:54:08Z",
+      "html_url": "https://github.com/sasasqt/invest/actions/runs/41186347454/job/124493940311"
+    }
+  ],
+  "failures": [
+    {
+      "job_id": 124493939333,
+      "name": "checks (3.11)",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:57:35Z",
+      "failures": [
+        "2026-10-31T08:57:33.6092228Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T08:57:33.6094082Z 1 failed, 585 passed in 300.63s (0:05:00)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124493939488,
+      "name": "checks (3.13)",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:56:20Z",
+      "failures": [
+        "2026-10-31T08:56:17.7450773Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T08:56:17.7452050Z 1 failed, 585 passed in 226.19s (0:03:46)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124493939496,
+      "name": "wheels",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:55:03Z",
+      "failures": [
+        "2026-10-31T08:54:59.5551894Z FAILED ../invest/invest/data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T08:54:59.5554088Z 1 failed, 539 passed, 5 warnings in 147.92s (0:02:27)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124493939516,
+      "name": "independent-install (data-mining-framework)",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T08:52:20Z",
+      "completed_at": "2026-10-31T08:53:03Z",
+      "failures": [
+        "2026-10-31T08:53:01.9075088Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T08:53:01.9077456Z 1 failed, 128 passed in 34.16s"
+      ],
+      "known_error": true
+    }
+  ]
+}

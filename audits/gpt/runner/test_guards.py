@@ -191,6 +191,7 @@ class RunnerContractTests(unittest.TestCase):
             "--security-opt=no-new-privileges",
             "--memory=2g",
             "--pids-limit=256",
+            "TMPDIR=/work/tmp",
         ):
             self.assertIn(required, command)
         self.assertNotIn("--privileged", command)

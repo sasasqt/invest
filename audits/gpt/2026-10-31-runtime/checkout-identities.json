@@ -1,0 +1,99 @@
+[
+  {
+    "run_id": 41184820796,
+    "pr_head": "010c7ea8b866f8f03c418d7d491d8f8e9ace466b",
+    "actual_checkout_merge": "d4fa793611e1f601a358c2580c8e925567f54a3d",
+    "blobs": [
+      {
+        "path": ".github/workflows/audit-runtime.yml",
+        "sha": "77865d12aa8ee05e87a54c12e9ca0218524222c1"
+      },
+      {
+        "path": "audits/gpt/runner/Dockerfile",
+        "sha": "031fb4e76466849cf634342c4ce115e4e9b8f865"
+      },
+      {
+        "path": "audits/gpt/runner/README.md",
+        "sha": "b68d86416526838c6d6c9511f0b3756e44a592ef"
+      },
+      {
+        "path": "audits/gpt/runner/build-requirements.txt",
+        "sha": "1611d477d8e032566200303c04cdb5c7516ddb42"
+      },
+      {
+        "path": "audits/gpt/runner/ci_evidence.py",
+        "sha": "22d6f92ab32738777966ac01b029b0b0776d36a8"
+      },
+      {
+        "path": "audits/gpt/runner/isolated_runner.py",
+        "sha": "199c23c5c4d71f8c5e1e41913a3e3acb34def50c"
+      },
+      {
+        "path": "audits/gpt/runner/runner_workload.py",
+        "sha": "cf057a0733bca15ddfb2188149f12ad402701ac1"
+      },
+      {
+        "path": "audits/gpt/runner/test_guards.py",
+        "sha": "0e2114aceb09be84ea27f4b953062751cf40eaf1"
+      },
+      {
+        "path": "audits/gpt/runner/verify_installed.py",
+        "sha": "905fa2bde74ebd3b02cb4044257bc24413f6df6d"
+      },
+      {
+        "path": "audits/gpt/runner/verify_snapshot.py",
+        "sha": "4d5a95db5232467c55ee9279e979516c57a45a09"
+      }
+    ],
+    "status": "actual checkout SHA read from all three job logs; all 10 runner/workflow blobs match PR head"
+  },
+  {
+    "run_id": 41186347445,
+    "pr_head": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+    "expected_checkout_merge": "dac2a76e6b6be5fdc65a799a93e20795aec06b5a",
+    "blobs": [
+      {
+        "path": ".github/workflows/audit-runtime.yml",
+        "sha": "77865d12aa8ee05e87a54c12e9ca0218524222c1"
+      },
+      {
+        "path": "audits/gpt/runner/Dockerfile",
+        "sha": "031fb4e76466849cf634342c4ce115e4e9b8f865"
+      },
+      {
+        "path": "audits/gpt/runner/README.md",
+        "sha": "b68d86416526838c6d6c9511f0b3756e44a592ef"
+      },
+      {
+        "path": "audits/gpt/runner/build-requirements.txt",
+        "sha": "1611d477d8e032566200303c04cdb5c7516ddb42"
+      },
+      {
+        "path": "audits/gpt/runner/ci_evidence.py",
+        "sha": "22d6f92ab32738777966ac01b029b0b0776d36a8"
+      },
+      {
+        "path": "audits/gpt/runner/isolated_runner.py",
+        "sha": "263e98a12b9fc79a88dd7dc143f83f11158a4aea"
+      },
+      {
+        "path": "audits/gpt/runner/runner_workload.py",
+        "sha": "eab48264e92d8a0198fc0355279ffe87981a20b1"
+      },
+      {
+        "path": "audits/gpt/runner/test_guards.py",
+        "sha": "398ec6f7f938bda8bb8143d05fb1d1d78b2e379c"
+      },
+      {
+        "path": "audits/gpt/runner/verify_installed.py",
+        "sha": "905fa2bde74ebd3b02cb4044257bc24413f6df6d"
+      },
+      {
+        "path": "audits/gpt/runner/verify_snapshot.py",
+        "sha": "4d5a95db5232467c55ee9279e979516c57a45a09"
+      }
+    ],
+    "status": "actual checkout SHA read from all three completed job logs; all 10 runner/workflow blobs match tested PR head",
+    "actual_checkout_merge": "dac2a76e6b6be5fdc65a799a93e20795aec06b5a"
+  }
+]

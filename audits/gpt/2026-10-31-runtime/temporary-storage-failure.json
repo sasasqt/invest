@@ -1,0 +1,14 @@
+{
+  "run_id": 41184820796,
+  "job_id": 124489509603,
+  "classification": "runner temporary-filesystem exhaustion; not product assertion failure",
+  "temporary_mount": "/tmp:rw,nosuid,nodev,size=256m",
+  "excerpt": [
+    "E               OSError: [Errno 28] No space left on device",
+    "E               OSError: [Errno 28] No space left on device",
+    "FAILED source/data-mining-framework/tests/test_ledger.py::test_cli_lookback_formula_still_requires_history",
+    "FAILED source/data-mining-framework/tests/test_search_and_inference.py::test_export_signals_bundle",
+    "2 failed, 128 passed in 35.14s"
+  ],
+  "fix": "TMPDIR=/work/tmp in existing isolated disk workspace; limits unchanged"
+}
