@@ -82,17 +82,24 @@ def run_captured(argv, *, timeout=None, input=None, **kwargs):
     Every host program goes through here, not subprocess.run: on Windows, run reads
     the pipes to their end after the kill, so a launcher's child that still holds
     them (Git for Windows' cmd\\git.exe, a Docker CLI plugin such as buildx) would
-    keep it waiting past the timeout.
+    keep it waiting past the timeout. ``input`` (bytes) is passed as a file, not a
+    pipe: Python 3.11 on Windows writes a pipe's input before it starts timing, so a
+    program that stopped reading would hold it past the timeout too.
     """
-    process = subprocess.Popen(
-        argv,
-        stdin=subprocess.PIPE if input is not None else None,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        **kwargs,
-    )
+    feed = None
+    if input is not None:
+        feed = tempfile.TemporaryFile()
+        feed.write(input)
+        feed.seek(0)
     try:
-        stdout, stderr = process.communicate(input, timeout=timeout)
+        process = subprocess.Popen(
+            argv, stdin=feed, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
+        )
+    finally:
+        if feed is not None:
+            feed.close()  # the program has its own handle
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
     except BaseException:  # the timeout, and an interrupt, as subprocess.run does
         process.kill()
         process.wait(timeout=30)
