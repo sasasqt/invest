@@ -1,0 +1,97 @@
+[
+  {
+    "original": "# invest repository audit — consolidated instructions v2 (2026-10-31)",
+    "replacement": "# invest audit — detailed methods for daily rotation v3 (2026-11-02)",
+    "reason": "Version and role of the separately loaded methods."
+  },
+  {
+    "original": "Run the complete sasasqt/invest repository audit and dedicated research scouting described below. Use a separate audit run and do not modify the existing daily PR-review task.",
+    "replacement": "Audit sasasqt/invest cumulatively through the approved seven-field rotation. These are detailed methods, loaded by the dispatcher for the selected question, not a request to perform every section on every invocation. Do not modify the daily PR-review task.",
+    "reason": "Replace full-audit-per-invocation scope."
+  },
+  {
+    "original": "Execute the full-audit profile subject to its recorded resource budgets, credential-isolation and dependency preflight.",
+    "replacement": "Execute the selected daily slice within the provisional 120-minute wall-time budget, credential-isolation and dependency preflight.",
+    "reason": "Use the approved daily resource policy."
+  },
+  {
+    "original": "Audit the entire `sasasqt/invest` repository for inconsistencies, verified defects, research-validity problems, and worthwhile improvements.",
+    "replacement": "Maintain cumulative whole-repository coverage for inconsistencies, verified defects, research-validity problems, and worthwhile improvements; each invocation investigates one bounded question in its assigned field.",
+    "reason": "Whole-repository objective is cumulative."
+  },
+  {
+    "original": "Also search primary research sources for relevant papers and new systematic trading-strategy hypotheses, assess them critically, and maintain a research queue with concrete validation plans.",
+    "replacement": "On Sunday research visits, search primary research sources for relevant papers and systematic trading-strategy hypotheses, assess them critically, and maintain a research queue with concrete validation plans.",
+    "reason": "Dedicated research day."
+  },
+  {
+    "original": "When one area is blocked, continue with independent areas, retain evidence, and report the gap.",
+    "replacement": "When one prerequisite is blocked, continue feasible trusted work in the same field, retain evidence, and report the gap. Move to another field only for the dispatcher's documented urgent material-risk replacement.",
+    "reason": "Keep one primary field per day."
+  },
+  {
+    "original": "Use the run's start date in `Europe/Berlin` for report names, new finding IDs and the deterministic exploration seed. Preserve that date on resume.",
+    "replacement": "Use the scheduled date in `Europe/Berlin` for report names, new finding IDs and the deterministic exploration seed; preserve it on retry/resume. When scheduled metadata is unavailable, use the local start date and disclose that fallback.",
+    "reason": "Delayed starts and retries retain field/date identity."
+  },
+  {
+    "original": "- **Full repository audit:** perform all applicable sections below. Inventory and review coverage must still account for the entire repository, including unchanged files.",
+    "replacement": "- **Rotating daily slice:** perform the selected bounded question and applicable gates. The complete audit remains cumulative; inventory and review coverage still account for unchanged files. Not-scheduled methods are neither passed nor failed today.",
+    "reason": "Replace daily full-audit profile."
+  },
+  {
+    "original": "A full audit may plan for about three hours if the runtime supports it, with checkpoints and no promise of completion.",
+    "replacement": "The daily plan is 120 minutes total: about 20 for common checks/setup, 70 for the primary field and 30 reserved for independent verification, checkpoint and reporting. Reallocate inside the total without dropping required evidence or the report. The pilot's short-case limits are not the daily allowance; record bounded per-job timeouts and remote compute separately.",
+    "reason": "Supersede three-hour full-run planning."
+  },
+  {
+    "original": "Prefer a complete audit; if resources prevent it, checkpoint the exact remaining work instead of quietly sampling and claiming full coverage.",
+    "replacement": "Complete the selected daily slice where feasible; checkpoint exact remaining field and repository work without claiming full coverage.",
+    "reason": "Daily versus repository completion."
+  },
+  {
+    "original": "Run at least one deterministic synthetic workflow through actual published boundaries:",
+    "replacement": "On an integration visit, select one bounded deterministic synthetic workflow case through actual published boundaries; rotate and queue the remaining combinations:",
+    "reason": "Thursday workflow cadence."
+  },
+  {
+    "original": "at most two historical records per run",
+    "replacement": "at most two historical records per selected integration visit",
+    "reason": "Preserve replay maximum without a daily replay requirement."
+  },
+  {
+    "original": "Add at most seven new recommendations per full run and refresh existing ones whose evidence changed.",
+    "replacement": "Add at most three optional new recommendations per daily run and seven per rolling seven Berlin dates; refresh existing ones whose evidence changed. Report all verified defects and unfavorable material observations regardless of these recommendation caps.",
+    "reason": "Approved daily and rolling recommendation caps."
+  },
+  {
+    "original": "For each peer finding that is new since the last cross-check or still open, perform an independent check against this run's main SHA.",
+    "replacement": "Triage each peer finding that is new since the last cross-check or still open, assign its owning field, and perform its independent check on that field's visit or a documented urgent replacement against the run's main SHA.",
+    "reason": "Daily triage and bounded field verification."
+  },
+  {
+    "original": "gets one fresh re-check in this run.",
+    "replacement": "gets one queued fresh re-check on its owning field's visit or a documented urgent replacement.",
+    "reason": "Do not silently add another field for peer disagreement."
+  },
+  {
+    "original": "over the available last four runs, disclosing the number of runs.",
+    "replacement": "over up to the last four eligible comparable visits in the same field, disclosing their number. Preserve pre-rotation aggregate history separately; do not fabricate field attribution.",
+    "reason": "Field-specific reading yield."
+  },
+  {
+    "original": "On a full run, initially allocate up to 30 minutes or 20% of the declared total execution budget, whichever is smaller, to scouting and feasibility assessment.",
+    "replacement": "On Sunday, allocate the primary field-work portion (initially about 70 minutes within the 120-minute total) to scouting and feasibility assessment; setup and verification/reporting remain inside the same total. Other days record scouting not scheduled, retaining its queue and evidence.",
+    "reason": "Research is its own primary field."
+  },
+  {
+    "original": "the overall seven-new-recommendations limit still applies.",
+    "replacement": "the three-daily/seven-rolling-seven-days optional-recommendation limits still apply.",
+    "reason": "Align research recommendation cap."
+  },
+  {
+    "original": "Write `research/scouting-\\<date>.md` and a Dedicated research scouting section in the main report.",
+    "replacement": "On a research visit, write `research/scouting-\\<date>.md` and a Dedicated research scouting section in the main report; on other visits include its compact not-scheduled/current-state status without a fresh literature search.",
+    "reason": "Do not require daily literature scouting."
+  }
+]

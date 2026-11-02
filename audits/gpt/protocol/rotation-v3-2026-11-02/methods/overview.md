@@ -1,0 +1,23 @@
+Approved operating interpretation for rotation v3:
+- The dispatcher selects one field/question per scheduled Berlin date and a 120-minute total. Every-run/full-run wording below means the relevant field visit or cumulative audit evidence, never all methods daily.
+- The detailed test matrix is owned by Friday as resumable named jobs; Thursday owns integration/replay, Saturday benchmarks, and Sunday research. Other correctness lenses apply to the selected field/question.
+- Common checks triage source changes, pending jobs and material findings; they do not launch every validation family. Reports retain compact not-scheduled statuses and aggregate only existing evidence for other fields.
+- Required independent-review, data, isolation, provenance, semantic-output, publication and adverse-evidence rules remain intact. Keep product and audit completion separate.
+- Known runner collection finding INV-PR32-001 at a73149d3cf8df7c133ea436a7787c5d5a2dc88b5 remains an execution prerequisite blocker until independently verified corrected. Earlier benign boundary probes and benchmark passes do not clear hostile output-collection paths. Use another genuinely proven authorized runner or continue trusted static work. Do not fix or dispatch the known unsafe runner as part of a normal scheduled audit.
+
+# invest audit — detailed methods for daily rotation v3 (2026-11-02)
+
+Audit sasasqt/invest cumulatively through the approved seven-field rotation. These are detailed methods, loaded by the dispatcher for the selected question, not a request to perform every section on every invocation. Do not modify the daily PR-review task.
+
+PREFERRED EXECUTION CONFIGURATION — CONTINUE IF UNVERIFIED: Prefer GPT-6 Astra (gpt-6-astra), reasoning effort medium, when available in the actual execution settings. This prompt is not a model selector. If these settings are unavailable or cannot be verified, continue the audit with the runtime-provided model and effort. Missing model/effort metadata is a reporting limitation, never a blocker: do not refuse, stop, defer, pause or disable this task, or require user intervention, solely because Astra Medium cannot be confirmed. Report the actual model and effort only when exposed; otherwise state "model/effort unavailable; audit continued as authorized." Do not claim Astra Medium was used without evidence. All data, execution-isolation and publication restrictions still apply.
+
+Execute the selected daily slice within the provisional 120-minute wall-time budget, credential-isolation and dependency preflight. Follow all data restrictions and the narrow audits/gpt/ on gpt/repo-audits publication boundary. Preserve persistent state and both exploration/exploitation allocations. Report completed, blocked and deferred work accurately.
+
+Maintain cumulative whole-repository coverage for inconsistencies, verified defects, research-validity problems, and worthwhile improvements; each invocation investigates one bounded question in its assigned field. Run the applicable tests and workflows, create independent checks where they add evidence, and benchmark representative operations. On Sunday research visits, search primary research sources for relevant papers and systematic trading-strategy hypotheses, assess them critically, and maintain a research queue with concrete validation plans. Deliver a reproducible, prioritized report with exact revision links, citations, supporting evidence, measured results, coverage and research ledgers.
+
+This is a repository audit, not only a review of recent changes or open PRs. Treat existing implementation choices skeptically, but distinguish an actual defect from an untested concern, a documented limitation, a planned capability, or an optional improvement. A report with no new verified issues is acceptable.
+
+Once invoked, work autonomously within this routine. Resolve ordinary implementation choices from the repository and state assumptions. When one prerequisite is blocked, continue feasible trusted work in the same field, retain evidence, and report the gap. Move to another field only for the dispatcher's documented urgent material-risk replacement. Never describe an attempted or partially completed audit as a complete audit.
+
+Use the scheduled date in `Europe/Berlin` for report names, new finding IDs and the deterministic exploration seed; preserve it on retry/resume. When scheduled metadata is unavailable, use the local start date and disclose that fallback. This naming convention does not set a schedule. Read persisted state rather than assuming conversation history is available. Report actual model/effort and usage only when exposed; do not invent usage percentages, model-switch controls or notifications.
+

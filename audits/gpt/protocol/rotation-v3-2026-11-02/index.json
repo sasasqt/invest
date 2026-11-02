@@ -1,0 +1,158 @@
+{
+  "version": 3,
+  "date": "2026-11-02",
+  "timezone": "Europe/Berlin",
+  "budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "verification_reporting": 30
+  },
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "baseline_output_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
+  "load_at_start": [
+    "overview",
+    "00-preflight",
+    "01-scope",
+    "13-continuity",
+    "action-boundary"
+  ],
+  "load_before_use": {
+    "coverage_updates": "02-coverage",
+    "candidate_or_drop_review": "11-findings-review",
+    "improvement_ranking": "10-improvements",
+    "report_preparation": "12-reporting",
+    "peer_verification_or_publication_or_reading_allocation": "14-crosscheck-publication"
+  },
+  "field_modules": {
+    "data": [
+      "03-consistency",
+      "04-correctness",
+      "05-financial-validity",
+      "07-independent-checks"
+    ],
+    "mining": [
+      "03-consistency",
+      "04-correctness",
+      "05-financial-validity",
+      "07-independent-checks"
+    ],
+    "evaluation": [
+      "03-consistency",
+      "04-correctness",
+      "05-financial-validity",
+      "07-independent-checks"
+    ],
+    "integration": [
+      "03-consistency",
+      "04-correctness",
+      "07-independent-checks",
+      "08-integration"
+    ],
+    "engineering": [
+      "03-consistency",
+      "04-correctness",
+      "06-engineering-checks"
+    ],
+    "performance": [
+      "07-independent-checks",
+      "09-performance"
+    ],
+    "research": [
+      "15-research"
+    ]
+  },
+  "loading_rule": "Load start gates once, the selected field methods, and conditional methods before the relevant action. The field list supplies lenses, not a requirement to execute every item. Additional necessary methods are loaded before use. Do not load every historical report. Pin all paths to the same immutable protocol commit.",
+  "modules": {
+    "overview": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/overview.md",
+      "sha256": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "bytes": 4730
+    },
+    "00-preflight": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/00-preflight.md",
+      "sha256": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "bytes": 5975
+    },
+    "01-scope": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/01-scope.md",
+      "sha256": "ed73caf0a3dc120195cc111f5d993be1b200f164aa4bfca37cd1c05dc617753d",
+      "bytes": 2955
+    },
+    "02-coverage": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/02-coverage.md",
+      "sha256": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "bytes": 2035
+    },
+    "03-consistency": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/03-consistency.md",
+      "sha256": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+      "bytes": 2910
+    },
+    "04-correctness": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/04-correctness.md",
+      "sha256": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+      "bytes": 1866
+    },
+    "05-financial-validity": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/05-financial-validity.md",
+      "sha256": "336c6887e1a60b96a27766328db1115cd3579604f3cf68cfa2287eb32cae0eaf",
+      "bytes": 2707
+    },
+    "06-engineering-checks": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/06-engineering-checks.md",
+      "sha256": "f2a2fc93f0067915e136b14228ea30e95d5196d0c28fb47a70fd45cc7fc3134b",
+      "bytes": 4033
+    },
+    "07-independent-checks": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/07-independent-checks.md",
+      "sha256": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "bytes": 1273
+    },
+    "08-integration": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/08-integration.md",
+      "sha256": "cbf0689b723a37643af61a5e4f900c0dfc4d453943cad32905bac33c1609d9b1",
+      "bytes": 3080
+    },
+    "09-performance": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/09-performance.md",
+      "sha256": "48e708f64ce144d7074ef7dc01b688be1bf2bd45846721d18f0145cdd38e2db7",
+      "bytes": 9968
+    },
+    "10-improvements": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/10-improvements.md",
+      "sha256": "81983f4cecb351cd72571a2067879f3c650f2f524abce9db1ff3452f9eca17fb",
+      "bytes": 2824
+    },
+    "11-findings-review": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/11-findings-review.md",
+      "sha256": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "bytes": 14408
+    },
+    "12-reporting": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/12-reporting.md",
+      "sha256": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "bytes": 5093
+    },
+    "13-continuity": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/13-continuity.md",
+      "sha256": "9444417361df01e9400b622beda25c56dd03342880a2ae8a5cd5034ebc9a5c2b",
+      "bytes": 3245
+    },
+    "14-crosscheck-publication": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/14-crosscheck-publication.md",
+      "sha256": "b42bf790042b8707f9b83ff8795d0ca03d4c6aa077fe3661dcd5e4a08a827903",
+      "bytes": 11733
+    },
+    "15-research": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/15-research.md",
+      "sha256": "caa548319f4139d96d1d3313d966116c9494c0518bce300d454e88f7971436f3",
+      "bytes": 14569
+    },
+    "action-boundary": {
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/action-boundary.md",
+      "sha256": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "bytes": 1265
+    }
+  }
+}

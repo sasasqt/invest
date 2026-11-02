@@ -1,0 +1,256 @@
+{
+  "kind": "dispatcher acceptance scenarios and preparation invariants",
+  "scope": "Pure local audit-tooling checks. These do not execute the scheduler, the repository, Docker, or historical market replay.",
+  "passed": 62,
+  "failed": 0,
+  "results": [
+    {
+      "scenario": "weekday_data",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_mining",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_evaluation",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_integration",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_engineering",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_performance",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekday_research",
+      "status": "passed"
+    },
+    {
+      "scenario": "delayed_start_retains_scheduled_monday",
+      "status": "passed"
+    },
+    {
+      "scenario": "retry_retains_original_source_and_date",
+      "status": "passed"
+    },
+    {
+      "scenario": "missing_metadata_discloses_fallback",
+      "status": "passed"
+    },
+    {
+      "scenario": "missed_days_do_not_accumulate_fields",
+      "status": "passed"
+    },
+    {
+      "scenario": "spring_dst_berlin_date",
+      "status": "passed"
+    },
+    {
+      "scenario": "autumn_dst_berlin_date",
+      "status": "passed"
+    },
+    {
+      "scenario": "pending_jobs_reconciled_before_dispatch",
+      "status": "passed"
+    },
+    {
+      "scenario": "unknown_publication_reconciled_before_redispatch",
+      "status": "passed"
+    },
+    {
+      "scenario": "known_unsafe_runner_blocks_execution",
+      "status": "passed"
+    },
+    {
+      "scenario": "known_failure_not_retried_to_turn_green",
+      "status": "passed"
+    },
+    {
+      "scenario": "unchanged_evidence_retains_scoped_reuse",
+      "status": "passed"
+    },
+    {
+      "scenario": "changed_source_requires_revalidation",
+      "status": "passed"
+    },
+    {
+      "scenario": "changed_dependencies_requires_revalidation",
+      "status": "passed"
+    },
+    {
+      "scenario": "changed_consumers_requires_revalidation",
+      "status": "passed"
+    },
+    {
+      "scenario": "changed_gate_requires_revalidation",
+      "status": "passed"
+    },
+    {
+      "scenario": "branch_movement_requires_reconciliation",
+      "status": "passed"
+    },
+    {
+      "scenario": "product_write_rejected",
+      "status": "passed"
+    },
+    {
+      "scenario": "path_traversal_rejected",
+      "status": "passed"
+    },
+    {
+      "scenario": "safe_paths_allow_guarded_nonforce_publish",
+      "status": "passed"
+    },
+    {
+      "scenario": "urgent_replacement_preserves_total_budget",
+      "status": "passed"
+    },
+    {
+      "scenario": "nonurgent_does_not_replace_field",
+      "status": "passed"
+    },
+    {
+      "scenario": "budget_totals_120",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_overview",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_00-preflight",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_01-scope",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_02-coverage",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_03-consistency",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_04-correctness",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_05-financial-validity",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_06-engineering-checks",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_07-independent-checks",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_08-integration",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_09-performance",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_10-improvements",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_11-findings-review",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_12-reporting",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_13-continuity",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_14-crosscheck-publication",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_15-research",
+      "status": "passed"
+    },
+    {
+      "scenario": "method_hash_action-boundary",
+      "status": "passed"
+    },
+    {
+      "scenario": "all_baseline_paragraphs_mapped",
+      "status": "passed"
+    },
+    {
+      "scenario": "dispatcher_120_minute_allocation",
+      "status": "passed"
+    },
+    {
+      "scenario": "unavailable_protocol_has_safe_fallback",
+      "status": "passed"
+    },
+    {
+      "scenario": "unavailable_data_only_blocks_its_replay",
+      "status": "passed"
+    },
+    {
+      "scenario": "weekly_summary_is_existing_evidence_only",
+      "status": "passed"
+    },
+    {
+      "scenario": "neglected_feasible_work_kept",
+      "status": "passed"
+    },
+    {
+      "scenario": "daily_result_not_suppressed",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_all_existing_state.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_unread_ranges_state.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_pending_reviews_state.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_all_existing_checkpoint.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_unread_ranges_checkpoint.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "preserve_pending_reviews_checkpoint.json",
+      "status": "passed"
+    },
+    {
+      "scenario": "exact_source_restrictions_preserved",
+      "status": "passed"
+    },
+    {
+      "scenario": "no_activation_product_execution",
+      "status": "passed"
+    }
+  ]
+}

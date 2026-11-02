@@ -1,0 +1,17 @@
+#### Daily rotation v3 — activation preparation, 2 November 2026
+
+The user approved the seven-field daily rotation and provisional 120-minute budget. The daily allocation is 20 minutes common checks/setup, 70 primary-field work, and 30 verification/checkpoint/reporting. The audit remains daily at 03:00 Europe/Berlin; PR review stays separate at 21:00.
+
+The short task dispatcher replaces the full-audit-per-run prompt. Detailed methods are immutable at the protocol commit selected during activation; index.json supplies exact SHA-256 identities, start gates, field methods and conditional sections. Every original baseline paragraph is mapped: 319 retained verbatim and 17 adapted, across 336 paragraph blocks. The prior 363-standing-instruction adaptation map and all its evidence remain unchanged at their original paths; these are different segmentation schemes, not discarded requirements. The exact original baseline is retained as baseline-v2.txt.
+
+The method adaptations replace daily full-audit, three-hour planning, daily scouting and per-run recommendation/cross-check wording with approved field cadence and budgets. All evidence, data, independent-review, coverage and publication safeguards remain. Incomplete or not-scheduled work is not counted as passed. Seven visits do not establish complete coverage.
+
+State migration adds rotation_v3 to existing state.json and checkpoint.json, preserving every pre-existing key/value. Existing findings, research cutoffs/IDs, pending_second_review, open_places, histories and raw measurements remain authoritative. All 78 unread paths and 19,659 exact unread lines are assigned an owning field, with explicit integration/interface owners. Historical reading allocations are retained; no per-field yield or elapsed time is invented.
+
+The 2 November scheduled audit was recorded in_progress under run ece15988-b4f0-8331-b102-0ce2475df4f6 when preparation started. This is not proof of worker liveness. No duplicate audit is triggered. Read the latest branch head on every invocation and before publication; reconcile in-flight state rather than restoring this preparation snapshot.
+
+Known INV-PR32-001 remains a prerequisite blocker for runner a73149d3cf8df7c133ea436a7787c5d5a2dc88b5: host collection can follow untrusted output links. The maintained primary review was read during activation. Earlier benign probe passes do not validate hostile collection. No repository code, container workflow or market replay was run during this activation. Safe static work can continue while execution is blocked; the original historical archive is still a separate prerequisite.
+
+Acceptance checks passed for weekday selection, delayed/missed/retried runs, Berlin DST, pending jobs and uncertain publication, changed source/dependencies/consumers/gates, unsafe-runner blocking, bounded urgent replacement, publication path/concurrency rules, method hashes, requirement mapping and state preservation. acceptance-results.json records the checks and their limits. These are dispatcher preparation checks, not an end-to-end scheduler or product test.
+
+The scheduler update and exact paste-ready copy are verified separately after the protocol commit is published. This preparation report alone does not assert that update succeeded. Protocol preparation changes only audits/gpt/ on gpt/repo-audits; no product, workflow, peer folder, PR, review or schedule changes are included.

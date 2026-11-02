@@ -1,0 +1,3066 @@
+{
+  "count": 336,
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "blocks": [
+    {
+      "id": "B001",
+      "baseline_sha256": "93f6439af801957f0738618e309936859409201552ffbc8cad6277b38999ac6a",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Version and role of the separately loaded methods."
+      ]
+    },
+    {
+      "id": "B002",
+      "baseline_sha256": "77296fa5ac83e24c8bed1c8de981910d834dede670753773c7cf78442302d34f",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Replace full-audit-per-invocation scope."
+      ]
+    },
+    {
+      "id": "B003",
+      "baseline_sha256": "9af0ad95000b134c83010ef24e417ea0f74d0404be085b009a238c9045cd4a7d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B004",
+      "baseline_sha256": "d9e70ddc14ad6f4bea38dbbde1208b2eb8cd2a54d534a5fa53bf87a298e2caed",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Use the approved daily resource policy."
+      ]
+    },
+    {
+      "id": "B005",
+      "baseline_sha256": "dbc4fc1a09b7653dccb2cb2bf16411c61e52c78cb00fcb2c24dfbad679c42246",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Whole-repository objective is cumulative.",
+        "Dedicated research day."
+      ]
+    },
+    {
+      "id": "B006",
+      "baseline_sha256": "2c9cba39f49544c68b48f290e2b5ed8c8972c1875c7f5fb5f20f3061982202a2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B007",
+      "baseline_sha256": "60208fe3e1fae5c094d61d088a7fe791b81319a244ea4a04ce96138eae5e42e2",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Keep one primary field per day."
+      ]
+    },
+    {
+      "id": "B008",
+      "baseline_sha256": "123840c50a80c6d073ece441c19d81a7afafd87309eec78c4e79af0aa075bea6",
+      "status": "adapted",
+      "method_modules": [
+        "overview"
+      ],
+      "reason": [
+        "Delayed starts and retries retain field/date identity."
+      ]
+    },
+    {
+      "id": "B009",
+      "baseline_sha256": "7781b2fdcc1763ffe5c7e160d6f663a2ccdb960af4b245b7d5bc542307ff2399",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B010",
+      "baseline_sha256": "a1ae7e3bcdee55a85c18b9d80d0b6ded86f19b6124e715d52c18bc481ca2586f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B011",
+      "baseline_sha256": "a49472ea517d17b19d61d71fccaeeb9badc894535f76990e84b1d4112cd89a8a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B012",
+      "baseline_sha256": "25cc534ecdaddc4dbfc93363ed922c34edcc78c13db3d20cc5d6f731814bec38",
+      "status": "adapted",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": [
+        "Replace daily full-audit profile."
+      ]
+    },
+    {
+      "id": "B013",
+      "baseline_sha256": "bb12cc8859e2cc6b43435cf3152b7ac74b94500a6a50a31334dea6cd4c365034",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B014",
+      "baseline_sha256": "f9278223b9e55d7fe52a9498c434470743b919f5a0583233cd8d3d5151cd84e3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B015",
+      "baseline_sha256": "2ad3cbb283681db11a9e8bb69895ee600bb4070dd2ec14161326d91d39f3646a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B016",
+      "baseline_sha256": "184f347498e36beece725eaabb15bbe6452418e4a13b6c1685f119721883c672",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B017",
+      "baseline_sha256": "760f30d460808b04406077e4b1b2e57aca214749b781f96c29230d645cbe9c20",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B018",
+      "baseline_sha256": "ba13ea51381bfa510d0d61fdba94bd98601d54197b130bc7bd92bcffef671d69",
+      "status": "adapted",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": [
+        "Supersede three-hour full-run planning."
+      ]
+    },
+    {
+      "id": "B019",
+      "baseline_sha256": "f5a464997c4d44fdcb7dff7daf2ab0f889da50a2a9cb1b6021e088a06fb6b712",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B020",
+      "baseline_sha256": "f00b266b95851a9b5fa1d24bf1e44846dd15a080de615ab33b5a319219854fa4",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "00-preflight"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B021",
+      "baseline_sha256": "18b61ecf1533f395df800c5b1e42eee6c3ee2d89cb82578b61b7105da8afc0a0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B022",
+      "baseline_sha256": "c29ddded04fd24d048069c5f80faf75240e048fae81a480bd87ffc63cb434aad",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B023",
+      "baseline_sha256": "392a47c7e8ec8d433fad61e781b0fee6a03085a08ebd24d999678bf605e8443b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B024",
+      "baseline_sha256": "d50217a9ef15b7ae8d5536e775756aabc15d42aaa8f1085fa6257a62bf2c5ede",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B025",
+      "baseline_sha256": "c96ec2e28406aac9b49f4fed66ad852effa196561bf03256d71024be1a357170",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B026",
+      "baseline_sha256": "eb25e9b088aa9455a7b6040a83400c72d1dae68c9a975c8f36b7f37db8362db9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B027",
+      "baseline_sha256": "b676f28665de552cf9e20ea9f76952491516d72f3db904ed28e7cf6d566ef51d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B028",
+      "baseline_sha256": "b1f03a6d6a46c45a9666ecde6a472846ff6886a8bfa05cfc67c9d2b498d8cbe2",
+      "status": "adapted",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": [
+        "Daily versus repository completion."
+      ]
+    },
+    {
+      "id": "B029",
+      "baseline_sha256": "7d51c74a526fc062777cb1c4257f0641419e34066fb65a4d0fdf065daef8c748",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B030",
+      "baseline_sha256": "18ba593d0f153ee7649b5267e0d0c176c6996d12348313ad4a1574dacd933cfc",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "01-scope"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B031",
+      "baseline_sha256": "3001c7dd5feb0023dc79cd788ac134bd6949b6572928b5837b5f35965531c88a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B032",
+      "baseline_sha256": "f2f299d4ba7f1e84a155f216a28d90cc2f4a6f975172b731114b3a72181855c8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B033",
+      "baseline_sha256": "0dfb2881af1f5ac04822178f21bfe915f27d793e57f8f612c27e1d91cefad342",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B034",
+      "baseline_sha256": "6b89a2c6431ca179f10c96fe5acff08ed94a6a4b0df755e78031cd26eaf0637b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B035",
+      "baseline_sha256": "30c8a2c16557a99d04a03d5cabd3b0edcc687748aa96343cce88b60f4a76124e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B036",
+      "baseline_sha256": "b916a86da875c37938a9654e0689286db5e558faf17e2c3e8d42a5ec191325ae",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B037",
+      "baseline_sha256": "4e1e26039e6ced4659469b4b821133e0de64ddbe9778a3e8e737780c98500cce",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B038",
+      "baseline_sha256": "b602ad0fd05e03b1189a958fd568d7a57b7cfaaa2d43494e3c4d157b001bf612",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "02-coverage"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B039",
+      "baseline_sha256": "d249dc91a9d49fd5a8122fee13b4b5708d6f0186df58a3f1a75b76369917a3b4",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B040",
+      "baseline_sha256": "c368940a7a4c7b497bfaad7affbfc464e276fb77686d8572e9a00490a091217a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B041",
+      "baseline_sha256": "dee9fe0c32a4130bf3ab2490d46223d6d0b32912c6f2b863b99defa2f4dd08e6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B042",
+      "baseline_sha256": "65a7b846a5cbe7dd8a8442dd1c93abc63881f1a0919550bd267200ad3600dd30",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B043",
+      "baseline_sha256": "d40598d4909cc2d50e848f444a04b926a485ed67f79deafc8070aa373e27f800",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B044",
+      "baseline_sha256": "8b1f6605543f476c845368177284ad40a2fee5eb5e5f58ee70a48ac735e873ac",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B045",
+      "baseline_sha256": "0221ba495f162ea837f55dd683bf828cba2be7e8c51311d57c2e149f063190dd",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "03-consistency"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B046",
+      "baseline_sha256": "37c55e506d5db2f443061970f56964478b6bc92f5ad39f411c18df1102280ca4",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B047",
+      "baseline_sha256": "921706b88f6f93a43eb76100c531a88da18fd50d4d14a441dfaafc954b68bbf8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B048",
+      "baseline_sha256": "50dd25ce817e2dd5816c483ece09e7e95386f13d8cd6237ec42774fae55a5257",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B049",
+      "baseline_sha256": "05861683acb5648766d1a2a1caca6022f0e1a26650551e23e49c3cc65742d096",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B050",
+      "baseline_sha256": "2218983f33422aecf830761d8117ffdc41a959c2681f68ce445e29c6dd5bd4b6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B051",
+      "baseline_sha256": "9d80a2727d96e7ef799a0338340608739f2e7132edeb0df29fcf4537d5bc19ce",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B052",
+      "baseline_sha256": "c0f5a07ad018334bbc536bb01c642ffa170af1593a961a3616ce3e22a17cda52",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B053",
+      "baseline_sha256": "ffa43820e825a1b3a5f2357cf8e92fba07d40e455d7b06f767d988384c0798da",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B054",
+      "baseline_sha256": "0f5f84b9a0ce163471ab73b7e6436f43fee6ce591e50b2c6e8903a001f7b9b01",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B055",
+      "baseline_sha256": "66a18f7cbdb15d4f52fe74d62909517493a4a8a96006470535563e95bbacb92b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "04-correctness"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B056",
+      "baseline_sha256": "0de790ab8fb75c2e3744400e471ff17422e412ae3a622470fd65543124388408",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B057",
+      "baseline_sha256": "91d56069f5dbb501ff8b04ec27b518847902d848189ca2c86aceed027918f387",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B058",
+      "baseline_sha256": "9a2f5f777e506e8485f2cf23208bec27e546269a32314017fbe247549c77c284",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B059",
+      "baseline_sha256": "3da73f8974541c880fa2b966b250b4347a8e8ac3bb572b682e7f80ae0e0ec08d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B060",
+      "baseline_sha256": "46ebdf9caae087212217b0a2c092870b284f6e4351f509ee0fa549c0367d03cf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B061",
+      "baseline_sha256": "ed45962b0f69c86f45b2faa37396ed627655cebcdb9646b0b9ddf0afe9385fc5",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B062",
+      "baseline_sha256": "b4c959c07fb07a34d02411f6de9f795bc97431cfc3fa7e1a8a4c2b05dd862e94",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B063",
+      "baseline_sha256": "abc704e6b37386eceae99e746e78a7d72931fe0b164444f37d09fc3b78f9d58b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B064",
+      "baseline_sha256": "dbaa863302f5054ff44e3a238b47997bbda5eec40ff170252796ea59ca62a3bd",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B065",
+      "baseline_sha256": "cade0096325d02b4d98cab61dc453cc721b11ec41e6bafe66b2923dbc28fa387",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B066",
+      "baseline_sha256": "cad288557045c48b136c7e61c93f13789cd2e606e242885437e8ae5fb62bbcea",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B067",
+      "baseline_sha256": "d94a2836ccc1a13646dc4d618d9bcf8fce385ccc8bf70156c306c20a7e07f3f1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "05-financial-validity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B068",
+      "baseline_sha256": "445b8001bb47cb051577499d772e68cc46200d766d8e1d6a9f0744b71e95766c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B069",
+      "baseline_sha256": "f9f6836c76098228e8503d2626e437d0c3d72ef889d391645c36ac66dd88deb9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B070",
+      "baseline_sha256": "a62561e188fe6441a64b66231edb3c4084f89ea538e389c43bbd49dcfd730adf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B071",
+      "baseline_sha256": "84158d7c54a3b51b42858f5889fd5a99b93eb332c570b987cf86b411c3462c20",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B072",
+      "baseline_sha256": "fd24530e918411b9cd1205c2f14cff8221100b76f7b70a1f74d596e251ba4b77",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B073",
+      "baseline_sha256": "9d5af3219469ff5856cc76a375062fa74e455755c5d95b2e691932690d40a971",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B074",
+      "baseline_sha256": "81caa5db600c52fa263c0104f1624aaf889f9576636a218e41cb0f18a6b14484",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B075",
+      "baseline_sha256": "5d0a17491a4a0fa38e1626648c4b25afb8d9e66534748eb04edfc281b3be0fa6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B076",
+      "baseline_sha256": "2e79ed5eb36775fb8395a804f5b8439659203087929cf722da7535e236d7ae41",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B077",
+      "baseline_sha256": "8f9fa690e836a3971ab46d48b6301802215a0636cb744dbc3d1e6ed4a4a17ea0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B078",
+      "baseline_sha256": "c308c9b6317fb35d4cbd524227c5704c6323fa7c62f46fc589ce5a1ace1135d6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B079",
+      "baseline_sha256": "87e4792e27438cb95a87a17667aa177c506a4cdaba9bf6cd0e31cfd23147fb50",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B080",
+      "baseline_sha256": "5c1dbd786a3476a20be4feffb1eff03d7d4b57b749586d21468314b68c23eb2f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B081",
+      "baseline_sha256": "35f4a210b2a6b45f3bcbc2ee1ca489e6f5e13ad4f7f5d5ff82d42c586fdc26c8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B082",
+      "baseline_sha256": "cb48e0afeb875e5b245048174f27b3ea1f28deb8473db854ad22f77085d317f8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B083",
+      "baseline_sha256": "706e402cd7f86de71f4f7b77b49f9f7422c6a9457c4656408ea340ab932e0109",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B084",
+      "baseline_sha256": "3cacef59caaebd24ed645f8895eec577d38614f7c1ce7bebe6895ef12353b161",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B085",
+      "baseline_sha256": "8af8182ab1e8f509cf81961103ae39b0aa62a55a70dfd31bb9437408df4b7c20",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B086",
+      "baseline_sha256": "513e8938c096491880193fdca4cd3c5cfd2f1c8e8fd17af7785b21ec4d4501b6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B087",
+      "baseline_sha256": "e80bd1c21d871732b141f29648107c8bf9c866291cac15fd2ad0f966bcd8c78f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B088",
+      "baseline_sha256": "64776c1ca0c426f361df9362b24f35323bd843c12b79af437d10aa080db1b36f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B089",
+      "baseline_sha256": "a57b896cd05bb63f1e55da4045b7477a8eb8fd05a7db8252227d09a47be54db6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B090",
+      "baseline_sha256": "422dfc0270874d630c763fe78ecb06410b752f35888d3bdb1fcd779c5732f145",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B091",
+      "baseline_sha256": "d327545ec78788d26864f62d5f30594bf9d10ef321635cc39a377a434de89077",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B092",
+      "baseline_sha256": "f1b901847390b0ed7e374e7c1e464ec17b46a427c487a5ad6cbd2906405083d5",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B093",
+      "baseline_sha256": "915d7f757d3525e03ee81077e46e6a830b5eb5267d2dbac215c09c6406461e67",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "06-engineering-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B094",
+      "baseline_sha256": "d9a46cf98a06b961235a49baab44227c5d94536e30999932387dcd4d51950b11",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B095",
+      "baseline_sha256": "75dbd7e79bae12ae0d5c2d00e3a9bfc7cdefeed44eca05d196c31f1c109788c2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B096",
+      "baseline_sha256": "13dd322078eff8b6a9964fb74b698cd6047ebf7293e229b7ac56bc87618380c6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B097",
+      "baseline_sha256": "249d31da2bd3ca187088390e9f9da47bb565718eb7969beb7fc2d84db35cb71d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B098",
+      "baseline_sha256": "7d5cd2c9f24b3009ba353f311a2267372f229db27e9665f6c0e96a3d24c24754",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B099",
+      "baseline_sha256": "04c432ad17279bb66cf5754cfa6694e7663c08ba6bede25fc6119e427abd530c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B100",
+      "baseline_sha256": "0cf32296f5a831e0fc00e6c6e67eca657309776b8c499e99f302390dff1df8b3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B101",
+      "baseline_sha256": "2067e326be163277ee466d74ac23a6d55efce05f8c863b05cb0c087f67b44d2a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B102",
+      "baseline_sha256": "f2ddcac523d280a58ad1a3900152629812676c7861e6726c8ce4daa42307a49b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B103",
+      "baseline_sha256": "892f0ca39d81046d5ce8a3744c6c3fefa875f29ad6ff92ead331c7877606d6a9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B104",
+      "baseline_sha256": "76ac904b5d001c9662c7f85a6b1f61464c94462a7569de35d067240ccf67f9b2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B105",
+      "baseline_sha256": "8ea96edaf2557af7bba16b7a99b4e1f004a61900096064f3b6fe1d24939ac534",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B106",
+      "baseline_sha256": "7647289a743676798e55b2a6b48553b9d397d5c97239288edab565258c5b1d83",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "07-independent-checks"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B107",
+      "baseline_sha256": "2e03b6c6416c064e894b9fce1d38435bef8efebd3278333db1e94dbbd5fbbed0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B108",
+      "baseline_sha256": "ca68acae969677e6cd07f0d1bd6c04cc7ebd5b63ef8e3a2259c3a59280078d17",
+      "status": "adapted",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": [
+        "Thursday workflow cadence."
+      ]
+    },
+    {
+      "id": "B109",
+      "baseline_sha256": "35971363e9c0fee703db1869453b40c5061484e992fe2f9777391c31647fcaf7",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B110",
+      "baseline_sha256": "62de0d15ca7c8052a9a6dd11a6152a7429a68f46387322c25ae3194d97e2396e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B111",
+      "baseline_sha256": "0b76019057b9cd9b845b5d6f0d67b4c9743bf464d91c93232b3b314757695058",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B112",
+      "baseline_sha256": "d921431fcdacb78970f1e2e7bef9f4961778529343f23faf86ff3969bc8ac22d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B113",
+      "baseline_sha256": "03966bb242e85fd2b0778629ef2135fbee115559ae20717dec6a8f3c2c76db5e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B114",
+      "baseline_sha256": "cf4fb2ce171904dac9a42eed40b3183d2fec68d23f273c60b9035192c1f6dc0e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B115",
+      "baseline_sha256": "abd9b7051b92c1eaae0e766cb0386638e5201f386435c039e6ad0e55d235b2bc",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B116",
+      "baseline_sha256": "c1ea3a85a4393883302b7108889be480057527814dae92b365ae10e7de20fb91",
+      "status": "adapted",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": [
+        "Preserve replay maximum without a daily replay requirement."
+      ]
+    },
+    {
+      "id": "B117",
+      "baseline_sha256": "e06ae7a7e1d41d9c42ee5ec43be08f40360ce1768408d6c7078116870789c53f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B118",
+      "baseline_sha256": "53d4707fc02436d25840780acf760c069802729c9d73acc6fc6ddcc399daa78b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "08-integration"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B119",
+      "baseline_sha256": "6dd5428454ad49a398f618d07351748ace8e5e9a270b9931a4c8329c769812ad",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B120",
+      "baseline_sha256": "801f569a60fcce7489e2f1f1d0857ee4af1dd04ce6556b6565009d0464b72f0d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B121",
+      "baseline_sha256": "0a6cd75608d0b7674038e5a48ce1b5066d06c4f7a8e107ab9e311fd65528963c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B122",
+      "baseline_sha256": "cfb105f16539f4c0bd03132e24b080cc6c4138ed5e2107cbe315794c8c080952",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B123",
+      "baseline_sha256": "27324fa54455002a20fce004333dd174a1a3527edf98e977ed7cdfc948bcb3ba",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B124",
+      "baseline_sha256": "d154e829258c77a59c95ef271b2c787a9517f29a6a65da2d5970cbe76ef9c16f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B125",
+      "baseline_sha256": "8c30676241e8c243808de1af61abe3ea2d23e6a1b448feea080f81e497942aeb",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B126",
+      "baseline_sha256": "a43326948ed0890a5dec56be0bb1bf5ebb0b3e96e3c520cf1128ed65cd400b02",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B127",
+      "baseline_sha256": "9cabd2114cb82397010a8ab69be2c6b25bff1e64494b3c9a3d3200df60195c15",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B128",
+      "baseline_sha256": "952edce6c1190703706e27ee62659738304674d93faed615276416c0a424380b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B129",
+      "baseline_sha256": "3f99f30889aaf3489a38ef283a00ae1fa4cfdaea7a95ef2ef6938d47eabcbac2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B130",
+      "baseline_sha256": "c662425c21109499db37027bfd16608e512c99d5b1d4c589c95d403816941406",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B131",
+      "baseline_sha256": "67835a1a3a60fc29a4310a1d9c2b01bd5319f603f7c249b40236c306214fdea3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B132",
+      "baseline_sha256": "378a41ed95d104e188f1a8c127104e9ffcd1f0b8a11339ecae6b60700b1c29fd",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B133",
+      "baseline_sha256": "e7d0bc7c82d89520d7f6e58de7ccf621912f221e063b55ee9a8e4954397f7dfa",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B134",
+      "baseline_sha256": "586eff92b926134405a631d695cff21d57f6144e33837819622a6aa6f60f6ff5",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B135",
+      "baseline_sha256": "b399d0cf9a855296d196d6cdfcf59b80ac8a450f8821849a99f6a2ff898831af",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B136",
+      "baseline_sha256": "745f533c2ec355a6a5d44a90427da36b544768be1e6639a888f4ed1afaa60ca7",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B137",
+      "baseline_sha256": "b9cb9c0d3e4fa94d9f2650ffe8936cf5f4d1e9bacf2eedb8fe8b4fc03203949b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B138",
+      "baseline_sha256": "89d33f87fcf8017e0078e88b82af27ce076603ac710855089ceea9ffa42962a8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B139",
+      "baseline_sha256": "7691d985bb3e8a447d7525e98ad93b59ac0a63cef5f3c1e9db1017d43ae5d35e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B140",
+      "baseline_sha256": "361502c7812eb36371d4b0b5820fc13507f0466cc351f3655b139f3d0da03406",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B141",
+      "baseline_sha256": "8c3feddd07af7e96751eef153eea63b589ad336100e8a07faba946c3c00e6d3a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B142",
+      "baseline_sha256": "2e6e76e100e96a64c58cbb0760f4eb0d3a8a652efa29c595a9e5c60aeb1aa513",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B143",
+      "baseline_sha256": "e6edd2eb06939ffe63c52a4b2421e04477fb18c554b93279e6ce1a19a05483a3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B144",
+      "baseline_sha256": "b4a088572c86e475bad7b1a12906201fc54b8bd886c62d3fb681e9fd538ae821",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B145",
+      "baseline_sha256": "a0deae0147f268131e57f4a7e6ee1d0cf2044a2e5350e0a2948a0447589462a1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B146",
+      "baseline_sha256": "bcd1727dc0085738910a0d78f761778e3edc7831639075a8758338abb629329e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B147",
+      "baseline_sha256": "00393984c2e418023fe2a611dda6c4703f34ce764d8302d8146b7caa1ebff233",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B148",
+      "baseline_sha256": "86734764eadd8f07bbc17915f20d89a4b0b28bb624d7923ee46ffa05929a523c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B149",
+      "baseline_sha256": "44507d206e3b3f228530850b6e94149506ad451bd21067264889d3192333d6be",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B150",
+      "baseline_sha256": "4745a671a6a22a93166519f6dd39d34b5715de02e6b115dcb3fad37380fa057f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B151",
+      "baseline_sha256": "3d2553fe32be27efddd600d7241ffa088bb294f9894e3b00c8963bb2475d7d6d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B152",
+      "baseline_sha256": "43af21492dcb89760a837e5d0d4d4b8d42791a6cec0d1e2c3bdfc412ebf63243",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "09-performance"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B153",
+      "baseline_sha256": "6d8da61aeb789af84d389bdfda865ac238fa9ae50e85682bcf1a8f5c5f80662f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B154",
+      "baseline_sha256": "c124e8a3362f932db2a36b528720e9ea6ae68cdaa178d6a545456cdad50cabd8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B155",
+      "baseline_sha256": "73b9a85efbff812bdc082608a1df7ceb08a2cf4cd49d270f2249e2f244129b54",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B156",
+      "baseline_sha256": "992f02605a2fb84ac493f4c86d13cd2b9d838fe28cfd011c19cddf678f491696",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B157",
+      "baseline_sha256": "fc32d6b0e6167fbad4d8a7212131617985b37cec0ad1e7eb23badc12d6cd427f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B158",
+      "baseline_sha256": "39130c6abdca37c9f9c7c75ac77b65141ee050692977a30da4f8c87f32b1a6ee",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B159",
+      "baseline_sha256": "1450d8c69136fcb5b51dd3064cae380e2a94a11e9e36f0b0b5f198ab5a496738",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B160",
+      "baseline_sha256": "1da96c18356dd3e4fb1081e4a5f80c9d7abc0de8d7976642b058592af0e9c1a6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B161",
+      "baseline_sha256": "bd95c6d86d237da5787c487f1e5db0d397fd67bf13b3c3ba370ce280cfd98ba9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B162",
+      "baseline_sha256": "cb287df90a868b2120d5a65c360cdc2d14f6f03eee1f597e9d9bc4729e6f62c2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B163",
+      "baseline_sha256": "55857dc7b48ab5d0b5da6a4a08b6891dec6f6858acfa928a3f4dfd3fdc28ea86",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B164",
+      "baseline_sha256": "556e6e0af5585bfc4d341b4106d61dd5d14af2fc50cf682715bba37fea83c6d8",
+      "status": "adapted",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": [
+        "Approved daily and rolling recommendation caps."
+      ]
+    },
+    {
+      "id": "B165",
+      "baseline_sha256": "152a93a56e69267049cfcc0a66583881011200cf3a4d888c00aa50d835db1bee",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B166",
+      "baseline_sha256": "34040defcc773a103bbc767466d1e86005c2fcd559679e33351771966373f79e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "10-improvements"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B167",
+      "baseline_sha256": "2c80277f6dc3590c68a354f10dc6e455ced135aed96a89cbb73c9ecb20da297e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B168",
+      "baseline_sha256": "00eb43f9a2f2cb197c115525cf4a08c3f5d9e218112f21ef030f5b3370d30ceb",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B169",
+      "baseline_sha256": "d450003658f79ce0db9d764350ed5f0edd528fa6cfa980d4dbe5db59ad8e7b8e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B170",
+      "baseline_sha256": "40bee0d77efd5a42a86215069a547ff6bb3d15b8f8669bd7dd58752644367a94",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B171",
+      "baseline_sha256": "396c1902feb0f86327d266ba6b9f724dc356fbe2f5c806c142aa4a2857c33243",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B172",
+      "baseline_sha256": "d2097887a27e48a0e5017bce785e644575f657da16e1f8fc6e689d7f26474aae",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B173",
+      "baseline_sha256": "80522afde927eb3dc95b7090e7e550058ae8117a16934f08e46666f1b83030d5",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B174",
+      "baseline_sha256": "59853ed32629af0be13c3e6610d0613322f38d2c906a2b676353b172197638af",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B175",
+      "baseline_sha256": "2e2b92f4bdad296eb39c8e9e5018adf70ba50a7fe38deea4f37a6edfb61d9e43",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B176",
+      "baseline_sha256": "8561f9699c9407817480df4e82457d584361337a461cce644707aa0e3d5770b7",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B177",
+      "baseline_sha256": "8ceebdfb538c7153c4a366a99c7e294f18ff6002b4cc75673c6610722dfd60ed",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B178",
+      "baseline_sha256": "c556d396b181bbb99129e7e7e0d275a6bf2bc4d20c75bd15c970cbdf23d7dce2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B179",
+      "baseline_sha256": "cc6b635be8e8adb7789b54e1f485d7823fa44ae9bd2cd9e327c7c4a5fb49acb3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B180",
+      "baseline_sha256": "47853d00cf03dcad12aeb290ce87717358e971934d9d41e0fe21c74cb101e349",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B181",
+      "baseline_sha256": "1e993cf73b8950f342ed3929caf7892da39d962c9e5a2bb7916743397e2aaa96",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B182",
+      "baseline_sha256": "4135b97136eb9239e436ec22b58ff50b0f22319ffc20e655d51730cc705f11cf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B183",
+      "baseline_sha256": "f58e24e35d31f86a9d019d7bef45b6575eb8e5a45d7c1f16087db4606643777b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B184",
+      "baseline_sha256": "80a19f49c8024dafd4991332075a65fe691c57e3f5cc250aafb55cb62359c784",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B185",
+      "baseline_sha256": "64d7e6bfd56681e14fbd5661071b8c7352e78c162c7f9738988f585076dac998",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B186",
+      "baseline_sha256": "4faec219a8558b0fdc2801adbb9075bdcf37bea937156c9e401a4b8971a094b2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B187",
+      "baseline_sha256": "14bae9dc7f82660600d202bbe8a0e1963a9d79c3a37952431e6004fe39df4362",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B188",
+      "baseline_sha256": "0b9dd989b2ec3bba26eb04e8bef3deaf9b6116b9fcff437da880b1e9e4ea9c02",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B189",
+      "baseline_sha256": "769c73a809507cc177da7817ef1cc17b0c60a46e17614c710be8b2eb0fc5fd73",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B190",
+      "baseline_sha256": "577721384a995e4cb59077a25c22d9b131477108c86935356b3a595fa80dfee1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B191",
+      "baseline_sha256": "a95e3ee6f4a1b72ca7386cd08b90100e235951c361733b2172a0ba918269b5b3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B192",
+      "baseline_sha256": "c3d18bf737cf3b86f283300d1aeb474fd404bebf31e2f712076a8253164fa18b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B193",
+      "baseline_sha256": "d99f00d3058e9c2b9a0617c3fd9c4fa460ac0d63f9766ab945dbb83e4a947d3f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B194",
+      "baseline_sha256": "f0f6e0f8123c5df1583a6c023a2391efc34fdfd6989ce72604861b49e137fd1c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B195",
+      "baseline_sha256": "ec3ae8837f9e93fb84bf08191e3c3344efdc5c3684d5ff9e424337be1c6a3c39",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B196",
+      "baseline_sha256": "6b021f00a5e8bcbf06de0c8c872c25a46caa9467b91a9c8e18e638770b558639",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B197",
+      "baseline_sha256": "c499d2dd4ac4475e1af1a72d51086dc75d42f63d88e68efab8594d9c112d3909",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B198",
+      "baseline_sha256": "aff0734f018cbfbc315661b787c628c740cbfc55554c701c503571d43018ab7a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B199",
+      "baseline_sha256": "0baa69938d6b80d9abe22f23ac3dc7293392369d7f4f06c9bce862911e06cab8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B200",
+      "baseline_sha256": "6d70598b2f533a3d74924060de51e56fce61b71778e787b243060b01a89cfc77",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B201",
+      "baseline_sha256": "39196273dc44eaee2b7398f61dedda13d9ab0ff481d15e0c82d0a15239784af2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B202",
+      "baseline_sha256": "9136a4b597f2d3b3d4c669ae97b0f31cd62902473455764a0e9ed9eec986610b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B203",
+      "baseline_sha256": "25cd48cce10db9acbcadf844e331c3f9c838d82bbdeca123b508e259f201e1b2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B204",
+      "baseline_sha256": "70c73c4ce4f8f6f38d316b11d296ded030224196533ed7995f5367e10ac5ea1d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B205",
+      "baseline_sha256": "433cc9c267c84859cc6edb69a4e4d9e38f5da686fcd30c66004e91e529f4b2b0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B206",
+      "baseline_sha256": "61ccfaf7e31d48e7f8bdd046bfa12db34987a4940fa83cf39c3e1c24672fa41c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B207",
+      "baseline_sha256": "8a8de93e70997791099cd59bd85b41329efea9684c9eebfaa6c5f474cfa03969",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B208",
+      "baseline_sha256": "bf45ebd7e6614b35e7d6ed0ca9094ea817f1dca7a1afd80664d491004813d1d3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B209",
+      "baseline_sha256": "481d263ed6af5da3dc00106e94c5be062deab1be740d72791c3d851894ec074d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B210",
+      "baseline_sha256": "89c20ae761246c2757d8e1fe16ef0a3a5b5ba0498ff842b23ef3244b88637257",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B211",
+      "baseline_sha256": "92c235e5f200c19d3624c578b6dad9bf388a8cf98212757c172bd8dcdc6a3374",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "11-findings-review"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B212",
+      "baseline_sha256": "8cc6a214a4dc272c385be062f7d76b744da79af4d1626ce133e420d841081439",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B213",
+      "baseline_sha256": "9ef92d585b1818a203fc14bbeaaff2e4ec64dd9a7fa7277a8ff41dbbd9e5dd85",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B214",
+      "baseline_sha256": "3f1ca346799e731a545b1ecc28a4bac92f4f500b2486a5becc58eb3128ee21b1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B215",
+      "baseline_sha256": "6d804a3d3668ba3fdea2ead0a60080b129b763002ce3c9820e170347af952a7c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B216",
+      "baseline_sha256": "8543cf642c0dc801bf03fc17313b2c89faa49ecc0a5ef23e112d9a1c9a7eb080",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B217",
+      "baseline_sha256": "a3186d81827a07d1c035843ba4eebf038be349349519a5da0636e1b731ac9a1a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B218",
+      "baseline_sha256": "5a9319476ef121519e949b7e6d67e232e8b6b2835578b24356c6f8586e2ebdd3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B219",
+      "baseline_sha256": "5ef165c7dbf590dccf100b68f320fb92c3bd4cca22b59f866e6b889cc246b438",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B220",
+      "baseline_sha256": "61d32ab82a0e2571ce0b9505c5b7d62def9b4e2cf147ebb16b50ca5e27dc5882",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B221",
+      "baseline_sha256": "8dbd282bf84f201041de1e86085847dcc8299fa88387840ca57d8edd22bab0f1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B222",
+      "baseline_sha256": "a92c126865c24a424a6e4d8eca39f1f219da176689b4f56e24779549a5212285",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B223",
+      "baseline_sha256": "c16ff58db632d47f2bed8919b39a28b5bf0268dc61ab2c9d1ef7851b7a171393",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B224",
+      "baseline_sha256": "2c6c113e397cce54dd1ce82db320dbd8b46636884315a20b229ed7c28bad3c30",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B225",
+      "baseline_sha256": "065a4211288f34d34093f7fae3a6f9ae4ba15e61b9b9855e00a423381c70a4fe",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B226",
+      "baseline_sha256": "51ddbc8ba32d36f7546e815125bb8e9d4521d111d048a6a85ee6d4f963de3417",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B227",
+      "baseline_sha256": "1041478316784ea15284398cde9973f3dea11d788b0cb3b80d8b4f68602f1900",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B228",
+      "baseline_sha256": "e29562d74fda72c34481ad6a3cb9d7d378e7747c6bcd2ce51e7808f5bfcf8a03",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B229",
+      "baseline_sha256": "869085344bb2616b467bc1fafc29a477f5d0e8ed3aecf4c6a4229514dfed1435",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B230",
+      "baseline_sha256": "cb78c964a2042ea48edffca6c9802b8942d14008c8f11b78f8bdcb21ec66e0cf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B231",
+      "baseline_sha256": "07e9f489b53f353a3465624aad24092a0583a53ec59947bf04fb18442f7985ad",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B232",
+      "baseline_sha256": "169961ddd9db9c7632612ad67f993c6d6d4acd48198fa3d74d667a85ce5f0505",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B233",
+      "baseline_sha256": "3a92252442b61dc368ac63337a47e67e883d1fd7c6ad00b9105be6e25ea9148b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B234",
+      "baseline_sha256": "d62542751aab3564feb1f241ddbc3499fb78688a0c054cfb5fc7a4b039b55e31",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B235",
+      "baseline_sha256": "47d690e12718c4cb8e8a38c7d8ccd3cbb041fca7ae14605b0fa53e600fe53777",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B236",
+      "baseline_sha256": "56d7367af5629e58370c3f4ac3c2b4b0a204592dc50de275dd5863888f5e6327",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B237",
+      "baseline_sha256": "99fbcae2f64c5b3b22a2ea3e66bc16d679c043332e041a5bc483872c3f35f1ea",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B238",
+      "baseline_sha256": "87391bba2dea7303e42ae759f6423d13eb8169bdeab73f75d5b9ec58a9beb943",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B239",
+      "baseline_sha256": "4e575dc01e049daf9656baaf1b0e34bf83ce578817124ada4226c3ba0ca01d95",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "12-reporting"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B240",
+      "baseline_sha256": "00b86d3741a51fd63f2db37d4ace7ce19ce45be05a7195e674f6e750a4fadf7b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B241",
+      "baseline_sha256": "8a518fd1908bf2497ab68df39f33d44d9f5ab9f946c78695ca4e9996c928a6b6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B242",
+      "baseline_sha256": "d163016e72d8d5f9b0679c50cffd8ca638f6f15ac21ba410cb316873ec2095c9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B243",
+      "baseline_sha256": "48180fec3b3f94482c9e4088bd9ccb413011839d376293a25120a093f8cbf332",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B244",
+      "baseline_sha256": "1b124530b62044bf9f5f6473bca64d1cc954996478f31e62930a4d26992b5455",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B245",
+      "baseline_sha256": "cc3b831c1092ff7fa086b1320b6837457d8997403fe42267354d329ec664777e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B246",
+      "baseline_sha256": "20fcfc1ac70fa9137a973fceef5df55070290a45b4e77244e2fef6b5195b7df3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B247",
+      "baseline_sha256": "0da4e071d39c480ca0f76c48f22711f83be09c1e2cd3cbc36dfdebeee2773f0f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B248",
+      "baseline_sha256": "c3a85a6f4c8cbdce9560aaa6053268f8a5fc78835d744b74f7076200ade6ee71",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B249",
+      "baseline_sha256": "6596957741612c98fb4160168dcbe022b190b2354b256c8788b9cf838ffa5d62",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B250",
+      "baseline_sha256": "4d541123705e384c82b296d19f0e045b4fc9f5ffe1f14da903d45e684b9fc2a1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "13-continuity"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B251",
+      "baseline_sha256": "d311de986def7832376ef324bda27d318a29691d14e1873cf50d3ce773ad69cb",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B252",
+      "baseline_sha256": "8c487682a4ec5d9f34e7773813693fe7ca5bf34e660c10f578cc42dc1e2c92b1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B253",
+      "baseline_sha256": "92ccfc9c26f7c0dfda14b30e2c1db16659746db40a82d8044c246fb3a93d634b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B254",
+      "baseline_sha256": "0a929eb7f2851a764d5cd5a44648173e53a35d08e281bc0b24002bb79fd7a50a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B255",
+      "baseline_sha256": "d159a45ea2fd7c900777fe947902546d891c95431157bb09988fc34eb3fd2af8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B256",
+      "baseline_sha256": "800ef7270f044300656e563515e3a528649429d8c40a73f930e1cef1a29f767b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B257",
+      "baseline_sha256": "f2d922f2ab0928835350f65a12276ab819141ac60f7c6f3401fa2fcbe53828c2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B258",
+      "baseline_sha256": "f7a44f168e4867edf204867973b078c2ffbfd4edabfe532ba417106e0065e352",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B259",
+      "baseline_sha256": "a825f231ab039e0dbfe8807e59d0a72279a0ac1db05a7dce0e4ce7fae847595d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B260",
+      "baseline_sha256": "507fdca6750ae8583ee5e920323a12fbfe41f5d0eb9cb8101689bfe31ead7802",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B261",
+      "baseline_sha256": "19395fd03d1ed2559b43f2d0210f7281917e14ed40e16d95cb17ce13038dc350",
+      "status": "adapted",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": [
+        "Daily triage and bounded field verification."
+      ]
+    },
+    {
+      "id": "B262",
+      "baseline_sha256": "071af695744b0850c2807cdc9428efe62ee8d0e1b50ec831c3edb64a65290562",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B263",
+      "baseline_sha256": "d7ca9622a8ecdd0a726123a94c6f3913f83e5ee5196261fd094fff8234053355",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B264",
+      "baseline_sha256": "b22d4d3fa6069fae0db270c43bdc7804e8493faffa56a2d11a596e6481abf5ac",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B265",
+      "baseline_sha256": "418893d1eeaa2094caf20d31fc2a9e024abc07fc5e7dfe49c4c44ed8e06d19f7",
+      "status": "adapted",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": [
+        "Do not silently add another field for peer disagreement."
+      ]
+    },
+    {
+      "id": "B266",
+      "baseline_sha256": "6b307c122992c7d18f3df2df0418c85459de7032a09cc2755f2bd8ce42d91956",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B267",
+      "baseline_sha256": "500131705483c6f4fe74b4afa453a69d8c9b6bec9f27c3c9e80882b834c929a3",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B268",
+      "baseline_sha256": "d303a5465de78bd7c7c39d0d0b80812f671ccdc1903a75a7482a4c855dcb4611",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B269",
+      "baseline_sha256": "4f0f6033c3ffcf0d5bab26ed3c6b184679431fbcecb2717fb519c6dc1d01a91b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B270",
+      "baseline_sha256": "90e77f16bb0229af280ce56677752d1587ed029ea770dfc45438b6edae197795",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B271",
+      "baseline_sha256": "b7196f10892b9d853cc83a9b0f063d4484cbbc2db5bd357f16db35cc37d91ad6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B272",
+      "baseline_sha256": "f94f72e196bfea285d53d0573725f2cafb7f1ef4879b150f41c3055bc4c30335",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B273",
+      "baseline_sha256": "afa6c6967e2e85ac65cf726026f4447e52c4a6ab8297e59d9dd192a056e3b1de",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B274",
+      "baseline_sha256": "196a7d5bbc30cf96549c1ce4e956421fc5776c3a442f272144ed364769d0a342",
+      "status": "adapted",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": [
+        "Field-specific reading yield."
+      ]
+    },
+    {
+      "id": "B275",
+      "baseline_sha256": "c953122d532774cb5eaaa1b85ec63549153ef3d58b3c0a1b887f5ad1d4979e10",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B276",
+      "baseline_sha256": "4b199da2e5a8a7e82c8ab76b3f5b29bcfba8a1897aafd6e148fbfb8291f05927",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B277",
+      "baseline_sha256": "39d94866de986aab960f9993d2cca68753aa2885814c1d8b8216ec3b848bdef9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B278",
+      "baseline_sha256": "dba816f35a73bfc7cd446f42b78bcf30dcf7f7dec4dad1b5a246b4b7eb619039",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B279",
+      "baseline_sha256": "1040f5a5ded20e2039423fa5f131d672e046cba255a36ed562471b2f50fc4f22",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B280",
+      "baseline_sha256": "0e7cc282715de0d0eeb32121bb5768d87ad5cebe4f8828e82bd0d64b3b8681e7",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B281",
+      "baseline_sha256": "d1ed51c0cc43e0439ed823dc611a897c40daec59ed7d13e088e40a3830319292",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B282",
+      "baseline_sha256": "c6d5bb366294ff4af9cd18893ef87c0b07846b94ca9c53f8b09331830d5ac35b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B283",
+      "baseline_sha256": "c77b012c2b5d3281570059887d1ef6a6103f021f359719868dbbd073a56f3ba1",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B284",
+      "baseline_sha256": "5580e4368e573258d27be8764607dcb659c2a387c87c38e369abe3acc434249b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B285",
+      "baseline_sha256": "c044f3d3d3131498b79a5cbf65b907802840d8994331b459d164d857290a2e28",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B286",
+      "baseline_sha256": "e598a9e53faa3d73834a1e787c325670a83bb3d7314a099e874158a9e539e413",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B287",
+      "baseline_sha256": "611077aa1417f4dfeb995e55d08f865cadad242594d48e468798a7791c2aaa7b",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "14-crosscheck-publication"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B288",
+      "baseline_sha256": "825fb33b87c9974b6cb3a33cf67a135ce9ab1dacd25548c869b349c912492257",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B289",
+      "baseline_sha256": "533440f6b589cb188db98196ef447dcc831b7080fc4a0b64af3ff598d62ea2f9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B290",
+      "baseline_sha256": "7d822c2911c13e742f073da2c3193b0fd4d33155882d4d7a26e5c66a31781071",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B291",
+      "baseline_sha256": "9c2be72b7dfee7843b358b656011ce7b5caf111c007780349c93bcb900ce5628",
+      "status": "adapted",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": [
+        "Research is its own primary field."
+      ]
+    },
+    {
+      "id": "B292",
+      "baseline_sha256": "142f47cf7a0839ad3b81890c4d10970560658904292fab8368ef483c0ad53fae",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B293",
+      "baseline_sha256": "a6ff4e7b29b574401fb453c8cb9836adcb410653c0a54b4f79be327d80dcd511",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B294",
+      "baseline_sha256": "b35b4e5e8799766ff082f79c06b5090e3828ae3094e503585ac4934cdacdfd8f",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B295",
+      "baseline_sha256": "13cb7b1137000ff51ffc71ce0543b4cc369843925bcc3aff34d36982cfdb8876",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B296",
+      "baseline_sha256": "5dc2b5792f3c97c149bce7a4c2fdbc7e20d58ec5ff35ffb647d26b197983a036",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B297",
+      "baseline_sha256": "904254bb7a6d51fcc68f211e1a34bf82786e52efdbb0c742860675faf4f0c496",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B298",
+      "baseline_sha256": "0b0f6d85ee051656e0195cb016d103879fc69d41c294ca4f52f9b740ddcd3aa4",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B299",
+      "baseline_sha256": "57248de877e5aacf8c09d505d67ff9f390efe4d913051d6174ba49f00e3775ae",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B300",
+      "baseline_sha256": "6af6fd020fc81af38b065f7f5a35a934dc513a6976aebcaaff9fcfa3a76c7ec8",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B301",
+      "baseline_sha256": "c6592811f779c1810d45e304151606378d8c68a8965176679d37eab719082bdd",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B302",
+      "baseline_sha256": "c5a6a7153d165a82de7da90f859d1375cfea44f57e708bec9f4e5fb637ba3baf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B303",
+      "baseline_sha256": "c5a1448b04be5f02ca74aa66b1cbba62effc39ae2a46f3d3fbdd6e7f066c042d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B304",
+      "baseline_sha256": "857fadd0f63834689f79ea1132e845214a11065ff3fcec5cd3fa0c13e984a93d",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B305",
+      "baseline_sha256": "1c377bbbc05eec983adf75ac79f16c5eeb4afa00ae5ce683f769e09acc7d3a77",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B306",
+      "baseline_sha256": "4e36728ec2e7eb4d858c617a9c0d02bb9f5fd86337211572a3818746a084dc38",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B307",
+      "baseline_sha256": "85108fe5b39ba8e686d4792a077a18a78ae02b160b42cd818059ed41700995f9",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B308",
+      "baseline_sha256": "818d1f1b97cf60de26d35a3d80b187cce5cc311c828a9b935d3c7fd6e7d9b784",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B309",
+      "baseline_sha256": "fc85d61b91418492a02e6b2fe999f644eb49e78233b7ca193d5230407d8aece7",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B310",
+      "baseline_sha256": "cdfcc3c03db06e64ea791327c49208b6515c976e5be8439ef5dad1e214c79a69",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B311",
+      "baseline_sha256": "9d16bbbdf6f8aa7dfff83b17ba71f90032de28e36c7ce53798d3d61f7e21180c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B312",
+      "baseline_sha256": "79a573df706cd80f57682a7800d79dc10a01f4b40b5af2a6b27b50fa4de55ba0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B313",
+      "baseline_sha256": "69d20d602675015dc69493c66d4565e6cdd605d7857718156f3590385843f50e",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B314",
+      "baseline_sha256": "2791e1e9fa783a61f07aa23c99ae1eb1819536c2d33b08bfd096ad12f83d7384",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B315",
+      "baseline_sha256": "c17467d5c6e547cb0b978c2b02f922b1332134e19f01f1fdca5f91fe8a518d95",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B316",
+      "baseline_sha256": "39a17da68c5296d4f48b2f04369fbea72599512dd475597849832f381b941bdc",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B317",
+      "baseline_sha256": "70dac769959595689692db06811295b2224b5d0fc9b557f324a524dbf5fa93b6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B318",
+      "baseline_sha256": "cfba6c305001be860ce47dde9dccf7133ff3fb6e5c2ec4af70d8596ad4299d4a",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B319",
+      "baseline_sha256": "cadef881c939803b480f7b665c481a32ff1f511f1555e091d4ae2a8c5d1a6869",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B320",
+      "baseline_sha256": "6dd6bb049050f08de54c5b90353e219e6ec120590d3c0f3cadeb33d82886529c",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B321",
+      "baseline_sha256": "ba64bd6e10e20327d2b7a72bdd1fb61add2cf5fcd118be6e76f1b3195fb933bf",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B322",
+      "baseline_sha256": "5e295498c51a448aead288c5d18b1179f1d48ea43104ab115807516750f8b134",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B323",
+      "baseline_sha256": "5d810b9d35549ed1bbd030131e7dcdfae1169c20eb358aeabff8c0ac3a3e09a6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B324",
+      "baseline_sha256": "bdc2e8052ae8028979705a9b84e0c9b2c9fbab6dcdbb5e2cdf98c0669614c6c2",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B325",
+      "baseline_sha256": "1415024853006359e7ce64eaa17248914d5e8ff583e10acdc4c2da120eda5551",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B326",
+      "baseline_sha256": "1aa2028f62b92799b83abc77f245bae85516ab0545fda670f93467d116a95aec",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B327",
+      "baseline_sha256": "2b9a0f107c350bb645d83c9ef4e3706b35129e50f155a15e6b1c3e8c13b1aca6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B328",
+      "baseline_sha256": "2762eb71e0775238ff6b2c961df450306b1a9f85be8d232bfac30dafecb5b4d4",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B329",
+      "baseline_sha256": "b69c7e717f3ea4c7d966759e379a44c394a5500f98fc7939c0288da8c0a623e0",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B330",
+      "baseline_sha256": "36ee6818cf60e20556c97806684b5d39c911e937be0b61027dec5361203aedbf",
+      "status": "adapted",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": [
+        "Align research recommendation cap.",
+        "Do not require daily literature scouting."
+      ]
+    },
+    {
+      "id": "B331",
+      "baseline_sha256": "4580a75dae04eaae2d494b81bd14c2410c6c8e1a6e7039fb5ddba5e07dec9c38",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "15-research"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B332",
+      "baseline_sha256": "363098f6233da2ca62d4ff83923c90be172ae6a70e2ce58cd399d9237b492a16",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "action-boundary"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B333",
+      "baseline_sha256": "ff79428519608ee828f95a2b6c85f05aea5dff7079db03e0f2ed281761e94794",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "action-boundary"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B334",
+      "baseline_sha256": "2a426ded4006fed42b373c2e6fbf6a20ac063a217d39e288d19755c53e9116d6",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "action-boundary"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B335",
+      "baseline_sha256": "c4870261d20135d3cbfd662d40315558f0edc053ca7c07cfd966f73fd9575846",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "action-boundary"
+      ],
+      "reason": []
+    },
+    {
+      "id": "B336",
+      "baseline_sha256": "e8e49bd5e1a2f5af1531f059ada9c314e0a39602c5cd6b265ecdc9ea31e22db5",
+      "status": "retained_verbatim",
+      "method_modules": [
+        "action-boundary"
+      ],
+      "reason": []
+    }
+  ]
+}
