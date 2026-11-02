@@ -76,8 +76,8 @@
     },
     "01-scope": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/01-scope.md",
-      "sha256": "ed73caf0a3dc120195cc111f5d993be1b200f164aa4bfca37cd1c05dc617753d",
-      "bytes": 2955
+      "sha256": "14db2d6591339ee4786e7bd6d302f741777a25790edeec0e63a9feaa2da9fd24",
+      "bytes": 3287
     },
     "02-coverage": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/02-coverage.md",
@@ -141,8 +141,8 @@
     },
     "14-crosscheck-publication": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/14-crosscheck-publication.md",
-      "sha256": "b42bf790042b8707f9b83ff8795d0ca03d4c6aa077fe3661dcd5e4a08a827903",
-      "bytes": 11733
+      "sha256": "b6fa84bf1348bb4d572fea48689618fdded38cdb9b58b7125654da89161898f0",
+      "bytes": 12135
     },
     "15-research": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/15-research.md",
@@ -154,5 +154,17 @@
       "sha256": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
       "bytes": 1265
     }
+  },
+  "output_layout": {
+    "revision": "audit-only-tree-2026-11-02",
+    "branch": "gpt/repo-audits",
+    "retained_history": true,
+    "routine_write_prefix": "audits/gpt/",
+    "read_only_root_files": [
+      "README.md"
+    ],
+    "missing_branch_action": "retain unpublished outputs; never recreate from main",
+    "previous_protocol_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+    "migration_record": "audits/gpt/2026-11-02-branch-cleanup.md"
   }
 }
