@@ -54,7 +54,7 @@ since a Windows path or process ID names nothing inside the Linux container, so
 there, and its child check (`child_inherits_env_denial`) covers the environment
 only. The same two probes cannot see the host from a Linux or macOS host whose
 `/var/run/docker.sock` leads to a daemon in a virtual machine (Docker Desktop), so
-there they would pass whatever leaked; run audits whose `boundary.json` you rely on
+there a pass proves little; run audits whose `boundary.json` you rely on
 against a native Linux daemon, as CI does. The `host-tests-windows` job runs the four
 host test modules on `windows-2025` with Python 3.11 and 3.13.
 

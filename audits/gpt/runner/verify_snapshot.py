@@ -50,14 +50,18 @@ def _entry(symbol, entry):
         or len(relative.parts) < 2
         or any("\\" in part or ":" in part or "\0" in part for part in relative.parts)
         or not all(_name_fits(part) for part in relative.parts)
+        # No Linux path call opens a path of PATH_MAX (4096) bytes or more, wherever
+        # the snapshot is, so such an entry could never verify.
+        or len(str(relative).encode("utf-8")) >= 4096
     ):
         raise SnapshotError(f"Unsafe raw path for {symbol}")
     return relative, entry
 
 
 def _name_fits(part):
-    """A name a file can have on Linux: valid UTF-8 (no lone surrogate), at most 255
-    bytes. Any other name could never verify, so it is malformed, not "blocked"."""
+    """A name of at most 255 UTF-8 bytes (Linux's limit) that is valid UTF-8. A lone
+    surrogate is refused on every host, as source and output names are: Linux reads
+    U+DC80-U+DCFF as a non-UTF-8 byte name (surrogateescape), and NTFS allows one."""
     try:
         return len(part.encode("utf-8")) <= 255
     except UnicodeEncodeError:

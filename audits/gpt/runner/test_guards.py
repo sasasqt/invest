@@ -230,10 +230,10 @@ class SnapshotTests(unittest.TestCase):
                         verify(self.reference, snapshot)
 
     def test_raw_paths_that_no_file_can_have_are_rejected(self):
-        """Review round 9 (W3): a raw path that is also another entry's folder, a name
-        over 255 bytes or a lone surrogate can never verify, yet was reported as
-        blocked: without a snapshot, and for the folder clash even with every file that
-        can exist in place."""
+        """Review round 9 (W3): a raw path that is also another entry's folder can never
+        verify, and a name over 255 bytes or with a lone surrogate is refused on every
+        host, yet each was reported as blocked: without a snapshot, and for the folder
+        clash even with every file that can exist in place."""
         request = self.expected["request"]
         good = self.expected["files"]["AAA"]
         entry = {"bytes": 1, "sha256": "0" * 64}
@@ -257,6 +257,25 @@ class SnapshotTests(unittest.TestCase):
         # Windows host may not open a path over 260 characters).
         self.assertTrue(verify_snapshot._name_fits("a" * 255))
 
+    def test_raw_path_no_path_call_can_open_is_rejected(self):
+        """Review round 10 (W3): a raw path of 4096 UTF-8 bytes or more (Linux PATH_MAX)
+        can never be opened wherever the snapshot is, yet was reported as blocked when
+        the snapshot was missing."""
+        request = self.expected["request"]
+        entry = {"bytes": 1, "sha256": "0" * 64}
+        long_path = "raw/" + "/".join(["d" * 200] * 21) + "/f.json"
+        self.assertGreaterEqual(len(long_path.encode()), 4096)
+        for snapshot in (self.snapshot, self.root / "missing"):
+            with self.subTest(snapshot=snapshot.name):
+                self.expected = {"request": request, "files": {"AAA": dict(entry, path=long_path)}}
+                self.save()
+                with self.assertRaisesRegex(SnapshotError, "^Unsafe raw path for AAA$"):
+                    verify(self.reference, snapshot)
+        # One byte shorter is still a path (checked without the file system).
+        fits = "raw/" + "/".join(["d" * 255] * 15) + "/" + "e" * 251
+        self.assertEqual(len(fits.encode()), 4095)
+        verify_snapshot._entry("AAA", dict(entry, path=fits))
+
     def test_an_empty_raw_file_verifies(self):
         """Mutation testing (round 9): no test had a raw file of 0 bytes, so a check that
         refused a size of 0 (not only a negative one) went unnoticed."""
@@ -274,6 +293,25 @@ class SnapshotTests(unittest.TestCase):
                 self.save()
                 with self.assertRaisesRegex(SnapshotError, "Unsafe raw path"):
                     verify(self.reference, self.snapshot)
+
+    @unittest.skipUnless(os.name == "nt", "names no Windows file can have (fail-first on Windows)")
+    def test_raw_names_no_windows_file_can_have_are_rejected(self):
+        """Review round 10 (C1, W3): no Windows file name holds ? * " < > | or a control
+        character. Windows' stat fails with error 123, which pathlib and os.path read as
+        "absent", so such an entry was reported as blocked with every file in place."""
+        request = self.expected["request"]
+        good = self.expected["files"]["AAA"]
+        for name in ("a?b", "a*b", 'a"b', "a<b", "a>b", "a|b", "a\x01b", "a\x1fb", "a\x7fb"):
+            with self.subTest(name=repr(name)):
+                entry = {"bytes": 1, "sha256": "0" * 64, "path": f"raw/{name}.json"}
+                self.expected = {"request": request, "files": {"AAA": good, "BBB": entry}}
+                self.save()
+                try:
+                    result = verify(self.reference, self.snapshot)
+                except SnapshotError as exc:
+                    self.assertEqual(str(exc), "Unsafe raw path for BBB")
+                else:
+                    self.fail(f"{result['status']} for a name no Windows file can have")
 
     def test_matching_fixture(self):
         result = verify(self.reference, self.snapshot)
@@ -1977,6 +2015,21 @@ class SemanticCoverageTests(unittest.TestCase):
             "figure_byte_comparison": "excluded; source tables participate in the gate",
         }
         self.assertEqual(semantic_manifest(self.root), expected)
+
+    def test_json_nested_too_deeply_fails_the_gate_with_a_reason(self):
+        """Review round 10: a JSON or JSONL output nested past the recursion limit raised
+        RecursionError, which main's gate handler (ValueError, OSError) does not catch,
+        so the workload stopped with a traceback and no benchmark summary."""
+        deep = "[" * 100000 + "]" * 100000
+        for name in ("metrics.json", "rows.jsonl"):
+            with self.subTest(name=name):
+                (self.root / "metrics.json").write_text("{}", encoding="utf-8")
+                (self.root / name).write_text(deep + "\n", encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, f"^JSON nested too deeply: {name}$"):
+                    semantic_manifest(self.root)
+                (self.root / name).unlink()
+        (self.root / "metrics.json").write_text("[[[1]]]", encoding="utf-8")
+        semantic_manifest(self.root)
 
     def test_records_and_a_nonempty_figure_are_both_required(self):
         (self.root / "figure.png").unlink()

@@ -90,9 +90,11 @@ the full isolated audit jobs exercise W1 and W2.
   file as `blocked` (exit 2) and every other wrong input (a missing or unreadable
   `--expected` manifest, a manifest or entry of the wrong shape, including a
   negative size or a SHA-256 that is not 64 lower-case hex digits, an empty `files`
-  object, an unsafe, Windows-rooted or repeated raw path, a raw path no file can
-  have (also another entry's folder, a name over 255 UTF-8 bytes or with a lone
-  surrogate), an entry that exists but is not a regular file, a hash mismatch) as
+  object, an unsafe, Windows-rooted or repeated raw path, a raw path that can never
+  verify (another entry's folder, or 4096 UTF-8 bytes or more, which no Linux path
+  call opens), a raw path name refused on every host (over 255 UTF-8 bytes, or not
+  valid UTF-8: a lone surrogate), an entry that exists but is not a regular file, a
+  hash mismatch) as
   `rejected` (exit 2). The manifest's own entries are checked before the snapshot
   is looked at, so a bad manifest is rejected even when the snapshot is missing. It never ends with a traceback.
 - **W4** The evidence uploads in `audit-runtime.yml` keep names that start with a
@@ -149,3 +151,8 @@ the full isolated audit jobs exercise W1 and W2.
   waiting.
 - `verify_snapshot` refuses raw paths with `\` or `:` in any part on every host;
   on Windows such a path would name a drive, a share or a stream.
+- `verify_snapshot` also refuses a raw path name that is not valid UTF-8 (a lone
+  surrogate in the manifest, such as `\udcff`), as source paths and output names are
+  refused. PR #32 verified such a name on Linux, where Python reads U+DC80-U+DCFF as
+  a non-UTF-8 byte (`raw/\udcff.json` named the file `raw/<0xFF>.json`); NTFS allows
+  a lone surrogate too.

@@ -34,19 +34,27 @@ def semantic_manifest(directory):
             return value.replace(str(directory), "$RUN")
         return value
 
+    def normalized(path, load):
+        """JSON of the cleaned value; one nested too deeply to parse fails the gate."""
+        try:
+            return json.dumps(load(), sort_keys=True).encode()
+        except RecursionError:
+            raise ValueError(f"JSON nested too deeply: {path.relative_to(directory)}") from None
+
     records = []
     figures = []
     for path in sorted(directory.rglob("*")):
         if not path.is_file():
             continue
         if path.suffix == ".json":
-            payload = json.dumps(
-                clean(json.loads(path.read_text(encoding="utf-8"))), sort_keys=True
-            ).encode()
+            payload = normalized(
+                path, lambda path=path: clean(json.loads(path.read_text(encoding="utf-8")))
+            )
             comparison = "json; declared volatile keys and output root normalized"
         elif path.suffix == ".jsonl":
-            payload = json.dumps(
-                [
+            payload = normalized(
+                path,
+                lambda path=path: [
                     clean(json.loads(line))
                     # Only a line feed ends a JSONL row: splitlines would also split
                     # at U+2028, U+2029 and U+0085, which a JSON string may hold raw.
@@ -54,8 +62,7 @@ def semantic_manifest(directory):
                     for line in path.read_bytes().decode("utf-8").split("\n")
                     if line.strip()
                 ],
-                sort_keys=True,
-            ).encode()
+            )
             comparison = "jsonl; record order retained; declared volatile keys normalized"
         elif path.name.endswith(".csv.gz"):
             try:
