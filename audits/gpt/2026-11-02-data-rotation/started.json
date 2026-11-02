@@ -1,0 +1,19 @@
+{
+  "run_id": "GA-2026-11-02-data-092201Z",
+  "scheduled_date": "2026-11-02",
+  "field": "data",
+  "started_utc": "2026-11-02T09:22:01Z",
+  "status": "started",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_base": "34407920f681be71913f7457db116ed8c0a85b3e",
+  "protocol_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+  "index_sha256": "c2999931753995963975259b21b84196d859fd27192389fba43a9344e7f543a2",
+  "plan_minutes": 120,
+  "reconciliation": {
+    "prior_run": "GA-2026-11-02",
+    "prior_status": "audit_incomplete",
+    "report_published": true,
+    "no_pending_remote_jobs_established": true,
+    "action": "Separate rotation run; preserve completed prior report and historical immutable source."
+  }
+}
