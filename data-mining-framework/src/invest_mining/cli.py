@@ -33,14 +33,17 @@ from invest_mining.diagnostics import (
     forward_returns,
     ic_summary,
     quantile_returns,
+    quantile_summary,
     rank_autocorrelation,
     tail_returns,
 )
 from invest_mining.expressions import (
     OPERATOR_VERSION,
+    ExpressionError,
     build_panel,
     canonical,
     evaluate,
+    parse,
     restrict,
 )
 from invest_mining.inference import export_signals
@@ -107,20 +110,33 @@ def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
 def _evaluate(args: argparse.Namespace) -> int:
     # Validate settings before the ledger records an inspection.
     for flag, value, minimum in (
+        ("--horizon", args.horizon, 1),
         ("--buckets", args.buckets, 1),
         ("--min-tail-names", args.min_tail_names, 1),
         ("--min-cross-section", args.min_cross_section, 1),
     ):
         if value < minimum:
             raise SystemExit(f"{flag} must be an integer >= {minimum}")
+    try:
+        expression = parse(args.expr)
+    except ExpressionError as exc:
+        raise SystemExit(f"--expr: {exc}") from exc
     manifest, bars = _market_bars(args.data)
+    window = _span(pd.DatetimeIndex(sorted(bars["date"].unique())), "data")
     if args.ledger is not None:
-        dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
-        _record_inspection(
-            args.ledger, _span(dates, "data"), manifest, "invest-mine evaluate (full sample)"
-        )
+        # Refuse reserved data before computing anything from it.
+        try:
+            ledger.check_inspection(ledger.load(args.ledger), window)
+        except LedgerError as exc:
+            raise SystemExit(f"{args.ledger}: {exc}") from exc
+    # An unwritable --out must fail here, not after the inspection is recorded.
+    try:
+        for sub in ("tables", "figures"):
+            (Path(args.out) / sub).mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        raise SystemExit(f"--out {args.out}: {exc}") from exc
     panel = build_panel(bars, **_optional_inputs(args))
-    values = restrict(evaluate(args.expr, panel) * args.orientation, panel)
+    values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
     ic = daily_ic(values, label, "spearman")
     summary = ic_summary(ic, args.horizon)
@@ -128,22 +144,35 @@ def _evaluate(args: argparse.Namespace) -> int:
     summary["pearson_mean_ic"] = ic_summary(daily_ic(values, label, "pearson"), args.horizon)[
         "mean_ic"
     ]
-    summary["rank_autocorrelation_1d"] = rank_autocorrelation(values)
+    autocorrelation = rank_autocorrelation(values)
+    # Undefined (no date with enough pairs) is written as null, like the other statistics.
+    summary["rank_autocorrelation_1d"] = autocorrelation if math.isfinite(autocorrelation) else None
     # Deciles and tails use the same dates; portfolios apply this threshold to eligible names.
     min_cross_section = max(args.buckets, args.min_cross_section)
+    quantiles = quantile_returns(
+        values, label, args.buckets, min_cross_section, min_names=args.min_tail_names
+    )
+    deciles = quantile_summary(
+        values, label, args.buckets, min_cross_section, min_names=args.min_tail_names
+    )
+    tails = tail_returns(
+        values,
+        label,
+        min_names=args.min_tail_names,
+        n_buckets=args.buckets,
+        min_cross_section=min_cross_section,
+    )
+    if args.ledger is not None:
+        # Recorded once the diagnostics exist and before any of them is written.
+        _record_inspection(args.ledger, window, manifest, "invest-mine evaluate (full sample)")
     write_factor_report(
         args.out,
-        expression=canonical(args.expr),
+        expression=canonical(expression),
         summary=summary,
         ic=ic,
-        quantiles=quantile_returns(values, label, args.buckets, min_cross_section),
-        tails=tail_returns(
-            values,
-            label,
-            min_names=args.min_tail_names,
-            n_buckets=args.buckets,
-            min_cross_section=min_cross_section,
-        ),
+        quantiles=quantiles,
+        quantile_summary=deciles,
+        tails=tails,
         config={
             "dataset_id": manifest.dataset_id,
             "dataset_sha256": manifest.content_sha256,
@@ -254,6 +283,10 @@ def _search(args: argparse.Namespace) -> int:
         )
     out = Path(args.out)
     (out / "factors").mkdir(parents=True, exist_ok=True)
+    # A rerun into the same directory replaces the family; stale factor files would be
+    # taken for members of it.
+    for stale in (out / "factors").glob("*.json"):
+        stale.unlink()
     result.ledger.to_csv(out / "ledger.csv", index=False)
     result.confirmation.to_csv(out / "confirmation.csv", index=False)
     (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
