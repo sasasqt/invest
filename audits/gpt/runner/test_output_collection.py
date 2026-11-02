@@ -18,6 +18,7 @@ os.environ.setdefault("CONTRACT_CHECKS", "1")
 
 from contract import ContractViolation
 from output_collection import (
+    DEFAULT_LIMITS,
     DEFAULT_METHOD,
     DESCRIPTOR_APIS,
     SUMMARY_MAX_BYTES,
@@ -25,6 +26,7 @@ from output_collection import (
     CollectionLimits,
     PathFolder,
     RejectedOutput,
+    check_collected,
     collect_results,
     collect_workload,
     is_link,
@@ -478,6 +480,65 @@ class DescriptorCollectionTests(CollectionCases, unittest.TestCase):
         result = collect_results(work, self.destination, method="descriptor")
         self.assertEqual(result["status"], "collected")
         self.assertEqual([row["bytes"] for row in result["files"]], [4])
+
+    def test_work_path_just_under_the_path_limit_is_checked_without_a_crash(self):
+        """Review round 6 (A1): work fits the path limit but work/results does not; the
+        test mode read the results folder by path and crashed, then reported a false I2."""
+        limit = os.pathconf(self.root, "PC_PATH_MAX") - 1
+        work = str(self.root)
+        while len(work) < limit - 4 - 201:
+            work = os.path.join(work, "d" * 200)
+        work = os.path.join(work, "w" * (limit - 4 - len(work) - 1))  # 5 under the limit
+        os.makedirs(work)
+        folder = os.open(work, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.mkdir("results", dir_fd=folder)
+            results = os.open("results", os.O_RDONLY | os.O_DIRECTORY, dir_fd=folder)
+            output = os.open("table.csv", os.O_WRONLY | os.O_CREAT, 0o644, dir_fd=results)
+            os.write(output, b"ordinary\n")
+            os.close(output)
+            os.close(results)
+        finally:
+            os.close(folder)
+        result = collect_results(work, self.destination, method="descriptor")
+        self.assertEqual(result["status"], "collected")
+
+
+@POSIX_ONLY
+class SourceChainCheckTests(unittest.TestCase):
+    """Review round 6 (A2): a link in a recorded file's source chain must fail the test
+    mode's Q1 check by name, not as an OSError from opening through the link."""
+
+    def check(self, relative, place_link, descriptors):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            results = root / "work/results"
+            results.mkdir(parents=True)
+            (root / "outside").mkdir()
+            (root / "outside/f").write_bytes(b"x")
+            place_link(results, root / "outside")
+            # The snapshot a broken collector would have made by following the link.
+            destination = root / "destination"
+            (destination / relative).parent.mkdir(parents=True, exist_ok=True)
+            (destination / relative).write_bytes(b"x")
+            row = {"path": relative, "bytes": 1, "sha256": hashlib.sha256(b"x").hexdigest()}
+            entries = relative.count("/") + 1
+            report = {"files": [row], "entries": entries, "bytes": 1, "summaries": {}}
+            with patch("output_collection.DESCRIPTOR_APIS", descriptors):
+                with self.assertRaisesRegex(ContractViolation, "^Q1: " + relative + "$"):
+                    check_collected(root / "work", destination, report, DEFAULT_LIMITS, "path")
+
+    def test_linked_folder_and_linked_file_fail_q1_in_both_ways_of_reading(self):
+        def folder_link(results, outside):
+            (results / "sub").symlink_to(outside, target_is_directory=True)
+
+        def file_link(results, outside):
+            (results / "f").symlink_to(outside / "f")
+
+        for descriptors in (DESCRIPTOR_APIS, False):
+            for relative, place in (("sub/f", folder_link), ("f", file_link)):
+                with self.subTest(relative=relative, descriptors=descriptors):
+                    self.check(relative, place, descriptors)
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")

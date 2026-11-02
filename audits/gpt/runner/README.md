@@ -8,7 +8,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 
 - `isolated_runner.py`: host-side source identity checks, credential-free Git metadata staging, immutable image capture and restricted container launch.
 - `output_collection.py`: link-free collection into a private host snapshot (no-follow directory descriptors on POSIX hosts, a reparse-point-checking path walk on Windows); validates summaries and bounds files, bytes, entries and depth before upload.
-- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite and the CI host steps switch them on.
+- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite, the CI host steps and the CI Docker controls step switch them on.
 - `collection_checks.py`: real Docker controls for hostile output and ordinary evidence, using generated host-only canaries, plus `test_output_collection.py` and `test_execution_logs.py` regression tests.
 - `test_host_safety.py`: runs the real host runner with a stand-in Docker command to check that uv settings (such as `cache-dir`), file names, build output and container output from the audited source cannot steer host-side uv or start GitHub workflow commands, and that the Dockerfile pulls no unpinned frontend image.
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
@@ -20,7 +20,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 
 ## Invocation on a Docker-capable runner
 
-The source must be a genuine Git checkout at the exact requested revision, with its object store available. A source archive without a Git database is insufficient for provenance-sensitive workflow tests.
+The source must be a genuine Git checkout (a linked worktree works too) at the exact requested revision, with its object store available; the runner needs Git 2.31 or later. A source archive without a Git database is insufficient for provenance-sensitive workflow tests. `--output` must name a new or empty folder; a used one is refused before anything runs, so an earlier `runner.json` can never stand in for a later run.
 
 ```sh
 python isolated_runner.py --source /path/to/checkout \
@@ -106,9 +106,11 @@ collects. It uploads only the host evidence directory. Run the host regression
 tests (they need `packaging`) on Linux or Windows with
 `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety`.
 Run `python collection_checks.py --python-version 3.11 --output /path/to/new-output`
-on a Docker-capable disposable host and repeat with Python 3.13. These generated
-fixtures do not read real secrets or market observations, run a product benchmark,
-or establish independently reviewed resolution of every runner-security concern.
+on a disposable Linux host with Docker and repeat with Python 3.13; it refuses other
+hosts, because its probes pass a host path and process ID into the container. These
+generated fixtures do not read real secrets or market observations, run a product
+benchmark, or establish independently reviewed resolution of every runner-security
+concern.
 
 Local guard tests verify command construction, source staging, hash checks and classification behavior. Each actual execution must also pass its kernel/file/network/process denial probes before product imports. A previous successful trial does not certify another host. Keep runner-code identity separate from audited-source identity; pull-request checkout merge commits must have matching runner blobs before attributing evidence to a PR head.
 

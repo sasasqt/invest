@@ -149,9 +149,40 @@ class ExecutionLogTests(unittest.TestCase):
         writer = "import sys\nwhile True: sys.stdout.write('x' * 4096); sys.stdout.flush()"
         started = time.monotonic()
         with patch("isolated_runner.subprocess.Popen", side_effect=popen):
-            with self.assertRaisesRegex(RuntimeError, "log reader failed"):
+            with self.assertRaisesRegex(RuntimeError, "^container log reader failed$"):
                 run_bounded([sys.executable, "-c", writer], timeout=20)
         self.assertLess(time.monotonic() - started, 5)
+
+    def test_child_that_closed_its_output_still_meets_the_deadline(self):
+        """Mutation testing: waiting for a child without output must keep the deadline."""
+        script = "import os, time; os.close(1); os.close(2); time.sleep(30)"
+        started = time.monotonic()
+        result, reason = run_bounded([sys.executable, "-c", script], timeout=1)
+        self.assertEqual((result.returncode, reason), (124, "timeout"))
+        self.assertLess(time.monotonic() - started, 15)
+
+    def test_reader_blocked_by_a_grandchild_never_keeps_the_host_alive(self):
+        """Mutation testing: the reader must be a daemon thread, or a grandchild holding
+        the pipe keeps the host process from exiting after run_bounded returned."""
+        host = (
+            "import sys; sys.path.insert(0, sys.argv[1]);"
+            "from isolated_runner import run_bounded;"
+            f"result, _ = run_bounded([sys.executable, '-c', {HOLDER!r}], timeout=1);"
+            "print(result.stdout.split()[0], flush=True)"
+        )
+        here = os.path.dirname(os.path.abspath(__file__))
+        started = time.monotonic()
+        done = subprocess.run(
+            [sys.executable, "-c", host, here], capture_output=True, text=True, timeout=120
+        )
+        elapsed = time.monotonic() - started
+        os.kill(int(done.stdout.split()[0]), signal.SIGTERM)
+        self.assertLess(elapsed, 20, "the host process waited for the reader thread")
+
+    def test_limits_must_be_positive(self):
+        for limits in ({"timeout": 0}, {"max_log_bytes": 0}):
+            with self.assertRaisesRegex(ValueError, "^execution limits must be positive$"):
+                run_bounded([sys.executable, "-c", "pass"], **limits)
 
 
 if __name__ == "__main__":

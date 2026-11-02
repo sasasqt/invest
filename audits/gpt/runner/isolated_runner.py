@@ -450,9 +450,17 @@ def stage_source(source, staged, expected_sha):
         )
     # Keep genuine commit provenance, but never copy Git credentials, config,
     # hooks, logs, alternates or global/home files into the execution boundary.
+    # The common Git folder: a linked worktree's own Git folder holds no objects.
     git_dir = Path(
         checked(
-            [program("git"), "-C", str(source), "rev-parse", "--absolute-git-dir"],
+            [
+                program("git"),
+                "-C",
+                str(source),
+                "rev-parse",
+                "--path-format=absolute",
+                "--git-common-dir",
+            ],
             env=env,
             timeout=GIT_TIMEOUT,
         )
@@ -536,6 +544,9 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     output = args.output.resolve()
+    # A used folder would keep an earlier runner.json that a failed run never replaces.
+    if output.exists() and (not output.is_dir() or any(output.iterdir())):
+        raise SystemExit(f"--output must be a new or empty folder: {output}")
     output.mkdir(parents=True, exist_ok=True)
     results = output / "results"
     results.mkdir(exist_ok=True)

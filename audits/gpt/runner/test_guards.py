@@ -422,6 +422,54 @@ class PortableHostTests(unittest.TestCase):
             finally:
                 os.chdir(previous)
 
+    def test_a_folder_named_like_a_program_is_skipped(self):
+        """Mutation testing: a folder carries the search bit, so it must also be a file."""
+        filename = "tool.cmd" if os.name == "nt" else "tool"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "first" / filename).mkdir(parents=True)
+            (root / "second").mkdir()
+            (root / "second" / filename).write_text("", encoding="utf-8")
+            (root / "second" / filename).chmod(0o755)
+            listed = os.pathsep.join([str(root / "first"), str(root / "second")])
+            with patch.dict(os.environ, {"PATH": listed}):
+                self.assertEqual(host_tool("tool"), str(root / "second" / filename))
+
+    def test_no_path_variable_finds_no_program(self):
+        with patch.dict(os.environ):
+            os.environ.pop("PATH", None)
+            self.assertIsNone(host_tool("git"))
+
+    @unittest.skipIf(os.name == "nt", "simulates the Windows lookup with POSIX file names")
+    def test_windows_lookup_adds_pathext_suffixes_only_to_a_bare_name(self):
+        """Mutation testing: the Windows branch ran only on Windows CI, never under mutmut."""
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            for filename in ("tool.xyz", "tool.bat", "solo.com", "Named.Cmd"):
+                (folder / filename).write_text("", encoding="utf-8")
+                (folder / filename).chmod(0o755)
+            with patch.object(isolated_runner.os, "name", "nt"):
+                with patch.dict(os.environ, {"PATH": directory, "PATHEXT": ".XYZ;.BAT;.CMD"}):
+                    self.assertEqual(host_tool("tool"), str(folder / "tool.xyz"))
+                    self.assertEqual(host_tool("Named.Cmd"), str(folder / "Named.Cmd"))
+                    self.assertIsNone(host_tool("solo"))
+                with patch.dict(os.environ, {"PATH": directory}):
+                    os.environ.pop("PATHEXT", None)
+                    self.assertEqual(host_tool("solo"), str(folder / "solo.com"))
+                    self.assertEqual(host_tool("tool"), str(folder / "tool.bat"))
+
+    def test_collection_checks_refuse_a_host_that_is_not_linux(self):
+        """Review round 6: the container probes take a host path and process ID, which
+        name nothing inside the Linux container from a Windows or macOS host."""
+        import collection_checks
+
+        argv = ["collection_checks.py", "--python-version", "3.11", "--output", "unused"]
+        created = AssertionError("collection_checks went on to create its output")
+        with patch.object(sys, "argv", argv), patch.object(sys, "platform", "win32"):
+            with patch.object(Path, "mkdir", side_effect=created):
+                with self.assertRaisesRegex(SystemExit, "Linux host"):
+                    collection_checks.main()
+
     def test_ordinary_paths_are_listed_in_order(self):
         rows = [("100644", "blob", "README.md"), ("100755", "blob", "tools/run.sh")]
         self.assertEqual(
@@ -595,6 +643,69 @@ class StagingSafetyTests(unittest.TestCase):
                 stage_source(repo, root / "staged", commit)
             self.assertFalse(marker.exists(), "the host ran a command from the commit")
 
+    def test_staged_files_keep_the_committed_modes(self):
+        """Mutation testing: nothing checked the staged file modes or Git's filemode."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, _ = fixture_repository(root, {"run.sh": b"#!/bin/sh\n", "data.txt": b"x\n"})
+            git_in(source, "update-index", "--chmod=+x", "run.sh")
+            git_in(source, "commit", "-qm", "executable")
+            revision = git_in(source, "rev-parse", "HEAD")
+            stage_source(source, root / "staged", revision)
+            config = (root / "staged/.git/config").read_text(encoding="utf-8")
+            self.assertIn(f"filemode = {'false' if os.name == 'nt' else 'true'}\n", config)
+            if os.name != "nt":  # Windows has no executable bit
+                self.assertEqual(stat.S_IMODE((root / "staged/run.sh").stat().st_mode), 0o755)
+                self.assertEqual(stat.S_IMODE((root / "staged/data.txt").stat().st_mode), 0o644)
+
+    def test_only_object_files_reach_the_staged_object_store(self):
+        """Mutation testing: other files in the object store must stay behind."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            objects = source / ".git/objects"
+            for stray in ("info/stray", "pack/notes.txt"):
+                (objects / stray).parent.mkdir(exist_ok=True)
+                (objects / stray).write_text("not an object\n", encoding="utf-8")
+            stage_source(source, root / "staged", revision)
+            staged = root / "staged/.git/objects"
+            copied = {p.relative_to(staged).as_posix() for p in staged.rglob("*") if p.is_file()}
+            self.assertTrue(copied)
+            self.assertFalse({"info/stray", "pack/notes.txt"} & copied)
+
+    def test_filters_from_host_git_configuration_never_run_while_staging(self):
+        """Mutation testing: the staged index reset must not read the host user's global
+        configuration, where a filter that the commit's .gitattributes names would run."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            marker, home = root / "filter-ran", root / "home"
+            home.mkdir()
+            script = root / "probe_filter.py"
+            script.write_text(
+                "import pathlib, sys\n"
+                "pathlib.Path(sys.argv[1]).touch()\n"
+                "sys.stdout.buffer.write(sys.stdin.buffer.read())\n",
+                encoding="utf-8",
+            )
+            quoted = " ".join(
+                f'"{Path(item).as_posix()}"' for item in (sys.executable, script, marker)
+            )
+            (home / ".gitconfig").write_text(
+                f'[filter "probe"]\n\tclean = {quoted}\n', encoding="utf-8"
+            )
+            files = {".gitattributes": b"* filter=probe\n", "a.txt": b"a\n"}
+            source, revision = fixture_repository(root, files)
+            host = {"HOME": str(home), "XDG_CONFIG_HOME": str(root / "xdg")}
+            with patch.dict(os.environ, host):
+                stage_source(source, root / "staged", revision)
+            self.assertFalse(marker.exists(), "a host Git filter ran during staging")
+            # The probe works: the same reset with the host configuration runs it.
+            (root / "staged/.git/index").unlink()
+            git_in(
+                root / "staged", "reset", "-q", "--mixed", revision, env=dict(os.environ, **host)
+            )
+            self.assertTrue(marker.exists())
+
     def test_source_given_as_a_subfolder_still_stages_the_whole_commit(self):
         """Review round 5 (A2, Q4): ls-tree without --full-tree listed only the subtree."""
         files = {"sub/inner.txt": b"inner\n", "top.txt": b"root\n"}
@@ -605,6 +716,22 @@ class StagingSafetyTests(unittest.TestCase):
             self.assertEqual([row["path"] for row in records], sorted(files))
             for name, payload in files.items():
                 self.assertEqual((root / "staged" / name).read_bytes(), payload)
+
+    def test_linked_worktree_stages_the_commit(self):
+        """Review round 6: a linked worktree's own Git folder holds no objects, so the
+        staged index reset failed with "Could not parse object <sha>"."""
+        files = {"sub/inner.txt": b"inner\n", "top.txt": b"root\n"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, files)
+            worktree = root / "worktree"
+            git_in(source, "worktree", "add", "-q", "--detach", str(worktree), revision)
+            staged = root / "staged"
+            records = stage_source(worktree, staged, revision)
+            self.assertEqual([row["path"] for row in records], sorted(files))
+            for name, payload in files.items():
+                self.assertEqual((staged / name).read_bytes(), payload)
+            self.assertEqual(git_in(staged, "status", "--porcelain"), "")
 
     def test_unreadable_commit_tree_names_gits_error(self):
         """Review round 5: a failed ls-tree raised CalledProcessError without Git's message."""

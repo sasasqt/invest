@@ -506,25 +506,38 @@ def check_rejected(work, destination, snapshot, limits, method, error):
         contract.require("I2", outcome[0] == "rejected", "only the descriptor walk rejected")
 
 
+def chain_entry_expected(info, last):
+    """No link anywhere, a folder on the way and a regular file at the end (Q1)."""
+    kind = stat.S_ISREG if last else stat.S_ISDIR
+    return not is_link(info) and kind(info.st_mode)
+
+
 def source_chain(work, relative):
     """Q1: lstat each component of work/results/relative and read the file, following
     no link. POSIX walks descriptors, so a path past PATH_MAX that the descriptor walk
-    collected can be checked too."""
+    collected can be checked too. An unexpected entry stops the walk with no bytes
+    read, so that check_collected names the broken rule (Q1)."""
     parts = ("results", *relative.split("/"))
     if not DESCRIPTOR_APIS:
         current, chain = Path(work), []
-        for part in parts:
+        for index, part in enumerate(parts):
             current = current / part
             chain.append(os.lstat(current))
+            if not chain_entry_expected(chain[-1], index == len(parts) - 1):
+                return chain, None
         return chain, current.read_bytes()
     flags = getattr(os, "O_PATH", os.O_RDONLY) | os.O_DIRECTORY | os.O_NOFOLLOW
     fd, chain = os.open(work, flags), []
     try:
         for part in parts[:-1]:
             chain.append(os.stat(part, dir_fd=fd, follow_symlinks=False))
+            if not chain_entry_expected(chain[-1], last=False):
+                return chain, None
             parent, fd = fd, os.open(part, flags, dir_fd=fd)
             os.close(parent)
         chain.append(os.stat(parts[-1], dir_fd=fd, follow_symlinks=False))
+        if not chain_entry_expected(chain[-1], last=True):
+            return chain, None
         with os.fdopen(os.open(parts[-1], READ_FLAGS, dir_fd=fd), "rb") as stream:
             return chain, stream.read()
     finally:
@@ -532,8 +545,15 @@ def source_chain(work, relative):
 
 
 def path_too_long(outcome):
-    """The path walk cannot open a path past the host's limit; the descriptor walk can."""
-    return outcome[0] == "rejected" and getattr(outcome[1], "errno", None) == errno.ENAMETOOLONG
+    """The path walk cannot open a path past the host's limit; the descriptor walk can.
+    The path walk wraps that OSError (for the results folder, in path_directory), so
+    the cause chain is followed."""
+    error = outcome[1] if outcome[0] == "rejected" else None
+    while error is not None:
+        if getattr(error, "errno", None) == errno.ENAMETOOLONG:
+            return True
+        error = error.__cause__
+    return False
 
 
 def check_collected(work, destination, report, limits, method):
@@ -556,13 +576,12 @@ def check_collected(work, destination, report, limits, method):
     contract.require("Q1", report["entries"] <= limits.entries, "entry limit exceeded")
     contract.require("Q1", report["bytes"] == sum(len(data) for data in found.values()))
     contract.require("Q1", report["bytes"] <= limits.total_bytes, "total byte limit exceeded")
-    results = Path(work, "results")
-    device = os.lstat(results).st_dev
     for relative, data in found.items():
         row = rows[relative]
         contract.require("Q1", row["bytes"] == len(data) <= limits.file_bytes, relative)
         contract.require("Q1", row["sha256"] == hashlib.sha256(data).hexdigest(), relative)
         chain, source = source_chain(work, relative)
+        device = chain[0].st_dev  # the results folder, reached without its full path
         for info in chain:
             contract.require("Q1", not is_link(info) and info.st_dev == device, relative)
         contract.require("Q1", stat.S_ISREG(info.st_mode) and info.st_nlink == 1, relative)

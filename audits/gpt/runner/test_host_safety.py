@@ -171,7 +171,7 @@ class HostSafetyTests(unittest.TestCase):
         return commit_all(self.source)
 
     def run_runner(self, revision, cwd=None, **extra):
-        return subprocess.run(
+        result = subprocess.run(
             [
                 sys.executable,
                 str(RUNNER),
@@ -190,6 +190,11 @@ class HostSafetyTests(unittest.TestCase):
             text=True,
             timeout=300,
         )
+        # Review round 6: a broken rule in the runner process ends as a host error line
+        # and exit 1, which several tests expect anyway, so it must fail the test here.
+        output = result.stdout + result.stderr
+        self.assertNotIn("ContractViolation", output, quoted(output))
+        return result
 
     def plant(self, name, marker):
         """A committed program that records that it ran."""
@@ -260,6 +265,35 @@ class HostSafetyTests(unittest.TestCase):
             path = os.pathsep.join([".", path])
         result = self.run_runner(revision, cwd=self.source, PATH=path)
         self.assertFalse(marker.exists(), quoted(result.stdout + result.stderr))
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_program_in_the_current_folder_never_runs_at_the_uv_step(self):
+        """Review round 6: the test above stops at the missing pyproject.toml, so it
+        never reaches the uv lookup."""
+        marker = self.root / "PLANTED-PROGRAM-RAN"
+        self.workspace()
+        self.plant("uv", marker)
+        revision = commit_all(self.source)
+        path = self.env["PATH"]
+        if os.name != "nt":
+            path = os.pathsep.join([".", path])
+        result = self.run_runner(revision, cwd=self.source, PATH=path)
+        output = result.stdout + result.stderr
+        exported = self.root / "output/build-context/requirements.txt"
+        self.assertTrue(exported.is_file(), quoted(output))
+        self.assertFalse(marker.exists(), quoted(output))
+
+    def test_a_used_output_folder_is_refused_before_anything_runs(self):
+        """Review round 6: a reused --output kept the earlier runner.json, so a later
+        failed run still read as the earlier result."""
+        stale = self.root / "output/results/runner.json"
+        stale.parent.mkdir(parents=True)
+        stale.write_text('{"status": "blocked", "reason": "earlier run"}', encoding="utf-8")
+        result = self.run_runner("0" * 40)
+        self.assertEqual(result.returncode, 1, quoted(result.stdout + result.stderr))
+        self.assertIn("--output must be a new or empty folder", result.stderr)
+        self.assertEqual(json.loads(stale.read_text("utf-8"))["reason"], "earlier run")
+        self.assertEqual(sorted(p.name for p in (self.root / "output").iterdir()), ["results"])
 
     def test_missing_docker_blocks_before_any_source_is_read(self):
         empty = self.root / "empty-path"

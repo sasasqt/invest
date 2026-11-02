@@ -1,9 +1,10 @@
 """Test-mode checks for the rules in CONTRACT.md.
 
-The checks run only when the environment sets CONTRACT_CHECKS=1. Every test suite
-and the CI host steps set it; production runs do not. A failed check is a bug in
-the runner, never a property of the audited input, so it raises an AssertionError
-that no collection or staging handler turns into an ordinary rejection.
+The checks run only when the environment sets CONTRACT_CHECKS=1. Every test suite,
+the CI host steps and the CI Docker controls step set it; production runs do not.
+A failed check is a bug in the runner, never a property of the audited input, so it
+raises an AssertionError that no collection or staging handler turns into an
+ordinary rejection.
 """
 
 import os

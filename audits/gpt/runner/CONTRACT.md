@@ -1,9 +1,10 @@
 # Audit runner contract (host side)
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
-`contract.py` checks each rule while `CONTRACT_CHECKS=1`; every test suite and the
-CI host-test steps set it, production runs do not. A failed check raises
-`ContractViolation` (an `AssertionError`), never an ordinary rejection.
+`contract.py` checks each rule while `CONTRACT_CHECKS=1`; every test suite, the
+CI host-test steps and the CI Docker controls step set it, production runs do not.
+A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
+rejection.
 
 ## Preconditions
 
@@ -40,8 +41,9 @@ CI host-test steps set it, production runs do not. A failed check raises
   file that is no link, and whose opened descriptor is a one-link regular file with
   the same identity: device, inode, size and times on POSIX; volume and file ID in
   the path walk, because Windows can answer a by-name stat from the folder entry,
-  whose size and times may lag the open handle's. On POSIX every folder is reached
-  through no-follow directory descriptors. On Windows each path component is
+  whose size and times may lag the open handle's. In the descriptor walk (the
+  default on POSIX) every folder is reached through no-follow directory
+  descriptors. In the path walk (the default on Windows) each path component is
   checked to be no reparse point just before the open, and each folder again after
   it was listed; a concurrent writer is excluded by P1. Checked in `read_opened`.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
@@ -72,7 +74,11 @@ CI host-test steps set it, production runs do not. A failed check raises
 - `git`, `uv` and `docker` are run only from absolute `PATH` folders, never from the
   current folder or a relative `PATH` entry (Windows searches the current folder
   first), so a program committed in the audited checkout cannot run on the host.
-- `--source` may name a subfolder of the checkout; the whole commit is staged.
+- `--source` may name a subfolder of the checkout, or a linked worktree; the whole
+  commit is staged, with objects read from the repository's common Git folder.
+- A used `--output` folder (one that exists and is not empty) is refused with exit
+  1 before anything runs. PR #32 reused it, so an earlier `runner.json` survived a
+  later run that failed before writing its own.
 - The CA bundle for the image build comes from the system bundle, else Python's
   default CA file, else (Windows) the certificate store exported as PEM.
 - On a Windows host the container's outside-file and host-process probes are not

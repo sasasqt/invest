@@ -5,6 +5,7 @@ import contextlib
 import io
 import json
 import os
+import sys
 import uuid
 from pathlib import Path
 
@@ -60,6 +61,10 @@ def main():
     parser.add_argument("--python-version", choices=("3.11", "3.13"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    # The container probes take a host path and process ID, which name nothing inside
+    # the Linux container when Docker runs in a virtual machine (Windows, macOS).
+    if sys.platform != "linux":
+        raise SystemExit("collection_checks.py runs on a Linux host with Docker only")
     output = args.output.resolve()
     output.mkdir(parents=True)
     evidence = output / "results"
