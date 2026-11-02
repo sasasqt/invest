@@ -1,10 +1,12 @@
 """Host-side safety: audited source must not steer host tools or workflow logs.
 
-Linux/POSIX only, like the collector: a stand-in ``docker`` shell script lets the
-real runner reach its host-side steps without a daemon. Tests that need uv skip
-when it is not installed.
+A stand-in ``docker`` (a small Python script behind an ``sh`` or ``.cmd`` launcher)
+lets the real runner reach its host-side steps without a daemon, on Linux and on
+Windows. Tests that need uv skip when it is not installed.
 """
 
+import contextlib
+import io
 import json
 import os
 import shutil
@@ -14,29 +16,52 @@ import tempfile
 import unittest
 from pathlib import Path
 
+os.environ.setdefault("CONTRACT_CHECKS", "1")
+
+from isolated_runner import report_host_error
+
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / "isolated_runner.py"
 FORGED = "::error title=Forged::annotation from audited input"
 # The runner also parses the older form anywhere in a line, not only at its start.
 LEGACY = "older ##[error title=Forged]annotation from audited input"
 MEMBERS = ("data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation")
-FAKE_DOCKER = """#!/bin/sh
+FAKE_DOCKER = """
 # Stand-in for the Docker CLI: no daemon and no containers.
-case " $* " in
-  *" image inspect "*) echo "python@sha256:DIGEST" ;;
-  *" build "*)
-    if [ -n "$FAKE_BUILD_OUTPUT" ]; then printf '%s\\n' "$FAKE_BUILD_OUTPUT"; fi
-    previous=""
-    for argument in "$@"; do
-      if [ "$previous" = "--iidfile" ]; then echo "sha256:DIGEST" > "$argument"; fi
-      previous="$argument"
-    done
-    exit "${FAKE_BUILD_EXIT:-0}" ;;
-  *" run "*)
-    if [ -n "$FAKE_RUN_OUTPUT" ]; then printf '%s\\n' "$FAKE_RUN_OUTPUT"; fi ;;
-esac
-exit 0
-""".replace("DIGEST", "0" * 64)
+import os, sys
+
+args = sys.argv[1:]
+digest = "0" * 64
+if "image" in args and "inspect" in args:
+    print("python@sha256:" + digest)
+elif "info" in args:
+    print("linux")
+elif "build" in args:
+    if os.environ.get("FAKE_BUILD_OUTPUT"):
+        print(os.environ["FAKE_BUILD_OUTPUT"])
+    if "--iidfile" in args:
+        with open(args[args.index("--iidfile") + 1], "w") as stream:
+            stream.write("sha256:" + digest + "\\n")
+    sys.exit(int(os.environ.get("FAKE_BUILD_EXIT", "0")))
+elif "run" in args and os.environ.get("FAKE_RUN_OUTPUT"):
+    print(os.environ["FAKE_RUN_OUTPUT"])
+"""
+
+
+def install_fake_docker(tools):
+    script = tools / "fake_docker.py"
+    script.write_text(FAKE_DOCKER, encoding="utf-8")
+    if os.name == "nt":
+        launcher = tools / "docker.cmd"
+        launcher.write_text(
+            f'@"{sys.executable}" "%~dp0fake_docker.py" %*\r\n', encoding="utf-8", newline=""
+        )
+    else:
+        launcher = tools / "docker"
+        launcher.write_text(
+            f'#!/bin/sh\nexec "{sys.executable}" "{script}" "$@"\n', encoding="utf-8"
+        )
+        launcher.chmod(0o755)
 
 
 def git(*args, cwd):
@@ -68,7 +93,18 @@ def forged_lines(output):
     return [line for line in output.splitlines() if line.lstrip().startswith("::") or "##[" in line]
 
 
-@unittest.skipUnless(os.name == "posix" and shutil.which("git"), "POSIX host with Git")
+class HostErrorTests(unittest.TestCase):
+    def test_host_error_text_is_one_escaped_line(self):
+        captured = io.StringIO()
+        with contextlib.redirect_stderr(captured):
+            report_host_error(ValueError("name\n" + FORGED + "\n" + LEGACY))
+        output = captured.getvalue()
+        self.assertEqual(len(output.splitlines()), 1, quoted(output))
+        self.assertEqual(forged_lines(output), [], quoted(output))
+        self.assertIn("Forged", output)
+
+
+@unittest.skipUnless(shutil.which("git"), "Git")
 class HostSafetyTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -79,9 +115,7 @@ class HostSafetyTests(unittest.TestCase):
         git("init", "-q", cwd=self.source)
         tools = self.root / "bin"
         tools.mkdir()
-        docker = tools / "docker"
-        docker.write_text(FAKE_DOCKER, encoding="utf-8")
-        docker.chmod(0o755)
+        install_fake_docker(tools)
         self.env = {
             key: value
             for key, value in os.environ.items()
@@ -161,15 +195,15 @@ class HostSafetyTests(unittest.TestCase):
         self.assertTrue(exported.is_file(), quoted(result.stdout + result.stderr))
         self.assertFalse(chosen.exists(), "audited [tool.uv] steered a host write")
 
+    @unittest.skipIf(os.name == "nt", "Windows file names cannot hold a newline")
     def test_host_errors_quoting_audited_names_cannot_start_workflow_commands(self):
         name = "!a\n" + FORGED + "\n" + LEGACY
         (self.source / name).write_text("committed\n", encoding="utf-8")
         revision = commit_all(self.source)
-        (self.source / name).write_text("changed after the commit\n", encoding="utf-8")
         result = self.run_runner(revision)
         output = result.stdout + result.stderr
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Dirty/mismatched source blob", output)
+        self.assertIn("not portable to Windows and Linux", output)
         self.assertEqual(forged_lines(output), [], quoted(output))
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")

@@ -2,16 +2,73 @@ import copy
 import gzip
 import hashlib
 import json
+import os
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+os.environ.setdefault("CONTRACT_CHECKS", "1")
+
+import isolated_runner
 from ci_evidence import classify
-from isolated_runner import execution_command, stage_source
+from isolated_runner import (
+    blob_digest,
+    ca_bundle,
+    container_user,
+    docker_command,
+    execution_command,
+    read_blobs,
+    source_entries,
+    stage_source,
+)
 from runner_workload import semantic_hash, semantic_manifest
 from verify_installed import applicable_requirements, verify_versions
 from verify_snapshot import SnapshotError, verify
+
+BLOB = "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"  # the empty blob
+
+
+def listing(*rows):
+    """Build ``git ls-tree -rz`` output from (mode, kind, path) rows."""
+    return b"".join(
+        f"{mode} {kind} {BLOB}\t".encode()
+        + (path if isinstance(path, bytes) else path.encode())
+        + b"\0"
+        for mode, kind, path in rows
+    )
+
+
+def fixture_repository(root, files):
+    source = root / "original"
+    source.mkdir()
+    subprocess.run(["git", "init", "-q", str(source)], check=True)
+    for name, payload in files.items():
+        (source / name).parent.mkdir(parents=True, exist_ok=True)
+        (source / name).write_bytes(payload)
+    subprocess.run(["git", "-C", str(source), "add", "-A"], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(source),
+            "-c",
+            "core.autocrlf=false",
+            "-c",
+            "user.name=Audit Fixture",
+            "-c",
+            "user.email=audit@example.invalid",
+            "commit",
+            "-qm",
+            "fixture",
+        ],
+        check=True,
+    )
+    revision = subprocess.check_output(
+        ["git", "-C", str(source), "rev-parse", "HEAD"], text=True
+    ).strip()
+    return source, revision
 
 
 class SnapshotTests(unittest.TestCase):
@@ -292,6 +349,98 @@ class RunnerContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaisesRegex(ValueError, "semantic records"):
                 semantic_hash(directory)
+
+
+class PortableHostTests(unittest.TestCase):
+    """Host-side parts that differ between Linux and Windows (Windows port, PR #36)."""
+
+    def test_staging_uses_committed_bytes_not_checked_out_bytes(self):
+        """Git on Windows checks text out with CRLF; the old byte check failed every file."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"dir/text.txt": b"line\nnext\n"})
+            (source / "dir/text.txt").write_bytes(b"line\r\nnext\r\n")  # as autocrlf would
+            records = stage_source(source, root / "staged", revision)
+            self.assertEqual((root / "staged/dir/text.txt").read_bytes(), b"line\nnext\n")
+            self.assertEqual(
+                records, [{"path": "dir/text.txt", "git_blob": blob_digest(b"line\nnext\n")}]
+            )
+            self.assertEqual((root / "staged/.git/HEAD").read_bytes(), revision.encode() + b"\n")
+
+    def test_ordinary_paths_are_listed_in_order(self):
+        rows = [("100644", "blob", "README.md"), ("100755", "blob", "tools/run.sh")]
+        self.assertEqual(
+            source_entries(listing(*rows)),
+            [("README.md", "100644", BLOB), ("tools/run.sh", "100755", BLOB)],
+        )
+
+    def test_paths_other_hosts_would_read_differently_are_refused(self):
+        for path in ("CON", "dir/nul.txt", "trailing.", "dir./file", "a:b", "back\\slash", "a\nb"):
+            with self.subTest(path=path):
+                with self.assertRaisesRegex(ValueError, "not portable"):
+                    source_entries(listing(("100644", "blob", path)))
+        with self.assertRaisesRegex(ValueError, "UTF-8"):
+            source_entries(listing(("100644", "blob", b"bad-\xff")))
+
+    def test_links_and_submodules_are_refused(self):
+        for mode, kind in (("120000", "blob"), ("160000", "commit"), ("100664", "blob")):
+            with self.subTest(mode=mode):
+                with self.assertRaisesRegex(ValueError, "ordinary tracked files"):
+                    source_entries(listing((mode, kind, "item")))
+
+    def test_case_clashes_are_refused(self):
+        for pair in (("Readme", "README"), ("a", "A/b"), ("Dir/x", "dir/y")):
+            with self.subTest(pair=pair):
+                rows = [("100644", "blob", path) for path in pair]
+                with self.assertRaisesRegex(ValueError, "differ only by case"):
+                    source_entries(listing(*rows))
+        rows = [("100644", "blob", "dir/x"), ("100644", "blob", "dir/y")]
+        self.assertEqual(len(source_entries(listing(*rows))), 2)
+
+    def test_missing_object_is_refused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = fixture_repository(Path(directory), {"a.txt": b"a\n"})
+            with self.assertRaisesRegex(ValueError, "missing or not a blob"):
+                read_blobs(source, ["1" * 40])
+            self.assertEqual(read_blobs(source, [blob_digest(b"a\n")]), [b"a\n"])
+            self.assertEqual(read_blobs(source, []), [])
+
+    def test_docker_always_targets_the_local_daemon(self):
+        command = docker_command("info")
+        expected = (
+            "npipe:////./pipe/docker_engine" if os.name == "nt" else "unix:///var/run/docker.sock"
+        )
+        self.assertEqual(command[1:], [f"--host={expected}", "info"])
+
+    def test_container_user_is_never_root(self):
+        uid, gid = container_user()
+        self.assertGreater(uid, 0)
+        self.assertGreater(gid, 0)
+        if os.name == "nt":
+            self.assertEqual((uid, gid), (65534, 65534))
+
+    def test_ca_bundle_prefers_the_system_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "system.pem"
+            bundle.write_text("-----BEGIN CERTIFICATE-----\n", encoding="ascii")
+            with patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", str(bundle)):
+                self.assertEqual(ca_bundle(Path(directory)), bundle)
+
+    def test_ca_bundle_without_any_source(self):
+        paths = isolated_runner.ssl.DefaultVerifyPaths(None, None, None, None, None, None)
+        with tempfile.TemporaryDirectory() as directory:
+            with (
+                patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", str(Path(directory) / "none")),
+                patch.object(isolated_runner.ssl, "get_default_verify_paths", return_value=paths),
+            ):
+                if os.name == "nt":  # the Windows certificate store is exported as PEM
+                    exported = ca_bundle(Path(directory))
+                    text = exported.read_text(encoding="ascii")
+                    self.assertTrue(text.startswith("-----BEGIN CERTIFICATE-----\n"))
+                    self.assertNotIn("\r", text)
+                else:
+                    with self.assertRaisesRegex(RuntimeError, "No CA bundle"):
+                        ca_bundle(Path(directory))
 
 
 class SemanticCoverageTests(unittest.TestCase):

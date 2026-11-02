@@ -6,7 +6,6 @@ import hashlib
 import json
 import os
 import platform
-import resource
 import shutil
 import signal
 import socket
@@ -152,6 +151,8 @@ def prove_boundary(sentinel, host_pid, results):
 
 
 def execute(name, argv, cwd, results, timeout=1200, env=None):
+    import resource  # POSIX only: imported here so host tests can load this module on Windows
+
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
     log = results / f"{name}.log"

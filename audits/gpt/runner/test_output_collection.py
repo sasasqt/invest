@@ -1,3 +1,5 @@
+"""Collector tests, run against both walks: descriptors (POSIX) and paths (all hosts)."""
+
 import contextlib
 import hashlib
 import io
@@ -10,18 +12,56 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+os.environ.setdefault("CONTRACT_CHECKS", "1")
+
 from output_collection import (
+    DEFAULT_METHOD,
+    DESCRIPTOR_APIS,
     SUMMARY_NAMES,
     CollectionLimits,
     RejectedOutput,
     collect_results,
     collect_workload,
+    portable_name,
     read_summaries,
 )
 
+POSIX_ONLY = unittest.skipUnless(os.name == "posix", "POSIX file types and names")
 
-@unittest.skipUnless(os.name == "posix" and hasattr(os, "O_NOFOLLOW"), "Linux/POSIX collector")
-class CollectionTests(unittest.TestCase):
+
+class NameTests(unittest.TestCase):
+    def test_portable_names_are_accepted(self):
+        for name in ("table.csv", "boundary.json", ".hidden", "a b", "CONSOLE", "con-1", "Ünïcode"):
+            with self.subTest(name=name):
+                self.assertTrue(portable_name(name))
+
+    def test_names_windows_or_zip_would_read_differently_are_rejected(self):
+        names = ["", ".", "..", "a\\b", "a/b", "c:d", "x*", "q?", 'quote"', "<", ">", "pipe|"]
+        names += ["line\nbreak", "tab\tname", "del\x7f", "trailing.", "trailing ", "CON", "nul"]
+        names += ["Aux.txt", "com1", "LPT9.tar.gz", "COM\u00b9", "conin$", "CON .txt", "bad\udcff"]
+        for name in names:
+            with self.subTest(name=name):
+                self.assertFalse(portable_name(name))
+
+    def test_default_walk_matches_the_host(self):
+        self.assertEqual(DEFAULT_METHOD, "descriptor" if DESCRIPTOR_APIS else "path")
+        if os.name == "nt":
+            self.assertEqual(DEFAULT_METHOD, "path")
+
+
+class CollectionCases:
+    method = None
+
+    def collect(self, **kwargs):
+        return collect_results(self.work, self.destination, method=self.method, **kwargs)
+
+    def link(self, path, target, directory=False):
+        """Create a symbolic link, or skip where Windows withholds the privilege."""
+        try:
+            path.symlink_to(target, target_is_directory=directory)
+        except OSError as exc:
+            self.skipTest(f"symbolic links unavailable: {exc}")
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -38,7 +78,7 @@ class CollectionTests(unittest.TestCase):
 
     def rejected(self, **kwargs):
         with self.assertRaises(RejectedOutput):
-            collect_results(self.work, self.destination, **kwargs)
+            self.collect(**kwargs)
         self.assertFalse(self.destination.exists())
         self.assertEqual(list(self.evidence.iterdir()), [])
         self.assertEqual(self.canary.read_bytes(), self.marker)
@@ -50,7 +90,7 @@ class CollectionTests(unittest.TestCase):
         (self.produced / "nested/table.csv").write_bytes(payload)
         for name in SUMMARY_NAMES:
             (self.produced / name).write_text('{"ok":true}')
-        result = collect_results(self.work, self.destination)
+        result = self.collect()
         self.assertEqual(result["status"], "collected")
         self.assertEqual((self.destination / "nested/table.csv").read_bytes(), payload)
         self.assertTrue((self.destination / "empty").is_dir())
@@ -59,48 +99,48 @@ class CollectionTests(unittest.TestCase):
         self.assertEqual(set(result["summaries"]), set(SUMMARY_NAMES))
 
     def test_previous_copy_primitive_leaks_only_the_generated_control(self):
-        (self.produced / "escape").symlink_to(self.canary)
+        self.link(self.produced / "escape", self.canary)
         copied = self.root / "old-copy-control"
         shutil.copytree(self.produced, copied)
         self.assertEqual((copied / "escape").read_bytes(), self.marker)
         self.rejected()
 
     def test_file_symlink_is_rejected(self):
-        (self.produced / "escape").symlink_to(self.canary)
+        self.link(self.produced / "escape", self.canary)
         self.rejected()
 
     def test_directory_symlink_is_rejected(self):
-        (self.produced / "escape").symlink_to(self.root, target_is_directory=True)
+        self.link(self.produced / "escape", self.root, directory=True)
         self.rejected()
 
     def test_results_root_symlink_is_rejected(self):
         self.produced.rmdir()
-        self.produced.symlink_to(self.root, target_is_directory=True)
+        self.link(self.produced, self.root, directory=True)
         self.rejected()
 
     def test_work_root_symlink_is_rejected(self):
         replacement = self.root / "replacement"
         self.work.rename(replacement)
-        self.work.symlink_to(replacement, target_is_directory=True)
+        self.link(self.work, replacement, directory=True)
         self.rejected()
 
     def test_dangling_symlink_is_rejected(self):
-        (self.produced / "escape").symlink_to(self.root / "missing")
+        self.link(self.produced / "escape", self.root / "missing")
         self.rejected()
 
     def test_internal_symlink_is_also_rejected(self):
         (self.produced / "real").write_text("ordinary")
-        (self.produced / "alias").symlink_to("real")
+        self.link(self.produced / "alias", "real")
         self.rejected()
 
     def test_all_summary_link_sinks_fail_without_logging_canary(self):
         for name in SUMMARY_NAMES:
             with self.subTest(name=name):
                 link = self.produced / name
-                link.symlink_to(self.canary)
+                self.link(link, self.canary)
                 captured = io.StringIO()
                 with contextlib.redirect_stdout(captured):
-                    result = collect_workload(self.work, self.evidence)
+                    result = collect_workload(self.work, self.evidence, method=self.method)
                 self.assertEqual(result["status"], "rejected")
                 self.assertFalse(self.destination.exists())
                 self.assertNotIn(self.marker.decode(), captured.getvalue())
@@ -113,19 +153,21 @@ class CollectionTests(unittest.TestCase):
         for name in SUMMARY_NAMES:
             with self.subTest(name=name):
                 link = self.produced / name
-                link.symlink_to(self.canary)
+                self.link(link, self.canary)
                 with self.assertRaises(RejectedOutput):
-                    read_summaries(self.produced)
+                    read_summaries(self.produced, self.method)
                 link.unlink()
 
     def test_hard_link_is_rejected(self):
         os.link(self.canary, self.produced / "escape")
         self.rejected()
 
+    @POSIX_ONLY
     def test_fifo_is_rejected_without_opening_it(self):
         os.mkfifo(self.produced / "pipe")
         self.rejected()
 
+    @unittest.skipUnless(hasattr(socket, "AF_UNIX") and os.name == "posix", "POSIX sockets")
     def test_socket_is_rejected(self):
         with socket.socket(socket.AF_UNIX) as listener:
             listener.bind(str(self.produced / "socket"))
@@ -175,7 +217,7 @@ class CollectionTests(unittest.TestCase):
         )
         captured = io.StringIO()
         with contextlib.redirect_stdout(captured):
-            report = collect_workload(self.work, self.evidence)
+            report = collect_workload(self.work, self.evidence, method=self.method)
         self.assertEqual(report["status"], "collected")
         lines = captured.getvalue().splitlines()
         self.assertFalse(any(line.lstrip().startswith("::") or "##[" in line for line in lines))
@@ -184,9 +226,10 @@ class CollectionTests(unittest.TestCase):
         target = self.produced / "replace-me"
         target.write_text("safe")
         real_open = os.open
+        self.link(self.root / "probe", self.canary)
 
         def switched(path, flags, *args, **kwargs):
-            if path == "replace-me":
+            if os.path.basename(path) == "replace-me":
                 target.unlink()
                 target.symlink_to(self.canary)
             return real_open(path, flags, *args, **kwargs)
@@ -197,15 +240,18 @@ class CollectionTests(unittest.TestCase):
     def test_directory_replaced_by_link_between_stat_and_open_is_rejected(self):
         target = self.produced / "replace-me"
         target.mkdir()
-        real_open = os.open
+        self.link(self.root / "probe", self.root, directory=True)
+        # The descriptor walk opens the folder; the path walk lists it.
+        name = "open" if self.method == "descriptor" else "scandir"
+        real = getattr(os, name)
 
-        def switched(path, flags, *args, **kwargs):
-            if path == "replace-me":
+        def switched(path, *args, **kwargs):
+            if isinstance(path, str) and os.path.basename(path) == "replace-me":
                 target.rmdir()
                 target.symlink_to(self.root, target_is_directory=True)
-            return real_open(path, flags, *args, **kwargs)
+            return real(path, *args, **kwargs)
 
-        with patch("output_collection.os.open", side_effect=switched):
+        with patch(f"output_collection.os.{name}", side_effect=switched):
             self.rejected()
 
     def test_destination_inside_work_is_refused(self):
@@ -213,12 +259,15 @@ class CollectionTests(unittest.TestCase):
             collect_results(self.work, self.work / "copy")
 
     def test_destination_through_a_link_in_work_is_refused(self):
-        (self.work / "outside").symlink_to(self.evidence, target_is_directory=True)
+        self.link(self.work / "outside", self.evidence, directory=True)
         with self.assertRaisesRegex(ValueError, "outside"):
             collect_results(self.work, self.work / "outside/copy")
 
+    @POSIX_ONLY
     def test_unsafe_archive_filenames_are_rejected(self):
-        for name in ("..\\outside", "drive:C", "line\nbreak", "tab\tname", "wild?card"):
+        names = ("..\\outside", "drive:C", "line\nbreak", "tab\tname", "wild?card")
+        names += ("trailing.", "trailing ", "CON", "nul.txt", "COM1.log")
+        for name in names:
             with self.subTest(name=name):
                 path = self.produced / name
                 path.write_text("ordinary generated content")
@@ -229,8 +278,41 @@ class CollectionTests(unittest.TestCase):
         self.destination.mkdir()
         (self.destination / "keep").write_text("previous evidence")
         with self.assertRaisesRegex(ValueError, "already exists"):
-            collect_results(self.work, self.destination)
+            self.collect()
         self.assertEqual((self.destination / "keep").read_text(), "previous evidence")
+
+    @POSIX_ONLY
+    def test_non_utf8_name_is_rejected(self):
+        """Finding F4: the artifact upload cannot name a file whose bytes are not UTF-8."""
+        fd = os.open(os.fsencode(self.produced) + b"/bad-\xff-name", os.O_CREAT | os.O_WRONLY)
+        os.close(fd)
+        self.rejected()
+
+    @unittest.skipUnless(os.name == "nt", "Windows junctions")
+    def test_junction_is_rejected(self):
+        import _winapi
+
+        outside = self.root / "outside"
+        outside.mkdir()
+        (outside / "canary").write_bytes(self.marker)
+        _winapi.CreateJunction(str(outside), str(self.produced / "junction"))
+        self.rejected()
+
+    def test_binary_bytes_are_copied_exactly(self):
+        payload = b"line\r\nnext\n\x1a\x00tail"
+        (self.produced / "binary.bin").write_bytes(payload)
+        result = self.collect()
+        self.assertEqual((self.destination / "binary.bin").read_bytes(), payload)
+        self.assertEqual(result["files"][0]["sha256"], hashlib.sha256(payload).hexdigest())
+
+
+@unittest.skipUnless(DESCRIPTOR_APIS, "POSIX descriptor walk")
+class DescriptorCollectionTests(CollectionCases, unittest.TestCase):
+    method = "descriptor"
+
+
+class PathCollectionTests(CollectionCases, unittest.TestCase):
+    method = "path"
 
 
 if __name__ == "__main__":
