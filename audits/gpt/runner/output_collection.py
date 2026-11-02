@@ -278,7 +278,13 @@ def open_folder(path, method, child=None):
         return
     # POSIX resolves a link before a later '..', as the descriptor walk does;
     # os.path.abspath would drop 'link/..' by text and walk another folder (I2).
-    base = os.path.abspath(path) if os.name == "nt" else os.path.join(os.getcwd(), path)
+    # An absolute path needs no current folder, which may have been deleted.
+    if os.name == "nt":
+        base = os.path.abspath(path)
+    elif os.path.isabs(path):
+        base = os.fspath(path)
+    else:
+        base = os.path.join(os.getcwd(), path)
     path_directory(base)
     folder = base if child is None else os.path.join(base, child)
     info = path_directory(folder)
@@ -480,20 +486,25 @@ def collect_workload(work, results, limits=DEFAULT_LIMITS, method=None):
 # Contract checks (CONTRACT.md); they run only when CONTRACT_CHECKS=1.
 
 
-def other_method_outcome(work, limits, method):
-    """I2: run the other walk on the same tree; return its outcome and data."""
+def other_method_outcome(work, limits, method, beside):
+    """I2: run the other walk on the same tree; return its outcome and data.
+
+    Its snapshot is made where the real one was (``beside``), under a name of the same
+    length, so it fits the path limit wherever the real snapshot did; one in TMPDIR
+    could be longer and fail on a tree the real walk collected."""
     other = "path" if method == "descriptor" else "descriptor"
-    with tempfile.TemporaryDirectory() as scratch:
-        snapshot = Path(scratch) / "snapshot"
-        snapshot.mkdir()
+    with tempfile.TemporaryDirectory(prefix=".collect-", dir=beside) as scratch:
+        snapshot = Path(scratch)
         try:
             records, entries, byte_count = copy_tree(work, snapshot, limits, other)
             summaries = read_summaries(snapshot, other)
         except (OSError, RejectedOutput) as exc:
-            # A failure on the reference snapshot's own path (a long TMPDIR) says
-            # nothing about the tree; as an outcome it would pass for path_too_long.
+            # A failure on the reference snapshot's own path (a full disk) says
+            # nothing about the tree; as an outcome it could pass for path_too_long.
             name = getattr(exc, "filename", None)
-            if isinstance(name, (str, bytes)) and os.fsdecode(name).startswith(scratch):
+            if isinstance(name, (str, bytes)) and (
+                os.fsdecode(name) == scratch or os.fsdecode(name).startswith(scratch + os.sep)
+            ):
                 raise
             return "rejected", exc
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
@@ -509,7 +520,7 @@ def check_rejected(work, destination, snapshot, limits, method, error):
     # (only possible in tests that inject the change) may be stable and valid by now.
     changed = isinstance(error, OSError) or "changed during collection" in str(error)
     if method == "descriptor" and DESCRIPTOR_APIS and not changed:
-        outcome = other_method_outcome(work, limits, method)
+        outcome = other_method_outcome(work, limits, method, destination.parent)
         contract.require("I2", outcome[0] == "rejected", "only the descriptor walk rejected")
 
 
@@ -600,7 +611,7 @@ def check_collected(work, destination, report, limits, method):
         contract.require("Q1", stat.S_ISREG(info.st_mode) and info.st_nlink == 1, relative)
         contract.require("Q1", source == data, "source bytes differ: " + relative)
     if method == "descriptor" and DESCRIPTOR_APIS:
-        outcome = other_method_outcome(work, limits, method)
+        outcome = other_method_outcome(work, limits, method, destination.parent)
         if path_too_long(outcome):
             return
         expected = ("collected", report["files"], report["entries"], report["bytes"])

@@ -2,7 +2,7 @@
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
 `contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
-(P2 and P3 are always enforced by the code, and the suites check W1-W3); every test
+(P2 and P3 are always enforced by the code, and the suites check W1-W4); every test
 suite, the CI host-test steps and the CI Docker controls step set it, production
 runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
@@ -62,9 +62,10 @@ rejection.
 
 ## Container workload and snapshot check (checked by the suites)
 
-These run inside the Linux container or on raw input, not in the host process, so
-`contract.py` does not check them; `test_guards.py` does, and the CI Docker controls
-exercise W1 and W2 in a real container.
+W1-W3 run inside the Linux container or on raw input, and W4 is a property of the
+workflow, not of the host process, so `contract.py` does not check them;
+`test_guards.py` checks W1-W3, `test_host_safety.py` checks W4, and the CI Docker
+controls exercise W1 and W2 in a real container.
 
 - **W1** `boundary.json` reports `no_capabilities` true only when the permitted,
   effective and bounding capability sets are all empty (and the ambient set, where
@@ -85,6 +86,10 @@ exercise W1 and W2 in a real container.
   file, a hash mismatch) as `rejected` (exit 2). The manifest's own entries are
   checked before the snapshot is looked at, so a bad manifest is rejected even when
   the snapshot is missing. It never ends with a traceback.
+- **W4** The evidence uploads in `audit-runtime.yml` keep names that start with a
+  dot but never take a collection's unfinished snapshot (`.collect-*` beside the
+  destination), which a host process killed during collection leaves behind and
+  which was never checked as a whole. Checked in `test_host_safety.WorkflowTests`.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 

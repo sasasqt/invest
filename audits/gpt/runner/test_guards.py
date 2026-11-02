@@ -280,6 +280,176 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(SnapshotError, "Duplicate"):
             verify(self.reference, self.snapshot)
 
+    def save_utf8(self):
+        """Both manifests as UTF-8 text with non-ASCII characters left unescaped."""
+        text = json.dumps(self.expected, ensure_ascii=False)
+        for path in (self.reference, self.snapshot / "snapshot.json"):
+            path.write_text(text, encoding="utf-8")
+
+    def test_each_result_is_reported_in_full(self):
+        """Mutation testing (round 8): most tests read only a result's status, and no
+        manifest held a non-ASCII path (read with the locale's encoding on Windows)."""
+        second = "café".encode()
+        (self.snapshot / "raw" / "BÉ.json").write_bytes(second)
+        self.expected["files"]["BÉ"] = {
+            "path": "raw/BÉ.json",
+            "bytes": len(second),
+            "sha256": hashlib.sha256(second).hexdigest(),
+        }
+        self.save_utf8()
+        common = {"request": self.expected["request"], "observations_interpreted": False}
+        self.assertEqual(
+            verify(self.reference, self.snapshot),
+            {
+                "status": "verified",
+                "files": 2,
+                "verified_bytes": len(self.payload) + len(second),
+                "missing": [],
+                **common,
+            },
+        )
+        self.file.unlink()
+        self.assertEqual(
+            verify(self.reference, self.snapshot),
+            {
+                "status": "blocked",
+                "files": 2,
+                "verified_bytes": len(second),
+                "missing": ["raw/AAA.json"],
+                **common,
+            },
+        )
+        (self.snapshot / "snapshot.json").unlink()
+        self.assertEqual(
+            verify(self.reference, self.snapshot),
+            {"status": "blocked", "reason": "snapshot manifest unavailable"},
+        )
+        self.assertEqual(
+            verify(self.reference, self.root / "missing"),
+            {"status": "blocked", "reason": "matching snapshot directory unavailable"},
+        )
+
+    def test_a_missing_file_does_not_end_the_check_of_later_files(self):
+        self.expected["files"]["BBB"] = {
+            "path": "raw/BBB.json",
+            "bytes": len(self.payload),
+            "sha256": "0" * 64,
+        }
+        (self.snapshot / "raw" / "BBB.json").write_bytes(self.payload)
+        self.save()
+        self.file.unlink()
+        with self.assertRaisesRegex(SnapshotError, "^Wrong SHA-256 for BBB$"):
+            verify(self.reference, self.snapshot)
+
+    def test_a_one_day_request_is_permitted(self):
+        self.expected["request"] = {"start": "2024-12-31", "end": "2024-12-31"}
+        self.save()
+        self.assertEqual(verify(self.reference, self.snapshot)["status"], "verified")
+
+    def test_each_rejection_names_its_reason(self):
+        """Mutation testing (round 8): the command line prints the reason, and most tests
+        matched only a word of it."""
+        base = copy.deepcopy(self.expected)
+
+        def manifest(change):
+            def apply(reference, snapshot):
+                expected = copy.deepcopy(base)
+                change(expected)
+                for path in (reference, snapshot / "snapshot.json"):
+                    path.write_text(json.dumps(expected), encoding="utf-8")
+                return snapshot
+
+            return apply
+
+        def snapshot_manifest(text):
+            def apply(reference, snapshot):
+                (snapshot / "snapshot.json").write_text(text, encoding="utf-8")
+                return snapshot
+
+            return apply
+
+        def raw(replace):
+            def apply(reference, snapshot):
+                replace(snapshot / "raw" / "AAA.json", snapshot)
+                return snapshot
+
+            return apply
+
+        def linked_root(reference, snapshot):
+            link = snapshot.with_name("link")
+            link.symlink_to(snapshot, target_is_directory=True)
+            return link
+
+        def file_root(reference, snapshot):
+            other = snapshot.with_name("file")
+            other.write_bytes(b"")
+            return other
+
+        def linked_manifest(reference, snapshot):
+            moved = snapshot.with_name("moved.json")
+            (snapshot / "snapshot.json").rename(moved)
+            (snapshot / "snapshot.json").symlink_to(moved)
+            return snapshot
+
+        def folder_manifest(reference, snapshot):
+            (snapshot / "snapshot.json").unlink()
+            (snapshot / "snapshot.json").mkdir()
+            return snapshot
+
+        def linked_raw(path, snapshot):
+            moved = snapshot.with_name("outside.json")
+            path.rename(moved)
+            path.symlink_to(moved)
+
+        def folder_raw(path, snapshot):
+            path.unlink()
+            path.mkdir()
+
+        entry = base["files"]["AAA"]
+        cases = {
+            "Manifest must be an object with a files object": manifest(
+                lambda m: m.update(files=[])
+            ),
+            "Manifest request must name its start and end dates": manifest(
+                lambda m: m.pop("request")
+            ),
+            "Only an already-inspected pre-2025 request is permitted": manifest(
+                lambda m: m["request"].update(start="2024-02-01", end="2024-01-31")
+            ),
+            "Malformed manifest entry for AAA": manifest(lambda m: m["files"]["AAA"].pop("sha256")),
+            "Unsafe raw path for AAA": manifest(
+                lambda m: m["files"]["AAA"].update(path="other/AAA.json")
+            ),
+            "Duplicate raw path": manifest(lambda m: m["files"].update(BBB=dict(entry))),
+            "Snapshot root must not be a symlink": linked_root,
+            "Snapshot root is not a directory": file_root,
+            "Snapshot manifest must not be a symlink": linked_manifest,
+            "Snapshot manifest is not a regular file": folder_manifest,
+            "Snapshot manifest differs from the recorded request/file identity": (
+                snapshot_manifest(json.dumps({**base, "request": {"start": "2011-01-01"}}))
+            ),
+            "JSON nested too deeply: snapshot.json": snapshot_manifest("[" * 100000),
+            "Symlink in raw path for AAA": raw(linked_raw),
+            "Raw path is not a regular file for AAA": raw(folder_raw),
+            "Wrong byte count for AAA": raw(lambda path, _: path.write_bytes(b"x")),
+            "Wrong SHA-256 for AAA": raw(
+                lambda path, _: path.write_bytes(self.payload.replace(b"t", b"T"))
+            ),
+        }
+        for number, (reason, apply) in enumerate(cases.items()):
+            with self.subTest(reason=reason):
+                root = self.root / f"case{number}"
+                snapshot = root / "snapshot"
+                (snapshot / "raw").mkdir(parents=True)
+                (snapshot / "raw" / "AAA.json").write_bytes(self.payload)
+                reference = root / "expected.json"
+                for path in (reference, snapshot / "snapshot.json"):
+                    path.write_text(json.dumps(base), encoding="utf-8")
+                target = apply(reference, snapshot)
+                with self.assertRaises(SnapshotError) as caught:
+                    verify(reference, target)
+                self.assertEqual(str(caught.exception), reason)
+
 
 class EvidenceTests(unittest.TestCase):
     def test_queued_job_is_pending_not_fresh_execution(self):
@@ -1113,6 +1283,12 @@ class StagingSafetyTests(unittest.TestCase):
         granted = empty.replace("CapBnd:\t0000000000000000", "CapBnd:\t00000000a80425fb")
         self.assertFalse(runner_workload.capabilities_dropped(granted))
         self.assertFalse(runner_workload.capabilities_dropped("CapEff:\t0000000000000000\n"))
+        # Mutation testing (round 8): kernels before 4.3 list no ambient set, and an
+        # ambient set that is not empty counts as granted.
+        no_ambient = "".join(line + "\n" for line in empty.splitlines() if "CapAmb" not in line)
+        self.assertTrue(runner_workload.capabilities_dropped(no_ambient))
+        ambient = empty.replace("CapAmb:\t0000000000000000", "CapAmb:\t0000000000000400")
+        self.assertFalse(runner_workload.capabilities_dropped(ambient))
 
     @unittest.skipUnless(sys.platform.startswith("linux"), "process groups and /proc")
     def test_a_workload_step_leaves_no_process_running(self):
@@ -1254,8 +1430,27 @@ class RunnerBranchTests(unittest.TestCase):
 
     def test_failed_command_names_the_program_and_its_error(self):
         script = "import sys; sys.stderr.write('broken'); raise SystemExit(3)"
-        with self.assertRaisesRegex(RuntimeError, "exited 3: broken"):
+        with self.assertRaises(RuntimeError) as caught:
             checked([sys.executable, "-c", script])
+        self.assertEqual(str(caught.exception), f"{Path(sys.executable).name} exited 3: broken")
+
+    def test_program_output_is_read_as_utf8_with_bad_bytes_replaced(self):
+        """Mutation testing (round 8): no test fed checked() bytes that are not UTF-8, or
+        UTF-8 that the host's locale encoding (cp1252 on Windows) reads differently."""
+        script = "import sys; sys.stdout.buffer.write(b'caf\\xc3\\xa9 \\xff')"
+        self.assertEqual(checked([sys.executable, "-c", script]), "café �")
+
+    def test_bounded_helper_returns_the_program_and_both_outputs(self):
+        argv = [
+            sys.executable,
+            "-c",
+            "import sys; print('out'); sys.stderr.write('err'); sys.exit(4)",
+        ]
+        result = isolated_runner.run_captured(argv, timeout=60)
+        self.assertEqual(
+            (result.args, result.returncode, result.stdout.strip(), result.stderr),
+            (argv, 4, b"out", b"err"),
+        )
 
     def test_non_positive_execution_limits_are_refused(self):
         for limits in ({"timeout": 0}, {"max_log_bytes": 0}):
@@ -1532,6 +1727,81 @@ class SemanticCoverageTests(unittest.TestCase):
         )
         self.assertEqual(manifest["figures_present_nonempty"], ["figure.png"])
         self.assertTrue(all(row["comparison"] and row["sha256"] for row in manifest["records"]))
+
+    def test_each_kind_of_output_is_compared_as_documented(self):
+        """Mutation testing (round 8): no test spelled out the manifest, so a changed
+        comparison for one kind of file (CSV, text, JSON key order, a nested folder)
+        went unseen. Every expected value here is written out independently."""
+        root = str(self.root)
+        (self.root / "metrics.json").write_text(
+            json.dumps({"b": [root + "/x", {"created_at": 1, "v": 2}], "a": 1}), encoding="utf-8"
+        )
+        (self.root / "rows.jsonl").write_text(
+            json.dumps({"z": 1, "y": 2, "recorded_at": 5})
+            + "\n\n"
+            + json.dumps({"a": root})
+            + "\n",
+            encoding="utf-8",
+        )
+        self.compressed(b"v\n1\n")
+        (self.root / "plain.csv").write_bytes(root.encode() + b",1\n")
+        for suffix in (".html", ".md", ".txt", ".yaml", ".yml"):
+            (self.root / f"note{suffix}").write_text(f"at {root}\n", encoding="utf-8")
+        (self.root / "data.bin").write_bytes(root.encode())
+        (self.root / "sub").mkdir()
+        (self.root / "sub" / "inner.json").write_text('{"k": "v"}', encoding="utf-8")
+
+        def row(path, comparison, payload):
+            digest = hashlib.sha256(payload).hexdigest()
+            return {"path": str(Path(path)), "comparison": comparison, "sha256": digest}
+
+        text = "UTF-8 text; output root normalized"
+        json_kind = "json; declared volatile keys and output root normalized"
+        expected = {
+            "version": 2,
+            "volatile_json_keys": ["created_at", "created_utc", "recorded_at", "retrieved_at"],
+            "records": [
+                row("data.bin", "raw bytes; no undeclared exclusion", root.encode()),
+                row("metrics.json", json_kind, b'{"a": 1, "b": ["$RUN/x", {"v": 2}]}'),
+                row("note.html", text, b"at $RUN\n"),
+                row("note.md", text, b"at $RUN\n"),
+                row("note.txt", text, b"at $RUN\n"),
+                row("note.yaml", text, b"at $RUN\n"),
+                row("note.yml", text, b"at $RUN\n"),
+                row("plain.csv", "CSV bytes", root.encode() + b",1\n"),
+                row(
+                    "rows.jsonl",
+                    "jsonl; record order retained; declared volatile keys normalized",
+                    b'[{"y": 2, "z": 1}, {"a": "$RUN"}]',
+                ),
+                row("sub/inner.json", json_kind, b'{"k": "v"}'),
+                row(
+                    "table.csv.gz",
+                    "decompressed CSV bytes; gzip header metadata excluded",
+                    b"v\n1\n",
+                ),
+            ],
+            "figures_present_nonempty": ["figure.png"],
+            "figure_byte_comparison": "excluded; source tables participate in the gate",
+        }
+        self.assertEqual(semantic_manifest(self.root), expected)
+
+    def test_records_and_a_nonempty_figure_are_both_required(self):
+        (self.root / "figure.png").unlink()
+        with self.assertRaisesRegex(
+            ValueError, "^Workflow produced no semantic records or figures$"
+        ):
+            semantic_manifest(self.root)
+        (self.root / "metrics.json").unlink()
+        (self.root / "figure.png").write_bytes(b"x")
+        with self.assertRaisesRegex(
+            ValueError, "^Workflow produced no semantic records or figures$"
+        ):
+            semantic_manifest(self.root)
+        (self.root / "metrics.json").write_text("{}", encoding="utf-8")
+        (self.root / "figure.png").write_bytes(b"")
+        with self.assertRaisesRegex(ValueError, "^Empty figure$"):
+            semantic_manifest(self.root)
 
 
 class InstalledGraphTests(unittest.TestCase):

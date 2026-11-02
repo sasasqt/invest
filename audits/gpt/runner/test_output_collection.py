@@ -36,6 +36,10 @@ from output_collection import (
 )
 
 POSIX_ONLY = unittest.skipUnless(os.name == "posix", "POSIX file types and names")
+# A test of a contract check itself; with the test mode off that check never runs.
+NEEDS_CHECKS = unittest.skipUnless(
+    os.environ.get("CONTRACT_CHECKS") == "1", "tests a contract check (CONTRACT_CHECKS=1)"
+)
 LINKED = "linked, special or cross-device output entry"
 MISSING = "missing, linked or unreadable output directory"
 
@@ -569,6 +573,7 @@ class RoundSevenCheckTests(unittest.TestCase):
                                     root / "work", destination, report, DEFAULT_LIMITS, "path"
                                 )
 
+    @NEEDS_CHECKS
     @unittest.skipUnless(os.name == "posix" and DESCRIPTOR_APIS, "PATH_MAX and descriptor walk")
     def test_a_long_temporary_folder_never_silences_an_i2_disagreement(self):
         """The reference walk's own snapshot path in a long TMPDIR failed with
@@ -577,8 +582,8 @@ class RoundSevenCheckTests(unittest.TestCase):
 
         real = output_collection.other_method_outcome
 
-        def disagreeing(work, limits, method):
-            outcome = real(work, limits, method)
+        def disagreeing(work, limits, method, *where):
+            outcome = real(work, limits, method, *where)
             if outcome[0] != "collected":
                 return outcome
             return ("collected", [{"path": "x", "bytes": 0, "sha256": ""}], 1, 0, {})
@@ -621,6 +626,96 @@ class RoundSevenCheckTests(unittest.TestCase):
                 with self.subTest(method=method):
                     collected = collect_results(work, root / f"ev-{method}/workload", method=method)
                     self.assertEqual([row["path"] for row in collected["files"]], ["kernel.txt"])
+
+
+@POSIX_ONLY
+class RoundEightCheckTests(unittest.TestCase):
+    """Review round 8: the path walk's base and the I2 reference snapshot."""
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_the_i2_check_compares_with_the_path_walk(self):
+        """Mutation testing (round 8): no test showed that the I2 check walks the tree the
+        other way; a reference made by the same walk agrees with any fault of that walk."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+            refused = RejectedOutput("path walk refused")
+            with patch("output_collection.path_directory", side_effect=refused):
+                with self.assertRaisesRegex(ContractViolation, "^I2: the two walks copied"):
+                    collect_results(root / "work", root / "evidence/workload", method="descriptor")
+
+    def test_an_absolute_work_path_needs_no_current_folder(self):
+        """The path walk joined every path to os.getcwd(), which fails once the current
+        folder is deleted, so it rejected a tree the descriptor walk collected (I2)."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results/sub").mkdir(parents=True)
+            (root / "work/results/sub/table.csv").write_text("a,b\n", encoding="utf-8")
+            (root / "gone").mkdir()
+            previous = os.getcwd()
+            os.chdir(root / "gone")
+            try:
+                (root / "gone").rmdir()
+                for method in ("descriptor", "path"):
+                    with self.subTest(method=method):
+                        collected = collect_results(
+                            root / "work", root / f"ev-{method}/workload", method=method
+                        )
+                        self.assertEqual(
+                            [row["path"] for row in collected["files"]], ["sub/table.csv"]
+                        )
+            finally:
+                os.chdir(previous)
+
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_the_reference_snapshot_fits_wherever_the_real_one_fits(self):
+        """The I2 reference copy went to TMPDIR/tmpXXXXXXXX/snapshot. When that is longer
+        than <output>/.collect-XXXXXXXX, a tree the real walk collected (or rejected)
+        near PATH_MAX made the test mode raise ENAMETOOLONG instead."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "r"
+            limit = os.pathconf(directory, "PC_PATH_MAX") - 1
+            temporary = root / ("t" * 120)
+            temporary.mkdir()
+            for case in ("collected", "rejected"):
+                with self.subTest(case=case), patch.object(tempfile, "tempdir", str(temporary)):
+                    destination = output / case / "workload"
+                    # The real snapshot (destination.parent/.collect-XXXXXXXX) just fits.
+                    budget = limit - len(str(destination.parent / ".collect-xxxxxxxx")) - 1 - 4
+                    results = root / case / "work/results"
+                    results.mkdir(parents=True)
+                    for name in ("a", "b"):
+                        (results / name).mkdir()
+                    first, second = [entry.name for entry in os.scandir(results)]
+                    parts, length = [first], 2
+                    while length + 201 < budget - 5:
+                        parts.append("d" * 200)
+                        length += 201
+                    folder = results.joinpath(*parts)
+                    folder.mkdir(parents=True, exist_ok=True)
+                    descriptor = os.open(folder, os.O_RDONLY | os.O_DIRECTORY)
+                    try:
+                        name = "f" * (budget - length)
+                        fd = os.open(name, os.O_WRONLY | os.O_CREAT, 0o644, dir_fd=descriptor)
+                        os.write(fd, b"x\n")
+                        os.close(fd)
+                    finally:
+                        os.close(descriptor)
+                    if case == "rejected":
+                        os.mkfifo(results / second / "pipe")
+                    if case == "collected":
+                        report = collect_results(results.parent, destination, method="descriptor")
+                        self.assertEqual(len(report["files"]), 1)
+                    else:
+                        with self.assertRaisesRegex(RejectedOutput, LINKED):
+                            collect_results(results.parent, destination, method="descriptor")
+                    self.assertEqual(
+                        sorted(path.name for path in destination.parent.iterdir()),
+                        ["workload"] if case == "collected" else [],
+                    )
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
@@ -687,6 +782,7 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
             self.rejected(LINKED)
         self.assertTrue(swapped)
 
+    @NEEDS_CHECKS
     def test_contract_check_catches_a_comparison_that_misses_a_different_file(self):
         """Review round 5 (B1): the I1 check repeated the type tests and never compared
         the opened file's identity with the checked name's."""

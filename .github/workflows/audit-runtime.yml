@@ -85,7 +85,11 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: collection-${{ matrix.python }}
-          path: ${{ runner.temp }}/collection-${{ matrix.python }}/results
+          # Not a collection's unfinished snapshot (.collect-*), which a host process
+          # killed mid-collection (job cancelled or timed out) leaves behind.
+          path: |
+            ${{ runner.temp }}/collection-${{ matrix.python }}/results
+            !${{ runner.temp }}/collection-${{ matrix.python }}/results/*/.collect-*
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 30
@@ -153,7 +157,11 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: audit-${{ matrix.kind }}-${{ matrix.python }}
-          path: ${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results
+          # Not a collection's unfinished snapshot (.collect-*), which a host process
+          # killed mid-collection (job cancelled or timed out) leaves behind.
+          path: |
+            ${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results
+            !${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results/.collect-*
           if-no-files-found: warn
           include-hidden-files: true
           retention-days: 30

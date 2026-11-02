@@ -6,6 +6,8 @@ Windows. Tests that need uv skip when it is not installed.
 """
 
 import contextlib
+import fnmatch
+import glob
 import io
 import json
 import os
@@ -104,6 +106,39 @@ def quoted(text):
 def forged_lines(output):
     """Lines GitHub reads as commands: '::' first, or the older '##[' anywhere."""
     return [line for line in output.splitlines() if line.lstrip().startswith("::") or "##[" in line]
+
+
+def upload_path_lines(step):
+    """The lines of an upload step's `path:` input (one line, or a `|` block)."""
+    lines = step.splitlines()
+    for number, line in enumerate(lines):
+        key, _, value = line.strip().partition(":")
+        if key == "path" and _:
+            if value.strip() != "|":
+                return [value.strip()]
+            indent = len(line) - len(line.lstrip())
+            block = []
+            for item in lines[number + 1 :]:
+                if item.strip() and len(item) - len(item.lstrip()) <= indent:
+                    break
+                if item.strip():
+                    block.append(item.strip())
+            return block
+    raise AssertionError("upload step without path")
+
+
+def upload_excludes(path, excludes):
+    """@actions/glob with implicitDescendants: an exclude that matches a folder
+    also covers everything in it; `*` stays within one path segment; dot: true."""
+    parts = path.split("/")
+    for pattern in excludes:
+        wanted = pattern.split("/")
+        if len(parts) >= len(wanted) and all(
+            fnmatch.fnmatchcase(part, piece)
+            for part, piece in zip(parts[: len(wanted)], wanted, strict=True)
+        ):
+            return True
+    return False
 
 
 class HostErrorTests(unittest.TestCase):
@@ -393,6 +428,66 @@ class WorkflowTests(unittest.TestCase):
         for step in uploads:
             with self.subTest(step=step.splitlines()[0]):
                 self.assertIn("include-hidden-files: true", step)
+
+    def test_no_evidence_upload_takes_an_unfinished_snapshot(self):
+        """Review round 8: collect_results builds its snapshot in a hidden `.collect-*`
+        folder beside its destination and renames it only once the whole tree passed.
+        A host process killed in between (job cancelled or timed out) leaves that
+        folder, the `if: always()` uploads still run, and with include-hidden-files
+        they would publish container output that was never validated as a whole."""
+        workflow = HERE.parents[2] / ".github/workflows/audit-runtime.yml"
+        steps = workflow.read_text(encoding="utf-8").split("\n      - ")
+        uploads = [step for step in steps if "actions/upload-artifact@" in step]
+        self.assertTrue(uploads, "no upload step found")
+        child = (
+            "import os, signal, sys\n"
+            "sys.path.insert(0, sys.argv[1])\n"
+            "import output_collection as oc\n"
+            "real = oc.copy_opened\n"
+            "def copy_then_die(*args, **kwargs):\n"
+            "    real(*args, **kwargs)\n"
+            "    os.kill(os.getpid(), signal.SIGTERM)  # abrupt on POSIX and Windows\n"
+            "oc.copy_opened = copy_then_die\n"
+            "oc.collect_workload(sys.argv[2], sys.argv[3])\n"
+        )
+        for step in uploads:
+            with self.subTest(step=step.splitlines()[0]), tempfile.TemporaryDirectory() as temp:
+                runner_temp = Path(temp)
+
+                def expand(line, root):
+                    return (
+                        line.replace("${{ runner.temp }}", root)
+                        .replace("${{ matrix.python }}", "3.11")
+                        .replace("${{ matrix.kind }}", "audited")
+                    )
+
+                lines = upload_path_lines(step)
+                root = runner_temp.as_posix()
+                includes = [expand(line, root) for line in lines if not line.startswith("!")]
+                excludes = [
+                    expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
+                ]
+                results = Path(includes[0])
+                # collection_checks.py collects each case into a folder of its own
+                sink = results / "ordinary" if "name: collection-" in step else results
+                sink.mkdir(parents=True)
+                folder = runner_temp / "work" / "results"
+                folder.mkdir(parents=True)
+                (folder / "boundary.json").write_text("{not json", encoding="utf-8")
+                killed = subprocess.run(
+                    [sys.executable, "-c", child, str(HERE), str(runner_temp / "work"), str(sink)],
+                    capture_output=True,
+                    timeout=120,
+                )
+                self.assertNotEqual(killed.returncode, 0, "the collection was not interrupted")
+                left = [path for path in sink.iterdir() if path.name.startswith(".collect-")]
+                self.assertTrue(left, "no unfinished snapshot to test with")
+                taken = [
+                    path.relative_to(results).as_posix()
+                    for path in results.rglob("*")
+                    if path.is_file() and not upload_excludes(path.as_posix(), excludes)
+                ]
+                self.assertEqual(taken, [], "the upload would take an unfinished snapshot")
 
 
 if __name__ == "__main__":

@@ -53,7 +53,11 @@ def verify(expected_path, snapshot):
     expected = _json(expected_path)
     if not isinstance(expected, dict) or not isinstance(expected.get("files"), dict):
         raise SnapshotError("Manifest must be an object with a files object")
-    request = expected.get("request", {})
+    request = expected.get("request")
+    if not isinstance(request, dict) or not all(
+        isinstance(request.get(key), str) for key in ("start", "end")
+    ):
+        raise SnapshotError("Manifest request must name its start and end dates")
     start, end = date.fromisoformat(request["start"]), date.fromisoformat(request["end"])
     if end < start or end >= date(2025, 1, 1):
         raise SnapshotError("Only an already-inspected pre-2025 request is permitted")
@@ -78,14 +82,10 @@ def verify(expected_path, snapshot):
     actual = _json(manifest)
     if actual != expected:
         raise SnapshotError("Snapshot manifest differs from the recorded request/file identity")
-    seen = set()
     total = 0
     missing = []
     root = snapshot.resolve()
     for symbol, (relative, entry) in entries.items():
-        if str(relative) in seen:
-            raise SnapshotError("Duplicate raw path")
-        seen.add(str(relative))
         path = snapshot.joinpath(*relative.parts)
         probe = path
         while probe != snapshot:
@@ -111,7 +111,7 @@ def verify(expected_path, snapshot):
         total += size
     return {
         "status": "blocked" if missing else "verified",
-        "files": len(seen),
+        "files": len(entries),
         "verified_bytes": total,
         "missing": missing,
         "request": request,

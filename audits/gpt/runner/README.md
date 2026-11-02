@@ -8,7 +8,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 
 - `isolated_runner.py`: host-side source identity checks, credential-free Git metadata staging, immutable image capture and restricted container launch.
 - `output_collection.py`: link-free collection into a private host snapshot (no-follow directory descriptors on POSIX hosts, a reparse-point-checking path walk on Windows); validates summaries and bounds files, bytes, entries and depth before upload.
-- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite, the CI host steps and the CI Docker controls step switch them on.
+- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite, the CI host steps and the CI Docker controls step switch them on. CONTRACT.md also states rules W1–W4 for the container workload, the snapshot check and the evidence uploads, which the test suites check instead.
 - `collection_checks.py`: real Docker controls for hostile output and ordinary evidence, using generated host-only canaries, plus `test_output_collection.py` and `test_execution_logs.py` regression tests.
 - `test_host_safety.py`: runs the real host runner with a stand-in Docker command to check that uv settings (such as `cache-dir`), file names, build output and container output from the audited source cannot steer host-side uv or start GitHub workflow commands, and that the Dockerfile pulls no unpinned frontend image.
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
@@ -121,7 +121,8 @@ The collection workflow tests file, directory, root and each summary link agains
 generated host-only canaries. It also rejects FIFO, hard-link and oversized
 output, checks all normal boundary probes, and proves ordinary evidence still
 collects. It uploads only the host evidence directory, names starting with a dot included, so
-the artifact holds every file that `collection.json` lists. Run the host regression
+the artifact holds every file that `collection.json` lists; an unfinished `.collect-*`
+snapshot that a killed collection leaves behind is left out. Run the host regression
 tests (they need `packaging`) on Linux or Windows with
 `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety`.
 Run `python collection_checks.py --python-version 3.11 --output /path/to/new-output`
