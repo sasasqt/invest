@@ -1,0 +1,50 @@
+{
+  "branch": "gpt/repo-audits",
+  "old_head": "54796481c71c3b5f93d19b056306fe7776dcb090",
+  "rewritten_head": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "orphan_root": "3d7eec50795cecfe8ceabfbb858dff6acc5bce5c",
+  "replayed_audit_commits": 14,
+  "guarded_replacement": {
+    "force": true,
+    "expected_old_sha": "54796481c71c3b5f93d19b056306fe7776dcb090",
+    "success": true
+  },
+  "all_replayed_snapshots_have_identical_original_audit_subtrees": true,
+  "all_replayed_snapshots_exclude_inherited_product_files": true,
+  "current_tree": {
+    "previous_files_retained": 175,
+    "unchanged_files": 169,
+    "modified_existing_files": 6,
+    "new_evidence_files": 3
+  },
+  "commit_map_path": "audits/gpt/history-rewrite-2026-11-02/commit-map.json",
+  "source_and_runner_shas_not_rewritten": true,
+  "runtime_execution": "none; INV-PR32-001 unresolved",
+  "backup_or_temporary_branches_created": 0,
+  "published_history_commits": 15,
+  "published_history_verified": true,
+  "main": {
+    "unchanged": true,
+    "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+  },
+  "gpt/isolated-audit-runner": {
+    "unchanged": true,
+    "sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5"
+  },
+  "claude/repo-audits": {
+    "unchanged": true,
+    "sha": "4930f9ee9ecf65735822456392d2253fdc93bd9e"
+  },
+  "audit_task": {
+    "prompt_verified": true,
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Berlin:20261101T030000\nRRULE:FREQ=DAILY;BYHOUR=3;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+    "is_enabled": true
+  },
+  "saved_prompt": {
+    "library_file_id": "libfile_10a906ccde108191a2419e40fcb8bfef",
+    "version": "4",
+    "exact_text_verified_except_read_terminal_newline": true
+  },
+  "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "all_18_method_hashes_verified": true
+}
