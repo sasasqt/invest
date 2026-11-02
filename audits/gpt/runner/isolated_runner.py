@@ -29,7 +29,8 @@ DOCKER_ENDPOINT = (
     "npipe:////./pipe/docker_engine" if os.name == "nt" else "unix:///var/run/docker.sock"
 )
 GIT_TIMEOUT = 600
-SYSTEM_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt"
+# Windows has no system bundle: "/etc/..." there names a folder on the current drive.
+SYSTEM_CA_BUNDLE = None if os.name == "nt" else "/etc/ssl/certs/ca-certificates.crt"
 SERVER_AUTH = "1.3.6.1.5.5.7.3.1"
 
 
@@ -47,7 +48,8 @@ def host_tool(name):
         if not any(name.lower().endswith(suffix) for suffix in listed if suffix):
             suffixes = [suffix for suffix in listed if suffix]
     for folder in os.environ.get("PATH", "").split(os.pathsep):
-        if not os.path.isabs(folder):
+        # On Windows also a drive or share: "\\tools" is relative to the current drive.
+        if not os.path.isabs(folder) or (os.name == "nt" and not os.path.splitdrive(folder)[0]):
             continue
         for suffix in suffixes:
             candidate = os.path.join(folder, name + suffix)
@@ -74,9 +76,33 @@ def write_text(path, text):
     Path(path).write_text(text, encoding="utf-8", newline="\n")
 
 
-def checked(argv, **kwargs):
-    result = subprocess.run(
-        argv, text=True, encoding="utf-8", errors="replace", capture_output=True, **kwargs
+def run_captured(argv, *, timeout=None, input=None, **kwargs):
+    """Run ``argv`` with captured output; on a timeout kill it and raise at once.
+
+    Every host program goes through here, not subprocess.run: on Windows, run reads
+    the pipes to their end after the kill, so a launcher's child that still holds
+    them (Git for Windows' cmd\\git.exe, a Docker CLI plugin such as buildx) would
+    keep it waiting past the timeout.
+    """
+    process = subprocess.Popen(
+        argv,
+        stdin=subprocess.PIPE if input is not None else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        **kwargs,
+    )
+    try:
+        stdout, stderr = process.communicate(input, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=30)
+        raise
+    return subprocess.CompletedProcess(argv, process.returncode, stdout, stderr)
+
+
+def checked(argv, *, timeout=None, **kwargs):
+    result = run_captured(
+        argv, timeout=timeout, text=True, encoding="utf-8", errors="replace", **kwargs
     )
     if result.returncode:
         raise RuntimeError(
@@ -170,12 +196,7 @@ def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
 
 def remove_container(name, env):
     """Do not collect a bind mount while a container could still write it."""
-    subprocess.run(
-        docker_command("container", "rm", "--force", name),
-        env=env,
-        capture_output=True,
-        timeout=30,
-    )
+    run_captured(docker_command("container", "rm", "--force", name), env=env, timeout=30)
     remaining = checked(
         docker_command(
             "container", "ls", "--all", "--filter", "name=^/" + name + "$", "--format", "{{.ID}}"
@@ -351,10 +372,9 @@ def read_blobs(source, digests):
     match the commit; the object store always holds the committed bytes.
     """
     request = "".join(digest + "\n" for digest in digests).encode("ascii")
-    result = subprocess.run(
+    result = run_captured(
         [program("git"), "-C", str(source), "cat-file", "--batch"],
         input=request,
-        capture_output=True,
         env=git_environment(),
         timeout=GIT_TIMEOUT,
     )
@@ -409,9 +429,8 @@ def stage_source(source, staged, expected_sha):
         raise ValueError("Source HEAD differs from the expected revision")
     # --full-tree: from a subfolder of the checkout, ls-tree would list only that
     # subtree, relative to it, and stage it as if it were the whole commit (Q4).
-    listing = subprocess.run(
+    listing = run_captured(
         [program("git"), "-C", str(source), "ls-tree", "-rz", "--full-tree", expected_sha],
-        capture_output=True,
         env=env,
         timeout=GIT_TIMEOUT,
     )
@@ -637,15 +656,7 @@ def main():
         f"id=proxy_ca,src={ca_bundle(output)}",
         str(context),
     )
-    built = subprocess.run(
-        build,
-        env=env,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=900,
-    )
+    built = run_captured(build, env=env, text=True, encoding="utf-8", errors="replace", timeout=900)
     write_text(results / "image-build.log", built.stdout + built.stderr)
     if built.returncode:
         # Build output can echo audited metadata; keep it to one escaped line.

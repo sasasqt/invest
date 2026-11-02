@@ -46,7 +46,9 @@ def semantic_manifest(directory):
             payload = json.dumps(
                 [
                     clean(json.loads(line))
-                    for line in path.read_text(encoding="utf-8").splitlines()
+                    # Only a line feed ends a JSONL row: splitlines would also split
+                    # at U+2028, U+2029 and U+0085, which a JSON string may hold raw.
+                    for line in path.read_text(encoding="utf-8").split("\n")
                     if line.strip()
                 ],
                 sort_keys=True,
@@ -97,18 +99,29 @@ def semantic_hash(directory):
     ).hexdigest()
 
 
+def capabilities_dropped(status):
+    """True when /proc/self/status shows no capability in any set that can grant one.
+
+    A non-root process has no effective capabilities whatever Docker granted it, so
+    --cap-drop=ALL shows only in the bounding set: every set must be empty.
+    """
+    sets = {
+        line.split(":", 1)[0]: int(line.split()[1], 16)
+        for line in status.splitlines()
+        if line.startswith(("CapPrm:", "CapEff:", "CapBnd:", "CapAmb:"))
+    }
+    return {"CapPrm", "CapEff", "CapBnd"} <= sets.keys() and not any(sets.values())
+
+
 def prove_boundary(sentinel, host_pid, results):
     status = Path("/proc/self/status").read_text()
     no_new_privs = next(
         line.split()[1] for line in status.splitlines() if line.startswith("NoNewPrivs:")
     )
-    capabilities = next(
-        line.split()[1] for line in status.splitlines() if line.startswith("CapEff:")
-    )
     checks = {
         "unprivileged_uid": os.getuid() != 0,
         "no_new_privileges": no_new_privs == "1",
-        "no_capabilities": int(capabilities, 16) == 0,
+        "no_capabilities": capabilities_dropped(status),
     }
     # A Windows host passes neither probe: its paths and process IDs name nothing
     # inside the Linux container, so the checks would pass vacuously.
@@ -174,6 +187,12 @@ def execute(name, argv, cwd, results, timeout=1200, env=None):
             os.killpg(process.pid, signal.SIGKILL)
             process.wait()
             status = 124
+        # Processes the step left in its group would run on into later steps and
+        # their timings (and could still write the results folder); stop them.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
     result = {
         "name": name,

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       audited_sha:
-        description: Optional exact source commit (otherwise resolve current main once)
+        description: Optional source commit, branch or tag, resolved once to a commit for the whole matrix (otherwise current main)
         required: false
       control_sha:
         description: Optional exact historical control commit (failures remain failures)

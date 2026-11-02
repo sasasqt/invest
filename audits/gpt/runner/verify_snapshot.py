@@ -21,12 +21,17 @@ def _pairs(pairs):
 
 
 def _json(path):
-    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_pairs)
+    try:
+        return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_pairs)
+    except RecursionError:
+        raise SnapshotError(f"JSON nested too deeply: {path.name}") from None
 
 
 def verify(expected_path, snapshot):
     expected_path, snapshot = Path(expected_path), Path(snapshot)
     expected = _json(expected_path)
+    if not isinstance(expected, dict) or not isinstance(expected.get("files"), dict):
+        raise SnapshotError("Manifest must be an object with a files object")
     request = expected.get("request", {})
     start, end = date.fromisoformat(request["start"]), date.fromisoformat(request["end"])
     if end < start or end >= date(2025, 1, 1):
@@ -34,11 +39,15 @@ def verify(expected_path, snapshot):
     if snapshot.is_symlink():
         raise SnapshotError("Snapshot root must not be a symlink")
     if not snapshot.is_dir():
+        if snapshot.exists():
+            raise SnapshotError("Snapshot root is not a directory")
         return {"status": "blocked", "reason": "matching snapshot directory unavailable"}
     manifest = snapshot / "snapshot.json"
     if manifest.is_symlink():
         raise SnapshotError("Snapshot manifest must not be a symlink")
     if not manifest.is_file():
+        if manifest.exists():
+            raise SnapshotError("Snapshot manifest is not a regular file")
         return {"status": "blocked", "reason": "snapshot manifest unavailable"}
     actual = _json(manifest)
     if actual != expected:
@@ -49,7 +58,13 @@ def verify(expected_path, snapshot):
     root = snapshot.resolve()
     for symbol, entry in expected["files"].items():
         relative = PurePosixPath(entry["path"])
-        if relative.is_absolute() or ".." in relative.parts or relative.parts[:1] != ("raw",):
+        # A backslash or colon makes a Windows path rooted, drive-relative or a stream.
+        if (
+            relative.is_absolute()
+            or ".." in relative.parts
+            or relative.parts[:1] != ("raw",)
+            or any("\\" in part or ":" in part for part in relative.parts)
+        ):
             raise SnapshotError(f"Unsafe raw path for {symbol}")
         if str(relative) in seen:
             raise SnapshotError("Duplicate raw path")
@@ -63,6 +78,8 @@ def verify(expected_path, snapshot):
         if not path.resolve().is_relative_to(root):
             raise SnapshotError(f"Raw path escapes snapshot for {symbol}")
         if not path.is_file():
+            if path.exists():
+                raise SnapshotError(f"Raw path is not a regular file for {symbol}")
             missing.append(str(relative))
             continue
         size = path.stat().st_size

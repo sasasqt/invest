@@ -7,7 +7,9 @@ import stat
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
+import uuid
 from pathlib import Path
 from unittest.mock import patch
 
@@ -110,6 +112,86 @@ class SnapshotTests(unittest.TestCase):
     def save(self):
         self.reference.write_text(json.dumps(self.expected))
         (self.snapshot / "snapshot.json").write_text(json.dumps(self.expected))
+
+    def test_manifest_of_the_wrong_shape_is_rejected(self):
+        """Review round 6 (A3): a list where an object belongs crashed with AttributeError,
+        which the command line did not catch."""
+        request = self.expected["request"]
+        for manifest in ([], {"request": request, "files": []}):
+            with self.subTest(manifest=manifest):
+                self.reference.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(SnapshotError, "files object"):
+                    verify(self.reference, self.snapshot)
+
+    def test_command_line_rejects_malformed_input_without_a_traceback(self):
+        """CONTRACT.md W3: wrong input is rejected with exit 2, never a traceback."""
+        script = Path(__file__).with_name("verify_snapshot.py")
+        manifest = self.snapshot / "snapshot.json"
+        request = self.expected["request"]
+        cases = {
+            "nested snapshot manifest": (None, "[" * 100000),
+            "entry is a list": ({"request": request, "files": {"AAA": []}}, None),
+            "request is text": ({"request": "2010", "files": {}}, None),
+            "manifest not UTF-8": ("\udcff", None),
+        }
+        for case, (reference, snapshot_text) in cases.items():
+            with self.subTest(case=case):
+                self.save()
+                if reference == "\udcff":
+                    self.reference.write_bytes(b'{"files": {"\xff": 1}}')
+                elif reference is not None:
+                    self.reference.write_text(json.dumps(reference))
+                if snapshot_text is not None:
+                    manifest.write_text(snapshot_text)
+                run = subprocess.run(
+                    [
+                        sys.executable,
+                        str(script),
+                        "--expected",
+                        str(self.reference),
+                        "--snapshot",
+                        str(self.snapshot),
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=120,
+                )
+                self.assertNotIn("Traceback", run.stderr)
+                self.assertEqual(run.returncode, 2)
+                self.assertEqual(json.loads(run.stdout)["status"], "rejected")
+
+    def test_present_input_of_the_wrong_kind_is_rejected_not_blocked(self):
+        """Review round 6 (A4): only missing input is blocked; a folder or a special
+        file where a regular file belongs is rejected."""
+        self.file.unlink()
+        self.file.mkdir()
+        with self.assertRaisesRegex(SnapshotError, "not a regular file"):
+            verify(self.reference, self.snapshot)
+        self.file.rmdir()
+        if hasattr(os, "mkfifo"):
+            os.mkfifo(self.file)
+            with self.assertRaisesRegex(SnapshotError, "not a regular file"):
+                verify(self.reference, self.snapshot)
+            self.file.unlink()
+        self.file.write_bytes(self.payload)
+        manifest = self.snapshot / "snapshot.json"
+        manifest.unlink()
+        manifest.mkdir()
+        with self.assertRaisesRegex(SnapshotError, "manifest is not a regular file"):
+            verify(self.reference, self.snapshot)
+        not_a_folder = self.root / "snapshot-file"
+        not_a_folder.write_bytes(b"")
+        with self.assertRaisesRegex(SnapshotError, "root is not a directory"):
+            verify(self.reference, not_a_folder)
+
+    def test_raw_paths_windows_reads_as_rooted_or_drive_paths_are_rejected(self):
+        """Review round 6 (C1): on Windows these made the symlink walk loop forever."""
+        for raw in ("raw/\\x", "raw/C:x", "raw/sub\\..\\x", "raw/name:stream"):
+            with self.subTest(raw=raw):
+                self.expected["files"]["AAA"]["path"] = raw
+                self.save()
+                with self.assertRaisesRegex(SnapshotError, "Unsafe raw path"):
+                    verify(self.reference, self.snapshot)
 
     def test_matching_fixture(self):
         result = verify(self.reference, self.snapshot)
@@ -449,14 +531,19 @@ class PortableHostTests(unittest.TestCase):
                 (folder / filename).write_text("", encoding="utf-8")
                 (folder / filename).chmod(0o755)
             with patch.object(isolated_runner.os, "name", "nt"):
+                # A POSIX folder has no drive, so the drive-less PATH guard skips it.
                 with patch.dict(os.environ, {"PATH": directory, "PATHEXT": ".XYZ;.BAT;.CMD"}):
-                    self.assertEqual(host_tool("tool"), str(folder / "tool.xyz"))
-                    self.assertEqual(host_tool("Named.Cmd"), str(folder / "Named.Cmd"))
-                    self.assertIsNone(host_tool("solo"))
-                with patch.dict(os.environ, {"PATH": directory}):
-                    os.environ.pop("PATHEXT", None)
-                    self.assertEqual(host_tool("solo"), str(folder / "solo.com"))
-                    self.assertEqual(host_tool("tool"), str(folder / "tool.bat"))
+                    self.assertIsNone(host_tool("tool"))
+                # Give every folder a drive so the PATHEXT handling itself is tested.
+                with patch.object(isolated_runner.os.path, "splitdrive", lambda path: ("C:", path)):
+                    with patch.dict(os.environ, {"PATH": directory, "PATHEXT": ".XYZ;.BAT;.CMD"}):
+                        self.assertEqual(host_tool("tool"), str(folder / "tool.xyz"))
+                        self.assertEqual(host_tool("Named.Cmd"), str(folder / "Named.Cmd"))
+                        self.assertIsNone(host_tool("solo"))
+                    with patch.dict(os.environ, {"PATH": directory}):
+                        os.environ.pop("PATHEXT", None)
+                        self.assertEqual(host_tool("solo"), str(folder / "solo.com"))
+                        self.assertEqual(host_tool("tool"), str(folder / "tool.bat"))
 
     def test_collection_checks_refuse_a_host_that_is_not_linux(self):
         """Review round 6: the container probes take a host path and process ID, which
@@ -469,6 +556,82 @@ class PortableHostTests(unittest.TestCase):
             with patch.object(Path, "mkdir", side_effect=created):
                 with self.assertRaisesRegex(SystemExit, "Linux host"):
                     collection_checks.main()
+
+    def test_checked_returns_at_its_timeout_when_a_grandchild_holds_the_pipe(self):
+        """Review round 6 (C4): on Windows, subprocess.run reads the pipes to their end
+        after the kill, so a launcher's child (Git for Windows' cmd\\git.exe, a Docker
+        CLI plugin) kept checked() waiting until that child exited."""
+        script = (
+            "import subprocess, sys, time; "
+            "subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(15)'], "
+            "stdout=sys.stdout, stderr=sys.stderr); time.sleep(60)"
+        )
+        started = time.monotonic()
+        with self.assertRaises(subprocess.TimeoutExpired):
+            isolated_runner.checked([sys.executable, "-c", script], timeout=2)
+        self.assertLess(time.monotonic() - started, 10)
+
+    def test_every_host_program_runs_through_the_bounded_helper(self):
+        """Review round 6 (C4): the image build (a Docker CLI plugin), the Git object
+        reads, the tree listing and the container removal called subprocess.run
+        directly, so on Windows their timeouts could wait for a grandchild too."""
+        import ast
+
+        tree = ast.parse(Path(isolated_runner.__file__).read_text(encoding="utf-8"))
+        direct = [
+            node.lineno
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "run"
+            and isinstance(node.func.value, ast.Name)
+            and node.func.value.id == "subprocess"
+        ]
+        self.assertEqual(direct, [], "lines that call subprocess.run directly")
+
+    def test_bounded_helper_passes_input_and_keeps_bytes(self):
+        echo = "import sys; sys.stdout.buffer.write(sys.stdin.buffer.read()[::-1])"
+        result = isolated_runner.run_captured(
+            [sys.executable, "-c", echo], input=b"ab\x00", timeout=60
+        )
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"\x00ba", b""))
+
+    @unittest.skipUnless(os.name == "nt", "a Windows path without a drive")
+    def test_ca_bundle_ignores_a_file_at_the_current_drive_root(self):
+        """Review round 6 (C2): "/etc/ssl/certs/..." names a folder on the current drive
+        on Windows, where any local user may create it."""
+        planted = Path(os.path.abspath("/etc/ssl/certs/ca-certificates.crt"))
+        created = not planted.exists()
+        if created:
+            planted.parent.mkdir(parents=True, exist_ok=True)
+            planted.write_text(
+                "-----BEGIN CERTIFICATE-----\nplanted\n-----END CERTIFICATE-----\n",
+                encoding="ascii",
+            )
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                try:
+                    chosen = ca_bundle(Path(directory))
+                except RuntimeError:
+                    chosen = None
+                self.assertNotEqual(chosen and Path(chosen).resolve(), planted.resolve())
+        finally:
+            if created:
+                planted.unlink()
+
+    @unittest.skipUnless(os.name == "nt", "a Windows path without a drive")
+    def test_host_tools_never_come_from_a_path_entry_without_a_drive(self):
+        """Review round 6 (C3): Python 3.11 calls "\\tools" absolute, yet it names a
+        folder at the current drive's root."""
+        folder = Path(os.path.abspath("\\audit-test-tools-" + uuid.uuid4().hex))
+        folder.mkdir()
+        try:
+            (folder / "docker.exe").write_bytes(b"")
+            with patch.dict(os.environ, {"PATH": "\\" + folder.name}):
+                self.assertIsNone(host_tool("docker"))
+        finally:
+            (folder / "docker.exe").unlink()
+            folder.rmdir()
 
     def test_ordinary_paths_are_listed_in_order(self):
         rows = [("100644", "blob", "README.md"), ("100755", "blob", "tools/run.sh")]
@@ -878,6 +1041,50 @@ class StagingSafetyTests(unittest.TestCase):
                 if sentinel is None:
                     self.assertFalse([key for key in checks if "outside" in key])
 
+    def test_capabilities_count_as_dropped_only_when_every_set_is_empty(self):
+        """Review round 6 (A1): a non-root process has no effective capabilities whatever
+        Docker granted it, so CapEff alone could not show a missing --cap-drop=ALL."""
+        empty = "".join(
+            f"{name}:\t0000000000000000\n"
+            for name in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")
+        )
+        self.assertTrue(runner_workload.capabilities_dropped(empty))
+        granted = empty.replace("CapBnd:\t0000000000000000", "CapBnd:\t00000000a80425fb")
+        self.assertFalse(runner_workload.capabilities_dropped(granted))
+        self.assertFalse(runner_workload.capabilities_dropped("CapEff:\t0000000000000000\n"))
+
+    @unittest.skipUnless(sys.platform.startswith("linux"), "process groups and /proc")
+    def test_a_workload_step_leaves_no_process_running(self):
+        """Review round 6 (A2): a step's background process ran on into later steps,
+        their timings and the results folder."""
+
+        def running(pid):
+            try:
+                state = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0]
+            except (OSError, IndexError):
+                return False
+            return state != "Z"  # a killed orphan may wait to be reaped
+
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory)
+            pidfile = results / "background.pid"
+            # Absolute programs: a suite may run with a PATH that holds only git.
+            sleeper = f'"{sys.executable}" -c "import time; time.sleep(60)"'
+            script = f'{sleeper} & echo $! > "{pidfile}"; exit 0'
+            result = runner_workload.execute(
+                "leftover", ["/bin/sh", "-c", script], directory, results, timeout=60
+            )
+            pid = int(pidfile.read_text())
+            try:
+                deadline = time.monotonic() + 5
+                while running(pid) and time.monotonic() < deadline:
+                    time.sleep(0.05)
+                self.assertEqual(result["exit"], 0)
+                self.assertFalse(running(pid), "the step's background process still runs")
+            finally:
+                if running(pid):
+                    os.kill(pid, 9)
+
     def test_windows_host_skips_probes_that_mean_nothing_in_the_container(self):
         """R3-4: a Windows path or PID names nothing inside the Linux container."""
         sentinel = Path("out") / "host-only-sentinel"
@@ -980,7 +1187,7 @@ class RunnerBranchTests(unittest.TestCase):
         }
         for message, result in cases.items():
             with self.subTest(message=message):
-                with patch("isolated_runner.subprocess.run", return_value=result):
+                with patch("isolated_runner.run_captured", return_value=result):
                     with self.assertRaisesRegex((RuntimeError, ValueError), message):
                         read_blobs(Path("."), [digest])
 
@@ -1098,7 +1305,8 @@ class SemanticCoverageTests(unittest.TestCase):
 
     def ledger(self, **changes):
         record = {"recorded_at": "first", "factor_id": "A", "n_trials": 20, **changes}
-        (self.root / "ledger.jsonl").write_text(json.dumps(record) + "\n", encoding="utf-8")
+        row = json.dumps(record, ensure_ascii=False)  # non-ASCII text stays raw
+        (self.root / "ledger.jsonl").write_text(row + "\n", encoding="utf-8")
 
     def test_ledger_numeric_change_is_detected(self):
         self.ledger()
@@ -1111,6 +1319,16 @@ class SemanticCoverageTests(unittest.TestCase):
         before = semantic_hash(self.root)
         self.ledger(factor_id="B")
         self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_ledger_row_with_a_raw_line_separator_in_a_string_is_one_record(self):
+        """Review round 6 (D1): str.splitlines also splits at U+2028, U+2029 and U+0085,
+        which JSON allows unescaped inside a string, so a valid row failed the gate."""
+        for separator in ("\u2028", "\u2029", "\x85"):
+            with self.subTest(separator=hex(ord(separator))):
+                self.ledger(note=f"a{separator}b")
+                before = semantic_hash(self.root)
+                self.ledger(note=f"a{separator}c")
+                self.assertNotEqual(before, semantic_hash(self.root))
 
     def test_declared_ledger_timestamp_change_is_ignored(self):
         self.ledger()

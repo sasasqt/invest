@@ -14,7 +14,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
 - `verify_installed.py`: version/marker checks and workspace import origins.
 - `ci_evidence.py`: distinguish fresh job executions from historical jobs copied into newer workflow attempts.
-- `verify_snapshot.py`: request/file identity checks without interpreting raw observations. Missing input is blocked; mismatched or unsafe input is rejected.
+- `verify_snapshot.py`: request/file identity checks without interpreting raw observations. Missing input is blocked; mismatched, unsafe or malformed input (a manifest of the wrong shape, or an entry that exists but is not a regular file) is rejected.
 - `build-requirements.txt`: six hash-pinned auditor build dependencies. These live in a separate build environment, so Hatchling's dependencies cannot replace the project's locked runtime packages.
 - `.github/workflows/audit-runtime.yml`: conditional workflow. It runs host/Docker collection checks on Python 3.11/3.13, then both full audit jobs. Source is resolved once from current main or an explicit manual revision; a historical control is optional and explicitly labeled.
 
@@ -39,8 +39,10 @@ Metadata-only uv checks explicitly select the host interpreter, avoiding inherit
 The host side (staging, image build, launch and collection) also runs on Windows
 with Docker Desktop in Linux-container mode. The runner talks to
 `npipe:////./pipe/docker_engine`, runs the container as UID and GID 65534, and
-takes the build's CA bundle from the system bundle, else Python's default CA file,
-else the Windows certificate store exported as PEM. A daemon that cannot be reached,
+takes the build's CA bundle from Python's default CA file, else the Windows
+certificate store exported as PEM (never from `/etc/ssl/...`, which on Windows
+names a folder on the current drive). `PATH` entries without a drive (`\tools`)
+are skipped as well. A daemon that cannot be reached,
 or does not report Linux containers, gives a `blocked` result (exit 2) before any
 source is read. `git`, `uv` and `docker` are taken only from absolute `PATH`
 folders, never from the current folder, which Windows otherwise searches first: a
@@ -59,10 +61,21 @@ Every benchmark invocation saves a per-file semantic manifest after timing. Comp
 tables are decompressed and hashed; their gzip header timestamps are excluded. JSON and JSONL
 retain numeric values, identities, row order and substantive fields, while the predeclared
 `created_at`, `recorded_at`, `retrieved_at` and `created_utc` fields and output-root strings are
-normalized. Plain CSV bytes are hashed. Markdown and other declared UTF-8 text normalize only
-the output root. Other file types receive a raw-byte comparison rather than being silently
-skipped. PNGs must exist and be nonempty; rendered pixels are not compared, while source tables
-participate in the gate. Invalid compressed data fails the gate with its evidence retained.
+normalized. JSON and JSONL are compared after parsing, so whitespace and key order do not
+count and a repeated key keeps its last value; a JSONL row ends only at a line feed. Plain CSV
+bytes are hashed. Markdown and other declared UTF-8 text normalize the output root, and reading
+them as text also turns CRLF and lone CR line ends into LF. Other file types receive a raw-byte
+comparison rather than being silently skipped. PNGs must exist and be nonempty; rendered pixels
+are not compared, while source tables participate in the gate. Invalid compressed data fails
+the gate; the sample in `benchmark-raw.jsonl` records the reason, but the workflow's own output
+folder (`/work/workflow-cases`) is not collected.
+
+The hash-seed repeat and the independent installs run only in the Python 3.11 job; a 3.13
+artifact has no record of them. Each workload step runs in its own process group, which is
+stopped when the step ends, so `"parallel_benchmarks": false` holds unless audited code starts
+a new session (`setsid`). `boundary.json`, `coverage.json` and the other workload records are
+written inside the container while audited code runs, so they are evidence, not the verdict:
+the verdict is the exit code in `runner.json`, computed by the container's first process.
 
 Samples and summaries identify semantic-gate version 2. Earlier version-1 timing samples remain
 historical measurements, with a narrower gate that omitted compressed tables and other
@@ -107,7 +120,10 @@ tests (they need `packaging`) on Linux or Windows with
 `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety`.
 Run `python collection_checks.py --python-version 3.11 --output /path/to/new-output`
 on a disposable Linux host with Docker and repeat with Python 3.13; it refuses other
-hosts, because its probes pass a host path and process ID into the container. These
+hosts, because its probes pass a host path and process ID into the container. Use a
+single-user host for real audits as well: the work folder is writable by every local
+account (mode 0777, so any container UID can write it), and another account could
+change the evidence before collection. These
 generated fixtures do not read real secrets or market observations, run a product
 benchmark, or establish independently reviewed resolution of every runner-security
 concern.
