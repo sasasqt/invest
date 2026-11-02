@@ -1,0 +1,13 @@
+# Audit-only history rewrite — 2 November 2026
+
+The user requested removing the inherited source snapshot from Git history after the earlier current-tree cleanup. This separately authorizes a one-off guarded history rewrite of `gpt/repo-audits`, keeping that branch name. Normal routine force-push and out-of-folder write prohibitions remain.
+
+The old head was `54796481c71c3b5f93d19b056306fe7776dcb090`. Fourteen audit commits were replayed onto the parentless root `3d7eec50795cecfe8ceabfbb858dff6acc5bce5c`; the replayed audit head is `391e8e78b39ee7d907f5fa68ab1ed5664c40f818`. All inherited main commits are excluded from the new parent chain. Every rewritten snapshot was read back and contains only audits/gpt/ plus the audit README where present, with its original audits subtree unchanged by Git object ID. The replayed latest snapshot has identical paths, modes and object IDs to the previous clean head.
+
+The [commit map](history-rewrite-2026-11-02/commit-map.json) preserves original audit IDs, authorship/time metadata and new equivalent snapshot IDs. Historical reports and maintained state remain byte-for-byte unchanged. Their old audit commit references resolve through the map; source and runner references retain their original meanings. This does not purge product history from main, other branches or provider caches, nor delete source from the repository as a whole. No backup ref retaining the old audit ancestry is created.
+
+The current README, three methods, method index and dispatcher template clarify independent history and reference resolution. All other existing audit files remain unchanged. The new index SHA-256 is `6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f`. The active prompt and its saved copy will pin the final preparation commit; the 120-minute rotation and both schedules stay unchanged.
+
+Publication must re-read the expected old head, confirm no audit run has added new work, and replace only this branch using force=true with an explicit expected-old-SHA guard. Never retry with the guard removed. Post-publication verification must traverse the complete new commit chain to its parentless root, inspect every snapshot and compare the old current audit files. No product imports, tests, build hooks, unsafe runner workflows or additional audit dispatch are part of this migration. INV-PR32-001 remains unresolved.
+
+The earlier cleanup's promise to retain source ancestry and its source-restoration rollback instructions are superseded. Future recovery must preserve this audit-only lineage and reconcile later audit progress. Historical evidence remains labeled historical; the rewrite does not reset findings, coverage, jobs, data restrictions or audit completion status.

@@ -76,8 +76,8 @@
     },
     "01-scope": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/01-scope.md",
-      "sha256": "14db2d6591339ee4786e7bd6d302f741777a25790edeec0e63a9feaa2da9fd24",
-      "bytes": 3287
+      "sha256": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+      "bytes": 3404
     },
     "02-coverage": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/02-coverage.md",
@@ -136,13 +136,13 @@
     },
     "13-continuity": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/13-continuity.md",
-      "sha256": "9444417361df01e9400b622beda25c56dd03342880a2ae8a5cd5034ebc9a5c2b",
-      "bytes": 3245
+      "sha256": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+      "bytes": 3863
     },
     "14-crosscheck-publication": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/14-crosscheck-publication.md",
-      "sha256": "b6fa84bf1348bb4d572fea48689618fdded38cdb9b58b7125654da89161898f0",
-      "bytes": 12135
+      "sha256": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+      "bytes": 12483
     },
     "15-research": {
       "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/15-research.md",
@@ -156,15 +156,17 @@
     }
   },
   "output_layout": {
-    "revision": "audit-only-tree-2026-11-02",
+    "revision": "audit-only-history-2026-11-02",
     "branch": "gpt/repo-audits",
-    "retained_history": true,
+    "retained_audit_snapshots": 14,
+    "inherited_source_ancestry_retained": false,
     "routine_write_prefix": "audits/gpt/",
     "read_only_root_files": [
       "README.md"
     ],
     "missing_branch_action": "retain unpublished outputs; never recreate from main",
-    "previous_protocol_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
-    "migration_record": "audits/gpt/2026-11-02-branch-cleanup.md"
+    "previous_protocol_commit": "87143c94b137e41c2f97cd4397c0df3cabfe8749",
+    "history_commit_map": "audits/gpt/history-rewrite-2026-11-02/commit-map.json",
+    "migration_record": "audits/gpt/2026-11-02-history-rewrite.md"
   }
 }

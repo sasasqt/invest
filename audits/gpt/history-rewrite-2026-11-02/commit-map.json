@@ -1,0 +1,349 @@
+{
+  "kind": "Historical own-audit commit resolver; not a source/runner revision replacement",
+  "branch": "gpt/repo-audits",
+  "old_head": "54796481c71c3b5f93d19b056306fe7776dcb090",
+  "new_orphan_root": "3d7eec50795cecfe8ceabfbb858dff6acc5bce5c",
+  "replayed_audit_head": "391e8e78b39ee7d907f5fa68ab1ed5664c40f818",
+  "old_to_new": {
+    "b57bd4334bd702d4649982f616d9bdaaefb728ce": "3d7eec50795cecfe8ceabfbb858dff6acc5bce5c",
+    "26376f406de80e190492d27de541658221272c09": "a6633295eb6ad966ef49f37bb31ba1f47791c8c6",
+    "11651c33a070b6fa2ab1ee3c1718a3579532ca0f": "3d7441c872599879117e8f9ad80076783f261b71",
+    "b1868f96b0d11a9095d577fc9593098a3948e6b8": "d085357efa38e5186a2072867346adb263deb96b",
+    "606eae209af0d426aaf83280585e1afaca3b4084": "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f",
+    "40187531fedd04c2fc8be5a049874cd49b0b6cee": "d1b5ada123b5eb3622f4f43eb5d87378dc63ca05",
+    "0393074d5eb6492ba5a1645c64309f9672433f08": "2d5ee4463d64ff0e55b59e7dafa92d05fcc82f72",
+    "c953414b99ef805be2f457940d0a8f2d0bde2dc5": "82fb4baf7cb99e58d7206b9796becd987f79c677",
+    "34407920f681be71913f7457db116ed8c0a85b3e": "8fa4fb7e4c94d8419c4157c069a14e55ca4bcb28",
+    "1acf314f305580c1b543c20bfc20ffbd7fb87e3e": "09bcad361d3640d6bc6e6685637a831e2b6e776d",
+    "8334d777216ecb4991c86d463e098328df13391d": "036a15559085fa4ea0c6be9590026b0fd43e725f",
+    "18a3bb690ec92263f6c714ebb19ce333983b4683": "bc749a5d281b52ee74c7d0476503ff5a3686a693",
+    "4392be9bf11b217069fc4d256a3ef430af6c6968": "87143c94b137e41c2f97cd4397c0df3cabfe8749",
+    "54796481c71c3b5f93d19b056306fe7776dcb090": "391e8e78b39ee7d907f5fa68ab1ed5664c40f818"
+  },
+  "snapshots": [
+    {
+      "old_commit": "b57bd4334bd702d4649982f616d9bdaaefb728ce",
+      "new_commit": "3d7eec50795cecfe8ceabfbb858dff6acc5bce5c",
+      "new_tree": "f9416ac125e3524f2cb4a27df1a26e24ae236848",
+      "parents": [],
+      "audit_subtree": "b8695285ff34bceaf7c33d4650ef5115e844e509"
+    },
+    {
+      "old_commit": "26376f406de80e190492d27de541658221272c09",
+      "new_commit": "a6633295eb6ad966ef49f37bb31ba1f47791c8c6",
+      "new_tree": "8e23f530c629a080fcb306cfd818af99b2d021ea",
+      "parents": [
+        "3d7eec50795cecfe8ceabfbb858dff6acc5bce5c"
+      ],
+      "audit_subtree": "b01b5e345f18cdfd2ac4dcdeb4d30513e4002bd2"
+    },
+    {
+      "old_commit": "11651c33a070b6fa2ab1ee3c1718a3579532ca0f",
+      "new_commit": "3d7441c872599879117e8f9ad80076783f261b71",
+      "new_tree": "9da286596ed18be8bcb97009ecfc4ab7bb35da9a",
+      "parents": [
+        "a6633295eb6ad966ef49f37bb31ba1f47791c8c6"
+      ],
+      "audit_subtree": "51150b4affc4ca60a220da6c076feca07f0043ec"
+    },
+    {
+      "old_commit": "b1868f96b0d11a9095d577fc9593098a3948e6b8",
+      "new_commit": "d085357efa38e5186a2072867346adb263deb96b",
+      "new_tree": "3ff45257188b5bb4717957bb4f8b219e9f21feac",
+      "parents": [
+        "3d7441c872599879117e8f9ad80076783f261b71"
+      ],
+      "audit_subtree": "b0f27f947efb6bbe07dbe1a10a9c83f41bfced9f"
+    },
+    {
+      "old_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
+      "new_commit": "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f",
+      "new_tree": "c0fa7c14d61b24fb74baea815744f21b6b287f70",
+      "parents": [
+        "d085357efa38e5186a2072867346adb263deb96b"
+      ],
+      "audit_subtree": "be4f0ee41bf6d168d2246fbfeece5e918087f3d2"
+    },
+    {
+      "old_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+      "new_commit": "d1b5ada123b5eb3622f4f43eb5d87378dc63ca05",
+      "new_tree": "15d58cb73e8143766bdb7fac49a3952ad6107b79",
+      "parents": [
+        "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f"
+      ],
+      "audit_subtree": "dc157dfbd80e3b036d693a27fb463ca076e03066"
+    },
+    {
+      "old_commit": "0393074d5eb6492ba5a1645c64309f9672433f08",
+      "new_commit": "2d5ee4463d64ff0e55b59e7dafa92d05fcc82f72",
+      "new_tree": "c4f55d9edd3ed8422192b7384d40d8a9ba3f58c5",
+      "parents": [
+        "d1b5ada123b5eb3622f4f43eb5d87378dc63ca05"
+      ],
+      "audit_subtree": "fd45b3a6c4b4f5c02f1e687a58df56367ac2accc"
+    },
+    {
+      "old_commit": "c953414b99ef805be2f457940d0a8f2d0bde2dc5",
+      "new_commit": "82fb4baf7cb99e58d7206b9796becd987f79c677",
+      "new_tree": "d2f06afff69a56972d2a84358235fac035db4ee9",
+      "parents": [
+        "2d5ee4463d64ff0e55b59e7dafa92d05fcc82f72"
+      ],
+      "audit_subtree": "97123a065be8ef6bc79dba48c1cd9170b858b5a4"
+    },
+    {
+      "old_commit": "34407920f681be71913f7457db116ed8c0a85b3e",
+      "new_commit": "8fa4fb7e4c94d8419c4157c069a14e55ca4bcb28",
+      "new_tree": "783b6dec2ae0cb95b9a13c100f882e402198aad2",
+      "parents": [
+        "82fb4baf7cb99e58d7206b9796becd987f79c677"
+      ],
+      "audit_subtree": "6566d4b0f54ccf3a59afba3ffbf0a5a738196d6c"
+    },
+    {
+      "old_commit": "1acf314f305580c1b543c20bfc20ffbd7fb87e3e",
+      "new_commit": "09bcad361d3640d6bc6e6685637a831e2b6e776d",
+      "new_tree": "9a5629499aa2b2a5b33a5afc66e96670b7497fc7",
+      "parents": [
+        "8fa4fb7e4c94d8419c4157c069a14e55ca4bcb28"
+      ],
+      "audit_subtree": "f33630c3e7e2834bdde4145038dcd0b3bf3b1028"
+    },
+    {
+      "old_commit": "8334d777216ecb4991c86d463e098328df13391d",
+      "new_commit": "036a15559085fa4ea0c6be9590026b0fd43e725f",
+      "new_tree": "391f04ee935d5a046b32e91b3c6a91c9f1b6296a",
+      "parents": [
+        "09bcad361d3640d6bc6e6685637a831e2b6e776d"
+      ],
+      "audit_subtree": "d59aecb5775022113c32783d8bffb1f52688a91d"
+    },
+    {
+      "old_commit": "18a3bb690ec92263f6c714ebb19ce333983b4683",
+      "new_commit": "bc749a5d281b52ee74c7d0476503ff5a3686a693",
+      "new_tree": "7e42902b072c4433faee9e700c0c35edc94275df",
+      "parents": [
+        "036a15559085fa4ea0c6be9590026b0fd43e725f"
+      ],
+      "audit_subtree": "f2c2fa9e605440fc8cfb3a464b39f89b1234500a"
+    },
+    {
+      "old_commit": "4392be9bf11b217069fc4d256a3ef430af6c6968",
+      "new_commit": "87143c94b137e41c2f97cd4397c0df3cabfe8749",
+      "new_tree": "45197ce5c861461d355993b871b2d4d929ff5091",
+      "parents": [
+        "bc749a5d281b52ee74c7d0476503ff5a3686a693"
+      ],
+      "audit_subtree": "b978a48e728b06c0aff5de4dae96918be5a191a5"
+    },
+    {
+      "old_commit": "54796481c71c3b5f93d19b056306fe7776dcb090",
+      "new_commit": "391e8e78b39ee7d907f5fa68ab1ed5664c40f818",
+      "new_tree": "d994bc9723327cd69ff4204dd7ab07346373cdb5",
+      "parents": [
+        "87143c94b137e41c2f97cd4397c0df3cabfe8749"
+      ],
+      "audit_subtree": "58067fbd6d75738d45fa913b6f8fa9cbdfc61f2b"
+    }
+  ],
+  "original_commit_metadata": [
+    {
+      "old_commit": "b57bd4334bd702d4649982f616d9bdaaefb728ce",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T00:34:32Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T00:34:32Z"
+      },
+      "message": "Record 2026-10-31 repository audit checkpoint and research scouting"
+    },
+    {
+      "old_commit": "26376f406de80e190492d27de541658221272c09",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T00:35:08Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T00:35:08Z"
+      },
+      "message": "Record verified audit publication and resumable state"
+    },
+    {
+      "old_commit": "11651c33a070b6fa2ab1ee3c1718a3579532ca0f",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T08:15:19Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T08:15:19Z"
+      },
+      "message": "audit: verify execution recovery and stage isolated runner"
+    },
+    {
+      "old_commit": "b1868f96b0d11a9095d577fc9593098a3948e6b8",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T09:10:33Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T09:10:33Z"
+      },
+      "message": "Record verified isolated audit runtime, fixes and synth-S measurements"
+    },
+    {
+      "old_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T14:17:02Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-10-31T14:17:02Z"
+      },
+      "message": "Apply approved audit instruction consolidation and semantic-gate recovery"
+    },
+    {
+      "old_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:16:57Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:16:57Z"
+      },
+      "message": "Prepare seven-field daily audit rotation with a 120-minute budget"
+    },
+    {
+      "old_commit": "0393074d5eb6492ba5a1645c64309f9672433f08",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:23:16Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:23:16Z"
+      },
+      "message": "Audit 2026-11-02: static continuation, peer cross-checks and durable checkpoint"
+    },
+    {
+      "old_commit": "c953414b99ef805be2f457940d0a8f2d0bde2dc5",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:24:19Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:24:19Z"
+      },
+      "message": "Record verified audit publication and preserved rotation state"
+    },
+    {
+      "old_commit": "34407920f681be71913f7457db116ed8c0a85b3e",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:26:03Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T02:26:03Z"
+      },
+      "message": "Record main advancement separately from immutable audit scope"
+    },
+    {
+      "old_commit": "1acf314f305580c1b543c20bfc20ffbd7fb87e3e",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:22:16Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:22:16Z"
+      },
+      "message": "audit: checkpoint Monday rotation start on 9913f94"
+    },
+    {
+      "old_commit": "8334d777216ecb4991c86d463e098328df13391d",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:34:37Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:34:37Z"
+      },
+      "message": "audit: Monday data integrity slice and cumulative rotation checkpoint"
+    },
+    {
+      "old_commit": "18a3bb690ec92263f6c714ebb19ce333983b4683",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:35:46Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T09:35:46Z"
+      },
+      "message": "audit: record verified Monday report publication"
+    },
+    {
+      "old_commit": "4392be9bf11b217069fc4d256a3ef430af6c6968",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T10:21:54Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T10:21:54Z"
+      },
+      "message": "Keep gpt/repo-audits as an audit-only archive\n\nRemove 109 unchanged inherited files and replace the product README with audit navigation. Preserve all audit state, evidence and tools, retain existing history, and keep the branch name. Clarify source selection and prevent routine recreation of inherited source. This is a separately authorized one-off layout migration; normal writes remain confined to audits/gpt/."
+    },
+    {
+      "old_commit": "54796481c71c3b5f93d19b056306fe7776dcb090",
+      "author": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T10:24:44Z"
+      },
+      "committer": {
+        "name": "sasasqt",
+        "email": "56587914+sasasqt@users.noreply.github.com",
+        "date": "2026-11-02T10:24:44Z"
+      },
+      "message": "Record verified audit-branch cleanup and prompt activation"
+    }
+  ],
+  "verification": "All 14 new parent chains and filtered snapshots were read back through GitHub. Each original audits subtree is identical by Git object ID. No file outside audits/gpt/ and the audit README appears in any rewritten snapshot. The replayed head has exactly the same paths, modes and object IDs as the prior clean head.",
+  "reference_rule": "Map an old own-audit commit ID through old_to_new and keep its file path. Preserve original evidence IDs. Do not translate product/source or runner commits. Earlier retained-history and rollback statements are historical and superseded by this rewrite."
+}
