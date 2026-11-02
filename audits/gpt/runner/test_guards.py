@@ -271,10 +271,13 @@ class SnapshotTests(unittest.TestCase):
                 self.save()
                 with self.assertRaisesRegex(SnapshotError, "^Unsafe raw path for AAA$"):
                     verify(self.reference, snapshot)
-        # One byte shorter is still a path (checked without the file system).
+        # 4096 bytes is past the limit, one byte fewer is still a path (both checked
+        # without the file system).
         fits = "raw/" + "/".join(["d" * 255] * 15) + "/" + "e" * 251
         self.assertEqual(len(fits.encode()), 4095)
         verify_snapshot._entry("AAA", dict(entry, path=fits))
+        with self.assertRaisesRegex(SnapshotError, "^Unsafe raw path for AAA$"):
+            verify_snapshot._entry("AAA", dict(entry, path=fits + "e"))
 
     def test_an_empty_raw_file_verifies(self):
         """Mutation testing (round 9): no test had a raw file of 0 bytes, so a check that
@@ -312,6 +315,10 @@ class SnapshotTests(unittest.TestCase):
                     self.assertEqual(str(exc), "Unsafe raw path for BBB")
                 else:
                     self.fail(f"{result['status']} for a name no Windows file can have")
+        # A space, a capital X or a printable non-ASCII character is still a name.
+        for name in ("BRK B", "XOM", "a~b", "caf\u00e9"):
+            entry = {"bytes": 1, "sha256": "0" * 64, "path": f"raw/{name}.json"}
+            self.assertEqual(verify_snapshot._entry("BBB", entry)[1], entry)
 
     def test_matching_fixture(self):
         result = verify(self.reference, self.snapshot)
