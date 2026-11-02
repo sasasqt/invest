@@ -255,6 +255,52 @@ class CollectionCases:
         with patch(f"output_collection.os.{name}", side_effect=switched):
             self.rejected()
 
+    def test_directory_replaced_by_another_directory_is_rejected(self):
+        target = self.produced / "replace-me"
+        target.mkdir()
+        # The descriptor walk opens the folder; the path walk lists it.
+        name = "open" if self.method == "descriptor" else "scandir"
+        real = getattr(os, name)
+
+        def switched(path, *args, **kwargs):
+            if isinstance(path, str) and os.path.basename(path) == "replace-me":
+                target.rename(self.work / "moved")
+                target.mkdir()
+            return real(path, *args, **kwargs)
+
+        with patch(f"output_collection.os.{name}", side_effect=switched):
+            self.rejected()
+
+    def test_file_growing_while_it_is_read_is_rejected(self):
+        source = self.produced / "growing.log"
+        source.write_bytes(b"first part\n")
+        real_read, grown = os.read, []
+
+        def growing(fd, size):
+            data = real_read(fd, size)
+            if data and not grown:
+                grown.append(True)
+                with source.open("ab") as stream:
+                    stream.write(b"appended while the host was copying\n")
+            return data
+
+        with patch("output_collection.os.read", side_effect=growing):
+            self.rejected()
+
+    def test_unknown_method_and_non_positive_limits_are_refused(self):
+        with self.assertRaisesRegex(ValueError, "unknown collection method"):
+            collect_results(self.work, self.destination, method="copytree")
+        with self.assertRaisesRegex(ValueError, "positive"):
+            self.collect(limits=CollectionLimits(entries=0))
+        self.assertEqual(list(self.evidence.iterdir()), [])
+
+    def test_interrupt_during_collection_leaves_no_snapshot(self):
+        (self.produced / "file").write_text("ordinary")
+        with patch("output_collection.copy_tree", side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                self.collect()
+        self.assertEqual(list(self.evidence.iterdir()), [])
+
     def test_destination_inside_work_is_refused(self):
         with self.assertRaisesRegex(ValueError, "outside"):
             collect_results(self.work, self.work / "copy")
@@ -312,6 +358,16 @@ class DescriptorCollectionTests(CollectionCases, unittest.TestCase):
     method = "descriptor"
 
 
+@unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
+class NoDescriptorTests(unittest.TestCase):
+    def test_descriptor_walk_fails_closed_without_its_apis(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory, "work")
+            (work / "results").mkdir(parents=True)
+            with self.assertRaisesRegex(RejectedOutput, "descriptor-based collection unavailable"):
+                collect_results(work, Path(directory, "evidence/workload"), method="descriptor")
+
+
 class PathCollectionTests(CollectionCases, unittest.TestCase):
     method = "path"
 
@@ -335,6 +391,36 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
         with self.stale_lstat(lambda info: older):
             result = self.collect()
         self.assertEqual(result["files"][0]["bytes"], len(b"ordinary output\n"))
+
+    def test_results_folder_replaced_while_listed_is_rejected(self):
+        real = os.scandir
+
+        def switched(path, *args, **kwargs):
+            if isinstance(path, str) and os.path.basename(path) == "results":
+                self.produced.rename(self.work / "results-before")
+                self.produced.mkdir()
+            return real(path, *args, **kwargs)
+
+        with patch("output_collection.os.scandir", side_effect=switched):
+            self.rejected()
+
+    @POSIX_ONLY
+    def test_parent_replaced_by_link_before_a_file_open_is_rejected(self):
+        folder = self.produced / "sub"
+        folder.mkdir()
+        (folder / "file").write_bytes(b"ordinary")
+        real, swapped = os.lstat, []
+
+        def lstat(path, *args, **kwargs):
+            if not swapped and os.path.basename(path) == "file":
+                swapped.append(True)
+                folder.rename(self.work / "sub-real")
+                folder.symlink_to(self.work / "sub-real", target_is_directory=True)
+            return real(path, *args, **kwargs)
+
+        with patch("output_collection.os.lstat", side_effect=lstat):
+            self.rejected()
+        self.assertTrue(swapped)
 
     def test_a_different_file_id_at_open_is_rejected(self):
         (self.produced / "table.csv").write_bytes(b"ordinary output\n")

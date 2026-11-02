@@ -414,7 +414,7 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
     except (OSError, RejectedOutput) as exc:
         shutil.rmtree(snapshot)
         if contract.enabled():
-            check_rejected(work, destination, snapshot, limits, method)
+            check_rejected(work, destination, snapshot, limits, method, exc)
         if isinstance(exc, RejectedOutput):
             raise
         raise RejectedOutput("unreadable or changing output entry") from exc
@@ -467,13 +467,16 @@ def other_method_outcome(work, limits, method):
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
 
 
-def check_rejected(work, destination, snapshot, limits, method):
+def check_rejected(work, destination, snapshot, limits, method, error):
     contract.require(
         "Q2",
         not destination.exists() and not destination.is_symlink() and not snapshot.exists(),
         "a rejected collection left a snapshot or destination",
     )
-    if method == "descriptor" and DESCRIPTOR_APIS:
+    # I2 compares walks of one unchanging tree. A tree that changed during the walk
+    # (only possible in tests that inject the change) may be stable and valid by now.
+    changed = isinstance(error, OSError) or "changed during collection" in str(error)
+    if method == "descriptor" and DESCRIPTOR_APIS and not changed:
         outcome = other_method_outcome(work, limits, method)
         contract.require("I2", outcome[0] == "rejected", "only the descriptor walk rejected")
 

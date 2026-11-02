@@ -35,7 +35,9 @@ digest = "0" * 64
 if "image" in args and "inspect" in args:
     print("python@sha256:" + digest)
 elif "info" in args:
-    print("linux")
+    print(os.environ.get("FAKE_OS_TYPE", "linux"))
+elif "ls" in args and os.environ.get("FAKE_LEFTOVER"):
+    print("0123456789ab")
 elif "build" in args:
     if os.environ.get("FAKE_BUILD_OUTPUT"):
         print(os.environ["FAKE_BUILD_OUTPUT"])
@@ -229,6 +231,32 @@ class HostSafetyTests(unittest.TestCase):
         self.assertIn("AUDIT_CONTAINER_STDOUT", output)
         self.assertIn("ordinary container line", output)
         self.assertNotEqual(result.returncode, 0, "no collected results must fail the run")
+        self.assertEqual(forged_lines(output), [], quoted(output))
+
+    def test_missing_docker_blocks_before_any_source_is_read(self):
+        empty = self.root / "empty-path"
+        empty.mkdir()
+        result = self.run_runner("0" * 40, PATH=str(empty))
+        self.assertEqual(result.returncode, 2, quoted(result.stdout + result.stderr))
+        report = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
+        self.assertEqual(report["status"], "blocked")
+        self.assertFalse((self.root / "output/verified-source").exists())
+
+    def test_daemon_without_linux_containers_blocks(self):
+        result = self.run_runner("0" * 40, FAKE_OS_TYPE="windows")
+        self.assertEqual(result.returncode, 2, quoted(result.stdout + result.stderr))
+        report = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
+        self.assertEqual(report["reason"], "Docker daemon does not run Linux containers")
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_unverified_container_removal_blocks_collection(self):
+        """P1: no collection while Docker still lists the container."""
+        revision = self.workspace()
+        result = self.run_runner(revision, FAKE_LEFTOVER="1")
+        output = result.stdout + result.stderr
+        self.assertEqual(result.returncode, 1, quoted(output))
+        self.assertIn("removal unverified", output)
+        self.assertFalse((self.root / "output/results/collection.json").exists())
         self.assertEqual(forged_lines(output), [], quoted(output))
 
 

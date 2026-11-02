@@ -54,6 +54,15 @@ class ExecutionLogTests(unittest.TestCase):
         self.assertEqual((result.returncode, reason), (0, None))
         self.assertEqual(result.stdout.split(), [str(n) for n in range(50)])
 
+    def test_output_past_an_exactly_full_log_is_a_log_limit(self):
+        script = (
+            "import sys, time; o = sys.stdout.buffer;"
+            "o.write(b'x' * 1024); o.flush(); time.sleep(0.3); o.write(b'y')"
+        )
+        result, reason = run_bounded([sys.executable, "-c", script], max_log_bytes=1024)
+        self.assertEqual((result.returncode, reason), (125, "log_limit"))
+        self.assertEqual(result.stdout, "x" * 1024)
+
     def test_output_exactly_at_the_limit_is_kept(self):
         result, reason = run_bounded(
             [sys.executable, "-c", "import sys;sys.stdout.write('x'*1024)"], max_log_bytes=1024

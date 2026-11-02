@@ -35,14 +35,17 @@ CI host-test steps set it, production runs do not. A failed check raises
 ## Invariants
 
 - **I1** The host reads bytes only from an output entry whose own `lstat` showed a
-  one-link regular file and whose opened descriptor has the same identity. On POSIX
-  every folder is reached through no-follow directory descriptors. On Windows each
-  path component is checked to be no reparse point just before the open, and each
-  folder again after it was listed; a concurrent writer is excluded by P1. Checked
-  in `read_opened`.
+  file that is no link, and whose opened descriptor is a one-link regular file with
+  the same identity: device, inode, size and times on POSIX; volume and file ID in
+  the path walk, because Windows can answer a by-name stat from the folder entry,
+  whose size and times may lag the open handle's. On POSIX every folder is reached
+  through no-follow directory descriptors. On Windows each path component is
+  checked to be no reparse point just before the open, and each folder again after
+  it was listed; a concurrent writer is excluded by P1. Checked in `read_opened`.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
-  the same outcome, records and summaries for the same tree. Checked after every
-  collection with the descriptor walk.
+  the same outcome, records and summaries for the same unchanging tree. Checked
+  after every collection with the descriptor walk, except a rejection for a change
+  during the walk (only tests can cause one, since P1 excludes a writer).
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 

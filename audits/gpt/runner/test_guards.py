@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,10 +17,12 @@ from ci_evidence import classify
 from isolated_runner import (
     blob_digest,
     ca_bundle,
+    checked,
     container_user,
     docker_command,
     execution_command,
     read_blobs,
+    run_bounded,
     source_entries,
     stage_source,
 )
@@ -441,6 +444,150 @@ class PortableHostTests(unittest.TestCase):
                 else:
                     with self.assertRaisesRegex(RuntimeError, "No CA bundle"):
                         ca_bundle(Path(directory))
+
+
+def git_output(*items):
+    """Fake ``git cat-file --batch`` output from (digest, payload) pairs."""
+    return b"".join(f"{d} blob {len(p)}\n".encode() + p + b"\n" for d, p in items)
+
+
+class RunnerBranchTests(unittest.TestCase):
+    """Error paths that the end-to-end tests do not reach (coverage, profile rule 20)."""
+
+    def test_failed_command_names_the_program_and_its_error(self):
+        script = "import sys; sys.stderr.write('broken'); raise SystemExit(3)"
+        with self.assertRaisesRegex(RuntimeError, "exited 3: broken"):
+            checked([sys.executable, "-c", script])
+
+    def test_non_positive_execution_limits_are_refused(self):
+        for limits in ({"timeout": 0}, {"max_log_bytes": 0}):
+            with self.subTest(limits=limits):
+                with self.assertRaisesRegex(ValueError, "positive"):
+                    run_bounded([sys.executable, "-c", "pass"], **limits)
+
+    def test_log_reader_failure_is_an_error_not_a_quiet_empty_log(self):
+        real = subprocess.Popen
+
+        class Broken:
+            def read1(self, size):
+                raise OSError("pipe broke")
+
+            def close(self):
+                pass
+
+        def popen(*args, **kwargs):
+            process = real(*args, **kwargs)
+            process.stdout.close()
+            process.stdout = Broken()
+            return process
+
+        with patch("isolated_runner.subprocess.Popen", side_effect=popen):
+            with self.assertRaisesRegex(RuntimeError, "log reader failed"):
+                run_bounded([sys.executable, "-c", "pass"], timeout=30)
+
+    def test_reader_that_cannot_start_still_ends_the_child(self):
+        started = []
+        real = subprocess.Popen
+
+        def popen(*args, **kwargs):
+            started.append(real(*args, **kwargs))
+            return started[-1]
+
+        with (
+            patch("isolated_runner.subprocess.Popen", side_effect=popen),
+            patch("isolated_runner.threading.Thread.start", side_effect=RuntimeError("no thread")),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "no thread"):
+                run_bounded([sys.executable, "-c", "import time; time.sleep(30)"])
+        self.assertIsNotNone(started[0].poll())
+        self.assertTrue(started[0].stdout.closed)
+
+    def test_git_object_output_is_checked(self):
+        good = b"payload\n"
+        digest = blob_digest(good)
+        cases = {
+            "exited 1": subprocess.CompletedProcess([], 1, b"", b""),
+            "ended early": subprocess.CompletedProcess([], 0, git_output((digest, good))[:-3], b""),
+            "does not match": subprocess.CompletedProcess(
+                [], 0, git_output((digest, b"payload!")).replace(b" 9\n", b" 8\n"), b""
+            ),
+            "Unexpected": subprocess.CompletedProcess(
+                [], 0, git_output((digest, good)) + b"x", b""
+            ),
+        }
+        for message, result in cases.items():
+            with self.subTest(message=message):
+                with patch("isolated_runner.subprocess.run", return_value=result):
+                    with self.assertRaisesRegex((RuntimeError, ValueError), message):
+                        read_blobs(Path("."), [digest])
+
+    def test_revision_must_be_full_and_checked_out(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            with self.assertRaisesRegex(ValueError, "full Git SHA"):
+                stage_source(source, root / "one", revision[:12])
+            with self.assertRaisesRegex(ValueError, "differs from the expected"):
+                stage_source(source, root / "two", "0" * 40)
+
+    def test_borrowed_object_store_is_refused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            (source / ".git/objects/info").mkdir(exist_ok=True)
+            (source / ".git/objects/info/alternates").write_text("/elsewhere\n")
+            with self.assertRaisesRegex(ValueError, "Materialize Git objects"):
+                stage_source(source, root / "staged", revision)
+
+    def test_linked_object_store_entry_is_refused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            try:
+                (source / ".git/objects/zz").symlink_to(root, target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"symbolic links unavailable: {exc}")
+            with self.assertRaisesRegex(ValueError, "Symlink in Git object store"):
+                stage_source(source, root / "staged", revision)
+
+    def test_shallow_clone_keeps_its_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            origin, _ = fixture_repository(root, {"a.txt": b"a\n"})
+            (origin / "b.txt").write_bytes(b"b\n")
+            subprocess.run(["git", "-C", str(origin), "add", "-A"], check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(origin),
+                    "-c",
+                    "user.name=F",
+                    "-c",
+                    "user.email=f@x.invalid",
+                    "commit",
+                    "-qm",
+                    "second",
+                ],
+                check=True,
+            )
+            clone = root / "clone"
+            subprocess.run(
+                ["git", "clone", "-q", "--depth", "1", origin.as_uri(), str(clone)], check=True
+            )
+            revision = subprocess.check_output(
+                ["git", "-C", str(clone), "rev-parse", "HEAD"], text=True
+            ).strip()
+            records = stage_source(clone, root / "staged", revision)
+            self.assertEqual([row["path"] for row in records], ["a.txt", "b.txt"])
+            self.assertEqual(
+                (root / "staged/.git/shallow").read_bytes(), (clone / ".git/shallow").read_bytes()
+            )
+            # Git accepts upper-case hex here; the runner accepts only its own spelling.
+            shallow = (clone / ".git/shallow").read_text()
+            (clone / ".git/shallow").write_text(shallow.upper())
+            with self.assertRaisesRegex(ValueError, "shallow-boundary"):
+                stage_source(clone, root / "again", revision)
 
 
 class SemanticCoverageTests(unittest.TestCase):
