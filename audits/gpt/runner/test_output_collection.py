@@ -873,6 +873,34 @@ class RoundNineCheckTests(unittest.TestCase):
             self.assertEqual(rejected["limits"], asdict(limits))
 
 
+@POSIX_ONLY
+class RoundTenCheckTests(unittest.TestCase):
+    """Review round 10: summary names looked up by path in a snapshot near PATH_MAX."""
+
+    def test_a_snapshot_near_the_path_limit_without_summaries_collects(self):
+        """The path walk looks up each summary name by its full path. In a snapshot whose
+        path leaves room for the output's names but not for benchmark-summary.json, the
+        lookup failed with ENAMETOOLONG: the path walk rejected the tree, and with the
+        test mode on, the I2 reference raised that OSError for a collected tree."""
+        with tempfile.TemporaryDirectory() as directory:
+            limit = os.pathconf(directory, "PC_PATH_MAX") - 1
+            work = Path(directory, "work")
+            (work / "results").mkdir(parents=True)
+            (work / "results/a").write_text("ordinary\n", encoding="utf-8")
+            for method in ("descriptor", "path"):
+                with self.subTest(method=method):
+                    parent = os.path.join(directory, method)
+                    # <parent>/.collect-XXXXXXXX/a fits; .../benchmark-summary.json does not.
+                    target = limit - len("/.collect-xxxxxxxx/benchmark-summary.json") + 10
+                    while len(parent) < target:
+                        parent = os.path.join(parent, "d" * min(200, target - len(parent) - 1))
+                    os.makedirs(parent)
+                    report = collect_results(work, Path(parent, "workload"), method=method)
+                    self.assertEqual(report["status"], "collected")
+                    self.assertEqual(report["summaries"], {})
+                    self.assertEqual(sorted(os.listdir(parent)), ["workload"])
+
+
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
 class NoDescriptorTests(unittest.TestCase):
     def test_descriptor_walk_fails_closed_without_its_apis(self):

@@ -5,8 +5,8 @@ source access can pass through a link. Windows has no such descriptors. There th
 walk uses paths, rejects every reparse point (symbolic links, junctions, WSL
 links) before it opens anything, and re-checks each opened file's identity. That
 walk relies on Docker having removed the container first (CONTRACT.md P1), so no
-process can swap an entry during collection. Neither walk replaces the
-container's own execution boundary.
+container process can swap an entry during collection (another local account still
+can, CONTRACT.md I1). Neither walk replaces the container's own execution boundary.
 """
 
 import errno
@@ -326,6 +326,12 @@ def read_summaries(snapshot, method=None):
                 info = folder.lstat(name)
             except FileNotFoundError:
                 continue
+            except OSError as exc:
+                # The path walk looks a name up by its full path. copy_tree wrote every
+                # snapshot file by its full path, so one past the limit is absent (I2).
+                if exc.errno != errno.ENAMETOOLONG:
+                    raise
+                continue
             regular_file(info, device, SUMMARY_MAX_BYTES)
             payload = bytearray()
 
@@ -536,7 +542,8 @@ def check_rejected(work, destination, snapshot, limits, method, error):
         "a rejected collection left a snapshot or destination",
     )
     # I2 compares walks of one unchanging tree. A tree that changed during the walk
-    # (only possible in tests that inject the change) may be stable and valid by now.
+    # (a test that injects the change, or another local account, see CONTRACT.md I1)
+    # may be stable and valid by now.
     changed = isinstance(error, OSError) or "changed during collection" in str(error)
     if method == "descriptor" and DESCRIPTOR_APIS and not changed:
         outcome = other_method_outcome(work, limits, method, destination.parent)

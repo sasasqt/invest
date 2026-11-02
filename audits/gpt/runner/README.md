@@ -101,8 +101,9 @@ descriptors with no-follow flags. Windows has no such descriptors: there it chec
 that no path component is a reparse point (symbolic link, junction or WSL link)
 just before each open, checks each folder as soon as it is listed and again after
 walking it, and ties each opened file to the checked name by volume and file ID.
-That walk relies on the verified container removal, so no process can swap an
-entry during collection. Both walks reject file/directory/root links, hard links, special files,
+That walk relies on the verified container removal, so no container process can swap
+an entry during collection (another local account still can; see below). Both walks
+reject file/directory/root links, hard links, special files,
 cross-device entries, a different file opened than the one checked by name, and a file
 that changes while it is read. (The Windows walk compares only volume and file ID
 between the check and the open, because a by-name stat there may show stale size and

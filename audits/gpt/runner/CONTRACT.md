@@ -57,10 +57,11 @@ rejection.
   the same outcome, records and summaries for the same unchanging tree whose paths
   fit the host's path length limit (the path walk cannot open a longer path; the
   descriptor walk can). Checked after every collection with the descriptor walk,
-  except a rejection for a change during the walk (only tests can cause one, since
-  P1 excludes a writer) or for an `OSError`. A failure of the check's own reference
-  snapshot (beside the real one; its own path, or a full volume) is raised as that
-  `OSError`, never reported as an I2 break.
+  except a rejection for a change during the walk (P1 excludes the container as a
+  writer, so only a test or another local account, see I1, can cause one) or for an
+  `OSError`. A failure of the check's own reference snapshot (beside the real one;
+  its own path, or a full volume) is raised as that `OSError`, never reported as an
+  I2 break.
 
 ## Container workload and snapshot check (checked by the suites)
 
@@ -107,8 +108,8 @@ the full isolated audit jobs exercise W1 and W2.
 - Source paths and output names that Windows or an artifact zip would read
   differently are refused on every host: reserved device names (`CON`, `NUL`,
   `COM1`...), names ending in a dot or space, `\ / : * ? " < > |`, control
-  characters, non-UTF-8 names, names shaped like an NTFS short name (`PROGRA~1`),
-  and source paths that clash when case is ignored.
+  characters (U+0000 to U+001F and U+007F), non-UTF-8 names, names shaped like an
+  NTFS short name (`PROGRA~1`), and source paths that clash when case is ignored.
 - Source paths that enter Git's own folder (`.git` in any case, or `GIT~1`) are
   refused before anything is written. PR #32 failed later on such a commit, when
   the checked-out bytes did not match.
