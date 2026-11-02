@@ -11,6 +11,7 @@ import socket
 import stat
 import tempfile
 import unittest
+from dataclasses import asdict
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -836,6 +837,40 @@ class RoundNineCheckTests(unittest.TestCase):
                 self.assertEqual(
                     sorted(path.name for path in (root / "ev").iterdir()), ["collection.json"]
                 )
+
+    def test_each_refusal_and_report_field_is_exactly_as_documented(self):
+        """Mutation testing (round 9): the tests matched these messages as substrings and
+        never read the reports' "limits" field, so a changed message or key went
+        unnoticed."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            work = root / "work"
+            (work / "results").mkdir(parents=True)
+            (work / "results/table.csv").write_text("a\n", encoding="utf-8")
+            (root / "taken").mkdir()
+            refusals = {
+                "unknown collection method": dict(method="other"),
+                "collection limits must be positive": dict(limits=CollectionLimits(depth=0)),
+                "collection destination must be outside the writable container mount": dict(
+                    destination=work / "results/out"
+                ),
+                "collection destination already exists": dict(destination=root / "taken"),
+            }
+            for message, arguments in refusals.items():
+                with self.subTest(message=message):
+                    arguments = {"destination": root / "ev/workload", **arguments}
+                    with self.assertRaises(ValueError) as caught:
+                        collect_results(work, **arguments)
+                    self.assertEqual(str(caught.exception), message)
+            limits = CollectionLimits(entries=9)
+            report = collect_results(work, root / "ev/workload", limits=limits)
+            self.assertEqual(report["limits"], asdict(limits))
+            broken = OSError(errno.EIO, os.strerror(errno.EIO))
+            with patch("output_collection.copy_opened", side_effect=broken):
+                with contextlib.redirect_stdout(io.StringIO()):
+                    rejected = collect_workload(work, root / "ev2", limits=limits)
+            self.assertEqual(rejected["reason"], "unreadable or changing output entry")
+            self.assertEqual(rejected["limits"], asdict(limits))
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")

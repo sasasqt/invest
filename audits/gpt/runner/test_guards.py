@@ -247,11 +247,24 @@ class SnapshotTests(unittest.TestCase):
                 with self.subTest(case=case, snapshot=snapshot.name):
                     self.expected = {"request": request, "files": files}
                     self.save()
-                    with self.assertRaises(SnapshotError):
+                    with self.assertRaises(SnapshotError) as caught:
                         verify(self.reference, snapshot)
+                    if case == "file and folder":
+                        self.assertEqual(
+                            str(caught.exception), "Raw path is a folder of another raw path"
+                        )
         # A 255-byte name is still a name (checked without the file system, since a
         # Windows host may not open a path over 260 characters).
         self.assertTrue(verify_snapshot._name_fits("a" * 255))
+
+    def test_an_empty_raw_file_verifies(self):
+        """Mutation testing (round 9): no test had a raw file of 0 bytes, so a check that
+        refused a size of 0 (not only a negative one) went unnoticed."""
+        self.file.write_bytes(b"")
+        self.expected["files"]["AAA"].update(bytes=0, sha256=hashlib.sha256(b"").hexdigest())
+        self.save()
+        result = verify(self.reference, self.snapshot)
+        self.assertEqual((result["status"], result["verified_bytes"]), ("verified", 0))
 
     def test_raw_paths_windows_reads_as_rooted_or_drive_paths_are_rejected(self):
         """Review round 6 (C1): on Windows these made the symlink walk loop forever."""
@@ -610,6 +623,79 @@ class RunnerContractTests(unittest.TestCase):
         self.assertTrue(any("dst=/input,readonly" in item for item in command))
         self.assertTrue(any("dst=/audit,readonly" in item for item in command))
         self.assertFalse(any("docker.sock,dst=" in item for item in command))
+
+    def test_the_container_command_is_exactly_the_documented_one(self):
+        """Mutation testing (round 9): the test above checks flags one by one, so a
+        changed environment value, mount target, tmpfs option, workload path or probe
+        argument, or an off-by-one UID check, went unnoticed (only the CI audit would
+        have failed)."""
+        paths = {name: Path(f"/tmp/{name}").resolve() for name in ("source", "tools", "output")}
+        command = execution_command(
+            "sha256:" + "0" * 64,
+            paths["source"],
+            paths["output"],
+            paths["tools"],
+            "/tmp/sentinel",
+            12345,
+            1,
+            1,
+        )
+        environment = {
+            "HOME": "/work/home",
+            "MPLCONFIGDIR": "/work/matplotlib",
+            "TMPDIR": "/work/tmp",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "OMP_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+            "PYTHONHASHSEED": "0",
+        }
+        proxies = ("HTTP_PROXY", "HTTPS_PROXY", "FTP_PROXY", "ALL_PROXY", "NO_PROXY")
+        environment.update({name: "" for name in proxies})
+        environment.update({name.lower(): "" for name in proxies})
+        expected = [
+            "run",
+            "--rm",
+            "--init=false",
+            "--network=none",
+            "--read-only",
+            "--cap-drop=ALL",
+            "--security-opt=no-new-privileges",
+            "--pids-limit=256",
+            "--memory=2g",
+            "--cpus=2",
+            "--user",
+            "1:1",
+            "--tmpfs",
+            "/tmp:rw,nosuid,nodev,size=256m",
+            "--mount",
+            f"type=bind,src={paths['source']},dst=/input,readonly",
+            "--mount",
+            f"type=bind,src={paths['tools']},dst=/audit,readonly",
+            "--mount",
+            f"type=bind,src={paths['output']},dst=/work",
+        ]
+        for name, value in environment.items():
+            expected += ["--env", f"{name}={value}"]
+        expected += ["sha256:" + "0" * 64, "python", "/audit/runner_workload.py"]
+        if os.name != "nt":
+            expected += ["--sentinel", "/tmp/sentinel", "--host-pid", "12345"]
+        self.assertTrue(command[1].startswith("--host="), command[:2])
+        self.assertEqual(command[2:], expected)
+        messages = {
+            "Container execution requires an unprivileged UID": ("sha256:" + "0" * 64, 0, 1),
+            "Execution requires a recorded immutable image ID": ("python:3.13", 1, 1),
+        }
+        for message, (image, uid, gid) in messages.items():
+            with self.subTest(message=message):
+                with self.assertRaises(ValueError) as caught:
+                    execution_command(image, "/tmp/a", "/tmp/b", "/tmp/c", None, None, uid, gid)
+                self.assertEqual(str(caught.exception), message)
+        with self.assertRaises(ValueError) as caught:
+            execution_command(
+                "sha256:" + "0" * 64, "/tmp/a,b", "/tmp/b", "/tmp/c", None, None, 1, 1
+            )
+        self.assertEqual(str(caught.exception), "A mount path must not contain a comma")
 
     def test_mutable_image_tag_rejected(self):
         with self.assertRaisesRegex(ValueError, "immutable"):
