@@ -171,13 +171,14 @@ class CollectionTests(unittest.TestCase):
 
     def test_summary_workflow_commands_are_escaped(self):
         (self.produced / "boundary.json").write_text(
-            json.dumps({"note": "ok\n::error::untrusted command"})
+            json.dumps({"note": "ok\n::error::untrusted command ##[error]older form"})
         )
         captured = io.StringIO()
         with contextlib.redirect_stdout(captured):
             report = collect_workload(self.work, self.evidence)
         self.assertEqual(report["status"], "collected")
-        self.assertFalse(any(line.startswith("::") for line in captured.getvalue().splitlines()))
+        lines = captured.getvalue().splitlines()
+        self.assertFalse(any(line.lstrip().startswith("::") or "##[" in line for line in lines))
 
     def test_file_replaced_by_link_between_stat_and_open_is_rejected(self):
         target = self.produced / "replace-me"

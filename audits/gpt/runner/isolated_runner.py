@@ -18,7 +18,7 @@ import traceback
 import uuid
 from pathlib import Path
 
-from output_collection import collect_workload
+from output_collection import collect_workload, log_line
 
 
 def checked(argv, **kwargs):
@@ -284,8 +284,8 @@ def main():
     uv = shutil.which("uv")
     if not uv:
         raise RuntimeError("Trusted setup requires uv for metadata-only export")
-    # --no-config: [tool.uv] settings in the audited pyproject.toml (such as
-    # cache-dir) must not steer where the host reads or writes.
+    # --no-config: uv settings in the audited pyproject.toml (such as cache-dir)
+    # must not steer host-side uv. Path sources are still read (see README).
     common = [
         "--no-config",
         "--offline",
@@ -341,7 +341,7 @@ def main():
     (results / "image-build.log").write_text(built.stdout + built.stderr)
     if built.returncode:
         # Build output can echo audited metadata; keep it to one escaped line.
-        print("AUDIT_IMAGE_BUILD_LOG " + json.dumps(built.stdout + built.stderr), flush=True)
+        log_line("AUDIT_IMAGE_BUILD_LOG", built.stdout + built.stderr)
     built.check_returncode()
     image = (output / "image-id").read_text().strip()
     work = output / "work"
@@ -372,8 +372,8 @@ def main():
     (results / "execution.log").write_text(execution.stdout + execution.stderr)
     # Container text is data, never a GitHub workflow command. Only the host's
     # private, validated snapshot can supply evidence or uploaded output.
-    print("AUDIT_CONTAINER_STDOUT " + json.dumps(execution.stdout), flush=True)
-    print("AUDIT_CONTAINER_STDERR " + json.dumps(execution.stderr), flush=True)
+    log_line("AUDIT_CONTAINER_STDOUT", execution.stdout)
+    log_line("AUDIT_CONTAINER_STDERR", execution.stderr)
     collection = collect_workload(work, results)
     (results / "runner.json").write_text(
         json.dumps(
@@ -393,8 +393,7 @@ def main():
 
 def report_host_error(error):
     """Host errors can quote audited names; print them as one JSON-escaped line."""
-    text = "".join(traceback.format_exception(error))
-    print("AUDIT_RUNNER_ERROR " + json.dumps(text), file=sys.stderr, flush=True)
+    log_line("AUDIT_RUNNER_ERROR", "".join(traceback.format_exception(error)), sys.stderr)
 
 
 if __name__ == "__main__":

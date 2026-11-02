@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 import stat
+import sys
 import tempfile
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
@@ -16,6 +17,16 @@ from pathlib import Path
 
 SUMMARY_NAMES = ("boundary.json", "environment.json", "benchmark-summary.json")
 SUMMARY_MAX_BYTES = 64 * 1024
+
+
+def log_line(tag, value, file=None):
+    """Print untrusted text as one line that GitHub Actions cannot read as a command.
+
+    json.dumps escapes newlines, so no line can start with '::'. The runner also
+    parses the older '##[command]' form anywhere in a line, so '#' becomes \\u0023.
+    """
+    text = json.dumps(value, ensure_ascii=True).replace("#", "\\u0023")
+    print(f"{tag} {text}", file=file or sys.stdout, flush=True)
 
 
 class RejectedOutput(ValueError):
@@ -209,7 +220,7 @@ def collect_workload(work, results, limits=DEFAULT_LIMITS):
     except RejectedOutput as exc:
         report = {"status": "rejected", "reason": str(exc), "limits": asdict(limits)}
     (results / "collection.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    print("AUDIT_COLLECTION " + json.dumps({"status": report["status"]}), flush=True)
+    log_line("AUDIT_COLLECTION", {"status": report["status"]})
     for name, value in report.get("summaries", {}).items():
-        print("AUDIT_EVIDENCE " + name + " " + json.dumps(value, ensure_ascii=True), flush=True)
+        log_line("AUDIT_EVIDENCE " + name, value)
     return report

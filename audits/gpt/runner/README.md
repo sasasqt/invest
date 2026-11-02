@@ -1,6 +1,6 @@
 # Isolated audit runner
 
-Linux/Docker tooling for an offline, containerized audit of one pinned source revision: boundary probes, installed-environment checks, full-suite results and synth-S measurements. Each pull request that changes the runner records the tested runner and source revisions, its results and its remaining failures. Without Docker only the host-side unit tests can run.
+Linux/Docker tooling for an offline, containerized audit of one pinned source revision: boundary probes, installed-environment checks, full-suite results and synth-S measurements. Record the tested runner and source revisions, results and remaining failures in the pull request that changes the runner. Without Docker only the host-side unit tests can run.
 
 This tooling supplies the execution path missing from the original audit. It keeps source execution inside an offline container, verifies installed versions, stages three genuine workspace wheels, runs the full suite/coverage and independent installs, and records seven timed synth-S repetitions after a warm-up. It does not implement product fixes, merge PRs, publish comments or access reserved observations.
 
@@ -9,7 +9,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 - `isolated_runner.py`: host-side source identity checks, credential-free Git metadata staging, immutable image capture and restricted container launch.
 - `output_collection.py`: descriptor-based, no-follow collection into a private host snapshot; validates summaries and bounds files, bytes, entries and depth before upload.
 - `collection_checks.py`: real Docker controls for hostile output and ordinary evidence, using generated host-only canaries, plus `test_output_collection.py` and `test_execution_logs.py` regression tests.
-- `test_host_safety.py`: runs the real host runner with a stand-in Docker command to check that `[tool.uv]` settings, file names and build output from the audited source cannot steer host-side uv or start GitHub workflow commands, and that the Dockerfile pulls no unpinned frontend image.
+- `test_host_safety.py`: runs the real host runner with a stand-in Docker command to check that uv settings (such as `cache-dir`), file names, build output and container output from the audited source cannot steer host-side uv or start GitHub workflow commands, and that the Dockerfile pulls no unpinned frontend image.
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
 - `verify_installed.py`: version/marker checks and workspace import origins.
 - `ci_evidence.py`: distinguish fresh job executions from historical jobs copied into newer workflow attempts.
@@ -27,7 +27,7 @@ python isolated_runner.py --source /path/to/checkout \
   --python-version 3.11 --output /path/to/new-audit-output
 ```
 
-The host performs metadata-only lock checks, with uv's configuration discovery switched off (`--no-config`) so `[tool.uv]` settings in the audited source cannot steer host-side uv, and verified downloads/image setup. The image uses Docker's built-in Dockerfile frontend, so no unpinned frontend image is pulled. It stages only tracked source files plus real commit objects and freshly generated minimal Git configuration; credentials, hooks, logs, host homes and Docker sockets are not mounted into the execution container. Network is disabled, root filesystem and inputs are read-only, capabilities are dropped, privilege escalation is disabled, the container UID is unprivileged, and writable output is isolated. Failed boundary probes stop product execution.
+The host performs metadata-only lock checks, with uv's configuration discovery switched off (`--no-config`) so uv settings in the audited source (such as `cache-dir`) cannot steer host-side uv, and verified downloads/image setup. A project that needs uv project or user settings (a custom index, `exclude-newer` and the like) therefore fails the host lock check. Known limit: path, Git or URL dependency sources in the audited `[tool.uv.sources]` are still resolved on the host, so the lock check can read a host path that the source names; nothing is written there. The image uses Docker's built-in Dockerfile frontend, so no unpinned frontend image is pulled. It stages only tracked source files plus real commit objects and freshly generated minimal Git configuration; credentials, hooks, logs, host homes and Docker sockets are not mounted into the execution container. Network is disabled, root filesystem and inputs are read-only, capabilities are dropped, privilege escalation is disabled, the container UID is unprivileged, and writable output is isolated. Failed boundary probes stop product execution.
 
 The workflow uses two Python versions and read-only repository permissions; checkout credentials are not persisted. Output upload is limited to the evidence directory. Source commits, image IDs, runtime versions and resource limits are recorded. The initial benchmark scope is synth-S only; M/L/XL, storage-format benchmarks, memory peaks and historical replay remain future work. No speedup/regression comparison is possible without a matched baseline.
 
@@ -56,10 +56,10 @@ opens the work/results root and descendants through directory descriptors with
 no-follow flags. It rejects file/directory/root links, hard links, special files,
 cross-device entries and changing files. Upload receives a newly created private
 snapshot, never the original work tree or preserved links. All three printed
-summaries are read from that snapshot and JSON-escaped for logs. Host-side errors
-and a failed image build's output can quote audited names, so they are printed as
-single JSON-escaped lines (`AUDIT_RUNNER_ERROR`, `AUDIT_IMAGE_BUILD_LOG`) that cannot
-start GitHub workflow commands. Rejection leaves
+summaries are read from that snapshot. Every `AUDIT_*` log line (container output,
+summaries, host errors and a failed image build's output, which can quote audited
+names) is one JSON-escaped line with `#` escaped as well, so it cannot carry a GitHub
+workflow command (`::` at a line start, or the older `##[` anywhere). Rejection leaves
 `collection.json` and a failed runner result without a partially collected tree.
 
 Collection defaults are 16 MiB per file, 128 MiB total, 4,096 entries and 32 nested

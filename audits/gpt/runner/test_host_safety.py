@@ -16,6 +16,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE / "isolated_runner.py"
 FORGED = "::error title=Forged::annotation from audited input"
+# The runner also parses the older form anywhere in a line, not only at its start.
+LEGACY = "older ##[error title=Forged]annotation from audited input"
 MEMBERS = ("data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation")
 FAKE_DOCKER = """#!/bin/sh
 # Stand-in for the Docker CLI: no daemon and no containers.
@@ -23,7 +25,14 @@ case " $* " in
   *" image inspect "*) echo "python@sha256:DIGEST" ;;
   *" build "*)
     if [ -n "$FAKE_BUILD_OUTPUT" ]; then printf '%s\\n' "$FAKE_BUILD_OUTPUT"; fi
+    previous=""
+    for argument in "$@"; do
+      if [ "$previous" = "--iidfile" ]; then echo "sha256:DIGEST" > "$argument"; fi
+      previous="$argument"
+    done
     exit "${FAKE_BUILD_EXIT:-0}" ;;
+  *" run "*)
+    if [ -n "$FAKE_RUN_OUTPUT" ]; then printf '%s\\n' "$FAKE_RUN_OUTPUT"; fi ;;
 esac
 exit 0
 """.replace("DIGEST", "0" * 64)
@@ -49,8 +58,8 @@ def commit_all(root):
 
 
 def forged_lines(output):
-    """GitHub reads a line whose first non-blank characters are '::' as a command."""
-    return [line for line in output.splitlines() if line.lstrip().startswith("::")]
+    """Lines GitHub reads as commands: '::' first, or the older '##[' anywhere."""
+    return [line for line in output.splitlines() if line.lstrip().startswith("::") or "##[" in line]
 
 
 @unittest.skipUnless(os.name == "posix" and shutil.which("git"), "POSIX host with Git")
@@ -72,6 +81,10 @@ class HostSafetyTests(unittest.TestCase):
             for key, value in os.environ.items()
             if not key.startswith(("UV_", "DOCKER_"))
         }
+        # Keep uv's default cache and user configuration inside the test. Not
+        # UV_CACHE_DIR: it would outrank the audited cache-dir under test.
+        self.env["XDG_CACHE_HOME"] = str(self.root / "xdg-cache")
+        self.env["XDG_CONFIG_HOME"] = str(self.root / "xdg-config")
         self.env["PATH"] = str(tools) + os.pathsep + self.env.get("PATH", "")
 
     def workspace(self, uv_settings=""):
@@ -95,6 +108,7 @@ class HostSafetyTests(unittest.TestCase):
             [
                 shutil.which("uv"),
                 "lock",
+                "--no-config",
                 "--offline",
                 "--no-python-downloads",
                 "--python",
@@ -142,7 +156,7 @@ class HostSafetyTests(unittest.TestCase):
         self.assertFalse(chosen.exists(), "audited [tool.uv] steered a host write")
 
     def test_host_errors_quoting_audited_names_cannot_start_workflow_commands(self):
-        name = "!a\n" + FORGED
+        name = "!a\n" + FORGED + "\n" + LEGACY
         (self.source / name).write_text("committed\n", encoding="utf-8")
         revision = commit_all(self.source)
         (self.source / name).write_text("changed after the commit\n", encoding="utf-8")
@@ -156,11 +170,25 @@ class HostSafetyTests(unittest.TestCase):
     def test_failed_image_build_log_cannot_start_workflow_commands(self):
         revision = self.workspace()
         result = self.run_runner(
-            revision, FAKE_BUILD_OUTPUT="ordinary build step\n" + FORGED, FAKE_BUILD_EXIT="1"
+            revision,
+            FAKE_BUILD_OUTPUT="ordinary build step\n" + FORGED + "\n" + LEGACY,
+            FAKE_BUILD_EXIT="1",
         )
         output = result.stdout + result.stderr
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("ordinary build step", output)
+        self.assertEqual(forged_lines(output), [], output)
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_container_output_cannot_start_workflow_commands(self):
+        revision = self.workspace()
+        result = self.run_runner(
+            revision, FAKE_RUN_OUTPUT="ordinary container line\n" + FORGED + "\n" + LEGACY
+        )
+        output = result.stdout + result.stderr
+        self.assertIn("AUDIT_CONTAINER_STDOUT", output)
+        self.assertIn("ordinary container line", output)
+        self.assertNotEqual(result.returncode, 0, "no collected results must fail the run")
         self.assertEqual(forged_lines(output), [], output)
 
 
@@ -168,7 +196,7 @@ class DockerfileTests(unittest.TestCase):
     def test_no_unpinned_frontend_image(self):
         """A '# syntax=' directive makes BuildKit fetch and run that image."""
         for line in (HERE / "Dockerfile").read_text(encoding="utf-8").splitlines():
-            directive = line.replace(" ", "").lower()
+            directive = "".join(line.split()).lower()
             if directive.startswith("#syntax="):
                 self.assertIn("@sha256:", directive, "pin the frontend image by digest")
 
