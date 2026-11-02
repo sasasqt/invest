@@ -35,6 +35,9 @@ digest = "0" * 64
 if "image" in args and "inspect" in args:
     print("python@sha256:" + digest)
 elif "info" in args:
+    if os.environ.get("FAKE_INFO_EXIT"):
+        sys.stderr.write("Cannot connect to the Docker daemon. Is the docker daemon running?\\n")
+        sys.exit(int(os.environ["FAKE_INFO_EXIT"]))
     print(os.environ.get("FAKE_OS_TYPE", "linux"))
 elif "ls" in args and os.environ.get("FAKE_LEFTOVER"):
     print("0123456789ab")
@@ -167,7 +170,7 @@ class HostSafetyTests(unittest.TestCase):
         )
         return commit_all(self.source)
 
-    def run_runner(self, revision, **extra):
+    def run_runner(self, revision, cwd=None, **extra):
         return subprocess.run(
             [
                 sys.executable,
@@ -182,10 +185,21 @@ class HostSafetyTests(unittest.TestCase):
                 str(self.root / "output"),
             ],
             env=dict(self.env, **extra),
+            cwd=cwd,
             capture_output=True,
             text=True,
             timeout=300,
         )
+
+    def plant(self, name, marker):
+        """A committed program that records that it ran."""
+        if os.name == "nt":
+            script = self.source / (name + ".cmd")
+            script.write_text(f'@echo ran > "{marker}"\r\n', encoding="utf-8", newline="")
+        else:
+            script = self.source / name
+            script.write_text(f'#!/bin/sh\necho ran > "{marker}"\n', encoding="utf-8")
+            script.chmod(0o755)
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")
     def test_audited_uv_settings_cannot_choose_host_write_paths(self):
@@ -233,6 +247,20 @@ class HostSafetyTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, "no collected results must fail the run")
         self.assertEqual(forged_lines(output), [], quoted(output))
 
+    def test_programs_in_the_current_folder_never_run(self):
+        """Review round 5: started inside the audited checkout, a committed git, uv or
+        docker ran on the host. Windows (shutil.which, CreateProcess) looks in the
+        current folder before PATH; POSIX does so for a relative PATH entry."""
+        marker = self.root / "PLANTED-PROGRAM-RAN"
+        for name in ("git", "uv", "docker"):
+            self.plant(name, marker)
+        revision = commit_all(self.source)
+        path = self.env["PATH"]
+        if os.name != "nt":
+            path = os.pathsep.join([".", path])
+        result = self.run_runner(revision, cwd=self.source, PATH=path)
+        self.assertFalse(marker.exists(), quoted(result.stdout + result.stderr))
+
     def test_missing_docker_blocks_before_any_source_is_read(self):
         empty = self.root / "empty-path"
         empty.mkdir()
@@ -240,6 +268,17 @@ class HostSafetyTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, quoted(result.stdout + result.stderr))
         report = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
         self.assertEqual(report["status"], "blocked")
+        self.assertFalse((self.root / "output/verified-source").exists())
+
+    def test_unreachable_daemon_blocks_before_any_source_is_read(self):
+        """Review round 5: a CLI without a running daemon ended in exit 1 and no
+        runner.json, unlike a missing CLI (blocked, exit 2)."""
+        result = self.run_runner("0" * 40, FAKE_INFO_EXIT="1")
+        self.assertEqual(result.returncode, 2, quoted(result.stdout + result.stderr))
+        report = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
+        self.assertEqual(
+            (report["status"], report["reason"]), ("blocked", "Docker daemon unreachable")
+        )
         self.assertFalse((self.root / "output/verified-source").exists())
 
     def test_daemon_without_linux_containers_blocks(self):

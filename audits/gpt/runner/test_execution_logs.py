@@ -116,6 +116,43 @@ class ExecutionLogTests(unittest.TestCase):
         self.assertEqual((result.returncode, reason), (0, None))
         self.assertEqual(len(result.stdout), 1024)
 
+    def test_child_that_closed_its_output_is_waited_for_without_spinning(self):
+        script = "import os, time; os.close(1); os.close(2); time.sleep(1.5)"
+        before = time.process_time()
+        result, reason = run_bounded([sys.executable, "-c", script], timeout=30)
+        spent = time.process_time() - before
+        self.assertEqual((result.returncode, reason), (0, None))
+        self.assertLess(spent, 0.5, "the host spun while the child still ran")
+
+    def test_reader_failure_ends_the_wait_at_once(self):
+        """Nothing drains the pipe after the reader failed, so waiting cannot help."""
+        real = subprocess.Popen
+
+        class FailsOnSecondRead:
+            def __init__(self, inner):
+                self.inner, self.reads = inner, 0
+
+            def read1(self, size):
+                self.reads += 1
+                if self.reads > 1:
+                    raise OSError("pipe broke")
+                return self.inner.read1(size)
+
+            def close(self):
+                self.inner.close()
+
+        def popen(*args, **kwargs):
+            process = real(*args, **kwargs)
+            process.stdout = FailsOnSecondRead(process.stdout)
+            return process
+
+        writer = "import sys\nwhile True: sys.stdout.write('x' * 4096); sys.stdout.flush()"
+        started = time.monotonic()
+        with patch("isolated_runner.subprocess.Popen", side_effect=popen):
+            with self.assertRaisesRegex(RuntimeError, "log reader failed"):
+                run_bounded([sys.executable, "-c", writer], timeout=20)
+        self.assertLess(time.monotonic() - started, 5)
+
 
 if __name__ == "__main__":
     unittest.main()

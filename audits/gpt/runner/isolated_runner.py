@@ -33,9 +33,40 @@ SYSTEM_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt"
 SERVER_AUTH = "1.3.6.1.5.5.7.3.1"
 
 
+def host_tool(name):
+    """The absolute path of program ``name`` in an absolute PATH folder, or None.
+
+    Never the current folder: Windows looks there before PATH (shutil.which, and
+    CreateProcess for a bare name), and POSIX does for a relative PATH entry, so a
+    git, uv or docker committed in an audited checkout would run on the host when
+    the runner starts inside it.
+    """
+    suffixes = [""]
+    if os.name == "nt":
+        listed = os.environ.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").lower().split(";")
+        if not any(name.lower().endswith(suffix) for suffix in listed if suffix):
+            suffixes = [suffix for suffix in listed if suffix]
+    for folder in os.environ.get("PATH", "").split(os.pathsep):
+        if not os.path.isabs(folder):
+            continue
+        for suffix in suffixes:
+            candidate = os.path.join(folder, name + suffix)
+            if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                return candidate
+    return None
+
+
+def program(name):
+    """``host_tool``, or an error rather than letting the OS search for a bare name."""
+    found = host_tool(name)
+    if not found:
+        raise RuntimeError(f"{name} executable unavailable on PATH")
+    return found
+
+
 def docker_command(*args):
-    """The Docker CLI, resolved on PATH once per call site, aimed at the local daemon."""
-    return [shutil.which("docker") or "docker", f"--host={DOCKER_ENDPOINT}", *args]
+    """The Docker CLI from an absolute PATH folder, aimed at the local daemon."""
+    return [program("docker"), f"--host={DOCKER_ENDPOINT}", *args]
 
 
 def write_text(path, text):
@@ -102,11 +133,19 @@ def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
             if over.is_set():
                 reason = "log_limit"
                 break
+            if failure:  # nothing drains the pipe any more, so waiting cannot help
+                break
             remaining = deadline - time.monotonic()
             if remaining <= 0:
                 reason = "timeout"
                 break
-            reader.join(min(0.1, remaining))
+            if reader.is_alive():
+                reader.join(min(0.1, remaining))
+            else:  # the output is closed but the child still runs: wait, do not spin
+                try:
+                    process.wait(timeout=min(0.1, remaining))
+                except subprocess.TimeoutExpired:
+                    pass
         if over.is_set():
             reason = "log_limit"
     finally:
@@ -313,7 +352,7 @@ def read_blobs(source, digests):
     """
     request = "".join(digest + "\n" for digest in digests).encode("ascii")
     result = subprocess.run(
-        ["git", "-C", str(source), "cat-file", "--batch"],
+        [program("git"), "-C", str(source), "cat-file", "--batch"],
         input=request,
         capture_output=True,
         env=git_environment(),
@@ -363,17 +402,23 @@ def stage_source(source, staged, expected_sha):
     if not re.fullmatch(r"[0-9a-f]{40}", expected_sha):
         raise ValueError("Expected revision must be a full Git SHA")
     env = git_environment()
-    actual = checked(["git", "-C", str(source), "rev-parse", "HEAD"], env=env, timeout=GIT_TIMEOUT)
+    actual = checked(
+        [program("git"), "-C", str(source), "rev-parse", "HEAD"], env=env, timeout=GIT_TIMEOUT
+    )
     if actual != expected_sha:
         raise ValueError("Source HEAD differs from the expected revision")
+    # --full-tree: from a subfolder of the checkout, ls-tree would list only that
+    # subtree, relative to it, and stage it as if it were the whole commit (Q4).
     listing = subprocess.run(
-        ["git", "-C", str(source), "ls-tree", "-rz", expected_sha],
+        [program("git"), "-C", str(source), "ls-tree", "-rz", "--full-tree", expected_sha],
         capture_output=True,
-        check=True,
         env=env,
         timeout=GIT_TIMEOUT,
-    ).stdout
-    entries = source_entries(listing)
+    )
+    if listing.returncode:
+        message = listing.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"git exited {listing.returncode}: {message}")
+    entries = source_entries(listing.stdout)
     staged.mkdir()
     # Git's own folder exists before any source file is written, so no committed path
     # can land in it, even one that a name check above missed.
@@ -394,11 +439,20 @@ def stage_source(source, staged, expected_sha):
         if contract.enabled():
             contract.require("Q4", blob_digest(destination.read_bytes()) == digest, path)
         records.append({"path": path, "git_blob": digest})
+    if contract.enabled():
+        written = sorted(
+            item.relative_to(staged).as_posix()
+            for item in staged.rglob("*")
+            if item.is_file() and item.relative_to(staged).parts[0] != ".git"
+        )
+        contract.require(
+            "Q4", written == sorted(path for path, _, _ in entries), "staged paths differ"
+        )
     # Keep genuine commit provenance, but never copy Git credentials, config,
     # hooks, logs, alternates or global/home files into the execution boundary.
     git_dir = Path(
         checked(
-            ["git", "-C", str(source), "rev-parse", "--absolute-git-dir"],
+            [program("git"), "-C", str(source), "rev-parse", "--absolute-git-dir"],
             env=env,
             timeout=GIT_TIMEOUT,
         )
@@ -442,7 +496,7 @@ def stage_source(source, staged, expected_sha):
     with tempfile.TemporaryDirectory() as hooks:
         checked(
             [
-                "git",
+                program("git"),
                 "-C",
                 str(staged),
                 "-c",
@@ -485,7 +539,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     results = output / "results"
     results.mkdir(exist_ok=True)
-    if not shutil.which("docker"):
+    if not host_tool("docker"):
         return blocked(results, "Docker executable unavailable")
     env = os.environ.copy()
     env["AUDIT_HOST_CANARY"] = "NON_SECRET_HOST_ENV_FIXTURE"
@@ -499,7 +553,10 @@ def main():
         env.pop(key, None)
     # Docker Desktop on Windows can be switched to Windows containers; the audit
     # image and every boundary check need a Linux daemon.
-    daemon = checked(docker_command("info", "--format", "{{.OSType}}"), env=env, timeout=60)
+    try:
+        daemon = checked(docker_command("info", "--format", "{{.OSType}}"), env=env, timeout=60)
+    except (RuntimeError, subprocess.TimeoutExpired):
+        return blocked(results, "Docker daemon unreachable")
     if daemon != "linux":
         return blocked(results, "Docker daemon does not run Linux containers")
     tools = Path(__file__).resolve().parent
@@ -522,7 +579,7 @@ def main():
         destination = metadata / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(staged / relative, destination)
-    uv = shutil.which("uv")
+    uv = host_tool("uv")
     if not uv:
         raise RuntimeError("Trusted setup requires uv for metadata-only export")
     # --no-config: uv settings in the audited pyproject.toml (such as cache-dir)

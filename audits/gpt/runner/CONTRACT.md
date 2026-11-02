@@ -45,9 +45,11 @@ CI host-test steps set it, production runs do not. A failed check raises
   checked to be no reparse point just before the open, and each folder again after
   it was listed; a concurrent writer is excluded by P1. Checked in `read_opened`.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
-  the same outcome, records and summaries for the same unchanging tree. Checked
-  after every collection with the descriptor walk, except a rejection for a change
-  during the walk (only tests can cause one, since P1 excludes a writer).
+  the same outcome, records and summaries for the same unchanging tree whose paths
+  fit the host's path length limit (the path walk cannot open a longer path; the
+  descriptor walk can). Checked after every collection with the descriptor walk,
+  except a rejection for a change during the walk (only tests can cause one, since
+  P1 excludes a writer) or for an `OSError`.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 
@@ -65,8 +67,12 @@ CI host-test steps set it, production runs do not. A failed check raises
 - The staged copy's index is built with no inherited `GIT_*` variables, no
   system or global Git configuration, no file system monitor and an empty hooks
   folder.
-- A Docker daemon that does not report Linux containers gives a `blocked` result
-  (exit 2) before any source is read.
+- A Docker daemon that cannot be reached, or does not report Linux containers,
+  gives a `blocked` result (exit 2) before any source is read.
+- `git`, `uv` and `docker` are run only from absolute `PATH` folders, never from the
+  current folder or a relative `PATH` entry (Windows searches the current folder
+  first), so a program committed in the audited checkout cannot run on the host.
+- `--source` may name a subfolder of the checkout; the whole commit is staged.
 - The CA bundle for the image build comes from the system bundle, else Python's
   default CA file, else (Windows) the certificate store exported as PEM.
 - On a Windows host the container's outside-file and host-process probes are not

@@ -73,6 +73,8 @@ jobs:
       - name: Hostile Docker output and ordinary collection controls
         env:
           AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+          # Check Q1, Q2 and I2 on trees a real container wrote (no output changes).
+          CONTRACT_CHECKS: '1'
         run: |
           uv run --no-project --no-config --python "$AUDIT_PYTHON_VERSION" python \
             audits/gpt/runner/collection_checks.py \

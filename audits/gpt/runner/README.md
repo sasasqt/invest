@@ -40,8 +40,12 @@ The host side (staging, image build, launch and collection) also runs on Windows
 with Docker Desktop in Linux-container mode. The runner talks to
 `npipe:////./pipe/docker_engine`, runs the container as UID and GID 65534, and
 takes the build's CA bundle from the system bundle, else Python's default CA file,
-else the Windows certificate store exported as PEM. A daemon that does not report
-Linux containers gives a `blocked` result (exit 2) before any source is read. The
+else the Windows certificate store exported as PEM. A daemon that cannot be reached,
+or does not report Linux containers, gives a `blocked` result (exit 2) before any
+source is read. `git`, `uv` and `docker` are taken only from absolute `PATH`
+folders, never from the current folder, which Windows otherwise searches first: a
+program committed in the audited checkout cannot run on the host even when the
+runner starts inside it. The
 container's outside-file and host-process probes are not run from a Windows host,
 since a Windows path or process ID names nothing inside the Linux container, so
 `boundary.json` lacks `outside_fixture_absent` and `host_process_not_visible`
@@ -75,7 +79,10 @@ just before each open, checks each folder as soon as it is listed and again afte
 walking it, and ties each opened file to the checked name by volume and file ID.
 That walk relies on the verified container removal, so no process can swap an
 entry during collection. Both walks reject file/directory/root links, hard links, special files,
-cross-device entries and changing files. Upload receives a newly created private
+cross-device entries, a different file opened than the one checked by name, and a file
+that changes while it is read. (The Windows walk compares only volume and file ID
+between the check and the open, because a by-name stat there may show stale size and
+times.) Upload receives a newly created private
 snapshot, never the original work tree or preserved links. All three printed
 summaries are read from that snapshot. Every runner `AUDIT_*` log line (container output,
 summaries, host errors and a failed image build's output, which can quote audited

@@ -16,12 +16,14 @@ from unittest.mock import patch
 
 os.environ.setdefault("CONTRACT_CHECKS", "1")
 
+from contract import ContractViolation
 from output_collection import (
     DEFAULT_METHOD,
     DESCRIPTOR_APIS,
     SUMMARY_MAX_BYTES,
     SUMMARY_NAMES,
     CollectionLimits,
+    PathFolder,
     RejectedOutput,
     collect_results,
     collect_workload,
@@ -434,6 +436,15 @@ class CollectionCases:
         _winapi.CreateJunction(str(outside), str(self.produced / "junction"))
         self.rejected(LINKED)
 
+    @POSIX_ONLY
+    def test_search_only_work_folder_gives_the_same_outcome_in_both_walks(self):
+        """Review round 5 (A2, I2): the container owns /work and can drop its read bit;
+        the descriptor walk needed read permission only to look up results/."""
+        (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+        self.work.chmod(0o100)
+        self.addCleanup(self.work.chmod, 0o700)
+        self.assertEqual(self.collect()["status"], "collected")
+
     def test_binary_bytes_are_copied_exactly(self):
         payload = b"line\r\nnext\n\x1a\x00tail"
         (self.produced / "binary.bin").write_bytes(payload)
@@ -445,6 +456,28 @@ class CollectionCases:
 @unittest.skipUnless(DESCRIPTOR_APIS, "POSIX descriptor walk")
 class DescriptorCollectionTests(CollectionCases, unittest.TestCase):
     method = "descriptor"
+
+    def test_source_path_past_the_path_length_limit_is_checked_without_a_crash(self):
+        """Review round 5 (A1): the test mode read the source by path and crashed on
+        a tree the descriptor walk had collected; the path walk cannot open it (I2)."""
+        work = self.root / ("w" * 200) / ("x" * 200) / "work"
+        (work / "results").mkdir(parents=True)
+        current = os.open(work / "results", os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            for level in range(16):  # 16 x 244 characters: past Linux's 4,096
+                name = f"d{level:02d}" + "a" * 240
+                os.mkdir(name, dir_fd=current)
+                inner = os.open(name, os.O_RDONLY | os.O_DIRECTORY, dir_fd=current)
+                os.close(current)
+                current = inner
+            fd = os.open("f.txt", os.O_WRONLY | os.O_CREAT, 0o644, dir_fd=current)
+            os.write(fd, b"deep")
+            os.close(fd)
+        finally:
+            os.close(current)
+        result = collect_results(work, self.destination, method="descriptor")
+        self.assertEqual(result["status"], "collected")
+        self.assertEqual([row["bytes"] for row in result["files"]], [4])
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
@@ -510,6 +543,16 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
         with patch("output_collection.os.lstat", side_effect=lstat):
             self.rejected(LINKED)
         self.assertTrue(swapped)
+
+    def test_contract_check_catches_a_comparison_that_misses_a_different_file(self):
+        """Review round 5 (B1): the I1 check repeated the type tests and never compared
+        the opened file's identity with the checked name's."""
+        (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+        blind = staticmethod(lambda info, opened: True)
+        with patch.object(PathFolder, "same", blind):
+            with self.stale_lstat(lambda info: {"st_ino": info.st_ino + 1}):
+                with self.assertRaisesRegex(ContractViolation, "^I1"):
+                    self.collect()
 
     def test_a_different_file_id_at_open_is_rejected(self):
         (self.produced / "table.csv").write_bytes(b"ordinary output\n")

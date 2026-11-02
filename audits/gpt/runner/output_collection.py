@@ -9,6 +9,7 @@ process can swap an entry during collection. Neither walk replaces the
 container's own execution boundary.
 """
 
+import errno
 import hashlib
 import json
 import os
@@ -110,11 +111,15 @@ DEFAULT_LIMITS = CollectionLimits()
 
 
 @contextmanager
-def directory_fd(path, parent=None):
+def directory_fd(path, parent=None, lookup_only=False):
+    """``lookup_only``: the folder is used only to look up a name, never listed. Linux
+    then opens it with O_PATH, which needs search but not read permission, as the
+    path walk does (CONTRACT.md I2)."""
     if not all(hasattr(os, name) for name in ("O_NOFOLLOW", "O_DIRECTORY", "O_NONBLOCK")):
         raise RejectedOutput("descriptor-based collection unavailable")
+    access = getattr(os, "O_PATH", os.O_RDONLY) if lookup_only else os.O_RDONLY
     try:
-        fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+        fd = os.open(path, access | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
     except OSError as exc:
         raise RejectedOutput("missing, linked or unreadable output directory") from exc
     try:
@@ -164,8 +169,12 @@ def read_opened(fd, info, device, maximum, changed, consume, same=same_identity)
     if contract.enabled():
         contract.require(
             "I1",
-            not is_link(info) and stat.S_ISREG(opened.st_mode) and opened.st_nlink == 1,
-            "about to read an entry that is not a one-link regular file checked by name",
+            not is_link(info)
+            and stat.S_ISREG(opened.st_mode)
+            and opened.st_nlink == 1
+            and (info.st_dev, info.st_ino) == (opened.st_dev, opened.st_ino)
+            and (same is same_file or identity(info) == identity(opened)),
+            "about to read an entry that is not the one-link regular file checked by name",
         )
     while chunk := os.read(fd, 65536):
         consume(chunk)
@@ -260,7 +269,7 @@ def path_directory(path):
 def open_folder(path, method, child=None):
     """Open ``path`` (or ``path/child``) for reading; yield the folder and its device."""
     if method == "descriptor":
-        with directory_fd(path) as parent:
+        with directory_fd(path, lookup_only=child is not None) as parent:
             if child is None:
                 yield DescriptorFolder(parent), os.fstat(parent).st_dev
                 return
@@ -478,8 +487,8 @@ def other_method_outcome(work, limits, method):
         try:
             records, entries, byte_count = copy_tree(work, snapshot, limits, other)
             summaries = read_summaries(snapshot, other)
-        except (OSError, RejectedOutput):
-            return ("rejected",)
+        except (OSError, RejectedOutput) as exc:
+            return "rejected", exc
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
 
 
@@ -495,6 +504,36 @@ def check_rejected(work, destination, snapshot, limits, method, error):
     if method == "descriptor" and DESCRIPTOR_APIS and not changed:
         outcome = other_method_outcome(work, limits, method)
         contract.require("I2", outcome[0] == "rejected", "only the descriptor walk rejected")
+
+
+def source_chain(work, relative):
+    """Q1: lstat each component of work/results/relative and read the file, following
+    no link. POSIX walks descriptors, so a path past PATH_MAX that the descriptor walk
+    collected can be checked too."""
+    parts = ("results", *relative.split("/"))
+    if not DESCRIPTOR_APIS:
+        current, chain = Path(work), []
+        for part in parts:
+            current = current / part
+            chain.append(os.lstat(current))
+        return chain, current.read_bytes()
+    flags = getattr(os, "O_PATH", os.O_RDONLY) | os.O_DIRECTORY | os.O_NOFOLLOW
+    fd, chain = os.open(work, flags), []
+    try:
+        for part in parts[:-1]:
+            chain.append(os.stat(part, dir_fd=fd, follow_symlinks=False))
+            parent, fd = fd, os.open(part, flags, dir_fd=fd)
+            os.close(parent)
+        chain.append(os.stat(parts[-1], dir_fd=fd, follow_symlinks=False))
+        with os.fdopen(os.open(parts[-1], READ_FLAGS, dir_fd=fd), "rb") as stream:
+            return chain, stream.read()
+    finally:
+        os.close(fd)
+
+
+def path_too_long(outcome):
+    """The path walk cannot open a path past the host's limit; the descriptor walk can."""
+    return outcome[0] == "rejected" and getattr(outcome[1], "errno", None) == errno.ENAMETOOLONG
 
 
 def check_collected(work, destination, report, limits, method):
@@ -523,15 +562,15 @@ def check_collected(work, destination, report, limits, method):
         row = rows[relative]
         contract.require("Q1", row["bytes"] == len(data) <= limits.file_bytes, relative)
         contract.require("Q1", row["sha256"] == hashlib.sha256(data).hexdigest(), relative)
-        current = Path(work)
-        for part in ("results", *relative.split("/")):
-            current = current / part
-            info = os.lstat(current)
+        chain, source = source_chain(work, relative)
+        for info in chain:
             contract.require("Q1", not is_link(info) and info.st_dev == device, relative)
         contract.require("Q1", stat.S_ISREG(info.st_mode) and info.st_nlink == 1, relative)
-        contract.require("Q1", current.read_bytes() == data, "source bytes differ: " + relative)
+        contract.require("Q1", source == data, "source bytes differ: " + relative)
     if method == "descriptor" and DESCRIPTOR_APIS:
         outcome = other_method_outcome(work, limits, method)
+        if path_too_long(outcome):
+            return
         expected = ("collected", report["files"], report["entries"], report["bytes"])
         contract.require("I2", outcome[:4] == expected, "the two walks copied different data")
         contract.require("I2", outcome[4] == report["summaries"], "the two walks read summaries")

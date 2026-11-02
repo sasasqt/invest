@@ -23,6 +23,8 @@ from isolated_runner import (
     docker_command,
     execution_command,
     git_environment,
+    host_tool,
+    program,
     read_blobs,
     run_bounded,
     source_entries,
@@ -382,6 +384,29 @@ class PortableHostTests(unittest.TestCase):
             for name, payload in files.items():
                 self.assertEqual((root / "staged" / name).read_bytes(), payload)
 
+    def test_host_tools_come_only_from_absolute_path_folders(self):
+        """Review round 5: never a program from the current folder or a relative entry."""
+        filename = "tool.cmd" if os.name == "nt" else "tool"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for folder in (root / "cwd", root / "cwd/relative", root / "bin"):
+                folder.mkdir(parents=True, exist_ok=True)
+                (folder / filename).write_text("", encoding="utf-8")
+                (folder / filename).chmod(0o755)
+            listed = os.pathsep.join([".", "", "relative", str(root / "bin")])
+            previous = os.getcwd()
+            os.chdir(root / "cwd")
+            try:
+                with patch.dict(os.environ, {"PATH": listed}):
+                    self.assertEqual(host_tool("tool"), str(root / "bin" / filename))
+                    self.assertEqual(program("tool"), str(root / "bin" / filename))
+                with patch.dict(os.environ, {"PATH": os.pathsep.join([".", "relative"])}):
+                    self.assertIsNone(host_tool("tool"))
+                    with self.assertRaisesRegex(RuntimeError, "tool executable unavailable"):
+                        program("tool")
+            finally:
+                os.chdir(previous)
+
     def test_ordinary_paths_are_listed_in_order(self):
         rows = [("100644", "blob", "README.md"), ("100755", "blob", "tools/run.sh")]
         self.assertEqual(
@@ -431,7 +456,9 @@ class PortableHostTests(unittest.TestCase):
             self.assertEqual(read_blobs(source, []), [])
 
     def test_docker_always_targets_the_local_daemon(self):
-        command = docker_command("info")
+        with patch("isolated_runner.host_tool", return_value="/abs/docker"):
+            command = docker_command("info")
+        self.assertEqual(command[0], "/abs/docker")
         expected = (
             "npipe:////./pipe/docker_engine" if os.name == "nt" else "unix:///var/run/docker.sock"
         )
@@ -552,6 +579,27 @@ class StagingSafetyTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Git metadata"):
                 stage_source(repo, root / "staged", commit)
             self.assertFalse(marker.exists(), "the host ran a command from the commit")
+
+    def test_source_given_as_a_subfolder_still_stages_the_whole_commit(self):
+        """Review round 5 (A2, Q4): ls-tree without --full-tree listed only the subtree."""
+        files = {"sub/inner.txt": b"inner\n", "top.txt": b"root\n"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, files)
+            records = stage_source(source / "sub", root / "staged", revision)
+            self.assertEqual([row["path"] for row in records], sorted(files))
+            for name, payload in files.items():
+                self.assertEqual((root / "staged" / name).read_bytes(), payload)
+
+    def test_unreadable_commit_tree_names_gits_error(self):
+        """Review round 5: a failed ls-tree raised CalledProcessError without Git's message."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"top.txt": b"root\n"})
+            tree = git_in(source, "rev-parse", revision + "^{tree}")
+            (source / ".git/objects" / tree[:2] / tree[2:]).unlink()
+            with self.assertRaisesRegex(RuntimeError, r"git exited \d+: fatal: \S"):
+                stage_source(source, root / "staged", revision)
 
     def test_paths_into_git_metadata_are_refused(self):
         for path in (".git/config", ".GIT/config", "sub/.Git/hooks/x", "GIT~1/config", "git~1"):
