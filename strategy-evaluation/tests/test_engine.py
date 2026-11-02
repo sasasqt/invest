@@ -609,8 +609,9 @@ def test_quantile_strategy_holds_a_tie_group_whole_or_not_at_all():
 
 
 def test_quantile_strategy_holds_nothing_when_a_leg_is_empty():
-    """A tie group wider than the leg at an extreme leaves the leg empty, as a bucket
-    portfolio's; so does a fraction below one name (BH-2026-10-09-4: 2% of 30)."""
+    """A tie group at an extreme whose average percentile exceeds the fraction leaves the
+    leg empty, as a bucket portfolio's; so does a fraction below one name
+    (BH-2026-10-09-4: 2% of 30)."""
     scores = pd.Series(np.arange(20, dtype=float), index=[f"S{i:02d}" for i in range(20)])
     scores[["S16", "S17", "S18", "S19"]] = 50.0  # percentile 2.5/20 from the top > 0.1
     assert quantile(0.1, 0.1).target_weights(scores).empty
@@ -622,17 +623,18 @@ def test_quantile_strategy_holds_nothing_when_a_leg_is_empty():
 
 @pytest.mark.parametrize("seed", range(25))
 def test_quantile_strategy_legs_ignore_instrument_ids(seed):
-    """Renaming instruments moves the weights with the names, reversing the scores swaps
-    the legs, and the legs are the bucket portfolios' top and bottom tails."""
+    """Renaming instruments moves the weights with the names, reversing the scores (and
+    the two fractions) swaps the legs, and the legs are the bucket portfolios' top and
+    bottom tails."""
     from invest_evaluation.strategies import Slice, percentile_ranks
 
     rng = np.random.default_rng(seed)
     n = int(rng.integers(10, 90))
-    f = float(rng.choice([0.05, 0.1, 0.2, 0.29, 0.5]))
+    long_f, short_f = (float(f) for f in rng.choice([0.05, 0.1, 0.2, 0.29, 0.5], size=2))
     values = rng.integers(0, 8, n).astype(float)  # many ties
     names = [f"N{i:03d}" for i in range(n)]
     scores = pd.Series(values, index=names)
-    strategy = quantile(f, f)
+    strategy = quantile(long_f, short_f)
     weights = strategy.target_weights(scores)
 
     perm = rng.permutation(n)
@@ -640,14 +642,14 @@ def test_quantile_strategy_legs_ignore_instrument_ids(seed):
     moved = {names[perm[names.index(k)]]: w for k, w in weights.items()}
     assert strategy.target_weights(renamed).to_dict() == moved
 
-    assert strategy.target_weights(-scores).to_dict() == (-weights).to_dict()
+    assert quantile(short_f, long_f).target_weights(-scores).to_dict() == (-weights).to_dict()
     if not weights.empty:
         pct, from_top = percentile_ranks(scores), percentile_ranks(scores, descending=True)
         assert set(weights[weights > 0].index) == set(
-            scores.index[Slice("top", f).mask(pct, from_top).to_numpy()]
+            scores.index[Slice("top", long_f).mask(pct, from_top).to_numpy()]
         )
         assert set(weights[weights < 0].index) == set(
-            scores.index[Slice("bottom", f).mask(pct, from_top).to_numpy()]
+            scores.index[Slice("bottom", short_f).mask(pct, from_top).to_numpy()]
         )
 
 
