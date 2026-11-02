@@ -1153,6 +1153,7 @@ def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
     assert last["equity"] == pytest.approx(-8.7425)
     assert last["cash"] == pytest.approx(1324.7575)
     assert last["traded_notional"] == pytest.approx(649.5)
+    assert last["n_clipped"] == 1 and last["n_rejected"] == 0
     assert last["commission_cost"] + last["spread_cost"] == pytest.approx(9.7425)
     assert last["cum_costs"] == pytest.approx(15.0 + 9.7425)
     fills = res.trades[(res.trades["status"] == "filled") & (res.trades["date"] == dates[5])]
@@ -1166,6 +1167,24 @@ def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
     assert held["status"].tolist() == ["open", "open"]
     assert held["holding_sessions"].tolist() == [2, 2]
     assert compute_metrics(res)["performance"]["insolvency"]["value"] == "2024-01-08"
+
+
+def test_fill_costs_that_leave_equity_at_exactly_zero_stop_after_the_fills():
+    """Boundary of the check after the open's fills: equity of exactly 0 stops there, as at
+    the open and the close. All of 1000 into A at 10 on 2024-01-04 (100 shares) with a
+    commission of 100% of notional (cost 1000): cash 1000 - 1000 - 1000 = -1000, equity
+    after the fills -1000 + 100 * 10 = 0."""
+    dates, bars, signals = gap_market(20.0, 20.0)
+    config = long_short_config(rebalance_every=100, commission_bps=10000)
+    res = run_backtest(bars, signals, config, Fixed({"A": 1.0}))
+    assert insolvency_warnings(res) == [
+        "insolvent after the open's fills on 2024-01-04: equity 0.00"
+    ]
+    last = res.daily.iloc[-1]
+    assert res.daily.index[-1] == dates[3]
+    assert last["equity"] == pytest.approx(0.0)
+    assert last["commission_cost"] == pytest.approx(1000.0)
+    assert last["cum_costs"] == pytest.approx(1000.0)
 
 
 def test_an_open_insolvency_stops_before_a_settlement_at_that_close():
