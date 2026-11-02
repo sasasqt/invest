@@ -988,3 +988,96 @@ def test_two_missing_bars_a_few_sessions_apart_do_not_block_the_exit(vol_window,
     assert bool(sale["shares"].iloc[0] < 0)
     assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
     assert res.daily["cash"].min() >= -1e-9
+
+
+def gap_market(b_event_open, b_event_close):
+    """A at 10 and B at 20 for eight sessions, except that B opens at ``b_event_open`` and
+    closes at ``b_event_close`` on session 5 (2024-01-08) and stays at that close afterwards.
+    Signals score both names from session 2 on, the first session with a volatility
+    estimate (``vol_window`` 2), so both are eligible on every decision."""
+    dates = pd.bdate_range("2024-01-01", periods=8)
+    rows = []
+    for k, d in enumerate(dates):
+        rows.append([d, "A", 10.0, 10.0, 10.0, 10.0, 1e9])
+        b_open = 20.0 if k < 5 else b_event_open if k == 5 else b_event_close
+        b_close = 20.0 if k < 5 else b_event_close
+        rows.append([d, "B", b_open, max(b_open, b_close), min(b_open, b_close), b_close, 1e9])
+    bars = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    signals = pd.DataFrame(
+        [[d, name, 1.0] for d in dates[2:] for name in ("A", "B")],
+        columns=["decision_date", "instrument", "score"],
+    )
+    return dates, bars, signals
+
+
+def long_short_config(rebalance_every=1, delay=0):
+    return replace(
+        hand_config(),
+        strategy=StrategyConfig(rebalance_every=rebalance_every, min_names=1),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0, delay=delay),
+    )
+
+
+def insolvency_warnings(res):
+    return [w for w in res.warnings if "insolvent" in w]
+
+
+@pytest.mark.parametrize("delay", [0, 1])
+def test_a_fill_session_that_opens_insolvent_stops_before_sizing_orders(delay):
+    """BH-2026-11-02-2: long A and short B at half of 1000 each (50 and 25 shares, cash
+    1000). B opens at 100 on 2024-01-08, so equity at the open is 1000 + 50 * 10 - 25 * 100
+    = -1000. Orders sized on it would invert both targets (A short 50, B long 5) and that
+    inverted book closes at +500 when B closes at 400, so the close check never saw the
+    insolvency. The run must stop at that open, with no order filled on that session."""
+    dates, bars, signals = gap_market(100.0, 400.0)
+    res = run_backtest(bars, signals, long_short_config(delay=delay), Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    assert res.daily.index[-1] == dates[5]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
+    fills = res.trades[res.trades["status"] == "filled"]
+    assert not (fills["date"] == dates[5]).any()
+    held = fills.groupby("instrument")["shares"].sum()
+    assert held.to_dict() == pytest.approx({"A": 50.0, "B": -25.0})
+    perf = compute_metrics(res)["performance"]
+    assert perf["insolvency"]["value"] == "2024-01-08"
+    assert perf["sharpe"]["reason"] == "insolvent_wealth_path"
+
+
+def test_a_session_without_orders_that_opens_insolvent_is_flagged():
+    """Same book, a single rebalance (fill on 2024-01-04), and B back at 20 by the close of
+    2024-01-08: equity is -1000 at that open and +1000 at its close. A NAV at or below zero
+    is insolvency whenever it is observed (METRICS.md section 6), at an open as at a close."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    res = run_backtest(
+        bars, signals, long_short_config(rebalance_every=100), Fixed({"A": 0.5, "B": -0.5})
+    )
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    assert res.daily.index[-1] == dates[5]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
+
+
+def test_equity_of_exactly_zero_at_the_open_stops_without_liquidating():
+    """B opens at 60: equity at the open is 1000 + 500 - 25 * 60 = 0. Sizing on it would sell
+    every position (targets times zero equity); the run stops at that open instead."""
+    dates, bars, signals = gap_market(60.0, 60.0)
+    res = run_backtest(bars, signals, long_short_config(), Fixed({"A": 0.5, "B": -0.5}))
+    fills = res.trades[res.trades["status"] == "filled"]
+    assert not (fills["date"] == dates[5]).any(), fills[fills["date"] == dates[5]]
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity 0.00"]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(0.0)
+
+
+def test_a_gap_that_leaves_equity_positive_at_the_open_sizes_orders_as_before():
+    """Guard: B opens at 30, so equity at the open is 1000 + 500 - 25 * 30 = 750. Targets of
+    half of 750 are 37.5 shares of A (sell 12.5) and -12.5 shares of B (buy 12.5 at 30)."""
+    dates, bars, signals = gap_market(30.0, 30.0)
+    res = run_backtest(bars, signals, long_short_config(), Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == []
+    assert res.daily.index[-1] == dates[-1]
+    fills = res.trades[(res.trades["status"] == "filled") & (res.trades["date"] == dates[5])]
+    assert fills.set_index("instrument")["shares"].to_dict() == pytest.approx(
+        {"A": -12.5, "B": 12.5}
+    )
+    assert res.daily.loc[dates[5], "equity"] == pytest.approx(750.0)
