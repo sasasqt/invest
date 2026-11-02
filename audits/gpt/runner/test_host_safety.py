@@ -5,6 +5,7 @@ real runner reach its host-side steps without a daemon. Tests that need uv skip
 when it is not installed.
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -55,6 +56,11 @@ def commit_all(root):
         cwd=root,
     )
     return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+
+
+def quoted(text):
+    """Failure messages must not forge commands in the test job's own log either."""
+    return json.dumps(text).replace("#", "\\u0023")
 
 
 def forged_lines(output):
@@ -152,7 +158,7 @@ class HostSafetyTests(unittest.TestCase):
         self.assertFalse(chosen.exists(), "fixture setup must not create the target")
         result = self.run_runner(revision)
         exported = self.root / "output/build-context/requirements.txt"
-        self.assertTrue(exported.is_file(), result.stdout + result.stderr)
+        self.assertTrue(exported.is_file(), quoted(result.stdout + result.stderr))
         self.assertFalse(chosen.exists(), "audited [tool.uv] steered a host write")
 
     def test_host_errors_quoting_audited_names_cannot_start_workflow_commands(self):
@@ -164,7 +170,7 @@ class HostSafetyTests(unittest.TestCase):
         output = result.stdout + result.stderr
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Dirty/mismatched source blob", output)
-        self.assertEqual(forged_lines(output), [], output)
+        self.assertEqual(forged_lines(output), [], quoted(output))
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")
     def test_failed_image_build_log_cannot_start_workflow_commands(self):
@@ -177,7 +183,7 @@ class HostSafetyTests(unittest.TestCase):
         output = result.stdout + result.stderr
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("ordinary build step", output)
-        self.assertEqual(forged_lines(output), [], output)
+        self.assertEqual(forged_lines(output), [], quoted(output))
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")
     def test_container_output_cannot_start_workflow_commands(self):
@@ -189,7 +195,7 @@ class HostSafetyTests(unittest.TestCase):
         self.assertIn("AUDIT_CONTAINER_STDOUT", output)
         self.assertIn("ordinary container line", output)
         self.assertNotEqual(result.returncode, 0, "no collected results must fail the run")
-        self.assertEqual(forged_lines(output), [], output)
+        self.assertEqual(forged_lines(output), [], quoted(output))
 
 
 class DockerfileTests(unittest.TestCase):
