@@ -1,0 +1,17 @@
+{
+  "command": [
+    "uv",
+    "lock",
+    "--check",
+    "--offline",
+    "--no-build",
+    "--no-python-downloads",
+    "--python",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": "Using CPython 3.12.14 interpreter at: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3\nResolved 35 packages in 7ms\n",
+  "seconds": 0.10175043699996422,
+  "scope": "metadata-only copies; no repository import/build/install"
+}

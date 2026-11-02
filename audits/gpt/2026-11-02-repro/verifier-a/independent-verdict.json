@@ -1,0 +1,209 @@
+{
+  "role": "Fresh independent Reviewer 2; static-only; initial verdict saved before reading reviewer1-initial.json",
+  "model": "not exposed to this reviewer",
+  "reasoning_effort": "not exposed to this reviewer",
+  "product_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "product_tree": "9b48fbc155c6f5006969241585f48953f63e809e",
+  "peer_sha": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+  "own_prior_sha": "606eae209af0d426aaf83280585e1afaca3b4084",
+  "runner_claimed_revision": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+  "runner_local_git_blob_sha1": "f8f5e27ba0c03c76f2134ef4b8ae6dfdcacd2e6f",
+  "execution": {
+    "repository_imports": 0,
+    "tests_executed": 0,
+    "builds": 0,
+    "dependencies_executed": 0,
+    "downloaded_scripts_executed": 0,
+    "real_observations_read": false,
+    "reserved_windows_read": false,
+    "runs_or_ledgers_data_read": false,
+    "method": "Trusted stdlib text/JSON parsing only. Source ledger.py and test references read as code, never ledger files."
+  },
+  "candidates": [
+    {
+      "id": "AUDIT-RUNNER-CSVGZ-001",
+      "decision": "drop original omission as statically corrected in v2; keep runtime acceptance pending",
+      "conclusion": "dropped",
+      "severity": "medium audit evidence gap before correction; no remaining csv.gz omission found",
+      "confidence": "high static implementation; no independent runtime validation",
+      "evidence": "runner_workload.py:24-92 now inventories all files: csv.gz decompressed bytes, plain CSV bytes, JSONL ordered records, declared UTF-8 text, unknown raw bytes; PNG relative paths plus nonempty check. Caller 424-451 stores per-sample manifests, compares hashes and stops on failure. Local blob hash independently matches supplied f8f5e27...",
+      "siblings_callers": [
+        "semantic_hash 95-98",
+        "benchmark loop 398-471",
+        "scripts/synthetic_workflow.sh:17-35 places ledger under destination/mining/ledger.jsonl",
+        "ledger.py:155-175 identifies recorded_at as managed metadata"
+      ],
+      "duplicates_open_prs": [
+        "PR #32 open draft at a73149d3cf8df7c133ea436a7787c5d5a2dc88b5; PR narrative explicitly queues independent review"
+      ],
+      "missing_evidence": [
+        "No independent corruption/negative-control execution or inspection of archived v2 result artifacts in this review.",
+        "Only local runner blob identity verified here; remote head and executed merge blob parity remain supplied/PR claims.",
+        "Gate has no expected path/schema/row-count inventory: consistent incomplete output, invalid but stable CSV/ledger or non-PNG bytes in a nonempty .png can pass first-run reference.",
+        "Gate is normalized repeatability, not an external correctness oracle. PNG pixel validity/comparison excluded; every volatile key name is removed recursively."
+      ],
+      "counterfactual_for_drop": "If csv.gz or JSONL did not enter records, mutations would remain invisible. Current branches append their hashes; corruption and additions/removals change manifests or raise under stated normalization. Reopen if same-blob isolated negative controls or manifest inventory contradict this static trace."
+    },
+    {
+      "id": "RA-2026-11-01-1",
+      "decision": "keep existing CI-parity item, not a new product defect",
+      "conclusion": "confirmed-static",
+      "severity": "high CI-operational under peer stated red-main scale; underlying test fragility low",
+      "confidence": "high observed CI failure metadata and static wrong-guard possibility; exact family/runtime causation independently unexecuted",
+      "evidence": "test_evidence.py:115-123 selects next(glob) without guaranteeing membership in second family. cli.py:415-417 membership guard precedes experiment guard at434-438. main-jobs.json has fresh checks3.11 failure on2026-10-31T07:40 and checks3.13 failure07:46; old successful jobs are dated2026-10-08 despite newer attempt wrappers.",
+      "siblings_callers": [
+        "test_ledger.py:179-193 only requires own experiment id for any selected factor",
+        "test_ledger.py:343-350 requires fixed-formula refusal for every search-selected factor",
+        "cli._confirmation_evidence membership and identity guards"
+      ],
+      "duplicates_open_prs": [
+        "INV-COMMON-001; REVIEW-22 described by peer and PR metadata; PR #31 open at a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+      ],
+      "missing_evidence": [
+        "No raw failing log fetched in this reviewer; exact message/count/forced-order repro remain attributed peer evidence.",
+        "Do not assert Windows deterministically lists names in lexical order; pathlib glob does not promise that order."
+      ],
+      "counterfactual_for_drop": null
+    },
+    {
+      "id": "RA-2026-11-01-2",
+      "decision": "keep; duplicate/corroboration of GA-2026-10-31-1",
+      "conclusion": "confirmed-static",
+      "severity": "medium",
+      "confidence": "high static contract contradiction; peer effect counts/runtime verdict stability not independently validated",
+      "evidence": "build_panel contract290-293 promises full history for TS. OPS129-145 includes unary neg/abs/log/sign, rolling min_periods=w. evaluate332-341 masks every nonbinary/nonTS argument, including unary. Thus entrant values close4,9 with false,true membership become NaN,9 before ts_sum2, while raw close sum is13. This is a hand trace, not execution.",
+      "siblings_callers": [
+        "binary/ts/ts2 branches",
+        "CS branch must retain membership mask",
+        "search.py:153,188,293 final restrict; inference.py:29-34; cli.py:122-124",
+        "random_expression:364-370 can nest unary in TS",
+        "test_expressions.py:90-110 causality lacks universe;121-133 CS universe test lacks entrant TS-over-unary"
+      ],
+      "duplicates_open_prs": [
+        "GA-2026-10-31-1; RA2 peer hunt row claimed; no matching correction among current open PR titles/bodies reviewed"
+      ],
+      "missing_evidence": [
+        "Untouched-revision isolated reproduction/control not run here; synthetic trial counts34/207, changed22 rows and unchanged verdicts remain peer claims.",
+        "Correction must decide OPERATOR_VERSION and artifact migration: expressions.py:8-12 explicitly requires version change when results change; artifact.py:35-37 factor identity includes version and59-71 rejects mismatches."
+      ],
+      "counterfactual_for_drop": null
+    },
+    {
+      "id": "RA-2026-11-01-3",
+      "decision": "keep as plausible test compatibility risk; drop certainty that future pandas4 necessarily fails",
+      "conclusion": "plausible",
+      "severity": "low",
+      "confidence": "high source sites and unbounded dependency; medium/low external deprecation/future-failure assertions without independent logs/docs",
+      "evidence": "test_cleaning_and_sources.py:112-120 mixes float close_as_traded with strings by row assignment; test_pipeline.py:266-270 supplies float_precision=round_trip. root pyproject:52 only errors RuntimeWarning from invest_.*; data pyproject:6 pandas>=2.1, lock1137-1138 pandas3.0.6.",
+      "siblings_callers": [
+        "tests compare exact pct_from_top values at test_pipeline.py:281-282, so removing round_trip requires precision-equivalence validation",
+        "No product function warning observed by this static review"
+      ],
+      "duplicates_open_prs": [
+        "No matching current PR correction seen; PR #33 changes pandas minimum but does not address these test sites by its stated scope"
+      ],
+      "missing_evidence": [
+        "Peer saved repro and resolved pandas3.1 logs not provided locally as raw evidence; no execution here.",
+        "Official removal policy/version behavior not independently verified; a deprecation warning alone is not proof of inevitable pandas4 failure."
+      ],
+      "counterfactual_for_drop": "To close the compatibility risk, show tests no longer use deprecated APIs/assignments and pass preserving numeric boundary behavior on supported pandas versions. Current static sites remain, so retain plausible rather than discard wholesale."
+    },
+    {
+      "id": "RA-2026-11-01-4",
+      "decision": "keep human-facing omission; do not independently endorse saved-run numbers",
+      "conclusion": "confirmed-static",
+      "severity": "medium reporting semantics; no decision-rule impact established",
+      "confidence": "high static omission",
+      "evidence": "metrics.py:108-112 writes extra.censored; reporting._fmt173-179 ignores extra and picks248 prints max_drawdown_duration. METRICS109 calls unrecovered episodes right-censored. Renderer311 links full metrics but gives no current/recovery/censor indication in summary.",
+      "siblings_callers": [
+        "max_drawdown extra recovery_date also omitted",
+        "quantiles.py:411-426 prints no duration",
+        "test_metrics.py:106-111 pins censored metadata only",
+        "test_stats_and_cli.py text search has no censor-specific assertion"
+      ],
+      "duplicates_open_prs": [
+        "Peer references distinct adjacent BH-2026-10-14-8 and BH-2026-10-09-6; cannot independently inspect restricted ledgers. No matching current open PR correction seen."
+      ],
+      "missing_evidence": [
+        "Saved record3485 and replay3632 not accessed/recomputed; peer runtime claims only.",
+        "Before blindly printing N+ (unrecovered), distinguish longest completed episode from last open episode: metrics94 chooses max duration but111 flags any open last episode; current test lacks long-recovered then short-open control. Adjacent bug already acknowledged in peer recommendation."
+      ],
+      "counterfactual_for_drop": null
+    },
+    {
+      "id": "RA-2026-11-01-5",
+      "decision": "keep as low report-completeness/doc consistency recommendation; independently second-reviewed statically",
+      "conclusion": "confirmed-static",
+      "severity": "low; no incorrect numeric result established",
+      "confidence": "high omission against stated default summary; medium requirement strength because should wording",
+      "evidence": "METRICS166-175 default summaries list net_profit, mean/median, trade expectancy, downside, skew/kurtosis, Omega/Ulcer/Martin, recovery/TUW. reporting picks239-276 omit these; metrics113-121 computes recovery/TUW/Ulcer. docs/REPORTING35-46 does not narrow default summary, also expects recovery and units.",
+      "siblings_callers": [
+        "render->_write_summary at reporting170",
+        "structured metrics retain omitted fields; report311 links metrics.json",
+        "quantile report is separate summarized portfolio product with explicit columns"
+      ],
+      "duplicates_open_prs": [
+        "TODO METRIC-01 already tracks remaining metrics/report scope broadly; peer RA5 pending_second_review; no exact correction seen among current PRs"
+      ],
+      "missing_evidence": [
+        "No failing contract test supplied/executed; no priority agreement that every soft summary item is required immediately.",
+        "Actual saved-run numerical examples deliberately not verified."
+      ],
+      "counterfactual_for_drop": null
+    }
+  ],
+  "recommendations_review": [
+    {
+      "id": "RA-2026-11-01-6",
+      "decision": "keep with OPERATOR_VERSION/migration decision and entrant/reentry controls; P2 defensible for medium product issue, peer P1 needs schedule policy"
+    },
+    {
+      "id": "RA-2026-11-01-7",
+      "decision": "keep tracked PR31; merging not authorized by this review"
+    },
+    {
+      "id": "RA-2026-11-01-8",
+      "decision": "keep plausible maintenance plan; do not mechanically remove round_trip without preserving exact percentile behavior; version-guard warning class"
+    },
+    {
+      "id": "RA-2026-11-01-9",
+      "decision": "keep combined report work, first resolve which duration extra.censored describes; add long-recovered/short-open control"
+    },
+    {
+      "id": "RA-2026-11-01-10",
+      "decision": "keep hygiene BUILD-03, drop promotion to product defect: no byte-identity contract for gzip tables found; decompressed contents covered in runner v2",
+      "counterfactual": "A product promise of byte-identical workflow artifacts or a consumer requiring compressed-byte identity would make nondeterministic gzip metadata contract-relevant; none in read README111/REPORTING46."
+    },
+    {
+      "id": "RA-2026-11-01-11",
+      "decision": "keep duplicate BUILD-03; explicit default-encoding writes confirmed at reporting24/312, quantiles310/429, ledger178; exact174+4 census not independently repeated"
+    }
+  ],
+  "cross_check_review": [
+    {
+      "id": "GA-2026-10-31-1",
+      "verdict": "agree static; consolidate duplicate with RA2"
+    },
+    {
+      "id": "GA-2026-10-31-2",
+      "verdict": "agree static omission, retain policy/runtime qualification; peer identifies duplicate BH-2026-10-21-2",
+      "evidence": "engine406-430 consumes settlements for strategy while539-542 universe benchmark only uses close ratios and previous members; metrics287 labels universe_equal_weight_daily_rebalanced_gross; METRICS126 requires same total-return basis. Raw restricted ledger/repro not read."
+    }
+  ],
+  "is_that_all": {
+    "answer": "No. This is bounded static review, not exhaustive correctness or runtime validation.",
+    "concrete_checked": [
+      "all unary/binary/TS/CS evaluate branches and exported/search score final restriction",
+      "confirmation membership guard preceding identity guard and two next(glob) sibling tests",
+      "drawdown computation metadata, summary row selection/formatting, quantile report columns and drawdown tests",
+      "default summary requirements in METRICS and REPORTING",
+      "semantic manifest extension cases, JSONL ledger placement, caller/reference/warmup/failure logic"
+    ],
+    "prioritized_unchecked": [
+      "P1 membership-gap label economics: search.forward_returns plus restrict uses decision membership; inspect entrant/reentry and exit-inside-horizon labels under unary correction with permitted synthetic inputs.",
+      "P2 benchmark settlement/membership edges: settlement on no-bar session, retired instruments in later benchmark ratios, held_from on universe reentry; compare explicit benchmark policy to strategy economics.",
+      "P2 semantic gate negative controls and expected inventory: isolated same-blob adversarial missing-output/schema/ledger/PNG controls plus csv.gz corruption controls; no local execution until credential isolation is established."
+    ]
+  },
+  "comparison_with_reviewer1": "pending; independent verdict committed to local note first"
+}

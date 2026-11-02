@@ -7,3 +7,23 @@
 | BH-2026-10-15-1 (lead from PR26; not RA ledger) | cannot check numeric reproduction | Main525-526 statically retains cumulative-cost denominator; PR26head785b20c proposes correction; no local runtime or saved snapshot replay | 2026-10-31-repro/verifier-a.md | 2026-10-31 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
 
 PR26/27 discussion read only to deduplicate known causes and scope prior claims. Prior seccomp/offline/clean-env claims were not adopted as proof of this routine's filesystem isolation. Other accessible peer IDs in PR descriptions remain leads, not checked findings. No substantive peer disagreement was accessible. No peer folders were copied or edited.
+
+## 2026-11-02: peer now accessible
+
+Peer commit [4930f9ee9ecf65735822456392d2253fdc93bd9e](https://github.com/sasasqt/invest/commit/4930f9ee9ecf65735822456392d2253fdc93bd9e), report1November, audited main90b5ca038155b97833b120baa57dfecd05d6f641; not stale. Read findings, recommendations, report, coverage and reciprocal verdicts at that exact commit. Earlier branch-unavailable observation remains historical.
+
+| Claude ID | Verdict (agree, disagree, cannot check) | Concrete reason and evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| RA-2026-11-01-1 | agree | Original main jobs on both supported interpreters show the expected-regex/actual-message mismatch and585passed1failed. Root cause already INV-COMMON-001/PR31. Underlying test consequence low; operational P1 is separate. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-2 | agree | Confirmed static full-history contradiction, duplicate GA-2026-10-31-1. Peer runtime narrative is attributed; referenced hunt script is not in published peer tree. No new local reproduction. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-3 | cannot check | Static sites and official pandas3.1 deprecations support a compatibility lead; exact5-test warning reproduction and eventual pandas4 CI not executed here. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-4 | agree | Static readable-summary omission, now GA-2026-11-02-1. Saved-run numbers not consumed. Censor metadata semantics need resolving before marker advice. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-5 | agree | Static doc/report omission under soft should language; optional GA-2026-11-02-2, independently reviewed here. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-6 | agree | Masking recommendation direction supported, with operator-version/migration and final-eligibility controls required. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-7 | agree | Existing PR31 route; no merge, approval or fresh CI trigger performed. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-8 | cannot check | Maintenance direction reasonable; warning reproduction unavailable; preserve exact percentile/CSV round-trip controls. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-9 | agree | Reporting correction direction supported; resolve maximum-versus-current-episode censor flag before printing N+. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-10 | agree | Fixed gzip headers are optional hygiene; no byte-equality contract established. Content equivalence gate should not call header drift a financial defect. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+| RA-2026-11-01-11 | agree | Already BUILD-03.178 static I/O leads do not prove178 defects or Windows failure. No new GA root counted. | 2026-11-02-repro/verifier-a/independent-verdict.json | 2026-11-02 | 90b5ca038155b97833b120baa57dfecd05d6f641 |
+
+Peer agrees with GA1 and supplies a BH-2026-10-21-2 duplicate lead for GA2. The original hunt path is not exposed as a verified ledger here; retain the alias as peer-reported and GA2 plausible. No substantive unresolved internal disagreement; one Reviewer2 helper, zero VerifierB rounds. Severity refinement and incomplete method access are explicit scope qualifications, not proof that the peer's original runtime observations are false.

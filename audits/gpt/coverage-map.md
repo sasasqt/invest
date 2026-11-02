@@ -1,52 +1,52 @@
-# Coverage map —31October2026
+# Coverage — 2026-11-02
 
-All110tracked files inventoried and byte-verified. Semantic coverage is incomplete. Automatic identity/AST/TOML/shell checks are not review.
+110 tracked blobs inventoried.87 non-data files materialized and byte-verified;23 saved-result/ledger blobs not materialized. Original checkout metadata was not reconstructed. No source byte changed during checks.
 
-{'reviewed': 23, 'inventoried': 27, 'partially_reviewed': 19, 'checked_automatically': 41}
+Status counts: `{"blocked": 22, "checked_automatically": 20, "inventoried": 8, "partially_reviewed": 24, "reviewed": 36}`. Cumulative exact GPT semantic ranges include the original review, both31October supplements, and today's main/verifier union on identical blobs. Today's primary unique lines: {'exploitation': 1326, 'exploration': 1295}; helper overlap is not counted again in yields. Newly added cumulative GPT ranges: 1832 lines. Remaining: 17827 text lines in 69 paths, plus five binary assets with no semantic review.
 
-| Category | Files | Text lines | Semantically read GPT lines |
+| Category | Files | Text lines | GPT semantic lines |
 |---|---:|---:|---:|
 | binary_saved_asset | 5 | 0 | 0 |
 | configuration | 7 | 231 | 176 |
-| documentation | 22 | 2541 | 1107 |
-| first_party_source | 29 | 7800 | 3159 |
+| documentation | 22 | 2541 | 1229 |
+| first_party_source | 29 | 7800 | 4884 |
 | lockfile | 1 | 1517 | 0 |
 | research_ledger_metadata | 1 | 2 | 2 |
 | saved_result | 17 | 6948 | 0 |
 | script_or_input | 3 | 432 | 326 |
 | shell_script | 2 | 164 | 164 |
-| tests | 23 | 6296 | 612 |
+| tests | 23 | 6296 | 1323 |
 
-Primary unique reading:5023lines; GPT main+VerifierA union:5546lines. Last28days: these exact same-content ranges read today only; no prior published audit evidence. Either-audit coverage has this GPT lower bound, with Claude coverage unknown, never substituted as zero.
+Last28days GPT coverage is this saved exact-range union (31October/2November); old dates retained for reused ranges. Either-audit exact union is unavailable: peer file statuses omit per-file blob identity/ranges. GPT is the evidenced lower bound, not a claim of zero peer coverage. Per-file test line/branch coverage was not regenerated or reconstructed from peer summaries; unavailable here.
 
-Never semantically reviewed in available state:
+Ten least semantically covered source files:
+
+- `data-mining-framework/src/invest_mining/__init__.py`: 0/3
+- `data-mining-framework/src/invest_mining/diagnostics.py`: 0/315
+- `data-pipeline/data-preparation/src/invest_data/__init__.py`: 0/3
+- `data-pipeline/data-preparation/src/invest_data/cli.py`: 0/252
+- `strategy-evaluation/src/invest_evaluation/__init__.py`: 0/3
+- `strategy-evaluation/src/invest_evaluation/cli.py`: 0/378
+- `data-mining-framework/src/invest_mining/cli.py`: 96/727
+- `data-pipeline/data-preparation/src/invest_data/schemas.py`: 175/544
+- `strategy-evaluation/src/invest_evaluation/metrics.py`: 186/491
+- `strategy-evaluation/src/invest_evaluation/config.py`: 115/226
+
+Never semantically reviewed in exact GPT records:
 
 - `.gitignore`
 - `data-mining-framework/ALPHA_VALIDATION.md`
 - `data-mining-framework/LITERATURE_REVIEW.md`
 - `data-mining-framework/PRIMARY_SOURCE_CATALOG.md`
 - `data-mining-framework/src/invest_mining/__init__.py`
-- `data-mining-framework/src/invest_mining/artifact.py`
-- `data-mining-framework/src/invest_mining/cli.py`
 - `data-mining-framework/src/invest_mining/diagnostics.py`
-- `data-mining-framework/src/invest_mining/ledger.py`
-- `data-mining-framework/src/invest_mining/reporting.py`
 - `data-mining-framework/tests/conftest.py`
 - `data-mining-framework/tests/test_cli.py`
 - `data-mining-framework/tests/test_diagnostics.py`
-- `data-mining-framework/tests/test_evidence.py`
-- `data-mining-framework/tests/test_ledger.py`
-- `data-mining-framework/tests/test_search_and_inference.py`
 - `data-pipeline/data-preparation/src/invest_data/__init__.py`
 - `data-pipeline/data-preparation/src/invest_data/cli.py`
-- `data-pipeline/data-preparation/src/invest_data/schemas.py`
-- `data-pipeline/data-preparation/src/invest_data/sources.py`
-- `data-pipeline/data-preparation/src/invest_data/testing.py`
-- `data-pipeline/data-preparation/tests/test_cleaning_and_sources.py`
-- `data-pipeline/data-preparation/tests/test_point_in_time.py`
 - `data-pipeline/data-preparation/tests/test_signal_metadata.py`
 - `data-pipeline/data-preparation/tests/test_yahoo.py`
-- `docs/HISTORICAL_BASELINE.md`
 - `docs/QUANTILE_ANALYSIS.md`
 - `docs/reviews/README.md`
 - `runs/yahoo-test/2026-10-07/README.md`
@@ -75,32 +75,14 @@ Never semantically reviewed in available state:
 - `strategy-evaluation/examples/quantile_long_short.json`
 - `strategy-evaluation/src/invest_evaluation/__init__.py`
 - `strategy-evaluation/src/invest_evaluation/cli.py`
-- `strategy-evaluation/src/invest_evaluation/quantiles.py`
-- `strategy-evaluation/src/invest_evaluation/reporting.py`
-- `strategy-evaluation/src/invest_evaluation/robustness.py`
 - `strategy-evaluation/tests/conftest.py`
 - `strategy-evaluation/tests/test_config.py`
-- `strategy-evaluation/tests/test_metrics.py`
 - `strategy-evaluation/tests/test_quantiles.py`
 - `strategy-evaluation/tests/test_stats_and_cli.py`
 - `strategy-evaluation/tests/test_validation.py`
 - `tests/test_markdown_links.py`
-- `tests/test_pipeline.py`
 - `tests/test_quantile_consistency.py`
 - `tests/test_save_run.py`
 - `uv.lock`
 
-Ten least semantically covered first-party source files (ties path-sorted):
-
-- `data-mining-framework/src/invest_mining/__init__.py`: 0/3 lines
-- `data-mining-framework/src/invest_mining/artifact.py`: 0/72 lines
-- `data-mining-framework/src/invest_mining/cli.py`: 0/727 lines
-- `data-mining-framework/src/invest_mining/diagnostics.py`: 0/315 lines
-- `data-mining-framework/src/invest_mining/ledger.py`: 0/249 lines
-- `data-mining-framework/src/invest_mining/reporting.py`: 0/72 lines
-- `data-pipeline/data-preparation/src/invest_data/__init__.py`: 0/3 lines
-- `data-pipeline/data-preparation/src/invest_data/cli.py`: 0/252 lines
-- `data-pipeline/data-preparation/src/invest_data/schemas.py`: 0/544 lines
-- `data-pipeline/data-preparation/src/invest_data/sources.py`: 0/229 lines
-
-Exact remaining intervals: [remaining-semantic-ranges.json](2026-10-31-repro/remaining-semantic-ranges.json). Next slice: schemas.py→CLI consumers, ledger.py→artifact.py, evaluation config/quantiles/reporting and respective tests. Bundle failure/race leads and Yahoo malformed snapshot shapes remain unchecked concerns, not findings. Per-category binary counts carry no invented line totals.
+This run's exact slice: 2026-11-02-repro/reading-main.json and verifier-a/read-ranges.json. Next slice: quantiles151–end and callers/tests, schemas176–end plus readers, remaining CLI and diagnostics responsibilities. Complete remaining intervals: [2026-11-02-repro/remaining-semantic-ranges.json](2026-11-02-repro/remaining-semantic-ranges.json). No passing suite or search match is credited as semantic review.

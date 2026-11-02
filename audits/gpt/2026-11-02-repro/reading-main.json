@@ -1,0 +1,182 @@
+{
+  "producer": "main",
+  "scope": "Exact ranges semantically read; repeated views credited once. Audit-tooling/peer reports/research papers are excluded from repository-line counts.",
+  "exploitation": {
+    ".github/workflows/ci.yml": [
+      [
+        1,
+        77
+      ]
+    ],
+    "pyproject.toml": [
+      [
+        1,
+        52
+      ]
+    ],
+    "data-mining-framework/pyproject.toml": [
+      [
+        1,
+        17
+      ]
+    ],
+    "data-pipeline/data-preparation/pyproject.toml": [
+      [
+        1,
+        13
+      ]
+    ],
+    "strategy-evaluation/pyproject.toml": [
+      [
+        1,
+        17
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/reporting.py": [
+      [
+        1,
+        312
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/metrics.py": [
+      [
+        50,
+        140
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/expressions.py": [
+      [
+        280,
+        380
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/inference.py": [
+      [
+        1,
+        77
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/cli.py": [
+      [
+        380,
+        450
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/ledger.py": [
+      [
+        1,
+        249
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/reporting.py": [
+      [
+        1,
+        72
+      ]
+    ],
+    "data-mining-framework/tests/test_evidence.py": [
+      [
+        75,
+        142
+      ]
+    ],
+    "strategy-evaluation/METRICS.md": [
+      [
+        90,
+        191
+      ]
+    ],
+    "TODO.md": [
+      [
+        16,
+        16
+      ],
+      [
+        27,
+        27
+      ],
+      [
+        30,
+        30
+      ],
+      [
+        42,
+        42
+      ],
+      [
+        56,
+        56
+      ],
+      [
+        60,
+        60
+      ],
+      [
+        65,
+        65
+      ]
+    ]
+  },
+  "exploration": {
+    "strategy-evaluation/src/invest_evaluation/strategies.py": [
+      [
+        1,
+        202
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/config.py": [
+      [
+        1,
+        110
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/artifact.py": [
+      [
+        1,
+        72
+      ]
+    ],
+    "data-pipeline/data-preparation/src/invest_data/pit.py": [
+      [
+        1,
+        67
+      ]
+    ],
+    "data-pipeline/data-preparation/src/invest_data/testing.py": [
+      [
+        1,
+        96
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/robustness.py": [
+      [
+        1,
+        79
+      ]
+    ],
+    "data-pipeline/data-preparation/src/invest_data/schemas.py": [
+      [
+        1,
+        175
+      ]
+    ],
+    "data-pipeline/data-preparation/src/invest_data/sources.py": [
+      [
+        1,
+        229
+      ]
+    ],
+    "data-pipeline/data-preparation/tests/test_point_in_time.py": [
+      [
+        1,
+        115
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/quantiles.py": [
+      [
+        1,
+        150
+      ]
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "remote_parent": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+  "remote_state_blob": "6b951e072d07c9be8a08c796350328e55c42c7e1",
+  "remote_change": "only new rotation_v3 key vs original state; all other keys identical",
+  "preserved_rotation_sha256": "21d730036e47a742179c86596bdb7ea543e04a07e8db65a2333b82a2ad1ea6d6",
+  "preserved_entire_rotation": true,
+  "new_report_no_name_collision": true,
+  "no_new_instruction_mutation": true
+}

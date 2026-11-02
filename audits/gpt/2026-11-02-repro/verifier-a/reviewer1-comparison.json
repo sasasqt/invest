@@ -1,0 +1,44 @@
+{
+  "independence": "independent-verdict.json and .md saved before reviewer1-initial.json was read",
+  "substantive_disagreements": [],
+  "comparison": "Agree on keep/drop outcomes, static-vs-runtime evidence boundary, medium RA2/RA4 and low RA3/RA5. No debate needed.",
+  "refinements": [
+    "Comparator caller inspected: first successful sample establishes reference; mismatch/invalid gzip fails gate and breaks loop; seven nonwarmup valid samples required. Independent static second review of CSVGZ correction can be marked complete; no fresh runtime claim.",
+    "Clarify RA1 high operational priority is distinct from low-severity underlying test defect. Original same-SHA CI log extracts now directly inspected confirm both Python versions, expected-regex/actual-message mismatch and585passed1failed.",
+    "RA2 recommendation must include operator-version/artifact migration decision, and preservation of final eligibility masking.",
+    "RA3 remains a compatibility risk, not certainty about unexecuted future CI. Parent supplies official pandas3.1 deprecation and Pandas4Warning4.0-enforcement documentation; reviewer did not independently fetch these docs. Exact boundary precision must be preserved when replacing float_precision.",
+    "RA4 marker advice requires checking maximum-duration versus current-open-episode metadata; peer already identifies adjacent BH-2026-10-14-8. Do not label this a novel independent ledger finding.",
+    "RA5 now has independent static second review: docs/REPORTING does not narrow METRICS section9; retain low recommendation status under should wording."
+  ],
+  "supplemental_primary_evidence_read": {
+    "evidence/reviewer1-initial.json": "all",
+    "evidence/ci-log-extracts.json": "all"
+  },
+  "runner_identity_supplement": "Parent independently verified GitHub tree at a73149d3cf8df7c133ea436a7787c5d5a2dc88b5 has runner blob f8f5e27ba0c03c76f2134ef4b8ae6dfdcacd2e6f, matching local hash; parent-reported verification, not independently refetched here.",
+  "recommendation_cross_check": [
+    {
+      "id": "RA-2026-11-01-6",
+      "verdict": "agree with version/migration refinement"
+    },
+    {
+      "id": "RA-2026-11-01-7",
+      "verdict": "agree existing PR31 route, no merge performed"
+    },
+    {
+      "id": "RA-2026-11-01-8",
+      "verdict": "agree maintenance direction; cannot independently check claimed warning runtime; preserve round-trip boundary behavior"
+    },
+    {
+      "id": "RA-2026-11-01-9",
+      "verdict": "agree with censor metadata semantics refinement"
+    },
+    {
+      "id": "RA-2026-11-01-10",
+      "verdict": "agree optional gzip hygiene; no compressed-byte promise established"
+    },
+    {
+      "id": "RA-2026-11-01-11",
+      "verdict": "agree duplicate BUILD-03 static portability leads; exact178 census and Windows failure not independently proven"
+    }
+  ]
+}

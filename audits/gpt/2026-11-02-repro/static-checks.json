@@ -1,0 +1,4354 @@
+{
+  "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "ast": [
+    {
+      "path": "data-mining-framework/src/invest_mining/__init__.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/tests/conftest.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "status": "parsed",
+      "test_functions": 6,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "status": "parsed",
+      "test_functions": 21,
+      "test_functions_without_ast_assert": [
+        "test_tail_minimum_counts_must_be_positive_integers",
+        "test_bucket_boundaries_do_not_round_exact_ranks_into_the_next_bucket"
+      ]
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "status": "parsed",
+      "test_functions": 6,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "status": "parsed",
+      "test_functions": 8,
+      "test_functions_without_ast_assert": [
+        "test_parser_rejects_unsafe_or_invalid",
+        "test_random_expressions_are_causal",
+        "test_fundamental_expressions_are_causal"
+      ]
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "status": "parsed",
+      "test_functions": 16,
+      "test_functions_without_ast_assert": [
+        "test_ledger_requires_explicit_null_for_empty_development"
+      ]
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "status": "parsed",
+      "test_functions": 13,
+      "test_functions_without_ast_assert": [
+        "test_reserved_prices_cannot_change_development_labels",
+        "test_split_rejects_invalid_label_horizon_and_embargo"
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "status": "parsed",
+      "test_functions": 17,
+      "test_functions_without_ast_assert": [
+        "test_parquet_reader_rejects_type_mismatch",
+        "test_rejects_infinity",
+        "test_rejects_null_in_non_nullable",
+        "test_rejects_naive_timestamp",
+        "test_reader_rejects_invalid_manifests",
+        "test_reader_rejects_malformed_manifest_structure",
+        "test_reader_rejects_a_manifest_that_is_not_a_json_object",
+        "test_reader_detects_tampered_data",
+        "test_reader_rejects_bad_values",
+        "test_missing_manifest"
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "status": "parsed",
+      "test_functions": 15,
+      "test_functions_without_ast_assert": [
+        "test_clean_bars_is_deterministic_and_order_independent",
+        "test_clean_bars_refuses_misused_conversion_arguments"
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "status": "parsed",
+      "test_functions": 7,
+      "test_functions_without_ast_assert": [
+        "test_fundamentals_asof_uses_only_published_values_and_revisions",
+        "test_fundamentals_asof_ignores_future_rows"
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "status": "parsed",
+      "test_functions": 14,
+      "test_functions_without_ast_assert": [
+        "test_factor_evidence_must_be_an_object",
+        "test_factor_evidence_requires_a_tested_horizon",
+        "test_search_window_check_handles_arrow_dates"
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "status": "parsed",
+      "test_functions": 18,
+      "test_functions_without_ast_assert": [
+        "test_parse_chart_rejects_bad_responses",
+        "test_parse_chart_rejects_misaligned_arrays",
+        "test_replay_detects_modified_snapshot"
+      ]
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "scripts/save_run.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/tests/conftest.py",
+      "status": "parsed",
+      "test_functions": 0,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/tests/test_config.py",
+      "status": "parsed",
+      "test_functions": 3,
+      "test_functions_without_ast_assert": [
+        "test_invalid_config_fails_before_simulation",
+        "test_subconfigs_validate_when_constructed_directly"
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "status": "parsed",
+      "test_functions": 23,
+      "test_functions_without_ast_assert": [
+        "test_invalid_strategy_targets_are_rejected",
+        "test_strategy_cannot_trade_outside_decision_time_eligibility",
+        "test_invalid_settlement_events_are_rejected",
+        "test_delisting_instruments_are_validated_before_index_operations",
+        "test_invalid_signals_are_rejected"
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "status": "parsed",
+      "test_functions": 12,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "status": "parsed",
+      "test_functions": 18,
+      "test_functions_without_ast_assert": [
+        "test_invalid_slices_are_rejected",
+        "test_invalid_quantile_config",
+        "test_future_data_cannot_change_earlier_bucket_holdings"
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "status": "parsed",
+      "test_functions": 26,
+      "test_functions_without_ast_assert": [
+        "test_cli_refuses_an_out_that_cannot_be_created"
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "status": "parsed",
+      "test_functions": 17,
+      "test_functions_without_ast_assert": [
+        "test_invalid_validation_rules_are_rejected"
+      ]
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "status": "parsed",
+      "test_functions": 6,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "status": "parsed",
+      "test_functions": 6,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "status": "parsed",
+      "test_functions": 4,
+      "test_functions_without_ast_assert": []
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "status": "parsed",
+      "test_functions": 12,
+      "test_functions_without_ast_assert": [
+        "test_refuses_quantile_portfolios_from_uncommitted_code"
+      ]
+    }
+  ],
+  "toml": [
+    {
+      "path": "data-mining-framework/pyproject.toml",
+      "status": "parsed",
+      "python": ">=3.11",
+      "dependencies": [
+        "invest-data",
+        "numpy>=1.26",
+        "pandas>=2.1",
+        "matplotlib>=3.8"
+      ],
+      "scripts": {
+        "invest-mine": "invest_mining.cli:main"
+      }
+    },
+    {
+      "path": "data-pipeline/data-preparation/pyproject.toml",
+      "status": "parsed",
+      "python": ">=3.11",
+      "dependencies": [
+        "numpy>=1.26",
+        "pandas>=2.1",
+        "pyarrow>=15"
+      ],
+      "scripts": {
+        "invest-data": "invest_data.cli:main"
+      }
+    },
+    {
+      "path": "pyproject.toml",
+      "status": "parsed",
+      "python": ">=3.11",
+      "dependencies": [
+        "invest-data",
+        "invest-mining",
+        "invest-evaluation"
+      ],
+      "scripts": null
+    },
+    {
+      "path": "strategy-evaluation/pyproject.toml",
+      "status": "parsed",
+      "python": ">=3.11",
+      "dependencies": [
+        "invest-data",
+        "numpy>=1.26",
+        "pandas>=2.1",
+        "matplotlib>=3.8"
+      ],
+      "scripts": {
+        "invest-eval": "invest_evaluation.cli:main"
+      }
+    },
+    {
+      "path": "uv.lock",
+      "status": "parsed",
+      "python": null,
+      "dependencies": null,
+      "scripts": null
+    }
+  ],
+  "shell": [
+    {
+      "path": "scripts/historical_workflow.sh",
+      "command": [
+        "bash",
+        "-n",
+        "scripts/historical_workflow.sh"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "seconds": 0.003898649000120713
+    },
+    {
+      "path": "scripts/synthetic_workflow.sh",
+      "command": [
+        "bash",
+        "-n",
+        "scripts/synthetic_workflow.sh"
+      ],
+      "exit": 0,
+      "stderr": "",
+      "seconds": 0.0016233189999184106
+    }
+  ],
+  "imports": [
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 5,
+      "module": "hashlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 6,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 7,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 8,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 9,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 10,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 12,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 5,
+      "module": "argparse",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 6,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 7,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 8,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 9,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 10,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 11,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 12,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 13,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 15,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 16,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 18,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 19,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 27,
+      "module": "invest_mining",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 28,
+      "module": "invest_mining.artifact",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 29,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 39,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 46,
+      "module": "invest_mining.inference",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 47,
+      "module": "invest_mining.ledger",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 48,
+      "module": "invest_mining.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 49,
+      "module": "invest_mining.search",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 9,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 11,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 12,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 13,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 14,
+      "module": "statistics",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 15,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 17,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "line": 18,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 15,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 17,
+      "module": "ast",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 18,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 19,
+      "module": "re",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 20,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 21,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 22,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 24,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 25,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "line": 27,
+      "module": "invest_data.pit",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 5,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 6,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 8,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 10,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 11,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 12,
+      "module": "invest_mining.artifact",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "line": 13,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 27,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 29,
+      "module": "hashlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 30,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 31,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 32,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 33,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 34,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 35,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 36,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 5,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 6,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 7,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 8,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 10,
+      "module": "matplotlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 13,
+      "module": "matplotlib.pyplot",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 14,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 16,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 18,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 19,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 20,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 22,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 23,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 25,
+      "module": "invest_mining.artifact",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 26,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "line": 34,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/conftest.py",
+      "line": 1,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/conftest.py",
+      "line": 2,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/conftest.py",
+      "line": 3,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/conftest.py",
+      "line": 5,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 3,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 4,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 6,
+      "module": "invest_data.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 7,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 8,
+      "module": "invest_mining.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 12,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 13,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 139,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 140,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 231,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 232,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "line": 1,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "line": 3,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "line": 4,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "line": 5,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_diagnostics.py",
+      "line": 7,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 3,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 5,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 6,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 8,
+      "module": "invest_data.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 9,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 10,
+      "module": "invest_mining.artifact",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 11,
+      "module": "invest_mining.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "line": 1,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "line": 2,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "line": 3,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "line": 5,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "line": 137,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 2,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 4,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 5,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 7,
+      "module": "invest_data.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 8,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 9,
+      "module": "invest_mining",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 10,
+      "module": "invest_mining.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 11,
+      "module": "invest_mining.ledger",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 12,
+      "module": "invest_mining.search",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 2,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 4,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 5,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 7,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 8,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 9,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 10,
+      "module": "invest_mining.artifact",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 11,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 12,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 13,
+      "module": "invest_mining.inference",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 14,
+      "module": "invest_mining.search",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 36,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 37,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 38,
+      "module": "invest_mining.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 146,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 10,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 12,
+      "module": "csv",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 13,
+      "module": "hashlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 14,
+      "module": "io",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 15,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 16,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 17,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 18,
+      "module": "shutil",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 19,
+      "module": "sqlite3",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 20,
+      "module": "tempfile",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 21,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 22,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 23,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 24,
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 25,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 26,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 28,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 29,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 573,
+      "module": "pyarrow",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 604,
+      "module": "pyarrow",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 605,
+      "module": "pyarrow.parquet",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 616,
+      "module": "pyarrow.parquet",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "line": 10,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "line": 12,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "line": 14,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "line": 15,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "line": 17,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 5,
+      "module": "argparse",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 6,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 7,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 8,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 9,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 11,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 13,
+      "module": "invest_data.cleaning",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 14,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 21,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 29,
+      "module": "invest_data.yahoo",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "line": 7,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "line": 9,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 37,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 39,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 40,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 41,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 42,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 43,
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 44,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 46,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 47,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "line": 49,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 10,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 12,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 13,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 14,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 16,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 17,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 19,
+      "module": "invest_data.cleaning",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "line": 20,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 7,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 9,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 10,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 11,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 12,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 13,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 15,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "line": 17,
+      "module": "invest_data.yahoo",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 18,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 20,
+      "module": "hashlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 21,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 22,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 23,
+      "module": "tempfile",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 24,
+      "module": "time",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 25,
+      "module": "urllib.error",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 26,
+      "module": "urllib.parse",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 27,
+      "module": "urllib.request",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 28,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 29,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 30,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 31,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 32,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 34,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 35,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 37,
+      "module": "invest_data.cleaning",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 2,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 3,
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 5,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 6,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 7,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 9,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 68,
+      "module": "pyarrow",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 69,
+      "module": "pyarrow.parquet",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 3,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 4,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 5,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 7,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 8,
+      "module": "invest_data.cleaning",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 9,
+      "module": "invest_data.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 10,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 11,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 207,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 221,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 233,
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 235,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 261,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 379,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 1,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 2,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 3,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 5,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 6,
+      "module": "invest_data.pit",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 7,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "line": 13,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 3,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 4,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 6,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 7,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 9,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 10,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 276,
+      "module": "pyarrow",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 3,
+      "module": "io",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 4,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 5,
+      "module": "urllib.error",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 7,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 8,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 9,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 11,
+      "module": "invest_data.cleaning",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 12,
+      "module": "invest_data.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 13,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 14,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 15,
+      "module": "invest_data.testing",
+      "relative_level": 0
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 16,
+      "module": "invest_data.yahoo",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "line": 9,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "line": 11,
+      "module": "re",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "line": 12,
+      "module": "subprocess",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "line": 13,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/check_markdown_links.py",
+      "line": 14,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 17,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 19,
+      "module": "argparse",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 20,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 21,
+      "module": "shutil",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 22,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 23,
+      "module": "tempfile",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 24,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 25,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 5,
+      "module": "argparse",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 6,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 7,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 8,
+      "module": "subprocess",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 9,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 10,
+      "module": "tempfile",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 11,
+      "module": "collections.abc",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 12,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 13,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 15,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 17,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 18,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 24,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 25,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 26,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 27,
+      "module": "invest_evaluation.quantiles",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 28,
+      "module": "invest_evaluation.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 29,
+      "module": "invest_evaluation.robustness",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 30,
+      "module": "invest_evaluation.stats",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 31,
+      "module": "invest_evaluation.validation",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 5,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 6,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 7,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 8,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 9,
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 10,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 11,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 12,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 20,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 22,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 23,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 24,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 25,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 27,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 28,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 30,
+      "module": "invest_data.bundle",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 31,
+      "module": "invest_data.pit",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 32,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 33,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "line": 34,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 14,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 16,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 17,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 18,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 20,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 21,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line": 23,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 17,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 19,
+      "module": "gzip",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 20,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 21,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 22,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 23,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 24,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 25,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 26,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 28,
+      "module": "matplotlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 31,
+      "module": "matplotlib.pyplot",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 32,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 33,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 35,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 36,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 37,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 38,
+      "module": "invest_evaluation.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 39,
+      "module": "invest_evaluation.stats",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 40,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 3,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 5,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 6,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 7,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 8,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 10,
+      "module": "matplotlib",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 13,
+      "module": "matplotlib.pyplot",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 14,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 15,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 17,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 18,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 7,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 9,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 11,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 13,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 14,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "line": 15,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 12,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 14,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 15,
+      "module": "statistics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 16,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 18,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 19,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "line": 21,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 8,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 10,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 11,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 12,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 13,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 15,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 16,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "line": 18,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 10,
+      "module": "__future__",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 12,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 13,
+      "module": "numbers",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 14,
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 16,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 17,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line": 19,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/conftest.py",
+      "line": 1,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/conftest.py",
+      "line": 2,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/conftest.py",
+      "line": 4,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_config.py",
+      "line": 1,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_config.py",
+      "line": 3,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_config.py",
+      "line": 5,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 1,
+      "module": "dataclasses",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 2,
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 4,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 5,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 6,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 8,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 9,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 493,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_engine.py",
+      "line": 505,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line": 1,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line": 3,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line": 4,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line": 5,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line": 7,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 1,
+      "module": "gzip",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 2,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 4,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 5,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 6,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 8,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 9,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 10,
+      "module": "invest_evaluation.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 11,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 12,
+      "module": "invest_evaluation.engine",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 13,
+      "module": "invest_evaluation.quantiles",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 20,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 300,
+      "module": "invest_evaluation.quantiles",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 323,
+      "module": "invest_evaluation.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 356,
+      "module": "invest_evaluation.quantiles",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 416,
+      "module": "matplotlib.axes",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 1,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 2,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 3,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 4,
+      "module": "statistics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 6,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 7,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 8,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 10,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 11,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 12,
+      "module": "invest_evaluation.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 13,
+      "module": "invest_evaluation.stats",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 127,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 128,
+      "module": "invest_evaluation.stats",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 273,
+      "module": "matplotlib.axes",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 448,
+      "module": "subprocess",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 462,
+      "module": "invest_evaluation.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 570,
+      "module": "matplotlib.axes",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 598,
+      "module": "matplotlib.axes",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 600,
+      "module": "invest_evaluation.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 709,
+      "module": "matplotlib.axes",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 711,
+      "module": "invest_evaluation.reporting",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 3,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 5,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 6,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 7,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 9,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 10,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 11,
+      "module": "invest_evaluation.cli",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 12,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 13,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 14,
+      "module": "invest_evaluation.stats",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 15,
+      "module": "invest_evaluation.validation",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 373,
+      "module": "invest_evaluation.metrics",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 388,
+      "module": "invest_evaluation.robustness",
+      "relative_level": 0
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 413,
+      "module": "invest_evaluation.config",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 3,
+      "module": "importlib.util",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 4,
+      "module": "subprocess",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 5,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 7,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 3,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 4,
+      "module": "os",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 5,
+      "module": "subprocess",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 6,
+      "module": "sys",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 7,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 9,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 180,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 181,
+      "module": "invest_data.testing",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 243,
+      "module": "invest_data.schemas",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 248,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 250,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 256,
+      "module": "invest_mining.expressions",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 314,
+      "module": "importlib.util",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 346,
+      "module": "invest_data.sources",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 347,
+      "module": "invest_data.testing",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 7,
+      "module": "math",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 8,
+      "module": "fractions",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 10,
+      "module": "numpy",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 11,
+      "module": "pandas",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 12,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 14,
+      "module": "invest_evaluation.strategies",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_quantile_consistency.py",
+      "line": 15,
+      "module": "invest_mining.diagnostics",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 3,
+      "module": "importlib.util",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 4,
+      "module": "json",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 5,
+      "module": "re",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 6,
+      "module": "pathlib",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 7,
+      "module": "types",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 9,
+      "module": "pytest",
+      "relative_level": 0
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 204,
+      "module": "os",
+      "relative_level": 0
+    }
+  ],
+  "portability_leads": [
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 55,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "line": 60,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 259,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 356,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "line": 409,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 178,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "line": 100,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "line": 18,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 62,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 189,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 38,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 39,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 104,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_cli.py",
+      "line": 213,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 242,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 37,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 196,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_evidence.py",
+      "line": 240,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 456,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 58,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 189,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 223,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 275,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 328,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 184,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 212,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 282,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 244,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_ledger.py",
+      "line": 386,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 109,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 113,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "line": 107,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 295,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "line": 399,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "line": 42,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "line": 279,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 138,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 204,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 212,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 136,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 83,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 204,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "line": 212,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 80,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 171,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 210,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 264,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "line": 324,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 46,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 132,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 158,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 188,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 218,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 44,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 130,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 156,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 183,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "line": 216,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "line": 322,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 80,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "scripts/save_run.py",
+      "line": 186,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "line": 123,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line": 226,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 429,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 310,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "line": 344,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 24,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 312,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 83,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 233,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 234,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line": 238,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 401,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 437,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 280,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 288,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 290,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_quantiles.py",
+      "line": 292,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 69,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 207,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 230,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 328,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 473,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 476,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 478,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 506,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 550,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 582,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 631,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 733,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 747,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 751,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 841,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 104,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 107,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 183,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 185,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 186,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 308,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 323,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 327,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 338,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 468,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 501,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 657,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 660,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 686,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 265,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 337,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 663,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 663,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 108,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 256,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 259,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 437,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 441,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 750,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 106,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line": 109,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 220,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 234,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 237,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 283,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 284,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 320,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 212,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 218,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 312,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 229,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 315,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "line": 317,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 31,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 35,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 49,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 65,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_markdown_links.py",
+      "line": 93,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 188,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 307,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 120,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 121,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 126,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 153,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 156,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 165,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 188,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 212,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 220,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 224,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 226,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 228,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 234,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 258,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 259,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 288,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 288,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 298,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 79,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 81,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 214,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 295,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 306,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 63,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 129,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 155,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 215,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "line": 159,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 39,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 40,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 42,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 105,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 123,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 198,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 30,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 115,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 125,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 197,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 87,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "line": 95,
+      "lead": "text I/O without explicit encoding; binary/mode/context need semantic review"
+    }
+  ],
+  "local_links": [],
+  "elapsed_seconds": 0.3398598960000072
+}

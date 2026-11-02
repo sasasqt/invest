@@ -1,0 +1,14 @@
+{
+  "run_id": "GA-2026-11-02",
+  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "tree": "9b48fbc155c6f5006969241585f48953f63e809e",
+  "output_base": "606eae209af0d426aaf83280585e1afaca3b4084",
+  "peer_output": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+  "peer_report_date": "2026-11-01",
+  "peer_audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+  "runner_workload_blob": "f8f5e27ba0c03c76f2134ef4b8ae6dfdcacd2e6f",
+  "runner_identity_checked": "GitHub recursive tree of runner SHA matches fetched output blob",
+  "acquisition": "GitHub connector recursive manifest + blob-by-SHA; SHA1 blob identities independently recomputed; no Git checkout reconstructed",
+  "observation_guard": "No runs/ or ledgers/ bytes materialized or consumed; only remote tree metadata. Synthetic fixtures read as code only."
+}

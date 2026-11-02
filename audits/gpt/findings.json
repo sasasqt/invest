@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-10-31T001744Z",
+  "run_id": "GA-2026-11-02",
   "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
   "findings": [
     {
@@ -9,7 +9,7 @@
       "category": "contract/implementation consistency",
       "severity": "medium",
       "priority": "P2",
-      "status": "new",
+      "status": "known/open",
       "confidence": "high for static contradiction; runtime unverified",
       "evidence_label": "verified_static_contract_contradiction",
       "runtime_label": "plausible",
@@ -54,13 +54,21 @@
       "acceptance": "Untouched-revision repeated reproduction+passing controls after isolation; entrant/re-entry unary identities; CS exclusions remain; explicit version decision.",
       "effort": "M estimate",
       "owner": "mining maintainer; user decides",
-      "also_found_by": [],
+      "also_found_by": [
+        "RA-2026-11-01-2"
+      ],
       "novelty": "No exact match in accessible main TODO/open PRs; unpublished2026-10-28 scratch lead, first published here; unavailable private stores unknown",
       "history": [
         {
           "date": "2026-10-31",
           "status": "new",
           "evidence": "independently corroborated static scope only"
+        },
+        {
+          "date": "2026-11-02",
+          "status": "known/open",
+          "evidence": "2026-11-02-repro/verifier-a/independent-verdict.json",
+          "scope": "independently corroborated static contradiction; peer runtime claim attributed, no fresh local runtime"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -109,16 +117,109 @@
       "acceptance": "Explicit policy; twice-repeated event/control checks; >=20-session relative-metric fixture; retirement and prefix causality; preserve missing-value statuses.",
       "effort": "M estimate",
       "owner": "evaluation maintainer; user decides",
-      "also_found_by": [],
+      "also_found_by": [
+        "BH-2026-10-21-2 (peer-reported alias; original hunt ledger unavailable)"
+      ],
       "history": [
         {
           "date": "2026-10-31",
           "status": "new",
           "evidence": "plausible; no runtime or authoritative policy resolution"
+        },
+        {
+          "date": "2026-11-02",
+          "status": "known/open, plausible",
+          "evidence": "cross-check.md",
+          "scope": "peer supplied duplicate lead; original hunt reproduction unavailable; no policy/runtime promotion"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
       "first_published_date": "2026-10-31"
+    },
+    {
+      "id": "GA-2026-11-02-1",
+      "fingerprint": "reported-output:strategy-evaluation/src/invest_evaluation/reporting.py:censored-drawdown-duration",
+      "category": "report/metric contract consistency",
+      "title": "Readable drawdown duration omits the open-episode qualification",
+      "severity": "medium",
+      "priority": "P2",
+      "confidence": "high for static contract/renderer omission; runtime not executed",
+      "status": "known/open",
+      "evidence_label": "confirmed_static_contract_renderer_contradiction",
+      "runtime_label": "unverified on this worker",
+      "independent_review_status": "independently reviewed, static only",
+      "origin": "First reported by RA-2026-11-01-4; new to GPT ledger, not claimed as original GPT discovery",
+      "also_found_by": [
+        "RA-2026-11-01-4"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/reporting.py#L173",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/reporting.py#L248",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/metrics.py#L108",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/METRICS.md#L109"
+      ],
+      "expected": "METRICS section6 says unrecovered episodes are right-censored; readable duration must distinguish observed elapsed time from completed recovery.",
+      "observed_static": "_fmt reads value/unit/reason but not extra.censored; summary prints max_drawdown_duration without qualification.",
+      "trigger": "A readable report for a window ending in an open drawdown.",
+      "impact": "Reader can interpret an observed duration as completed recovery; structured metrics retain metadata. No portfolio returns or validation verdict change demonstrated.",
+      "reproduction": "After isolation, use a synthetic wealth path initial100, then90,80,85: open episode observed3sessions at end. Generate actual report from untouched main, require an open/lower-bound qualification; compare recovered100,90,80,100 control. Repeat twice. NOT EXECUTED.",
+      "expected_actual_control": "Static: censored metadata exists; _fmt returns str(3). No emitted report generated today.",
+      "caution": "metrics.py censored flag describes final open episode even when an older recovered episode has the longest duration. Resolve event attribution (peer-referenced BH-2026-10-14-8) before blindly printing N+. Original hunt evidence unavailable.",
+      "evidence": [
+        "2026-11-02-repro/verifier-a/independent-verdict.json",
+        "2026-11-02-repro/reading-main.json"
+      ],
+      "acceptance": "Correct open/recovered markers and duration metadata on both current-longest and earlier-recovered-longest synthetic paths; twice/control after isolation; saved-result reconciliation only for permitted inputs.",
+      "correction_boundary": "Report/metric metadata and tests; no product modification or saved artifact regeneration performed.",
+      "effort": "S to M estimate, depending on metric metadata correction",
+      "owner": "evaluation maintainer; user decides",
+      "history": [
+        {
+          "date": "2026-11-02",
+          "status": "known/open",
+          "scope": "static verified, peer origin preserved"
+        }
+      ]
+    },
+    {
+      "id": "GA-2026-11-02-2",
+      "fingerprint": "recommendation:strategy-evaluation/src/invest_evaluation/reporting.py:default-summary-computed-fields",
+      "category": "optional reporting improvement",
+      "title": "Reconcile computed summary fields with the documented default summary",
+      "severity": "low",
+      "priority": "P3",
+      "confidence": "high static omission; benefit not measured",
+      "status": "known/open",
+      "evidence_label": "optional_improvement",
+      "independent_review_status": "independently reviewed, static only",
+      "also_found_by": [
+        "RA-2026-11-01-5",
+        "RA-2026-11-01-9"
+      ],
+      "origin": "Peer lead; no original GPT discovery claimed",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/METRICS.md#L166",
+        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/reporting.py#L239"
+      ],
+      "expected": "Section9 default summaries should show recovery and time under water among other applicable computed fields.",
+      "observed_static": "picks omits max_recovery_duration and time_under_water although metrics computes them; should is a soft requirement.",
+      "impact": "Less complete readable summary, not a demonstrated wrong numeric result.",
+      "counterargument": "Full metrics.json is linked; METRIC-01 still has planned capabilities, so do not demand unsupported calculations or overload the short report.",
+      "cheapest_alternative": "Explicitly narrow the documented short summary and retain a clear full-metrics link.",
+      "acceptance": "Choose documented summary scope; include applicable already-computed recovery/time-under-water or explicitly narrow it. Test missing/not_applicable statuses without substituting zero.",
+      "effort": "S estimate",
+      "owner": "user decides",
+      "evidence": [
+        "2026-11-02-repro/verifier-a/independent-verdict.json"
+      ],
+      "history": [
+        {
+          "date": "2026-11-02",
+          "status": "known/open; optional recommendation"
+        }
+      ]
     }
   ],
   "known_external": [
@@ -145,6 +246,37 @@
       "pr": 27,
       "head": "4ccb3ab2732b55ff97fad5229232a8a1cfe051dd",
       "not_new": true
+    },
+    {
+      "peer_id": "RA-2026-11-01-1",
+      "aliases": [
+        "INV-COMMON-001",
+        "REVIEW-22"
+      ],
+      "status": "known/open; same-SHA CI failure observed in original logs",
+      "pr": 31,
+      "head": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+      "not_new": true,
+      "evidence": "2026-11-02-repro/ci-log-extracts.json"
+    },
+    {
+      "peer_id": "RA-2026-11-01-3",
+      "status": "plausible future compatibility risk; not future failure proven",
+      "evidence": "Official pandas3.1 deprecation documentation + static test sites; no local warning reproduction"
+    },
+    {
+      "id": "INV-PR32-001",
+      "status": "known/open",
+      "priority": "P1",
+      "severity": "high; tooling security boundary",
+      "head": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "source_blob": "263e98a12b9fc79a88dd7dc143f83f11158a4aea",
+      "primary_review_url": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
+      "review_updated_at": "2026-11-01T20:05:34Z",
+      "source_static_trace": "writable /work output; host copytree311 default follows links; summary is_file/read_text314-315",
+      "evidence_scope": "Primary maintained review inspected; own pinned static sink trace; prior two independent stdlib fixture controls attributed, not rerun. No full Docker exploit or actual secret exposure claimed.",
+      "effect": "Do not execute this runner for untrusted revisions until hostile-output collection invariant is corrected and verified; earlier benign boundary probes and CSVGZ correction are not a whole-runner safety certificate.",
+      "not_new": true
     }
   ],
   "dropped_candidates": [
@@ -153,6 +285,14 @@
       "reason": "same gross-cost root cause already tracked by BH-2026-10-15-1/PR26; no new GA discovery",
       "counterfactual": "A distinct failing invariant beyond PR26 would warrant a separate item",
       "evidence": "2026-10-31-repro/verifier-a.md"
+    }
+  ],
+  "run_history": [
+    {
+      "run_id": "GA-2026-11-02",
+      "date": "2026-11-02",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "scope": "static continuation; historical remote evidence refreshed"
     }
   ]
 }

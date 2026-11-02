@@ -1,0 +1,845 @@
+[
+  {
+    "path": ".gitignore",
+    "content_identity": "cf3c7a0a8f9dbd2cbbd636d52485caa9565d3784",
+    "unread_ranges": [
+      [
+        1,
+        40
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "DESIGN_BY_CONTRACT.md",
+    "content_identity": "3a792e9016b056c9ebb92c95a9825ce0dd9faae9",
+    "unread_ranges": [
+      [
+        91,
+        147
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "GIT_GUIDELINES.md",
+    "content_identity": "bc800859fe84696b4f1939b27e12af25ef39c1d7",
+    "unread_ranges": [
+      [
+        91,
+        95
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "PYTHON_GUIDELINES.md",
+    "content_identity": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d",
+    "unread_ranges": [
+      [
+        71,
+        126
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "RAPID_DEVELOPMENT.md",
+    "content_identity": "0a3acfff383bb7a1d7cb1f33202b5b1271afe00e",
+    "unread_ranges": [
+      [
+        101,
+        106
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "README.md",
+    "content_identity": "79f0c5029c93f4325a986b616c9df173da8fb0e4",
+    "unread_ranges": [
+      [
+        96,
+        184
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "TODO.md",
+    "content_identity": "2e7c5130dda2c61463968724dcb141255e6a8854",
+    "unread_ranges": [
+      [
+        1,
+        15
+      ],
+      [
+        17,
+        26
+      ],
+      [
+        28,
+        28
+      ],
+      [
+        31,
+        41
+      ],
+      [
+        43,
+        55
+      ],
+      [
+        57,
+        59
+      ],
+      [
+        61,
+        64
+      ],
+      [
+        66,
+        100
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/ALPHA_VALIDATION.md",
+    "content_identity": "b02bf5478505329027db917222e9b45b1c8221f5",
+    "unread_ranges": [
+      [
+        1,
+        155
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/LITERATURE_REVIEW.md",
+    "content_identity": "b8558ebf9d5567526166a27e86a5baa63fdaea02",
+    "unread_ranges": [
+      [
+        1,
+        282
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/PRIMARY_SOURCE_CATALOG.md",
+    "content_identity": "4d3f1fce77a41493501069a9505e902c45f2bf3a",
+    "unread_ranges": [
+      [
+        1,
+        358
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/README.md",
+    "content_identity": "4e2b4268370d25beab1f0f7a9045a3f95be0235a",
+    "unread_ranges": [
+      [
+        1,
+        6
+      ],
+      [
+        8,
+        81
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/__init__.py",
+    "content_identity": "baccd52dc4d6b4181c6da24771ade8be626e9a8b",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "content_identity": "90934f1d7d98416a468d16fe665ac3f3d64d6fbe",
+    "unread_ranges": [
+      [
+        1,
+        364
+      ],
+      [
+        461,
+        727
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+    "content_identity": "f42e5f0c0655763ce14087b2699edbaf691e02a9",
+    "unread_ranges": [
+      [
+        1,
+        315
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/search.py",
+    "content_identity": "0f49381ce90d97abf3e55f0f8fa1ba755f2fb5b7",
+    "unread_ranges": [
+      [
+        1,
+        129
+      ],
+      [
+        321,
+        359
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/tests/conftest.py",
+    "content_identity": "f22892a57326b46fd568301feb5d3adf80ad92c3",
+    "unread_ranges": [
+      [
+        1,
+        33
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/tests/test_cli.py",
+    "content_identity": "14bc701cff3c4d4abf9673da4237b45ed0cf310d",
+    "unread_ranges": [
+      [
+        1,
+        258
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/tests/test_diagnostics.py",
+    "content_identity": "f9cc7ea398aac46e1db2e634ff84f4f678461319",
+    "unread_ranges": [
+      [
+        1,
+        258
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-mining-framework/tests/test_ledger.py",
+    "content_identity": "181df2f5347892c72ebd3699494b3ed9598b24ff",
+    "unread_ranges": [
+      [
+        1,
+        174
+      ],
+      [
+        201,
+        329
+      ],
+      [
+        356,
+        471
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+    "content_identity": "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+    "content_identity": "d4d78d93f1e3751053d9c34fd73bf67c1102fa25",
+    "unread_ranges": [
+      [
+        1,
+        252
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+    "content_identity": "7e7407928a2d8d50c0b0c46d9c818a1d69a23721",
+    "unread_ranges": [
+      [
+        176,
+        544
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+    "content_identity": "ddf1ed68b4fcfcba46110ac01b8fda9f5d8d7f39",
+    "unread_ranges": [
+      [
+        211,
+        229
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+    "content_identity": "5ec7d14c286b10e652a706a605efa14d7a7282bc",
+    "unread_ranges": [
+      [
+        1,
+        89
+      ],
+      [
+        131,
+        383
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+    "content_identity": "7765a54f06829dc13ac674fb7c098a53273da904",
+    "unread_ranges": [
+      [
+        1,
+        288
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
+    "content_identity": "28ccfb5e9b24b28a51a8e6e8557d9ff1f44f3553",
+    "unread_ranges": [
+      [
+        1,
+        407
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "docs/DATA_CONTRACT.md",
+    "content_identity": "602dfd528c0191c3f86de2d3bf20f0ef42e78067",
+    "unread_ranges": [
+      [
+        41,
+        83
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "docs/QUANTILE_ANALYSIS.md",
+    "content_identity": "93eb670405cd534a9a46cd03d1473d60b399dcf1",
+    "unread_ranges": [
+      [
+        1,
+        60
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "docs/reviews/README.md",
+    "content_identity": "9bd17360f86040cdcfed8d8b4adea50b04c6f64a",
+    "unread_ranges": [
+      [
+        1,
+        12
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/README.md",
+    "content_identity": "322d17f9d320942f69666345d914466df0e5093e",
+    "unread_ranges": [
+      [
+        1,
+        24
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json",
+    "content_identity": "06a08c4400145564465bd3d8956191a59fc0fd7b",
+    "unread_ranges": [
+      [
+        1,
+        220
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/data/market/manifest.json",
+    "content_identity": "475a5dfb8b118909008573fd44c6716700e50de1",
+    "unread_ranges": [
+      [
+        1,
+        1210
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/config.json",
+    "content_identity": "f2c8645460bb43d4020ec35763b0d6e6410869a7",
+    "unread_ranges": [
+      [
+        1,
+        39
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/manifest.json",
+    "content_identity": "dffbd1c84a8c8dc7fe1bfc4322b56b3b7d4268a7",
+    "unread_ranges": [
+      [
+        1,
+        49
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/metrics.json",
+    "content_identity": "41e4f9c1d7f4321ad2241150629f233ab24200bf",
+    "unread_ranges": [
+      [
+        1,
+        628
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/report.md",
+    "content_identity": "828e480c36bef4f23a6516fd3151e89c142ae200",
+    "unread_ranges": [
+      [
+        1,
+        93
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/statistics.json",
+    "content_identity": "370e1007111b15f48711ae441bc42ef21ad560d7",
+    "unread_ranges": [
+      [
+        1,
+        62
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/tables/scenarios.csv",
+    "content_identity": "66254000961b61147dbfa8f86cddf0350fb55d05",
+    "unread_ranges": [
+      [
+        1,
+        9
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/eval/verdict.json",
+    "content_identity": "5ea1c8b74be6afc40c086b0b7b37f5382a8139b6",
+    "unread_ranges": [
+      [
+        1,
+        85
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/config.json",
+    "content_identity": "d0fe3533dd3ba5bb567703dff118927adce26aba",
+    "unread_ranges": [
+      [
+        1,
+        7
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/metrics.json",
+    "content_identity": "e2b5065c74e1375168e82f95b6089077e16050d6",
+    "unread_ranges": [
+      [
+        1,
+        23
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv",
+    "content_identity": "881fa2a36b240dc085d91da822d20abd844d2027",
+    "unread_ranges": [
+      [
+        1,
+        3775
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/tail_returns.csv",
+    "content_identity": "be48d864cf9b53cb419fb04b65bde8b2abc1dae2",
+    "unread_ranges": [
+      [
+        1,
+        10
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/mining/factor.json",
+    "content_identity": "f0b69b34df752b90b9c04aa85f00fa607595599f",
+    "unread_ranges": [
+      [
+        1,
+        21
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/signals/manifest.json",
+    "content_identity": "4dd1c9efedab6d77815e8cf2690dcaa7615acd06",
+    "unread_ranges": [
+      [
+        1,
+        67
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "runs/yahoo-test/2026-10-07/snapshot/snapshot.json",
+    "content_identity": "0e9548b4f97b5867d47dedbdbd95e7087f0a9b14",
+    "unread_ranges": [
+      [
+        1,
+        626
+      ]
+    ],
+    "reason": "Bytes not materialized pending permitted-date/data classification; metadata inventory only"
+  },
+  {
+    "path": "scripts/save_run.py",
+    "content_identity": "45c8daa4723027357ebbb4f7618fbeb2eacaa8d2",
+    "unread_ranges": [
+      [
+        216,
+        217
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "scripts/sp100_members.txt",
+    "content_identity": "65a13e475da1da872420679b794943fb91c64e4c",
+    "unread_ranges": [
+      [
+        1,
+        104
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/README.md",
+    "content_identity": "371abdcc556e2118385db37634599e3e93c13e0d",
+    "unread_ranges": [
+      [
+        1,
+        17
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/examples/quantile_long_short.json",
+    "content_identity": "cbe0d7b22eb6c25198d74d83297924582a1c0a82",
+    "unread_ranges": [
+      [
+        1,
+        15
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+    "content_identity": "eb517e1412c20b5d64bb62945936f1d4447ec669",
+    "unread_ranges": [
+      [
+        1,
+        3
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+    "content_identity": "9460058caac73dfe33fee137b3b6b2680dd04900",
+    "unread_ranges": [
+      [
+        1,
+        378
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "content_identity": "86779012f5ce9a22e7fb1d949837746491ccd209",
+    "unread_ranges": [
+      [
+        116,
+        226
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "content_identity": "9396e5e456aad00f78dc2badcf35effb84f32e75",
+    "unread_ranges": [
+      [
+        1,
+        49
+      ],
+      [
+        148,
+        249
+      ],
+      [
+        338,
+        491
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+    "content_identity": "2d90858523a4cbe716596b412aae75a94334b4a4",
+    "unread_ranges": [
+      [
+        151,
+        294
+      ],
+      [
+        321,
+        332
+      ],
+      [
+        349,
+        401
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+    "content_identity": "117d07804665b786884616be10f54e7fbf8e1fdb",
+    "unread_ranges": [
+      [
+        156,
+        213
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+    "content_identity": "35d6a30ba0581b6a804d0525dcb31b531718402a",
+    "unread_ranges": [
+      [
+        101,
+        174
+      ],
+      [
+        204,
+        240
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/conftest.py",
+    "content_identity": "1bf40269e7f48e547dfa03d512ca37999dc6fca3",
+    "unread_ranges": [
+      [
+        1,
+        19
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_config.py",
+    "content_identity": "c414a7390315cec7bc80ee60e5f640f0c1c23cb8",
+    "unread_ranges": [
+      [
+        1,
+        73
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_engine.py",
+    "content_identity": "578a6a2611fdb7881698b66d4fe159ef1e0a6dc4",
+    "unread_ranges": [
+      [
+        206,
+        439
+      ],
+      [
+        491,
+        511
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_metrics.py",
+    "content_identity": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee",
+    "unread_ranges": [
+      [
+        1,
+        74
+      ],
+      [
+        126,
+        186
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_quantiles.py",
+    "content_identity": "7bef11bf398e844820594b734208b5a2c4dd4b97",
+    "unread_ranges": [
+      [
+        1,
+        439
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+    "content_identity": "2b7f7a3641323d99eee8f8e01ae213a5b15ef7eb",
+    "unread_ranges": [
+      [
+        1,
+        851
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "strategy-evaluation/tests/test_validation.py",
+    "content_identity": "cc865acf4c974d4517f88f73e288b917e3024863",
+    "unread_ranges": [
+      [
+        1,
+        425
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "tests/test_markdown_links.py",
+    "content_identity": "ac801770e35bc79a3c90b2bc3f9ee6a45a8ac693",
+    "unread_ranges": [
+      [
+        1,
+        96
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "content_identity": "b07f7ec5c649166f3729659e89598382d9b11365",
+    "unread_ranges": [
+      [
+        1,
+        249
+      ],
+      [
+        294,
+        390
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "tests/test_quantile_consistency.py",
+    "content_identity": "8295679fbde48c5ac1d4781c9f812273f65b327c",
+    "unread_ranges": [
+      [
+        1,
+        99
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "tests/test_save_run.py",
+    "content_identity": "4aca77eb3e743cb786f1467ac49ba0aab0e1cc1c",
+    "unread_ranges": [
+      [
+        1,
+        211
+      ]
+    ],
+    "reason": null
+  },
+  {
+    "path": "uv.lock",
+    "content_identity": "6db309081b462314e6f64bdc1381cca7db23fb13",
+    "unread_ranges": [
+      [
+        1,
+        1517
+      ]
+    ],
+    "reason": null
+  }
+]

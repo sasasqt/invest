@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-02",
+  "id": "INV-PR32-001",
+  "status": "known unresolved blocker; no new finding/yield",
+  "decision": "agree confirmed-static host-output collection weakness; P1/high preserved",
+  "comment_url": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
+  "comment_id": 6548582767,
+  "comment_updated_at": "2026-11-01T20:05:34Z",
+  "publication_app": {
+    "id": 1144995,
+    "owner": "openai",
+    "name": "ChatGPT Codex Connector"
+  },
+  "runner_head": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+  "target_main": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "blob": "263e98a12b9fc79a88dd7dc143f83f11158a4aea",
+  "immutable_head_matches_blob_content": true,
+  "source_read": "audits/gpt/runner/isolated_runner.py:270-320; execution_command source28-100 returned/read for /work bind mount context",
+  "evidence": "work chmod0777 at273, container receives writable work bind from execution_command, host sentinel path passed278; after container removal host is_dir310 follows results-root symlink, copytree311 omits symlinks override (default false), summary is_file/read_text314-315 follows target. No root/descendant no-follow/containment check at collection sinks.",
+  "scope": "Static source and maintained primary comment independently read. No fixture, source code, Docker exploit, tests, build, rerun or real host-data access executed. Existing maintained comment has prior illustrative stdlib controls; those remain attributed, not reproduced. No actual exposure alleged.",
+  "relationship_to_prior_verdict": "CSVGZ v2 correction stays statically accepted at its declared comparison scope. It does not certify whole-runner isolation or host collection; runner remains unsafe/unresolved until INV-PR32-001 correction is verified.",
+  "provenance": "Direct GitHub comment API identifies issue32, exact reviewed runner/target SHAs, maintained status refreshed1Nov2026, OpenAI-owned connector app1144995; direct immutable-head file equals requested blob text. No provenance conflict observed. Concurrent40187531 rotation_v3 untouched.",
+  "missing": "No current collector fix or hostile-output end-to-end control verified here. Required boundary must reject root/directory/file and printed-summary links before any host read/upload."
+}

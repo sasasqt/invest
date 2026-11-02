@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-10-31T001744Z",
-  "search_cutoff": "2026-10-31",
-  "search_range": "first published run: emphasize last12months; add older foundational and contrary work; not exhaustive",
-  "papers_screened": 5,
-  "primary_bibliographies_verified": 4,
-  "qualified_new_explicit_queue_candidates": 2,
+  "run_id": "GA-2026-11-02",
+  "search_cutoff": "2026-11-02",
+  "search_range": "since2026-10-31 bounded primary search plus older cost/capacity and negative work; nonexhaustive",
+  "papers_screened": 3,
+  "primary_bibliographies_verified": 3,
+  "qualified_new_explicit_queue_candidates": 0,
   "experiments_run": 0,
   "planned_minutes": 30,
   "actual_exclusive_minutes": null,
-  "actual_timing_limitation": "Main source reads were interleaved; do not manufacture per-bucket minutes/rates. Research helper measured38seconds initial read window only; note writing/research total unavailable.",
+  "actual_timing_limitation": "Research and source inspection interleaved; no reliable per-bucket exclusive research time. Tool-return durations are not research-hour denominators.",
   "planned_split": {
     "exploitation": 60,
     "exploration": 40
@@ -41,7 +41,7 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "reason": "insufficient reliable per-category measured time/completed eligible-run evidence",
+  "reason": "insufficient reliable measured category time; source screens are not automatically evidence advances",
   "last_four_completed_runs": [],
   "queued_ids": [
     "GA-2026-10-31-3",
@@ -55,5 +55,15 @@
     "lineage balancing",
     "VIX-gated reversal"
   ],
-  "experiments_status": "all blocked; zero attempted variants; no confirmation data consumed"
+  "experiments_status": "no attempts; existing candidates blocked; no confirmation data consumed",
+  "history": [
+    {
+      "run_id": "GA-2026-10-31T001744Z",
+      "search_cutoff": "2026-10-31",
+      "state_evidence": "606eae209af0d426aaf83280585e1afaca3b4084"
+    }
+  ],
+  "new_advances": [],
+  "topic_draw": "cost_capacity; oldest backlog topic; no new random draw credited",
+  "peer_research": "peer current tree has no dedicated research ledgers; unavailable, not assumed empty research history"
 }

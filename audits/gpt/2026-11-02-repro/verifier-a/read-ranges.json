@@ -1,0 +1,119 @@
+{
+  "prior/audits/gpt/runner/runner_workload.py": [
+    "1-112",
+    "340-480"
+  ],
+  "prior/audits/gpt/runner/README.md": [
+    "1-55"
+  ],
+  "source/data-mining-framework/src/invest_mining/expressions.py": [
+    "1-95",
+    "125-230",
+    "240-370",
+    "380-386"
+  ],
+  "source/data-mining-framework/src/invest_mining/inference.py": [
+    "1-77"
+  ],
+  "source/data-mining-framework/src/invest_mining/artifact.py": [
+    "15-72"
+  ],
+  "source/data-mining-framework/src/invest_mining/cli.py": [
+    "365-460",
+    "rg matches 24,40-41,54,61-62,107,122-124,174,200,289,303,324,691"
+  ],
+  "source/data-mining-framework/src/invest_mining/search.py": [
+    "140-202",
+    "280-302"
+  ],
+  "source/data-mining-framework/src/invest_mining/ledger.py": [
+    "1-180"
+  ],
+  "source/data-mining-framework/tests/test_expressions.py": [
+    "1-146"
+  ],
+  "source/data-mining-framework/tests/test_evidence.py": [
+    "85-140"
+  ],
+  "source/data-mining-framework/tests/test_ledger.py": [
+    "175-200",
+    "330-355"
+  ],
+  "source/data-pipeline/data-preparation/tests/test_cleaning_and_sources.py": [
+    "90-130"
+  ],
+  "source/data-pipeline/data-preparation/pyproject.toml": [
+    "1-13"
+  ],
+  "source/tests/test_pipeline.py": [
+    "250-293"
+  ],
+  "source/pyproject.toml": [
+    "1-52"
+  ],
+  "source/uv.lock": [
+    "rg match1137-1138 (plus unrelated version matches819,1364)"
+  ],
+  "source/scripts/synthetic_workflow.sh": [
+    "1-35"
+  ],
+  "source/strategy-evaluation/src/invest_evaluation/reporting.py": [
+    "1-312"
+  ],
+  "source/strategy-evaluation/src/invest_evaluation/metrics.py": [
+    "60-147",
+    "270-315"
+  ],
+  "source/strategy-evaluation/src/invest_evaluation/engine.py": [
+    "383-432",
+    "527-553"
+  ],
+  "source/strategy-evaluation/src/invest_evaluation/quantiles.py": [
+    "295-320",
+    "333-348",
+    "402-429"
+  ],
+  "source/strategy-evaluation/tests/test_metrics.py": [
+    "75-125"
+  ],
+  "source/strategy-evaluation/tests/test_stats_and_cli.py": [
+    "rg matches94,99,107,185,261,264-265,310-311,316,327-328,338,439-441,551-552,689,691,694,751"
+  ],
+  "source/strategy-evaluation/src/invest_evaluation/validation.py": [
+    "rg search only: no drawdown match"
+  ],
+  "source/strategy-evaluation/METRICS.md": [
+    "1-191 (1-145 initially mixed output;166-191 re-read focused)"
+  ],
+  "source/docs/REPORTING.md": [
+    "1-46"
+  ],
+  "source/README.md": [
+    "rg matches95,97,101,111,145,149,151,159,164,168-169"
+  ],
+  "source/TODO.md": [
+    "rg matches8,17,28,36,42,60,65,67"
+  ],
+  "prior/audits/claude/findings.md": [
+    "all"
+  ],
+  "prior/audits/claude/recommendations.md": [
+    "all"
+  ],
+  "prior/audits/claude/cross-check.md": [
+    "all"
+  ],
+  "prior/audits/claude/2026-11-01.md": [
+    "1-82",
+    "83-199 (mixed output; no vendor files read)"
+  ],
+  "prior/audits/gpt/findings.json": [
+    "GA1/GA2 from output, runner candidate lookup absent"
+  ],
+  "evidence/prs.json": [
+    "structured number/state/title/head summary all8; bodies31,32,33 partial up to6500chars"
+  ],
+  "evidence/main-jobs.json": [
+    "structured id/attempt/name/conclusion/start/head_sha all18; rg metadata matches"
+  ]
+}

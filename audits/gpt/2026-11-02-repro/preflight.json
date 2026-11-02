@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-02",
+  "run_id": "GA-2026-11-02",
+  "profile": "full_repository_audit_attempt",
+  "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "setup_budget_seconds": 900,
+  "total_budget_seconds": 10800,
+  "short_case_timeout_seconds": 60,
+  "local_product_execution_budget_seconds": 0,
+  "memory_ceiling_bytes": 2147483648,
+  "host_memory_limit_bytes": 8589934592,
+  "cpu_quota_cores": 8,
+  "pids_limit": "max; no per-audit enforcement",
+  "disk_free_approx_gib": 60,
+  "isolation": "BLOCKED: bwrap --unshare-all failed creating NETLINK_ROUTE socket: Operation not permitted; no filesystem/network/child boundary established",
+  "dependencies": "Only metadata check allowed; install/build/import/test/workflow/benchmark blocked locally",
+  "environment_status": "tool unavailable; network-policy.json absent; no shell network access attempted",
+  "platforms": "Linux host; no current product execution",
+  "model_effort": "model/effort unavailable; audit continued as authorized.",
+  "research_budget_seconds": 1800,
+  "source_entries_verified": 87,
+  "publication": "not_started"
+}

@@ -1,7 +1,7 @@
 {
-  "run_id": "GA-2026-10-31T001744Z",
-  "start_date": "2026-10-31",
-  "started_utc": "2026-10-31T00:17:44Z",
+  "run_id": "GA-2026-11-02",
+  "start_date": "2026-11-02",
+  "started_utc": "2026-11-02T02:00:18Z",
   "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
   "tree": "9b48fbc155c6f5006969241585f48953f63e809e",
   "profile": "full_repository_audit_attempt",
@@ -12,16 +12,16 @@
   "research_budget_seconds": 1800,
   "reading_split": {
     "planned": [
-      60,
-      40
-    ],
-    "actual_lines": {
-      "exploitation": 3616,
-      "exploration": 1407
-    },
-    "next": [
       50,
       50
+    ],
+    "actual_lines": {
+      "exploitation": 1326,
+      "exploration": 1295
+    },
+    "next": [
+      60,
+      40
     ]
   },
   "research_split": {
@@ -30,36 +30,51 @@
   },
   "model_effort": "model/effort unavailable; audit continued as authorized.",
   "preflight": {
-    "access": "passed GitHub connector",
-    "identity": "110 tracked files verified against recursive remote manifest; no Git checkout",
-    "isolation": "failed: bwrap open /proc/8/ns/ns ENOENT; unshare uid_map EPERM",
-    "dependencies": "blocked before install: no verified execution isolation",
-    "platforms": "Linux host; no repository platform execution",
-    "own_state": "gpt/repo-audits absent at preflight; old scratch 2026-10-28 treated as untrusted unpublished leads",
-    "peer": "claude/repo-audits absent",
-    "persistence": "remote report commit verified; artifact delivery pending",
-    "publication": "not started"
+    "date": "2026-11-02",
+    "run_id": "GA-2026-11-02",
+    "profile": "full_repository_audit_attempt",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "setup_budget_seconds": 900,
+    "total_budget_seconds": 10800,
+    "short_case_timeout_seconds": 60,
+    "local_product_execution_budget_seconds": 0,
+    "memory_ceiling_bytes": 2147483648,
+    "host_memory_limit_bytes": 8589934592,
+    "cpu_quota_cores": 8,
+    "pids_limit": "max; no per-audit enforcement",
+    "disk_free_approx_gib": 60,
+    "isolation": "BLOCKED: bwrap --unshare-all failed creating NETLINK_ROUTE socket: Operation not permitted; no filesystem/network/child boundary established",
+    "dependencies": "Only metadata check allowed; install/build/import/test/workflow/benchmark blocked locally",
+    "environment_status": "tool unavailable; network-policy.json absent; no shell network access attempted",
+    "platforms": "Linux host; no current product execution",
+    "model_effort": "model/effort unavailable; audit continued as authorized.",
+    "research_budget_seconds": 1800,
+    "source_entries_verified": 87,
+    "publication": "not_started",
+    "existing_runner": "BLOCKED for new execution: existing INV-PR32-001 host-output link traversal; pinned primary review/source rechecked; no actual exposure claim; independently statically corroborated by Reviewer2 late addendum"
   },
   "steps": {
-    "preflight": "partial; isolationblocked",
-    "inventory": "done110exactblobs",
-    "static_analysis": "partial; 318 + 408 supplemental static lines; 19,659 unread across 78 paths",
-    "independent_review": "doneC1C2C3andR1R2static/literatureonly",
-    "tests": "Latest isolated run 41208034002 verified: main retains known experiment-identity test failure; PR31 control 587 passed twice, independent installs all pass; 40 helper tests per job.",
-    "workflows": "remote published synth-S workflow verified; wider formats/recovery/historical replay incomplete",
-    "benchmarks": "24 version-2 raw invocations / 21 measured samples verified; prior 48 version-1 invocations retained with narrower gate; no matched performance comparison, peak-memory or wider-scaling claim.",
-    "research": "partial5screened2specified0run",
-    "publication": "published_verified"
+    "preflight": "partial;local isolation blocked",
+    "inventory": "110tree entries;87blobs materialized/verified;23data/saved bytes not consumed",
+    "static_analysis": "54AST/5TOML/2shell;1832new cumulative semantic lines",
+    "independent_review": "one fresh Reviewer2;6candidate rows +6recommendation checks; no substantive disagreement; zeroB",
+    "tests": "not executed locally; original same-SHA red CI logs refreshed",
+    "workflows": "not executed this run; prior remote synth-S remains historical",
+    "benchmarks": "zero new samples; no comparable regression claim; prior raw ledger unchanged",
+    "research": "3screened0qualified0experiments; explicit gaps",
+    "publication": "prepared on reconciled latest parent, not remotely verified",
+    "report": "written"
   },
   "status": "audit_incomplete",
   "last_audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-  "last_audited_date": "2026-10-31",
-  "last_run_id": "GA-2026-10-31T001744Z",
+  "last_audited_date": "2026-11-02",
+  "last_run_id": "GA-2026-11-02",
   "coverage_counts": {
-    "reviewed": 23,
-    "inventoried": 27,
-    "partially_reviewed": 19,
-    "checked_automatically": 41
+    "reviewed": 36,
+    "inventoried": 8,
+    "partially_reviewed": 24,
+    "checked_automatically": 20,
+    "blocked": 22
   },
   "last_four_completed_runs": [
     {
@@ -72,99 +87,55 @@
         "exploration": 0
       },
       "static_contradiction_rechecked": "GA-2026-10-31-1; present in unpublished28October evidence, not newly confirmed yield"
+    },
+    {
+      "run_id": "GA-2026-11-02",
+      "audit_complete": false,
+      "exploitation_lines": 1326,
+      "exploration_lines": 1295,
+      "new_verified_roots": {
+        "exploitation": 1,
+        "exploration": 0
+      },
+      "confirmed_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations"
     }
   ],
-  "last_peer_revision": null,
-  "peer_fingerprints": [],
+  "last_peer_revision": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+  "peer_fingerprints": [
+    "RA-2026-11-01-1",
+    "RA-2026-11-01-2",
+    "RA-2026-11-01-3",
+    "RA-2026-11-01-4",
+    "RA-2026-11-01-5",
+    "RA-2026-11-01-6",
+    "RA-2026-11-01-7",
+    "RA-2026-11-01-8",
+    "RA-2026-11-01-9",
+    "RA-2026-11-01-10",
+    "RA-2026-11-01-11"
+  ],
   "remaining_work": [
-    "Unread semantic intervals in 2026-10-31-runtime/remaining-semantic-ranges.json",
-    "GA1/GA2 repeated controls and policy clarification",
-    "Wider published workflow format/recovery checks",
-    "Matching permitted raw snapshot and exact historical replay; no reserved observations",
-    "M/L/XL and storage-format benchmarks, matched baseline and memory peaks",
-    "Remaining test-quality, portability, advisory, artifact/schema/CLI caller review; Windows not executed",
-    "Research oracle execution and original research constraints"
+    "Existing INV-PR32-001: verify safe hostile-output collection before treating a731 runner as usable",
+    "17827unread text lines across69paths; binary/saved-data provenance gaps",
+    "Verified credential-free boundary + exact installed runtime graph",
+    "All currently blocked required jobs/workflows/independent financial controls",
+    "GA1 entrant/reentry controls and GA2 benchmark settlement policy/repro",
+    "Duration censor attribution + actual report fixture/control",
+    "CSV/SQLite/Parquet logical comparison and recovery; M/L/XL comparable benchmarks + memory",
+    "Authorized already-inspected matching pre2025 raw snapshot; historical replay",
+    "Full-source cost-mitigation research and existing oracle execution"
   ],
   "publication": {
-    "run_id": "GA-2026-10-31T001744Z",
-    "status": "published_verified",
+    "run_id": "GA-2026-11-02",
+    "status": "prepared_unpublished",
     "branch": "gpt/repo-audits",
-    "report_commit": "b57bd4334bd702d4649982f616d9bdaaefb728ce",
-    "report_url": "https://github.com/sasasqt/invest/blob/b57bd4334bd702d4649982f616d9bdaaefb728ce/audits/gpt/2026-10-31.md",
-    "recommendations_url": "https://github.com/sasasqt/invest/blob/b57bd4334bd702d4649982f616d9bdaaefb728ce/audits/gpt/recommendations.md",
-    "parent": "90b5ca038155b97833b120baa57dfecd05d6f641",
-    "tree": "2876c62b9f89821e4b671ced7a4d2d801d2be768",
-    "verified_utc": "2026-10-31T00:34:44Z",
-    "total_elapsed_seconds_to_first_publication_verification": 1020,
-    "stage_timings": {
-      "trusted_static_parser_seconds": 0.347305688,
-      "other_stage_exclusive_seconds": null,
-      "reason": "No reliable exclusive timing across interleaved tool and semantic work; no invented estimates"
-    },
-    "scope_check": {
-      "outside_entries_preserved": 146,
-      "new_paths": [
-        "audits/gpt/2026-10-31-repro/README.md",
-        "audits/gpt/2026-10-31-repro/action-pins.json",
-        "audits/gpt/2026-10-31-repro/ci-evidence.json",
-        "audits/gpt/2026-10-31-repro/final-source-identity.json",
-        "audits/gpt/2026-10-31-repro/open-prs.json",
-        "audits/gpt/2026-10-31-repro/preflight.json",
-        "audits/gpt/2026-10-31-repro/reading-main.json",
-        "audits/gpt/2026-10-31-repro/remaining-semantic-ranges.json",
-        "audits/gpt/2026-10-31-repro/remote-manifest.json",
-        "audits/gpt/2026-10-31-repro/research-reviewer1-initial.json",
-        "audits/gpt/2026-10-31-repro/research-verifier-comparison.md",
-        "audits/gpt/2026-10-31-repro/research-verifier-ranges.json",
-        "audits/gpt/2026-10-31-repro/research-verifier.md",
-        "audits/gpt/2026-10-31-repro/reviewer1-initial.json",
-        "audits/gpt/2026-10-31-repro/selection.json",
-        "audits/gpt/2026-10-31-repro/static-checks.json",
-        "audits/gpt/2026-10-31-repro/static_checks.py",
-        "audits/gpt/2026-10-31-repro/verifier-a-comparison.md",
-        "audits/gpt/2026-10-31-repro/verifier-a-ranges.json",
-        "audits/gpt/2026-10-31-repro/verifier-a.md",
-        "audits/gpt/2026-10-31.md",
-        "audits/gpt/benchmark_inputs.json",
-        "audits/gpt/benchmark_samples.csv",
-        "audits/gpt/benchmarks.csv",
-        "audits/gpt/benchmarks/history.md",
-        "audits/gpt/benchmarks/raw.jsonl",
-        "audits/gpt/checkpoint.json",
-        "audits/gpt/coverage-map.json",
-        "audits/gpt/coverage-map.md",
-        "audits/gpt/coverage.csv",
-        "audits/gpt/cross-check.md",
-        "audits/gpt/exploration.json",
-        "audits/gpt/findings.json",
-        "audits/gpt/findings.md",
-        "audits/gpt/overlap.csv",
-        "audits/gpt/publication.json",
-        "audits/gpt/recommendations.md",
-        "audits/gpt/research/backlog.md",
-        "audits/gpt/research/candidate-specifications.json",
-        "audits/gpt/research/experiments.jsonl",
-        "audits/gpt/research/ideas.md",
-        "audits/gpt/research/papers.jsonl",
-        "audits/gpt/research/queries.jsonl",
-        "audits/gpt/research/scouting-2026-10-31.md",
-        "audits/gpt/research/state.json",
-        "audits/gpt/state.json",
-        "audits/gpt/validation.csv"
-      ],
-      "tree": "2876c62b9f89821e4b671ced7a4d2d801d2be768"
-    },
-    "source_final": {
-      "blobs_verified": 110,
-      "changed": 0,
-      "main_advanced": false
-    },
-    "model_effort": "model/effort unavailable; audit continued as authorized.",
-    "restrictions": "Only audits/gpt/ changed. No source execution, raw/reserved observations, PR/comments/reviews or other routine/schedule mutations."
+    "expected_parent": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+    "report": "audits/gpt/2026-11-02.md",
+    "scope": "only audits/gpt; no PRs/comments/reviews/settings/schedule writes"
   },
-  "safe_resume": "Verify current remote identities and restrictions; use the original ranges plus both execution-recovery supplements and the runtime supplement only for identical blobs. Read the current runtime-validation report before treating old blocked preflight fields as current. Accept remote execution only with actual checkout identity, audited source identity, boundary proof, lock graph, fresh timestamps and original failures. Historical replay separately needs its matching permitted raw archive.",
+  "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
-  "completed_utc": "2026-10-31T00:34:44Z",
+  "completed_utc": null,
   "total_elapsed_seconds_to_publication_verified": 1020,
   "execution_recovery": {
     "date": "2026-10-31",
@@ -206,7 +177,7 @@
     ]
   },
   "steps_as_of_recovery_utc": "2026-10-31T09:08:07.857736+00:00",
-  "coverage_counts_scope": "original audit coarse counts; semantic supplements and current remaining ranges are authoritative for continuation",
+  "coverage_counts_scope": "current cumulative identical-blob semantic ranges; no peer range inflation",
   "instruction_spec": {
     "version": 2,
     "sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
@@ -214,28 +185,7 @@
     "traceability": "audits/gpt/2026-10-31-adaptation/instruction-traceability.md"
   },
   "followup_queue_schema_version": 1,
-  "pending_second_review": [
-    {
-      "id": "AUDIT-RUNNER-CSVGZ-001",
-      "kind": "audit-tooling",
-      "priority": "P2",
-      "scope": "runner comparator; not a newly discovered main-code defect",
-      "source_fingerprint": "runner_workload.semantic_hash:compressed-table-coverage",
-      "affected_runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
-      "fixed_runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
-      "evidence_status": "confirmed by generated before/after control",
-      "review_status": "single-reviewed",
-      "implementation_status": "fixed and isolated execution verified; draft PR32",
-      "evidence_refs": [
-        "audits/gpt/2026-10-31-adaptation/comparator-regression.before.json",
-        "audits/gpt/2026-10-31-adaptation/runtime-evidence.json"
-      ],
-      "next_check": "Fresh independent review of compressed-table, ledger and other-artifact comparison rules; preserve substantive differences and declared normalization.",
-      "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
-      "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
-      "deferral_reason": "Implementation self-review and execution completed; independent second review not performed in this change."
-    }
-  ],
+  "pending_second_review": [],
   "open_places": [
     {
       "id": "OPEN-AUDIT-FORMAT-GATES-001",
@@ -250,6 +200,45 @@
       "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
       "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
       "deferral_reason": "This correction validates synth-S; the wider format benchmark remains existing incomplete-audit work."
+    },
+    {
+      "id": "OPEN-DRAWDOWN-CENSOR-001",
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py:67-122 and reporting.py:173-179,239-300",
+      "source_fingerprint": "max-duration-versus-current-open-episode",
+      "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "priority": "P2",
+      "originating_item": "GA-2026-11-02-1 / peer-referenced BH-2026-10-14-8",
+      "next_check": "Two synthetic paths: earlier recovered maximum vs currently open maximum; resolve censor attribution before rendering N+.",
+      "originating_reviewer": "VerifierA",
+      "first_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "last_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "deferral_reason": "Execution blocked or next semantic slice; no claim checked beyond exact listed ranges"
+    },
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "path": "audits/gpt/runner/runner_workload.py:24-98,404-474",
+      "source_fingerprint": "gate-repeatability-versus-expected-schema",
+      "source_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "priority": "P2",
+      "originating_item": "AUDIT-RUNNER-CSVGZ-001 independent review",
+      "next_check": "Isolated negative controls and explicit expected paths/schema; repeated wrong output must not establish financial correctness.",
+      "originating_reviewer": "VerifierA",
+      "first_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "last_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "deferral_reason": "Execution blocked or next semantic slice; no claim checked beyond exact listed ranges"
+    },
+    {
+      "id": "OPEN-MEMBERSHIP-LABELS-001",
+      "path": "data-mining-framework/src/invest_mining/search.py:140-202,280-302 and tests/test_search_and_inference.py",
+      "source_fingerprint": "labels-across-membership-gaps",
+      "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "priority": "P2",
+      "originating_item": "VerifierA closing question",
+      "next_check": "Trace actual eligible labels and return economics across entrant/reentry gaps without reserved observations.",
+      "originating_reviewer": "VerifierA",
+      "first_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "last_queued_utc": "2026-11-02T02:19:56.603239+00:00",
+      "deferral_reason": "Execution blocked or next semantic slice; no claim checked beyond exact listed ranges"
     }
   ],
   "followup_queue_history": [
@@ -262,6 +251,33 @@
       "id": "OPEN-AUDIT-FORMAT-GATES-001",
       "action": "enqueued",
       "utc": "2026-10-31T14:14:41.347132+00:00"
+    },
+    {
+      "id": "AUDIT-RUNNER-CSVGZ-001",
+      "action": "independent_static_review_completed",
+      "utc": "2026-11-02T02:19:56.603239+00:00",
+      "original_item": {
+        "id": "AUDIT-RUNNER-CSVGZ-001",
+        "kind": "audit-tooling",
+        "priority": "P2",
+        "scope": "runner comparator; not a newly discovered main-code defect",
+        "source_fingerprint": "runner_workload.semantic_hash:compressed-table-coverage",
+        "affected_runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+        "fixed_runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+        "evidence_status": "confirmed by generated before/after control",
+        "review_status": "single-reviewed",
+        "implementation_status": "fixed and isolated execution verified; draft PR32",
+        "evidence_refs": [
+          "audits/gpt/2026-10-31-adaptation/comparator-regression.before.json",
+          "audits/gpt/2026-10-31-adaptation/runtime-evidence.json"
+        ],
+        "next_check": "Fresh independent review of compressed-table, ledger and other-artifact comparison rules; preserve substantive differences and declared normalization.",
+        "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+        "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+        "deferral_reason": "Implementation self-review and execution completed; independent second review not performed in this change."
+      },
+      "resolution": "Original csv.gz/ledger omission corrected in gatev2 at identical runner blob; Reviewer2 static review complete. Fresh isolated negative controls and independent expected-output inventory not executed.",
+      "evidence": "2026-11-02-repro/verifier-a/independent-verdict.json"
     }
   ],
   "latest_runtime_validation": {
@@ -275,6 +291,25 @@
     "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
     "status": "all boundary/lock/gate checks passed; main retains known test failure; control validation all passed",
     "verified_utc": "2026-10-31T14:14:41.347132+00:00"
+  },
+  "run_history": [
+    {
+      "run_id": "GA-2026-10-31T001744Z",
+      "date": "2026-10-31",
+      "status": "audit_incomplete",
+      "state_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
+      "reason": "new run on same main explicitly started; prior report/evidence preserved, not silently marked complete"
+    }
+  ],
+  "latest_current_run_evidence": "audits/gpt/2026-11-02-repro/",
+  "report_summary_counts": {
+    "new_runtime_confirmed": 0,
+    "new_static_confirmed_peer_origin": 1,
+    "new_optional_recommendations": 1,
+    "carried_plausible_concerns": [
+      "GA-2026-10-31-2",
+      "RA-2026-11-01-3"
+    ]
   },
   "rotation_v3": {
     "version": 3,
@@ -1239,5 +1274,18 @@
         "invariant": "evidence tiers, reserved-data and trial accounting preserved"
       }
     ]
-  }
+  },
+  "concurrent_reconciliation": {
+    "parent": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+    "changed_remote_keys": [
+      "rotation_v3"
+    ],
+    "preservation": "entire rotation_v3 key copied unchanged; no visit/yield invented; current audit coverage is canonical for later reconciliation",
+    "invocation_profile": "Full v2 prompt retained; rotation applies on subsequent updated invocation",
+    "current_unread_lines": 17827,
+    "current_unread_paths": 69
+  },
+  "prepared_utc": "2026-11-02T02:22:37.122936+00:00",
+  "elapsed_wall_seconds_from_supplied_run_context": 1339.12295,
+  "elapsed_clock_limitation": "Wall-clock difference from supplied run-context timestamp; not exclusive model/tool CPU or monotonic full-audit timing"
 }

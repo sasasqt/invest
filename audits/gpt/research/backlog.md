@@ -6,3 +6,11 @@
 4. Neglected next topics: carry and liquidity/capacity; retrieve primary negative replication before another generator paper. Search for 1) volatility managed portfolios implementable out-of-sample transaction costs2) alpha mining all attempted proposal accounting negative results3) next-open execution independent cash accounting reference.
 
 Topic age before31October unknown; current deterministic topic draw portfolio_volatility_management. No four-run diversity history exists. Access limitations are missing evidence, not negative outcomes.
+
+## 2026-11-02 next actions
+
+- Obtain credential-free runtime for the existing GA3 six-case oracle; do not add another backtest engine.
+- Search for1) Novy-Marx Velikov2016 buy-hold spread author PDF revised2026;2) Chen Velikov2020 post-publication buy-hold-spread cost mitigation;3) realized holdings feedback under participation-capped execution. Retrieve full methods and define the minimum held-versus-targeted contract before qualifying a buffer candidate.
+- Keep GA4 exact monthly scheduling and licensed pre2025 history blocked. No21-session substitution.
+
+New topic inspected: cost/capacity and contradictory anomaly replication. No verified four-run diversity history; neglected carry remains queued.

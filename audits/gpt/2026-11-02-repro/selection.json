@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-02",
+  "seed_method": "big-endian integer SHA256(UTF8 Berlin date)",
+  "seed": "84658221814925406398075449760650834893390069522803695195894877003560516766156",
+  "eligible": [
+    "data-mining-framework/src/invest_mining/__init__.py",
+    "data-mining-framework/src/invest_mining/artifact.py",
+    "data-mining-framework/src/invest_mining/cli.py",
+    "data-mining-framework/src/invest_mining/diagnostics.py",
+    "data-mining-framework/src/invest_mining/reporting.py",
+    "data-mining-framework/src/invest_mining/search.py",
+    "data-pipeline/data-preparation/src/invest_data/__init__.py",
+    "data-pipeline/data-preparation/src/invest_data/cli.py",
+    "data-pipeline/data-preparation/src/invest_data/schemas.py",
+    "data-pipeline/data-preparation/src/invest_data/sources.py",
+    "data-pipeline/data-preparation/src/invest_data/testing.py",
+    "strategy-evaluation/src/invest_evaluation/__init__.py",
+    "strategy-evaluation/src/invest_evaluation/cli.py",
+    "strategy-evaluation/src/invest_evaluation/config.py",
+    "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "strategy-evaluation/src/invest_evaluation/quantiles.py",
+    "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "strategy-evaluation/src/invest_evaluation/robustness.py",
+    "strategy-evaluation/src/invest_evaluation/stats.py",
+    "strategy-evaluation/src/invest_evaluation/strategies.py",
+    "strategy-evaluation/src/invest_evaluation/validation.py"
+  ],
+  "draw": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+  "lens": "invalid-input validation before persistence; protocol/consumer constraints",
+  "peer_coverage": "file-level claims accessible without blob identity or line ranges; no exact peer union",
+  "planned_split": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "selection_timing": "recorded before random-area read; prior targeted reads recorded separately"
+}
