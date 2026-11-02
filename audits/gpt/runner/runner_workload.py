@@ -18,6 +18,8 @@ from pathlib import Path
 
 VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
 SEMANTIC_GATE_VERSION = 2
+# Set by main when it runs as the container's first process (PID 1, no --init).
+CONTAINER_INIT = False
 
 
 def semantic_manifest(directory):
@@ -48,7 +50,8 @@ def semantic_manifest(directory):
                     clean(json.loads(line))
                     # Only a line feed ends a JSONL row: splitlines would also split
                     # at U+2028, U+2029 and U+0085, which a JSON string may hold raw.
-                    for line in path.read_text(encoding="utf-8").split("\n")
+                    # read_text would also turn a lone CR into a line feed.
+                    for line in path.read_bytes().decode("utf-8").split("\n")
                     if line.strip()
                 ],
                 sort_keys=True,
@@ -100,7 +103,8 @@ def semantic_hash(directory):
 
 
 def capabilities_dropped(status):
-    """True when /proc/self/status shows no capability in any set that can grant one.
+    """True when /proc/self/status shows the permitted, effective, bounding and (where
+    listed) ambient sets empty; no-new-privileges, probed separately, covers exec.
 
     A non-root process has no effective capabilities whatever Docker granted it, so
     --cap-drop=ALL shows only in the bounding set: every set must be empty.
@@ -169,6 +173,31 @@ def prove_boundary(sentinel, host_pid, results):
         raise RuntimeError("Execution boundary probe failed; no project code imported")
 
 
+def stop_session(session):
+    """SIGKILL every process left in the step's session (W2). A process that made its
+    own process group (GNU timeout, a shell with job control, setpgid) is still in the
+    session; only setsid leaves it. Linux keeps a session's ID unused while any of its
+    processes lives, so the ID names only this step's processes."""
+    for _ in range(100):
+        found = False
+        for entry in os.listdir("/proc"):
+            if not entry.isdigit():
+                continue
+            try:
+                with open(f"/proc/{entry}/stat", encoding="ascii", errors="replace") as stream:
+                    fields = stream.read().rsplit(")", 1)[1].split()
+            except (OSError, IndexError):
+                continue
+            if int(fields[3]) == session and fields[0] not in ("Z", "X"):
+                found = True
+                try:
+                    os.kill(int(entry), signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+        if not found:
+            return
+
+
 def execute(name, argv, cwd, results, timeout=1200, env=None):
     import resource  # POSIX only: imported here so host tests can load this module on Windows
 
@@ -193,6 +222,21 @@ def execute(name, argv, cwd, results, timeout=1200, env=None):
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
+        stop_session(process.pid)
+        if CONTAINER_INIT:
+            # The container's first process: every other process in the container
+            # came from a step, also one that left the step's session (setsid), and
+            # orphans are reparented here. Stop them all and reap them, so no zombie
+            # holds a slot of --pids-limit and their CPU time is counted.
+            try:
+                os.kill(-1, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            while True:
+                try:
+                    os.waitpid(-1, 0)
+                except ChildProcessError:
+                    break
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
     result = {
         "name": name,
@@ -214,6 +258,8 @@ def main():
     parser.add_argument("--sentinel")
     parser.add_argument("--host-pid", type=int)
     args = parser.parse_args()
+    global CONTAINER_INIT
+    CONTAINER_INIT = os.getpid() == 1
     work = Path("/work")
     results = work / "results"
     results.mkdir()

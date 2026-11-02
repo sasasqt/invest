@@ -14,13 +14,13 @@ This tooling supplies the execution path missing from the original audit. It kee
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
 - `verify_installed.py`: version/marker checks and workspace import origins.
 - `ci_evidence.py`: distinguish fresh job executions from historical jobs copied into newer workflow attempts.
-- `verify_snapshot.py`: request/file identity checks without interpreting raw observations. Missing input is blocked; mismatched, unsafe or malformed input (a manifest of the wrong shape, or an entry that exists but is not a regular file) is rejected.
+- `verify_snapshot.py`: request/file identity checks without interpreting raw observations. A missing snapshot, snapshot manifest or raw file is blocked; a missing expected manifest and mismatched, unsafe or malformed input (a manifest of the wrong shape, or an entry that exists but is not a regular file) are rejected.
 - `build-requirements.txt`: six hash-pinned auditor build dependencies. These live in a separate build environment, so Hatchling's dependencies cannot replace the project's locked runtime packages.
 - `.github/workflows/audit-runtime.yml`: conditional workflow. It runs host/Docker collection checks on Python 3.11/3.13, then both full audit jobs. Source is resolved once from current main or an explicit manual revision; a historical control is optional and explicitly labeled.
 
 ## Invocation on a Docker-capable runner
 
-The source must be a genuine Git checkout (a linked worktree works too) at the exact requested revision, with its object store available; the runner needs Git 2.31 or later. A source archive without a Git database is insufficient for provenance-sensitive workflow tests. `--output` must name a new or empty folder; a used one is refused before anything runs, so an earlier `runner.json` can never stand in for a later run.
+The source must be a genuine Git checkout (a linked worktree works too) at the exact requested revision, with its object store available; the runner needs Git 2.32 or later and refuses an older one before staging (earlier versions ignore `GIT_CONFIG_GLOBAL`, so the staged index would be built with the host user's global configuration). A source archive without a Git database is insufficient for provenance-sensitive workflow tests. `--output` must name a new or empty folder; a used one is refused before anything runs, so an earlier `runner.json` can never stand in for a later run.
 
 ```sh
 python isolated_runner.py --source /path/to/checkout \
@@ -57,7 +57,9 @@ only. The `host-tests-windows` job runs the four host test modules on
 
 ## Semantic output gate, version 2
 
-Every benchmark invocation saves a per-file semantic manifest after timing. Compressed CSV
+Every benchmark invocation saves a per-file semantic manifest after timing. The gate
+(`correctness_gate`) compares each sample's manifest with the first sample's (the warm-up), not
+with an external reference, so it shows repeatability, not correctness. Compressed CSV
 tables are decompressed and hashed; their gzip header timestamps are excluded. JSON and JSONL
 retain numeric values, identities, row order and substantive fields, while the predeclared
 `created_at`, `recorded_at`, `retrieved_at` and `created_utc` fields and output-root strings are
@@ -71,11 +73,14 @@ the gate; the sample in `benchmark-raw.jsonl` records the reason, but the workfl
 folder (`/work/workflow-cases`) is not collected.
 
 The hash-seed repeat and the independent installs run only in the Python 3.11 job; a 3.13
-artifact has no record of them. Each workload step runs in its own process group, which is
-stopped when the step ends, so `"parallel_benchmarks": false` holds unless audited code starts
-a new session (`setsid`). `boundary.json`, `coverage.json` and the other workload records are
-written inside the container while audited code runs, so they are evidence, not the verdict:
-the verdict is the exit code in `runner.json`, computed by the container's first process.
+artifact has no record of them. Each workload step runs in its own session, and every process
+left in it (also one in a process group of its own, as GNU `timeout` makes) is stopped when the
+step ends; in the container, where the workload is the first process, every other process is
+then stopped and reaped too, also one that started a new session (`setsid`). So
+`"parallel_benchmarks": false` holds, and no leftover holds a slot of the process limit. `boundary.json`, `coverage.json` and the other workload records are written inside
+the container while audited code runs, so they are evidence, not the verdict: the verdict is the
+exit code in `runner.json`, computed by the container's first process (or set by the host to 124
+or 125 when the run reaches its deadline or log limit, with `termination_reason` saying which).
 
 Samples and summaries identify semantic-gate version 2. Earlier version-1 timing samples remain
 historical measurements, with a narrower gate that omitted compressed tables and other
@@ -115,7 +120,8 @@ runner with an appropriate disk budget. On Windows, an output path longer than
 The collection workflow tests file, directory, root and each summary link against
 generated host-only canaries. It also rejects FIFO, hard-link and oversized
 output, checks all normal boundary probes, and proves ordinary evidence still
-collects. It uploads only the host evidence directory. Run the host regression
+collects. It uploads only the host evidence directory, names starting with a dot included, so
+the artifact holds every file that `collection.json` lists. Run the host regression
 tests (they need `packaging`) on Linux or Windows with
 `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety`.
 Run `python collection_checks.py --python-version 3.11 --output /path/to/new-output`

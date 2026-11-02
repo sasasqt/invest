@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import json
 import os
+import shutil
 import stat
 import subprocess
 import sys
@@ -183,6 +184,28 @@ class SnapshotTests(unittest.TestCase):
         not_a_folder.write_bytes(b"")
         with self.assertRaisesRegex(SnapshotError, "root is not a directory"):
             verify(self.reference, not_a_folder)
+
+    def test_malformed_or_unsafe_manifest_is_rejected_even_without_a_snapshot(self):
+        """Review round 7 (F1, W3): a malformed entry or an unsafe path was reported as
+        blocked when the raw file or the whole snapshot was missing."""
+        request = self.expected["request"]
+        entry = {"path": "raw/a", "bytes": 1, "sha256": "0" * 64}
+        cases = {
+            "no hash": {"AAA": {"path": "raw/AAA.json"}},
+            "bytes as text": {"AAA": dict(entry, bytes="1")},
+            "bytes as bool": {"AAA": dict(entry, bytes=True)},
+            "entry is a number": {"AAA": 5},
+            "parent escape": {"AAA": dict(entry, path="../a")},
+            "duplicate": {"AAA": entry, "BBB": dict(entry, path="raw/./a")},
+        }
+        for case, files in cases.items():
+            for snapshot in (self.snapshot, self.root / "missing"):
+                with self.subTest(case=case, snapshot=snapshot.name):
+                    self.expected = {"request": request, "files": files}
+                    self.save()
+                    self.file.unlink(missing_ok=True)
+                    with self.assertRaises(SnapshotError):
+                        verify(self.reference, snapshot)
 
     def test_raw_paths_windows_reads_as_rooted_or_drive_paths_are_rejected(self):
         """Review round 6 (C1): on Windows these made the symlink walk loop forever."""
@@ -588,6 +611,44 @@ class PortableHostTests(unittest.TestCase):
             and node.func.value.id == "subprocess"
         ]
         self.assertEqual(direct, [], "lines that call subprocess.run directly")
+
+    def test_bounded_helper_ends_its_program_when_the_wait_is_interrupted(self):
+        """Review round 7: subprocess.run killed its program on any exception, such as
+        KeyboardInterrupt; run_captured killed it only at its timeout."""
+        made = []
+
+        class Interrupted(subprocess.Popen):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                made.append(self)
+
+            def communicate(self, *args, **kwargs):
+                raise KeyboardInterrupt
+
+        with patch.object(isolated_runner.subprocess, "Popen", Interrupted):
+            with self.assertRaises(KeyboardInterrupt):
+                isolated_runner.run_captured(
+                    [sys.executable, "-c", "import time; time.sleep(60)"], timeout=60
+                )
+        try:
+            self.assertIsNotNone(made[0].returncode, "the program still runs")
+        finally:
+            if made[0].poll() is None:
+                made[0].kill()
+                made[0].wait()
+
+    def test_bounded_helper_returns_at_its_timeout_while_input_is_unread(self):
+        """Review round 7: Python 3.11 on Windows writes the input before it starts
+        timing, so a program that stopped reading its input (git cat-file with a
+        request larger than the pipe) kept run_captured waiting past its timeout."""
+        started = time.monotonic()
+        with self.assertRaises(subprocess.TimeoutExpired):
+            isolated_runner.run_captured(
+                [sys.executable, "-c", "import time; time.sleep(30)"],
+                input=b"x" * (1 << 20),
+                timeout=2,
+            )
+        self.assertLess(time.monotonic() - started, 10)
 
     def test_bounded_helper_passes_input_and_keeps_bytes(self):
         echo = "import sys; sys.stdout.buffer.write(sys.stdin.buffer.read()[::-1])"
@@ -1085,6 +1146,86 @@ class StagingSafetyTests(unittest.TestCase):
                 if running(pid):
                     os.kill(pid, 9)
 
+    @unittest.skipUnless(sys.platform.startswith("linux"), "sessions and /proc")
+    def test_a_process_in_its_own_group_does_not_outlive_its_step(self):
+        """Review round 7: killing the step's process group missed a process that made
+        its own group in the same session (GNU timeout, a shell with job control)."""
+        child = (
+            "import os, sys, time\n"
+            "if os.fork() == 0:\n"
+            "    os.setpgid(0, 0)\n"
+            "    open(sys.argv[1], 'w').write(str(os.getpid()))\n"
+            "    time.sleep(60)\n"
+            "    os._exit(0)\n"
+            "time.sleep(0.3)\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            results = Path(directory) / "results"
+            results.mkdir()
+            pidfile = Path(directory) / "grouped.pid"
+            runner_workload.execute(
+                "grouped", [sys.executable, "-c", child, str(pidfile)], directory, results, 60
+            )
+            pid = int(pidfile.read_text())
+            try:
+                deadline = time.monotonic() + 5
+                while self.process_runs(pid) and time.monotonic() < deadline:
+                    time.sleep(0.05)
+                self.assertFalse(self.process_runs(pid), "the step's grouped process still runs")
+            finally:
+                if self.process_runs(pid):
+                    os.kill(pid, 9)
+
+    @staticmethod
+    def process_runs(pid):
+        try:
+            state = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0]
+        except (OSError, IndexError):
+            return False
+        return state not in ("Z", "X")
+
+    @unittest.skipUnless(
+        sys.platform.startswith("linux")
+        and hasattr(os, "geteuid")
+        and os.geteuid() == 0
+        and shutil.which("unshare"),
+        "needs root and unshare for a PID namespace",
+    )
+    def test_container_init_stops_and_reaps_every_leftover(self):
+        """Review round 7 (F2, W2): a process in its own group (set -m, setpgid) or
+        session survived the step's killpg, and killed orphans stayed zombies of PID 1."""
+        driver = (
+            "import os, sys, time; from pathlib import Path; sys.path.insert(0, sys.argv[1]);"
+            " import runner_workload as rw; assert os.getpid() == 1; rw.CONTAINER_INIT = True;"
+            " r = Path(sys.argv[2]);"
+            " rw.execute('leftovers', ['/bin/bash', '-c', 'sleep 300 & set -m; sleep 301 &"
+            " setsid sleep 302 & sleep 0.2'], r, r, timeout=30); time.sleep(0.3);"
+            " print(sorted(p for p in os.listdir('/proc') if p.isdigit() and p != '1'))"
+        )
+        probe = ["unshare", "--pid", "--fork", "--mount-proc", sys.executable, "-c", "0"]
+        if subprocess.run(probe, capture_output=True, timeout=60, check=False).returncode:
+            self.skipTest("no PID namespace here (unshare needs CAP_SYS_ADMIN)")
+        with tempfile.TemporaryDirectory() as directory:
+            run = subprocess.run(
+                [
+                    "unshare",
+                    "--pid",
+                    "--fork",
+                    "--mount-proc",
+                    sys.executable,
+                    "-I",
+                    "-c",
+                    driver,
+                    str(Path(__file__).resolve().parent),
+                    directory,
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+        self.assertEqual(run.stdout.strip().splitlines()[-1:], ["[]"], run.stderr)
+
     def test_windows_host_skips_probes_that_mean_nothing_in_the_container(self):
         """R3-4: a Windows path or PID names nothing inside the Linux container."""
         sentinel = Path("out") / "host-only-sentinel"
@@ -1190,6 +1331,33 @@ class RunnerBranchTests(unittest.TestCase):
                 with patch("isolated_runner.run_captured", return_value=result):
                     with self.assertRaisesRegex((RuntimeError, ValueError), message):
                         read_blobs(Path("."), [digest])
+
+    def test_git_older_than_2_32_is_refused_before_staging(self):
+        """Review round 7: Git before 2.32 ignores GIT_CONFIG_GLOBAL, so the staged
+        index would be built with the host user's global configuration (and Git
+        before 2.31 misreads --path-format); the README's floor was not enforced."""
+        versions = {
+            "git version 2.31.8": False,
+            "git version 1.8.3.1": False,
+            "git version 2.32.0": True,
+            "git version 2.56.0.windows.4": True,
+            "git version 2.39.3 (Apple Git-145)": True,
+            "git version 3.0.0": True,
+            "not git": False,
+        }
+        for text, accepted in versions.items():
+            with self.subTest(version=text):
+                with patch("isolated_runner.checked", return_value=text):
+                    if accepted:
+                        isolated_runner.require_git()
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, "Git 2.32 or later"):
+                            isolated_runner.require_git()
+        with tempfile.TemporaryDirectory() as directory:
+            with patch("isolated_runner.checked", return_value="git version 2.31.0"):
+                with self.assertRaisesRegex(RuntimeError, "Git 2.32 or later"):
+                    stage_source(Path(directory), Path(directory) / "staged", "a" * 40)
+            self.assertFalse((Path(directory) / "staged").exists())
 
     def test_revision_must_be_full_and_checked_out(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -1329,6 +1497,15 @@ class SemanticCoverageTests(unittest.TestCase):
                 before = semantic_hash(self.root)
                 self.ledger(note=f"a{separator}c")
                 self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_a_carriage_return_never_ends_a_ledger_row(self):
+        """Review round 7: reading as text turned a lone CR into a line feed, so CR as
+        JSON whitespace split a valid row and a lone CR ended one."""
+        (self.root / "ledger.jsonl").write_bytes(b'{"a":\r1}\r\n{"b":2}\n')
+        semantic_hash(self.root)
+        (self.root / "ledger.jsonl").write_bytes(b'{"a":1}\r{"b":2}\n')
+        with self.assertRaises(ValueError):
+            semantic_hash(self.root)
 
     def test_declared_ledger_timestamp_change_is_ignored(self):
         self.ledger()

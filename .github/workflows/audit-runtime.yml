@@ -87,6 +87,7 @@ jobs:
           name: collection-${{ matrix.python }}
           path: ${{ runner.temp }}/collection-${{ matrix.python }}/results
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 30
 
   host-tests-windows:
@@ -154,4 +155,5 @@ jobs:
           name: audit-${{ matrix.kind }}-${{ matrix.python }}
           path: ${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 30

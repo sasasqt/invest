@@ -27,6 +27,27 @@ def _json(path):
         raise SnapshotError(f"JSON nested too deeply: {path.name}") from None
 
 
+def _entry(symbol, entry):
+    """The safe relative raw path of one manifest entry; reject a malformed entry."""
+    if (
+        not isinstance(entry, dict)
+        or not isinstance(entry.get("path"), str)
+        or type(entry.get("bytes")) is not int
+        or not isinstance(entry.get("sha256"), str)
+    ):
+        raise SnapshotError(f"Malformed manifest entry for {symbol}")
+    relative = PurePosixPath(entry["path"])
+    # A backslash or colon makes a Windows path rooted, drive-relative or a stream.
+    if (
+        relative.is_absolute()
+        or ".." in relative.parts
+        or relative.parts[:1] != ("raw",)
+        or any("\\" in part or ":" in part for part in relative.parts)
+    ):
+        raise SnapshotError(f"Unsafe raw path for {symbol}")
+    return relative, entry
+
+
 def verify(expected_path, snapshot):
     expected_path, snapshot = Path(expected_path), Path(snapshot)
     expected = _json(expected_path)
@@ -36,6 +57,11 @@ def verify(expected_path, snapshot):
     start, end = date.fromisoformat(request["start"]), date.fromisoformat(request["end"])
     if end < start or end >= date(2025, 1, 1):
         raise SnapshotError("Only an already-inspected pre-2025 request is permitted")
+    # Check every entry before looking at the snapshot: a malformed or unsafe manifest
+    # is rejected (W3), never reported as blocked because its snapshot is missing.
+    entries = {symbol: _entry(symbol, entry) for symbol, entry in expected["files"].items()}
+    if len({str(relative) for relative, _ in entries.values()}) != len(entries):
+        raise SnapshotError("Duplicate raw path")
     if snapshot.is_symlink():
         raise SnapshotError("Snapshot root must not be a symlink")
     if not snapshot.is_dir():
@@ -56,16 +82,7 @@ def verify(expected_path, snapshot):
     total = 0
     missing = []
     root = snapshot.resolve()
-    for symbol, entry in expected["files"].items():
-        relative = PurePosixPath(entry["path"])
-        # A backslash or colon makes a Windows path rooted, drive-relative or a stream.
-        if (
-            relative.is_absolute()
-            or ".." in relative.parts
-            or relative.parts[:1] != ("raw",)
-            or any("\\" in part or ":" in part for part in relative.parts)
-        ):
-            raise SnapshotError(f"Unsafe raw path for {symbol}")
+    for symbol, (relative, entry) in entries.items():
         if str(relative) in seen:
             raise SnapshotError("Duplicate raw path")
         seen.add(str(relative))
@@ -83,7 +100,7 @@ def verify(expected_path, snapshot):
             missing.append(str(relative))
             continue
         size = path.stat().st_size
-        if type(entry["bytes"]) is not int or size != entry["bytes"]:
+        if size != entry["bytes"]:
             raise SnapshotError(f"Wrong byte count for {symbol}")
         digest = hashlib.sha256()
         with path.open("rb") as stream:

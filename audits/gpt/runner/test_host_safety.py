@@ -48,8 +48,16 @@ elif "build" in args:
         with open(args[args.index("--iidfile") + 1], "w") as stream:
             stream.write("sha256:" + digest + "\\n")
     sys.exit(int(os.environ.get("FAKE_BUILD_EXIT", "0")))
-elif "run" in args and os.environ.get("FAKE_RUN_OUTPUT"):
-    print(os.environ["FAKE_RUN_OUTPUT"])
+elif "run" in args:
+    if os.environ.get("FAKE_RUN_OUTPUT"):
+        print(os.environ["FAKE_RUN_OUTPUT"])
+    if os.environ.get("FAKE_RUN_RESULT"):  # one result file in the /work mount
+        for value in args:
+            if value.startswith("type=bind,") and ",dst=/work" in value:
+                work = value.split("src=", 1)[1].split(",dst=", 1)[0]
+                os.makedirs(os.path.join(work, "results"), exist_ok=True)
+                with open(os.path.join(work, "results", "result.txt"), "w") as stream:
+                    stream.write(os.environ["FAKE_RUN_RESULT"])
 """
 
 
@@ -332,6 +340,37 @@ class HostSafetyTests(unittest.TestCase):
         self.assertFalse((self.root / "output/results/collection.json").exists())
         self.assertEqual(forged_lines(output), [], quoted(output))
 
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_a_finished_audit_keeps_its_exit_with_an_output_path_outside_the_code_page(self):
+        """Review round 7: Windows writes a redirected stdout in the ANSI code page, so
+        the last print of an --output path outside it raised, and an audit that
+        runner.json records as collected with exit 0 ended with exit 1."""
+        revision = self.workspace()
+        output = self.root / "\u0141\u00f3d\u017a" / "output"
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(RUNNER),
+                "--source",
+                str(self.source),
+                "--expected-sha",
+                revision,
+                "--python-version",
+                "3.11",
+                "--output",
+                str(output),
+            ],
+            env=dict(self.env, PYTHONIOENCODING="cp1252", FAKE_RUN_RESULT="ok\n"),
+            capture_output=True,
+            timeout=300,
+        )
+        text = (result.stdout + result.stderr).decode("ascii", "replace")
+        self.assertNotIn("ContractViolation", text, quoted(text))
+        report = json.loads((output / "results/runner.json").read_text("utf-8"))
+        self.assertEqual((report["exit"], report["collection_status"]), (0, "collected"))
+        self.assertEqual(result.returncode, 0, quoted(text))
+        self.assertNotIn("AUDIT_RUNNER_ERROR", text, quoted(text))
+
 
 class DockerfileTests(unittest.TestCase):
     def test_no_unpinned_frontend_image(self):
@@ -340,6 +379,20 @@ class DockerfileTests(unittest.TestCase):
             directive = "".join(line.split()).lower()
             if directive.startswith("#syntax="):
                 self.assertIn("@sha256:", directive, "pin the frontend image by digest")
+
+
+class WorkflowTests(unittest.TestCase):
+    def test_every_evidence_upload_keeps_hidden_files(self):
+        """Review round 7: upload-artifact (v4.4.0 and later) leaves out names that
+        start with a dot unless told otherwise, so a collected `.name` listed in
+        collection.json with its SHA-256 would be missing from the uploaded evidence."""
+        workflow = HERE.parents[2] / ".github/workflows/audit-runtime.yml"
+        steps = workflow.read_text(encoding="utf-8").split("\n      - ")
+        uploads = [step for step in steps if "actions/upload-artifact@" in step]
+        self.assertTrue(uploads, "no upload step found")
+        for step in uploads:
+            with self.subTest(step=step.splitlines()[0]):
+                self.assertIn("include-hidden-files: true", step)
 
 
 if __name__ == "__main__":

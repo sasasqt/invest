@@ -1,8 +1,10 @@
-# Audit runner contract (host side)
+# Audit runner contract
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
-`contract.py` checks each rule while `CONTRACT_CHECKS=1`; every test suite, the
-CI host-test steps and the CI Docker controls step set it, production runs do not.
+`contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
+(P2 and P3 are always enforced by the code, and the suites check W1-W3); every test
+suite, the CI host-test steps and the CI Docker controls step set it, production
+runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
 rejection.
 
@@ -69,14 +71,20 @@ exercise W1 and W2 in a real container.
   listed). The effective set alone is empty for any non-root process, so it cannot
   show a missing `--cap-drop=ALL`. Checked in `runner_workload.capabilities_dropped`.
 - **W2** No process a workload step started still runs when the next step starts:
-  every step runs in its own session and its process group is killed once the step
-  ends. A process that starts a new session itself (`setsid`) leaves that group and
-  is not stopped; the container's process limit and its removal (P1) still bound
-  it. Checked in `runner_workload.execute`.
-- **W3** `verify_snapshot` reports missing input as `blocked` (exit 2) and every
-  other wrong input (a manifest of the wrong shape, an entry that exists but is not
-  a regular file, an unsafe or Windows-rooted raw path, a hash mismatch) as
-  `rejected` (exit 2); it never ends with a traceback.
+  every step runs in its own session, and every process left in that session is
+  killed once the step ends, also one that made its own process group (GNU
+  `timeout`, a shell with job control). In the container, where the workload is
+  PID 1, every other process is then killed and reaped as well, so one that started
+  a new session (`setsid`) is stopped too and no zombie holds a slot of
+  `--pids-limit`. Outside a container (host tests) a process that starts a new
+  session escapes. Checked in `runner_workload.execute`.
+- **W3** `verify_snapshot` reports a missing snapshot folder, `snapshot.json` or raw
+  file as `blocked` (exit 2) and every other wrong input (a missing or unreadable
+  `--expected` manifest, a manifest or entry of the wrong shape, an unsafe,
+  Windows-rooted or repeated raw path, an entry that exists but is not a regular
+  file, a hash mismatch) as `rejected` (exit 2). The manifest's own entries are
+  checked before the snapshot is looked at, so a bad manifest is rejected even when
+  the snapshot is missing. It never ends with a traceback.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 
@@ -93,7 +101,8 @@ exercise W1 and W2 in a real container.
   the checked-out bytes did not match.
 - The staged copy's index is built with no inherited `GIT_*` variables, no
   system or global Git configuration, no file system monitor and an empty hooks
-  folder.
+  folder. Git before 2.32 cannot leave out the global configuration, so it is
+  refused before staging.
 - A Docker daemon that cannot be reached, or does not report Linux containers,
   gives a `blocked` result (exit 2) before any source is read.
 - `git`, `uv` and `docker` are run only from absolute `PATH` folders, never from the

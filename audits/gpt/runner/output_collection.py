@@ -276,7 +276,9 @@ def open_folder(path, method, child=None):
             with directory_fd(child, parent) as fd:
                 yield DescriptorFolder(fd), os.fstat(fd).st_dev
         return
-    base = os.path.abspath(path)
+    # POSIX resolves a link before a later '..', as the descriptor walk does;
+    # os.path.abspath would drop 'link/..' by text and walk another folder (I2).
+    base = os.path.abspath(path) if os.name == "nt" else os.path.join(os.getcwd(), path)
     path_directory(base)
     folder = base if child is None else os.path.join(base, child)
     info = path_directory(folder)
@@ -488,6 +490,11 @@ def other_method_outcome(work, limits, method):
             records, entries, byte_count = copy_tree(work, snapshot, limits, other)
             summaries = read_summaries(snapshot, other)
         except (OSError, RejectedOutput) as exc:
+            # A failure on the reference snapshot's own path (a long TMPDIR) says
+            # nothing about the tree; as an outcome it would pass for path_too_long.
+            name = getattr(exc, "filename", None)
+            if isinstance(name, (str, bytes)) and os.fsdecode(name).startswith(scratch):
+                raise
             return "rejected", exc
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
 
@@ -516,28 +523,33 @@ def source_chain(work, relative):
     """Q1: lstat each component of work/results/relative and read the file, following
     no link. POSIX walks descriptors, so a path past PATH_MAX that the descriptor walk
     collected can be checked too. An unexpected entry stops the walk with no bytes
-    read, so that check_collected names the broken rule (Q1)."""
+    read, so that check_collected names the broken rule (Q1); so does a missing one."""
     parts = ("results", *relative.split("/"))
+    chain = []
     if not DESCRIPTOR_APIS:
-        current, chain = Path(work), []
+        current = Path(work)
         for index, part in enumerate(parts):
             current = current / part
-            chain.append(os.lstat(current))
+            try:
+                chain.append(os.lstat(current))
+            except FileNotFoundError:
+                return chain, None
             if not chain_entry_expected(chain[-1], index == len(parts) - 1):
                 return chain, None
         return chain, current.read_bytes()
     flags = getattr(os, "O_PATH", os.O_RDONLY) | os.O_DIRECTORY | os.O_NOFOLLOW
-    fd, chain = os.open(work, flags), []
+    fd = os.open(work, flags)
     try:
-        for part in parts[:-1]:
-            chain.append(os.stat(part, dir_fd=fd, follow_symlinks=False))
-            if not chain_entry_expected(chain[-1], last=False):
+        for index, part in enumerate(parts):
+            try:
+                chain.append(os.stat(part, dir_fd=fd, follow_symlinks=False))
+            except FileNotFoundError:
                 return chain, None
-            parent, fd = fd, os.open(part, flags, dir_fd=fd)
-            os.close(parent)
-        chain.append(os.stat(parts[-1], dir_fd=fd, follow_symlinks=False))
-        if not chain_entry_expected(chain[-1], last=True):
-            return chain, None
+            if not chain_entry_expected(chain[-1], index == len(parts) - 1):
+                return chain, None
+            if index < len(parts) - 1:
+                parent, fd = fd, os.open(part, flags, dir_fd=fd)
+                os.close(parent)
         with os.fdopen(os.open(parts[-1], READ_FLAGS, dir_fd=fd), "rb") as stream:
             return chain, stream.read()
     finally:
@@ -581,6 +593,7 @@ def check_collected(work, destination, report, limits, method):
         contract.require("Q1", row["bytes"] == len(data) <= limits.file_bytes, relative)
         contract.require("Q1", row["sha256"] == hashlib.sha256(data).hexdigest(), relative)
         chain, source = source_chain(work, relative)
+        contract.require("Q1", chain, "no source results folder: " + relative)
         device = chain[0].st_dev  # the results folder, reached without its full path
         for info in chain:
             contract.require("Q1", not is_link(info) and info.st_dev == device, relative)

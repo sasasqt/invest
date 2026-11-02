@@ -93,7 +93,7 @@ def run_captured(argv, *, timeout=None, input=None, **kwargs):
     )
     try:
         stdout, stderr = process.communicate(input, timeout=timeout)
-    except subprocess.TimeoutExpired:
+    except BaseException:  # the timeout, and an interrupt, as subprocess.run does
         process.kill()
         process.wait(timeout=30)
         raise
@@ -418,9 +418,23 @@ def make_folders(folder, created):
         created.add(folder)
 
 
+def require_git():
+    """Refuse a Git that would not keep staging isolated.
+
+    Git before 2.32 ignores GIT_CONFIG_GLOBAL, so the staged index would be built
+    with the host user's global configuration; before 2.31 it also misreads
+    ``rev-parse --path-format``.
+    """
+    version = checked([program("git"), "--version"], env=git_environment(), timeout=60)
+    found = re.match(r"git version (\d+)\.(\d+)", version)
+    if not found or (int(found[1]), int(found[2])) < (2, 32):
+        raise RuntimeError(f"Staging needs Git 2.32 or later, found: {version[:80]}")
+
+
 def stage_source(source, staged, expected_sha):
     if not re.fullmatch(r"[0-9a-f]{40}", expected_sha):
         raise ValueError("Expected revision must be a full Git SHA")
+    require_git()
     env = git_environment()
     actual = checked(
         [program("git"), "-C", str(source), "rev-parse", "HEAD"], env=env, timeout=GIT_TIMEOUT
@@ -721,6 +735,10 @@ def report_host_error(error):
 
 
 if __name__ == "__main__":
+    # A path the console code page cannot encode (a Windows pipe's default) must not
+    # turn a finished audit into exit 1 at its last print.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="backslashreplace")
     try:
         status = main()
     except Exception as error:

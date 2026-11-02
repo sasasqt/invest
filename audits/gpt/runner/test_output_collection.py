@@ -541,6 +541,88 @@ class SourceChainCheckTests(unittest.TestCase):
                     self.check(relative, place, descriptors)
 
 
+class RoundSevenCheckTests(unittest.TestCase):
+    """Review round 7: the test-mode checks and the path walk."""
+
+    def test_a_recorded_file_missing_from_the_source_fails_q1_by_name(self):
+        """A missing file, folder or results folder surfaced as FileNotFoundError."""
+        cases = (("missing file", "f", True), ("missing folder", "sub/f", True))
+        cases += (("missing results", "f", False),)
+        for label, relative, make_results in cases:
+            for descriptors in sorted({DESCRIPTOR_APIS, False}):
+                with self.subTest(case=label, descriptors=descriptors):
+                    with tempfile.TemporaryDirectory() as directory:
+                        root = Path(directory)
+                        (root / "work").mkdir()
+                        if make_results:
+                            (root / "work/results").mkdir()
+                        destination = root / "destination"
+                        (destination / relative).parent.mkdir(parents=True, exist_ok=True)
+                        (destination / relative).write_bytes(b"x")
+                        row = {"path": relative, "bytes": 1}
+                        row["sha256"] = hashlib.sha256(b"x").hexdigest()
+                        entries = relative.count("/") + 1
+                        report = {"files": [row], "entries": entries, "bytes": 1, "summaries": {}}
+                        with patch("output_collection.DESCRIPTOR_APIS", descriptors):
+                            with self.assertRaisesRegex(ContractViolation, "^Q1: "):
+                                check_collected(
+                                    root / "work", destination, report, DEFAULT_LIMITS, "path"
+                                )
+
+    @unittest.skipUnless(os.name == "posix" and DESCRIPTOR_APIS, "PATH_MAX and descriptor walk")
+    def test_a_long_temporary_folder_never_silences_an_i2_disagreement(self):
+        """The reference walk's own snapshot path in a long TMPDIR failed with
+        ENAMETOOLONG, which passed for a long path in the tree and skipped I2."""
+        import output_collection
+
+        real = output_collection.other_method_outcome
+
+        def disagreeing(work, limits, method):
+            outcome = real(work, limits, method)
+            if outcome[0] != "collected":
+                return outcome
+            return ("collected", [{"path": "x", "bytes": 0, "sha256": ""}], 1, 0, {})
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            # Short enough to hold the reference snapshot's own folders, too short to
+            # hold the tree's 200-character folder below them (PATH_MAX 4096).
+            long_tmp = root / "t"
+            while len(str(long_tmp)) < 4096 - 250:
+                long_tmp = long_tmp / ("t" * 200)
+            os.makedirs(long_tmp)
+            results = root / "w/work/results" / ("d" * 200)
+            results.mkdir(parents=True)
+            (results / "f").write_text("f", encoding="utf-8")
+            work = root / "w/work"
+            with patch("output_collection.other_method_outcome", side_effect=disagreeing):
+                for label, temporary in (("short", None), ("long", str(long_tmp))):
+                    with self.subTest(tmpdir=label), patch.object(tempfile, "tempdir", temporary):
+                        with self.assertRaises((ContractViolation, OSError)) as caught:
+                            collect_results(
+                                work, root / f"evidence-{label}/workload", method="descriptor"
+                            )
+                        if isinstance(caught.exception, ContractViolation):
+                            self.assertTrue(str(caught.exception).startswith("I2"))
+
+    @POSIX_ONLY
+    def test_both_walks_read_the_folder_the_kernel_names_for_link_dot_dot(self):
+        """os.path.abspath dropped 'link/..' as text, so the path walk read another
+        folder than the descriptor walk for the same work path."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for side, name in (("a", "lexical.txt"), ("elsewhere", "kernel.txt")):
+                (root / side / "work/results").mkdir(parents=True)
+                (root / side / "work/results" / name).write_text(name, encoding="utf-8")
+            (root / "elsewhere/x").mkdir()
+            (root / "a/link").symlink_to(root / "elsewhere/x", target_is_directory=True)
+            work = os.path.join(root, "a", "link", "..", "work")
+            for method in ("descriptor", "path"):
+                with self.subTest(method=method):
+                    collected = collect_results(work, root / f"ev-{method}/workload", method=method)
+                    self.assertEqual([row["path"] for row in collected["files"]], ["kernel.txt"])
+
+
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
 class NoDescriptorTests(unittest.TestCase):
     def test_descriptor_walk_fails_closed_without_its_apis(self):
