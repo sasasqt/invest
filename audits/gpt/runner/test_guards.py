@@ -372,6 +372,16 @@ class PortableHostTests(unittest.TestCase):
             )
             self.assertEqual((root / "staged/.git/HEAD").read_bytes(), revision.encode() + b"\n")
 
+    def test_files_sharing_folders_are_staged(self):
+        files = {"dir/a.txt": b"a\n", "dir/b.txt": b"b\n", "dir/sub/c.txt": b"c\n", "top": b"t"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, files)
+            records = stage_source(source, root / "staged", revision)
+            self.assertEqual([row["path"] for row in records], sorted(files))
+            for name, payload in files.items():
+                self.assertEqual((root / "staged" / name).read_bytes(), payload)
+
     def test_ordinary_paths_are_listed_in_order(self):
         rows = [("100644", "blob", "README.md"), ("100755", "blob", "tools/run.sh")]
         self.assertEqual(
@@ -716,8 +726,9 @@ class RunnerBranchTests(unittest.TestCase):
             return process
 
         with patch("isolated_runner.subprocess.Popen", side_effect=popen):
-            with self.assertRaisesRegex(RuntimeError, "log reader failed"):
+            with self.assertRaisesRegex(RuntimeError, "log reader failed") as caught:
                 run_bounded([sys.executable, "-c", "pass"], timeout=30)
+        self.assertIsInstance(caught.exception.__cause__, OSError)
 
     def test_reader_that_cannot_start_still_ends_the_child(self):
         started = []

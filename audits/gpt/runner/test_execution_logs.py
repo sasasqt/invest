@@ -1,8 +1,11 @@
 import os
 import signal
+import subprocess
 import sys
+import threading
 import time
 import unittest
+from unittest.mock import patch
 
 os.environ.setdefault("CONTRACT_CHECKS", "1")
 
@@ -47,6 +50,26 @@ class ExecutionLogTests(unittest.TestCase):
     def test_smallest_log_limit_is_accepted(self):
         result, reason = run_bounded([sys.executable, "-c", "pass"], max_log_bytes=1)
         self.assertEqual((result.returncode, reason), (0, None))
+
+    def test_invalid_utf8_output_is_kept_as_replacement_characters(self):
+        script = "import sys;sys.stdout.buffer.write(b'ok \\xff\\xfe end')"
+        result, reason = run_bounded([sys.executable, "-c", script])
+        self.assertEqual((result.returncode, reason), (0, None))
+        self.assertEqual(result.stdout, "ok \ufffd\ufffd end")
+
+    def test_pipe_is_closed_once_the_reader_is_done(self):
+        made, real = [], subprocess.Popen
+
+        def popen(*args, **kwargs):
+            made.append(real(*args, **kwargs))
+            return made[-1]
+
+        with patch("isolated_runner.subprocess.Popen", side_effect=popen):
+            run_bounded([sys.executable, "-c", "print('x')"])
+        for thread in threading.enumerate():
+            if thread.name == "run_bounded-reader":
+                thread.join(5)
+        self.assertTrue(made[0].stdout.closed)
 
     def test_large_stdout_is_bounded_and_fails(self):
         result, reason = run_bounded(
