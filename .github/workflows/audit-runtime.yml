@@ -85,6 +85,27 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  host-tests-windows:
+    name: host-tests-windows (Python ${{ matrix.python }})
+    runs-on: windows-2025
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          version: 0.13.6
+      - name: Host runner tests on Windows (no Docker; GitHub's Windows runners lack Linux containers)
+        working-directory: audits/gpt/runner
+        env:
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+        run: uv run --no-project --no-config --with packaging==26.3 --python "$env:AUDIT_PYTHON_VERSION" python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety
+
   isolated-audit:
     name: isolated-audit (${{ matrix.kind }}, Python ${{ matrix.python }})
     needs: [resolve-source, collection-boundary]
