@@ -2,8 +2,10 @@
 
 Event order within each session ``t``:
 
-1. **Open.** Positions are marked from the previous mark to the open. Orders whose fill
-   date is ``t`` execute at the open price; transaction costs are paid in cash.
+1. **Open.** Positions are marked from the previous mark to the open. If equity is then
+   not positive, the run stops before any order is sized on it. Otherwise orders whose
+   fill date is ``t`` execute at the open price; transaction costs are paid in cash, and
+   the run stops if they leave equity not positive.
 2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
@@ -446,6 +448,23 @@ def run_backtest(
                         "participation": notional / adv_j,
                     }
                 )
+
+        if traded:
+            # Fills trade at the open marks, so they move equity only by their costs, which
+            # can still take a small positive equity below zero; a recovery by the close
+            # would hide it.
+            mv_filled = shares * np.where(np.isnan(mark), 0.0, mark)
+            equity_filled = cash + float(mv_filled.sum())
+            if equity_filled <= 0:
+                for k, v in day_costs.items():
+                    cum_costs[k] += v
+                warnings.append(
+                    f"insolvent after the open's fills on {date.date()}: equity {equity_filled:.2f}"
+                )
+                rows.append(
+                    session_row(date, mv_filled, traded, day_costs, 0.0, n_rejected, n_clipped)
+                )
+                break
 
         # 2. Close: mark, delistings, borrow and cash interest.
         has_close = ~np.isnan(px_close[i])
