@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "reviewer": "fresh Reviewer 2 / Verifier A",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "review_scope": "Independent static review, no repository execution, untouched canonical blob identities checked against main-tree.json",
+  "model_effort": "unavailable; inherited configuration used",
+  "independent_saved_before_reviewer1": true,
+  "product_execution": {
+    "runs": 0,
+    "repeats": 0,
+    "control_runs": 0,
+    "reason": "credential-isolation boundary and installed locked runtime graph unverified; known runner blocked"
+  },
+  "oracle": "independent_oracle.py / oracle-result.json, reference-only expected values",
+  "candidates": [
+    {
+      "id": "C1",
+      "claim": "Late older-period revisions overwrite newer periods in fundamentals_asof",
+      "verdict": "drop",
+      "severity": "none demonstrated",
+      "confidence": "high for static rejection of claim on valid non-null uniquely keyed rows",
+      "evidence": [
+        "pit.py:45-66",
+        "docs/DATA_CONTRACT.md:46",
+        "test_point_in_time.py:65-91",
+        "test_expressions.py:136-146"
+      ],
+      "reason": "Events are processed in available_date order, breaking same-date ties by period_end. The running best key is lexicographic (period_end,available_date). Once newer period wins, a later revision of older period cannot exceed it. Each event stores only the running best then; forward-fill cannot expose a future event earlier.",
+      "expected_actual_control": {
+        "expected": "oracle late-older-period 99.0 leaves newest known value2.0; same-new-period later revision becomes2.5",
+        "actual": "static trace matches expectation; product output not generated",
+        "control": "full versus future-row-deleted prefix; oracle expected2.0 in both",
+        "product_repeats": 0
+      },
+      "drop_counterfactual": "A valid input whose prefix score changes when appending only later-availability rows, or a trace where (older_period,later_available_date) exceeds (newer_period,earlier_available_date), would retain the claim. The latter is inconsistent with tuple ordering.",
+      "missing": "fresh product prefix/empty/weekend/same-day cross-format controls unavailable",
+      "siblings_checked": [
+        "build_panel calls fundamentals_asof for each field",
+        "compute_scores uses build_panel then eligibility restriction"
+      ],
+      "what_changes_verdict": "fresh reproducible counterexample on valid contract inputs"
+    },
+    {
+      "id": "C2",
+      "claim": "Missing/weakened financial primary-key validation permits conflicting fundamentals revision rows",
+      "verdict": "keep known/open static validation omission; runtime consequences plausible",
+      "severity": "medium potential data integrity consequence",
+      "priority": "P2",
+      "confidence": "high static omission, no measured downstream financial impact",
+      "evidence": [
+        "docs/DATA_CONTRACT.md:46,75,83",
+        "schemas.py:113-117,506-544",
+        "bundle.py:311-332,464-506,510-533",
+        "pit.py:60-64"
+      ],
+      "duplicate": "K14 / TODO REVIEW-16 at current TODO.md:44, known since2026-10-08; not newly discovered",
+      "reason": "Generic reader honors only manifest-declared primary_key and nullable flags. read_fundamentals checks kind, names/types, availability >= period and field regex; it does not require/independently enforce (instrument,field,period_end,available_date) uniqueness or mandatory non-nullability. Contract requires unique revisions; external adapter with primary_key=[] and conflicting same-key values has no rejecting check in the traced path. Writer publish_fundamentals does declare required key and remains guarded.",
+      "expected_actual_control": {
+        "expected": "Reject synthetic duplicate key with values1.0 and9.0 before panel construction; accept same values on distinct available_dates",
+        "actual": "static read path has no key check when manifest primary_key empty; no actual product read run",
+        "control": "canonical writer passes primary_key=keys; generic _validate_table then rejects duplicates",
+        "product_repeats": 0
+      },
+      "siblings_checked": [
+        "read_market_bars has same missing key-binding class, known K14; numeric/OHLC checks do not enforce row uniqueness",
+        "read_signals lacks key binding too; downstream consequence untraced",
+        "read_universe also lacks key binding but overlap validation rejects ordinary duplicate intervals; not blanket equivalence"
+      ],
+      "missing": "twice-executed malformed read plus valid control on verified isolated exact lock environment; cross-format parity; no reserved/saved results read",
+      "acceptance": "Independently enforce required row key/non-nullability in each financial reader; synthetic wrong-key/missing-key/nullable variants rejected, distinct revisions and each supported format preserved. It is not necessary to reject an equivalent declared key ordering if rows themselves satisfy contract.",
+      "what_changes_verdict": "A reachable existing check outside inspected chain that enforces required key, or authoritative revised contract allowing ambiguous duplicate revisions"
+    },
+    {
+      "id": "C3",
+      "claim": "Fundamentals available_at metadata may override default while consumers use date-close",
+      "verdict": "retain low-priority unverified consistency lead; do not report confirmed lookahead",
+      "severity": "low demonstrated metadata consistency; potential timing impact conditional",
+      "confidence": "high static override, policy/behavioral impact unverified",
+      "evidence": [
+        "schemas.py:513-544",
+        "schemas.py:419-455 (signals contrasting check)",
+        "pit.py:45-66",
+        "current-mining-cli.py:55-69"
+      ],
+      "reason": "Caller metadata unpacking follows default in publication; read_fundamentals never checks available_at; CLI discards manifest and passes rows. Contract fixes fundamental meaning at available_date close and does not declare alternative fundamental timing values. A custom next-open metadata value cannot establish supported next-open semantics or confirmed financial leakage.",
+      "expected_actual_control": {
+        "expected": "Either reject unsupported timing metadata or force canonical value, after policy clarified",
+        "actual": "static accepts overridden metadata and row-only consumer uses date-close",
+        "control": "signals writer/reader explicitly enforce decision_date_close; fundamentals default is canonical",
+        "product_repeats": 0
+      },
+      "missing": "authoritative custom-metadata timing policy, actual malformed publish/read/control in isolated runtime, downstream observed timing difference",
+      "what_changes_verdict": "Documented guarantee that fundamentals available_at is validated or supported timing alternative and concrete violated case",
+      "duplicate_check": "No exact match found in accessible prior GA findings/cross-check, current TODO and open PR descriptions; unavailable private hunt ledgers unknown"
+    }
+  ],
+  "dedup": {
+    "prior_ga_ids": [
+      "GA-2026-10-31-1",
+      "GA-2026-10-31-2",
+      "GA-2026-11-02-1",
+      "GA-2026-11-02-2"
+    ],
+    "open_prs": [
+      35,
+      34,
+      33,
+      32
+    ],
+    "scope": "TODO REVIEW-16 explicitly records K14; open PR descriptions contain no fundamentals-key correction; #33 is date import work"
+  },
+  "closing_question": {
+    "answer": "The main missing evidence is safe actual reader execution. Checked pit selection, financial readers and writer, generic key validation, CLI row-only consumption, panel construction, score export and available tests.",
+    "unchecked": [
+      {
+        "priority": 1,
+        "path": "schemas.py/read_fundamentals plus CSV/SQLite/Parquet negative fixtures",
+        "next": "Actual conflicting key, forged nullable, empty key and correct controls twice after isolation",
+        "reason": "Would establish executable failure signature and format scope"
+      },
+      {
+        "priority": 2,
+        "path": "schemas.py/read_signals and evaluator consumers",
+        "next": "Trace duplicate decision/instrument rows under weakened primary_key through evaluation",
+        "reason": "Shared missing binding is static; consequence may be explicit downstream error"
+      },
+      {
+        "priority": 3,
+        "path": "fundamentals metadata availability policy",
+        "next": "Clarify fixed timing semantics and reject/ignore unsupported available_at consistently",
+        "reason": "Prevents promoting unsupported input semantics into a financial bug"
+      }
+    ]
+  }
+}

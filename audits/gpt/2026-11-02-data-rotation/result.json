@@ -1,0 +1,296 @@
+{
+  "run_id": "GA-2026-11-02-data-092201Z",
+  "date": "2026-11-02",
+  "field": "data",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "novel_defects": 0,
+  "new_runtime_verified_defects": 0,
+  "known_static_omissions_corroborated": 1,
+  "unverified_new_leads": 1,
+  "optional_new_recommendations": 0,
+  "candidate_statuses": {
+    "C1": "dropped",
+    "C2": "known K14 static corroborated",
+    "C3": "unverified"
+  },
+  "reviewers": 2,
+  "product_runs": 0,
+  "daily_scope": "partial",
+  "whole_repository": "Audit incomplete",
+  "coverage": {
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "files": 111,
+    "statuses": {
+      "reviewed": 30,
+      "inventoried": 28,
+      "partially_reviewed": 15,
+      "checked_automatically": 16,
+      "blocked": 22
+    },
+    "new_cumulative_semantic_lines": 268,
+    "unread_text_lines": 21168,
+    "unread_text_paths": 76,
+    "unknown_line_count_files": [
+      "runs/yahoo-test/2026-10-07/eval/figures/diagnostics.png",
+      "runs/yahoo-test/2026-10-07/eval/figures/equity_drawdown.png",
+      "runs/yahoo-test/2026-10-07/eval/figures/scenarios.png",
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/ic.png",
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/quantiles.png"
+    ],
+    "runtime_coverage_percent": null,
+    "either_audit_coverage": null,
+    "changed_content_paths": [
+      "GIT_GUIDELINES.md",
+      "README.md",
+      "ROADMAP.md",
+      "TODO.md",
+      "data-mining-framework/README.md",
+      "data-mining-framework/src/invest_mining/cli.py",
+      "data-mining-framework/src/invest_mining/diagnostics.py",
+      "data-mining-framework/src/invest_mining/reporting.py",
+      "data-mining-framework/src/invest_mining/search.py",
+      "data-mining-framework/tests/test_cli.py",
+      "data-mining-framework/tests/test_diagnostics.py",
+      "data-mining-framework/tests/test_evidence.py",
+      "data-mining-framework/tests/test_reporting.py",
+      "data-mining-framework/tests/test_search_and_inference.py",
+      "docs/HISTORICAL_BASELINE.md",
+      "docs/QUANTILE_ANALYSIS.md",
+      "scripts/save_run.py",
+      "strategy-evaluation/METRICS.md",
+      "strategy-evaluation/README.md",
+      "strategy-evaluation/src/invest_evaluation/config.py",
+      "strategy-evaluation/src/invest_evaluation/engine.py",
+      "strategy-evaluation/tests/test_engine.py",
+      "tests/test_pipeline.py",
+      "tests/test_save_run.py"
+    ],
+    "per_category": {
+      "binary_saved_asset": {
+        "files": 5,
+        "known_lines": 0,
+        "semantic_lines": 0,
+        "statuses": {
+          "blocked": 5
+        }
+      },
+      "configuration": {
+        "files": 7,
+        "known_lines": 231,
+        "semantic_lines": 176,
+        "statuses": {
+          "reviewed": 5,
+          "inventoried": 2
+        }
+      },
+      "documentation": {
+        "files": 22,
+        "known_lines": 2551,
+        "semantic_lines": 644,
+        "statuses": {
+          "reviewed": 6,
+          "partially_reviewed": 4,
+          "inventoried": 12
+        }
+      },
+      "first_party_source": {
+        "files": 29,
+        "known_lines": 7958,
+        "semantic_lines": 4016,
+        "statuses": {
+          "checked_automatically": 5,
+          "reviewed": 13,
+          "partially_reviewed": 6,
+          "inventoried": 5
+        }
+      },
+      "lockfile": {
+        "files": 1,
+        "known_lines": 1517,
+        "semantic_lines": 0,
+        "statuses": {
+          "checked_automatically": 1
+        }
+      },
+      "research_ledger_metadata": {
+        "files": 1,
+        "known_lines": 2,
+        "semantic_lines": 2,
+        "statuses": {
+          "reviewed": 1
+        }
+      },
+      "saved_result": {
+        "files": 17,
+        "known_lines": 6948,
+        "semantic_lines": 0,
+        "statuses": {
+          "blocked": 17
+        }
+      },
+      "script_or_input": {
+        "files": 3,
+        "known_lines": 495,
+        "semantic_lines": 111,
+        "statuses": {
+          "reviewed": 1,
+          "inventoried": 2
+        }
+      },
+      "shell_script": {
+        "files": 2,
+        "known_lines": 164,
+        "semantic_lines": 164,
+        "statuses": {
+          "reviewed": 2
+        }
+      },
+      "tests": {
+        "files": 24,
+        "known_lines": 7069,
+        "semantic_lines": 654,
+        "statuses": {
+          "checked_automatically": 10,
+          "inventoried": 7,
+          "reviewed": 2,
+          "partially_reviewed": 5
+        }
+      }
+    },
+    "per_component": {
+      "evaluation": {
+        "files": 22,
+        "known_lines": 6477,
+        "semantic_lines": 1351,
+        "statuses": {
+          "inventoried": 6,
+          "reviewed": 4,
+          "checked_automatically": 7,
+          "partially_reviewed": 5
+        }
+      },
+      "mining": {
+        "files": 22,
+        "known_lines": 5077,
+        "semantic_lines": 1054,
+        "statuses": {
+          "inventoried": 11,
+          "reviewed": 6,
+          "checked_automatically": 2,
+          "partially_reviewed": 3
+        }
+      },
+      "preparation": {
+        "files": 17,
+        "known_lines": 3871,
+        "semantic_lines": 2360,
+        "statuses": {
+          "reviewed": 10,
+          "checked_automatically": 4,
+          "partially_reviewed": 3
+        }
+      },
+      "saved_results": {
+        "files": 23,
+        "known_lines": 6950,
+        "semantic_lines": 2,
+        "statuses": {
+          "reviewed": 1,
+          "blocked": 22
+        }
+      },
+      "workspace": {
+        "files": 27,
+        "known_lines": 4560,
+        "semantic_lines": 1000,
+        "statuses": {
+          "reviewed": 9,
+          "inventoried": 11,
+          "partially_reviewed": 4,
+          "checked_automatically": 3
+        }
+      }
+    },
+    "ten_least_reviewed_known_text_files": [
+      {
+        "path": ".gitignore",
+        "read": 0,
+        "lines": 40,
+        "last_review_date": null
+      },
+      {
+        "path": "GIT_GUIDELINES.md",
+        "read": 0,
+        "lines": 139,
+        "last_review_date": "2026-10-31"
+      },
+      {
+        "path": "README.md",
+        "read": 0,
+        "lines": 182,
+        "last_review_date": "2026-10-31"
+      },
+      {
+        "path": "ROADMAP.md",
+        "read": 0,
+        "lines": 65,
+        "last_review_date": "2026-10-31"
+      },
+      {
+        "path": "data-mining-framework/ALPHA_VALIDATION.md",
+        "read": 0,
+        "lines": 155,
+        "last_review_date": null
+      },
+      {
+        "path": "data-mining-framework/LITERATURE_REVIEW.md",
+        "read": 0,
+        "lines": 282,
+        "last_review_date": null
+      },
+      {
+        "path": "data-mining-framework/PRIMARY_SOURCE_CATALOG.md",
+        "read": 0,
+        "lines": 358,
+        "last_review_date": null
+      },
+      {
+        "path": "data-mining-framework/README.md",
+        "read": 0,
+        "lines": 81,
+        "last_review_date": "2026-10-31"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/__init__.py",
+        "read": 0,
+        "lines": 3,
+        "last_review_date": null
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+        "read": 0,
+        "lines": 363,
+        "last_review_date": null
+      }
+    ]
+  },
+  "timing": {
+    "run_id": "GA-2026-11-02-data-092201Z",
+    "field": "data",
+    "date": "2026-11-02",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "protocol_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+    "status": "partial; static scope completed, runtime blocked",
+    "date_resolution": "Scheduled-for timestamp unavailable for this invocation; Berlin local start date fallback2026-11-02. Original date retained.",
+    "started_context_utc": "2026-11-02T09:20:43Z",
+    "started_checkpoint_utc": "2026-11-02T09:22:01Z",
+    "prepared_utc": "2026-11-02T09:34:01.210069+00:00",
+    "wall_seconds_from_supplied_start": 798.235466,
+    "timing_limitation": "Wall-clock time, not exclusive model CPU. Individual stage/helper wall measurements unavailable; no invented token/account usage.",
+    "helper_count": 1,
+    "helper_budget_minutes": 15,
+    "remote_compute_dispatched": 0,
+    "product_runs": 0,
+    "report": "2026-11-02-2.md"
+  }
+}

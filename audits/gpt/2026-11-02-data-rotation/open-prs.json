@@ -1,0 +1,22 @@
+[
+  {
+    "number": 35,
+    "title": "Fix stale docs: README pytest line matches CI (DA-2026-10-31-12)",
+    "head": "d90d306e8270a298a6096f19a0101803608cd292"
+  },
+  {
+    "number": 34,
+    "title": "Fix engine solvency: stop at an open whose equity is not positive (BH-2026-11-02-2, REVIEW-31)",
+    "head": "87a72646e126ef4f907e59924261436d6aac6e1c"
+  },
+  {
+    "number": 33,
+    "title": "Fix data import dates: read CSV dates as ISO 8601, refuse empty publishes and non-ISO Yahoo bounds (K13, BH-2026-10-13-3, BH-2026-10-13-4, BH-2026-10-13-6)",
+    "head": "56257f110dc55538c790957d3712d4c4372f095c"
+  },
+  {
+    "number": 32,
+    "title": "Add isolated runtime checks and benchmarks for repository audits",
+    "head": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5"
+  }
+]

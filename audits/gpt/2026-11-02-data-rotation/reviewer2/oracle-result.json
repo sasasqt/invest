@@ -1,0 +1,54 @@
+{
+  "label": "synthetic reference-only expectations, no product execution",
+  "C1_expected": {
+    "2024-01-31": null,
+    "2024-02-01": 1.0,
+    "2024-04-15": 2.0,
+    "2024-05-01": 2.0,
+    "2024-05-02": 2.5
+  },
+  "C2_conflicting_rows": [
+    {
+      "instrument": "SYN_A",
+      "field": "bp",
+      "period_end": "2023-12-31",
+      "available_date": "2024-02-01",
+      "value": 1.0
+    },
+    {
+      "instrument": "SYN_A",
+      "field": "bp",
+      "period_end": "2023-12-31",
+      "available_date": "2024-02-01",
+      "value": 9.0
+    }
+  ],
+  "C2_duplicate_keys": [
+    [
+      "SYN_A",
+      "bp",
+      "2023-12-31",
+      "2024-02-01"
+    ]
+  ],
+  "C2_control_distinct_revisions": [
+    {
+      "instrument": "SYN_A",
+      "field": "bp",
+      "period_end": "2023-12-31",
+      "available_date": "2024-02-01",
+      "value": 1.0
+    },
+    {
+      "instrument": "SYN_A",
+      "field": "bp",
+      "period_end": "2023-12-31",
+      "available_date": "2024-02-02",
+      "value": 9.0
+    }
+  ],
+  "C2_control_duplicate_keys": [],
+  "product_runs": 0,
+  "product_repeats": 0,
+  "negative_product_control_runs": 0
+}

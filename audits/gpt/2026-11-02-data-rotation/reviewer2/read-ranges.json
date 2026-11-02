@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "producer": "fresh Reviewer 2",
+  "scope": "exact semantic ranges, helper effort separate; do not double count with main producer",
+  "ranges": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "lens": "as-of revision/prefix invariant"
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          46,
+          46
+        ]
+      ],
+      "lens": "fundamentals revision ordering contract"
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          45
+        ],
+        [
+          47,
+          83
+        ]
+      ],
+      "lens": "independent reader/schema contract"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          125
+        ],
+        [
+          410,
+          417
+        ],
+        [
+          419,
+          544
+        ]
+      ],
+      "lens": "financial schema binding, reader/writer timing and sibling validation"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          145,
+          248
+        ],
+        [
+          311,
+          333
+        ],
+        [
+          450,
+          533
+        ]
+      ],
+      "lens": "generic manifest coercion, nullability/key/read path"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          65,
+          115
+        ]
+      ],
+      "lens": "available as-of controls and negative-validation coverage"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          90,
+          117
+        ],
+        [
+          128,
+          180
+        ]
+      ],
+      "lens": "declared key rejection and manifest structure negative tests"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          280,
+          309
+        ]
+      ],
+      "lens": "feature construction consumer"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "lens": "score and signals consumer"
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          122,
+          146
+        ]
+      ],
+      "lens": "prefix invariant expression tests"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          55,
+          70
+        ]
+      ],
+      "lens": "reader manifest consumption"
+    },
+    {
+      "path": "TODO.md",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          44,
+          44
+        ]
+      ],
+      "lens": "dedup K14/REVIEW-16"
+    }
+  ]
+}

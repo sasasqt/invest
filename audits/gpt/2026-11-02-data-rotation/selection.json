@@ -1,0 +1,22 @@
+{
+  "field": "data",
+  "question": "Do fundamentals read boundaries enforce revision identity before as-of panel selection?",
+  "expected_evidence": "canonical source and contract trace, independent spec oracle, fresh static Reviewer2, runtime only after proven boundary",
+  "stop": "Resolve static paths and known IDs; preserve missing actual read/control checks; do not widen to unrelated mining/evaluation fixes",
+  "planned_split": [
+    60,
+    40
+  ],
+  "migration_note": "Activation fields retain legacy 50/50; dispatcher explicit 60/40 and latest global next split take precedence for this first eligible data visit. No field yield history invented.",
+  "random_seed_algorithm": "first 8 bytes of SHA256(date) big endian",
+  "seed": 13486832838421457824,
+  "eligible_sorted": [
+    "data-pipeline/data-preparation/tests/test_bundle.py",
+    "data-pipeline/data-preparation/tests/test_point_in_time.py",
+    "data-pipeline/data-preparation/tests/test_signal_metadata.py"
+  ],
+  "draw": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+  "timing_note": "Bounded question established before source trace; this supplemental draw is recorded after initial trace and is not claimed to have guided earlier reads.",
+  "lens": "Malformed external-manifest trust and revision identity; prior runs causality/accounting dominate. Four prior lens histories unavailable, so absence across four runs unverified.",
+  "oldest_area_note": "No data-field visit history; exact prior unread ranges reconciled with latest coverage, not stale activation ranges."
+}

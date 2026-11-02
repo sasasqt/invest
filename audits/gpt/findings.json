@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-11-02",
-  "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+  "run_id": "GA-2026-11-02-data-092201Z",
+  "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "findings": [
     {
       "id": "GA-2026-10-31-1",
@@ -72,7 +72,16 @@
         }
       ],
       "first_seen_unpublished": "2026-10-28",
-      "first_published_date": "2026-10-31"
+      "first_published_date": "2026-10-31",
+      "freshness_history": [
+        {
+          "date": "2026-11-02",
+          "run_id": "GA-2026-11-02-data-092201Z",
+          "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "historical; owning field not scheduled for revalidation today",
+          "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        }
+      ]
     },
     {
       "id": "GA-2026-10-31-2",
@@ -134,7 +143,16 @@
         }
       ],
       "first_seen_unpublished": "2026-10-28",
-      "first_published_date": "2026-10-31"
+      "first_published_date": "2026-10-31",
+      "freshness_history": [
+        {
+          "date": "2026-11-02",
+          "run_id": "GA-2026-11-02-data-092201Z",
+          "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "historical; owning field not scheduled for revalidation today",
+          "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        }
+      ]
     },
     {
       "id": "GA-2026-11-02-1",
@@ -180,6 +198,15 @@
           "status": "known/open",
           "scope": "static verified, peer origin preserved"
         }
+      ],
+      "freshness_history": [
+        {
+          "date": "2026-11-02",
+          "run_id": "GA-2026-11-02-data-092201Z",
+          "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "historical; owning field not scheduled for revalidation today",
+          "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        }
       ]
     },
     {
@@ -218,6 +245,62 @@
         {
           "date": "2026-11-02",
           "status": "known/open; optional recommendation"
+        }
+      ],
+      "freshness_history": [
+        {
+          "date": "2026-11-02",
+          "run_id": "GA-2026-11-02-data-092201Z",
+          "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "historical; owning field not scheduled for revalidation today",
+          "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        }
+      ]
+    },
+    {
+      "id": "GA-2026-11-02-3",
+      "fingerprint": "contract:data-pipeline/data-preparation/src/invest_data/schemas.py:fundamentals-reader-required-revision-key",
+      "title": "Fundamentals reader does not bind required revision keys",
+      "status": "known/open",
+      "category": "data integrity / reader contract",
+      "severity": "medium potential consequence",
+      "priority": "P2",
+      "confidence": "high for independently corroborated static omission; runtime impact unverified",
+      "evidence_label": "confirmed_static_validation_omission",
+      "runtime_label": "plausible/unexecuted",
+      "independent_review_status": "fresh Reviewer2 completed static review",
+      "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "also_found_by": [
+        "K14",
+        "TODO REVIEW-16 (2026-10-08)"
+      ],
+      "novelty": "Known repository finding; first independent corroboration in this GA ledger, not an original discovery.",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-pipeline/data-preparation/src/invest_data/schemas.py#L538",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-pipeline/data-preparation/src/invest_data/bundle.py#L320",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/TODO.md#L44"
+      ],
+      "expected": "Fundamentals revision identity (instrument,field,period_end,available_date) is non-null and unique, regardless of a weaker external manifest key.",
+      "observed_static": "Financial reader checks names/types and two semantic conditions; generic validation checks only manifest-declared key. Empty/omitted primary_key bypasses duplicate-key enforcement on traced path.",
+      "trigger": "External/generic bundle with valid financial column types and duplicate revision rows, primary_key=[] or omitted. Canonical publish_fundamentals supplies the required key.",
+      "synthetic_case": "SYN_A,bp,2023-12-31,2024-02-01 values1.0 and9.0 must be refused; distinct later available_date is a valid revision control.",
+      "impact": "Ambiguous external revisions may reach features. No portfolio, report or historical outcome change demonstrated; duplicate tie outcome not asserted without runtime.",
+      "runtime_repeats": 0,
+      "control_runs": 0,
+      "evidence": [
+        "2026-11-02-data-rotation/static-evidence.json",
+        "2026-11-02-data-rotation/reviewer2/independent-verdict.json"
+      ],
+      "acceptance": "After proving isolation and installed lock graph, run malformed/read and valid-key controls twice across CSV/SQLite/Parquet. Required row-key/non-null validation must work independent of key ordering or compatible redundant manifest keys. No product fix in this audit.",
+      "effort": "S\u2013M estimate",
+      "owner": "data contract maintainer; no action taken",
+      "history": [
+        {
+          "date": "2026-11-02",
+          "run_id": "GA-2026-11-02-data-092201Z",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "known/open",
+          "scope": "static omission independently corroborated; runtime missing"
         }
       ]
     }

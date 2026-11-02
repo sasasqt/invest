@@ -1,0 +1,138 @@
+{
+  "week_id": "2026-W45",
+  "aggregate_date": "2026-11-02",
+  "basis": "Existing state only, not seven same-SHA passes",
+  "fields": [
+    {
+      "field": "data",
+      "last_substantive_visit": "2026-11-02",
+      "last_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "validation_freshness": "current static scope; runtime blocked",
+      "completed_advances": [
+        "Independent static trace of known K14 / REVIEW-16 through generic reader, financial reader and feature consumer; C1 dropped with separately derived reference controls."
+      ],
+      "unresolved_refs": [
+        "OPEN-FUNDAMENTALS-KEYS-001",
+        "OPEN-FUNDAMENTALS-AVAILABLE-AT-001"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "Known K14 malformed-read/control job after isolation; otherwise oldest feasible unread data range"
+    },
+    {
+      "field": "mining",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "GA-2026-10-31-1"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    },
+    {
+      "field": "evaluation",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "GA-2026-10-31-2"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    },
+    {
+      "field": "integration",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "remaining-work:published-boundary-format-recovery",
+        "remaining-work:permitted-snapshot-replay"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    },
+    {
+      "field": "engineering",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "INV-PR32-001",
+        "remaining-work:validation-matrix-test-quality-portability"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    },
+    {
+      "field": "performance",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "AUDIT-RUNNER-CSVGZ-001",
+        "OPEN-AUDIT-FORMAT-GATES-001",
+        "remaining-work:M-L-XL-formats-memory-matched-baseline"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "runtime isolation and installed lock graph unverified"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    },
+    {
+      "field": "research",
+      "last_substantive_visit": null,
+      "last_source": null,
+      "validation_freshness": "rotation visit not observed; legacy evidence historical",
+      "completed_advances": [],
+      "unresolved_refs": [
+        "GA-2026-10-31-3",
+        "GA-2026-10-31-4"
+      ],
+      "pending_reviews": "Root current queue authoritative; legacy imported references historical",
+      "pending_jobs": [],
+      "blockers": [
+        "reserved-data boundary; no research visit yet"
+      ],
+      "next": "owning field next visit; no catch-up today"
+    }
+  ],
+  "open_material": [
+    "INV-PR32-001",
+    "GA-2026-10-31-1",
+    "GA-2026-10-31-2 (plausible policy)",
+    "GA-2026-11-02-1",
+    "GA-2026-11-02-3"
+  ],
+  "pending_second_review": [],
+  "pending_jobs": [],
+  "four_week_assessment": "not due: rotation activation2026-11-02; no four-week comparable baseline",
+  "source_scope_note": "Legacy source90b5ca03 and current data slice9913f94 are never represented as one same-SHA pass."
+}

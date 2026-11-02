@@ -1,0 +1,122 @@
+[
+  {
+    "path": "GIT_GUIDELINES.md",
+    "status": "modified",
+    "sha": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02"
+  },
+  {
+    "path": "README.md",
+    "status": "modified",
+    "sha": "b97d7a363b3c2ccb3e187f7b7b964fd8495c9948"
+  },
+  {
+    "path": "ROADMAP.md",
+    "status": "modified",
+    "sha": "3439a83ccbb2154b90e61b985bb360302816a547"
+  },
+  {
+    "path": "TODO.md",
+    "status": "modified",
+    "sha": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224"
+  },
+  {
+    "path": "data-mining-framework/README.md",
+    "status": "modified",
+    "sha": "1e0437b7085eca64f513cfd1647a3e269ffdec16"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "status": "modified",
+    "sha": "abb44a04793f657188da5b0feab9fc7a2b360494"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+    "status": "modified",
+    "sha": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/reporting.py",
+    "status": "modified",
+    "sha": "eab461c558af00fa982c387726f6a49a485e029b"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/search.py",
+    "status": "modified",
+    "sha": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0"
+  },
+  {
+    "path": "data-mining-framework/tests/test_cli.py",
+    "status": "modified",
+    "sha": "175917942a72a58063167a3ac04b057e527bca02"
+  },
+  {
+    "path": "data-mining-framework/tests/test_diagnostics.py",
+    "status": "modified",
+    "sha": "7658cb2a65c0065aae98d4131a0a467e27e1f039"
+  },
+  {
+    "path": "data-mining-framework/tests/test_evidence.py",
+    "status": "modified",
+    "sha": "a4809cd79440fa0a69022b2e886ae13ac1e63d06"
+  },
+  {
+    "path": "data-mining-framework/tests/test_reporting.py",
+    "status": "added",
+    "sha": "9b801218cd234efcf1b8003739ae772ca9992487"
+  },
+  {
+    "path": "data-mining-framework/tests/test_search_and_inference.py",
+    "status": "modified",
+    "sha": "d6c179f34baf4cae3307c55b0dd85ccb99da6067"
+  },
+  {
+    "path": "docs/HISTORICAL_BASELINE.md",
+    "status": "modified",
+    "sha": "baa6e19438c1e67543f6e986230efbae8c520f4e"
+  },
+  {
+    "path": "docs/QUANTILE_ANALYSIS.md",
+    "status": "modified",
+    "sha": "b050fe013f31d43c63253ce84d5b06f8f662fa8c"
+  },
+  {
+    "path": "scripts/save_run.py",
+    "status": "modified",
+    "sha": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+  },
+  {
+    "path": "strategy-evaluation/METRICS.md",
+    "status": "modified",
+    "sha": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+  },
+  {
+    "path": "strategy-evaluation/README.md",
+    "status": "modified",
+    "sha": "da30fb6ad0907e28e082127a91fdafc8636e43fb"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "status": "modified",
+    "sha": "c4803c5d4d5814143a24b25611ce678c2b037b3f"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+    "status": "modified",
+    "sha": "0a01b02d11f1c21c0a566e10c48b5cae49501ded"
+  },
+  {
+    "path": "strategy-evaluation/tests/test_engine.py",
+    "status": "modified",
+    "sha": "d232bfd7382641fb012530a78c1e9a9d027584c4"
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "status": "modified",
+    "sha": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf"
+  },
+  {
+    "path": "tests/test_save_run.py",
+    "status": "modified",
+    "sha": "f266a908918ecf4e546185adf269894360f8c092"
+  }
+]

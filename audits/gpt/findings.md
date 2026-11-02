@@ -23,3 +23,9 @@ No new runtime-verified product defect. New-to-GPT static confirmation retains t
 GA-2026-10-31-1 remains open and now has independent static corroboration from RA-2026-11-01-2. GA-2026-10-31-2 remains plausible; peer reports BH-2026-10-21-2 alias, but the original hunt ledger/control is unavailable. All previous entries and histories retained. See findings.json and dated report for current limits.
 
 Delivery reconciliation: existing **INV-PR32-001 P1/high** remains unresolved at runner a73149d3. Safe host-output collection must be verified before new execution. The CSVGZ correction review closure does not certify whole-runner isolation. [Primary maintained review](https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767). No new GA ID/yield for this known root.
+
+
+
+## 2026-11-02 Monday data slice
+
+GA-2026-11-02-3: **known K14 / REVIEW-16**, fundamentals reader required-key validation omission independently corroborated on `9913f94b9b795bd9633a6a683e9f420301e400b3`. Static omission confirmed; actual product read/control and financial impact unverified. No newly discovered defect or product execution. [Evidence](2026-11-02-data-rotation/reviewer2/independent-verdict.json).

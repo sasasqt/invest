@@ -1,0 +1,162 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "producer": "Reviewer1",
+  "counting": "Unique path/line per primary reviewer; helper ranges separate. Re-reading old coverage counts actual effort but never adds cumulative unique coverage twice.",
+  "ranges": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          67
+        ]
+      ]
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          83
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/README.md",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          41
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          229
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          115
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          280,
+          347
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          77
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          55,
+          70
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          118,
+          156
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          105
+        ],
+        [
+          113,
+          122
+        ],
+        [
+          375,
+          416
+        ],
+        [
+          447,
+          544
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          35,
+          145
+        ],
+        [
+          301,
+          405
+        ],
+        [
+          450,
+          561
+        ]
+      ]
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          80,
+          117
+        ],
+        [
+          140,
+          185
+        ]
+      ]
+    },
+    {
+      "path": "TODO.md",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          44,
+          44
+        ]
+      ]
+    }
+  ],
+  "mandatory_reads_note": "Protocol/common-check metadata, inventory and rg matches are not included as discretionary semantic lines. Broad emitted surrounding context without specific semantic inspection receives no credit."
+}

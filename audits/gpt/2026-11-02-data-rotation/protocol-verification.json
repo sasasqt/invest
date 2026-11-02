@@ -1,0 +1,86 @@
+{
+  "commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+  "index_sha256": "c2999931753995963975259b21b84196d859fd27192389fba43a9344e7f543a2",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "verified_via": "GitHub fetch_file encoding=base64 -> stdlib base64 decode -> SHA256/length; canonical index and baseline bytes checked, all loaded modules checked",
+  "modules": [
+    {
+      "name": "overview",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/overview.md",
+      "sha256": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "bytes": 4730
+    },
+    {
+      "name": "00-preflight",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/00-preflight.md",
+      "sha256": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "bytes": 5975
+    },
+    {
+      "name": "01-scope",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/01-scope.md",
+      "sha256": "ed73caf0a3dc120195cc111f5d993be1b200f164aa4bfca37cd1c05dc617753d",
+      "bytes": 2955
+    },
+    {
+      "name": "13-continuity",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/13-continuity.md",
+      "sha256": "9444417361df01e9400b622beda25c56dd03342880a2ae8a5cd5034ebc9a5c2b",
+      "bytes": 3245
+    },
+    {
+      "name": "action-boundary",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/action-boundary.md",
+      "sha256": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "bytes": 1265
+    },
+    {
+      "name": "03-consistency",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/03-consistency.md",
+      "sha256": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+      "bytes": 2910
+    },
+    {
+      "name": "04-correctness",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/04-correctness.md",
+      "sha256": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+      "bytes": 1866
+    },
+    {
+      "name": "05-financial-validity",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/05-financial-validity.md",
+      "sha256": "336c6887e1a60b96a27766328db1115cd3579604f3cf68cfa2287eb32cae0eaf",
+      "bytes": 2707
+    },
+    {
+      "name": "07-independent-checks",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/07-independent-checks.md",
+      "sha256": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "bytes": 1273
+    },
+    {
+      "name": "02-coverage",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/02-coverage.md",
+      "sha256": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "bytes": 2035
+    },
+    {
+      "name": "11-findings-review",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/11-findings-review.md",
+      "sha256": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "bytes": 14408
+    },
+    {
+      "name": "12-reporting",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/12-reporting.md",
+      "sha256": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "bytes": 5093
+    },
+    {
+      "name": "14-crosscheck-publication",
+      "path": "audits/gpt/protocol/rotation-v3-2026-11-02/methods/14-crosscheck-publication.md",
+      "sha256": "b42bf790042b8707f9b83ff8795d0ca03d4c6aa077fe3661dcd5e4a08a827903",
+      "bytes": 11733
+    }
+  ]
+}

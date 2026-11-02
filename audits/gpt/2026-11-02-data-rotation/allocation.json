@@ -1,0 +1,36 @@
+{
+  "run_id": "GA-2026-11-02-data-092201Z",
+  "field": "data",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "planned_percent": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "primary_unique_lines": {
+    "exploitation": 735,
+    "exploration": 668
+  },
+  "helper_lines_separate": 901,
+  "new_cumulative_lines_all_reviewers": 268,
+  "new_verified_distinct_roots": {
+    "exploitation": 0,
+    "exploration": 1
+  },
+  "root_count_scope": "GA-2026-11-02-3 first locally independently corroborated static omission; known K14, zero novel discoveries and zero runtime confirmations. C3 excluded.",
+  "pooled_eligible_visits": 1,
+  "pooled_rates_per_1000_lines": {
+    "exploitation": 0.0,
+    "exploration": 1.4970059880239521
+  },
+  "next_percent": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "actual_percent": {
+    "exploitation": 52.38774055595153,
+    "exploration": 47.61225944404847
+  },
+  "actual_deviation": "Shared generic validation and financial-reader boundary required more exploration than planned; no extra field appended.",
+  "selection": "2026-11-02-data-rotation/selection.json",
+  "research": "not scheduled; zero research reading/experiments; excluded from code denominator"
+}

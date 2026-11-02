@@ -23,3 +23,9 @@ Four shared IDs allocated, two optional research work items, no additional new p
 The comparator pending independent review is closed at static-review scope. Expected artifact inventories, format logical gates, isolated negative controls and new benchmarks remain open. Pandas4 deprecation cleanup is a low-severity maintenance lead, not a proven future CI result. No new trading candidate promoted and no implementation authorized. Two new shared GA IDs, including one optional recommendation, within the seven-item limit.
 
 Delivery reconciliation: existing **INV-PR32-001 P1/high** remains unresolved at runner a73149d3. Safe host-output collection must be verified before new execution. The CSVGZ correction review closure does not certify whole-runner isolation. [Primary maintained review](https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767). No new GA ID/yield for this known root.
+
+
+
+## 2026-11-02 data follow-up
+
+No optional new recommendation. Existing REVIEW-16 / K14 needs safe malformed-bundle/control verification; follow the existing correction scope rather than open a duplicate issue. No fix or saved-result regeneration performed.
