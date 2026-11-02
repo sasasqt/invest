@@ -583,6 +583,89 @@ def test_leg_size_matches_the_bucket_cutpoint_rule():
             assert leg_size(n, float(f)) == expected, (n, f)
 
 
+def quantile(long_fraction: float, short_fraction: float, min_names: int = 1):
+    from invest_evaluation.strategies import QuantileStrategy
+
+    return QuantileStrategy(
+        StrategyConfig(
+            long_fraction=long_fraction, short_fraction=short_fraction, min_names=min_names
+        )
+    )
+
+
+def test_quantile_strategy_holds_a_tie_group_whole_or_not_at_all():
+    """BH-2026-11-02-1: a tie group straddling a leg cut was split by instrument id."""
+    names = [f"S{i:02d}" for i in range(20)]
+    scores = pd.Series(np.arange(20, dtype=float), index=names)
+    # From the top: S19, S18, then S15-S17 tied at ranks 3-5 (percentile 4/20 = 0.2).
+    scores[["S15", "S16", "S17"]] = 16.0
+    # From the bottom: S00-S02, then S03-S06 tied at ranks 4-7 (percentile 5.5/20).
+    scores[["S03", "S04", "S05", "S06"]] = 4.5
+    weights = quantile(0.2, 0.2).target_weights(scores)
+    assert sorted(weights[weights > 0].index) == ["S15", "S16", "S17", "S18", "S19"]
+    assert sorted(weights[weights < 0].index) == ["S00", "S01", "S02"]
+    assert weights[weights > 0].to_numpy() == pytest.approx([0.5 / 5] * 5)
+    assert weights[weights < 0].to_numpy() == pytest.approx([-0.5 / 3] * 3)
+
+
+def test_quantile_strategy_holds_nothing_when_a_leg_is_empty():
+    """A tie group wider than the leg at an extreme leaves the leg empty, as a bucket
+    portfolio's; so does a fraction below one name (BH-2026-10-09-4: 2% of 30)."""
+    scores = pd.Series(np.arange(20, dtype=float), index=[f"S{i:02d}" for i in range(20)])
+    scores[["S16", "S17", "S18", "S19"]] = 50.0  # percentile 2.5/20 from the top > 0.1
+    assert quantile(0.1, 0.1).target_weights(scores).empty
+    assert quantile(0.1, 0.1).target_weights(-scores).empty
+    assert not quantile(0.1, 0.0).target_weights(-scores).empty  # long-only, no tie on top
+    distinct = pd.Series(np.arange(30, dtype=float), index=[f"N{i:02d}" for i in range(30)])
+    assert quantile(0.02, 0.02, min_names=10).target_weights(distinct).empty
+
+
+@pytest.mark.parametrize("seed", range(25))
+def test_quantile_strategy_legs_ignore_instrument_ids(seed):
+    """Renaming instruments moves the weights with the names, reversing the scores swaps
+    the legs, and the legs are the bucket portfolios' top and bottom tails."""
+    from invest_evaluation.strategies import Slice, percentile_ranks
+
+    rng = np.random.default_rng(seed)
+    n = int(rng.integers(10, 90))
+    f = float(rng.choice([0.05, 0.1, 0.2, 0.29, 0.5]))
+    values = rng.integers(0, 8, n).astype(float)  # many ties
+    names = [f"N{i:03d}" for i in range(n)]
+    scores = pd.Series(values, index=names)
+    strategy = quantile(f, f)
+    weights = strategy.target_weights(scores)
+
+    perm = rng.permutation(n)
+    renamed = pd.Series(values, index=[names[j] for j in perm])
+    moved = {names[perm[names.index(k)]]: w for k, w in weights.items()}
+    assert strategy.target_weights(renamed).to_dict() == moved
+
+    assert strategy.target_weights(-scores).to_dict() == (-weights).to_dict()
+    if not weights.empty:
+        pct, from_top = percentile_ranks(scores), percentile_ranks(scores, descending=True)
+        assert set(weights[weights > 0].index) == set(
+            scores.index[Slice("top", f).mask(pct, from_top).to_numpy()]
+        )
+        assert set(weights[weights < 0].index) == set(
+            scores.index[Slice("bottom", f).mask(pct, from_top).to_numpy()]
+        )
+
+
+def test_backtest_on_tied_scores_does_not_depend_on_instrument_names(market, reversal_signals):
+    """BH-2026-11-02-1 end to end: a discrete score gave results that changed with ticker
+    spelling, because tie groups at the leg cuts were split by instrument id."""
+    signals = reversal_signals.assign(score=np.round(reversal_signals["score"] * 20))
+    names = sorted(market["instrument"].unique())
+    rename = dict(zip(names, reversed(names), strict=True))
+    base = run_backtest(market, signals)
+    renamed = run_backtest(
+        market.assign(instrument=market["instrument"].map(rename)),
+        signals.assign(instrument=signals["instrument"].map(rename)),
+    )
+    assert base.daily["n_long"].max() > 0
+    pd.testing.assert_series_equal(base.daily["equity"], renamed.daily["equity"], rtol=1e-12)
+
+
 class EqualWeight:
     """Long every eligible name equally."""
 
