@@ -1086,6 +1086,23 @@ def test_a_gap_that_leaves_equity_positive_at_the_open_sizes_orders_as_before():
     assert res.daily.loc[dates[5], "equity"] == pytest.approx(750.0)
 
 
+def test_an_open_insolvency_uses_the_last_mark_of_a_name_without_an_open_bar():
+    """A has no bar on 2024-01-08, when B gaps to 100 at the open and is back at 20 by the
+    close. Equity at the open values A at its last mark (10): 1000 + 50 * 10 - 25 * 100 =
+    -1000 (it would be -1500 if A counted as 0), and the run stops there with A's last mark
+    in the long value. One rebalance only, so no later decision needs A's broken windows."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    bars = bars[~((bars["date"] == dates[5]) & (bars["instrument"] == "A"))]
+    config = long_short_config(rebalance_every=100)
+    res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    last = res.daily.iloc[-1]
+    assert res.daily.index[-1] == dates[5]
+    assert last["long_value"] == pytest.approx(500.0)
+    assert last["short_value"] == pytest.approx(2500.0)
+    assert last["equity"] == pytest.approx(-1000.0)
+
+
 def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
     """Equity after the open's fills is checked too. One fill on 2024-01-04 (A +50, B -25)
     at 150 bp (commission 100, half-spread 50) costs 15: cash 985. B opens at 59.36 on
