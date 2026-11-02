@@ -1,0 +1,3168 @@
+[
+  {
+    "round": 4,
+    "kind": "audited",
+    "python": "3.13",
+    "run_id": 41208034002,
+    "job_id": 124557059770,
+    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "artifact_id": 13044684306,
+    "artifact_sha256": "3954647e217870ed31634879dcc904d4aa74951115d8e796cc2839de67d73a43",
+    "expected_exit": 1,
+    "expected_failed_commands": [
+      "tests"
+    ],
+    "guard_tests": 40,
+    "archive": "artifacts/audited-3.13.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:281d39ff02e3b389401586134ff9e6572954687822a58055ec07a60ded4e0b7f",
+      "image_id": "sha256:341dfb974c0ed9e119426921bb36cd800552313540603d9e78b8baeed0e70ed3",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-4b04216dd6284f02b5942cd616765131",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.13/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:341dfb974c0ed9e119426921bb36cd800552313540603d9e78b8baeed0e70ed3",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.13/host-only-sentinel",
+        "--host-pid",
+        "2398"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 1,
+      "image_id": "sha256:341dfb974c0ed9e119426921bb36cd800552313540603d9e78b8baeed0e70ed3",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 9V45 96-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.4.0"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.3"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.13/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.13/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.13/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.13.18 (main, Oct 28 2026, 02:02:02) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "1 failed, 585 passed in 234.45s (0:03:54)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16380280999999286,
+        "child_cpu_seconds": 0.14354599999999998
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6648465570000042,
+        "child_cpu_seconds": 0.622061
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 1.4663154590000005,
+        "child_cpu_seconds": 1.438503
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.3142000710000019,
+        "child_cpu_seconds": 0.30407299999999987
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11386130800001126,
+        "child_cpu_seconds": 0.07758999999999977
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06381954399999756,
+        "child_cpu_seconds": 0.05117500000000058
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06379435400000943,
+        "child_cpu_seconds": 0.04841599999999979
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.1202346500000004,
+        "child_cpu_seconds": 3.1853890000000007
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 235.212807148,
+        "child_cpu_seconds": 235.086332
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06403915100003132,
+        "child_cpu_seconds": 0.040374999999987615
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.3141142230000469,
+        "child_cpu_seconds": 0.288844000000001
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5145120580000366,
+        "child_cpu_seconds": 0.5093780000000061
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.5646158970000101,
+        "child_cpu_seconds": 0.5191770000000275
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.376024980000011,
+        "child_cpu_seconds": 5.333669999999994
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.372929150999994,
+        "child_cpu_seconds": 5.346826
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.324022736000018,
+        "child_cpu_seconds": 5.28121000000001
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.473403110999982,
+        "child_cpu_seconds": 5.451261000000009
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.623571245999983,
+        "child_cpu_seconds": 5.622196999999964
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.673779659000047,
+        "child_cpu_seconds": 5.623702000000021
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.3225480990000165,
+        "child_cpu_seconds": 5.312987000000033
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.372911063000004,
+        "child_cpu_seconds": 5.359913000000011
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "semantic_gate_version": 2,
+      "valid_measured_samples": 7,
+      "median_seconds": 5.372929150999994,
+      "min_seconds": 5.3225480990000165,
+      "max_seconds": 5.673779659000047,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": [
+        "tests"
+      ]
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.376024980000011,
+        "child_cpu_seconds": 5.333669999999994,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-0-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.372929150999994,
+        "child_cpu_seconds": 5.346826,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-1-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.324022736000018,
+        "child_cpu_seconds": 5.28121000000001,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-2-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.473403110999982,
+        "child_cpu_seconds": 5.451261000000009,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-3-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.623571245999983,
+        "child_cpu_seconds": 5.622196999999964,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-4-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.673779659000047,
+        "child_cpu_seconds": 5.623702000000021,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-5-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.3225480990000165,
+        "child_cpu_seconds": 5.312987000000033,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-6-semantic-manifest.json",
+        "output_bytes": 853598
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.372911063000004,
+        "child_cpu_seconds": 5.359913000000011,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-7-semantic-manifest.json",
+        "output_bytes": 853598
+      }
+    ],
+    "semantic_manifest_template": {
+      "version": 2,
+      "volatile_json_keys": [
+        "created_at",
+        "created_utc",
+        "recorded_at",
+        "retrieved_at"
+      ],
+      "records": [
+        {
+          "path": "data/fundamentals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "b043d42db1add6664ab9dfdb8a41fff509e4f1a4deee07f25b91e418c3ae6353"
+        },
+        {
+          "path": "data/fundamentals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "90857978d353094928cfc820cd11dcd65332236f6e7cd9b2aebe7688bb4b9e1d"
+        },
+        {
+          "path": "data/market/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "7b2c70d580438e524a812c309cef096513a7c98ac0e4ae0bb50e31e058b10e66"
+        },
+        {
+          "path": "data/market/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3ea5b5d04b345637d6e26ed229e5822c9362757b3da7d8b4a11676a26a4b6d59"
+        },
+        {
+          "path": "data/universe/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "5f5f186aa8fb1e4309d32047dda6b7709ff13aff74b8aa1482c228473284392c"
+        },
+        {
+          "path": "data/universe/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "33b503dff704f1d3c26da0df27a8a03ae2c752a9fe8e437e53766bfb3e218678"
+        },
+        {
+          "path": "eval/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "314dc4a88f776873953703cb496e993c55129eb79fc01cb04b871e6c3782e6d5"
+        },
+        {
+          "path": "eval/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "926204b253db58be47766906dd784b152e30c5707105334d294b8287d55ed51d"
+        },
+        {
+          "path": "eval/metrics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "98d28ccaab8ee8d80ed55af297d9df718ef47f8b6a106c4d34f7a3414c27e6ec"
+        },
+        {
+          "path": "eval/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "13c1cfed6ac113de8e5860b09da6ad970616d96d796ec8349b2550d7f123c552"
+        },
+        {
+          "path": "eval/statistics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "967ac9aad55d5e2ae7b6e2a362b0e16ebf480e616dba5b0b0858e5b65239a959"
+        },
+        {
+          "path": "eval/tables/daily.csv",
+          "comparison": "CSV bytes",
+          "sha256": "01338a0a84a4d0591c126a7848cac45886a674d95d5f51d969fc0cef7411dd25"
+        },
+        {
+          "path": "eval/tables/episodes.csv",
+          "comparison": "CSV bytes",
+          "sha256": "368e14f06d5818d9fb56243b039fdf7cac039d90930a1f335f52b66898fee4ba"
+        },
+        {
+          "path": "eval/tables/scenarios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "8ec6d241ac6e9c6ff2b73a3c5dadf42fe38b27e4082bfc37e3a52701b1e274df"
+        },
+        {
+          "path": "eval/tables/trades.csv",
+          "comparison": "CSV bytes",
+          "sha256": "bfea164da558e7f632b96c71aed3d27e7ccea3cda06dc52c3619ecdafc1fb9c7"
+        },
+        {
+          "path": "eval/verdict.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "43d12dc5048fafdfe14f40798cc0de52638d78dc897ccc0f7a1aace81c62a397"
+        },
+        {
+          "path": "mining/ledger.jsonl",
+          "comparison": "jsonl; record order retained; declared volatile keys normalized",
+          "sha256": "00ae2fbb4a1650245d9c8e959a6213b3878e6d2e31d4d72199cdc53dc3bc9692"
+        },
+        {
+          "path": "mining/search/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "b9454e94a8e51471765e7789c66ffaae1eee0e50fffa4fde58f9e57442573cb3"
+        },
+        {
+          "path": "mining/search/confirmation.csv",
+          "comparison": "CSV bytes",
+          "sha256": "e7cd5a0e961d20c480fbc32bd05d5f33bef04d847e722ecf0820085735256a18"
+        },
+        {
+          "path": "mining/search/factors/f_97e8945c84e9.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "a78301df79a7d7f67f5bc8c869ba600c17e4c20f870a9a2250575eaf1e1be3e6"
+        },
+        {
+          "path": "mining/search/factors/f_a763c814692c.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0e4a41c25d64e549c6f5964eb09137afeeaa5c233818c439a135e8a482a41376"
+        },
+        {
+          "path": "mining/search/factors/f_c46b895a8bda.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0331977ca27faaffbc5f5c7af95b8083db36eff56f8718d5a46f3e376f3df760"
+        },
+        {
+          "path": "mining/search/factors/f_de2c232de3dd.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c1fb7ce3512f3af06f2c95ee4cfb40df810bc95f15abc5a9307798a0bba375aa"
+        },
+        {
+          "path": "mining/search/factors/f_f4031d273d5d.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "dcdf778d66dd59991c31fa51c115d6ab8ed16297d61080c2cacfafd1b455fb05"
+        },
+        {
+          "path": "mining/search/ledger.csv",
+          "comparison": "CSV bytes",
+          "sha256": "3bf0408e6ed6e22d593403bcb1549860916455424bbe317451ec958233ed7567"
+        },
+        {
+          "path": "quantiles/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "fa309ea85e8e756b5a7574099c3f517c6b967f0fe9778a59f109286c617bc0ed"
+        },
+        {
+          "path": "quantiles/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3792004d8eeab855a2cbb5ec9f30dfdd02ced9c4f689719787e6e6818c30f394"
+        },
+        {
+          "path": "quantiles/quantiles.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c42f926f9774aab941cd9e5563cd6117b7db0084e06e782751ed929aaf726f52"
+        },
+        {
+          "path": "quantiles/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "5a0079a0b9d0dc499a9b3d8ac2a61fda0768e639079c59d45ab6f169d9364d14"
+        },
+        {
+          "path": "quantiles/tables/daily_returns.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "315af256426366da679c4a608aca865fac8af5904b87b7fc7d9e08c2f8d79f91"
+        },
+        {
+          "path": "quantiles/tables/memberships.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "766d087aa9376d7c6b656351a0ade3ed62b9b22fa167bf9f363551c01d15d738"
+        },
+        {
+          "path": "quantiles/tables/portfolios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "8bf8ecd6a089080d7d791610f3957358231f6d7e47450a16b5ad47d44c3d5318"
+        },
+        {
+          "path": "signals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "9b2e5f7e2a44a20221d2b93afd67f338f2bb54e58ee55a7e70df28e63002897e"
+        },
+        {
+          "path": "signals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "cf97d0aeece708c1501d6d0c97d8e841e899c04749ce68f27f70d46d780bf571"
+        }
+      ],
+      "figures_present_nonempty": [
+        "eval/figures/diagnostics.png",
+        "eval/figures/equity_drawdown.png",
+        "eval/figures/scenarios.png",
+        "quantiles/figures/quantile_portfolios.png"
+      ],
+      "figure_byte_comparison": "excluded; source tables participate in the gate"
+    },
+    "verified_manifest_hashes": [
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d",
+      "7f551ed12413a72db26859317b5a51cd92b7fcf86a2f13f86bf3e030e160a90d"
+    ],
+    "coverage_totals": {
+      "covered_lines": 3702,
+      "num_statements": 3851,
+      "percent_covered": 94.72553233053331,
+      "percent_covered_display": "95",
+      "missing_lines": 149,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.1308750973773,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 111,
+      "covered_branches": 1147,
+      "missing_branches": 121,
+      "percent_branches_covered": 90.45741324921136,
+      "percent_branches_covered_display": "90"
+    }
+  },
+  {
+    "round": 4,
+    "kind": "control",
+    "python": "3.11",
+    "run_id": 41208034002,
+    "job_id": 124557059691,
+    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "source_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "artifact_id": 13044779639,
+    "artifact_sha256": "b7bf64453909e1036effdfa4f7314f059cd6b42e2f05bd34d29f4708b0233718",
+    "expected_exit": 0,
+    "expected_failed_commands": [],
+    "guard_tests": 40,
+    "archive": "artifacts/control-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:8a2bb07900c58fdf08ba497799019e1734f56d6ef66fdc9451f1c83e905f7017",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-949ddc021d184e0fb9736f19e7f0e7b8",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-control-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:8a2bb07900c58fdf08ba497799019e1734f56d6ef66fdc9451f1c83e905f7017",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-control-3.11/host-only-sentinel",
+        "--host-pid",
+        "2395"
+      ],
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "runner": {
+      "exit": 0,
+      "image_id": "sha256:8a2bb07900c58fdf08ba497799019e1734f56d6ef66fdc9451f1c83e905f7017",
+      "sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1014-aws-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "Intel(R) Xeon(R) 6975P-C",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "587 passed in 268.37s (0:04:28)"
+      ],
+      "hash-seed-repeat": [
+        "587 passed in 142.63s (0:02:22)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 1.73s"
+      ],
+      "data-mining-framework-tests": [
+        "130 passed in 23.88s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 68.38s (0:01:08)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.16388711700000158,
+        "child_cpu_seconds": 0.135623
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6147659660000073,
+        "child_cpu_seconds": 0.611204
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.1689076260000064,
+        "child_cpu_seconds": 2.130694
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.3647759330000042,
+        "child_cpu_seconds": 0.32261099999999976
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.11394688700001154,
+        "child_cpu_seconds": 0.08993200000000012
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06385525099999256,
+        "child_cpu_seconds": 0.049485999999999974
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06387541099999794,
+        "child_cpu_seconds": 0.04629599999999995
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.520418669999998,
+        "child_cpu_seconds": 2.619509
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 269.06531307399996,
+        "child_cpu_seconds": 269.010559
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06382101000002649,
+        "child_cpu_seconds": 0.03764800000000079
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.3143210389999922,
+        "child_cpu_seconds": 0.29394999999998284
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.61529851399996,
+        "child_cpu_seconds": 0.5703149999999737
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.6151048390000255,
+        "child_cpu_seconds": 0.5663970000000127
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 143.20725618600005,
+        "child_cpu_seconds": 143.124004
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.21873235999999,
+        "child_cpu_seconds": 2.1634530000000263
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877781185999993,
+        "child_cpu_seconds": 5.842471999999983
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.0188974340000527,
+        "child_cpu_seconds": 1.9582659999999734
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.1692206209999654,
+        "child_cpu_seconds": 2.1488560000000207
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 8.134687947999964,
+        "child_cpu_seconds": 7.725610000000001
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 24.421491005999997,
+        "child_cpu_seconds": 24.379783999999987
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.1683855399999175,
+        "child_cpu_seconds": 2.1547889999999796
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 7.883177861000036,
+        "child_cpu_seconds": 7.827711000000011
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.015924584999993385,
+        "child_cpu_seconds": 0.011759999999986448
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 68.92682927100009,
+        "child_cpu_seconds": 68.90353599999997
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.8781480110000075,
+        "child_cpu_seconds": 5.850024999999947
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877319278000073,
+        "child_cpu_seconds": 5.8378590000000585
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.828128028000037,
+        "child_cpu_seconds": 5.804198999999981
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877118773999996,
+        "child_cpu_seconds": 5.858863000000003
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877481088999957,
+        "child_cpu_seconds": 5.8679570000000645
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.82810612600008,
+        "child_cpu_seconds": 5.818872999999968
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.827008441999965,
+        "child_cpu_seconds": 5.816302999999921
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.826871479000033,
+        "child_cpu_seconds": 5.806629999999991
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "semantic_gate_version": 2,
+      "valid_measured_samples": 7,
+      "median_seconds": 5.828128028000037,
+      "min_seconds": 5.826871479000033,
+      "max_seconds": 5.877481088999957,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": []
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.8781480110000075,
+        "child_cpu_seconds": 5.850024999999947,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-0-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877319278000073,
+        "child_cpu_seconds": 5.8378590000000585,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-1-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.828128028000037,
+        "child_cpu_seconds": 5.804198999999981,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-2-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877118773999996,
+        "child_cpu_seconds": 5.858863000000003,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-3-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.877481088999957,
+        "child_cpu_seconds": 5.8679570000000645,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-4-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.82810612600008,
+        "child_cpu_seconds": 5.818872999999968,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-5-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.827008441999965,
+        "child_cpu_seconds": 5.816302999999921,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-6-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 5.826871479000033,
+        "child_cpu_seconds": 5.806629999999991,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-7-semantic-manifest.json",
+        "output_bytes": 853600
+      }
+    ],
+    "semantic_manifest_template": {
+      "version": 2,
+      "volatile_json_keys": [
+        "created_at",
+        "created_utc",
+        "recorded_at",
+        "retrieved_at"
+      ],
+      "records": [
+        {
+          "path": "data/fundamentals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "b043d42db1add6664ab9dfdb8a41fff509e4f1a4deee07f25b91e418c3ae6353"
+        },
+        {
+          "path": "data/fundamentals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "90857978d353094928cfc820cd11dcd65332236f6e7cd9b2aebe7688bb4b9e1d"
+        },
+        {
+          "path": "data/market/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "7b2c70d580438e524a812c309cef096513a7c98ac0e4ae0bb50e31e058b10e66"
+        },
+        {
+          "path": "data/market/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3ea5b5d04b345637d6e26ed229e5822c9362757b3da7d8b4a11676a26a4b6d59"
+        },
+        {
+          "path": "data/universe/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "5f5f186aa8fb1e4309d32047dda6b7709ff13aff74b8aa1482c228473284392c"
+        },
+        {
+          "path": "data/universe/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "33b503dff704f1d3c26da0df27a8a03ae2c752a9fe8e437e53766bfb3e218678"
+        },
+        {
+          "path": "eval/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "314dc4a88f776873953703cb496e993c55129eb79fc01cb04b871e6c3782e6d5"
+        },
+        {
+          "path": "eval/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "926204b253db58be47766906dd784b152e30c5707105334d294b8287d55ed51d"
+        },
+        {
+          "path": "eval/metrics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "98d28ccaab8ee8d80ed55af297d9df718ef47f8b6a106c4d34f7a3414c27e6ec"
+        },
+        {
+          "path": "eval/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "13c1cfed6ac113de8e5860b09da6ad970616d96d796ec8349b2550d7f123c552"
+        },
+        {
+          "path": "eval/statistics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "967ac9aad55d5e2ae7b6e2a362b0e16ebf480e616dba5b0b0858e5b65239a959"
+        },
+        {
+          "path": "eval/tables/daily.csv",
+          "comparison": "CSV bytes",
+          "sha256": "01338a0a84a4d0591c126a7848cac45886a674d95d5f51d969fc0cef7411dd25"
+        },
+        {
+          "path": "eval/tables/episodes.csv",
+          "comparison": "CSV bytes",
+          "sha256": "368e14f06d5818d9fb56243b039fdf7cac039d90930a1f335f52b66898fee4ba"
+        },
+        {
+          "path": "eval/tables/scenarios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "f11c4a0f8fdf61e9830ffc9f7f45d0bc994b2336f6c7599ea9deebc5c78f2636"
+        },
+        {
+          "path": "eval/tables/trades.csv",
+          "comparison": "CSV bytes",
+          "sha256": "bfea164da558e7f632b96c71aed3d27e7ccea3cda06dc52c3619ecdafc1fb9c7"
+        },
+        {
+          "path": "eval/verdict.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "43d12dc5048fafdfe14f40798cc0de52638d78dc897ccc0f7a1aace81c62a397"
+        },
+        {
+          "path": "mining/ledger.jsonl",
+          "comparison": "jsonl; record order retained; declared volatile keys normalized",
+          "sha256": "00ae2fbb4a1650245d9c8e959a6213b3878e6d2e31d4d72199cdc53dc3bc9692"
+        },
+        {
+          "path": "mining/search/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "b9454e94a8e51471765e7789c66ffaae1eee0e50fffa4fde58f9e57442573cb3"
+        },
+        {
+          "path": "mining/search/confirmation.csv",
+          "comparison": "CSV bytes",
+          "sha256": "e7cd5a0e961d20c480fbc32bd05d5f33bef04d847e722ecf0820085735256a18"
+        },
+        {
+          "path": "mining/search/factors/f_97e8945c84e9.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "a78301df79a7d7f67f5bc8c869ba600c17e4c20f870a9a2250575eaf1e1be3e6"
+        },
+        {
+          "path": "mining/search/factors/f_a763c814692c.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0e4a41c25d64e549c6f5964eb09137afeeaa5c233818c439a135e8a482a41376"
+        },
+        {
+          "path": "mining/search/factors/f_c46b895a8bda.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0331977ca27faaffbc5f5c7af95b8083db36eff56f8718d5a46f3e376f3df760"
+        },
+        {
+          "path": "mining/search/factors/f_de2c232de3dd.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c1fb7ce3512f3af06f2c95ee4cfb40df810bc95f15abc5a9307798a0bba375aa"
+        },
+        {
+          "path": "mining/search/factors/f_f4031d273d5d.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "dcdf778d66dd59991c31fa51c115d6ab8ed16297d61080c2cacfafd1b455fb05"
+        },
+        {
+          "path": "mining/search/ledger.csv",
+          "comparison": "CSV bytes",
+          "sha256": "3bf0408e6ed6e22d593403bcb1549860916455424bbe317451ec958233ed7567"
+        },
+        {
+          "path": "quantiles/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "fa309ea85e8e756b5a7574099c3f517c6b967f0fe9778a59f109286c617bc0ed"
+        },
+        {
+          "path": "quantiles/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3792004d8eeab855a2cbb5ec9f30dfdd02ced9c4f689719787e6e6818c30f394"
+        },
+        {
+          "path": "quantiles/quantiles.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c42f926f9774aab941cd9e5563cd6117b7db0084e06e782751ed929aaf726f52"
+        },
+        {
+          "path": "quantiles/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "5a0079a0b9d0dc499a9b3d8ac2a61fda0768e639079c59d45ab6f169d9364d14"
+        },
+        {
+          "path": "quantiles/tables/daily_returns.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "315af256426366da679c4a608aca865fac8af5904b87b7fc7d9e08c2f8d79f91"
+        },
+        {
+          "path": "quantiles/tables/memberships.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "766d087aa9376d7c6b656351a0ade3ed62b9b22fa167bf9f363551c01d15d738"
+        },
+        {
+          "path": "quantiles/tables/portfolios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "8bf8ecd6a089080d7d791610f3957358231f6d7e47450a16b5ad47d44c3d5318"
+        },
+        {
+          "path": "signals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "9b2e5f7e2a44a20221d2b93afd67f338f2bb54e58ee55a7e70df28e63002897e"
+        },
+        {
+          "path": "signals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "cf97d0aeece708c1501d6d0c97d8e841e899c04749ce68f27f70d46d780bf571"
+        }
+      ],
+      "figures_present_nonempty": [
+        "eval/figures/diagnostics.png",
+        "eval/figures/equity_drawdown.png",
+        "eval/figures/scenarios.png",
+        "quantiles/figures/quantile_portfolios.png"
+      ],
+      "figure_byte_comparison": "excluded; source tables participate in the gate"
+    },
+    "verified_manifest_hashes": [
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587"
+    ],
+    "coverage_totals": {
+      "covered_lines": 3701,
+      "num_statements": 3851,
+      "percent_covered": 94.68646219964837,
+      "percent_covered_display": "95",
+      "missing_lines": 150,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.10490781615165,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 112,
+      "covered_branches": 1146,
+      "missing_branches": 122,
+      "percent_branches_covered": 90.37854889589906,
+      "percent_branches_covered_display": "90"
+    }
+  },
+  {
+    "round": 4,
+    "kind": "audited",
+    "python": "3.11",
+    "run_id": 41208034002,
+    "job_id": 124557059601,
+    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "artifact_id": 13045970050,
+    "artifact_sha256": "35ba6fc79f6bff329eccc920b6adb2d30b59c3ffd73e9cabc148b3ee925b0663",
+    "expected_exit": 1,
+    "expected_failed_commands": [
+      "tests",
+      "hash-seed-repeat",
+      "data-mining-framework-tests"
+    ],
+    "guard_tests": 40,
+    "archive": "artifacts/audited-3.11.zip",
+    "verified_source_blobs": 110,
+    "boundary": {
+      "unprivileged_uid": true,
+      "no_new_privileges": true,
+      "no_capabilities": true,
+      "outside_fixture_absent": true,
+      "host_process_not_visible": true,
+      "host_canary_env_absent": true,
+      "container_socket_absent": true,
+      "source_readable": true,
+      "source_write_denied": true,
+      "network_connection_denied": true,
+      "child_inherits_outside_file_and_env_denial": true,
+      "output_writable": true
+    },
+    "launch": {
+      "base_digest": "python@sha256:94a8fee35252d06ab75856f15f12c7bae67b10e8a6da93c7fded82b2610926cd",
+      "image_id": "sha256:5a434bbaa6675e7852013185f351fd02139578e25d25f3f21d4a4383b37a1356",
+      "command": [
+        "docker",
+        "--host=unix:///var/run/docker.sock",
+        "run",
+        "--name",
+        "invest-audit-fd3a75ae73ed498c8ce8cf85f142d703",
+        "--rm",
+        "--network=none",
+        "--read-only",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "--pids-limit=256",
+        "--memory=2g",
+        "--cpus=2",
+        "--user",
+        "1001:1001",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=256m",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/verified-source,dst=/input,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/invest/invest/runner-code/audits/gpt/runner,dst=/audit,readonly",
+        "--mount",
+        "type=bind,src=/home/runner/work/_temp/audit-audited-3.11/work,dst=/work",
+        "--env",
+        "HOME=/work/home",
+        "--env",
+        "MPLCONFIGDIR=/work/matplotlib",
+        "--env",
+        "TMPDIR=/work/tmp",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "--env",
+        "OPENBLAS_NUM_THREADS=1",
+        "--env",
+        "OMP_NUM_THREADS=1",
+        "--env",
+        "MKL_NUM_THREADS=1",
+        "--env",
+        "PYTHONHASHSEED=0",
+        "--env",
+        "HTTP_PROXY=",
+        "--env",
+        "HTTPS_PROXY=",
+        "--env",
+        "ALL_PROXY=",
+        "--env",
+        "NO_PROXY=",
+        "--env",
+        "http_proxy=",
+        "--env",
+        "https_proxy=",
+        "--env",
+        "all_proxy=",
+        "--env",
+        "no_proxy=",
+        "sha256:5a434bbaa6675e7852013185f351fd02139578e25d25f3f21d4a4383b37a1356",
+        "python",
+        "/audit/runner_workload.py",
+        "--sentinel",
+        "/home/runner/work/_temp/audit-audited-3.11/host-only-sentinel",
+        "--host-pid",
+        "2410"
+      ],
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "runner": {
+      "exit": 1,
+      "image_id": "sha256:5a434bbaa6675e7852013185f351fd02139578e25d25f3f21d4a4383b37a1356",
+      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641"
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    },
+    "installed_graph": {
+      "resolved": [
+        {
+          "name": "ast-serialize",
+          "version": "0.12.1"
+        },
+        {
+          "name": "contourpy",
+          "version": "1.3.3"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.2"
+        },
+        {
+          "name": "cycler",
+          "version": "0.12.1"
+        },
+        {
+          "name": "fonttools",
+          "version": "4.66.1"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "kiwisolver",
+          "version": "1.5.1"
+        },
+        {
+          "name": "librt",
+          "version": "0.16.0"
+        },
+        {
+          "name": "matplotlib",
+          "version": "3.11.2"
+        },
+        {
+          "name": "mypy",
+          "version": "2.4.0"
+        },
+        {
+          "name": "mypy-extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.4.6"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pandas",
+          "version": "3.0.6"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pyarrow",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pyparsing",
+          "version": "3.3.3"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.10"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "typing-extensions",
+          "version": "4.16.0"
+        }
+      ],
+      "origins": {
+        "invest_data": "/work/env/lib/python3.11/site-packages/invest_data/__init__.py",
+        "invest_mining": "/work/env/lib/python3.11/site-packages/invest_mining/__init__.py",
+        "invest_evaluation": "/work/env/lib/python3.11/site-packages/invest_evaluation/__init__.py"
+      },
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]"
+    },
+    "tests": {
+      "tests": [
+        "1 failed, 585 passed in 319.11s (0:05:19)"
+      ],
+      "hash-seed-repeat": [
+        "1 failed, 585 passed in 172.90s (0:02:52)"
+      ],
+      "data-preparation-tests": [
+        "162 passed in 2.84s"
+      ],
+      "data-mining-framework-tests": [
+        "1 failed, 128 passed in 27.98s"
+      ],
+      "strategy-evaluation-tests": [
+        "240 passed in 81.59s (0:01:21)"
+      ]
+    },
+    "validations": [
+      {
+        "name": "audit-guard-tests",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "unittest",
+          "-v",
+          "test_guards"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.2141413170000135,
+        "child_cpu_seconds": 0.16718
+      },
+      {
+        "name": "build-workspace",
+        "argv": [
+          "/buildenv/bin/python",
+          "-m",
+          "pip",
+          "wheel",
+          "--no-index",
+          "--no-deps",
+          "--no-build-isolation",
+          "--wheel-dir",
+          "/work/built",
+          "/work/source/data-pipeline/data-preparation",
+          "/work/source/data-mining-framework",
+          "/work/source/strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7653246680000052,
+        "child_cpu_seconds": 0.724732
+      },
+      {
+        "name": "create-environment",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "--system-site-packages",
+          "/work/env"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.519615103999996,
+        "child_cpu_seconds": 2.466707
+      },
+      {
+        "name": "install-workspace",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--no-deps",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.41466861300000346,
+        "child_cpu_seconds": 0.38089099999999987
+      },
+      {
+        "name": "installed-graph",
+        "argv": [
+          "/work/env/bin/python",
+          "/audit/verify_installed.py",
+          "--requirements",
+          "/requirements.txt",
+          "--workspace-prefix",
+          "/work/env/"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.1139405540000098,
+        "child_cpu_seconds": 0.10627999999999993
+      },
+      {
+        "name": "format",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06390384299999141,
+        "child_cpu_seconds": 0.05595400000000017
+      },
+      {
+        "name": "lint",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06389816099999734,
+        "child_cpu_seconds": 0.05411200000000016
+      },
+      {
+        "name": "types",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "mypy",
+          "/work/source/data-pipeline/data-preparation/src",
+          "/work/source/data-mining-framework/src",
+          "/work/source/strategy-evaluation/src"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.0713790620000054,
+        "child_cpu_seconds": 3.1899950000000006
+      },
+      {
+        "name": "tests",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest",
+          "--cov=invest_data",
+          "--cov=invest_mining",
+          "--cov=invest_evaluation",
+          "--cov-branch",
+          "--cov-report=term-missing",
+          "--cov-report=json:/work/results/coverage.json",
+          "--durations=25"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 320.102892581,
+        "child_cpu_seconds": 319.358192
+      },
+      {
+        "name": "links",
+        "argv": [
+          "/work/env/bin/python",
+          "scripts/check_markdown_links.py"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.06406838500004142,
+        "child_cpu_seconds": 0.04721200000000003
+      },
+      {
+        "name": "cli-invest-data",
+        "argv": [
+          "/work/env/bin/invest-data",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.41476295299992216,
+        "child_cpu_seconds": 0.3677400000000457
+      },
+      {
+        "name": "cli-invest-mine",
+        "argv": [
+          "/work/env/bin/invest-mine",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7154543830000648,
+        "child_cpu_seconds": 0.695592999999981
+      },
+      {
+        "name": "cli-invest-eval",
+        "argv": [
+          "/work/env/bin/invest-eval",
+          "--help"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.7154424049999761,
+        "child_cpu_seconds": 0.7024570000000221
+      },
+      {
+        "name": "hash-seed-repeat",
+        "argv": [
+          "/work/env/bin/python",
+          "-m",
+          "pytest"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 173.65309233100004,
+        "child_cpu_seconds": 173.560957
+      },
+      {
+        "name": "data-preparation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-preparation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.519432728999959,
+        "child_cpu_seconds": 2.4833559999999615
+      },
+      {
+        "name": "data-preparation-install",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.678899215000001,
+        "child_cpu_seconds": 6.545888999999962
+      },
+      {
+        "name": "data-preparation-tests",
+        "argv": [
+          "/work/independent-data-preparation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-pipeline/data-preparation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 3.2210901490000197,
+        "child_cpu_seconds": 2.404506000000012
+      },
+      {
+        "name": "data-mining-framework-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-data-mining-framework"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.569855763000078,
+        "child_cpu_seconds": 2.547923999999938
+      },
+      {
+        "name": "data-mining-framework-install",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_mining-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.384829293000053,
+        "child_cpu_seconds": 9.044977999999968
+      },
+      {
+        "name": "data-mining-framework-tests",
+        "argv": [
+          "/work/independent-data-mining-framework/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/data-mining-framework/tests"
+        ],
+        "exit": 1,
+        "timeout": false,
+        "wall_seconds": 28.68664973500006,
+        "child_cpu_seconds": 28.3655450000001
+      },
+      {
+        "name": "strategy-evaluation-venv",
+        "argv": [
+          "/usr/local/bin/python",
+          "-m",
+          "venv",
+          "/work/independent-strategy-evaluation"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 2.5192516380000143,
+        "child_cpu_seconds": 2.4901299999999544
+      },
+      {
+        "name": "strategy-evaluation-install",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pip",
+          "install",
+          "--no-index",
+          "--find-links=/wheelhouse",
+          "/work/built/invest_data-0.1.0-py3-none-any.whl",
+          "/work/built/invest_evaluation-0.1.0-py3-none-any.whl",
+          "pytest"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 9.384471656000073,
+        "child_cpu_seconds": 8.798986000000038
+      },
+      {
+        "name": "evaluation-independent-import",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-c",
+          "import importlib.util as u; assert u.find_spec('invest_mining') is None"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 0.015661378000004333,
+        "child_cpu_seconds": 0.013111000000012751
+      },
+      {
+        "name": "strategy-evaluation-tests",
+        "argv": [
+          "/work/independent-strategy-evaluation/bin/python",
+          "-m",
+          "pytest",
+          "-p",
+          "no:cacheprovider",
+          "/work/source/strategy-evaluation/tests"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 82.32209995800008,
+        "child_cpu_seconds": 82.03084700000012
+      },
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.832820517999949,
+        "child_cpu_seconds": 6.811805999999972
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930052910999962,
+        "child_cpu_seconds": 6.885769999999987
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930119399999967,
+        "child_cpu_seconds": 6.888970999999987
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930048197000019,
+        "child_cpu_seconds": 6.917587000000044
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880967374999955,
+        "child_cpu_seconds": 6.862502000000113
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880194083999982,
+        "child_cpu_seconds": 6.859144999999938
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.829860473000053,
+        "child_cpu_seconds": 6.780772000000063
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880169816000034,
+        "child_cpu_seconds": 6.870047999999862
+      }
+    ],
+    "benchmark_summary": {
+      "case": "synth-S",
+      "semantic_gate_version": 2,
+      "valid_measured_samples": 7,
+      "median_seconds": 6.880967374999955,
+      "min_seconds": 6.829860473000053,
+      "max_seconds": 6.930119399999967,
+      "comparison_baseline": null,
+      "regression_claim": "unavailable",
+      "memory_peak": "not measured",
+      "scope": "subprocess wall/CPU, startup included; hashing excluded",
+      "test_failures_retained": [
+        "tests",
+        "hash-seed-repeat",
+        "data-mining-framework-tests"
+      ]
+    },
+    "raw_samples": [
+      {
+        "name": "synth-S-0",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-0"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.832820517999949,
+        "child_cpu_seconds": 6.811805999999972,
+        "case": "synth-S",
+        "repetition": 0,
+        "warmup": true,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-0-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-1",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-1"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930052910999962,
+        "child_cpu_seconds": 6.885769999999987,
+        "case": "synth-S",
+        "repetition": 1,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-1-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-2",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-2"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930119399999967,
+        "child_cpu_seconds": 6.888970999999987,
+        "case": "synth-S",
+        "repetition": 2,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-2-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-3",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-3"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.930048197000019,
+        "child_cpu_seconds": 6.917587000000044,
+        "case": "synth-S",
+        "repetition": 3,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-3-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-4",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-4"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880967374999955,
+        "child_cpu_seconds": 6.862502000000113,
+        "case": "synth-S",
+        "repetition": 4,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-4-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-5",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-5"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880194083999982,
+        "child_cpu_seconds": 6.859144999999938,
+        "case": "synth-S",
+        "repetition": 5,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-5-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-6",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-6"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.829860473000053,
+        "child_cpu_seconds": 6.780772000000063,
+        "case": "synth-S",
+        "repetition": 6,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-6-semantic-manifest.json",
+        "output_bytes": 853600
+      },
+      {
+        "name": "synth-S-7",
+        "argv": [
+          "bash",
+          "/work/source/scripts/synthetic_workflow.sh",
+          "/work/workflow-cases/S-7"
+        ],
+        "exit": 0,
+        "timeout": false,
+        "wall_seconds": 6.880169816000034,
+        "child_cpu_seconds": 6.870047999999862,
+        "case": "synth-S",
+        "repetition": 7,
+        "warmup": false,
+        "instruments": 20,
+        "sessions": 300,
+        "trials": 20,
+        "semantic_gate_version": 2,
+        "semantic_hash": "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+        "correctness_gate": true,
+        "semantic_manifest": "synth-S-7-semantic-manifest.json",
+        "output_bytes": 853600
+      }
+    ],
+    "semantic_manifest_template": {
+      "version": 2,
+      "volatile_json_keys": [
+        "created_at",
+        "created_utc",
+        "recorded_at",
+        "retrieved_at"
+      ],
+      "records": [
+        {
+          "path": "data/fundamentals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "b043d42db1add6664ab9dfdb8a41fff509e4f1a4deee07f25b91e418c3ae6353"
+        },
+        {
+          "path": "data/fundamentals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "90857978d353094928cfc820cd11dcd65332236f6e7cd9b2aebe7688bb4b9e1d"
+        },
+        {
+          "path": "data/market/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "7b2c70d580438e524a812c309cef096513a7c98ac0e4ae0bb50e31e058b10e66"
+        },
+        {
+          "path": "data/market/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3ea5b5d04b345637d6e26ed229e5822c9362757b3da7d8b4a11676a26a4b6d59"
+        },
+        {
+          "path": "data/universe/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "5f5f186aa8fb1e4309d32047dda6b7709ff13aff74b8aa1482c228473284392c"
+        },
+        {
+          "path": "data/universe/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "33b503dff704f1d3c26da0df27a8a03ae2c752a9fe8e437e53766bfb3e218678"
+        },
+        {
+          "path": "eval/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "314dc4a88f776873953703cb496e993c55129eb79fc01cb04b871e6c3782e6d5"
+        },
+        {
+          "path": "eval/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "926204b253db58be47766906dd784b152e30c5707105334d294b8287d55ed51d"
+        },
+        {
+          "path": "eval/metrics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "98d28ccaab8ee8d80ed55af297d9df718ef47f8b6a106c4d34f7a3414c27e6ec"
+        },
+        {
+          "path": "eval/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "13c1cfed6ac113de8e5860b09da6ad970616d96d796ec8349b2550d7f123c552"
+        },
+        {
+          "path": "eval/statistics.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "967ac9aad55d5e2ae7b6e2a362b0e16ebf480e616dba5b0b0858e5b65239a959"
+        },
+        {
+          "path": "eval/tables/daily.csv",
+          "comparison": "CSV bytes",
+          "sha256": "01338a0a84a4d0591c126a7848cac45886a674d95d5f51d969fc0cef7411dd25"
+        },
+        {
+          "path": "eval/tables/episodes.csv",
+          "comparison": "CSV bytes",
+          "sha256": "368e14f06d5818d9fb56243b039fdf7cac039d90930a1f335f52b66898fee4ba"
+        },
+        {
+          "path": "eval/tables/scenarios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "f11c4a0f8fdf61e9830ffc9f7f45d0bc994b2336f6c7599ea9deebc5c78f2636"
+        },
+        {
+          "path": "eval/tables/trades.csv",
+          "comparison": "CSV bytes",
+          "sha256": "bfea164da558e7f632b96c71aed3d27e7ccea3cda06dc52c3619ecdafc1fb9c7"
+        },
+        {
+          "path": "eval/verdict.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "43d12dc5048fafdfe14f40798cc0de52638d78dc897ccc0f7a1aace81c62a397"
+        },
+        {
+          "path": "mining/ledger.jsonl",
+          "comparison": "jsonl; record order retained; declared volatile keys normalized",
+          "sha256": "00ae2fbb4a1650245d9c8e959a6213b3878e6d2e31d4d72199cdc53dc3bc9692"
+        },
+        {
+          "path": "mining/search/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "b9454e94a8e51471765e7789c66ffaae1eee0e50fffa4fde58f9e57442573cb3"
+        },
+        {
+          "path": "mining/search/confirmation.csv",
+          "comparison": "CSV bytes",
+          "sha256": "e7cd5a0e961d20c480fbc32bd05d5f33bef04d847e722ecf0820085735256a18"
+        },
+        {
+          "path": "mining/search/factors/f_97e8945c84e9.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "a78301df79a7d7f67f5bc8c869ba600c17e4c20f870a9a2250575eaf1e1be3e6"
+        },
+        {
+          "path": "mining/search/factors/f_a763c814692c.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0e4a41c25d64e549c6f5964eb09137afeeaa5c233818c439a135e8a482a41376"
+        },
+        {
+          "path": "mining/search/factors/f_c46b895a8bda.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "0331977ca27faaffbc5f5c7af95b8083db36eff56f8718d5a46f3e376f3df760"
+        },
+        {
+          "path": "mining/search/factors/f_de2c232de3dd.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c1fb7ce3512f3af06f2c95ee4cfb40df810bc95f15abc5a9307798a0bba375aa"
+        },
+        {
+          "path": "mining/search/factors/f_f4031d273d5d.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "dcdf778d66dd59991c31fa51c115d6ab8ed16297d61080c2cacfafd1b455fb05"
+        },
+        {
+          "path": "mining/search/ledger.csv",
+          "comparison": "CSV bytes",
+          "sha256": "3bf0408e6ed6e22d593403bcb1549860916455424bbe317451ec958233ed7567"
+        },
+        {
+          "path": "quantiles/config.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "fa309ea85e8e756b5a7574099c3f517c6b967f0fe9778a59f109286c617bc0ed"
+        },
+        {
+          "path": "quantiles/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "3792004d8eeab855a2cbb5ec9f30dfdd02ced9c4f689719787e6e6818c30f394"
+        },
+        {
+          "path": "quantiles/quantiles.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "c42f926f9774aab941cd9e5563cd6117b7db0084e06e782751ed929aaf726f52"
+        },
+        {
+          "path": "quantiles/report.md",
+          "comparison": "UTF-8 text; output root normalized",
+          "sha256": "5a0079a0b9d0dc499a9b3d8ac2a61fda0768e639079c59d45ab6f169d9364d14"
+        },
+        {
+          "path": "quantiles/tables/daily_returns.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "315af256426366da679c4a608aca865fac8af5904b87b7fc7d9e08c2f8d79f91"
+        },
+        {
+          "path": "quantiles/tables/memberships.csv.gz",
+          "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+          "sha256": "766d087aa9376d7c6b656351a0ade3ed62b9b22fa167bf9f363551c01d15d738"
+        },
+        {
+          "path": "quantiles/tables/portfolios.csv",
+          "comparison": "CSV bytes",
+          "sha256": "8bf8ecd6a089080d7d791610f3957358231f6d7e47450a16b5ad47d44c3d5318"
+        },
+        {
+          "path": "signals/data.parquet",
+          "comparison": "raw bytes; no undeclared exclusion",
+          "sha256": "9b2e5f7e2a44a20221d2b93afd67f338f2bb54e58ee55a7e70df28e63002897e"
+        },
+        {
+          "path": "signals/manifest.json",
+          "comparison": "json; declared volatile keys and output root normalized",
+          "sha256": "cf97d0aeece708c1501d6d0c97d8e841e899c04749ce68f27f70d46d780bf571"
+        }
+      ],
+      "figures_present_nonempty": [
+        "eval/figures/diagnostics.png",
+        "eval/figures/equity_drawdown.png",
+        "eval/figures/scenarios.png",
+        "quantiles/figures/quantile_portfolios.png"
+      ],
+      "figure_byte_comparison": "excluded; source tables participate in the gate"
+    },
+    "verified_manifest_hashes": [
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587",
+      "0ad7155eb0eb86b648c62c5a8ccf9bf946fea261f1227ca330d20d7495cc6587"
+    ],
+    "coverage_totals": {
+      "covered_lines": 3702,
+      "num_statements": 3851,
+      "percent_covered": 94.72553233053331,
+      "percent_covered_display": "95",
+      "missing_lines": 149,
+      "excluded_lines": 7,
+      "percent_statements_covered": 96.1308750973773,
+      "percent_statements_covered_display": "96",
+      "num_branches": 1268,
+      "num_partial_branches": 111,
+      "covered_branches": 1147,
+      "missing_branches": 121,
+      "percent_branches_covered": 90.45741324921136,
+      "percent_branches_covered_display": "90"
+    }
+  }
+]

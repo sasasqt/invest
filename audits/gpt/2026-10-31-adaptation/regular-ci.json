@@ -1,0 +1,87 @@
+{
+  "run_id": 41208033915,
+  "failures": [
+    {
+      "job_id": 124557059219,
+      "failures": [
+        "2026-10-31T14:03:01.6799727Z FAILED ../invest/invest/data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T14:03:01.6801772Z 1 failed, 539 passed, 5 warnings in 193.55s (0:03:13)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124557059388,
+      "failures": [
+        "2026-10-31T14:05:40.3217072Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T14:05:40.3219099Z 1 failed, 585 passed in 349.39s (0:05:49)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124557059439,
+      "failures": [
+        "2026-10-31T14:06:13.9031829Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T14:06:13.9033811Z 1 failed, 585 passed in 383.47s (0:06:23)"
+      ],
+      "known_error": true
+    },
+    {
+      "job_id": 124557059519,
+      "failures": [
+        "2026-10-31T14:00:21.6962290Z FAILED data-mining-framework/tests/test_evidence.py::test_factor_from_another_experiment_is_refused - AssertionError: Regex pattern did not match.",
+        "2026-10-31T14:00:21.6965784Z 1 failed, 128 passed in 36.26s"
+      ],
+      "known_error": true
+    }
+  ],
+  "jobs": [
+    {
+      "id": 124557059219,
+      "name": "wheels",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T14:03:04Z"
+    },
+    {
+      "id": 124557059382,
+      "name": "independent-install (strategy-evaluation)",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T14:01:34Z"
+    },
+    {
+      "id": 124557059388,
+      "name": "checks (3.13)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T14:05:42Z"
+    },
+    {
+      "id": 124557059426,
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T13:59:49Z"
+    },
+    {
+      "id": 124557059439,
+      "name": "checks (3.11)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T14:06:16Z"
+    },
+    {
+      "id": 124557059519,
+      "name": "independent-install (data-mining-framework)",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-31T13:59:36Z",
+      "completed_at": "2026-10-31T14:00:23Z"
+    }
+  ]
+}

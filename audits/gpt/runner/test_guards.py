@@ -1,4 +1,5 @@
 import copy
+import gzip
 import hashlib
 import json
 import subprocess
@@ -8,7 +9,7 @@ from pathlib import Path
 
 from ci_evidence import classify
 from isolated_runner import execution_command, stage_source
-from runner_workload import semantic_hash
+from runner_workload import semantic_hash, semantic_manifest
 from verify_installed import applicable_requirements, verify_versions
 from verify_snapshot import SnapshotError, verify
 
@@ -291,6 +292,92 @@ class RunnerContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaisesRegex(ValueError, "semantic records"):
                 semantic_hash(directory)
+
+
+class SemanticCoverageTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        (self.root / "metrics.json").write_text('{"return":0.25}', encoding="utf-8")
+        (self.root / "figure.png").write_bytes(b"TOY_NONEMPTY_FIGURE")
+
+    def compressed(self, value=b"value\n1\n", mtime=0):
+        path = self.root / "table.csv.gz"
+        path.write_bytes(gzip.compress(value, mtime=mtime))
+        return path
+
+    def test_compressed_numeric_change_is_detected(self):
+        self.compressed()
+        before = semantic_hash(self.root)
+        self.compressed(b"value\n2\n")
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_gzip_header_timestamp_is_not_table_content(self):
+        self.compressed(mtime=1)
+        before = semantic_hash(self.root)
+        self.compressed(mtime=2)
+        self.assertEqual(before, semantic_hash(self.root))
+
+    def test_deleted_compressed_table_is_detected(self):
+        path = self.compressed()
+        before = semantic_hash(self.root)
+        path.unlink()
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_added_compressed_table_is_detected(self):
+        before = semantic_hash(self.root)
+        self.compressed()
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_corrupt_compressed_table_is_rejected(self):
+        for payload in (b"not a gzip stream", gzip.compress(b"value\n1\n", mtime=0)[:-2]):
+            with self.subTest(payload=payload):
+                (self.root / "table.csv.gz").write_bytes(payload)
+                with self.assertRaisesRegex(ValueError, "Invalid compressed CSV"):
+                    semantic_hash(self.root)
+
+    def ledger(self, **changes):
+        record = {"recorded_at": "first", "factor_id": "A", "n_trials": 20, **changes}
+        (self.root / "ledger.jsonl").write_text(json.dumps(record) + "\n", encoding="utf-8")
+
+    def test_ledger_numeric_change_is_detected(self):
+        self.ledger()
+        before = semantic_hash(self.root)
+        self.ledger(n_trials=21)
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_ledger_identity_change_is_detected(self):
+        self.ledger()
+        before = semantic_hash(self.root)
+        self.ledger(factor_id="B")
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_declared_ledger_timestamp_change_is_ignored(self):
+        self.ledger()
+        before = semantic_hash(self.root)
+        self.ledger(recorded_at="later")
+        self.assertEqual(before, semantic_hash(self.root))
+
+    def test_other_artifact_changes_are_not_silently_ignored(self):
+        path = self.root / "artifact.bin"
+        path.write_bytes(b"first")
+        before = semantic_hash(self.root)
+        path.write_bytes(b"changed")
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_manifest_records_every_file_and_its_comparison(self):
+        self.compressed()
+        self.ledger()
+        (self.root / "artifact.bin").write_bytes(b"first")
+        manifest = semantic_manifest(self.root)
+        self.assertEqual(manifest["version"], 2)
+        self.assertEqual(
+            {row["path"] for row in manifest["records"]},
+            {"metrics.json", "table.csv.gz", "ledger.jsonl", "artifact.bin"},
+        )
+        self.assertEqual(manifest["figures_present_nonempty"], ["figure.png"])
+        self.assertTrue(all(row["comparison"] and row["sha256"] for row in manifest["records"]))
 
 
 class InstalledGraphTests(unittest.TestCase):

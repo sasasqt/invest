@@ -1,0 +1,46 @@
+{
+  "pr_head": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+  "actual_checkout": "abc38c69e5134d5a9d5ab26285691aec5636ef2a",
+  "verified_blobs": [
+    {
+      "path": ".github/workflows/audit-runtime.yml",
+      "sha": "77865d12aa8ee05e87a54c12e9ca0218524222c1"
+    },
+    {
+      "path": "audits/gpt/runner/Dockerfile",
+      "sha": "031fb4e76466849cf634342c4ce115e4e9b8f865"
+    },
+    {
+      "path": "audits/gpt/runner/README.md",
+      "sha": "0d0a2f93a3b6857798342b88ccc1c6b775262875"
+    },
+    {
+      "path": "audits/gpt/runner/build-requirements.txt",
+      "sha": "1611d477d8e032566200303c04cdb5c7516ddb42"
+    },
+    {
+      "path": "audits/gpt/runner/ci_evidence.py",
+      "sha": "22d6f92ab32738777966ac01b029b0b0776d36a8"
+    },
+    {
+      "path": "audits/gpt/runner/isolated_runner.py",
+      "sha": "263e98a12b9fc79a88dd7dc143f83f11158a4aea"
+    },
+    {
+      "path": "audits/gpt/runner/runner_workload.py",
+      "sha": "f8f5e27ba0c03c76f2134ef4b8ae6dfdcacd2e6f"
+    },
+    {
+      "path": "audits/gpt/runner/test_guards.py",
+      "sha": "deb17e6d5baf2152c6cacd452ff1e49dde2ff6bd"
+    },
+    {
+      "path": "audits/gpt/runner/verify_installed.py",
+      "sha": "905fa2bde74ebd3b02cb4044257bc24413f6df6d"
+    },
+    {
+      "path": "audits/gpt/runner/verify_snapshot.py",
+      "sha": "4d5a95db5232467c55ee9279e979516c57a45a09"
+    }
+  ]
+}

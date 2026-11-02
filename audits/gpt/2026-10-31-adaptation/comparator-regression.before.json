@@ -1,0 +1,7 @@
+{
+  "runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+  "runner_git_blob": "eab48264e92d8a0198fc0355279ffe87981a20b1",
+  "changed_gzip_table_detected": false,
+  "changed_plain_csv_control_detected": true,
+  "scope": "generated toy fixture in trusted audit helper; no product code or market observations executed"
+}

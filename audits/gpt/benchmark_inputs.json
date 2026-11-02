@@ -75,5 +75,24 @@
       "formats"
     ],
     "memory_peak": "not measured"
+  },
+  "semantic_gate_v2_recovery": {
+    "run_id": 41208034002,
+    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "semantic_gate_version": 2,
+    "guard_tests": 40,
+    "report": "audits/gpt/2026-10-31-adaptation.md",
+    "evidence": "audits/gpt/2026-10-31-adaptation/runtime-evidence.json",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "status": "all boundary/lock/gate checks passed; main retains known test failure; control validation all passed",
+    "verified_utc": "2026-10-31T14:14:41.347132+00:00",
+    "raw_invocations": 24,
+    "measured_samples": 21,
+    "files_per_sample": 38,
+    "compressed_tables_per_sample": 2,
+    "figure_policy": "4 PNGs present/nonempty; rendered pixels not compared",
+    "other_records_per_sample": 34,
+    "prior_raw_history_preserved": true
   }
 }

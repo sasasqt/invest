@@ -45,9 +45,9 @@
     "inventory": "done110exactblobs",
     "static_analysis": "partial; 318 + 408 supplemental static lines; 19,659 unread across 78 paths",
     "independent_review": "doneC1C2C3andR1R2static/literatureonly",
-    "tests": "remote Linux installed-wheel suites, coverage, slowest25, 3.11 hash-seed repeat and independent installs verified; main retains known test failure; PR31 control passes",
+    "tests": "Latest isolated run 41208034002 verified: main retains known experiment-identity test failure; PR31 control 587 passed twice, independent installs all pass; 40 helper tests per job.",
     "workflows": "remote published synth-S workflow verified; wider formats/recovery/historical replay incomplete",
-    "benchmarks": "synth-S: 6 jobs, 48 raw invocations, 42 valid measured samples; no matched baseline, memory or scaling measurement",
+    "benchmarks": "24 version-2 raw invocations / 21 measured samples verified; prior 48 version-1 invocations retained with narrower gate; no matched performance comparison, peak-memory or wider-scaling claim.",
     "research": "partial5screened2specified0run",
     "publication": "published_verified"
   },
@@ -206,5 +206,74 @@
     ]
   },
   "steps_as_of_recovery_utc": "2026-10-31T09:08:07.857736+00:00",
-  "coverage_counts_scope": "original audit coarse counts; semantic supplements and current remaining ranges are authoritative for continuation"
+  "coverage_counts_scope": "original audit coarse counts; semantic supplements and current remaining ranges are authoritative for continuation",
+  "instruction_spec": {
+    "version": 2,
+    "sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "applied_utc": "2026-10-31T14:14:41.347132+00:00",
+    "traceability": "audits/gpt/2026-10-31-adaptation/instruction-traceability.md"
+  },
+  "followup_queue_schema_version": 1,
+  "pending_second_review": [
+    {
+      "id": "AUDIT-RUNNER-CSVGZ-001",
+      "kind": "audit-tooling",
+      "priority": "P2",
+      "scope": "runner comparator; not a newly discovered main-code defect",
+      "source_fingerprint": "runner_workload.semantic_hash:compressed-table-coverage",
+      "affected_runner_sha": "b4c9a911d0856d1b9c4fd675893d9b61b366414f",
+      "fixed_runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "evidence_status": "confirmed by generated before/after control",
+      "review_status": "single-reviewed",
+      "implementation_status": "fixed and isolated execution verified; draft PR32",
+      "evidence_refs": [
+        "audits/gpt/2026-10-31-adaptation/comparator-regression.before.json",
+        "audits/gpt/2026-10-31-adaptation/runtime-evidence.json"
+      ],
+      "next_check": "Fresh independent review of compressed-table, ledger and other-artifact comparison rules; preserve substantive differences and declared normalization.",
+      "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+      "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+      "deferral_reason": "Implementation self-review and execution completed; independent second review not performed in this change."
+    }
+  ],
+  "open_places": [
+    {
+      "id": "OPEN-AUDIT-FORMAT-GATES-001",
+      "path": "audits/gpt/runner/runner_workload.py and planned formats workflow",
+      "source_fingerprint": "format-round-trip-logical-equivalence",
+      "source_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "originating_item": "existing unexecuted CSV/SQLite/Parquet format benchmark work",
+      "originating_reviewer": "adaptation self-review",
+      "priority": "P2",
+      "risk": "Conservative raw-byte checks for other formats are not validated logical equality for nondeterministic storage containers.",
+      "next_check": "Execute the planned cross-format round trips and validate each format's logical comparison under existing resource/data limits.",
+      "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+      "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
+      "deferral_reason": "This correction validates synth-S; the wider format benchmark remains existing incomplete-audit work."
+    }
+  ],
+  "followup_queue_history": [
+    {
+      "id": "AUDIT-RUNNER-CSVGZ-001",
+      "action": "enqueued",
+      "utc": "2026-10-31T14:14:41.347132+00:00"
+    },
+    {
+      "id": "OPEN-AUDIT-FORMAT-GATES-001",
+      "action": "enqueued",
+      "utc": "2026-10-31T14:14:41.347132+00:00"
+    }
+  ],
+  "latest_runtime_validation": {
+    "run_id": 41208034002,
+    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "semantic_gate_version": 2,
+    "guard_tests": 40,
+    "report": "audits/gpt/2026-10-31-adaptation.md",
+    "evidence": "audits/gpt/2026-10-31-adaptation/runtime-evidence.json",
+    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+    "status": "all boundary/lock/gate checks passed; main retains known test failure; control validation all passed",
+    "verified_utc": "2026-10-31T14:14:41.347132+00:00"
+  }
 }

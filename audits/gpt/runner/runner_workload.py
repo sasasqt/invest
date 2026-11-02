@@ -1,6 +1,7 @@
 """Offline workload, invoked only by isolated_runner.py inside its container."""
 
 import argparse
+import gzip
 import hashlib
 import json
 import os
@@ -13,12 +14,14 @@ import statistics
 import subprocess
 import sys
 import time
+import zlib
 from pathlib import Path
 
 VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
+SEMANTIC_GATE_VERSION = 2
 
 
-def semantic_hash(directory):
+def semantic_manifest(directory):
     directory = Path(directory)
 
     def clean(value):
@@ -36,25 +39,63 @@ def semantic_hash(directory):
         if not path.is_file():
             continue
         if path.suffix == ".json":
-            payload = json.dumps(clean(json.loads(path.read_text())), sort_keys=True).encode()
+            payload = json.dumps(
+                clean(json.loads(path.read_text(encoding="utf-8"))), sort_keys=True
+            ).encode()
+            comparison = "json; declared volatile keys and output root normalized"
         elif path.suffix == ".jsonl":
             payload = json.dumps(
-                [clean(json.loads(line)) for line in path.read_text().splitlines() if line.strip()],
+                [
+                    clean(json.loads(line))
+                    for line in path.read_text(encoding="utf-8").splitlines()
+                    if line.strip()
+                ],
                 sort_keys=True,
             ).encode()
+            comparison = "jsonl; record order retained; declared volatile keys normalized"
+        elif path.name.endswith(".csv.gz"):
+            try:
+                with gzip.open(path, "rb") as stream:
+                    payload = stream.read()
+            except (OSError, EOFError, zlib.error) as exc:
+                raise ValueError(f"Invalid compressed CSV: {path.relative_to(directory)}") from exc
+            comparison = "decompressed CSV bytes; gzip header metadata excluded"
         elif path.suffix == ".csv":
             payload = path.read_bytes()
+            comparison = "CSV bytes"
+        elif path.suffix in (".md", ".txt", ".html", ".yaml", ".yml"):
+            payload = path.read_text(encoding="utf-8").replace(str(directory), "$RUN").encode()
+            comparison = "UTF-8 text; output root normalized"
         elif path.suffix == ".png":
             if not path.stat().st_size:
                 raise ValueError("Empty figure")
             figures.append(str(path.relative_to(directory)))
             continue
         else:
-            continue
-        records.append((str(path.relative_to(directory)), hashlib.sha256(payload).hexdigest()))
+            payload = path.read_bytes()
+            comparison = "raw bytes; no undeclared exclusion"
+        records.append(
+            {
+                "path": str(path.relative_to(directory)),
+                "comparison": comparison,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            }
+        )
     if not records or not figures:
         raise ValueError("Workflow produced no semantic records or figures")
-    return hashlib.sha256(json.dumps([records, figures]).encode()).hexdigest()
+    return {
+        "version": SEMANTIC_GATE_VERSION,
+        "volatile_json_keys": sorted(VOLATILE_KEYS),
+        "records": records,
+        "figures_present_nonempty": figures,
+        "figure_byte_comparison": "excluded; source tables participate in the gate",
+    }
+
+
+def semantic_hash(directory):
+    return hashlib.sha256(
+        json.dumps(semantic_manifest(directory), sort_keys=True).encode()
+    ).hexdigest()
 
 
 def prove_boundary(sentinel, host_pid, results):
@@ -377,14 +418,24 @@ def main():
                 "instruments": 20,
                 "sessions": 300,
                 "trials": 20,
+                "semantic_gate_version": SEMANTIC_GATE_VERSION,
             }
         )
         if sample["exit"] == 0:
             try:
-                observed = semantic_hash(destination)
+                manifest = semantic_manifest(destination)
+                observed = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
+                manifest_name = f"synth-S-{repetition}-semantic-manifest.json"
+                (results / manifest_name).write_text(
+                    json.dumps(manifest, indent=2), encoding="utf-8"
+                )
                 reference = reference or observed
                 sample.update(
-                    {"semantic_hash": observed, "correctness_gate": observed == reference}
+                    {
+                        "semantic_hash": observed,
+                        "correctness_gate": observed == reference,
+                        "semantic_manifest": manifest_name,
+                    }
                 )
                 sample["output_bytes"] = sum(
                     p.stat().st_size for p in destination.rglob("*") if p.is_file()
@@ -403,6 +454,7 @@ def main():
         json.dumps(
             {
                 "case": "synth-S",
+                "semantic_gate_version": SEMANTIC_GATE_VERSION,
                 "valid_measured_samples": len(valid),
                 "median_seconds": statistics.median(valid) if len(valid) == 7 else None,
                 "min_seconds": min(valid) if valid else None,

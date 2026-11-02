@@ -1,0 +1,11 @@
+{
+  "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+  "guard_tests_passed": 40,
+  "compressed_numeric_change_detected": true,
+  "gzip_header_only_change_ignored": true,
+  "ledger_numeric_and_identity_changes_detected": true,
+  "declared_ledger_timestamp_only_change_ignored": true,
+  "other_artifact_changes_detected": true,
+  "evidence": "guard-tests.log from digest-verified isolated control artifact 13044779639",
+  "independent_second_review": "not performed; explicitly queued"
+}
