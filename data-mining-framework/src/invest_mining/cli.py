@@ -29,6 +29,7 @@ from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
     BUCKET_RULE,
+    MIN_CROSS_SECTION,
     TAIL_RULE,
     daily_ic,
     forward_returns,
@@ -77,11 +78,14 @@ def _span(dates: pd.DatetimeIndex, what: str) -> Window:
     return Window(dates[0].date(), dates[-1].date())
 
 
-def _prepare_out(out: str | Path, *subdirs: str) -> Path:
-    """Create ``out`` (and ``subdirs``) and check that each takes a new file.
+def _prepare_out(out: str | Path, *subdirs: str, files: Sequence[str] = ()) -> Path:
+    """Create ``out`` (and ``subdirs``) and check that it can take the command's outputs.
 
-    Called before the ledger records anything, so an unusable ``--out`` cannot leave a
-    recorded inspection or experiment without its output.
+    Each folder must take a new file, and each output already there (``files`` are glob
+    patterns relative to ``out``, such as an earlier run's results before a rerun into the
+    same folder) must open for writing; a file that is read-only or locked by another
+    program fails here. Called after every refusal and before the ledger records anything,
+    so a refused run leaves no ``--out`` and an unusable one leaves no record.
     """
     root = Path(out)
     try:
@@ -89,23 +93,38 @@ def _prepare_out(out: str | Path, *subdirs: str) -> Path:
             folder.mkdir(parents=True, exist_ok=True)
             with tempfile.TemporaryFile(dir=folder):
                 pass
+        for pattern in files:
+            for existing in sorted(root.glob(pattern)):
+                with existing.open("ab"):
+                    pass
     except OSError as exc:
         raise SystemExit(f"--out {out}: {exc}") from exc
     return root
 
 
-def _require_labels(confirmation: Window, n_sessions: int, horizon: int) -> None:
-    """Refuse a confirmation window too short for any decision date to carry a label.
+def _unwritten(out: Path, exc: OSError, exp_id: str, use: str) -> SystemExit:
+    """The error for outputs that failed after the ledger recorded the experiment."""
+    return SystemExit(
+        f"--out {out}: {exc}; the ledger already recorded experiment {exp_id} ({use})"
+    )
 
-    The label of decision ``t`` needs the opens at ``t+1`` and ``t+1+h``
-    (:func:`~invest_mining.diagnostics.forward_returns`), so with fewer than ``h+2``
-    confirmation sessions nothing would be tested on the window it records as used.
+
+def _require_labels(label: pd.DataFrame, confirmation: Window, horizon: int) -> None:
+    """Refuse a confirmation window on which no rank IC can be computed.
+
+    ``label`` holds the confirmation dates' forward returns, restricted to traded universe
+    members. Decision ``t`` needs the opens at ``t+1`` and ``t+1+h``
+    (:func:`~invest_mining.diagnostics.forward_returns`) and a date's IC needs
+    ``MIN_CROSS_SECTION`` labelled names, so without such a date nothing would be tested
+    on a window the ledger records as used. Only which labels exist is read, never their
+    values, and no candidate is involved.
     """
-    if n_sessions < horizon + 2:
+    if not (label.notna().sum(axis=1) >= MIN_CROSS_SECTION).any():
         raise SystemExit(
-            f"confirmation window {confirmation} has {n_sessions} session(s), so no decision "
-            f"date with a complete {horizon}-session label (that needs {horizon + 2}); start "
-            "confirmation earlier"
+            f"confirmation window {confirmation} has no decision date with a complete "
+            f"{horizon}-session label for at least {MIN_CROSS_SECTION} names (that needs "
+            f"{horizon + 2} or more sessions with universe members trading), so nothing "
+            "would be tested on it; it needs more data after its start"
         )
 
 
@@ -167,7 +186,12 @@ def _evaluate(args: argparse.Namespace) -> int:
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
     # An unwritable --out must fail here, not after the inspection is recorded.
-    _prepare_out(args.out, "tables", "figures")
+    _prepare_out(
+        args.out,
+        "tables",
+        "figures",
+        files=("config.json", "metrics.json", "tables/*.csv", "figures/*"),
+    )
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
@@ -268,7 +292,8 @@ def _search(args: argparse.Namespace) -> int:
     use, reasons = "unrecorded", list[str]()
     if args.ledger is not None:
         # A window with no labelled date would be recorded as used with nothing tested.
-        _require_labels(confirmation, len(split.confirm_dates), args.horizon)
+        label = restrict(forward_returns(panel["open"], args.horizon), panel)
+        _require_labels(label.loc[split.confirm_dates], confirmation, args.horizon)
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
             use, reasons = ledger.assess_confirmation(
@@ -285,7 +310,11 @@ def _search(args: argparse.Namespace) -> int:
                 f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
             )
     # An unusable --out must fail before the ledger records the experiment.
-    out = _prepare_out(args.out, "factors")
+    out = _prepare_out(
+        args.out,
+        "factors",
+        files=("ledger.csv", "confirmation.csv", "config.json", "factors/*.json"),
+    )
     result = run_search(
         panel,
         n_trials=args.trials,
@@ -322,15 +351,20 @@ def _search(args: argparse.Namespace) -> int:
                 "reasons": reasons,
             },
         )
-    # A rerun into the same directory replaces the family; stale factor files would be
-    # taken for members of it.
-    for stale in (out / "factors").glob("*.json"):
-        stale.unlink()
-    result.ledger.to_csv(out / "ledger.csv", index=False)
-    result.confirmation.to_csv(out / "confirmation.csv", index=False)
-    (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
-    for factor in result.family:
-        factor.save(out / "factors" / f"{factor.factor_id}.json")
+    try:
+        # A rerun into the same directory replaces the family; stale factor files would be
+        # taken for members of it.
+        for stale in (out / "factors").glob("*.json"):
+            stale.unlink()
+        result.ledger.to_csv(out / "ledger.csv", index=False)
+        result.confirmation.to_csv(out / "confirmation.csv", index=False)
+        (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
+        for factor in result.family:
+            factor.save(out / "factors" / f"{factor.factor_id}.json")
+    except OSError as exc:
+        if args.ledger is None:
+            raise SystemExit(f"--out {out}: {exc}") from exc
+        raise _unwritten(out, exc, exp_id, use) from exc
     if not result.family:
         print("No candidates qualified for confirmation; see ledger.csv for rejection reasons.")
         return 0
@@ -383,7 +417,9 @@ def _confirm(args: argparse.Namespace) -> int:
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
-    _require_labels(confirmation, len(dates) - k, factor.horizon_days)
+    label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
+    # A window with no labelled date would be recorded as used with nothing tested.
+    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
     try:
         use, reasons = ledger.assess_confirmation(
             ledger.load(args.ledger), context, confirmation, exp_id, sessions=_session_days(dates)
@@ -395,8 +431,7 @@ def _confirm(args: argparse.Namespace) -> int:
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
     # An unusable --out must fail before the ledger records the experiment.
-    out = _prepare_out(args.out)
-    label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
+    out = _prepare_out(args.out, files=("confirmation.csv", "config.json"))
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
@@ -413,7 +448,6 @@ def _confirm(args: argparse.Namespace) -> int:
             "reasons": reasons,
         },
     )
-    table.to_csv(out / "confirmation.csv", index=False)
     config = {
         "factor": factor.to_json(),
         "horizon": factor.horizon_days,
@@ -426,7 +460,11 @@ def _confirm(args: argparse.Namespace) -> int:
             "identity": identity,
         },
     }
-    (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    try:
+        table.to_csv(out / "confirmation.csv", index=False)
+        (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    except OSError as exc:
+        raise _unwritten(out, exc, exp_id, use) from exc
     print(
         table[
             ["factor_id", "expression", "confirm_mean_rank_ic", "p_one_sided", "status"]
@@ -688,8 +726,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     se.add_argument("--top-k", type=int, default=5)
     se.add_argument(
         "--confirm-start",
-        help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction, "
-        "e.g. to confirm on a reserved window",
+        help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction; to confirm "
+        "on a reserved window, its first date (a later date inside it is refused)",
     )
     se.add_argument(
         "--require-confirmatory",
@@ -718,7 +756,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     co.add_argument(
         "--confirm-start",
         required=True,
-        help="first confirmation date (YYYY-MM-DD), e.g. the start of a reserved window",
+        help="first confirmation date (YYYY-MM-DD), e.g. the first date of a reserved "
+        "window (a later date inside it is refused)",
     )
     co.add_argument(
         "--ledger",

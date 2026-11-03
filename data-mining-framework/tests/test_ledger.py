@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 from invest_data.cli import main as data_main
-from invest_data.schemas import publish_market_bars, read_market_bars
+from invest_data.schemas import publish_market_bars, publish_universe, read_market_bars
 from invest_mining import ledger
 from invest_mining.cli import main
 from invest_mining.ledger import LedgerError, Window
@@ -643,22 +643,58 @@ def test_cli_read_only_out_is_refused_before_the_ledger_records_anything(tmp_pat
 def test_cli_confirmation_without_a_labelled_date_is_refused(tmp_path, command):
     # Same class as BH-2026-10-26-1: with horizon 1, decision t needs the opens at t+1 and
     # t+2, so a confirmation of the last two sessions has no label and tests nothing.
-    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data = tmp_path / "data"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
-    start = str(dates[-2].date())
-    assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
     if command == "confirm":
         factor = _frozen(tmp_path, expr="close", horizon="1")
-        args = ["confirm", "--data", str(data), "--factor", str(factor)]
+        base = ["confirm", "--data", str(data), "--factor", str(factor)]
     else:
-        args = ["search", "--data", str(data), "--trials", "5", "--horizon", "1"]
-    args += ["--ledger", str(book), "--confirm-start", start, "--out", str(tmp_path / "c")]
+        base = ["search", "--data", str(data), "--trials", "5", "--horizon", "1"]
+
+    def run(sessions):
+        start, book = str(dates[-sessions].date()), tmp_path / f"ledger{sessions}.jsonl"
+        assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
+        out = tmp_path / f"c{sessions}"
+        return [*base, "--ledger", str(book), "--confirm-start", start, "--out", str(out)], book
+
+    args, book = run(2)
     before = book.read_bytes()
     with pytest.raises(SystemExit, match="no decision date with a complete 1-session label"):
         main(args)
-    assert book.read_bytes() == before
+    assert book.read_bytes() == before and not (tmp_path / "c2").exists()
     assert len(ledger.unused_reservations(ledger.load(book))) == 1
+    # Boundary: three sessions give decision dates[-3] its label (opens at -2 and -1).
+    args, book = run(3)
+    assert main(args) == 0
+    assert ledger.unused_reservations(ledger.load(book)) == []
+
+
+def test_cli_confirmation_after_the_universe_ends_is_refused(tmp_path):
+    # Same class: enough sessions, but no universe member on them, so no date has a label
+    # (the confirmation would test 0 dates and still use the reservation up).
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "200"])
+    bars = read_market_bars(data)[1]
+    dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
+    cut = dates[120]
+    members = pd.DataFrame(
+        {
+            "universe": "u",
+            "instrument": sorted(bars["instrument"].unique()),
+            "start_date": dates[0].date(),
+            "end_date": (cut - pd.Timedelta(days=1)).date(),
+        }
+    )
+    publish_universe(members, tmp_path / "uni", dataset_id="u")
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(cut.date())]) == 0
+    factor = _frozen(tmp_path, expr="close", horizon="1")
+    args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+    args += ["--universe", str(tmp_path / "uni"), "--confirm-start", str(cut.date())]
+    before = book.read_bytes()
+    with pytest.raises(SystemExit, match="no decision date with a complete 1-session label"):
+        main([*args, "--out", str(tmp_path / "c")])
+    assert book.read_bytes() == before and not (tmp_path / "c").exists()
 
 
 def test_an_empty_family_does_not_use_its_confirmation_window():
@@ -771,3 +807,54 @@ def test_overlapping_reservations_are_confirmed_from_their_first_session():
         LedgerError, match=re.escape("starts before the reserved window 2020-09-01..open")
     ):
         ledger.assess_confirmation(apart, dev, W("2020-06-01"), "e", sessions=sessions)
+
+
+@pytest.mark.parametrize("command", ["confirm", "search"])
+def test_cli_existing_output_that_takes_no_write_is_refused_before_recording(tmp_path, command):
+    # BH-2026-10-20-2 for a rerun into the same --out whose earlier result cannot be
+    # replaced (read-only, or open in another program on Windows): here a folder holds the
+    # name confirmation.csv, so writing it fails on every platform and user.
+    data, book = _reserved_market(tmp_path)
+    out = tmp_path / "rerun"
+    (out / "confirmation.csv").mkdir(parents=True)
+    if command == "confirm":
+        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path, expr="close"))]
+    else:
+        args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
+    args += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(out)]
+    before = book.read_bytes()
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main(args)
+    assert book.read_bytes() == before
+
+
+def test_cli_write_failure_after_recording_names_the_experiment(tmp_path, monkeypatch):
+    # The probe cannot rule out every failure (a full disk); one after the record exits
+    # with a message naming the recorded experiment instead of a traceback.
+    data, book = _reserved_market(tmp_path)
+    factor = _frozen(tmp_path, expr="close")
+
+    def full(*args, **kwargs):
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(pd.DataFrame, "to_csv", full)
+    args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+    with pytest.raises(SystemExit, match="the ledger already recorded experiment e_"):
+        main([*args, "--confirm-start", "2020-09-01", "--out", str(tmp_path / "c")])
+    assert ledger.load(book)[-1]["kind"] == "experiment"
+
+
+def test_cli_reserve_and_search_after_an_empty_family(tmp_path):
+    # BH-2026-10-26-1 end to end: a search that selected nothing leaves its confirmation
+    # window free to reserve, and a later search that selects factors there is confirmatory.
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "260"])
+    search = ["search", "--data", str(data), "--trials", "5", "--ledger", str(book)]
+    assert main([*search, "--confirm-start", "2020-02-03", "--out", str(tmp_path / "s1")]) == 0
+    assert ledger.load(book)[-1]["family"] == []
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", "2020-06-01"]) == 0
+    later = [*search, "--confirm-start", "2020-06-01", "--require-confirmatory"]
+    assert main([*later, "--out", str(tmp_path / "s2")]) == 0
+    entry = ledger.load(book)[-1]
+    assert entry["family"] and entry["confirmation_use"] == "confirmatory"
+    assert ledger.unused_reservations(ledger.load(book)) == []

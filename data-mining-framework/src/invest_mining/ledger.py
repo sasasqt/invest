@@ -269,7 +269,9 @@ def assess_confirmation(
     unused reservation is also refused when a session lies between the reservation's start
     and the confirmation's first date: confirming would use up reserved sessions that
     nothing tested. Without them a reservation that starts on a non-session day cannot be
-    told apart from skipped sessions, so this check is not made. Overlapping unused
+    told apart from skipped sessions, so this check is not made. The data's own sessions
+    are the calendar: reserved sessions before the data's first session are not seen, so
+    a confirmation needs data that covers the reservation's start. Overlapping unused
     reservations are checked as one window, their union.
     """
     days = None if sessions is None else sorted(sessions)
