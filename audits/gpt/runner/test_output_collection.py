@@ -904,6 +904,41 @@ class RoundTenCheckTests(unittest.TestCase):
                     self.assertEqual(sorted(os.listdir(parent)), ["workload"])
 
 
+class ExactReasonTests(unittest.TestCase):
+    """Mutation testing (round 12): the rejection tests match a reason as a regex
+    search, so a reason with text added around it still passed. collection.json shows
+    the reason to a reader, so these three are compared exactly."""
+
+    def test_rejection_reasons_are_reported_exactly(self):
+        def symlink(results):
+            try:
+                os.symlink("elsewhere", results / "link")
+            except (OSError, NotImplementedError) as exc:
+                self.skipTest(f"cannot create a symbolic link here: {exc}")
+
+        cases = {
+            "output file size limit exceeded": lambda results: (results / "large").write_bytes(
+                b"x" * 5
+            ),
+            "linked, special or cross-device output entry": symlink,
+            "summary size limit exceeded": lambda results: (results / "boundary.json").write_text(
+                json.dumps({"large": "x" * SUMMARY_MAX_BYTES}), encoding="utf-8"
+            ),
+        }
+        for reason, make in cases.items():
+            with self.subTest(reason=reason), tempfile.TemporaryDirectory() as directory:
+                results = Path(directory, "work", "results")
+                results.mkdir(parents=True)
+                make(results)
+                limits = CollectionLimits(file_bytes=4 if "file size" in reason else 2**20)
+                with contextlib.redirect_stdout(io.StringIO()):
+                    report = collect_workload(
+                        Path(directory, "work"), Path(directory, "ev"), limits
+                    )
+                self.assertEqual(report["status"], "rejected")
+                self.assertEqual(report["reason"], reason)
+
+
 @POSIX_ONLY
 class RoundElevenCheckTests(unittest.TestCase):
     """Review round 11: a relative destination near PATH_MAX."""

@@ -1351,6 +1351,34 @@ class StagingSafetyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "No Git object store"):
                     stage_source(source, root / "staged", revision)
 
+    def test_a_failed_path_query_names_the_programs_error(self):
+        """checked_path raises with the program's name, exit status and error text (bytes
+        that are not UTF-8 replaced), honours its timeout, and keeps every byte of the
+        path but the line end: a carriage return is a line end only on Windows."""
+        name = re.escape(Path(sys.executable).name)
+        failing = [
+            sys.executable,
+            "-c",
+            "import sys; sys.stderr.buffer.write(b'no \\xff'); sys.exit(3)",
+        ]
+        with self.assertRaisesRegex(RuntimeError, rf"^{name} exited 3: no \ufffd$"):
+            isolated_runner.checked_path(failing, timeout=60)
+        for printed, expected in (
+            (b"/a b \n", "/a b "),
+            (b"/a\r\n", "/a" if os.name == "nt" else "/a\r"),
+            (b"/a\n\n", "/a\n"),
+        ):
+            with self.subTest(printed=printed):
+                printing = [
+                    sys.executable,
+                    "-c",
+                    f"import sys; sys.stdout.buffer.write({printed!r})",
+                ]
+                self.assertEqual(isolated_runner.checked_path(printing, timeout=60), Path(expected))
+        sleeping = [sys.executable, "-c", "import time; time.sleep(60)"]
+        with self.assertRaises(subprocess.TimeoutExpired):
+            isolated_runner.checked_path(sleeping, timeout=0.5)
+
     def test_unreadable_commit_tree_names_gits_error(self):
         """Review round 5: a failed ls-tree raised CalledProcessError without Git's message."""
         with tempfile.TemporaryDirectory() as directory:
@@ -2056,6 +2084,21 @@ class SemanticCoverageTests(unittest.TestCase):
         before = semantic_hash(self.root)
         (folder / "table.csv").write_text("v\n2\n", encoding="utf-8")
         self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_a_folder_the_walk_cannot_list_fails_the_gate_even_as_root(self):
+        """W5 with root's file-permission override, where chmod(0) hides nothing: a
+        listing error is a gate failure that names the folder, not a skipped folder."""
+        (self.root / "hidden").mkdir()
+        real = os.scandir
+
+        def scandir(path):
+            if Path(path).name == "hidden":
+                raise PermissionError(13, "Permission denied", str(path))
+            return real(path)
+
+        with patch("runner_workload.os.scandir", side_effect=scandir):
+            with self.assertRaisesRegex(ValueError, "cannot be listed: hidden$"):
+                semantic_hash(self.root)
 
     def test_manifest_records_every_file_and_its_comparison(self):
         self.compressed()
