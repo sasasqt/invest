@@ -113,13 +113,39 @@ def forged_lines(output):
     return [line for line in output.splitlines() if line.lstrip().startswith("::") or "##[" in line]
 
 
+def upload_inputs(step):
+    """The lines of an upload step's `with:` mapping, cut to its own keys' indentation
+    and below: the action reads only these as inputs (INPUT_* variables), never a key
+    of the step's `env:` or of the next job, which the step's text chunk runs into."""
+    lines = step.splitlines()
+    for number, line in enumerate(lines):
+        if line.strip() == "with:":
+            indent = len(line) - len(line.lstrip())
+            block = []
+            for item in lines[number + 1 :]:
+                if item.strip() and len(item) - len(item.lstrip()) <= indent:
+                    break
+                block.append(item)
+            return block
+    return []
+
+
+def input_key(line, block):
+    """The key a `with:` line sets, or None for a deeper line (a `|` block's text)."""
+    keys = [item for item in block if item.strip() and not item.strip().startswith("#")]
+    if not keys or len(line) - len(line.lstrip()) != len(keys[0]) - len(keys[0].lstrip()):
+        return None
+    key, colon, _ = line.strip().partition(":")
+    return key if colon else None
+
+
 def upload_path_lines(step):
     """The pattern lines of an upload step's `path:` input (one line, or a `|` block);
     @actions/glob skips lines that start with `#`."""
-    lines = step.splitlines()
+    lines = upload_inputs(step)
     for number, line in enumerate(lines):
-        key, _, value = line.strip().partition(":")
-        if key == "path" and _:
+        value = line.strip().partition(":")[2]
+        if input_key(line, lines) == "path":
             if value.strip() != "|":
                 return [value.strip()]
             indent = len(line) - len(line.lstrip())
@@ -135,10 +161,10 @@ def upload_path_lines(step):
 
 def upload_setting(step, key):
     """The value of one `with:` key of an upload step, without a trailing YAML comment."""
-    for line in step.splitlines():
-        name, colon, value = line.strip().partition(":")
-        if colon and name == key:
-            return value.split(" #")[0].strip()
+    block = upload_inputs(step)
+    for line in block:
+        if input_key(line, block) == key:
+            return line.strip().partition(":")[2].split(" #")[0].strip()
     return None
 
 
@@ -407,6 +433,47 @@ class HostSafetyTests(unittest.TestCase):
         self.assertIn("--output must be a new or empty folder", result.stderr)
         self.assertEqual(json.loads(stale.read_text("utf-8"))["reason"], "earlier run")
         self.assertEqual(sorted(p.name for p in (self.root / "output").iterdir()), ["results"])
+
+    def test_a_comma_in_a_mounted_folder_is_refused_before_anything_runs(self):
+        """Review round 12 (R12C-C2): Docker reads --mount and --secret values as
+        comma-separated fields. On Windows the CA bundle is exported into --output, so a
+        comma there split the build's secret field and the image build failed with
+        Docker's own parse error, after the pull; on every host a comma in --output or
+        the runner folder was refused only at the container's mounts."""
+        runner = self.root / "runner,copy"
+        shutil.copytree(HERE, runner, ignore=shutil.ignore_patterns("__pycache__"))
+        cases = {
+            "--output must not contain a comma": (RUNNER, self.root / "out,put" / "output"),
+            "The runner folder must not contain a comma": (
+                runner / RUNNER.name,
+                self.root / "output",
+            ),
+        }
+        for message, (script, output) in cases.items():
+            with self.subTest(message=message):
+                result = subprocess.run(
+                    [
+                        sys.executable,
+                        str(script),
+                        "--source",
+                        str(self.source),
+                        "--expected-sha",
+                        "0" * 40,
+                        "--python-version",
+                        "3.11",
+                        "--output",
+                        str(output),
+                    ],
+                    env=self.env,
+                    capture_output=True,
+                    text=True,
+                    timeout=300,
+                )
+                text = result.stdout + result.stderr
+                self.assertEqual(result.returncode, 1, quoted(text))
+                self.assertIn(message, result.stderr, quoted(text))
+                self.assertNotIn("ContractViolation", text, quoted(text))
+                self.assertFalse(output.exists(), quoted(text))
 
     def test_missing_docker_blocks_before_any_source_is_read(self):
         empty = self.root / "empty-path"
@@ -743,7 +810,7 @@ class WorkflowTests(unittest.TestCase):
             with self.subTest(path=path, exclude=exclude):
                 patterns = upload_patterns(["/r/results", "!" + exclude])
                 self.assertEqual(not upload_takes(path, patterns), expected)
-        step = "x\n  path: |\n    # a comment\n    /r/results\n    !/r/results/.c*\n  y: z"
+        step = "x\n with:\n  path: |\n    # a comment\n    /r/results\n    !/r/results/.c*\n  y: z"
         self.assertEqual(upload_path_lines(step), ["/r/results", "!/r/results/.c*"])
         self.assertEqual(upload_root(self, ["/r/results", "!/r/results/.c*"]), ["/r/results"])
         for lines in (["/r/results", "/r/work"], ["/r/results/*.json"], ["/r/other"]):
@@ -778,6 +845,27 @@ class WorkflowTests(unittest.TestCase):
         step = "x\n  with:\n    include-hidden-files: true # keep dot names\n"
         self.assertEqual(upload_setting(step, "include-hidden-files"), "true")
         self.assertIsNone(upload_setting("x\n  with:\n    name: y\n", "include-hidden-files"))
+
+    def test_upload_emulator_reads_inputs_only_from_with(self):
+        """Review round 12 (R12A-W4): upload-artifact reads its inputs only from the
+        step's `with:` mapping. The emulator took the first key of that name anywhere in
+        the step's text, so include-hidden-files under the step's `env:` (or in the next
+        job's header) passed W4 while the real upload dropped every dot name."""
+        hidden = "include-hidden-files"
+        for step in (
+            "x\n  env:\n    include-hidden-files: true\n  with:\n    name: y\n",
+            "x\n  with:\n    name: y\n\n  next-job:\n    env:\n      include-hidden-files: true\n",
+            "x\n  with:\n    path: |\n      /r/results\n      include-hidden-files: true\n",
+        ):
+            with self.subTest(step=step):
+                self.assertIsNone(upload_setting(step, hidden))
+        step = (
+            "x\n  env:\n    path: /r/work\n"
+            "  with:\n    # c\n    path: /r/results\n    include-hidden-files: true\n"
+        )
+        self.assertEqual(upload_path_lines(step), ["/r/results"])
+        self.assertEqual(upload_setting(step, hidden), "true")
+        self.assertEqual(upload_setting(step, "name"), None)
 
 
 if __name__ == "__main__":

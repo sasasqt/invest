@@ -1,3 +1,4 @@
+import contextlib
 import copy
 import gzip
 import hashlib
@@ -21,6 +22,7 @@ import isolated_runner
 import runner_workload
 import verify_snapshot
 from ci_evidence import classify
+from contract import ContractViolation
 from isolated_runner import (
     blob_digest,
     ca_bundle,
@@ -1264,6 +1266,298 @@ class StagingSafetyTests(unittest.TestCase):
             self.assertTrue(copied)
             self.assertFalse({"info/stray", "pack/notes.txt"} & copied)
 
+    def test_only_objects_the_commit_reaches_are_staged(self):
+        """Review round 12 (R12A-S1): every loose object and pack of the source's store
+        was copied into the staged .git, which the container mounts at /input, so a
+        stash with an untracked .env, a blob once added and then unstaged, and an
+        unpushed branch reached the audited code (generated canaries here)."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, first = fixture_repository(root, {"a.txt": b"one\n"})
+            (source / "a.txt").write_bytes(b"two\n")
+            git_in(source, "commit", "-qam", "second")
+            revision = git_in(source, "rev-parse", "HEAD")
+            canaries = {kind: f"CANARY_{kind}_{uuid.uuid4().hex}" for kind in ("add", "stash")}
+            (source / "secret.env").write_text(canaries["add"], encoding="utf-8")
+            git_in(source, "add", "secret.env")
+            git_in(source, "rm", "-q", "--cached", "secret.env")
+            (source / "secret.env").unlink()
+            (source / ".env").write_text(canaries["stash"], encoding="utf-8")
+            git_in(source, "stash", "push", "-q", "-u")
+            canaries["branch"] = f"CANARY_branch_{uuid.uuid4().hex}"
+            branch = git_in(
+                source,
+                "commit-tree",
+                "-p",
+                revision,
+                "-m",
+                "private",
+                write_tree(source, {"notes.txt": canaries["branch"].encode()}),
+            )
+            git_in(source, "update-ref", "refs/heads/private", branch)
+            staged = root / "staged"
+            stage_source(source, staged, revision)
+            every = subprocess.run(
+                ["git", "-C", str(staged), "cat-file", "--batch-all-objects", "--batch"],
+                env=FIXTURE_GIT,
+                capture_output=True,
+                check=True,
+            ).stdout
+            for kind, value in canaries.items():
+                with self.subTest(kind=kind):
+                    self.assertFalse(value.encode() in every, f"{kind} object staged")
+            self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision, first])
+            self.assertEqual(git_in(staged, "status", "--porcelain"), "")
+
+    def test_staging_refusals_name_their_cause_exactly(self):
+        """Mutation testing (round 12): the staging refusals were matched as a regex
+        search or not at all, so a message with its cause dropped or changed, or Git's
+        error text decoded strictly, still passed. The host error line shows them to the
+        reader, so they are compared exactly."""
+        real_run = isolated_runner.run_captured
+
+        def failing(subcommand):
+            def run(argv, **kwargs):
+                if subcommand in argv:
+                    return subprocess.CompletedProcess(argv, 128, b"", b"fatal: bad \xff\n")
+                return real_run(argv, **kwargs)
+
+            return run
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            git_dir = Path(git_in(source, "rev-parse", "--path-format=absolute", "--git-dir"))
+            store = git_dir / "objects"
+            digest = blob_digest(b"a\n")
+
+            def planted(path, make):
+                @contextlib.contextmanager
+                def change():
+                    make(path)
+                    try:
+                        yield
+                    finally:
+                        path.unlink()
+
+                return change
+
+            def symlink(path):
+                try:
+                    path.symlink_to(store / "info")
+                except OSError as exc:  # Windows without the privilege
+                    self.skipTest(f"symbolic links unavailable: {exc}")
+
+            cases = [
+                ("Expected revision must be a full Git SHA", revision[:12], None),
+                ("Source HEAD differs from the expected revision", "0" * 40, None),
+                (
+                    "git exited 128: fatal: bad \ufffd",
+                    revision,
+                    lambda: patch("isolated_runner.run_captured", side_effect=failing("ls-tree")),
+                ),
+                (
+                    "git exited 128: fatal: bad \ufffd",
+                    revision,
+                    lambda: patch(
+                        "isolated_runner.run_captured", side_effect=failing("pack-objects")
+                    ),
+                ),
+                (
+                    "Source paths alias each other on this host: a.txt",
+                    revision,
+                    lambda: patch(
+                        "isolated_runner.source_entries",
+                        return_value=[("a.txt", "100644", digest)] * 2,
+                    ),
+                ),
+                (
+                    "Materialize Git objects locally before staging",
+                    revision,
+                    planted(store / "info/alternates", lambda path: path.write_text("x\n")),
+                ),
+                ("Symlink in Git object store", revision, planted(store / "link", symlink)),
+                (
+                    "Invalid shallow-boundary metadata",
+                    revision,
+                    planted(
+                        git_dir / "shallow", lambda path: path.write_text(revision.upper() + "\n")
+                    ),
+                ),
+            ]
+            for number, (message, sha, context) in enumerate(cases):
+                with self.subTest(message=message, case=number):
+                    with context() if context else contextlib.nullcontext():
+                        with self.assertRaises((ValueError, RuntimeError)) as caught:
+                            stage_source(source, root / f"staged-{number}", sha)
+                    self.assertEqual(str(caught.exception), message)
+
+    def test_every_git_call_while_staging_has_a_timeout_and_a_clean_environment(self):
+        """Mutation testing (round 12): no test noticed a Git call while staging that
+        lost its timeout (a Git that hangs would hang the run) or its environment
+        (inherited GIT_* variables point Git at another repository). The calls on the
+        staged copy also leave out the host's system and global configuration."""
+        calls = []
+        real_run = isolated_runner.run_captured
+
+        def record(argv, **kwargs):
+            calls.append((list(argv), kwargs))
+            return real_run(argv, **kwargs)
+
+        def subcommand(argv):
+            rest = argv[1:]
+            while rest[0] in ("-C", "-c"):
+                rest = rest[2:]
+            return rest[0]
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            staged = root / "staged"
+            with patch("isolated_runner.run_captured", side_effect=record):
+                stage_source(source, staged, revision)
+        expected = ["--version", "rev-parse", "ls-tree", "cat-file", "rev-parse"]
+        expected += ["pack-objects", "reset"]
+        if isolated_runner.contract.enabled():
+            expected += ["cat-file", "rev-list"]
+        self.assertEqual([subcommand(argv) for argv, _ in calls], expected)
+        for argv, kwargs in calls:
+            with self.subTest(argv=argv):
+                self.assertEqual(Path(argv[0]).stem.lower(), "git")
+                limit = 60 if argv[1:] == ["--version"] else isolated_runner.GIT_TIMEOUT
+                self.assertEqual(kwargs.get("timeout"), limit)
+                env = kwargs.get("env")
+                self.assertIsNotNone(env)
+                self.assertEqual(env.get("GIT_NO_REPLACE_OBJECTS"), "1")
+                if argv[1:3] == ["-C", str(staged)]:
+                    self.assertEqual(
+                        (env.get("GIT_CONFIG_NOSYSTEM"), env.get("GIT_CONFIG_GLOBAL")),
+                        ("1", os.devnull),
+                    )
+
+    def test_a_path_into_the_git_folder_is_refused_even_past_the_name_check(self):
+        """Mutation testing (round 12): the staged .git folder is made before any
+        committed file is written, so a path into it is refused even if the name check
+        missed it; no test noticed when that folder was not made first."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            entry = (".git/config", "100644", blob_digest(b"a\n"))
+            staged = root / "staged"
+            with patch("isolated_runner.source_entries", return_value=[entry]):
+                with self.assertRaisesRegex(
+                    ValueError, "^Source paths alias each other on this host: "
+                ):
+                    stage_source(source, staged, revision)
+            self.assertFalse((staged / ".git/config").exists())
+
+    def test_staging_stops_when_git_returns_fewer_blobs_than_it_listed(self):
+        """Mutation testing (round 12): nothing noticed when the listed paths and the
+        blobs read for them were paired without checking that both lists end together."""
+        real = isolated_runner.read_blobs
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n", "b.txt": b"b\n"})
+            with patch(
+                "isolated_runner.read_blobs",
+                side_effect=lambda folder, digests: real(folder, digests)[:-1],
+            ):
+                with self.assertRaisesRegex(ValueError, r"^zip\(\) argument 2 is shorter"):
+                    stage_source(source, root / "staged", revision)
+
+    @unittest.skipUnless(
+        isolated_runner.contract.enabled(), "tests a contract check (CONTRACT_CHECKS=1)"
+    )
+    def test_the_test_mode_reports_each_broken_staging_rule(self):
+        """Mutation testing (round 12): no test broke a Q4 check of staging on purpose,
+        so a check that lost its condition, rule or message still passed."""
+        real_digest, real_blobs, real_run = (
+            isolated_runner.blob_digest,
+            isolated_runner.read_blobs,
+            isolated_runner.run_captured,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            private = git_in(
+                source,
+                "commit-tree",
+                "-p",
+                revision,
+                "-m",
+                "private",
+                write_tree(source, {"notes.txt": b"private\n"}),
+            )
+            git_in(source, "update-ref", "refs/heads/private", private)
+            digests = iter([True, False])  # the read checks the blob, then the copy
+
+            def wrong_copy(payload):
+                return real_digest(payload) if next(digests) else "0" * 40
+
+            def extra_file(folder, wanted):
+                (root / f"staged-{number}" / "extra.txt").write_bytes(b"extra\n")
+                return real_blobs(folder, wanted)
+
+            def every_ref(argv, **kwargs):
+                if "pack-objects" in argv:
+                    argv = [*argv[:-1], "--all", argv[-1]]
+                return real_run(argv, **kwargs)
+
+            cases = [
+                ("Q4: a.txt", patch("isolated_runner.blob_digest", side_effect=wrong_copy)),
+                (
+                    "Q4: staged paths differ",
+                    patch("isolated_runner.read_blobs", side_effect=extra_file),
+                ),
+                (
+                    "Q4: staged Git objects differ from the commit's history",
+                    patch("isolated_runner.run_captured", side_effect=every_ref),
+                ),
+            ]
+            for number, (message, change) in enumerate(cases):
+                with self.subTest(message=message):
+                    with change, self.assertRaises(ContractViolation) as caught:
+                        stage_source(source, root / f"staged-{number}", revision)
+                    self.assertEqual(str(caught.exception), message)
+
+    @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
+    def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
+        """Review round 12 (R12C-C1): with PYTHONLEGACYWINDOWSFSENCODING=1, os.fsdecode
+        reads bytes in the ANSI code page, while Git for Windows prints the common Git
+        folder in UTF-8, so a checkout under a folder named with an accented letter was
+        refused as having no Git object store."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory, "Jos\u00e9")
+            root.mkdir()
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            staged = Path(directory, "staged")
+            code = (
+                "import sys\n"
+                "from pathlib import Path\n"
+                "sys.path.insert(0, sys.argv[1])\n"
+                "from isolated_runner import stage_source\n"
+                "stage_source(Path(sys.argv[2]), Path(sys.argv[3]), sys.argv[4])\n"
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-c",
+                    code,
+                    str(Path(__file__).resolve().parent),
+                    str(source),
+                    str(staged),
+                    revision,
+                ],
+                env=dict(os.environ, PYTHONLEGACYWINDOWSFSENCODING="1"),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=300,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((staged / "a.txt").read_bytes(), b"a\n")
+
     def test_filters_from_host_git_configuration_never_run_while_staging(self):
         """Mutation testing: the staged index reset must not read the host user's global
         configuration, where a filter that the commit's .gitattributes names would run."""
@@ -2097,8 +2391,27 @@ class SemanticCoverageTests(unittest.TestCase):
             return real(path)
 
         with patch("runner_workload.os.scandir", side_effect=scandir):
-            with self.assertRaisesRegex(ValueError, "cannot be listed: hidden$"):
+            with self.assertRaisesRegex(
+                ValueError, r"cannot be listed \(Permission denied\): hidden$"
+            ):
                 semantic_hash(self.root)
+
+    def test_a_missing_or_file_output_root_names_the_cause(self):
+        """Review round 12 (R12C-F1): a root the workflow never created, or a file in its
+        place, read "cannot be listed: ." with the cause dropped, which points a reader to
+        permissions; the output folder is not collected, so the reason is all there is."""
+        (self.root / "a-file").write_text("x", encoding="utf-8")
+        for root in (self.root / "never-created", self.root / "a-file"):
+            with self.subTest(root=root.name):
+                try:
+                    os.scandir(root).close()
+                except OSError as exc:
+                    cause = exc.strerror
+                else:
+                    self.fail("the root should not be listable")
+                expected = rf"^Workflow output folder cannot be listed \({re.escape(cause)}\): \.$"
+                with self.assertRaisesRegex(ValueError, expected):
+                    semantic_manifest(root)
 
     def test_manifest_records_every_file_and_its_comparison(self):
         self.compressed()

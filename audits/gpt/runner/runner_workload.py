@@ -36,8 +36,11 @@ def output_files(directory):
             with os.scandir(folder) as listing:
                 entries = list(listing)
         except OSError as exc:
+            # The cause goes into the reason: a root the workflow never created is not
+            # a permission problem, and the output folder itself is not collected.
             name = folder.relative_to(directory)
-            raise ValueError(f"Workflow output folder cannot be listed: {name}") from exc
+            cause = exc.strerror or type(exc).__name__
+            raise ValueError(f"Workflow output folder cannot be listed ({cause}): {name}") from exc
         for entry in entries:
             path = Path(entry.path)
             mode = entry.stat(follow_symlinks=False).st_mode

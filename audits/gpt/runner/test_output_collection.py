@@ -214,6 +214,43 @@ class CollectionCases:
                     read_summaries(self.produced, self.method)
                 link.unlink()
 
+    def test_a_summary_that_grows_after_its_check_names_the_summary_limit(self):
+        """Review round 12: read_opened checked the opened summary with the default
+        reason, so a summary that grew past 64 KiB between its check by name and the
+        open was reported as "output file size limit exceeded"."""
+        (self.produced / "boundary.json").write_text("{}", encoding="utf-8")
+        real = os.fstat
+
+        def grown(fd):
+            info = real(fd)
+            if not stat.S_ISREG(info.st_mode):
+                return info
+            fields = {name: getattr(info, name) for name in dir(info) if name.startswith("st_")}
+            return SimpleNamespace(**dict(fields, st_size=SUMMARY_MAX_BYTES + 1))
+
+        with patch("output_collection.os.fstat", side_effect=grown):
+            with self.assertRaisesRegex(RejectedOutput, "^summary size limit exceeded$"):
+                read_summaries(self.produced, self.method)
+
+    def test_an_output_file_that_grows_after_its_check_names_the_file_limit(self):
+        """Mutation testing (round 12): the reason for an output file that grew past its
+        limit between its check by name and the read (read_opened's default) was never
+        compared, only a file that was already too large when checked."""
+        (self.produced / "table.csv").write_bytes(b"123")
+        real = os.fstat
+
+        def grown(fd):
+            info = real(fd)
+            if not stat.S_ISREG(info.st_mode):
+                return info
+            fields = {name: getattr(info, name) for name in dir(info) if name.startswith("st_")}
+            return SimpleNamespace(**dict(fields, st_size=5))
+
+        with patch("output_collection.os.fstat", side_effect=grown):
+            self.rejected(
+                "^output file size limit exceeded$", limits=CollectionLimits(file_bytes=4)
+            )
+
     def test_hard_link_is_rejected(self):
         os.link(self.canary, self.produced / "escape")
         self.rejected(LINKED)
@@ -937,6 +974,31 @@ class ExactReasonTests(unittest.TestCase):
                     )
                 self.assertEqual(report["status"], "rejected")
                 self.assertEqual(report["reason"], reason)
+
+
+class RoundTwelveCheckTests(unittest.TestCase):
+    @NEEDS_CHECKS
+    def test_the_test_mode_reports_a_read_of_another_file(self):
+        """Mutation testing (round 12): no test broke the I1 check before a read on
+        purpose, so the check's message could be dropped or changed unnoticed. A ``same``
+        that accepts any pair stands for an identity check that misses a swap."""
+        with tempfile.TemporaryDirectory() as directory:
+            checked, opened = Path(directory, "checked"), Path(directory, "opened")
+            checked.write_bytes(b"checked\n")
+            opened.write_bytes(b"opened\n")
+            info = os.lstat(checked)
+            fd = os.open(opened, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+            try:
+                with self.assertRaises(ContractViolation) as caught:
+                    output_collection.read_opened(
+                        fd, info, info.st_dev, 100, "changed", lambda chunk: None, lambda a, b: True
+                    )
+            finally:
+                os.close(fd)
+            self.assertEqual(
+                str(caught.exception),
+                "I1: about to read an entry that is not the one-link regular file checked by name",
+            )
 
 
 @POSIX_ONLY

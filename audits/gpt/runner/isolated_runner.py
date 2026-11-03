@@ -531,24 +531,31 @@ def stage_source(source, staged, expected_sha):
         raise ValueError(f"No Git object store in the common Git folder: {git_dir}")
     if (git_dir / "objects/info/alternates").exists():
         raise ValueError("Materialize Git objects locally before staging")
-    (staged / ".git/objects").mkdir()
     for path in (git_dir / "objects").rglob("*"):
-        rel = path.relative_to(git_dir / "objects")
         if is_link(path.lstat()):  # symbolic links, and junctions on Windows
             raise ValueError("Symlink in Git object store")
-        permitted = (
-            len(rel.parts) == 2
-            and re.fullmatch(r"[0-9a-f]{2}", rel.parts[0])
-            and re.fullmatch(r"[0-9a-f]{38}", rel.parts[1])
-        ) or (
-            len(rel.parts) == 2
-            and rel.parts[0] == "pack"
-            and re.fullmatch(r"pack-[0-9a-f]{40}\.(pack|idx|rev)", rel.parts[1])
-        )
-        if path.is_file() and permitted:
-            target = staged / ".git/objects" / rel
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(path, target)
+    # Only the objects the audited commit reaches (its history, cut at a shallow
+    # boundary), packed by Git: the store also holds stashes (with `-u`, untracked
+    # files such as .env), other branches and blobs once added but never committed,
+    # and the audited code must not read those.
+    (staged / ".git/objects/pack").mkdir(parents=True)
+    packed = run_captured(
+        [
+            program("git"),
+            "-C",
+            str(source),
+            "pack-objects",
+            "--revs",
+            "--quiet",
+            str(staged / ".git/objects/pack/pack"),
+        ],
+        input=f"{expected_sha}\n".encode("ascii"),
+        env=env,
+        timeout=GIT_TIMEOUT,
+    )
+    if packed.returncode:
+        message = packed.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"git exited {packed.returncode}: {message}")
     (staged / ".git/refs").mkdir()
     write_text(staged / ".git/HEAD", expected_sha + "\n")
     # Windows has no executable bit, so Git there must not compare file modes.
@@ -582,6 +589,37 @@ def stage_source(source, staged, expected_sha):
             env=git_environment(isolated=True),
             timeout=GIT_TIMEOUT,
         )
+    if contract.enabled():
+        staged_objects = checked(
+            [
+                program("git"),
+                "-C",
+                str(staged),
+                "cat-file",
+                "--batch-all-objects",
+                "--batch-check=%(objectname)",
+            ],
+            env=git_environment(isolated=True),
+            timeout=GIT_TIMEOUT,
+        )
+        reached = checked(
+            [
+                program("git"),
+                "-C",
+                str(source),
+                "rev-list",
+                "--objects",
+                "--no-object-names",
+                expected_sha,
+            ],
+            env=env,
+            timeout=GIT_TIMEOUT,
+        )
+        contract.require(
+            "Q4",
+            set(staged_objects.split()) == set(reached.split()),
+            "staged Git objects differ from the commit's history",
+        )
     return records
 
 
@@ -608,6 +646,13 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     output = args.output.resolve()
+    tools = Path(__file__).resolve().parent
+    # Docker reads --mount and --secret values as comma-separated fields, so a comma in
+    # a folder that is mounted, or that holds the exported CA bundle (Windows), would
+    # split one: refused here, before anything runs.
+    for label, folder in (("--output", output), ("The runner folder", tools)):
+        if "," in str(folder):
+            raise SystemExit(f"{label} must not contain a comma: {folder}")
     # A used folder would keep an earlier runner.json that a failed run never replaces.
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise SystemExit(f"--output must be a new or empty folder: {output}")
@@ -634,7 +679,6 @@ def main():
         return blocked(results, "Docker daemon unreachable")
     if daemon != "linux":
         return blocked(results, "Docker daemon does not run Linux containers")
-    tools = Path(__file__).resolve().parent
     staged = output / "verified-source"
     records = stage_source(args.source.resolve(), staged, args.expected_sha)
     write_text(

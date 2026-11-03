@@ -35,6 +35,9 @@ rejection.
   for the bytes read from Git (with replace refs and inherited `GIT_*` variables
   ignored); checked again on the written file in `stage_source`. No path enters
   `.git`, and no two committed paths may reach the same staged file or folder.
+  The staged object store holds exactly the objects the commit reaches (its
+  history, cut at a shallow boundary), never a stash, another branch or an object
+  that no commit holds; checked in `stage_source` against `git rev-list --objects`.
 - **Q5** Host-side uv runs with `--no-config`. Checked in `host_uv`.
 
 ## Invariants
@@ -50,9 +53,10 @@ rejection.
   it was listed. P1 excludes the container as a concurrent writer. Another local
   account that can write the work folder (POSIX: mode 0777, so that any container
   UID can write it; Windows: the inherited ACL) is not excluded: the identity
-  checks keep an entry it swaps in during collection out of the snapshot, but files
-  it writes before collection are collected as evidence, so run audits on a
-  single-user host. Checked in `read_opened`.
+  checks keep out only an entry it swaps between the walk's check by name and the
+  read; whatever it writes or swaps in before the walk reaches that entry, before or
+  during collection, is collected as evidence, so run audits on a single-user host.
+  Checked in `read_opened`.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
   the same outcome, records and summaries for the same unchanging tree whose paths
   fit the host's path length limit (the path walk cannot open a longer path; the
@@ -61,7 +65,9 @@ rejection.
   writer, so only a test or another local account, see I1, can cause one) or for an
   `OSError`. A failure of the check's own reference snapshot (beside the real one;
   its own path, or a full volume) is raised as that `OSError`, never reported as an
-  I2 break.
+  I2 break; with a relative destination, a summary lookup that the path walk's
+  full spelling (under the current folder) puts past the limit skips the check
+  like a tree path past it.
 
 ## Container workload and snapshot check (checked by the suites)
 
@@ -69,7 +75,7 @@ W1-W3 and W5 run inside the Linux container or on raw input, and W4 is a propert
 of the workflow, not of the host process, so `contract.py` does not check them;
 `test_guards.py` checks W1-W3 and W5 and `test_host_safety.py` checks W4. In a real
 container the CI Docker controls exercise W1 (they run only the boundary probe), and
-the full isolated audit jobs exercise W1 and W2.
+the full isolated audit jobs exercise W1, W2 and W5.
 
 - **W1** `boundary.json` reports `no_capabilities` true only when the permitted,
   effective and bounding capability sets are all empty (and the ambient set, where
@@ -103,10 +109,14 @@ the full isolated audit jobs exercise W1 and W2.
   dot but never take a collection's unfinished snapshot (`.collect-*` beside the
   destination), which a host process killed during collection leaves behind and
   which was never checked as a whole. Checked in `test_host_safety.WorkflowTests`.
-- **W5** The semantic output gate hashes every entry of the workflow output or fails:
+- **W5** The semantic output gate hashes every file of the workflow output (a PNG
+  figure only has to exist and be nonempty; folders count only through the files
+  they hold) or fails:
   a symbolic link (also one to a folder, or a dangling one), a FIFO or other special
   file, or a folder it cannot list fails the gate with a reason that names it, so
-  two outputs that differ only in such an entry never pass as repeatable. Checked in
+  two outputs that differ only in such an entry never pass as repeatable. A listing
+  failure also gives the operating system's cause, so an output folder the workflow
+  never created does not read as a permission problem. Checked in
   `runner_workload.semantic_manifest`.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
@@ -139,6 +149,10 @@ the full isolated audit jobs exercise W1 and W2.
   first), so a program committed in the audited checkout cannot run on the host.
 - `--source` may name a subfolder of the checkout, or a linked worktree; the whole
   commit is staged, with objects read from the repository's common Git folder.
+- Only the objects the audited commit reaches are staged, packed by Git. PR #32
+  copied every loose object and pack of the source's store, so a stash (with `-u`,
+  untracked files such as `.env`), an unpushed branch or a blob once added and never
+  committed was readable by the audited code under `/input/.git`.
 - A used `--output` folder (one that exists and is not empty) is refused with exit
   1 before anything runs. PR #32 reused it, so an earlier `runner.json` survived a
   later run that failed before writing its own.

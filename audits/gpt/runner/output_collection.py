@@ -160,10 +160,19 @@ def same_file(info, opened):
     return (info.st_dev, info.st_ino) == (opened.st_dev, opened.st_ino)
 
 
-def read_opened(fd, info, device, maximum, changed, consume, same=same_identity):
+def read_opened(
+    fd,
+    info,
+    device,
+    maximum,
+    changed,
+    consume,
+    same=same_identity,
+    too_large="output file size limit exceeded",
+):
     """Read an opened entry only while it is the regular file that was checked by name."""
     opened = os.fstat(fd)
-    regular_file(opened, device, maximum)
+    regular_file(opened, device, maximum, too_large)
     if not same(info, opened):
         raise RejectedOutput(changed)
     if contract.enabled():
@@ -330,8 +339,8 @@ def read_summaries(snapshot, method=None):
                 # The path walk looks a name up by its full path. copy_tree wrote every
                 # snapshot file by the snapshot's own spelling, so when that spelling is
                 # absolute, a name past the limit is absent (I2). A relative spelling is
-                # looked up under the current folder, which copy_tree never used, so
-                # there the lookup fails and the path walk rejects the tree.
+                # looked up as the current folder plus that spelling, a longer path than
+                # copy_tree used, so there the lookup fails and the path walk rejects.
                 if exc.errno != errno.ENAMETOOLONG or not os.path.isabs(snapshot):
                     raise
                 continue
@@ -353,6 +362,7 @@ def read_summaries(snapshot, method=None):
                     "summary changed during collection",
                     consume,
                     folder.same,
+                    "summary size limit exceeded",
                 )
             finally:
                 os.close(fd)
