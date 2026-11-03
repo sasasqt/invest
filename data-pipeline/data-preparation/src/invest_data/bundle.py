@@ -36,8 +36,7 @@ STORAGE_FORMATS = {"csv": "data.csv", "sqlite": "data.sqlite", "parquet": "data.
 # int64 bounds, and the most digits a Parquet decimal128 holds.
 _INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
 _MAX_DECIMAL_PRECISION = 38
-# Readers return dates and timestamps as datetime64[ns], which holds only this span.
-_MIN_TIME, _MAX_TIME = pd.Timestamp.min, pd.Timestamp.max
+# Readers return date columns as datetime64[ns], which holds only this span of days.
 _MIN_DATE, _MAX_DATE = date(1677, 9, 22), date(2262, 4, 11)
 _SQLITE_TYPES = {
     "string": "TEXT",
@@ -181,7 +180,9 @@ def _show(value: Any) -> str:
     try:
         return repr(value)
     except ValueError:  # beyond sys.get_int_max_str_digits()
-        return f"an integer of {int(value).bit_length()} bits"
+        if isinstance(value, int):
+            return f"an integer of {value.bit_length()} bits"
+        return f"a {type(value).__name__} too long to show"
 
 
 def _as_timestamp(col: Column, value: Any) -> pd.Timestamp:
@@ -237,11 +238,18 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
     # A signaling NaN raises decimal.InvalidOperation in any comparison, pd.isna included.
     if isinstance(value, Decimal) and value.is_snan():
         raise BundleError(f"column {col.name!r}: cannot store the signaling NaN {value!r}")
+    if isinstance(value, list | tuple | dict | set | np.ndarray):
+        raise BundleError(
+            f"column {col.name!r}: cannot store a {type(value).__name__} as {col.type}"
+        )
     # pandas missing values (None, NaN, NaT, pd.NA) are stored as null; infinity is rejected.
     if value is None or (not isinstance(value, str) and pd.isna(value)):
         return None
     if col.type == "string":
-        text = str(value)
+        try:
+            text = str(value)
+        except ValueError as exc:  # an integer too long for text
+            raise BundleError(f"column {col.name!r}: cannot store {_show(value)} as text") from exc
         try:
             text.encode("utf-8")
         except UnicodeEncodeError as exc:  # a lone surrogate has no UTF-8 form
@@ -254,6 +262,8 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
             raise BundleError(f"column {col.name!r}: non-integer value {value!r}")
         if isinstance(value, Decimal) and value != value.to_integral_value():
             raise BundleError(f"column {col.name!r}: non-integer value {value!r}")
+        if isinstance(value, Decimal) and value.adjusted() > 18:  # int() would expand 1E+999999999
+            raise BundleError(f"column {col.name!r}: {value!r} is outside the int64 range")
         try:
             number = int(value)
         except (TypeError, ValueError, OverflowError) as exc:
@@ -261,7 +271,7 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
         # int() truncates any other real number with a fraction (Fraction(7, 2), a long
         # double that a float cannot hold exactly).
         if isinstance(value, numbers.Real | np.floating) and number != value:
-            raise BundleError(f"column {col.name!r}: non-integer value {value!r}")
+            raise BundleError(f"column {col.name!r}: non-integer value {_show(value)}")
         if not _INT64_MIN <= number <= _INT64_MAX:
             raise BundleError(f"column {col.name!r}: {_show(value)} is outside the int64 range")
         return number
@@ -303,13 +313,7 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
                 f"column {col.name!r}: {value!r} has nanoseconds; timestamps are stored to "
                 "the microsecond"
             )
-        utc = ts.tz_convert("UTC")
-        if not _MIN_TIME <= utc.tz_localize(None) <= _MAX_TIME:
-            raise BundleError(
-                f"column {col.name!r}: {value!r} is outside the times a reader can return "
-                f"({_MIN_TIME} to {_MAX_TIME} UTC)"
-            )
-        return utc.strftime("%Y-%m-%dT%H:%M:%S.%fZ").replace(".000000Z", "Z")
+        return ts.tz_convert("UTC").strftime("%Y-%m-%dT%H:%M:%S.%fZ").replace(".000000Z", "Z")
     if col.type == "decimal":
         return _decimal(col, value)
     raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
@@ -499,11 +503,17 @@ def write_bundle(
         for rec in frame.itertuples(index=False, name=None)
     ]
     when = datetime.now(UTC) if created_at is None else created_at
-    if not isinstance(when, datetime) or when.utcoffset() is None:
+    try:  # pd.NaT raises here; a time near year 1 or 9999 can leave the range in UTC
+        aware = isinstance(when, datetime) and when.utcoffset() is not None
+        utc = when.astimezone(UTC) if aware else None
+    except (ValueError, OverflowError):
+        utc = None
+    if utc is None:
         raise BundleError(
-            f"created_at must be timezone-aware: a datetime with a UTC offset, not {when!r}"
+            "created_at must be timezone-aware: a datetime with a UTC offset and a UTC time "
+            f"in years 1 to 9999, not {when!r}"
         )
-    created = when.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    created = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
     storage = {"format": fmt, "path": STORAGE_FORMATS[fmt]}
     if fmt == "sqlite":
         storage["table"] = table
@@ -738,7 +748,10 @@ def _signed_zero_hash_matches(
 
 
 def _read_csv(path: Path, manifest: Manifest) -> list[list[Any]]:
-    text = path.read_text(encoding="utf-8")
+    try:
+        text = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError as exc:
+        raise BundleError(f"CSV file is not UTF-8 text: {exc}") from exc
     reader = csv.reader(io.StringIO(text, newline=""))
     try:
         header = next(reader)
@@ -833,6 +846,9 @@ def _read_parquet(path: Path, manifest: Manifest) -> list[list[Any]]:
         # Floats pass as stored: canonical form would turn a -0.0 into 0.0, and a bundle
         # written before negative zero was stored as 0 is verified with its sign. A stored
         # NaN is then refused like a CSV "NaN", where canonical form read it as null.
-        values = table.column(col.name).to_pylist()
+        try:
+            values = table.column(col.name).to_pylist()
+        except UnicodeDecodeError as exc:  # pyarrow does not check UTF-8 on read
+            raise BundleError(f"column {col.name!r}: Parquet text is not UTF-8: {exc}") from exc
         columns.append(values if col.type == "float64" else [format_value(col, v) for v in values])
     return [list(r) for r in zip(*columns, strict=True)] if columns else []

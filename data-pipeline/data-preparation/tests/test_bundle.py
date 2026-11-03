@@ -1,5 +1,5 @@
 import json
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta, timezone
 from decimal import Decimal
 
 import numpy as np
@@ -473,8 +473,6 @@ def test_reader_refuses_a_manifest_with_non_finite_numbers(tmp_path, literal):
 
 
 def test_created_at_must_be_timezone_aware_and_is_written_in_utc(tmp_path):
-    from datetime import timedelta, timezone
-
     frame = pd.DataFrame({"k": ["a"]})
     with pytest.raises(BundleError, match="created_at must be timezone-aware"):
         write_bundle(frame, tmp_path / "naive", dataset_id="x", created_at=datetime(2026, 1, 1, 12))
@@ -580,13 +578,19 @@ def test_int64_columns_refuse_other_numbers_with_a_fraction(tmp_path):
         (Column("d", "date"), date(1500, 1, 1)),
         (Column("d", "date"), date(2262, 4, 12)),
         (Column("d", "date"), date(1677, 9, 21)),
-        (Column("t", "timestamp"), datetime(1500, 1, 1, tzinfo=UTC)),
-        (Column("t", "timestamp"), datetime(2262, 4, 12, tzinfo=UTC)),
     ],
 )
-def test_dates_and_timestamps_outside_the_reader_range_are_refused(tmp_path, fmt, column, value):
+def test_dates_outside_the_reader_range_are_refused(tmp_path, fmt, column, value):
     """They escaped as pandas OutOfBoundsDatetime from the writer's own read-back."""
-    _refused(tmp_path, [value], column, "outside the", fmt=fmt)
+    _refused(tmp_path, [value], column, "outside the dates", fmt=fmt)
+
+
+@pytest.mark.parametrize("fmt", FORMATS)
+def test_timestamps_outside_the_date_range_round_trip(tmp_path, fmt):
+    """Readers keep the resolution pandas infers for timestamps, so these read exactly."""
+    values = [pd.Timestamp("1500-01-01T12:00:00Z"), pd.Timestamp("2300-01-01T00:00:00.5Z")]
+    _, frame = _one_column(tmp_path, values, Column("t", "timestamp"), fmt=fmt)
+    assert frame["t"].tolist() == values
 
 
 @pytest.mark.parametrize("fmt", FORMATS)
@@ -597,7 +601,7 @@ def test_dates_at_the_edges_of_the_reader_range_round_trip(tmp_path, fmt):
     assert frame["d"].dt.date.tolist() == [date(1677, 9, 22), date(2262, 4, 11)]
 
 
-@pytest.mark.parametrize("kind", ["int64", "float64", "decimal", "date"])
+@pytest.mark.parametrize("kind", ["int64", "float64", "decimal", "date", "timestamp", "string"])
 def test_integers_too_long_for_text_are_refused_as_bundle_errors(tmp_path, kind):
     """Building the message raised ValueError (the int-to-text digit limit)."""
     column = Column(
@@ -671,3 +675,57 @@ def test_parquet_readers_refuse_a_stored_nan_like_csv_readers(tmp_path):
     _replace_in_csv(tmp_path / "c", "\\N", "NaN")
     with pytest.raises(BundleError, match="NaN/infinity is not allowed"):
         read_bundle(tmp_path / "c")
+
+
+def test_a_fraction_too_long_for_text_is_refused_as_a_bundle_error(tmp_path):
+    """The non-integer message built repr(value), which raised ValueError."""
+    from fractions import Fraction
+
+    _refused(tmp_path, [Fraction(10**5000 + 1, 2)], Column("n", "int64"), "Fraction too long")
+
+
+def test_an_int64_column_refuses_a_decimal_with_a_huge_exponent_at_once(tmp_path):
+    """int(Decimal("1E+999999999")) builds a billion-digit integer before the range check."""
+    _refused(tmp_path, [Decimal("1E+999999999")], Column("n", "int64"), "outside the int64 range")
+
+
+@pytest.mark.parametrize("value", [[1, 2], (1,), {"a": 1}, np.array([1.0])])
+def test_a_container_in_a_cell_is_refused(tmp_path, value):
+    """pd.isna on a list raised "truth value of an array is ambiguous"."""
+    frame = pd.DataFrame({"x": pd.Series([value], dtype=object)})
+    with pytest.raises(BundleError, match="cannot store a"):
+        write_bundle(frame, tmp_path / "b", dataset_id="x", columns=(Column("x", "float64"),))
+
+
+@pytest.mark.parametrize(
+    "when",
+    [
+        pd.NaT,  # a datetime instance whose utcoffset() raises ValueError
+        datetime(1, 1, 1, tzinfo=timezone(timedelta(hours=1))),  # OverflowError in UTC
+    ],
+)
+def test_created_at_without_a_utc_time_is_refused(tmp_path, when):
+    frame = pd.DataFrame({"k": ["a"]})
+    with pytest.raises(BundleError, match="created_at must be timezone-aware"):
+        write_bundle(frame, tmp_path / "b", dataset_id="x", created_at=when)
+    assert not list(tmp_path.iterdir())
+
+
+@pytest.mark.parametrize("fmt", ["csv", "parquet"])
+def test_text_that_is_not_utf8_is_refused_on_read(tmp_path, fmt):
+    """CSV and Parquet readers raised UnicodeDecodeError rather than BundleError."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    _one_column(tmp_path, ["ab"], Column("s", "string"), fmt=fmt)
+    path = tmp_path / "b"
+    if fmt == "csv":
+        (path / "data.csv").write_bytes(b"s\na\xed\xa0\x80b\n")
+    else:
+        offsets = pa.py_buffer(np.array([0, 5], dtype=np.int32).tobytes())
+        text = pa.Array.from_buffers(
+            pa.string(), 1, [None, offsets, pa.py_buffer(b"a\xed\xa0\x80b")]
+        )
+        pq.write_table(pa.table({"s": text}), path / "data.parquet")
+    with pytest.raises(BundleError, match="not UTF-8"):
+        read_bundle(path)
