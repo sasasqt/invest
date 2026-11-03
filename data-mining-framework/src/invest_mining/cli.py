@@ -106,18 +106,21 @@ def _prepare_out(
     The check asks only for what the run will do. Each output in ``files`` (paths relative
     to ``out``) that already exists, such as an earlier run's result before a rerun into the
     same folder, must open for writing (not appending), so a read-only or append-only file,
-    a folder in its place or a file locked by another program fails here; a broken link in
-    its place fails too; where one is missing, its folder must take a new file. Folders in
-    ``new_files_in`` get files whose names are not known yet, so they must take a new file
-    too. Files matching the glob ``deleted`` are only deleted: on POSIX that needs the
-    folder's permission, checked above, and a folder in their place cannot be deleted;
-    Windows cannot delete a read-only file, so there each must open for writing. A link is
-    deleted as a link and needs nothing more. Not checked: immutable files and another
-    user's files in a shared (sticky) folder on POSIX, hidden or system files and
-    junctions on Windows; such a run fails after the record, and the error names the
-    experiment. Called after every refusal and before the ledger records anything, so a
-    refused run leaves no ``--out`` and an unusable one leaves no record; a search that
-    fails after the check, for example on a ledger it cannot append to, keeps the folders.
+    a folder in its place or a file locked by another program fails here. A broken link in
+    its place is refused too, on purpose: the run does not write through a dangling link,
+    even one whose target could be created. Where an output is missing, its folder must
+    take a new file. Folders in ``new_files_in`` get files whose names are not known yet,
+    so they must take a new file too. Files matching the glob ``deleted`` are only
+    deleted: on POSIX that needs the folder's permission, checked above, and a folder in
+    their place cannot be deleted; Windows cannot delete a read-only file, so there each
+    must open for writing. A link is deleted as a link and needs nothing more; a Windows
+    junction is refused as a folder, although deleting it would work. Not checked:
+    immutable files and another user's files in a shared (sticky) folder on POSIX, and
+    hidden or system files on Windows; such a run fails after the record, and the error
+    names the experiment. Called after every refusal and before the ledger records
+    anything, so a refused run leaves no ``--out`` and an unusable one leaves no record; a
+    run that fails after the check, for example on a ledger it cannot append to, keeps
+    its folders.
     """
     root = Path(out)
     probed: set[Path] = set()
