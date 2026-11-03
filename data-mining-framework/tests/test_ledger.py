@@ -926,3 +926,95 @@ def test_cli_evaluate_refuses_a_tables_folder_that_takes_no_file(tmp_path, monke
     with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
         main([*evaluate, "--out", str(out)])
     assert not book.exists()
+
+
+def test_a_reservation_used_as_development_counts_as_used():
+    # A ledger written before empty-family searches stopped counting: such a search used the
+    # reservation up, then a later search took it into its development data. That data has
+    # been looked at, so the reservation must not become reserved again (a rerun of the later
+    # search would be refused).
+    entries = [
+        _entry("reservation", W("2020-02-03", "2020-02-28")),
+        {**_experiment("e_empty", W("2010-01-04", "2020-01-31"), W("2020-02-03")), "family": []},
+        _experiment("e_later", W("2020-01-01", "2020-05-29"), W("2020-06-01")),
+    ]
+    assert ledger.unused_reservations(entries) == []
+    ledger.check_inspection(entries, W("2020-02-10", "2020-02-20"))
+
+
+def test_cli_evaluate_rerun_with_a_subfolder_in_figures(tmp_path):
+    # Regression test for the --out check of evaluate: only its own output files are opened,
+    # so a subfolder an earlier run or the user left in figures/ or tables/ is no obstacle.
+    data, out = tmp_path / "d", tmp_path / "ev"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "120"])
+    args = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    assert main(args) == 0
+    (out / "figures" / "old").mkdir()
+    (out / "tables" / "old").mkdir()
+    assert main([*args, "--ledger", str(tmp_path / "l.jsonl")]) == 0
+
+
+def test_cli_evaluate_rerun_needs_no_new_file_where_every_output_exists(tmp_path, monkeypatch):
+    # The --out check asks only for what the run will do: a rerun overwrites its eight
+    # outputs, so folders that take no new file (mode 555, say) must not refuse it.
+    data, out, book = tmp_path / "d", tmp_path / "ev", tmp_path / "l.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "120"])
+    args = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    assert main(args) == 0
+    original = tempfile.TemporaryFile
+    full = {out, out / "tables", out / "figures"}
+
+    def refuse(*a, **kwargs):
+        if Path(kwargs.get("dir", "")) in full:
+            raise PermissionError(13, "Permission denied", str(kwargs["dir"]))
+        return original(*a, **kwargs)
+
+    monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
+    assert main([*args, "--ledger", str(book)]) == 0
+    assert ledger.load(book)[-1]["kind"] == "inspection"
+    (out / "figures" / "ic.png").unlink()
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main([*args, "--ledger", str(tmp_path / "l2.jsonl")])
+    assert not (tmp_path / "l2.jsonl").exists()
+
+
+@pytest.mark.skipif(
+    os.name == "nt" or getattr(os, "geteuid", lambda: 0)() == 0,
+    reason="needs POSIX permission bits and a non-root user",
+)
+def test_cli_reruns_into_read_only_outputs_the_run_only_deletes_or_overwrites(tmp_path):
+    # search only deletes an earlier run's factors/*.json, which POSIX allows for read-only
+    # files in a writable folder; evaluate only overwrites its outputs, which needs no
+    # writable folder. Both reruns work without the check, so the check must not refuse them.
+    data = tmp_path / "d"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "200"])
+    search = ["search", "--data", str(data), "--trials", "10", "--out", str(tmp_path / "s")]
+    assert main(search) == 0
+    old = sorted((tmp_path / "s" / "factors").glob("*.json"))
+    assert old
+    for path in old:
+        path.chmod(0o444)
+    assert main(search) == 0
+    out = tmp_path / "ev"
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    assert main(evaluate) == 0
+    folders = [out, out / "tables", out / "figures"]
+    for folder in folders:
+        folder.chmod(0o555)
+    try:
+        assert main(evaluate) == 0
+    finally:
+        for folder in folders:
+            folder.chmod(0o755)
+
+
+def test_cli_search_rerun_refuses_a_folder_among_old_factor_files(tmp_path):
+    # Guard: the search deletes an earlier run's factors/*.json, which fails for a folder, so
+    # the check must still refuse such an --out before the ledger records anything.
+    data, book, out = tmp_path / "d", tmp_path / "l.jsonl", tmp_path / "s"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "200"])
+    search = ["search", "--data", str(data), "--trials", "10", "--out", str(out)]
+    (out / "factors" / "f_old.json").mkdir(parents=True)
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main([*search, "--ledger", str(book)])
+    assert not book.exists()

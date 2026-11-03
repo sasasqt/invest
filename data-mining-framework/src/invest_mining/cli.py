@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 import tempfile
 from collections.abc import Sequence
@@ -84,23 +85,52 @@ def _span(dates: pd.DatetimeIndex, what: str) -> Window:
     return Window(dates[0].date(), dates[-1].date())
 
 
-def _prepare_out(out: str | Path, *subdirs: str, files: Sequence[str] = ()) -> Path:
-    """Create ``out`` (and ``subdirs``) and check that it can take the command's outputs.
+def _prepare_out(
+    out: str | Path,
+    files: Sequence[str],
+    *,
+    new_files_in: Sequence[str] = (),
+    deleted: str | None = None,
+) -> Path:
+    """Create ``out`` and its folders and check that it can take the command's outputs.
 
-    Each folder must take a new file, and each output already there (``files`` are glob
-    patterns relative to ``out``, such as an earlier run's results before a rerun into the
-    same folder) must open for writing; a file that is read-only or locked by another
-    program fails here. Called after every refusal and before the ledger records anything,
-    so a refused run leaves no ``--out`` and an unusable one leaves no record.
+    The check asks only for what the run will do. Each output in ``files`` (paths relative
+    to ``out``) that already exists, such as an earlier run's result before a rerun into the
+    same folder, must open for writing, so a read-only file, a folder in its place or a file
+    locked by another program fails here; where one is missing, its folder must take a new
+    file. Folders in ``new_files_in`` get files whose names are not known yet, so they must
+    take a new file too. Files matching the glob ``deleted`` are only deleted: on POSIX
+    that needs the folder's permission, checked above; Windows cannot delete a read-only
+    file, so there each must open for writing. Called after every refusal and before the
+    ledger records anything, so a refused run leaves no ``--out`` and an unusable one leaves
+    no record.
     """
     root = Path(out)
-    try:
-        for folder in [root, *(root / sub for sub in subdirs)]:
-            folder.mkdir(parents=True, exist_ok=True)
+    probed: set[Path] = set()
+
+    def takes_new_file(folder: Path) -> None:
+        if folder not in probed:
+            probed.add(folder)
             with tempfile.TemporaryFile(dir=folder):
                 pass
-        for pattern in files:
-            for existing in sorted(root.glob(pattern)):
+
+    try:
+        for folder in [root, *(root / name for name in new_files_in)]:
+            folder.mkdir(parents=True, exist_ok=True)
+            if folder != root:
+                takes_new_file(folder)
+        for name in files:
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if path.exists():
+                with path.open("ab"):
+                    pass
+            else:
+                takes_new_file(path.parent)
+        for existing in sorted(root.glob(deleted)) if deleted is not None else []:
+            if existing.is_dir():
+                raise IsADirectoryError(f"cannot delete the folder {existing}")
+            if os.name == "nt":
                 with existing.open("ab"):
                     pass
     except OSError as exc:
@@ -196,9 +226,7 @@ def _evaluate(args: argparse.Namespace) -> int:
     # An unwritable --out must fail here, not after the inspection is recorded.
     _prepare_out(
         args.out,
-        "tables",
-        "figures",
-        files=(
+        (
             "config.json",
             "metrics.json",
             "tables/daily_ic.csv",
@@ -329,8 +357,9 @@ def _search(args: argparse.Namespace) -> int:
     # An unusable --out must fail before the ledger records the experiment.
     out = _prepare_out(
         args.out,
-        "factors",
-        files=("ledger.csv", "confirmation.csv", "config.json", "factors/*.json"),
+        ("ledger.csv", "confirmation.csv", "config.json"),
+        new_files_in=("factors",),
+        deleted="factors/*.json",
     )
     result = run_search(
         panel,
@@ -448,7 +477,7 @@ def _confirm(args: argparse.Namespace) -> int:
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
     _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
     # An unusable --out must fail before the ledger records the experiment.
-    out = _prepare_out(args.out, files=("confirmation.csv", "config.json"))
+    out = _prepare_out(args.out, ("confirmation.csv", "config.json"))
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
@@ -744,7 +773,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     se.add_argument(
         "--confirm-start",
         help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction; to confirm "
-        "on a reserved window, its first date (a later date inside it is refused)",
+        "on a reserved window, its first date (a date that skips reserved sessions is "
+        "refused)",
     )
     se.add_argument(
         "--require-confirmatory",
@@ -774,7 +804,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--confirm-start",
         required=True,
         help="first confirmation date (YYYY-MM-DD), e.g. the first date of a reserved "
-        "window (a later date inside it is refused)",
+        "window (a date that skips reserved sessions is refused)",
     )
     co.add_argument(
         "--ledger",
