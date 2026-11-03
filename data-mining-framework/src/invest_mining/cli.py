@@ -198,7 +198,16 @@ def _evaluate(args: argparse.Namespace) -> int:
         args.out,
         "tables",
         "figures",
-        files=("config.json", "metrics.json", "tables/*.csv", "figures/*"),
+        files=(
+            "config.json",
+            "metrics.json",
+            "tables/daily_ic.csv",
+            "tables/quantile_returns.csv",
+            "tables/quantile_summary.csv",
+            "tables/tail_returns.csv",
+            "figures/ic.png",
+            "figures/quantiles.png",
+        ),
     )
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
