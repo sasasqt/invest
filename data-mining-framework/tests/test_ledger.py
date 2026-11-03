@@ -836,19 +836,31 @@ def test_cli_existing_output_that_takes_no_write_is_refused_before_recording(tmp
     assert book.read_bytes() == before
 
 
-def test_cli_write_failure_after_recording_names_the_experiment(tmp_path, monkeypatch):
+@pytest.mark.parametrize("command", ["confirm", "search", "search without a ledger"])
+def test_cli_write_failure_after_recording_names_the_experiment(tmp_path, monkeypatch, command):
     # The probe cannot rule out every failure (a full disk); one after the record exits
     # with a message naming the recorded experiment instead of a traceback.
     data, book = _reserved_market(tmp_path)
-    factor = _frozen(tmp_path, expr="close")
+    if command == "confirm":
+        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path, expr="close"))]
+    else:
+        args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
+    if command != "search without a ledger":
+        args += ["--ledger", str(book)]
+    out = tmp_path / "c"
 
     def full(*args, **kwargs):
         raise OSError(28, "No space left on device")
 
     monkeypatch.setattr(pd.DataFrame, "to_csv", full)
-    args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+    if command == "search without a ledger":
+        with pytest.raises(SystemExit, match=re.escape(f"--out {out}: [Errno 28]")) as raised:
+            main([*args, "--confirm-start", "2020-09-01", "--out", str(out)])
+        assert "recorded" not in str(raised.value)
+        assert len(ledger.load(book)) == 2
+        return
     with pytest.raises(SystemExit, match="the ledger already recorded experiment e_"):
-        main([*args, "--confirm-start", "2020-09-01", "--out", str(tmp_path / "c")])
+        main([*args, "--confirm-start", "2020-09-01", "--out", str(out)])
     assert ledger.load(book)[-1]["kind"] == "experiment"
 
 
