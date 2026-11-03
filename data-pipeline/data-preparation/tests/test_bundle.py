@@ -501,3 +501,173 @@ def test_column_definitions_are_not_coerced(tmp_path, column, message):
     (path / "manifest.json").write_text(json.dumps(raw))
     with pytest.raises(BundleError, match=message):
         read_bundle(path)
+
+
+def _without_hash(path):
+    raw = json.loads((path / "manifest.json").read_text())
+    del raw["content_sha256"]
+    (path / "manifest.json").write_text(json.dumps(raw))
+
+
+def _replace_in_csv(path, old, new):
+    data = path / "data.csv"
+    text = data.read_text(encoding="utf-8")
+    assert old in text
+    data.write_text(text.replace(old, new, 1), encoding="utf-8", newline="")
+
+
+@pytest.mark.parametrize("token", ["NaN", "sNaN", "Infinity"])
+def test_a_decimal_column_refuses_nan_and_infinity_on_read(tmp_path, token):
+    """A stored null changed to NaN still matched the hash, and sNaN raised InvalidOperation."""
+    column = Column("c", "decimal", precision=5, scale=2)
+    _one_column(tmp_path, [None, Decimal("1.00")], column)
+    _replace_in_csv(tmp_path / "b", "\\N", token)
+    with pytest.raises(BundleError, match="NaN/infinity is not allowed"):
+        read_bundle(tmp_path / "b")
+
+
+@pytest.mark.parametrize("kind", ["int64", "float64", "decimal"])
+def test_a_signaling_nan_is_refused_on_write(tmp_path, kind):
+    column = Column(
+        "c",
+        kind,
+        precision=5 if kind == "decimal" else None,
+        scale=2 if kind == "decimal" else None,
+    )
+    _refused(tmp_path, [Decimal("sNaN")], column, "signaling NaN")
+
+
+@pytest.mark.parametrize(
+    ("column", "value", "stored", "message"),
+    [
+        (Column("c", "decimal", precision=5, scale=2), Decimal("1.00"), "1.234", "decimal places"),
+        (Column("c", "decimal", precision=5, scale=2), Decimal("1.00"), "1234.00", "does not fit"),
+        (
+            Column("t", "timestamp"),
+            pd.Timestamp("2020-01-01T00:00:00.123456Z"),
+            "2020-01-01T00:00:00.123456789Z",
+            "nanoseconds",
+        ),
+        (Column("d", "date"), date(2000, 1, 1), "1500-01-01", "outside the dates"),
+    ],
+)
+def test_readers_check_every_value_without_a_content_hash(tmp_path, column, value, stored, message):
+    """Without content_sha256 the reader returned 1.234 for decimal(5, 2) and nanoseconds."""
+    _one_column(tmp_path, [value], column)
+    path = tmp_path / "b"
+    _without_hash(path)
+    text = (path / "data.csv").read_text(encoding="utf-8").splitlines()[1]
+    _replace_in_csv(path, text, stored)
+    with pytest.raises(BundleError, match=message):
+        read_bundle(path)
+
+
+def test_int64_columns_refuse_other_numbers_with_a_fraction(tmp_path):
+    """int() truncated them: Fraction(7, 2) was stored as 3."""
+    from fractions import Fraction
+
+    _refused(tmp_path, [Fraction(7, 2)], Column("n", "int64"), "non-integer value")
+    if np.finfo(np.longdouble).nmant > 52:  # an 80-bit long double (not on Windows)
+        value = np.longdouble(2**53) + np.longdouble(0.5)
+        _refused(tmp_path, [value], Column("n", "int64"), "non-integer value")
+    assert _one_column(tmp_path, [Fraction(6, 2)], Column("n", "int64"))[1]["n"].tolist() == [3]
+
+
+@pytest.mark.parametrize("fmt", FORMATS)
+@pytest.mark.parametrize(
+    ("column", "value"),
+    [
+        (Column("d", "date"), date(1500, 1, 1)),
+        (Column("d", "date"), date(2262, 4, 12)),
+        (Column("d", "date"), date(1677, 9, 21)),
+        (Column("t", "timestamp"), datetime(1500, 1, 1, tzinfo=UTC)),
+        (Column("t", "timestamp"), datetime(2262, 4, 12, tzinfo=UTC)),
+    ],
+)
+def test_dates_and_timestamps_outside_the_reader_range_are_refused(tmp_path, fmt, column, value):
+    """They escaped as pandas OutOfBoundsDatetime from the writer's own read-back."""
+    _refused(tmp_path, [value], column, "outside the", fmt=fmt)
+
+
+@pytest.mark.parametrize("fmt", FORMATS)
+def test_dates_at_the_edges_of_the_reader_range_round_trip(tmp_path, fmt):
+    _, frame = _one_column(
+        tmp_path, [date(1677, 9, 22), date(2262, 4, 11)], Column("d", "date"), fmt=fmt
+    )
+    assert frame["d"].dt.date.tolist() == [date(1677, 9, 22), date(2262, 4, 11)]
+
+
+@pytest.mark.parametrize("kind", ["int64", "float64", "decimal", "date"])
+def test_integers_too_long_for_text_are_refused_as_bundle_errors(tmp_path, kind):
+    """Building the message raised ValueError (the int-to-text digit limit)."""
+    column = Column(
+        "c",
+        kind,
+        precision=5 if kind == "decimal" else None,
+        scale=0 if kind == "decimal" else None,
+    )
+    with pytest.raises(BundleError, match="integer of"):
+        _one_column(tmp_path, [10**5000], column, name="refused")
+
+
+def test_a_string_with_a_lone_surrogate_is_refused(tmp_path):
+    _refused(tmp_path, ["a\ud800b"], Column("s", "string"), "not valid Unicode text")
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"metadata": {1: "a", "1": "b"}},  # json.dumps kept only "1": "b"
+        {"metadata": {"nested": [{None: 1}]}},  # written as "null"
+        {"provenance": {True: "x"}},  # written as "true"
+    ],
+)
+def test_metadata_and_provenance_keys_must_be_strings(tmp_path, changes):
+    frame = pd.DataFrame({"k": ["a"]})
+    with pytest.raises(BundleError, match="is not a string"):
+        write_bundle(frame, tmp_path / "b", dataset_id="x", **changes)
+    assert not list(tmp_path.iterdir())
+
+
+def test_deeply_nested_metadata_is_refused_on_write_and_read(tmp_path):
+    deep: dict = {}
+    node = deep
+    for _ in range(100_000):
+        node["a"] = {}
+        node = node["a"]
+    frame = pd.DataFrame({"k": ["a"]})
+    with pytest.raises(BundleError, match="metadata"):
+        write_bundle(frame, tmp_path / "w", dataset_id="x", metadata=deep)
+    path = _published(tmp_path)
+    text = (path / "manifest.json").read_text()
+    (path / "manifest.json").write_text(
+        text.replace(
+            '"provenance": {}', '"provenance": ' + '{"a": ' * 100_000 + "1" + "}" * 100_000
+        )
+    )
+    with pytest.raises(BundleError, match="invalid manifest JSON"):
+        read_manifest(path)
+
+
+def test_created_at_must_be_a_datetime(tmp_path):
+    frame = pd.DataFrame({"k": ["a"]})
+    with pytest.raises(BundleError, match="created_at must be timezone-aware"):
+        write_bundle(frame, tmp_path / "b", dataset_id="x", created_at=date(2026, 1, 1))  # type: ignore[arg-type]
+
+
+def test_parquet_readers_refuse_a_stored_nan_like_csv_readers(tmp_path):
+    """Writers store a missing float as null; a NaN in the file is refused in every format."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    _one_column(tmp_path, [1.0, None], Column("x", "float64"), fmt="parquet")
+    path = tmp_path / "b"
+    pq.write_table(
+        pa.table({"x": pa.array([1.0, float("nan")], type=pa.float64())}), path / "data.parquet"
+    )
+    with pytest.raises(BundleError, match="NaN/infinity is not allowed"):
+        read_bundle(path)
+    _one_column(tmp_path, [1.0, None], Column("x", "float64"), name="c")
+    _replace_in_csv(tmp_path / "c", "\\N", "NaN")
+    with pytest.raises(BundleError, match="NaN/infinity is not allowed"):
+        read_bundle(tmp_path / "c")
