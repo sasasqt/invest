@@ -21,7 +21,7 @@ import tempfile
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from decimal import Decimal, InvalidOperation
+from decimal import Context, Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +32,9 @@ CONTRACT_VERSION = 1
 NULL_TOKEN = "\\N"
 LOGICAL_TYPES = ("string", "int64", "float64", "boolean", "date", "timestamp", "decimal")
 STORAGE_FORMATS = {"csv": "data.csv", "sqlite": "data.sqlite", "parquet": "data.parquet"}
+# int64 bounds, and the most digits a Parquet decimal128 holds.
+_INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
+_MAX_DECIMAL_PRECISION = 38
 _SQLITE_TYPES = {
     "string": "TEXT",
     "int64": "INTEGER",
@@ -69,15 +72,23 @@ class Column:
     def from_json(raw: Mapping[str, Any]) -> Column:
         if not isinstance(raw, Mapping):
             raise BundleError(f"column definition must be a JSON object, not {raw!r}")
+        for key in ("name", "type"):
+            if key in raw and not isinstance(raw[key], str):
+                raise BundleError(f"column {raw.get('name')!r}: {key} must be a string")
         for key in ("precision", "scale"):
             value = raw.get(key)
             if value is not None and (isinstance(value, bool) or not isinstance(value, int)):
                 raise BundleError(f"column {raw.get('name')!r}: {key} must be an integer")
+        if not isinstance(raw.get("nullable", True), bool):
+            raise BundleError(f"column {raw.get('name')!r}: nullable must be true or false")
+        for key in ("unit", "description"):
+            if raw.get(key) is not None and not isinstance(raw[key], str):
+                raise BundleError(f"column {raw.get('name')!r}: {key} must be a string")
         try:
             col = Column(
-                name=str(raw["name"]),
-                type=str(raw["type"]),
-                nullable=bool(raw.get("nullable", True)),
+                name=raw["name"],
+                type=raw["type"],
+                nullable=raw.get("nullable", True),
                 precision=raw.get("precision"),
                 scale=raw.get("scale"),
                 unit=raw.get("unit"),
@@ -87,8 +98,19 @@ class Column:
             raise BundleError(f"column definition missing {exc}") from exc
         if col.type not in LOGICAL_TYPES:
             raise BundleError(f"column {col.name!r}: unsupported logical type {col.type!r}")
-        if col.type == "decimal" and (col.precision is None or col.scale is None):
-            raise BundleError(f"decimal column {col.name!r} must declare precision and scale")
+        if col.type == "decimal":
+            if col.precision is None or col.scale is None:
+                raise BundleError(f"decimal column {col.name!r} must declare precision and scale")
+            # The bounds of Parquet's decimal128, so every storage format holds the column.
+            if (
+                not 1 <= col.precision <= _MAX_DECIMAL_PRECISION
+                or not 0 <= col.scale <= col.precision
+            ):
+                raise BundleError(
+                    f"decimal column {col.name!r}: precision must be 1 to "
+                    f"{_MAX_DECIMAL_PRECISION} and scale 0 to the precision, got "
+                    f"({col.precision}, {col.scale})"
+                )
         return col
 
 
@@ -150,10 +172,53 @@ def _check_finite(name: str, value: float) -> float:
     return value
 
 
+def _as_timestamp(col: Column, value: Any) -> pd.Timestamp:
+    """A ``date`` or ``timestamp`` value as a pandas Timestamp. Numbers are refused:
+    pandas would read them as nanoseconds since 1970."""
+    if isinstance(value, bool | int | float | Decimal | np.number | np.bool_):
+        raise BundleError(f"column {col.name!r}: expected a {col.type}, got the number {value!r}")
+    try:
+        ts = pd.Timestamp(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise BundleError(f"column {col.name!r}: cannot read {value!r} as a {col.type}") from exc
+    if ts is pd.NaT:
+        raise BundleError(f"column {col.name!r}: cannot read {value!r} as a {col.type}")
+    return ts
+
+
+def _decimal(col: Column, value: Any) -> str:
+    """The stored text of a decimal that fits ``decimal(precision, scale)`` exactly.
+
+    A value with more fractional digits than the scale, or more integer digits than
+    ``precision - scale``, is refused rather than rounded; a signed zero is stored as 0
+    (Parquet's decimal128 has no negative zero).
+    """
+    try:
+        dec = value if isinstance(value, Decimal) else Decimal(str(value))
+    except InvalidOperation as exc:
+        raise BundleError(f"column {col.name!r}: cannot read {value!r} as a decimal") from exc
+    if not dec.is_finite():
+        raise BundleError(f"column {col.name!r}: non-finite decimal")
+    assert col.precision is not None and col.scale is not None
+    declared = f"decimal({col.precision}, {col.scale})"
+    if dec.copy_abs() >= Decimal(1).scaleb(col.precision - col.scale):
+        raise BundleError(f"column {col.name!r}: {value!r} does not fit {declared}")
+    # Enough context digits that quantize never fails on a value that fits (the default
+    # context holds 28), plus one so an inexact value rounding up is caught below.
+    stored = dec.quantize(Decimal(1).scaleb(-col.scale), context=Context(prec=col.precision + 1))
+    if stored != dec:
+        raise BundleError(
+            f"column {col.name!r}: {value!r} has more than {col.scale} decimal places "
+            f"for {declared}; round it before publishing"
+        )
+    return str(stored.copy_abs() if stored.is_zero() else stored)
+
+
 def format_value(col: Column, value: Any) -> str | int | float | None:
     """Convert a Python/pandas value to its stored text (CSV) form, or None for null.
 
-    Public so that contract checks judge the values exactly as they will be stored.
+    Public so that contract checks judge the values exactly as they will be stored. A
+    value the column cannot store exactly is refused, never rounded or truncated.
     """
     # pandas missing values (None, NaN, NaT, pd.NA) are stored as null; infinity is rejected.
     if value is None or (not isinstance(value, str) and pd.isna(value)):
@@ -165,26 +230,48 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
             raise BundleError(f"column {col.name!r}: boolean given for int64")
         if isinstance(value, float | np.floating) and not float(value).is_integer():
             raise BundleError(f"column {col.name!r}: non-integer value {value!r}")
-        return int(value)
+        if isinstance(value, Decimal) and value != value.to_integral_value():
+            raise BundleError(f"column {col.name!r}: non-integer value {value!r}")
+        try:
+            number = int(value)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise BundleError(f"column {col.name!r}: cannot store {value!r} as int64") from exc
+        if not _INT64_MIN <= number <= _INT64_MAX:
+            raise BundleError(f"column {col.name!r}: {value!r} is outside the int64 range")
+        return number
     if col.type == "float64":
-        return _check_finite(col.name, float(value))
+        try:
+            real = float(value)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise BundleError(f"column {col.name!r}: cannot store {value!r} as float64") from exc
+        _check_finite(col.name, real)
+        # -0.0 is stored as 0.0: SQLite reads a stored -0.0 back as 0.0, and the copies in
+        # every format must hold the same values.
+        return 0.0 if real == 0 else real
     if col.type == "boolean":
         if not isinstance(value, bool | np.bool_):
             raise BundleError(f"column {col.name!r}: expected boolean, got {value!r}")
         return "true" if bool(value) else "false"
     if col.type == "date":
-        return pd.Timestamp(value).date().isoformat()
+        ts = _as_timestamp(col, value)
+        if ts.tzinfo is not None or ts != ts.normalize():
+            raise BundleError(
+                f"column {col.name!r}: {value!r} is not a date; a date column holds no time "
+                "of day or time zone"
+            )
+        return ts.date().isoformat()
     if col.type == "timestamp":
-        ts = pd.Timestamp(value)
+        ts = _as_timestamp(col, value)
         if ts.tzinfo is None:
             raise BundleError(f"column {col.name!r}: timestamps must be timezone-aware")
+        if ts.nanosecond:
+            raise BundleError(
+                f"column {col.name!r}: {value!r} has nanoseconds; timestamps are stored to "
+                "the microsecond"
+            )
         return ts.tz_convert("UTC").strftime("%Y-%m-%dT%H:%M:%S.%fZ").replace(".000000Z", "Z")
     if col.type == "decimal":
-        dec = value if isinstance(value, Decimal) else Decimal(str(value))
-        if not dec.is_finite():
-            raise BundleError(f"column {col.name!r}: non-finite decimal")
-        assert col.scale is not None
-        return str(dec.quantize(Decimal(1).scaleb(-col.scale)))
+        return _decimal(col, value)
     raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
 
 
@@ -368,7 +455,10 @@ def write_bundle(
         [format_value(col, v) for col, v in zip(cols, rec, strict=True)]
         for rec in frame.itertuples(index=False, name=None)
     ]
-    created = (created_at or datetime.now(UTC)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    when = created_at or datetime.now(UTC)
+    if when.utcoffset() is None:
+        raise BundleError("created_at must be timezone-aware")
+    created = when.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     storage = {"format": fmt, "path": STORAGE_FORMATS[fmt]}
     if fmt == "sqlite":
         storage["table"] = table
@@ -385,6 +475,13 @@ def write_bundle(
         content_sha256=_content_sha256(cols, rows),
     )
     _validate_table(manifest, rows)
+    # Strict JSON: NaN and infinity have no JSON form, and other objects have none either.
+    try:
+        manifest_text = json.dumps(manifest.to_json(), indent=2, allow_nan=False) + "\n"
+    except (TypeError, ValueError) as exc:
+        raise BundleError(
+            f"metadata and provenance must be JSON values with finite numbers: {exc}"
+        ) from exc
 
     target.parent.mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=f".{target.name}.", dir=target.parent))
@@ -396,7 +493,7 @@ def write_bundle(
             _write_parquet(data_path, cols, rows)
         else:
             _write_sqlite(data_path, cols, rows, table)
-        (tmp / "manifest.json").write_text(json.dumps(manifest.to_json(), indent=2) + "\n")
+        (tmp / "manifest.json").write_text(manifest_text, encoding="utf-8")
         read_bundle(tmp)  # round-trip validation before publication
         os.rename(tmp, target)
     except BaseException:
@@ -446,14 +543,29 @@ def _write_sqlite(path: Path, cols: Sequence[Column], rows: list[list[Any]], tab
 # Reading
 
 
+def _refuse_json_constant(name: str) -> Any:
+    raise ValueError(f"{name} is not JSON: manifest numbers must be finite")
+
+
+def _finite_json_number(text: str) -> float:
+    number = float(text)
+    if not math.isfinite(number):
+        raise ValueError(f"{text} is beyond the float range: manifest numbers must be finite")
+    return number
+
+
 def read_manifest(path: str | os.PathLike[str]) -> Manifest:
     root = Path(path)
     mpath = root / "manifest.json"
     if not mpath.is_file():
         raise BundleError(f"missing manifest.json in {root}")
     try:
-        raw = json.loads(mpath.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raw = json.loads(
+            mpath.read_text(encoding="utf-8"),
+            parse_constant=_refuse_json_constant,
+            parse_float=_finite_json_number,
+        )
+    except ValueError as exc:  # also JSONDecodeError and UnicodeDecodeError
         raise BundleError(f"invalid manifest JSON: {exc}") from exc
     # A malformed manifest is a BundleError like any other invalid bundle, never a TypeError.
     if not isinstance(raw, dict):
@@ -528,9 +640,37 @@ def read_bundle(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
         canonical = [
             [format_value(c, v) for c, v in zip(manifest.columns, r, strict=True)] for r in rows
         ]
-        if _content_sha256(manifest.columns, canonical) != manifest.content_sha256:
+        if _content_sha256(
+            manifest.columns, canonical
+        ) != manifest.content_sha256 and not _signed_zero_hash_matches(manifest, rows, canonical):
             raise BundleError("content hash mismatch: data does not match its manifest")
     return manifest, _to_frame(manifest.columns, rows)
+
+
+def _signed_zero(value: Any) -> bool:
+    return isinstance(value, float | Decimal) and value == 0 and math.copysign(1.0, value) < 0
+
+
+def _signed_zero_hash_matches(
+    manifest: Manifest, rows: list[list[Any]], canonical: list[list[Any]]
+) -> bool:
+    """Whether the bundle's hash is that of its values with negative zeros kept.
+
+    Bundles written before -0.0 and -0.00 were stored as 0 hashed them with their sign
+    (CSV and Parquet kept it); they stay readable.
+    """
+    if not any(_signed_zero(v) for row in rows for v in row):
+        return False
+    legacy = [
+        [
+            (value if col.type == "float64" else "-" + str(stored))
+            if _signed_zero(value)
+            else stored
+            for col, value, stored in zip(manifest.columns, row, crow, strict=True)
+        ]
+        for row, crow in zip(rows, canonical, strict=True)
+    ]
+    return _content_sha256(manifest.columns, legacy) == manifest.content_sha256
 
 
 def _read_csv(path: Path, manifest: Manifest) -> list[list[Any]]:
@@ -626,5 +766,8 @@ def _read_parquet(path: Path, manifest: Manifest) -> list[list[Any]]:
         if not arrow_field.type.equals(_arrow_type(col)):
             raise BundleError(f"column {col.name!r}: Parquet type {arrow_field.type} != {col.type}")
         # Re-encode to the canonical stored form so one parser validates every format.
-        columns.append([format_value(col, v) for v in table.column(col.name).to_pylist()])
+        # Floats pass as stored: canonical form would turn a -0.0 into 0.0, and a bundle
+        # written before negative zero was stored as 0 is verified with its sign.
+        values = table.column(col.name).to_pylist()
+        columns.append(values if col.type == "float64" else [format_value(col, v) for v in values])
     return [list(r) for r in zip(*columns, strict=True)] if columns else []
