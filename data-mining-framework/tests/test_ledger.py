@@ -1032,3 +1032,123 @@ def test_cli_search_rerun_deletes_an_old_factor_link_to_a_folder(tmp_path):
     assert main(["search", "--data", str(data), "--trials", "10", "--out", str(out)]) == 0
     assert not (out / "factors" / "f_old.json").is_symlink()
     assert (tmp_path / "elsewhere").is_dir()
+
+
+@pytest.mark.skipif(os.name == "nt", reason="symbolic links need extra rights on Windows")
+@pytest.mark.parametrize("target", ["missing", "itself"])
+def test_cli_broken_link_as_an_output_is_refused_before_recording(tmp_path, target):
+    # A write through a link to a missing folder, or a link to itself, fails, so the check
+    # must refuse it before the ledger records the experiment (BH-2026-10-20-2's class).
+    data, book = _reserved_market(tmp_path)
+    out = tmp_path / "out"
+    out.mkdir()
+    link = out / "config.json"
+    link.symlink_to(tmp_path / "missing" / "x" if target == "missing" else link)
+    before = book.read_bytes()
+    confirm = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path))]
+    confirm += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(out)]
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main(confirm)
+    assert book.read_bytes() == before
+
+
+def _chattr(flag, path):
+    import subprocess
+
+    done = subprocess.run(["chattr", flag, str(path)], capture_output=True, check=False)
+    return done.returncode == 0
+
+
+@pytest.mark.skipif(
+    os.name == "nt" or getattr(os, "geteuid", lambda: 1)() != 0,
+    reason="needs root and chattr on Linux",
+)
+def test_cli_append_only_output_is_refused_before_recording(tmp_path):
+    # An append-only file opens for appending but not for the run's overwrite.
+    data, book = _reserved_market(tmp_path)
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "config.json").write_text("{}\n", encoding="utf-8")
+    if not _chattr("+a", out / "config.json"):
+        pytest.skip("chattr +a is not supported here")
+    try:
+        before = book.read_bytes()
+        confirm = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path))]
+        confirm += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(out)]
+        with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+            main(confirm)
+        assert book.read_bytes() == before
+    finally:
+        _chattr("-a", out / "config.json")
+
+
+def test_cli_confirm_that_fails_before_recording_leaves_no_out(tmp_path):
+    # The factor is evaluated before --out is created, so a formula that cannot be computed
+    # (a fundamental without --fundamentals) leaves neither a record nor an --out.
+    data, book = _reserved_market(tmp_path)
+    out = tmp_path / "out"
+    confirm = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path, "fund_pe"))]
+    confirm += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(out)]
+    before = book.read_bytes()
+    with pytest.raises(ValueError, match="fund_pe"):
+        main(confirm)
+    assert book.read_bytes() == before
+    assert not out.exists()
+
+
+def test_cli_search_on_windows_deletes_old_factor_links_without_probing_them(tmp_path, monkeypatch):
+    # Windows cannot delete a read-only file, so there the check opens each old factor file
+    # for writing; a link is deleted as a link, so it must not be opened.
+    from invest_mining import cli
+
+    monkeypatch.setattr(cli, "_DELETE_NEEDS_WRITABLE_FILE", True)
+    opened = []
+    original = os.open
+
+    def recording_open(path, flags, *args, **kwargs):
+        opened.append(Path(path).name)
+        return original(path, flags, *args, **kwargs)
+
+    data, out = tmp_path / "d", tmp_path / "s"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "200"])
+    (out / "factors").mkdir(parents=True)
+    (out / "factors" / "f_plain.json").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "elsewhere").mkdir()
+    link = out / "factors" / "f_link.json"
+    try:
+        link.symlink_to(tmp_path / "elsewhere", target_is_directory=True)
+    except OSError:
+        pytest.skip("cannot create a symbolic link here")
+    monkeypatch.setattr(os, "open", recording_open)
+    assert main(["search", "--data", str(data), "--trials", "10", "--out", str(out)]) == 0
+    assert "f_plain.json" in opened and "f_link.json" not in opened
+
+
+def test_require_labels_counts_dates_with_five_labelled_names():
+    from invest_mining.cli import _require_labels
+
+    dates = pd.bdate_range("2021-01-04", periods=60)
+    names = [f"S{i}" for i in range(5)]
+    label = pd.DataFrame(0.01, index=dates, columns=names)
+    window = W("2021-01-04")
+    _require_labels(label, window, 1)
+    label.iloc[0, 0] = float("nan")
+    with pytest.raises(SystemExit, match="has 59 decision date"):
+        _require_labels(label, window, 1)
+
+
+def test_cli_search_refuses_a_factors_folder_that_takes_no_file(tmp_path, monkeypatch):
+    data, book, out = tmp_path / "d", tmp_path / "l.jsonl", tmp_path / "s"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "200"])
+    original = tempfile.TemporaryFile
+
+    def refuse(*args, **kwargs):
+        if Path(kwargs.get("dir", "")) == out / "factors":
+            raise PermissionError(13, "Permission denied", str(out / "factors"))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
+    search = ["search", "--data", str(data), "--trials", "10", "--ledger", str(book)]
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main([*search, "--out", str(out)])
+    assert not book.exists()

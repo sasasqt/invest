@@ -85,6 +85,15 @@ def _span(dates: pd.DatetimeIndex, what: str) -> Window:
     return Window(dates[0].date(), dates[-1].date())
 
 
+# Windows cannot delete a read-only file; POSIX deletes with the folder's permission.
+_DELETE_NEEDS_WRITABLE_FILE = os.name == "nt"
+
+
+def _open_for_writing(path: Path) -> None:
+    """Open an existing file for writing without creating or truncating it."""
+    os.close(os.open(path, os.O_WRONLY))
+
+
 def _prepare_out(
     out: str | Path,
     files: Sequence[str],
@@ -96,14 +105,19 @@ def _prepare_out(
 
     The check asks only for what the run will do. Each output in ``files`` (paths relative
     to ``out``) that already exists, such as an earlier run's result before a rerun into the
-    same folder, must open for writing, so a read-only file, a folder in its place or a file
-    locked by another program fails here; where one is missing, its folder must take a new
-    file. Folders in ``new_files_in`` get files whose names are not known yet, so they must
-    take a new file too. Files matching the glob ``deleted`` are only deleted: on POSIX
-    that needs the folder's permission, checked above, and a folder in their place cannot
-    be deleted; Windows cannot delete a read-only file, so there each must open for
-    writing. Called after every refusal and before the ledger records anything, so a
-    refused run leaves no ``--out`` and an unusable one leaves no record.
+    same folder, must open for writing (not appending), so a read-only or append-only file,
+    a folder in its place or a file locked by another program fails here; a broken link in
+    its place fails too; where one is missing, its folder must take a new file. Folders in
+    ``new_files_in`` get files whose names are not known yet, so they must take a new file
+    too. Files matching the glob ``deleted`` are only deleted: on POSIX that needs the
+    folder's permission, checked above, and a folder in their place cannot be deleted;
+    Windows cannot delete a read-only file, so there each must open for writing. A link is
+    deleted as a link and needs nothing more. Not checked: immutable files and another
+    user's files in a shared (sticky) folder on POSIX, hidden or system files and
+    junctions on Windows; such a run fails after the record, and the error names the
+    experiment. Called after every refusal and before the ledger records anything, so a
+    refused run leaves no ``--out`` and an unusable one leaves no record; a search that
+    fails after the check, for example on a ledger it cannot append to, keeps the folders.
     """
     root = Path(out)
     probed: set[Path] = set()
@@ -123,16 +137,18 @@ def _prepare_out(
             path = root / name
             path.parent.mkdir(parents=True, exist_ok=True)
             if path.exists():
-                with path.open("ab"):
-                    pass
+                _open_for_writing(path)
+            elif path.is_symlink():
+                raise FileNotFoundError(f"{path} is a broken link")
             else:
                 takes_new_file(path.parent)
         for existing in sorted(root.glob(deleted)) if deleted is not None else []:
-            if existing.is_dir() and not existing.is_symlink():
+            if existing.is_symlink():
+                continue
+            if existing.is_dir():
                 raise IsADirectoryError(f"cannot delete the folder {existing}")
-            if os.name == "nt":
-                with existing.open("ab"):
-                    pass
+            if _DELETE_NEEDS_WRITABLE_FILE:
+                _open_for_writing(existing)
     except OSError as exc:
         raise SystemExit(f"--out {out}: {exc}") from exc
     return root
@@ -476,11 +492,11 @@ def _confirm(args: argparse.Namespace) -> int:
     # A window too short for the test would be recorded as used with nothing tested.
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
     _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
-    # An unusable --out must fail before the ledger records the experiment.
-    out = _prepare_out(args.out, ("confirmation.csv", "config.json"))
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
+    # An unusable --out must fail before the ledger records the experiment.
+    out = _prepare_out(args.out, ("confirmation.csv", "config.json"))
     ledger.append(
         args.ledger,
         "experiment",
