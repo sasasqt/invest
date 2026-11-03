@@ -219,24 +219,29 @@ def test_cli_search_records_experiments_and_flags_reuse(tmp_path, capsys):
 
 def test_cli_cannot_confirm_on_prices_used_by_an_earlier_development_label(tmp_path):
     data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
-    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "260"])
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "400"])
     manifest, bars = read_market_bars(data)
     dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
     first = tmp_path / "first"
-    assert _search(data, first, book, "--horizon", "40") == 0
+    assert _search(data, first, book, "--horizon", "80") == 0
     config = json.loads((first / "config.json").read_text())
     last_decision = dates.get_loc(pd.Timestamp(config["split"]["development"][1]))
-    last_observation = dates[last_decision + 41]
+    last_observation = dates[last_decision + 81]
     [entry] = ledger.load(book)
     assert entry["development"]["end"] == str(last_observation.date())
     assert config["split"]["development_observations"][1] == str(last_observation.date())
 
-    # Those prices are outside the first run's decision windows, but shaped selection.
+    # Those prices are outside the first run's decision windows, but shaped selection. The
+    # 80-session horizon leaves a purge gap long enough for a confirmation with the test's
+    # 60 labelled dates.
     shorter = tmp_path / "shorter"
     publish_market_bars(
-        bars[bars["date"] < dates[156]], shorter, dataset_id="shorter", metadata=manifest.metadata
+        bars[bars["date"] < dates[last_decision + 82]],
+        shorter,
+        dataset_id="shorter",
+        metadata=manifest.metadata,
     )
-    start = str(dates[116].date())
+    start = str(dates[last_decision + 2].date())
     with pytest.raises(SystemExit, match=r"already used.*development window"):
         _search(
             shorter, tmp_path / "strict", book, "--confirm-start", start, "--require-confirmatory"
@@ -642,7 +647,8 @@ def test_cli_read_only_out_is_refused_before_the_ledger_records_anything(tmp_pat
 @pytest.mark.parametrize("command", ["confirm", "search"])
 def test_cli_confirmation_without_a_labelled_date_is_refused(tmp_path, command):
     # Same class as BH-2026-10-26-1: with horizon 1, decision t needs the opens at t+1 and
-    # t+2, so a confirmation of the last two sessions has no label and tests nothing.
+    # t+2, so a confirmation of the last two sessions has no label and tests nothing, and
+    # the test needs 60 labelled dates (search.py's MIN_CONFIRM_DATES): 62 sessions.
     data = tmp_path / "data"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
@@ -658,14 +664,16 @@ def test_cli_confirmation_without_a_labelled_date_is_refused(tmp_path, command):
         out = tmp_path / f"c{sessions}"
         return [*base, "--ledger", str(book), "--confirm-start", start, "--out", str(out)], book
 
-    args, book = run(2)
-    before = book.read_bytes()
-    with pytest.raises(SystemExit, match="no decision date with a complete 1-session label"):
-        main(args)
-    assert book.read_bytes() == before and not (tmp_path / "c2").exists()
-    assert len(ledger.unused_reservations(ledger.load(book))) == 1
-    # Boundary: three sessions give decision dates[-3] its label (opens at -2 and -1).
-    args, book = run(3)
+    for sessions, labelled in ((2, 0), (61, 59)):
+        args, book = run(sessions)
+        before = book.read_bytes()
+        match = rf"has {labelled} decision date\(s\) with a complete 1-session label"
+        with pytest.raises(SystemExit, match=match):
+            main(args)
+        assert book.read_bytes() == before and not (tmp_path / f"c{sessions}").exists()
+        assert len(ledger.unused_reservations(ledger.load(book))) == 1
+    # Boundary: 62 sessions label decision dates[-62] to dates[-3], 60 dates.
+    args, book = run(62)
     assert main(args) == 0
     assert ledger.unused_reservations(ledger.load(book)) == []
 
@@ -692,7 +700,7 @@ def test_cli_confirmation_after_the_universe_ends_is_refused(tmp_path):
     args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
     args += ["--universe", str(tmp_path / "uni"), "--confirm-start", str(cut.date())]
     before = book.read_bytes()
-    with pytest.raises(SystemExit, match="no decision date with a complete 1-session label"):
+    with pytest.raises(SystemExit, match=r"has 0 decision date\(s\) with a complete"):
         main([*args, "--out", str(tmp_path / "c")])
     assert book.read_bytes() == before and not (tmp_path / "c").exists()
 
@@ -858,3 +866,51 @@ def test_cli_reserve_and_search_after_an_empty_family(tmp_path):
     entry = ledger.load(book)[-1]
     assert entry["family"] and entry["confirmation_use"] == "confirmatory"
     assert ledger.unused_reservations(ledger.load(book)) == []
+
+
+def test_reserved_regions_merge_by_the_latest_end():
+    # R1 06-01..07-31 and R2 07-15..12-31 overlap; R3 from 09-01 lies only inside R2, so it
+    # belongs to the same stretch only if the union ends at R2's end, not R1's.
+    dev = W("2010-01-04", "2020-05-29")
+    entries = [
+        _entry("reservation", W("2020-06-01", "2020-07-31")),
+        _entry("reservation", W("2020-07-15", "2020-12-31")),
+        _entry("reservation", W("2020-09-01")),
+    ]
+    sessions = [date(2020, 5, 29), date(2020, 6, 1), date(2020, 9, 1)]
+    assert ledger.assess_confirmation(entries, dev, W("2020-06-01"), "e", sessions=sessions) == (
+        "confirmatory",
+        [],
+    )
+
+
+def test_an_inspected_reservation_counts_as_used():
+    # A ledger written before empty-family searches stopped counting: such a search used the
+    # reservation up, then an inspection (refused over an unused reservation) covered it.
+    # Its data has been looked at, so it must not become reserved again.
+    dev, conf = W("2010-01-04", "2024-01-31"), W("2024-02-01")
+    entries = [
+        _entry("reservation", W("2024-02-01")),
+        {**_experiment("e_empty", dev, conf), "family": []},
+        _entry("inspection", W("2024-01-01", "2024-08-09")),
+    ]
+    assert ledger.unused_reservations(entries) == []
+    ledger.check_inspection(entries, W("2024-03-01", "2024-03-29"))
+
+
+def test_cli_evaluate_refuses_a_tables_folder_that_takes_no_file(tmp_path, monkeypatch):
+    data = tmp_path / "data"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "120"])
+    out, book = tmp_path / "ev", tmp_path / "ledger.jsonl"
+    original = tempfile.TemporaryFile
+
+    def refuse(*args, **kwargs):
+        if Path(kwargs.get("dir", "")) == out / "tables":
+            raise PermissionError(13, "Permission denied", str(out / "tables"))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
+        main([*evaluate, "--out", str(out)])
+    assert not book.exists()

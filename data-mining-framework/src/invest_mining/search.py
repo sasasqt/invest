@@ -43,6 +43,10 @@ from invest_mining.expressions import (
     size,
 )
 
+# Fewest confirmation dates with a rank IC for the one-shot test; with fewer it reports
+# insufficient_data, so the CLI refuses such a window before the ledger records it.
+MIN_CONFIRM_DATES = 60
+
 SEED_TEMPLATES = (
     "close / delay(close, 5) - 1",
     "close / delay(close, 20) - 1",
@@ -286,7 +290,7 @@ def confirm(
     confirm_label: pd.DataFrame,
     horizon: int,
     alpha: float = 0.05,
-    min_dates: int = 60,
+    min_dates: int = MIN_CONFIRM_DATES,
 ) -> pd.DataFrame:
     """Test the frozen family once on confirmation data (one-sided, Holm-adjusted)."""
     rows = []

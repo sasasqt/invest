@@ -204,13 +204,19 @@ def used_windows(entry: Mapping[str, Any]) -> dict[str, Window]:
 
 
 def unused_reservations(entries: list[dict[str, Any]]) -> list[Window]:
-    """Reserved windows that no experiment has tested anything on yet."""
+    """Reserved windows that no experiment has tested anything on yet.
+
+    A reservation that an inspection overlaps counts as used too: no command records an
+    inspection over an unused reservation, so such a ledger was written when the window
+    already counted as used (for example by an empty-family search before such searches
+    stopped counting), and its data has been looked at.
+    """
     confirmed = [
         window
         for e in entries
-        if e["kind"] == "experiment"
+        if e["kind"] in ("experiment", "inspection")
         for name, window in used_windows(e).items()
-        if name == "confirmation"
+        if name in ("confirmation", "window")
     ]
     reserved = [Window.from_json(e["window"]) for e in entries if e["kind"] == "reservation"]
     return [r for r in reserved if not any(r.overlaps(c) for c in confirmed)]

@@ -51,7 +51,13 @@ from invest_mining.expressions import (
 from invest_mining.inference import export_signals
 from invest_mining.ledger import LedgerError, Window
 from invest_mining.reporting import write_factor_report
-from invest_mining.search import chronological_split, confirm, mark_confirmation_use, run_search
+from invest_mining.search import (
+    MIN_CONFIRM_DATES,
+    chronological_split,
+    confirm,
+    mark_confirmation_use,
+    run_search,
+)
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
@@ -110,21 +116,23 @@ def _unwritten(out: Path, exc: OSError, exp_id: str, use: str) -> SystemExit:
 
 
 def _require_labels(label: pd.DataFrame, confirmation: Window, horizon: int) -> None:
-    """Refuse a confirmation window on which no rank IC can be computed.
+    """Refuse a confirmation window too short for the confirmation test.
 
     ``label`` holds the confirmation dates' forward returns, restricted to traded universe
     members. Decision ``t`` needs the opens at ``t+1`` and ``t+1+h``
-    (:func:`~invest_mining.diagnostics.forward_returns`) and a date's IC needs
-    ``MIN_CROSS_SECTION`` labelled names, so without such a date nothing would be tested
-    on a window the ledger records as used. Only which labels exist is read, never their
-    values, and no candidate is involved.
+    (:func:`~invest_mining.diagnostics.forward_returns`), a date's rank IC needs
+    ``MIN_CROSS_SECTION`` labelled names, and the test needs ``MIN_CONFIRM_DATES`` such
+    dates; with fewer it reports ``insufficient_data`` while the ledger would record the
+    window as used. Only which labels exist is read, never their values, and no candidate
+    is involved, so a factor with missing values can still fall short.
     """
-    if not (label.notna().sum(axis=1) >= MIN_CROSS_SECTION).any():
+    n_dates = int((label.notna().sum(axis=1) >= MIN_CROSS_SECTION).sum())
+    if n_dates < MIN_CONFIRM_DATES:
         raise SystemExit(
-            f"confirmation window {confirmation} has no decision date with a complete "
-            f"{horizon}-session label for at least {MIN_CROSS_SECTION} names (that needs "
-            f"{horizon + 2} or more sessions with universe members trading), so nothing "
-            "would be tested on it; it needs more data after its start"
+            f"confirmation window {confirmation} has {n_dates} decision date(s) with a "
+            f"complete {horizon}-session label for at least {MIN_CROSS_SECTION} names; the "
+            f"confirmation test needs {MIN_CONFIRM_DATES}, so it would test nothing and "
+            "still use the window up; wait for more data after its start"
         )
 
 
@@ -291,9 +299,6 @@ def _search(args: argparse.Namespace) -> int:
     exp_id = ledger.experiment_id(identity)
     use, reasons = "unrecorded", list[str]()
     if args.ledger is not None:
-        # A window with no labelled date would be recorded as used with nothing tested.
-        label = restrict(forward_returns(panel["open"], args.horizon), panel)
-        _require_labels(label.loc[split.confirm_dates], confirmation, args.horizon)
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
             use, reasons = ledger.assess_confirmation(
@@ -309,6 +314,9 @@ def _search(args: argparse.Namespace) -> int:
             raise SystemExit(
                 f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
             )
+        # A window too short for the test would be recorded as used with nothing tested.
+        label = restrict(forward_returns(panel["open"], args.horizon), panel)
+        _require_labels(label.loc[split.confirm_dates], confirmation, args.horizon)
     # An unusable --out must fail before the ledger records the experiment.
     out = _prepare_out(
         args.out,
@@ -417,9 +425,6 @@ def _confirm(args: argparse.Namespace) -> int:
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
-    label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
-    # A window with no labelled date would be recorded as used with nothing tested.
-    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
     try:
         use, reasons = ledger.assess_confirmation(
             ledger.load(args.ledger), context, confirmation, exp_id, sessions=_session_days(dates)
@@ -430,6 +435,9 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
+    # A window too short for the test would be recorded as used with nothing tested.
+    label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
+    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
     # An unusable --out must fail before the ledger records the experiment.
     out = _prepare_out(args.out, files=("confirmation.csv", "config.json"))
     table = mark_confirmation_use(
