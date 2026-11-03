@@ -618,11 +618,41 @@ def path_too_long(outcome):
     return False
 
 
+def snapshot_walk(destination):
+    """Yield (folder, folders, files, lstat of a name, bytes of a file) for each folder of
+    the collected snapshot. The snapshot was written under its shorter .collect-* name, so
+    a longer destination name can put a collected path past PATH_MAX; POSIX therefore
+    lists and reads it through descriptors, as source_chain does the source."""
+    if not (DESCRIPTOR_APIS and hasattr(os, "fwalk")):
+        for current, directories, files in os.walk(destination):
+            yield (
+                current,
+                directories,
+                files,
+                lambda name, current=current: os.lstat(os.path.join(current, name)),
+                lambda name, current=current: Path(current, name).read_bytes(),
+            )
+        return
+    for current, directories, files, fd in os.fwalk(destination):
+
+        def read(name, fd=fd):
+            with os.fdopen(os.open(name, READ_FLAGS, dir_fd=fd), "rb") as stream:
+                return stream.read()
+
+        yield (
+            current,
+            directories,
+            files,
+            lambda name, fd=fd: os.stat(name, dir_fd=fd, follow_symlinks=False),
+            read,
+        )
+
+
 def check_collected(work, destination, report, limits, method):
     found, folders = {}, 0
-    for current, directories, files in os.walk(destination):
+    for current, directories, files, lstat, read in snapshot_walk(destination):
         for name in directories + files:
-            info = os.lstat(os.path.join(current, name))
+            info = lstat(name)
             contract.require(
                 "Q1",
                 not is_link(info) and (stat.S_ISDIR(info.st_mode) or stat.S_ISREG(info.st_mode)),
@@ -630,8 +660,7 @@ def check_collected(work, destination, report, limits, method):
             )
         folders += len(directories)
         for name in files:
-            path = Path(current, name)
-            found[path.relative_to(destination).as_posix()] = path.read_bytes()
+            found[Path(current, name).relative_to(destination).as_posix()] = read(name)
     rows = {row["path"]: row for row in report["files"]}
     contract.require("Q1", set(found) == set(rows), "snapshot files differ from the records")
     contract.require("Q1", report["entries"] == folders + len(found), "entry count differs")

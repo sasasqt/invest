@@ -739,11 +739,17 @@ class RunnerContractTests(unittest.TestCase):
                 with self.assertRaises(ValueError) as caught:
                     execution_command(image, "/tmp/a", "/tmp/b", "/tmp/c", None, None, uid, gid)
                 self.assertEqual(str(caught.exception), message)
-        with self.assertRaises(ValueError) as caught:
-            execution_command(
-                "sha256:" + "0" * 64, "/tmp/a,b", "/tmp/b", "/tmp/c", None, None, 1, 1
+        # Review round 13 (R13A-X3): Docker parses a mount as CSV, so a double quote or
+        # a line break in a path breaks it as a comma does.
+        for mark in (",", '"', "\n", "\r"):
+            with self.subTest(mark=mark), self.assertRaises(ValueError) as caught:
+                execution_command(
+                    "sha256:" + "0" * 64, f"/tmp/a{mark}b", "/tmp/b", "/tmp/c", None, None, 1, 1
+                )
+            self.assertEqual(
+                str(caught.exception),
+                "A mount path must not contain a comma, a double quote or a line break",
             )
-        self.assertEqual(str(caught.exception), "A mount path must not contain a comma")
 
     def test_mutable_image_tag_rejected(self):
         with self.assertRaisesRegex(ValueError, "immutable"):
@@ -1124,6 +1130,63 @@ class PortableHostTests(unittest.TestCase):
             with patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", str(bundle)):
                 self.assertEqual(ca_bundle(Path(directory)), bundle)
 
+    def test_a_ca_bundle_path_docker_would_split_is_copied_into_the_output(self):
+        """Review round 13 (R13C-F2): `--secret id=proxy_ca,src=<path>` is comma-separated,
+        so a CA file under a folder named "certs,corp" (SSL_CERT_FILE, tried first on
+        Windows) split the secret and the build failed after staging."""
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory) / "certs,corp"
+            folder.mkdir()
+            bundle = folder / "ca.pem"
+            bundle.write_text("-----BEGIN CERTIFICATE-----\n", encoding="ascii")
+            output = Path(directory) / "output"
+            output.mkdir()
+            paths = isolated_runner.ssl.DefaultVerifyPaths(
+                str(bundle), None, "SSL_CERT_FILE", str(bundle), "SSL_CERT_DIR", None
+            )
+            with (
+                patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", None),
+                patch.object(isolated_runner.ssl, "get_default_verify_paths", return_value=paths),
+            ):
+                chosen = ca_bundle(output)
+            self.assertNotIn(",", str(chosen))
+            self.assertEqual(chosen.parent, output)
+            self.assertEqual(chosen.read_bytes(), bundle.read_bytes())
+
+    @unittest.skipUnless(os.name == "nt", "the Windows certificate store")
+    def test_the_windows_store_export_keeps_only_server_roots_once(self):
+        """Mutation testing (round 13): the export's store names, encoding and trust
+        filter, and its file, could change and the Windows test only saw a PEM start.
+        The image build must trust exactly the X.509 entries of ROOT and CA that are
+        trusted for every purpose or for server authentication, each once."""
+        server, email = isolated_runner.SERVER_AUTH, "1.3.6.1.5.5.7.3.4"
+        stores = {
+            "ROOT": [
+                (b"root-all", "x509_asn", True),
+                (b"root-server", "x509_asn", {server, email}),
+                (b"root-email", "x509_asn", {email}),
+                (b"root-pkcs7", "pkcs_7_asn", True),
+                (b"root-all", "x509_asn", True),
+            ],
+            "CA": [(b"ca-server", "x509_asn", {server}), (b"root-server", "x509_asn", True)],
+        }
+        paths = isolated_runner.ssl.DefaultVerifyPaths(None, None, None, None, None, None)
+        with tempfile.TemporaryDirectory() as directory:
+            with (
+                patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", None),
+                patch.object(isolated_runner.ssl, "get_default_verify_paths", return_value=paths),
+                patch.object(
+                    isolated_runner.ssl, "enum_certificates", stores.__getitem__, create=True
+                ),
+            ):
+                exported = ca_bundle(Path(directory))
+            self.assertEqual(exported, Path(directory) / "build-ca-bundle.pem")
+            expected = "".join(
+                isolated_runner.ssl.DER_cert_to_PEM_cert(der)
+                for der in (b"root-all", b"root-server", b"ca-server")
+            )
+            self.assertEqual(exported.read_bytes(), expected.encode("ascii"))
+
     def test_ca_bundle_without_any_source(self):
         paths = isolated_runner.ssl.DefaultVerifyPaths(None, None, None, None, None, None)
         with tempfile.TemporaryDirectory() as directory:
@@ -1309,6 +1372,75 @@ class StagingSafetyTests(unittest.TestCase):
             self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision, first])
             self.assertEqual(git_in(staged, "status", "--porcelain"), "")
 
+    def test_staging_never_writes_into_the_source_object_store(self):
+        """Review round 13 (R13A-X1): `git pack-objects <base>` run in the source makes
+        its pack as a temporary file in the source's own object store and then renames
+        it to <base> in the staged copy, so a checkout the host user cannot write was
+        refused, and an --output on another file system or drive failed (EXDEV) and
+        left the temporary pack in the source."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            store = source / ".git/objects"
+            folders = [store, *(path for path in store.rglob("*") if path.is_dir())]
+            modes = {folder: stat.S_IMODE(folder.stat().st_mode) for folder in folders}
+            try:
+                for folder in folders:
+                    folder.chmod(0o555)
+                probe = store / "pack" / "probe"
+                try:
+                    probe.touch()
+                except OSError:
+                    pass
+                else:
+                    probe.unlink()
+                    self.skipTest("this user can write a read-only folder (root, or Windows)")
+                stage_source(source, root / "staged", revision)
+            finally:
+                for folder, mode in modes.items():
+                    folder.chmod(mode)
+            staged = root / "staged"
+            self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision])
+            self.assertEqual(git_in(staged, "status", "--porcelain"), "")
+
+    @unittest.skipUnless(os.name == "nt", "drives exist only on Windows")
+    def test_staging_from_another_drive_than_the_output(self):
+        """Review round 13 (R13A-X1, Windows side): Git for Windows makes a pack it writes
+        to a named file in the source's own store and then moves it, which fails across
+        drives; the CI checkout is on D: and the temporary folder on C:."""
+        here = Path(__file__).resolve().parent
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            tempfile.TemporaryDirectory(dir=here) as beside,
+        ):
+            if Path(directory).drive.casefold() == Path(beside).drive.casefold():
+                self.skipTest("the checkout and the temporary folder share a drive")
+            source, revision = fixture_repository(Path(beside), {"a.txt": b"a\n"})
+            staged = Path(directory) / "staged"
+            stage_source(source, staged, revision)
+            self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision])
+            self.assertEqual(git_in(staged, "status", "--porcelain"), "")
+
+    def test_binary_pack_bytes_survive_the_pipe_into_index_pack(self):
+        """Review round 13 (R13C-C1): the staged pack goes from pack-objects' output
+        through the runner into index-pack's input. A text-mode pipe (a Windows risk)
+        would change a CR LF pair or stop at 0x1A; an incompressible blob that holds both
+        must reach the staged object store and the staged file unchanged."""
+        data = b"\r\n\x1a\x00" * 256 + os.urandom(65536)
+
+        def blob(repo, revision):
+            argv = ["git", "-C", str(repo), "cat-file", "blob", f"{revision}:blob.bin"]
+            return subprocess.run(argv, env=FIXTURE_GIT, capture_output=True, check=True).stdout
+
+        with tempfile.TemporaryDirectory() as directory:
+            source, revision = fixture_repository(Path(directory), {"blob.bin": data})
+            committed = blob(source, revision)
+            staged = Path(directory) / "staged"
+            stage_source(source, staged, revision)
+            self.assertEqual(blob(staged, revision), committed)
+            self.assertEqual((staged / "blob.bin").read_bytes(), committed)
+            self.assertEqual(git_in(staged, "fsck", "--strict", "--no-dangling"), "")
+
     def test_staging_refusals_name_their_cause_exactly(self):
         """Mutation testing (round 12): the staging refusals were matched as a regex
         search or not at all, so a message with its cause dropped or changed, or Git's
@@ -1361,6 +1493,13 @@ class StagingSafetyTests(unittest.TestCase):
                     revision,
                     lambda: patch(
                         "isolated_runner.run_captured", side_effect=failing("pack-objects")
+                    ),
+                ),
+                (
+                    "git exited 128: fatal: bad \ufffd",
+                    revision,
+                    lambda: patch(
+                        "isolated_runner.run_captured", side_effect=failing("index-pack")
                     ),
                 ),
                 (
@@ -1417,9 +1556,9 @@ class StagingSafetyTests(unittest.TestCase):
             with patch("isolated_runner.run_captured", side_effect=record):
                 stage_source(source, staged, revision)
         expected = ["--version", "rev-parse", "ls-tree", "cat-file", "rev-parse"]
-        expected += ["pack-objects", "reset"]
+        expected += ["pack-objects", "index-pack", "reset"]
         if isolated_runner.contract.enabled():
-            expected += ["cat-file", "rev-list"]
+            expected += ["cat-file", "rev-list", "rev-list"]
         self.assertEqual([subcommand(argv) for argv, _ in calls], expected)
         for argv, kwargs in calls:
             with self.subTest(argv=argv):
@@ -1760,8 +1899,41 @@ class StagingSafetyTests(unittest.TestCase):
                 env.get(key)
                 for key in ("GIT_CONFIG_COUNT", "GIT_CONFIG_KEY_0", "GIT_CONFIG_VALUE_0")
             ],
-            ["1", "core.useReplaceRefs", "false"],
+            ["2", "core.useReplaceRefs", "false"],
         )
+
+    def test_a_host_graft_file_does_not_change_the_staged_history(self):
+        """Review round 13 (R13A-X2): Git still reads the deprecated info/grafts, which
+        rewrites a commit's parents; a graft naming an unpushed branch as HEAD's parent
+        packed that branch into the staged .git (and left HEAD's real parent out). The
+        Q4 test-mode check ran rev-list under the same graft and did not notice."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, first = fixture_repository(root, {"a.txt": b"one\n"})
+            (source / "a.txt").write_bytes(b"two\n")
+            git_in(source, "commit", "-qam", "second")
+            revision = git_in(source, "rev-parse", "HEAD")
+            canary = f"CANARY_graft_{uuid.uuid4().hex}"
+            private = git_in(
+                source,
+                "commit-tree",
+                "-m",
+                "private",
+                write_tree(source, {"notes.txt": canary.encode()}),
+            )
+            git_in(source, "update-ref", "refs/heads/private", private)
+            (source / ".git/info").mkdir(exist_ok=True)
+            (source / ".git/info/grafts").write_text(f"{revision} {private}\n", encoding="ascii")
+            staged = root / "staged"
+            stage_source(source, staged, revision)
+            every = subprocess.run(
+                ["git", "-C", str(staged), "cat-file", "--batch-all-objects", "--batch"],
+                env=FIXTURE_GIT,
+                capture_output=True,
+                check=True,
+            ).stdout
+            self.assertNotIn(canary.encode(), every)
+            self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision, first])
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
         with tempfile.TemporaryDirectory() as directory:

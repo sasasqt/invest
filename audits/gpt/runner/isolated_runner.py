@@ -32,6 +32,8 @@ GIT_TIMEOUT = 600
 # Windows has no system bundle: "/etc/..." there names a folder on the current drive.
 SYSTEM_CA_BUNDLE = None if os.name == "nt" else "/etc/ssl/certs/ca-certificates.crt"
 SERVER_AUTH = "1.3.6.1.5.5.7.3.1"
+# Docker reads --mount and --secret values as CSV fields (Go's encoding/csv).
+CSV_MARKS = (",", '"', "\n", "\r")
 
 
 def host_tool(name):
@@ -247,9 +249,17 @@ def ca_bundle(output):
     Linux: the system bundle. Otherwise Python's default CA file, and on Windows the
     certificate store (the roots and intermediates Python itself trusts for HTTPS),
     exported once as PEM into the run's private output folder.
+
+    A file whose path Docker's comma-separated --secret value would split (a comma, a
+    double quote or a line break, which SSL_CERT_FILE may hold) is copied into that
+    folder first; main refused such a character there.
     """
     for candidate in (SYSTEM_CA_BUNDLE, ssl.get_default_verify_paths().cafile):
         if candidate and Path(candidate).is_file():
+            if any(mark in str(candidate) for mark in CSV_MARKS):
+                copied = Path(output) / "build-ca-bundle.pem"
+                shutil.copyfile(candidate, copied)
+                return copied
             return Path(candidate)
     if os.name == "nt":
         certificates = [
@@ -294,8 +304,10 @@ def execution_command(image, source, output, tools, sentinel, host_pid, uid, gid
         (output, "/work", False),
     ):
         text = str(Path(src).resolve())
-        if "," in text:
-            raise ValueError("A mount path must not contain a comma")
+        if any(mark in text for mark in CSV_MARKS):
+            raise ValueError(
+                "A mount path must not contain a comma, a double quote or a line break"
+            )
         command += [
             "--mount",
             f"type=bind,src={text},dst={dest}" + (",readonly" if readonly else ""),
@@ -351,12 +363,16 @@ def git_environment(isolated=False):
     for another one. Git before 2.43 let a configured core.useReplaceRefs=true win
     over GIT_NO_REPLACE_OBJECTS, so the setting is also passed as command-line
     configuration, which Git 2.31 and later (every Git that require_git accepts)
-    reads last. ``isolated`` also drops system and global configuration.
+    reads last. Grafts (``info/grafts``, replace refs' deprecated predecessor) would
+    rewrite a commit's parents, so packing its history would take another branch:
+    Git reads an empty graft file instead, without its hint about grafts.
+    ``isolated`` also drops system and global configuration.
     """
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
-    env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0")
-    env.update(GIT_CONFIG_COUNT="1", GIT_CONFIG_KEY_0="core.useReplaceRefs")
-    env.update(GIT_CONFIG_VALUE_0="false")
+    env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0", GIT_GRAFT_FILE=os.devnull)
+    env.update(GIT_CONFIG_COUNT="2", GIT_CONFIG_KEY_0="core.useReplaceRefs")
+    env.update(GIT_CONFIG_VALUE_0="false", GIT_CONFIG_KEY_1="advice.graftFileDeprecated")
+    env.update(GIT_CONFIG_VALUE_1="false")
     if isolated:
         env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
     return env
@@ -540,28 +556,7 @@ def stage_source(source, staged, expected_sha):
     for path in (git_dir / "objects").rglob("*"):
         if is_link(path.lstat()):  # symbolic links, and junctions on Windows
             raise ValueError("Symlink in Git object store")
-    # Only the objects the audited commit reaches (its history, cut at a shallow
-    # boundary), packed by Git: the store also holds stashes (with `-u`, untracked
-    # files such as .env), other branches and blobs once added but never committed,
-    # and the audited code must not read those.
     (staged / ".git/objects/pack").mkdir(parents=True)
-    packed = run_captured(
-        [
-            program("git"),
-            "-C",
-            str(source),
-            "pack-objects",
-            "--revs",
-            "--quiet",
-            str(staged / ".git/objects/pack/pack"),
-        ],
-        input=f"{expected_sha}\n".encode("ascii"),
-        env=env,
-        timeout=GIT_TIMEOUT,
-    )
-    if packed.returncode:
-        message = packed.stderr.decode("utf-8", errors="replace").strip()
-        raise RuntimeError(f"git exited {packed.returncode}: {message}")
     (staged / ".git/refs").mkdir()
     write_text(staged / ".git/HEAD", expected_sha + "\n")
     # Windows has no executable bit, so Git there must not compare file modes.
@@ -575,6 +570,32 @@ def stage_source(source, staged, expected_sha):
         if not all(re.fullmatch(r"[0-9a-f]{40}", x) for x in shallow.splitlines()):
             raise ValueError("Invalid shallow-boundary metadata")
         write_text(staged / ".git/shallow", shallow)
+    # Only the objects the audited commit reaches (its history, cut at a shallow
+    # boundary), packed by Git: the store also holds stashes (with `-u`, untracked
+    # files such as .env), other branches and blobs once added but never committed,
+    # and the audited code must not read those. The pack goes to stdout and is
+    # indexed in the staged copy: a pack Git writes to a named file starts as a
+    # temporary file in the store of the repository it runs in, so packing in the
+    # source would write there (a read-only checkout fails) and then rename across
+    # volumes (an --output on another file system or drive fails).
+    packed = run_captured(
+        [program("git"), "-C", str(source), "pack-objects", "--revs", "--stdout", "--quiet"],
+        input=f"{expected_sha}\n".encode("ascii"),
+        env=env,
+        timeout=GIT_TIMEOUT,
+    )
+    if packed.returncode:
+        message = packed.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"git exited {packed.returncode}: {message}")
+    indexed = run_captured(
+        [program("git"), "-C", str(staged), "index-pack", "--stdin"],
+        input=packed.stdout,
+        env=git_environment(isolated=True),
+        timeout=GIT_TIMEOUT,
+    )
+    if indexed.returncode:
+        message = indexed.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"git exited {indexed.returncode}: {message}")
     # The index is built with no inherited, system or global configuration, no file
     # system monitor command and an empty hooks folder: nothing from the commit or
     # the host user's setup runs here.
@@ -621,9 +642,28 @@ def stage_source(source, staged, expected_sha):
             env=env,
             timeout=GIT_TIMEOUT,
         )
+        # Also as the staged copy itself reads its history (its own shallow file, no
+        # grafts or replace refs), so a view of the source that both packing and the
+        # first listing share cannot hide a missing or extra object.
+        own = run_captured(
+            [
+                program("git"),
+                "-C",
+                str(staged),
+                "rev-list",
+                "--objects",
+                "--no-object-names",
+                expected_sha,
+            ],
+            env=git_environment(isolated=True),
+            timeout=GIT_TIMEOUT,
+        )
         contract.require(
             "Q4",
-            set(staged_objects.split()) == set(reached.split()),
+            not own.returncode
+            and set(staged_objects.split())
+            == set(reached.split())
+            == set(own.stdout.decode("ascii", "replace").split()),
             "staged Git objects differ from the commit's history",
         )
     return records
@@ -654,11 +694,15 @@ def main():
     output = args.output.resolve()
     tools = Path(__file__).resolve().parent
     # Docker reads --mount and --secret values as comma-separated fields, so a comma in
-    # a folder that is mounted, or that holds the exported CA bundle (Windows), would
-    # split one: refused here, before anything runs.
+    # a folder that is mounted, or that holds the exported or copied CA bundle, would
+    # split one: refused here, before anything runs (ca_bundle copies a CA file whose
+    # own path has one). Docker parses those values as CSV, so a double quote or a line
+    # break breaks them too.
     for label, folder in (("--output", output), ("The runner folder", tools)):
-        if "," in str(folder):
-            raise SystemExit(f"{label} must not contain a comma: {folder}")
+        if any(mark in str(folder) for mark in CSV_MARKS):
+            raise SystemExit(
+                f"{label} must not contain a comma, a double quote or a line break: {folder}"
+            )
     # A used folder would keep an earlier runner.json that a failed run never replaces.
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise SystemExit(f"--output must be a new or empty folder: {output}")

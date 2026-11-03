@@ -449,6 +449,14 @@ class HostSafetyTests(unittest.TestCase):
                 self.root / "output",
             ),
         }
+        if os.name != "nt":  # review round 13 (R13A-X3): no Windows name holds these
+            for mark, name in (('"', "quote"), ("\n", "line feed")):
+                cases[
+                    f"--output must not contain a comma, a double quote or a line break ({name})"
+                ] = (
+                    RUNNER,
+                    self.root / f"out{mark}put" / "output",
+                )
         for message, (script, output) in cases.items():
             with self.subTest(message=message):
                 result = subprocess.run(
@@ -471,7 +479,7 @@ class HostSafetyTests(unittest.TestCase):
                 )
                 text = result.stdout + result.stderr
                 self.assertEqual(result.returncode, 1, quoted(text))
-                self.assertIn(message, result.stderr, quoted(text))
+                self.assertIn(message.split(" (")[0], result.stderr, quoted(text))
                 self.assertNotIn("ContractViolation", text, quoted(text))
                 self.assertFalse(output.exists(), quoted(text))
 

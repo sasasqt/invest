@@ -32,8 +32,8 @@ rejection.
   Checked in `log_line`.
 - **Q4** Every staged source file's Git blob hash equals the commit's entry, on
   every host, and the staged tree holds exactly the commit's paths. Always enforced
-  for the bytes read from Git (with replace refs and inherited `GIT_*` variables
-  ignored); checked again on the written file in `stage_source`. No path enters
+  for the bytes read from Git (with replace refs, grafts and inherited `GIT_*`
+  variables ignored); checked again on the written file in `stage_source`. No path enters
   `.git`, and no two committed paths may reach the same staged file or folder.
   The staged object store holds exactly the objects the commit reaches (its
   history, cut at a shallow boundary), never a stash, another branch or an object
@@ -100,7 +100,8 @@ the full isolated audit jobs exercise W1, W2 and W5.
   character no Windows file name holds (`? * " < > |` or U+0000 to U+001F) or with
   U+007F (refused as in output names), a raw
   path that can never verify (another entry's folder, or 4096 UTF-8 bytes or more,
-  which no Linux path call opens), a raw path name refused on every host (over 255
+  which no Linux path call opens; a shorter one that is too long once joined to the
+  `--snapshot` folder is rejected with the system's error), a raw path name refused on every host (over 255
   UTF-8 bytes, or not valid UTF-8: a lone surrogate), an entry that exists but is not
   a regular file, a hash mismatch) as
   `rejected` (exit 2). The manifest's own entries are checked before the snapshot
@@ -149,7 +150,9 @@ the full isolated audit jobs exercise W1, W2 and W5.
   first), so a program committed in the audited checkout cannot run on the host.
 - `--source` may name a subfolder of the checkout, or a linked worktree; the whole
   commit is staged, with objects read from the repository's common Git folder.
-- Only the objects the audited commit reaches are staged, packed by Git. PR #32
+- Only the objects the audited commit reaches are staged, packed by Git as a stream
+  that the staged copy indexes (staging writes nothing into the source, so a
+  read-only checkout and an `--output` on another volume work). PR #32
   copied every loose object and pack of the source's store, so a stash (with `-u`,
   untracked files such as `.env`), an unpushed branch or a blob once added and never
   committed was readable by the audited code under `/input/.git`.
@@ -159,7 +162,9 @@ the full isolated audit jobs exercise W1, W2 and W5.
 - The CA bundle for the image build comes from the system bundle (not on Windows,
   where `/etc/ssl/...` would name a folder on the current drive that any local user
   may create), else Python's default CA file, else (Windows) the certificate store
-  exported as PEM.
+  exported as PEM. A CA file whose path holds a comma, a double quote or a line
+  break is copied into `--output` first, because Docker reads the build secret's
+  `src` as a comma-separated field (PR #32 had only the system bundle).
 - On a Windows host the container's outside-file and host-process probes are not
   run, so `boundary.json` lacks `outside_fixture_absent` and
   `host_process_not_visible`, and its child check is named

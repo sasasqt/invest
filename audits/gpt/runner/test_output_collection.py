@@ -1002,6 +1002,179 @@ class RoundTwelveCheckTests(unittest.TestCase):
 
 
 @POSIX_ONLY
+class RoundThirteenCheckTests(unittest.TestCase):
+    def test_a_destination_name_longer_than_the_snapshot_name_near_the_path_limit(self):
+        """R13B-T1: the snapshot is written under its .collect-* name (17 characters) and
+        then renamed. check_collected listed and read the destination by full path, so a
+        tree that fit the path limit under the snapshot's name, renamed to a longer
+        destination name, raised ENAMETOOLONG in the test mode instead of returning the
+        report that the run returns with it off."""
+        with tempfile.TemporaryDirectory() as directory:
+            limit = os.pathconf(directory, "PC_PATH_MAX") - 1
+            work, parent = Path(directory, "w"), Path(directory, "p")
+            (work / "results").mkdir(parents=True)
+            parent.mkdir()
+            (work / "results/boundary.json").write_text('{"ok": true}', encoding="utf-8")
+            # The deepest file's path under the snapshot is limit - 2 characters long.
+            budget = limit - 2 - (len(str(parent)) + 1 + len(".collect-xxxxxxxx")) - 1
+            parts, used = [], 0
+            while budget - used > 210:
+                parts.append("d" * 200)
+                used += 201
+            folder = Path(work, "results", *parts)
+            folder.mkdir(parents=True)
+            (folder / ("f" * (budget - used))).write_bytes(b"deep file\n")
+            deepest = "/".join([*parts, "f" * (budget - used)])
+            for method in ("descriptor", "path"):
+                with self.subTest(method=method):
+                    destination = parent / (method + "-evidence-" + "n" * 30)
+                    self.assertGreater(len(str(destination)) + 1 + len(deepest), limit)
+                    report = collect_results(work, destination, method=method)
+                    self.assertEqual(report["status"], "collected")
+                    self.assertIn(deepest, [row["path"] for row in report["files"]])
+                    self.assertEqual(sorted(report["summaries"]), ["boundary.json"])
+
+    def test_a_link_or_special_entry_in_the_snapshot_fails_q1_by_name(self):
+        """Mutation testing of snapshot_walk: its lstat could follow links (both walks)
+        or name the folder instead of the entry (path walk), and no test noticed,
+        because no test put a link into a snapshot. A link to a file, a link to a
+        folder and a FIFO in the snapshot must each fail Q1 with the link message."""
+
+        def file_link(snapshot):
+            (snapshot / "entry").symlink_to(snapshot / "f")
+
+        def folder_link(snapshot):
+            (snapshot / "folder").mkdir()
+            (snapshot / "entry").symlink_to(snapshot / "folder", target_is_directory=True)
+
+        def fifo(snapshot):
+            os.mkfifo(snapshot / "entry")
+
+        for name, place in (("file link", file_link), ("folder link", folder_link), ("fifo", fifo)):
+            for descriptors in (DESCRIPTOR_APIS, False):
+                with self.subTest(entry=name, descriptors=descriptors):
+                    with tempfile.TemporaryDirectory() as directory:
+                        root = Path(directory)
+                        (root / "work/results").mkdir(parents=True)
+                        (root / "work/results/f").write_bytes(b"x")
+                        snapshot = root / "destination"
+                        snapshot.mkdir()
+                        (snapshot / "f").write_bytes(b"x")
+                        try:
+                            place(snapshot)
+                        except (AttributeError, NotImplementedError, OSError) as exc:
+                            self.skipTest(f"cannot make a {name} here: {exc}")
+                        digest = hashlib.sha256(b"x").hexdigest()
+                        row = {"path": "f", "bytes": 1, "sha256": digest}
+                        report = {"files": [row], "entries": 1, "bytes": 1, "summaries": {}}
+                        with patch("output_collection.DESCRIPTOR_APIS", descriptors):
+                            with self.assertRaisesRegex(
+                                ContractViolation,
+                                "^Q1: the snapshot holds a link or special entry$",
+                            ):
+                                check_collected(
+                                    root / "work", snapshot, report, DEFAULT_LIMITS, "path"
+                                )
+
+    def test_the_test_mode_reports_each_broken_collection_rule(self):
+        """Mutation testing (round 13): check_collected's Q1 and I2 checks could lose their
+        condition, rule or message and no test noticed, because no test broke them one
+        at a time. Each case breaks one rule on a real collection and expects that
+        check's exact report."""
+
+        def records(report, limits, work):
+            report["files"].append({"path": "g", "bytes": 1, "sha256": "0" * 64})
+
+        def rename_results(report, limits, work):
+            (work / "results").rename(work / "gone")
+
+        def hard_link(report, limits, work):
+            os.link(work / "results/f", work / "f-link")
+
+        def new_bytes(report, limits, work):
+            (work / "results/f").write_bytes(b"y")
+
+        def field(*keys, value):
+            def change(report, limits, work):
+                target = report
+                for key in keys[:-1]:
+                    target = target[key]
+                target[keys[-1]] = value(target[keys[-1]])
+
+            return change
+
+        cases = {
+            "^Q1: snapshot files differ from the records$": (records, DEFAULT_LIMITS),
+            "^Q1: entry count differs$": (field("entries", value=lambda n: n + 1), None),
+            "^Q1: entry limit exceeded$": (None, CollectionLimits(entries=0)),
+            "^Q1$": (field("bytes", value=lambda n: n + 1), None),
+            "^Q1: total byte limit exceeded$": (None, CollectionLimits(total_bytes=0)),
+            "^Q1: f$": (field("files", 0, "sha256", value=lambda _: "0" * 64), None),
+            "^Q1: no source results folder: f$": (rename_results, None),
+            "^Q1: source bytes differ: f$": (new_bytes, None),
+            "^I2: the two walks read summaries$": (
+                field("summaries", value=lambda _: {"boundary.json": {}}),
+                None,
+            ),
+        }
+        cases_more = {
+            "row bytes": (field("files", 0, "bytes", value=lambda n: n + 1), None),
+            "file limit": (None, CollectionLimits(file_bytes=0)),
+            "hard link": (hard_link, None),
+        }
+        for pattern, (change, limits) in [
+            *cases.items(),
+            *(("^Q1: f$", case) for case in cases_more.values()),
+        ]:
+            for method in ("descriptor", "path") if DESCRIPTOR_APIS else ("path",):
+                if pattern.startswith("^I2") and method == "path":
+                    continue
+                with self.subTest(pattern=pattern, method=method, change=change):
+                    with tempfile.TemporaryDirectory() as directory:
+                        work = Path(directory, "work")
+                        (work / "results").mkdir(parents=True)
+                        (work / "results/f").write_bytes(b"x")
+                        destination = Path(directory, "destination")
+                        report = collect_results(work, destination, method=method)
+                        self.assertEqual(report["status"], "collected")
+                        check_collected(work, destination, report, DEFAULT_LIMITS, method)
+                        limits = limits or DEFAULT_LIMITS
+                        if change is not None:
+                            try:
+                                change(report, limits, work)
+                            except OSError as exc:  # no hard links on this file system
+                                self.skipTest(str(exc))
+                        with self.assertRaisesRegex(ContractViolation, pattern):
+                            check_collected(work, destination, report, limits, method)
+
+    def test_the_test_mode_reports_a_source_file_on_another_device(self):
+        """Mutation testing (round 13): the check that every part of a recorded file's
+        source chain is on the results folder's device could lose its condition or rule
+        unnoticed, since no test crosses a mount. The chain is shifted to another device
+        number here, so the check must name the file."""
+        import output_collection
+
+        real = output_collection.source_chain
+
+        def crossing(work, relative):
+            chain, data = real(work, relative)
+            last = chain[-1]
+            moved = os.stat_result((*last[:2], last.st_dev + 1, *last[3:10]))
+            return [*chain[:-1], moved], data
+
+        for method in ("descriptor", "path") if DESCRIPTOR_APIS else ("path",):
+            with self.subTest(method=method), tempfile.TemporaryDirectory() as directory:
+                work = Path(directory, "work")
+                (work / "results").mkdir(parents=True)
+                (work / "results/f").write_bytes(b"x")
+                destination = Path(directory, "destination")
+                report = collect_results(work, destination, method=method)
+                with patch("output_collection.source_chain", crossing):
+                    with self.assertRaisesRegex(ContractViolation, "^Q1: f$"):
+                        check_collected(work, destination, report, DEFAULT_LIMITS, method)
+
+
+@POSIX_ONLY
 class RoundElevenCheckTests(unittest.TestCase):
     """Review round 11: a relative destination near PATH_MAX."""
 
