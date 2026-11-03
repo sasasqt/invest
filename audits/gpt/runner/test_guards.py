@@ -1661,6 +1661,7 @@ class StagingSafetyTests(unittest.TestCase):
             (b"/a b \n", "/a b "),
             (b"/a\r\n", "/a" if os.name == "nt" else "/a\r"),
             (b"/a\n\n", "/a\n"),
+            (b"/Jos\xc3\xa9\n", "/José"),  # Git prints UTF-8 (R12C-C1)
         ):
             with self.subTest(printed=printed):
                 printing = [

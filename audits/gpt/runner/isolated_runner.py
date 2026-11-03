@@ -121,13 +121,19 @@ def checked(argv, *, timeout=None, **kwargs):
 
 def checked_path(argv, *, timeout=None, **kwargs):
     """The one path a program prints, decoded as the file system decodes names, so a
-    folder name that is not valid UTF-8 keeps its bytes (``checked`` replaces them)."""
+    folder name that is not valid UTF-8 keeps its bytes (``checked`` replaces them).
+
+    Windows: Git prints paths in UTF-8 there. That is Python's file-name encoding too,
+    unless PYTHONLEGACYWINDOWSFSENCODING=1 selects the ANSI code page, which would
+    turn a folder named with an accented letter into another name."""
     result = run_captured(argv, timeout=timeout, **kwargs)
     if result.returncode:
         message = result.stderr.decode("utf-8", "replace").strip()
         raise RuntimeError(f"{Path(argv[0]).name} exited {result.returncode}: {message}")
     line = result.stdout.removesuffix(b"\n")
-    return Path(os.fsdecode(line.removesuffix(b"\r") if os.name == "nt" else line))
+    if os.name == "nt":
+        return Path(line.removesuffix(b"\r").decode("utf-8", "surrogatepass"))
+    return Path(os.fsdecode(line))
 
 
 def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
