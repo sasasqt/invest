@@ -14,15 +14,16 @@ Two kinds are defined so producers and consumers can validate independently:
     or delisted).
 
 ``universe``
-    Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``.
-    An instrument is a member on date ``d`` when ``start_date <= d < end_date``
-    (``end_date`` null = still a member). Intervals are known on their ``start_date``.
+    Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``,
+    keyed by ``(universe, instrument, start_date)``. An instrument is a member on date
+    ``d`` when ``start_date <= d < end_date`` (``end_date`` null = still a member).
+    Intervals are known on their ``start_date``.
 
 ``fundamentals``
-    Point-in-time values ``(instrument, field, period_end, available_date, value)``. A row
-    may be used for decisions at the close of ``available_date`` or later. A revision is a
-    new row for the same ``(instrument, field, period_end)`` with a later
-    ``available_date``; earlier rows are never overwritten.
+    Point-in-time values ``(instrument, field, period_end, available_date, value)``, keyed
+    by all but ``value``. A row may be used for decisions at the close of ``available_date``
+    or later. A revision is a new row for the same ``(instrument, field, period_end)`` with
+    a later ``available_date``; earlier rows are never overwritten.
 
 ``signals``
     Keys ``(decision_date, instrument)``. ``score`` uses only information available at the
@@ -89,6 +90,10 @@ FUNDAMENTAL_COLUMNS = (
     Column("available_date", "date", nullable=False),
     Column("value", "float64", nullable=False),
 )
+MARKET_BAR_PRIMARY_KEY = ("date", "instrument")
+SIGNAL_PRIMARY_KEY = ("decision_date", "instrument")
+UNIVERSE_PRIMARY_KEY = ("universe", "instrument", "start_date")
+FUNDAMENTAL_PRIMARY_KEY = ("instrument", "field", "period_end", "available_date")
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
 PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
 # What evaluation and mining accept: closes whose returns include splits and dividends.
@@ -115,6 +120,16 @@ def _check_columns(manifest: Manifest, expected: tuple[Column, ...]) -> None:
     want = [(c.name, c.type) for c in expected]
     if got != want:
         raise BundleError(f"{manifest.dataset_kind}: columns {got} != expected {want}")
+
+
+def _check_key(manifest: Manifest, key: tuple[str, ...]) -> None:
+    """A dataset kind's rows are unique on its key. The generic reader enforces only the
+    key a manifest declares, so a kind's reader requires that declaration."""
+    if sorted(manifest.primary_key) != sorted(key):
+        raise BundleError(
+            f"{manifest.dataset_kind}: primary key must be {list(key)}, "
+            f"got {list(manifest.primary_key)}"
+        )
 
 
 def _check_kind(manifest: Manifest, kind: str) -> None:
@@ -217,11 +232,12 @@ def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind
         n_trials = metadata["n_trials"]
         if type(n_trials) is not int or n_trials < 1:
             raise BundleError("signals: n_trials must be a positive integer (not a boolean)")
-    if kind == SIGNALS and "factor_evidence" in metadata:
+    if kind == SIGNALS:
         if type(metadata["horizon_days"]) is not int or metadata["horizon_days"] < 1:
-            raise BundleError(
-                "signals: horizon_days must be a positive integer with factor_evidence"
-            )
+            raise BundleError("signals: horizon_days must be a positive integer (not a boolean)")
+        if not isinstance(metadata["factor_id"], str) or not metadata["factor_id"]:
+            raise BundleError("signals: factor_id must be a non-empty string")
+    if kind == SIGNALS and "factor_evidence" in metadata:
         evidence = metadata["factor_evidence"]
         validate_factor_evidence(
             evidence,
@@ -373,7 +389,7 @@ def publish_market_bars(
 ) -> Manifest:
     _validate_metadata(metadata, REQUIRED_MARKET_METADATA, MARKET_BARS)
     columns = market_bar_columns(frame.columns)
-    frame = frame[[c.name for c in columns]].sort_values(["date", "instrument"])
+    frame = frame[[c.name for c in columns]].sort_values(list(MARKET_BAR_PRIMARY_KEY))
     validate_market_frame(frame)
     return write_bundle(
         frame.reset_index(drop=True),
@@ -381,7 +397,7 @@ def publish_market_bars(
         dataset_id=dataset_id,
         fmt=fmt,
         columns=columns,
-        primary_key=("date", "instrument"),
+        primary_key=MARKET_BAR_PRIMARY_KEY,
         provenance=provenance,
         dataset_kind=MARKET_BARS,
         metadata=metadata,
@@ -411,6 +427,7 @@ def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFra
     manifest, frame = read_bundle(path)
     _check_kind(manifest, MARKET_BARS)
     _check_columns(manifest, market_bar_columns(manifest.column_names))
+    _check_key(manifest, MARKET_BAR_PRIMARY_KEY)
     _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     validate_market_frame(frame)
     return manifest, frame
@@ -437,7 +454,7 @@ def publish_signals(
         dataset_id=dataset_id,
         fmt=fmt,
         columns=SIGNAL_COLUMNS,
-        primary_key=("decision_date", "instrument"),
+        primary_key=SIGNAL_PRIMARY_KEY,
         provenance=provenance,
         dataset_kind=SIGNALS,
         metadata=meta,
@@ -449,6 +466,7 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     if manifest.dataset_kind != SIGNALS:
         raise BundleError(f"expected dataset_kind {SIGNALS!r}, got {manifest.dataset_kind!r}")
     _check_columns(manifest, SIGNAL_COLUMNS)
+    _check_key(manifest, SIGNAL_PRIMARY_KEY)
     _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
@@ -477,9 +495,7 @@ def publish_universe(
     provenance: dict[str, Any] | None = None,
     fmt: str = "csv",
 ) -> Manifest:
-    frame = frame[[c.name for c in UNIVERSE_COLUMNS]].sort_values(
-        ["universe", "instrument", "start_date"]
-    )
+    frame = frame[[c.name for c in UNIVERSE_COLUMNS]].sort_values(list(UNIVERSE_PRIMARY_KEY))
     validate_universe_frame(frame)
     return write_bundle(
         frame.reset_index(drop=True),
@@ -487,7 +503,7 @@ def publish_universe(
         dataset_id=dataset_id,
         fmt=fmt,
         columns=UNIVERSE_COLUMNS,
-        primary_key=("universe", "instrument", "start_date"),
+        primary_key=UNIVERSE_PRIMARY_KEY,
         provenance=provenance,
         dataset_kind=UNIVERSE,
         metadata={"interval": "start_date <= date < end_date", **(metadata or {})},
@@ -499,6 +515,7 @@ def read_universe(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]
     if manifest.dataset_kind != UNIVERSE:
         raise BundleError(f"expected dataset_kind {UNIVERSE!r}, got {manifest.dataset_kind!r}")
     _check_columns(manifest, UNIVERSE_COLUMNS)
+    _check_key(manifest, UNIVERSE_PRIMARY_KEY)
     validate_universe_frame(frame)
     return manifest, frame
 
@@ -519,8 +536,7 @@ def publish_fundamentals(
     provenance: dict[str, Any] | None = None,
     fmt: str = "csv",
 ) -> Manifest:
-    keys = ["instrument", "field", "period_end", "available_date"]
-    frame = frame[[c.name for c in FUNDAMENTAL_COLUMNS]].sort_values(keys)
+    frame = frame[[c.name for c in FUNDAMENTAL_COLUMNS]].sort_values(list(FUNDAMENTAL_PRIMARY_KEY))
     validate_fundamentals_frame(frame)
     return write_bundle(
         frame.reset_index(drop=True),
@@ -528,7 +544,7 @@ def publish_fundamentals(
         dataset_id=dataset_id,
         fmt=fmt,
         columns=FUNDAMENTAL_COLUMNS,
-        primary_key=keys,
+        primary_key=FUNDAMENTAL_PRIMARY_KEY,
         provenance=provenance,
         dataset_kind=FUNDAMENTALS,
         metadata={"available_at": "available_date_close", **(metadata or {})},
@@ -540,5 +556,6 @@ def read_fundamentals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFr
     if manifest.dataset_kind != FUNDAMENTALS:
         raise BundleError(f"expected dataset_kind {FUNDAMENTALS!r}, got {manifest.dataset_kind!r}")
     _check_columns(manifest, FUNDAMENTAL_COLUMNS)
+    _check_key(manifest, FUNDAMENTAL_PRIMARY_KEY)
     validate_fundamentals_frame(frame)
     return manifest, frame

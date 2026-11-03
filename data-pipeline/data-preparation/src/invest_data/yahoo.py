@@ -153,6 +153,19 @@ def _file_name(symbol: str) -> str:
     return f"raw/{urllib.parse.quote(symbol, safe='')}.json"
 
 
+def _same_symbol_spellings(symbols: Iterable[str]) -> list[list[str]]:
+    """Groups of symbols that differ only in case, such as ``SPY`` and ``spy``.
+
+    Yahoo answers both with the same instrument's bars, so each spelling would publish as
+    a separate instrument with identical bars; their raw files would also be one file on a
+    case-insensitive file system (Windows, macOS).
+    """
+    groups: dict[str, list[str]] = {}
+    for symbol in symbols:
+        groups.setdefault(symbol.casefold(), []).append(symbol)
+    return [group for group in groups.values() if len(group) > 1]
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -187,6 +200,8 @@ def download_snapshot(
     names = list(dict.fromkeys(s.strip() for s in symbols if s.strip()))
     if not names:
         raise ValueError("no symbols to download")
+    if spellings := _same_symbol_spellings(names):
+        raise ValueError(f"symbols that differ only in case name one instrument: {spellings}")
     chart_url(names[0], start, end)  # validates the date range before any request
     root.parent.mkdir(parents=True, exist_ok=True)
     root.mkdir()  # exclusive reservation: competing writers fail before fetching
@@ -312,6 +327,10 @@ def load_snapshot(
         raise SourceError(f"{root}: symbols not in snapshot: {missing}")
     if not wanted:
         raise SourceError(f"{root}: snapshot holds no symbols")
+    if spellings := _same_symbol_spellings(wanted):
+        raise SourceError(
+            f"{root}: symbols that differ only in case name one instrument: {spellings}"
+        )
     frames = []
     currencies: dict[str, str | None] = {}
     source_metadata: dict[str, dict[str, Any]] = {}
