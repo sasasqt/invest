@@ -1,0 +1,42 @@
+{
+  "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+  "scheduled_for": "2026-11-03T02:00:00Z",
+  "scheduled_berlin_date": "2026-11-03",
+  "field": "mining",
+  "status": "started",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_parent": "5cee0135345226463cdd474a3f59ac74b4fc1e76",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "index_sha256_verified": true,
+  "started_context_utc": "2026-11-03T01:55:03.543840Z",
+  "budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "verification_reporting": 30
+  },
+  "previous_current_run": {
+    "run_id": "GA-2026-11-02-data-092201Z",
+    "field": "data",
+    "date": "2026-11-02",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "protocol_commit": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
+    "status": "partial; static scope completed, runtime blocked",
+    "date_resolution": "Scheduled-for timestamp unavailable for this invocation; Berlin local start date fallback2026-11-02. Original date retained.",
+    "started_context_utc": "2026-11-02T09:20:43Z",
+    "started_checkpoint_utc": "2026-11-02T09:22:01Z",
+    "prepared_utc": "2026-11-02T09:34:01.210069+00:00",
+    "wall_seconds_from_supplied_start": 798.235466,
+    "timing_limitation": "Wall-clock time, not exclusive model CPU. Individual stage/helper wall measurements unavailable; no invented token/account usage.",
+    "helper_count": 1,
+    "helper_budget_minutes": 15,
+    "remote_compute_dispatched": 0,
+    "product_runs": 0,
+    "report": "2026-11-02-2.md",
+    "publication_verified_utc": "2026-11-02T09:34:48Z",
+    "wall_seconds_through_publication": 883.734247
+  },
+  "overlap_reconciliation": "Previous current_run has a published partial report and verified publication; preserved. No evidence of an unfinished current-date audit. Activation in_progress evidence reconciled historically; no live runtime jobs established.",
+  "model_effort": "unavailable; audit continued as authorized",
+  "scope": "Trusted static mining question selection; no product imports/builds/tests/workflows until current isolation and installed graph proved."
+}
