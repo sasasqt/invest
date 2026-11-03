@@ -6,6 +6,7 @@ import argparse
 import json
 import math
 import sys
+import tempfile
 from collections.abc import Sequence
 from dataclasses import replace
 from datetime import date
@@ -76,6 +77,42 @@ def _span(dates: pd.DatetimeIndex, what: str) -> Window:
     return Window(dates[0].date(), dates[-1].date())
 
 
+def _prepare_out(out: str | Path, *subdirs: str) -> Path:
+    """Create ``out`` (and ``subdirs``) and check that each takes a new file.
+
+    Called before the ledger records anything, so an unusable ``--out`` cannot leave a
+    recorded inspection or experiment without its output.
+    """
+    root = Path(out)
+    try:
+        for folder in [root, *(root / sub for sub in subdirs)]:
+            folder.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryFile(dir=folder):
+                pass
+    except OSError as exc:
+        raise SystemExit(f"--out {out}: {exc}") from exc
+    return root
+
+
+def _require_labels(confirmation: Window, n_sessions: int, horizon: int) -> None:
+    """Refuse a confirmation window too short for any decision date to carry a label.
+
+    The label of decision ``t`` needs the opens at ``t+1`` and ``t+1+h``
+    (:func:`~invest_mining.diagnostics.forward_returns`), so with fewer than ``h+2``
+    confirmation sessions nothing would be tested on the window it records as used.
+    """
+    if n_sessions < horizon + 2:
+        raise SystemExit(
+            f"confirmation window {confirmation} has {n_sessions} session(s), so no decision "
+            f"date with a complete {horizon}-session label (that needs {horizon + 2}); start "
+            "confirmation earlier"
+        )
+
+
+def _session_days(dates: pd.DatetimeIndex) -> list[date]:
+    return [ts.date() for ts in dates]
+
+
 def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> None:
     """Refuse reserved data, then record the window unless already recorded."""
     entries = ledger.load(path)
@@ -130,11 +167,7 @@ def _evaluate(args: argparse.Namespace) -> int:
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
     # An unwritable --out must fail here, not after the inspection is recorded.
-    try:
-        for sub in ("tables", "figures"):
-            (Path(args.out) / sub).mkdir(parents=True, exist_ok=True)
-    except OSError as exc:
-        raise SystemExit(f"--out {args.out}: {exc}") from exc
+    _prepare_out(args.out, "tables", "figures")
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
@@ -234,10 +267,16 @@ def _search(args: argparse.Namespace) -> int:
     exp_id = ledger.experiment_id(identity)
     use, reasons = "unrecorded", list[str]()
     if args.ledger is not None:
+        # A window with no labelled date would be recorded as used with nothing tested.
+        _require_labels(confirmation, len(split.confirm_dates), args.horizon)
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
             use, reasons = ledger.assess_confirmation(
-                ledger.load(args.ledger), development, confirmation, exp_id
+                ledger.load(args.ledger),
+                development,
+                confirmation,
+                exp_id,
+                sessions=_session_days(pd.DatetimeIndex(panel["close"].index)),
             )
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
@@ -245,6 +284,8 @@ def _search(args: argparse.Namespace) -> int:
             raise SystemExit(
                 f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
             )
+    # An unusable --out must fail before the ledger records the experiment.
+    out = _prepare_out(args.out, "factors")
     result = run_search(
         panel,
         n_trials=args.trials,
@@ -281,8 +322,6 @@ def _search(args: argparse.Namespace) -> int:
                 "reasons": reasons,
             },
         )
-    out = Path(args.out)
-    (out / "factors").mkdir(parents=True, exist_ok=True)
     # A rerun into the same directory replaces the family; stale factor files would be
     # taken for members of it.
     for stale in (out / "factors").glob("*.json"):
@@ -344,9 +383,10 @@ def _confirm(args: argparse.Namespace) -> int:
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
+    _require_labels(confirmation, len(dates) - k, factor.horizon_days)
     try:
         use, reasons = ledger.assess_confirmation(
-            ledger.load(args.ledger), context, confirmation, exp_id
+            ledger.load(args.ledger), context, confirmation, exp_id, sessions=_session_days(dates)
         )
     except LedgerError as exc:
         raise SystemExit(f"{args.ledger}: {exc}") from exc
@@ -354,6 +394,8 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
+    # An unusable --out must fail before the ledger records the experiment.
+    out = _prepare_out(args.out)
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
@@ -371,8 +413,6 @@ def _confirm(args: argparse.Namespace) -> int:
             "reasons": reasons,
         },
     )
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
     table.to_csv(out / "confirmation.csv", index=False)
     config = {
         "factor": factor.to_json(),
@@ -592,7 +632,7 @@ def _ledger(args: argparse.Namespace) -> int:
                 e
                 for e in entries
                 if e["kind"] != "reservation"
-                and any(window.overlaps(observed) for observed in ledger.entry_windows(e).values())
+                and any(window.overlaps(observed) for observed in ledger.used_windows(e).values())
             ]
             if used:
                 raise LedgerError(f"{window} was already inspected or used by a search")

@@ -1,5 +1,9 @@
 import json
+import os
+import re
+import tempfile
 from datetime import UTC, date, datetime
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -362,7 +366,10 @@ def test_cli_zero_lookback_confirmation_needs_no_history(tmp_path, start_offset)
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
     assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(factor)]) == 0
-    assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(dates[0].date())]) == 0
+    # The reservation starts where the confirmation does: confirming from a later session
+    # would use up reserved sessions untested (BH-2026-10-20-1), and is refused.
+    reserve_start = str(dates[start_offset].date())
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", reserve_start]) == 0
     args = [
         "confirm",
         "--data",
@@ -469,3 +476,298 @@ def test_ledger_requires_explicit_null_for_empty_development(tmp_path):
                 "params": {"method": "fixed_formula", "lookback_sessions": 0},
             },
         )
+
+
+def _reserved_market(tmp_path, *, days=260, reserve="2020-09-01"):
+    """A synthetic market from 2020-01-01, inspected before ``reserve`` and reserved from it."""
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", str(days)])
+    ledger_cmd = ["ledger", "--ledger", str(book)]
+    end = str((pd.Timestamp(reserve) - pd.Timedelta(days=1)).date())
+    assert main([*ledger_cmd, "inspect", "--start", "2020-01-01", "--end", end]) == 0
+    assert main([*ledger_cmd, "reserve", "--start", reserve]) == 0
+    return data, book
+
+
+def _frozen(tmp_path, expr="close / delay(close, 5) - 1", horizon="5"):
+    factor = tmp_path / "f.json"
+    assert main(["freeze", "--expr", expr, "--horizon", horizon, "--out", str(factor)]) == 0
+    return factor
+
+
+@pytest.mark.parametrize("command", ["confirm", "search"])
+def test_cli_confirmation_starting_inside_a_reservation_is_refused(tmp_path, command):
+    # BH-2026-10-20-1: confirming from a session inside the reservation would use up the
+    # reserved sessions before it, which nothing has tested (README: confirm on a
+    # reservation with --confirm-start <first reserved date>, which uses it up). A
+    # zero-lookback formula, or a search with an embargo, reads no reserved history, so
+    # the development-window refusal does not catch it.
+    data, book = _reserved_market(tmp_path)
+    if command == "confirm":
+        factor = _frozen(tmp_path, expr="close")
+        args = ["confirm", "--data", str(data), "--factor", str(factor)]
+        late = "2020-10-06"
+    else:
+        args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
+        args += ["--embargo", "5"]
+        late = "2020-09-08"  # five reserved sessions before it, all inside the embargo
+    args += ["--ledger", str(book), "--out", str(tmp_path / "late")]
+    before = book.read_bytes()
+    with pytest.raises(SystemExit, match="starts after the reserved window"):
+        main([*args, "--confirm-start", late])
+    assert book.read_bytes() == before and not (tmp_path / "late").exists()
+    [reserved] = ledger.unused_reservations(ledger.load(book))
+    assert str(reserved) == "2020-09-01..open"
+    with pytest.raises(SystemExit, match="reserved confirmation window"):
+        main(
+            [
+                "ledger",
+                "check",
+                "--ledger",
+                str(book),
+                "--start",
+                "2020-09-01",
+                "--end",
+                "2020-09-30",
+            ]
+        )
+
+
+def test_cli_reservation_starting_on_a_non_session_day_accepts_the_next_session(tmp_path):
+    # Guard: 2020-09-05 is a Saturday; the reservation's first session is Monday 2020-09-07.
+    data, book = _reserved_market(tmp_path, reserve="2020-09-05")
+    args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path))]
+    out = tmp_path / "c"
+    assert (
+        main([*args, "--ledger", str(book), "--confirm-start", "2020-09-05", "--out", str(out)])
+        == 0
+    )
+    entry = ledger.load(book)[-1]
+    assert entry["confirmation"]["start"] == "2020-09-07"
+    assert entry["confirmation_use"] == "confirmatory"
+    assert ledger.unused_reservations(ledger.load(book)) == []
+
+
+def test_cli_search_with_an_empty_family_leaves_the_reservation_unused(tmp_path, capsys):
+    # BH-2026-10-26-1: a development window this short rejects every candidate, so nothing
+    # is tested on the confirmation window; it must not use up the reservation.
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "160"])
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", "2020-02-03"]) == 0
+    search = ["search", "--data", str(data), "--trials", "5", "--ledger", str(book)]
+    assert main([*search, "--confirm-start", "2020-02-03", "--out", str(tmp_path / "s1")]) == 0
+    assert "No candidates qualified" in capsys.readouterr().out
+    entries = ledger.load(book)
+    assert entries[-1]["kind"] == "experiment" and entries[-1]["family"] == []
+    # Its development window is recorded and still counts as used.
+    dev = Window.from_json(entries[-1]["development"])
+    assert dev.end is not None and dev.end < date(2020, 2, 3)
+    [reserved] = ledger.unused_reservations(entries)
+    assert str(reserved) == "2020-02-03..open"
+    with pytest.raises(SystemExit, match="reserved confirmation window"):
+        main(
+            [
+                "ledger",
+                "check",
+                "--ledger",
+                str(book),
+                "--start",
+                "2020-03-02",
+                "--end",
+                "2020-03-31",
+            ]
+        )
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    with pytest.raises(SystemExit, match="reserved confirmation window"):
+        main([*evaluate, "--out", str(tmp_path / "ev")])
+    # A later search on the reservation is still confirmatory.
+    later = Window.from_json(entries[-1]["confirmation"])
+    assert ledger.assess_confirmation(entries, dev, later, "e_other") == ("confirmatory", [])
+
+
+@pytest.mark.parametrize("command", ["confirm", "search"])
+def test_cli_unwritable_out_is_refused_before_the_ledger_records_anything(tmp_path, command):
+    # BH-2026-10-20-2: the experiment was appended before --out was created, so a bad --out
+    # ended in a traceback and burnt the window's one confirmatory use.
+    data, book = _reserved_market(tmp_path)
+    taken = tmp_path / "taken"
+    taken.write_text("")
+    if command == "confirm":
+        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path))]
+    else:
+        args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
+    args += ["--ledger", str(book), "--confirm-start", "2020-09-01"]
+    before = book.read_bytes()
+    for bad in (taken, taken / "sub"):
+        with pytest.raises(SystemExit, match=re.escape(f"--out {bad}")):
+            main([*args, "--out", str(bad)])
+        assert book.read_bytes() == before
+    assert main([*args, "--out", str(tmp_path / "ok")]) == 0
+    assert ledger.load(book)[-1]["confirmation_use"] == "confirmatory"
+
+
+@pytest.mark.skipif(
+    os.name == "nt" or getattr(os, "geteuid", lambda: 0)() == 0,
+    reason="needs POSIX permission bits and a non-root user",
+)
+def test_cli_read_only_out_is_refused_before_the_ledger_records_anything(tmp_path):
+    # Same class: an existing folder that takes no file (evaluate records an inspection).
+    data, book = _reserved_market(tmp_path)
+    locked = tmp_path / "locked"
+    locked.mkdir()
+    locked.chmod(0o555)
+    try:
+        before = book.read_bytes()
+        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path))]
+        args += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(locked)]
+        with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
+            main(args)
+        assert book.read_bytes() == before
+        evaluate = [
+            "evaluate",
+            "--data",
+            str(data),
+            "--expr",
+            "close",
+            "--ledger",
+            str(tmp_path / "e"),
+        ]
+        with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
+            main([*evaluate, "--out", str(locked)])
+        assert not (tmp_path / "e").exists()
+    finally:
+        locked.chmod(0o755)
+
+
+@pytest.mark.parametrize("command", ["confirm", "search"])
+def test_cli_confirmation_without_a_labelled_date_is_refused(tmp_path, command):
+    # Same class as BH-2026-10-26-1: with horizon 1, decision t needs the opens at t+1 and
+    # t+2, so a confirmation of the last two sessions has no label and tests nothing.
+    data, book = tmp_path / "data", tmp_path / "ledger.jsonl"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
+    dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
+    start = str(dates[-2].date())
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
+    if command == "confirm":
+        factor = _frozen(tmp_path, expr="close", horizon="1")
+        args = ["confirm", "--data", str(data), "--factor", str(factor)]
+    else:
+        args = ["search", "--data", str(data), "--trials", "5", "--horizon", "1"]
+    args += ["--ledger", str(book), "--confirm-start", start, "--out", str(tmp_path / "c")]
+    before = book.read_bytes()
+    with pytest.raises(SystemExit, match="no decision date with a complete 1-session label"):
+        main(args)
+    assert book.read_bytes() == before
+    assert len(ledger.unused_reservations(ledger.load(book))) == 1
+
+
+def test_an_empty_family_does_not_use_its_confirmation_window():
+    # BH-2026-10-26-1: an experiment that selected nothing tested nothing on its
+    # confirmation window; only its development window was observed.
+    dev, conf = W("2010-01-04", "2024-12-20"), W("2025-01-02")
+    reservation = _entry("reservation", W("2025-01-01"))
+    empty = {**_experiment("e_empty", dev, conf), "family": []}
+    tested = {**_experiment("e_tested", dev, conf), "family": ["f_1"]}
+    assert ledger.unused_reservations([reservation, empty]) == [W("2025-01-01")]
+    with pytest.raises(LedgerError, match="reserved confirmation window"):
+        ledger.check_inspection([reservation, empty], W("2025-02-01", "2025-02-28"))
+    assert ledger.assess_confirmation([reservation, empty], dev, conf, "e_next") == (
+        "confirmatory",
+        [],
+    )
+    # Its development window still counts, and so does a repeat of it.
+    use, reasons = ledger.assess_confirmation([empty], W("2000-01-03", "2004-12-31"), dev, "e_x")
+    assert use == "exploratory"
+    assert reasons == ["confirmation overlaps the development window of e_empty"]
+    assert ledger.assess_confirmation([empty], dev, conf, "e_empty")[1] == [
+        "repeat of experiment e_empty"
+    ]
+    # A tested family, or a legacy entry without the field, uses the window up.
+    assert ledger.unused_reservations([reservation, tested]) == []
+    assert ledger.unused_reservations([reservation, _experiment("e_old", dev, conf)]) == []
+    assert set(ledger.used_windows(empty)) == {"development"}
+    assert set(ledger.used_windows(tested)) == {"development", "confirmation"}
+    assert ledger.used_windows(reservation) == {}
+    assert ledger.used_windows(_entry("inspection", dev)) == {"window": dev}
+
+
+def test_assess_confirmation_with_sessions_refuses_skipping_reserved_sessions():
+    # BH-2026-10-20-1, at the function: 2025-01-01 is a holiday, so the reservation's
+    # first session is 2025-01-02; confirming from 2025-01-06 would skip two of them.
+    reserved = [_entry("reservation", W("2025-01-01"))]
+    dev = W("2010-01-04", "2024-12-20")
+    sessions = [date(2024, 12, 31), date(2025, 1, 2), date(2025, 1, 3), date(2025, 1, 6)]
+    assert ledger.assess_confirmation(reserved, dev, W("2025-01-02"), "e", sessions=sessions) == (
+        "confirmatory",
+        [],
+    )
+    match = r"reserved session\(s\) 2025-01-02\.\.2025-01-03 would be used up untested"
+    with pytest.raises(LedgerError, match=match):
+        ledger.assess_confirmation(reserved, dev, W("2025-01-06"), "e", sessions=sessions)
+    # A bounded reservation that ends before the confirmation is not touched by it.
+    bounded = [_entry("reservation", W("2025-01-01", "2025-01-03"))]
+    assert ledger.assess_confirmation(bounded, dev, W("2025-01-06"), "e", sessions=sessions) == (
+        "confirmatory",
+        [],
+    )
+    assert ledger.unused_reservations(bounded) == [W("2025-01-01", "2025-01-03")]
+
+
+def test_cli_out_that_takes_no_file_is_refused_before_recording(tmp_path, monkeypatch):
+    # BH-2026-10-20-2 for an existing folder that refuses new files (read-only), on every
+    # platform and user: the probe file cannot be created there.
+    data, book = _reserved_market(tmp_path)
+    locked = tmp_path / "locked"
+    locked.mkdir()
+    original = tempfile.TemporaryFile
+
+    def refuse(*args, **kwargs):
+        if Path(kwargs.get("dir", "")) == locked:
+            raise PermissionError(13, "Permission denied", str(locked))
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
+    factor = _frozen(tmp_path, expr="close")
+    before = book.read_bytes()
+    confirm = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
+    with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
+        main([*confirm, "--confirm-start", "2020-09-01", "--out", str(locked)])
+    assert book.read_bytes() == before
+    # evaluate records a full-sample inspection, so it gets a ledger without a reservation.
+    fresh = tmp_path / "fresh.jsonl"
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(fresh)]
+    with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
+        main([*evaluate, "--out", str(locked)])
+    assert not fresh.exists() and list(locked.iterdir()) == []
+
+
+def test_overlapping_reservations_are_confirmed_from_their_first_session():
+    # Checked one by one, R1 refuses a start after its first session and R2 a start before
+    # its own, so no confirmation could use nested reservations once BH-2026-10-20-1 is
+    # fixed. They are one reserved stretch, confirmed from its first session.
+    dev = W("2010-01-04", "2020-05-29")
+    sessions = [date(2020, 5, 29), date(2020, 6, 1), date(2020, 9, 1), date(2020, 12, 31)]
+    for inner in (W("2020-09-01"), W("2020-08-01", "2020-09-30")):
+        entries = [
+            _entry("reservation", W("2020-06-01", "2020-12-31")),
+            _entry("reservation", inner),
+        ]
+        late = W("2020-09-01")
+        with pytest.raises(LedgerError, match=r"starts after the reserved window 2020-06-01\.\."):
+            ledger.assess_confirmation(entries, dev, late, "e", sessions=sessions)
+        first = W("2020-06-01")
+        assert ledger.assess_confirmation(entries, dev, first, "e", sessions=sessions) == (
+            "confirmatory",
+            [],
+        )
+        used = [*entries, {**_experiment("e_r", dev, first), "family": ["f_1"]}]
+        assert ledger.unused_reservations(used) == []
+    # Reservations that do not overlap stay separate.
+    apart = [
+        _entry("reservation", W("2020-06-01", "2020-06-30")),
+        _entry("reservation", W("2020-09-01")),
+    ]
+    with pytest.raises(
+        LedgerError, match=re.escape("starts before the reserved window 2020-09-01..open")
+    ):
+        ledger.assess_confirmation(apart, dev, W("2020-06-01"), "e", sessions=sessions)
