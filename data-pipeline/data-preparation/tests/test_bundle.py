@@ -729,3 +729,113 @@ def test_text_that_is_not_utf8_is_refused_on_read(tmp_path, fmt):
         pq.write_table(pa.table({"s": text}), path / "data.parquet")
     with pytest.raises(BundleError, match="not UTF-8"):
         read_bundle(path)
+
+
+@pytest.mark.parametrize("fmt", FORMATS)
+def test_timestamps_before_year_1000_keep_four_digit_years(tmp_path, fmt):
+    """strftime("%Y") wrote 999 (and 50, which pandas read back as 2050) on glibc."""
+    values = [pd.Timestamp("0050-06-01T12:00:00Z"), pd.Timestamp("0999-06-01T12:00:00.5Z")]
+    _, frame = _one_column(tmp_path, values, Column("t", "timestamp"), fmt=fmt)
+    assert frame["t"].tolist() == values
+    if fmt == "csv":
+        assert (tmp_path / "b" / "data.csv").read_text().split("\n")[1] == "0050-06-01T12:00:00Z"
+
+
+@pytest.mark.parametrize(
+    ("column", "value"),
+    [
+        (Column("t", "timestamp"), datetime(1, 1, 1, tzinfo=timezone(timedelta(hours=1)))),
+        (Column("t", "timestamp"), pd.Timestamp(np.datetime64("10000-01-01", "s"), tz="UTC")),
+        (Column("d", "date"), np.datetime64("10000-01-01", "D")),
+    ],
+)
+def test_values_beyond_year_9999_or_before_year_1_are_bundle_errors(tmp_path, column, value):
+    """They raised NotImplementedError from strftime and Timestamp.date()."""
+    _refused(tmp_path, [value], column, "outside")
+
+
+@pytest.mark.parametrize(
+    ("column", "value"),
+    [
+        (Column("t", "timestamp"), "2024-01-02T00:00:00.0000000001Z"),
+        (Column("t", "timestamp"), "2024-01-02T00:00:00.1234560000001Z"),
+        (Column("d", "date"), "2024-01-02T00:00:00.0000000001"),
+        (Column("d", "date"), np.datetime64(86400 * 10**12 + 5, "ps")),
+    ],
+)
+def test_values_more_precise_than_a_nanosecond_are_refused(tmp_path, column, value):
+    """pandas drops the digits beyond the nanosecond, so they were stored truncated."""
+    _refused(tmp_path, [value], column, "more precise than a nanosecond")
+
+
+def test_readers_refuse_stored_timestamps_more_precise_than_a_nanosecond(tmp_path):
+    _published(tmp_path)
+    manifest = json.loads((tmp_path / "b" / "manifest.json").read_text())
+    manifest.pop("content_sha256")
+    manifest["columns"] = [{"name": "t", "type": "timestamp", "nullable": True}]
+    manifest["row_count"] = 1
+    manifest["primary_key"] = []
+    (tmp_path / "b" / "manifest.json").write_text(json.dumps(manifest))
+    (tmp_path / "b" / "data.csv").write_text("t\n2024-01-02T00:00:00.0000000001Z\n")
+    with pytest.raises(BundleError, match="more precise than a nanosecond"):
+        read_bundle(tmp_path / "b")
+
+
+@pytest.mark.parametrize("kind", ["int64", "float64"])
+@pytest.mark.parametrize("value", [np.datetime64(5, "ns"), np.timedelta64(5, "ns")])
+def test_numeric_columns_refuse_numpy_datetimes(tmp_path, kind, value):
+    """int() read them as a count of nanoseconds."""
+    _refused(tmp_path, [value], Column("n", kind), "expected a number")
+
+
+@pytest.mark.parametrize("version", ["true", "1.0"])
+def test_contract_version_must_be_the_integer_one(tmp_path, version):
+    _published(tmp_path)
+    path = tmp_path / "b" / "manifest.json"
+    path.write_text(
+        path.read_text().replace('"contract_version": 1', f'"contract_version": {version}')
+    )
+    with pytest.raises(BundleError, match="contract_version"):
+        read_bundle(tmp_path / "b")
+
+
+@pytest.mark.parametrize("kind", ["string", "float64"])
+@pytest.mark.parametrize("value", [pd.Series([1.0]), pd.Index([1]), frozenset([1]), pd.array([1])])
+def test_any_container_in_a_cell_is_refused(tmp_path, kind, value):
+    """A Series raised "truth value of a Series is ambiguous"; a string column stored the
+    repr of an Index, a frozenset or an extension array."""
+    _refused(tmp_path, [value], Column("x", kind), "cannot store a")
+
+
+@pytest.mark.parametrize("fmt", FORMATS)
+def test_timestamps_before_year_1000_from_earlier_writers_stay_readable(tmp_path, fmt):
+    """Earlier writers hashed strftime's year, which glibc does not pad (999-06-01)."""
+    from invest_data.bundle import _content_sha256
+
+    column, value = Column("t", "timestamp"), pd.Timestamp("0999-06-01T12:00:00Z")
+    _one_column(tmp_path, [value], column, fmt=fmt)
+    if fmt == "csv":
+        (tmp_path / "b" / "data.csv").write_text("t\n999-06-01T12:00:00Z\n")
+    _edit_manifest(
+        tmp_path / "b", content_sha256=_content_sha256([column], [["999-06-01T12:00:00Z"]])
+    )
+    _, frame = read_bundle(tmp_path / "b")
+    assert frame["t"].tolist() == [value]
+    _edit_manifest(
+        tmp_path / "b", content_sha256=_content_sha256([column], [["998-06-01T12:00:00Z"]])
+    )
+    with pytest.raises(BundleError, match="content hash mismatch"):
+        read_bundle(tmp_path / "b")
+
+
+@pytest.mark.parametrize("name", ["rowid", "ROWID", 'a"b'])
+def test_sqlite_holds_any_column_name_like_csv_and_parquet(tmp_path, name):
+    """A column named rowid reordered SQLite rows (ORDER BY rowid sorted by it), and a
+    double quote in a name ended in sqlite3.OperationalError."""
+    frame = pd.DataFrame({name: [2, 1], "v": ["first", "second"]})
+    hashes = {
+        write_bundle(frame, tmp_path / fmt, dataset_id="t", fmt=fmt).content_sha256
+        for fmt in FORMATS
+    }
+    assert len(hashes) == 1
+    assert read_bundle(tmp_path / "sqlite")[1]["v"].tolist() == ["first", "second"]

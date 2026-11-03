@@ -16,6 +16,7 @@ import json
 import math
 import numbers
 import os
+import re
 import shutil
 import sqlite3
 import tempfile
@@ -38,6 +39,9 @@ _INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
 _MAX_DECIMAL_PRECISION = 38
 # Readers return date columns as datetime64[ns], which holds only this span of days.
 _MIN_DATE, _MAX_DATE = date(1677, 9, 22), date(2262, 4, 11)
+# A fraction of a second with digits beyond the nanosecond, which pandas drops when parsing.
+_SUB_NANOSECOND = re.compile(r"[.,]\d{9}\d*?[1-9]")
+_TICKS_PER_NANOSECOND = {"ps": 10**3, "fs": 10**6, "as": 10**9}
 _SQLITE_TYPES = {
     "string": "TEXT",
     "int64": "INTEGER",
@@ -183,6 +187,36 @@ def _show(value: Any) -> str:
         if isinstance(value, int):
             return f"an integer of {value.bit_length()} bits"
         return f"a {type(value).__name__} too long to show"
+    except NotImplementedError:  # a pandas Timestamp beyond year 9999
+        return f"a {type(value).__name__} beyond year 9999"
+
+
+def _refuse_sub_nanosecond(col: Column, value: Any) -> None:
+    """pandas silently drops digits beyond the nanosecond (text with more than nine
+    fractional digits, numpy picoseconds and finer), so such a value is refused here."""
+    if isinstance(value, str):
+        precise = _SUB_NANOSECOND.search(value) is not None
+    elif isinstance(value, np.datetime64):
+        unit, count = np.datetime_data(value.dtype)
+        per_ns = _TICKS_PER_NANOSECOND.get(unit)
+        precise = per_ns is not None and int(value.astype(np.int64)) * count % per_ns != 0
+    else:
+        precise = False
+    if precise:
+        raise BundleError(
+            f"column {col.name!r}: {value!r} is more precise than a nanosecond; a "
+            f"{col.type} cannot store it"
+        )
+
+
+def _utc_text(moment: datetime) -> str:
+    """RFC 3339 text of a UTC time. strftime("%Y") writes years before 1000 with fewer
+    than four digits on some platforms (glibc: 999), which pandas then misreads."""
+    text = (
+        f"{moment.year:04d}-{moment.month:02d}-{moment.day:02d}"
+        f"T{moment.hour:02d}:{moment.minute:02d}:{moment.second:02d}"
+    )
+    return text + (f".{moment.microsecond:06d}Z" if moment.microsecond else "Z")
 
 
 def _as_timestamp(col: Column, value: Any) -> pd.Timestamp:
@@ -192,6 +226,7 @@ def _as_timestamp(col: Column, value: Any) -> pd.Timestamp:
         raise BundleError(
             f"column {col.name!r}: expected a {col.type}, got the number {_show(value)}"
         )
+    _refuse_sub_nanosecond(col, value)
     try:
         ts = pd.Timestamp(value)
     except (TypeError, ValueError, OverflowError) as exc:
@@ -238,7 +273,9 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
     # A signaling NaN raises decimal.InvalidOperation in any comparison, pd.isna included.
     if isinstance(value, Decimal) and value.is_snan():
         raise BundleError(f"column {col.name!r}: cannot store the signaling NaN {value!r}")
-    if isinstance(value, list | tuple | dict | set | np.ndarray):
+    # Any container (a Series, an Index, a frozenset, an extension array as well as a list):
+    # pd.isna answers per element, and a string column would store its repr.
+    if isinstance(value, np.ndarray) or pd.api.types.is_list_like(value):
         raise BundleError(
             f"column {col.name!r}: cannot store a {type(value).__name__} as {col.type}"
         )
@@ -255,6 +292,9 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
         except UnicodeEncodeError as exc:  # a lone surrogate has no UTF-8 form
             raise BundleError(f"column {col.name!r}: {text!r} is not valid Unicode text") from exc
         return text
+    if col.type in ("int64", "float64") and isinstance(value, np.datetime64 | np.timedelta64):
+        # int() reads them as a count of their unit (days, nanoseconds, ...).
+        raise BundleError(f"column {col.name!r}: expected a number, got {value!r}")
     if col.type == "int64":
         if isinstance(value, bool | np.bool_):
             raise BundleError(f"column {col.name!r}: boolean given for int64")
@@ -294,16 +334,18 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
         ts = _as_timestamp(col, value)
         if ts.tzinfo is not None or ts != ts.normalize():
             raise BundleError(
-                f"column {col.name!r}: {value!r} is not a date; a date column holds no time "
+                f"column {col.name!r}: {_show(value)} is not a date; a date column holds no time "
                 "of day or time zone"
             )
-        day = ts.date()
-        if not _MIN_DATE <= day <= _MAX_DATE:
+        # ts.date() raises NotImplementedError beyond year 9999, so the year is checked first.
+        if not _MIN_DATE.year <= ts.year <= _MAX_DATE.year or not (
+            _MIN_DATE <= ts.date() <= _MAX_DATE
+        ):
             raise BundleError(
-                f"column {col.name!r}: {day} is outside the dates a reader can return "
-                f"({_MIN_DATE} to {_MAX_DATE})"
+                f"column {col.name!r}: {ts.year:04d}-{ts.month:02d}-{ts.day:02d} is outside "
+                f"the dates a reader can return ({_MIN_DATE} to {_MAX_DATE})"
             )
-        return day.isoformat()
+        return ts.date().isoformat()
     if col.type == "timestamp":
         ts = _as_timestamp(col, value)
         if ts.tzinfo is None:
@@ -313,7 +355,12 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
                 f"column {col.name!r}: {value!r} has nanoseconds; timestamps are stored to "
                 "the microsecond"
             )
-        return ts.tz_convert("UTC").strftime("%Y-%m-%dT%H:%M:%S.%fZ").replace(".000000Z", "Z")
+        utc = ts.tz_convert("UTC")
+        if not 1 <= utc.year <= 9999:  # RFC 3339 has four-digit years
+            raise BundleError(
+                f"column {col.name!r}: {_show(value)} is outside years 1 to 9999 in UTC"
+            )
+        return _utc_text(utc)
     if col.type == "decimal":
         return _decimal(col, value)
     raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
@@ -349,6 +396,7 @@ def _parse_value(col: Column, raw: Any) -> Any:
             text = str(raw)
             if not text.endswith("Z"):
                 raise BundleError(f"column {col.name!r}: timestamp must be UTC with 'Z'")
+            _refuse_sub_nanosecond(col, text)
             return pd.Timestamp(text)
         if col.type == "decimal":
             dec = Decimal(str(raw))
@@ -513,7 +561,7 @@ def write_bundle(
             "created_at must be timezone-aware: a datetime with a UTC offset and a UTC time "
             f"in years 1 to 9999, not {when!r}"
         )
-    created = utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    created = _utc_text(utc.replace(microsecond=0))
     storage = {"format": fmt, "path": STORAGE_FORMATS[fmt]}
     if fmt == "sqlite":
         storage["table"] = table
@@ -592,10 +640,15 @@ def _write_csv(path: Path, cols: Sequence[Column], rows: list[list[Any]]) -> Non
             writer.writerow(out)
 
 
+def _quote(name: str) -> str:
+    """A quoted SQLite identifier; a double quote inside it is doubled."""
+    return '"' + name.replace('"', '""') + '"'
+
+
 def _write_sqlite(path: Path, cols: Sequence[Column], rows: list[list[Any]], table: str) -> None:
     con = sqlite3.connect(path)
     try:
-        defs = ", ".join(f'"{c.name}" {_SQLITE_TYPES[c.type]}' for c in cols)
+        defs = ", ".join(f"{_quote(c.name)} {_SQLITE_TYPES[c.type]}" for c in cols)
         con.execute(f'CREATE TABLE "{table}" ({defs})')
         sql_rows = [
             [
@@ -643,7 +696,7 @@ def read_manifest(path: str | os.PathLike[str]) -> Manifest:
     if not isinstance(raw, dict):
         raise BundleError("manifest must be a JSON object")
     version = raw.get("contract_version")
-    if version != CONTRACT_VERSION:
+    if isinstance(version, bool) or not isinstance(version, int) or version != CONTRACT_VERSION:
         raise BundleError(f"unsupported contract_version {version!r}")
     for key in ("dataset_id", "storage", "row_count", "columns"):
         if key not in raw:
@@ -716,7 +769,7 @@ def read_bundle(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
     if manifest.content_sha256 is not None:
         if _content_sha256(
             manifest.columns, canonical
-        ) != manifest.content_sha256 and not _signed_zero_hash_matches(manifest, rows, canonical):
+        ) != manifest.content_sha256 and not _legacy_hash_matches(manifest, rows, canonical):
             raise BundleError("content hash mismatch: data does not match its manifest")
     return manifest, _to_frame(manifest.columns, rows)
 
@@ -725,23 +778,36 @@ def _signed_zero(value: Any) -> bool:
     return isinstance(value, float | Decimal) and value == 0 and math.copysign(1.0, value) < 0
 
 
-def _signed_zero_hash_matches(
+def _early_year(col: Column, value: Any) -> bool:
+    return col.type == "timestamp" and value is not None and value.year < 1000
+
+
+def _legacy_value(col: Column, value: Any, stored: Any) -> Any:
+    """The canonical value of writers before stage 5, where it differs from today's."""
+    if _signed_zero(value):
+        return value if col.type == "float64" else "-" + str(stored)
+    if _early_year(col, value):
+        return str(value.year) + stored[stored.index("-", 1) :]  # glibc strftime("%Y")
+    return stored
+
+
+def _legacy_hash_matches(
     manifest: Manifest, rows: list[list[Any]], canonical: list[list[Any]]
 ) -> bool:
-    """Whether the bundle's hash is that of its values with negative zeros kept.
+    """Whether the bundle's hash is that of its values in the earlier canonical form.
 
     Bundles written before -0.0 and -0.00 were stored as 0 hashed them with their sign
-    (CSV and Parquet kept it); they stay readable.
+    (CSV and Parquet kept it), and timestamps before year 1000 with the year glibc's
+    strftime wrote (999, not 0999); they stay readable.
     """
-    if not any(_signed_zero(v) for row in rows for v in row):
+    if not any(
+        _signed_zero(v) or _early_year(c, v)
+        for row in rows
+        for c, v in zip(manifest.columns, row, strict=True)
+    ):
         return False
     legacy = [
-        [
-            (value if col.type == "float64" else "-" + str(stored))
-            if _signed_zero(value)
-            else stored
-            for col, value, stored in zip(manifest.columns, row, crow, strict=True)
-        ]
+        [_legacy_value(c, v, s) for c, v, s in zip(manifest.columns, row, crow, strict=True)]
         for row, crow in zip(rows, canonical, strict=True)
     ]
     return _content_sha256(manifest.columns, legacy) == manifest.content_sha256
@@ -774,8 +840,14 @@ def _read_sqlite(path: Path, manifest: Manifest) -> list[list[Any]]:
         info = con.execute(f'PRAGMA table_info("{table}")').fetchall()
         if [r[1] for r in info] != manifest.column_names:
             raise BundleError(f"SQLite table {table!r} columns do not match manifest")
-        cols = ", ".join(f'"{n}"' for n in manifest.column_names)
-        return [list(r) for r in con.execute(f'SELECT {cols} FROM "{table}" ORDER BY rowid')]
+        # A column named rowid (or _rowid_, oid, in any case) hides SQLite's row order.
+        used = {n.lower() for n in manifest.column_names}
+        order = next((a for a in ("rowid", "_rowid_", "oid") if a not in used), None)
+        if order is None:
+            raise BundleError("SQLite storage needs a free rowid alias (rowid, _rowid_ or oid)")
+        cols = ", ".join(_quote(n) for n in manifest.column_names)
+        query = f'SELECT {cols} FROM "{table}" ORDER BY {order}'
+        return [list(r) for r in con.execute(query)]
     except sqlite3.Error as exc:
         raise BundleError(f"SQLite error: {exc}") from exc
     finally:

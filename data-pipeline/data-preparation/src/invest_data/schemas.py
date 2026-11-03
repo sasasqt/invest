@@ -14,15 +14,16 @@ Two kinds are defined so producers and consumers can validate independently:
     or delisted).
 
 ``universe``
-    Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``.
-    An instrument is a member on date ``d`` when ``start_date <= d < end_date``
-    (``end_date`` null = still a member). Intervals are known on their ``start_date``.
+    Point-in-time membership intervals ``(universe, instrument, start_date, end_date)``,
+    keyed by ``(universe, instrument, start_date)``. An instrument is a member on date
+    ``d`` when ``start_date <= d < end_date`` (``end_date`` null = still a member).
+    Intervals are known on their ``start_date``.
 
 ``fundamentals``
-    Point-in-time values ``(instrument, field, period_end, available_date, value)``. A row
-    may be used for decisions at the close of ``available_date`` or later. A revision is a
-    new row for the same ``(instrument, field, period_end)`` with a later
-    ``available_date``; earlier rows are never overwritten.
+    Point-in-time values ``(instrument, field, period_end, available_date, value)``, keyed
+    by all but ``value``. A row may be used for decisions at the close of ``available_date``
+    or later. A revision is a new row for the same ``(instrument, field, period_end)`` with
+    a later ``available_date``; earlier rows are never overwritten.
 
 ``signals``
     Keys ``(decision_date, instrument)``. ``score`` uses only information available at the
