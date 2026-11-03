@@ -134,7 +134,7 @@ def is_link(info):
     return stat.S_ISLNK(info.st_mode) or bool(attributes & stat.FILE_ATTRIBUTE_REPARSE_POINT)
 
 
-def regular_file(info, device, maximum):
+def regular_file(info, device, maximum, too_large="output file size limit exceeded"):
     if (
         is_link(info)
         or not stat.S_ISREG(info.st_mode)
@@ -143,7 +143,7 @@ def regular_file(info, device, maximum):
     ):
         raise RejectedOutput("linked, special or cross-device output entry")
     if info.st_size > maximum:
-        raise RejectedOutput("output file size limit exceeded")
+        raise RejectedOutput(too_large)
 
 
 def identity(info):
@@ -328,11 +328,14 @@ def read_summaries(snapshot, method=None):
                 continue
             except OSError as exc:
                 # The path walk looks a name up by its full path. copy_tree wrote every
-                # snapshot file by its full path, so one past the limit is absent (I2).
-                if exc.errno != errno.ENAMETOOLONG:
+                # snapshot file by the snapshot's own spelling, so when that spelling is
+                # absolute, a name past the limit is absent (I2). A relative spelling is
+                # looked up under the current folder, which copy_tree never used, so
+                # there the lookup fails and the path walk rejects the tree.
+                if exc.errno != errno.ENAMETOOLONG or not os.path.isabs(snapshot):
                     raise
                 continue
-            regular_file(info, device, SUMMARY_MAX_BYTES)
+            regular_file(info, device, SUMMARY_MAX_BYTES, "summary size limit exceeded")
             payload = bytearray()
 
             def consume(chunk, payload=payload):

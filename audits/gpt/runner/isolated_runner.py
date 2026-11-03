@@ -119,6 +119,17 @@ def checked(argv, *, timeout=None, **kwargs):
     return result.stdout.strip()
 
 
+def checked_path(argv, *, timeout=None, **kwargs):
+    """The one path a program prints, decoded as the file system decodes names, so a
+    folder name that is not valid UTF-8 keeps its bytes (``checked`` replaces them)."""
+    result = run_captured(argv, timeout=timeout, **kwargs)
+    if result.returncode:
+        message = result.stderr.decode("utf-8", "replace").strip()
+        raise RuntimeError(f"{Path(argv[0]).name} exited {result.returncode}: {message}")
+    line = result.stdout.removesuffix(b"\n")
+    return Path(os.fsdecode(line.removesuffix(b"\r") if os.name == "nt" else line))
+
+
 def run_bounded(argv, *, env=None, timeout=6600, max_log_bytes=8 * 1024 * 1024):
     """Bound host memory while retaining a failed container's available log.
 
@@ -504,20 +515,20 @@ def stage_source(source, staged, expected_sha):
     # Keep genuine commit provenance, but never copy Git credentials, config,
     # hooks, logs, alternates or global/home files into the execution boundary.
     # The common Git folder: a linked worktree's own Git folder holds no objects.
-    git_dir = Path(
-        checked(
-            [
-                program("git"),
-                "-C",
-                str(source),
-                "rev-parse",
-                "--path-format=absolute",
-                "--git-common-dir",
-            ],
-            env=env,
-            timeout=GIT_TIMEOUT,
-        )
+    git_dir = checked_path(
+        [
+            program("git"),
+            "-C",
+            str(source),
+            "rev-parse",
+            "--path-format=absolute",
+            "--git-common-dir",
+        ],
+        env=env,
+        timeout=GIT_TIMEOUT,
     )
+    if not (git_dir / "objects").is_dir():
+        raise ValueError(f"No Git object store in the common Git folder: {git_dir}")
     if (git_dir / "objects/info/alternates").exists():
         raise ValueError("Materialize Git objects locally before staging")
     (staged / ".git/objects").mkdir()

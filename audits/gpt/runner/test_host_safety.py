@@ -133,9 +133,30 @@ def upload_path_lines(step):
     raise AssertionError("upload step without path")
 
 
+def upload_setting(step, key):
+    """The value of one `with:` key of an upload step, without a trailing YAML comment."""
+    for line in step.splitlines():
+        name, colon, value = line.strip().partition(":")
+        if colon and name == key:
+            return value.split(" #")[0].strip()
+    return None
+
+
+def upload_patterns(lines):
+    """(negate, pattern) for each `path:` line, as @actions/glob reads it: every leading
+    `!` toggles negation and the text after it is trimmed, so `!!x` includes x."""
+    patterns = []
+    for line in lines:
+        negate, pattern = False, line.strip()
+        while pattern.startswith("!"):
+            negate, pattern = not negate, pattern[1:].strip()
+        patterns.append((negate, pattern))
+    return patterns
+
+
 def upload_root(test, lines):
     """The one include line: a plain folder, so the emulator below sees all it takes."""
-    includes = [line for line in lines if not line.startswith("!")]
+    includes = [pattern for negate, pattern in upload_patterns(lines) if not negate]
     test.assertEqual(len(includes), 1, f"one evidence folder per upload: {includes}")
     test.assertFalse(set("*?[") & set(includes[0]), f"a plain folder: {includes[0]}")
     test.assertTrue(includes[0].endswith("/results"), f"the evidence folder: {includes[0]}")
@@ -154,12 +175,23 @@ def covered(parts, pieces):
     return bool(parts) and fnmatch.fnmatchcase(parts[0], piece) and covered(parts[1:], pieces[1:])
 
 
-def upload_excludes(path, excludes):
-    """@actions/glob: does one of the `!` patterns leave ``path`` out of the upload?"""
-    patterns = [
-        pattern[:-1] + "/*/**" if pattern.endswith("/") else pattern for pattern in excludes
-    ]
-    return any(covered(path.split("/"), pattern.split("/")) for pattern in patterns)
+def upload_takes(path, patterns):
+    """@actions/glob: does the upload take ``path``? It folds the patterns in order: an
+    include adds what it matches and an exclude removes only what an earlier line
+    added (internal-pattern-helper `match`)."""
+    taken = False
+    for negate, pattern in patterns:
+        pieces = (pattern[:-1] + "/*/**" if pattern.endswith("/") else pattern).split("/")
+        if covered(path.split("/"), pieces):
+            taken = not negate
+    return taken
+
+
+def upload_visible(path, root, step):
+    """upload-artifact leaves out every name that starts with a dot below its search
+    root unless include-hidden-files is true."""
+    hidden = any(part.startswith(".") for part in path.relative_to(root).parts)
+    return not hidden or upload_setting(step, "include-hidden-files") == "true"
 
 
 class HostErrorTests(unittest.TestCase):
@@ -578,7 +610,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(uploads, "no upload step found")
         for step in uploads:
             with self.subTest(step=step.splitlines()[0]):
-                self.assertIn("include-hidden-files: true", step)
+                self.assertEqual(upload_setting(step, "include-hidden-files"), "true")
 
     def test_no_evidence_upload_takes_an_unfinished_snapshot(self):
         """Review round 8: collect_results builds its snapshot in a hidden `.collect-*`
@@ -615,8 +647,9 @@ class WorkflowTests(unittest.TestCase):
                 lines = upload_path_lines(step)
                 root = runner_temp.as_posix()
                 includes = [expand(line, root) for line in upload_root(self, lines)]
-                excludes = [
-                    expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
+                patterns = [
+                    (negate, expand(pattern, glob.escape(root)))
+                    for negate, pattern in upload_patterns(lines)
                 ]
                 results = Path(includes[0])
                 # collection_checks.py collects each case into a folder of its own
@@ -636,7 +669,9 @@ class WorkflowTests(unittest.TestCase):
                 taken = [
                     path.relative_to(results).as_posix()
                     for path in results.rglob("*")
-                    if path.is_file() and not upload_excludes(path.as_posix(), excludes)
+                    if path.is_file()
+                    and upload_takes(path.as_posix(), patterns)
+                    and upload_visible(path, results, step)
                 ]
                 self.assertEqual(taken, [], "the upload would take an unfinished snapshot")
 
@@ -663,8 +698,9 @@ class WorkflowTests(unittest.TestCase):
                 lines = upload_path_lines(step)
                 root = runner_temp.as_posix()
                 includes = [expand(line, root) for line in upload_root(self, lines)]
-                excludes = [
-                    expand(line[1:], glob.escape(root)) for line in lines if line.startswith("!")
+                patterns = [
+                    (negate, expand(pattern, glob.escape(root)))
+                    for negate, pattern in upload_patterns(lines)
                 ]
                 results = Path(includes[0])
                 sink = results / "ordinary" if "name: collection-" in step else results
@@ -684,7 +720,9 @@ class WorkflowTests(unittest.TestCase):
                 taken = {
                     path.relative_to(results).as_posix()
                     for path in results.rglob("*")
-                    if path.is_file() and not upload_excludes(path.as_posix(), excludes)
+                    if path.is_file()
+                    and upload_takes(path.as_posix(), patterns)
+                    and upload_visible(path, results, step)
                 }
                 self.assertEqual(taken, listed, "the upload would drop collected evidence")
 
@@ -703,13 +741,43 @@ class WorkflowTests(unittest.TestCase):
         ]
         for path, exclude, expected in cases:
             with self.subTest(path=path, exclude=exclude):
-                self.assertEqual(upload_excludes(path, [exclude]), expected)
+                patterns = upload_patterns(["/r/results", "!" + exclude])
+                self.assertEqual(not upload_takes(path, patterns), expected)
         step = "x\n  path: |\n    # a comment\n    /r/results\n    !/r/results/.c*\n  y: z"
         self.assertEqual(upload_path_lines(step), ["/r/results", "!/r/results/.c*"])
         self.assertEqual(upload_root(self, ["/r/results", "!/r/results/.c*"]), ["/r/results"])
         for lines in (["/r/results", "/r/work"], ["/r/results/*.json"], ["/r/other"]):
             with self.subTest(lines=lines), self.assertRaises(AssertionError):
                 upload_root(self, lines)
+
+    def test_upload_emulator_folds_lines_in_order_as_actions_glob_does(self):
+        """Review round 11 (R11A-E1): @actions/glob folds the `path:` lines in order (an
+        exclude removes only what an earlier line added), toggles negation for every
+        leading `!` and trims the text after it, and upload-artifact keeps dot names
+        only when include-hidden-files really is true. The emulator applied every
+        exclude after all includes, read `!!x` as an exclude, refused `! x` and found
+        the setting in a YAML comment, so four wrong workflows passed W4."""
+        snapshot = "/r/results/.collect-x/f"
+        late = upload_patterns(["!/r/results/.collect-*", "/r/results"])
+        self.assertTrue(upload_takes(snapshot, late), "an exclude before the include")
+        for exclude in ("!/r/results/.collect-*", "! /r/results/.collect-*"):
+            with self.subTest(exclude=exclude):
+                patterns = upload_patterns(["/r/results", exclude])
+                self.assertFalse(upload_takes(snapshot, patterns))
+                self.assertTrue(upload_takes("/r/results/collection.json", patterns))
+        self.assertEqual(
+            upload_patterns(["!!/r/work", "! /r/x", "!!!/r/y", " /r/z "]),
+            [(False, "/r/work"), (True, "/r/x"), (True, "/r/y"), (False, "/r/z")],
+        )
+        self.assertTrue(upload_takes("/r/work/a", upload_patterns(["/r/results", "!!/r/work"])))
+        self.assertEqual(upload_root(self, ["/r/results", "! /r/results/.c*"]), ["/r/results"])
+        with self.assertRaises(AssertionError):
+            upload_root(self, ["/r/results", "!!/r/work"])
+        step = "x\n  with:\n    include-hidden-files: false # not include-hidden-files: true\n"
+        self.assertEqual(upload_setting(step, "include-hidden-files"), "false")
+        step = "x\n  with:\n    include-hidden-files: true # keep dot names\n"
+        self.assertEqual(upload_setting(step, "include-hidden-files"), "true")
+        self.assertIsNone(upload_setting("x\n  with:\n    name: y\n", "include-hidden-files"))
 
 
 if __name__ == "__main__":

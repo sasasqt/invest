@@ -2,7 +2,7 @@
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
 `contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
-(P2 and P3 are always enforced by the code, and the suites check W1-W4); every test
+(P2 and P3 are always enforced by the code, and the suites check W1-W5); every test
 suite, the CI host-test steps and the CI Docker controls step set it, production
 runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
@@ -49,9 +49,9 @@ rejection.
   checked to be no reparse point just before the open, and each folder again after
   it was listed. P1 excludes the container as a concurrent writer. Another local
   account that can write the work folder (POSIX: mode 0777, so that any container
-  UID, including one remapped by rootless Docker, can write it; Windows: the
-  inherited ACL) is not excluded: the identity checks still keep its files out of
-  the snapshot, but it can change or spoil the evidence, so run audits on a
+  UID can write it; Windows: the inherited ACL) is not excluded: the identity
+  checks keep an entry it swaps in during collection out of the snapshot, but files
+  it writes before collection are collected as evidence, so run audits on a
   single-user host. Checked in `read_opened`.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
   the same outcome, records and summaries for the same unchanging tree whose paths
@@ -65,9 +65,9 @@ rejection.
 
 ## Container workload and snapshot check (checked by the suites)
 
-W1-W3 run inside the Linux container or on raw input, and W4 is a property of the
-workflow, not of the host process, so `contract.py` does not check them;
-`test_guards.py` checks W1-W3 and `test_host_safety.py` checks W4. In a real
+W1-W3 and W5 run inside the Linux container or on raw input, and W4 is a property
+of the workflow, not of the host process, so `contract.py` does not check them;
+`test_guards.py` checks W1-W3 and W5 and `test_host_safety.py` checks W4. In a real
 container the CI Docker controls exercise W1 (they run only the boundary probe), and
 the full isolated audit jobs exercise W1 and W2.
 
@@ -91,7 +91,8 @@ the full isolated audit jobs exercise W1 and W2.
   `--expected` manifest, a manifest or entry of the wrong shape, including a
   negative size or a SHA-256 that is not 64 lower-case hex digits, an empty `files`
   object, an unsafe, Windows-rooted or repeated raw path, a raw path name with a
-  character no Windows file name holds (`? * " < > |` or a control character), a raw
+  character no Windows file name holds (`? * " < > |` or U+0000 to U+001F) or with
+  U+007F (refused as in output names), a raw
   path that can never verify (another entry's folder, or 4096 UTF-8 bytes or more,
   which no Linux path call opens), a raw path name refused on every host (over 255
   UTF-8 bytes, or not valid UTF-8: a lone surrogate), an entry that exists but is not
@@ -102,6 +103,11 @@ the full isolated audit jobs exercise W1 and W2.
   dot but never take a collection's unfinished snapshot (`.collect-*` beside the
   destination), which a host process killed during collection leaves behind and
   which was never checked as a whole. Checked in `test_host_safety.WorkflowTests`.
+- **W5** The semantic output gate hashes every entry of the workflow output or fails:
+  a symbolic link (also one to a folder, or a dangling one), a FIFO or other special
+  file, or a folder it cannot list fails the gate with a reason that names it, so
+  two outputs that differ only in such an entry never pass as repeatable. Checked in
+  `runner_workload.semantic_manifest`.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 
@@ -111,7 +117,8 @@ the full isolated audit jobs exercise W1 and W2.
 - Source paths and output names that Windows or an artifact zip would read
   differently are refused on every host: reserved device names (`CON`, `NUL`,
   `COM1`...), names ending in a dot or space, `\ / : * ? " < > |`, control
-  characters (U+0000 to U+001F and U+007F), non-UTF-8 names, names shaped like an
+  characters (U+0000 to U+001F, and U+007F, which Windows allows but is refused to
+  be strict), non-UTF-8 names, names shaped like an
   NTFS short name (`PROGRA~1`), and source paths that clash when case is ignored.
 - Source paths that enter Git's own folder (`.git` in any case, or `GIT~1`) are
   refused before anything is written. PR #32 failed later on such a commit, when
@@ -152,11 +159,17 @@ the full isolated audit jobs exercise W1 and W2.
   waiting.
 - `verify_snapshot` refuses raw paths with `\` or `:` in any part on every host;
   on Windows such a path would name a drive, a share or a stream. It also refuses
-  `* ? " < > |` and control characters (U+0000 to U+001F and U+007F) on every host,
-  as output names are: no Windows file can have such a name, and Windows reads one
-  as absent, so PR #32 reported it as blocked there with every file in place.
+  `* ? " < > |` and U+0000 to U+001F on every host, as output names are: no Windows
+  file can have such a name, and Windows reads one as absent, so PR #32 reported it
+  as blocked there with every file in place. U+007F, which Windows allows, is
+  refused too, as in output names.
 - `verify_snapshot` also refuses a raw path name that is not valid UTF-8 (a lone
   surrogate in the manifest, such as `\udcff`), as source paths and output names are
   refused. PR #32 verified such a name on Linux, where Python reads U+DC80-U+DCFF as
   a non-UTF-8 byte (`raw/\udcff.json` named the file `raw/<0xFF>.json`); NTFS allows
   a lone surrogate too.
+- The semantic output gate fails on a symbolic link, a special file or a folder it
+  cannot list (W5); PR #32 skipped them, so two outputs differing only there passed
+  as repeatable. It walks the output with its own stack: PR #32's `rglob` recursed
+  on Python 3.11, so an output nested about 1,000 folders deep raised
+  RecursionError past the gate's handler and crashed the workload.

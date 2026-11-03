@@ -9,6 +9,7 @@ import platform
 import shutil
 import signal
 import socket
+import stat
 import statistics
 import subprocess
 import sys
@@ -20,6 +21,36 @@ VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
 SEMANTIC_GATE_VERSION = 2
 # Set by main when it runs as the container's first process (PID 1, no --init).
 CONTAINER_INIT = False
+
+
+def output_files(directory):
+    """Every regular file of the workflow output, sorted. A symbolic link, a special
+    file or a folder that cannot be listed fails the gate (CONTRACT.md W5), so no
+    entry drops out of the comparison. The walk keeps its own stack: os.walk and
+    rglob recurse on Python 3.11, and a deep output raised RecursionError there."""
+    directory = Path(directory)
+    files, pending = [], [directory]
+    while pending:
+        folder = pending.pop()
+        try:
+            with os.scandir(folder) as listing:
+                entries = list(listing)
+        except OSError as exc:
+            name = folder.relative_to(directory)
+            raise ValueError(f"Workflow output folder cannot be listed: {name}") from exc
+        for entry in entries:
+            path = Path(entry.path)
+            mode = entry.stat(follow_symlinks=False).st_mode
+            if stat.S_ISDIR(mode):
+                pending.append(path)
+            elif stat.S_ISREG(mode):
+                files.append(path)
+            else:
+                raise ValueError(
+                    "Workflow output entry is not a plain file or folder: "
+                    f"{path.relative_to(directory)}"
+                )
+    return sorted(files)
 
 
 def semantic_manifest(directory):
@@ -41,11 +72,10 @@ def semantic_manifest(directory):
         except RecursionError:
             raise ValueError(f"JSON nested too deeply: {path.relative_to(directory)}") from None
 
+    files = output_files(directory)
     records = []
     figures = []
-    for path in sorted(directory.rglob("*")):
-        if not path.is_file():
-            continue
+    for path in files:
         if path.suffix == ".json":
             payload = normalized(
                 path, lambda path=path: clean(json.loads(path.read_text(encoding="utf-8")))
@@ -529,7 +559,7 @@ def main():
                     }
                 )
                 sample["output_bytes"] = sum(
-                    p.stat().st_size for p in destination.rglob("*") if p.is_file()
+                    path.stat().st_size for path in output_files(destination)
                 )
             except (ValueError, OSError) as exc:
                 sample.update({"correctness_gate": False, "reason": str(exc)})

@@ -8,7 +8,7 @@ This tooling supplies the execution path missing from the original audit. It kee
 
 - `isolated_runner.py`: host-side source identity checks, credential-free Git metadata staging, immutable image capture and restricted container launch.
 - `output_collection.py`: link-free collection into a private host snapshot (no-follow directory descriptors on POSIX hosts, a reparse-point-checking path walk on Windows); validates summaries and bounds files, bytes, entries and depth before upload.
-- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite, the CI host steps and the CI Docker controls step switch them on. CONTRACT.md also states rules W1–W4 for the container workload, the snapshot check and the evidence uploads, which the test suites check instead.
+- `CONTRACT.md`, `contract.py`: the host-side rules (preconditions, postconditions, invariants) and their checks, which run when `CONTRACT_CHECKS=1`. Every test suite, the CI host steps and the CI Docker controls step switch them on. CONTRACT.md also states rules W1–W5 for the container workload, the snapshot check, the evidence uploads and the semantic output gate, which the test suites check instead.
 - `collection_checks.py`: real Docker controls for hostile output and ordinary evidence, using generated host-only canaries, plus `test_output_collection.py` and `test_execution_logs.py` regression tests.
 - `test_host_safety.py`: runs the real host runner with a stand-in Docker command to check that uv settings (such as `cache-dir`), file names, build output and container output from the audited source cannot steer host-side uv or start GitHub workflow commands, and that the Dockerfile pulls no unpinned frontend image.
 - `runner_workload.py`: boundary checks before product imports, installed-wheel tests, coverage JSON, slow tests, hash-seed repeat, independent installs and synth-S measurements.
@@ -71,7 +71,9 @@ gate, which is safe). JSON and JSONL are compared after parsing, so whitespace a
 count and a repeated key keeps its last value; a JSONL row ends only at a line feed. Plain CSV
 bytes are hashed. Markdown and other declared UTF-8 text normalize the output root, and reading
 them as text also turns CRLF and lone CR line ends into LF. Other file types receive a raw-byte
-comparison rather than being silently skipped. PNGs must exist and be nonempty; rendered pixels
+comparison rather than being silently skipped, and a symbolic link, a FIFO or other special
+file, or a folder the workload cannot list fails the gate (CONTRACT.md W5; PR #32 skipped
+them). PNGs must exist and be nonempty; rendered pixels
 are not compared, while source tables participate in the gate. Invalid compressed data fails
 the gate; the sample in `benchmark-raw.jsonl` records the reason, but the workflow's own output
 folder (`/work/workflow-cases`) is not collected.
@@ -84,9 +86,11 @@ then stopped and reaped too, also one that started a new session (`setsid`). So
 `"parallel_benchmarks": false` holds, and no leftover holds a slot of the process limit. `boundary.json`, `coverage.json` and the other workload records are written inside
 the container while audited code runs, so they are evidence, not the verdict: the verdict is the
 runner's exit status, 0 only when both the `exit` in `runner.json` is 0 and its `collection_status`
-is `collected`. `exit` is computed by the container's first process (or set by the host to 124 or
-125 when the run reaches its deadline or log limit, with `termination_reason` saying which); a
-rejected collection fails the run even after `exit` 0.
+is `collected`. `exit` is the Docker CLI's exit status: normally the container's first process's
+status, but also Docker's own 125 to 127 when the container could not be created or its command
+could not start, or (POSIX host) a negative number when the CLI itself was killed by a signal. The host sets it
+to 124 or 125 when the run reaches its deadline or log limit, with `termination_reason` saying
+which (it is null otherwise). A rejected collection fails the run even after `exit` 0.
 
 Samples and summaries identify semantic-gate version 2. Earlier version-1 timing samples remain
 historical measurements, with a narrower gate that omitted compressed tables and other

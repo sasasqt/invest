@@ -43,8 +43,9 @@ def _entry(symbol, entry):
         raise SnapshotError(f"Malformed manifest entry for {symbol}")
     relative = PurePosixPath(entry["path"])
     # A backslash or colon makes a Windows path rooted, drive-relative or a stream. No
-    # Windows file name holds ? * " < > | or a control character (its stat fails, which
-    # pathlib reads as "absent"), so those are refused on every host, as output names are.
+    # Windows file name holds ? * " < > | or U+0000 to U+001F (its stat fails, which
+    # pathlib reads as "absent"), so those are refused on every host, as output names
+    # are; U+007F, which Windows allows, is refused as in output names.
     if (
         relative.is_absolute()
         or ".." in relative.parts

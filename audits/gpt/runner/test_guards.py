@@ -3,6 +3,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -1323,6 +1324,33 @@ class StagingSafetyTests(unittest.TestCase):
                 self.assertEqual((staged / name).read_bytes(), payload)
             self.assertEqual(git_in(staged, "status", "--porcelain"), "")
 
+    @unittest.skipUnless(sys.platform.startswith("linux"), "folder names that are not UTF-8")
+    def test_a_checkout_under_a_folder_whose_name_is_not_utf8_stages(self):
+        """Review round 11 (R11A-E2): the common Git folder was read from rev-parse as
+        text with replacement characters, so under a folder whose name holds a byte that
+        is not UTF-8 no objects were copied and staging failed at `git reset` with
+        "Could not parse object", a message about the wrong cause."""
+        files = {"sub/inner.txt": b"inner\n", "top.txt": b"root\n"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory, os.fsdecode(b"folder-\xff"))
+            root.mkdir()
+            source, revision = fixture_repository(root, files)
+            staged = Path(directory, "staged")
+            records = stage_source(source, staged, revision)
+            self.assertEqual([row["path"] for row in records], sorted(files))
+            for name, payload in files.items():
+                self.assertEqual((staged / name).read_bytes(), payload)
+
+    def test_a_common_git_folder_without_objects_is_refused(self):
+        """Review round 11 (R11A-E2): a common Git folder that holds no object store
+        (it names nothing, or not a repository) is refused before anything is copied."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"top.txt": b"root\n"})
+            with patch("isolated_runner.checked_path", return_value=root / "elsewhere"):
+                with self.assertRaisesRegex(ValueError, "No Git object store"):
+                    stage_source(source, root / "staged", revision)
+
     def test_unreadable_commit_tree_names_gits_error(self):
         """Review round 5: a failed ls-tree raised CalledProcessError without Git's message."""
         with tempfile.TemporaryDirectory() as directory:
@@ -1950,6 +1978,83 @@ class SemanticCoverageTests(unittest.TestCase):
         path.write_bytes(b"first")
         before = semantic_hash(self.root)
         path.write_bytes(b"changed")
+        self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_entries_that_are_not_plain_files_or_folders_fail_the_gate(self):
+        """Review round 11 (R11C-F1): the gate skipped a folder reached through a
+        symbolic link, a dangling link, a FIFO and a folder it could not list, so two
+        outputs differing only there got one hash (a false repeatability pass). CONTRACT.md
+        W5: every such entry fails the gate and the reason names it."""
+        other = Path(self.temp.name + "-elsewhere")
+        other.mkdir()
+        self.addCleanup(shutil.rmtree, other)
+        (other / "table.csv").write_text("v\n1\n", encoding="utf-8")
+
+        def link(name, target):
+            try:
+                os.symlink(target, self.root / name)
+            except (OSError, NotImplementedError) as exc:  # Windows without the right
+                self.skipTest(f"cannot create a symbolic link here: {exc}")
+
+        cases = {
+            "linked-folder": lambda name: link(name, other),
+            "linked-file.csv": lambda name: link(name, other / "table.csv"),
+            "dangling.json": lambda name: link(name, "missing-target"),
+        }
+        if hasattr(os, "mkfifo"):
+            cases["pipe"] = lambda name: os.mkfifo(self.root / name)
+        probe = self.root / "probe"
+        probe.mkdir()
+        probe.chmod(0)
+        try:
+            os.listdir(probe)
+            lists_anything = True  # root's override, or Windows, where chmod(0) hides nothing
+        except PermissionError:
+            lists_anything = False
+        finally:
+            probe.chmod(0o700)
+            probe.rmdir()
+        if not lists_anything:
+
+            def unlistable(name):
+                (self.root / name).mkdir()
+                (self.root / name / "table.csv").write_text("v\n1\n", encoding="utf-8")
+                (self.root / name).chmod(0)  # TemporaryDirectory resets it on cleanup
+
+            cases["hidden"] = unlistable
+        for name, make in cases.items():
+            with self.subTest(entry=name):
+                semantic_hash(self.root)  # the plain tree passes
+                make(name)
+                with self.assertRaisesRegex(ValueError, f"Workflow output .*: {re.escape(name)}$"):
+                    semantic_hash(self.root)
+                path = self.root / name
+                if path.is_symlink() or not path.is_dir():
+                    path.unlink()
+                else:
+                    path.chmod(0o700)
+                    shutil.rmtree(path)
+
+    def test_an_output_deeper_than_the_recursion_limit_is_hashed(self):
+        """Review round 12 (own check): os.walk and rglob recurse on Python 3.11, so a
+        workflow output nested about 1,000 folders deep raised RecursionError, which the
+        gate's handler (ValueError and OSError) does not catch: the workload crashed."""
+        folder = self.root
+        for _ in range(sys.getrecursionlimit() + 100):  # two bytes of path a level
+            folder = folder / "d"
+            folder.mkdir()
+        (folder / "table.csv").write_text("v\n1\n", encoding="utf-8")
+
+        def remove_deepest_first():  # shutil.rmtree recurses too on Python 3.11
+            (folder / "table.csv").unlink()
+            current = folder
+            while current != self.root:
+                current.rmdir()
+                current = current.parent
+
+        self.addCleanup(remove_deepest_first)
+        before = semantic_hash(self.root)
+        (folder / "table.csv").write_text("v\n2\n", encoding="utf-8")
         self.assertNotEqual(before, semantic_hash(self.root))
 
     def test_manifest_records_every_file_and_its_comparison(self):

@@ -264,8 +264,11 @@ class CollectionCases:
                 self.rejected("invalid JSON summary")
 
     def test_summary_limit_is_enforced(self):
+        """Review round 11: a summary over 64 KiB but under the 16 MiB file limit was
+        rejected as "output file size limit exceeded", so a reader looked for a file over
+        the limit that collection.json shows."""
         (self.produced / "boundary.json").write_text(json.dumps({"large": "x" * 65536}))
-        self.rejected("output file size limit exceeded")
+        self.rejected("summary size limit exceeded")
 
     def test_summary_workflow_commands_are_escaped(self):
         (self.produced / "boundary.json").write_text(
@@ -381,7 +384,7 @@ class CollectionCases:
     def test_summary_one_past_its_limits_is_rejected(self):
         filler = SUMMARY_MAX_BYTES + 1 - len(json.dumps({"large": ""}))
         nested = {"deep": json.loads("[" * 32 + "0" + "]" * 32)}
-        cases = (({"large": "x" * filler}, "output file size limit"), (nested, "invalid JSON"))
+        cases = (({"large": "x" * filler}, "summary size limit"), (nested, "invalid JSON"))
         for value, reason in (*cases, ({"nodes": [0] * 4095}, "invalid JSON")):
             with self.subTest(reason=reason):
                 (self.produced / "boundary.json").write_text(json.dumps(value), encoding="utf-8")
@@ -899,6 +902,48 @@ class RoundTenCheckTests(unittest.TestCase):
                     self.assertEqual(report["status"], "collected")
                     self.assertEqual(report["summaries"], {})
                     self.assertEqual(sorted(os.listdir(parent)), ["workload"])
+
+
+@POSIX_ONLY
+class RoundElevenCheckTests(unittest.TestCase):
+    """Review round 11: a relative destination near PATH_MAX."""
+
+    def test_a_relative_destination_near_the_path_limit_keeps_its_summaries(self):
+        """R11B-1: copy_tree writes the snapshot by the destination's own spelling, but
+        the path walk looks each summary up under the current folder. With a relative
+        destination whose absolute spelling left no room for boundary.json, round 10's
+        "absent" reading of ENAMETOOLONG dropped a summary that was in the snapshot (path
+        walk), and with the test mode on the descriptor walk raised an I2 break."""
+        start = os.getcwd()
+        self.addCleanup(os.chdir, start)
+        with tempfile.TemporaryDirectory() as directory:
+            limit = os.pathconf(directory, "PC_PATH_MAX") - 1
+            work = Path(directory, "work")
+            (work / "results").mkdir(parents=True)
+            (work / "results/boundary.json").write_text('{"no_capabilities": true}', "utf-8")
+            (work / "results/a.txt").write_text("x\n", encoding="utf-8")
+            # <cwd>/dest/.collect-XXXXXXXX fits the limit; .../boundary.json does not.
+            target = limit - len("/dest/.collect-xxxxxxxx/boundary.json") + 5
+            for method in ("descriptor", "path"):
+                with self.subTest(method=method):
+                    os.chdir(directory)
+                    os.mkdir(method)
+                    os.chdir(method)
+                    while len(os.getcwd()) < target:
+                        part = "c" * min(200, target - len(os.getcwd()) - 1)
+                        os.mkdir(part)
+                        os.chdir(part)
+                    try:
+                        report = collect_results(work, Path("dest/workload"), method=method)
+                    except RejectedOutput:
+                        self.assertEqual(method, "path")  # failing closed is allowed there
+                        continue
+                    finally:
+                        held = os.listdir("dest/workload") if os.path.isdir("dest/workload") else []
+                        os.chdir(start)
+                    self.assertEqual(report["status"], "collected")
+                    self.assertIn("boundary.json", held)
+                    self.assertEqual(sorted(report["summaries"]), ["boundary.json"])
 
 
 @unittest.skipIf(DESCRIPTOR_APIS, "descriptor APIs present")
