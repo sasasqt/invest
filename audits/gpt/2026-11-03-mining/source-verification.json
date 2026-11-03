@@ -1,0 +1,135 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "fetched_files": [
+    {
+      "path": "CI_CD_GUIDELINES.md",
+      "expected_blob": "7b6fb7fc18723458b71876e55cf36bbc795bc2d5",
+      "actual_blob": "7b6fb7fc18723458b71876e55cf36bbc795bc2d5",
+      "match": true,
+      "bytes": 8072,
+      "lines": 60
+    },
+    {
+      "path": "GIT_GUIDELINES.md",
+      "expected_blob": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02",
+      "actual_blob": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02",
+      "match": true,
+      "bytes": 14606,
+      "lines": 139
+    },
+    {
+      "path": "PYTHON_GUIDELINES.md",
+      "expected_blob": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d",
+      "actual_blob": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d",
+      "match": true,
+      "bytes": 11491,
+      "lines": 126
+    },
+    {
+      "path": "TODO.md",
+      "expected_blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224",
+      "actual_blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224",
+      "match": true,
+      "bytes": 43618,
+      "lines": 109
+    },
+    {
+      "path": "data-mining-framework/ALPHA_VALIDATION.md",
+      "expected_blob": "b02bf5478505329027db917222e9b45b1c8221f5",
+      "actual_blob": "b02bf5478505329027db917222e9b45b1c8221f5",
+      "match": true,
+      "bytes": 18905,
+      "lines": 155
+    },
+    {
+      "path": "data-mining-framework/README.md",
+      "expected_blob": "1e0437b7085eca64f513cfd1647a3e269ffdec16",
+      "actual_blob": "1e0437b7085eca64f513cfd1647a3e269ffdec16",
+      "match": true,
+      "bytes": 12315,
+      "lines": 81
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "expected_blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+      "actual_blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+      "match": true,
+      "bytes": 14937,
+      "lines": 363
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "expected_blob": "10ced2bad043d0e0337a369a453a58168bb52f42",
+      "actual_blob": "10ced2bad043d0e0337a369a453a58168bb52f42",
+      "match": true,
+      "bytes": 14206,
+      "lines": 386
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "expected_blob": "05b80c6f7a3a8846647aa974cd70232512dcf520",
+      "actual_blob": "05b80c6f7a3a8846647aa974cd70232512dcf520",
+      "match": true,
+      "bytes": 2880,
+      "lines": 77
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "expected_blob": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0",
+      "actual_blob": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0",
+      "match": true,
+      "bytes": 12887,
+      "lines": 361
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "expected_blob": "bbceb14b08bfda33a3f76e6faed9bae502d581e4",
+      "actual_blob": "bbceb14b08bfda33a3f76e6faed9bae502d581e4",
+      "match": true,
+      "bytes": 5079,
+      "lines": 146
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "expected_blob": "d6c179f34baf4cae3307c55b0dd85ccb99da6067",
+      "actual_blob": "d6c179f34baf4cae3307c55b0dd85ccb99da6067",
+      "match": true,
+      "bytes": 7238,
+      "lines": 164
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "expected_blob": "6e46b63080124740f5ba56b768f8af7b53507752",
+      "actual_blob": "6e46b63080124740f5ba56b768f8af7b53507752",
+      "match": true,
+      "bytes": 2476,
+      "lines": 67
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "expected_blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb",
+      "actual_blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb",
+      "match": true,
+      "bytes": 13923,
+      "lines": 146
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "actual_blob": "abb44a04793f657188da5b0feab9fc7a2b360494",
+      "expected_blob": "abb44a04793f657188da5b0feab9fc7a2b360494",
+      "match": true,
+      "bytes": 29923,
+      "lines": 760
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "actual_blob": "0e6f93023dfbb1fb6bc86495be75f281f0252b26",
+      "expected_blob": "0e6f93023dfbb1fb6bc86495be75f281f0252b26",
+      "match": true,
+      "bytes": 2674,
+      "lines": 72
+    }
+  ],
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "baseline_matches": true
+}

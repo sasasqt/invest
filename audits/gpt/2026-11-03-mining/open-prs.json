@@ -1,0 +1,38 @@
+[
+  {
+    "number": 37,
+    "head": "3e8eca9dad3dc869ecb62c0e1f1224bdf243e583",
+    "title": "Keep tie groups together in QuantileStrategy's legs (BH-2026-11-02-1, REVIEW-32)",
+    "draft": false
+  },
+  {
+    "number": 36,
+    "head": "a4b338026459fa81030db1d873e0c6b4d1c3a5b0",
+    "title": "Audit runner (PR #32): review fixes and Windows host support",
+    "draft": true
+  },
+  {
+    "number": 35,
+    "head": "d90d306e8270a298a6096f19a0101803608cd292",
+    "title": "Fix stale docs: README pytest line matches CI (DA-2026-10-31-12)",
+    "draft": false
+  },
+  {
+    "number": 34,
+    "head": "87a72646e126ef4f907e59924261436d6aac6e1c",
+    "title": "Fix engine solvency: stop at an open whose equity is not positive (BH-2026-11-02-2, REVIEW-31)",
+    "draft": false
+  },
+  {
+    "number": 33,
+    "head": "56257f110dc55538c790957d3712d4c4372f095c",
+    "title": "Fix data import dates: read CSV dates as ISO 8601, refuse empty publishes and non-ISO Yahoo bounds (K13, BH-2026-10-13-3, BH-2026-10-13-4, BH-2026-10-13-6)",
+    "draft": false
+  },
+  {
+    "number": 32,
+    "head": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "title": "Add isolated runtime checks and benchmarks for repository audits",
+    "draft": true
+  }
+]

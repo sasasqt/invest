@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-03",
+  "field": "mining",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "conclusion": "Audit incomplete",
+  "daily_scope": "static question completed; runtime blocked",
+  "new_defects": 0,
+  "known_static_roots_revalidated": [
+    "GA-2026-10-31-1"
+  ],
+  "new_runtime_verified_defects": 0,
+  "new_optional_recommendations": 0,
+  "helper_count": 1,
+  "disagreements": 0,
+  "ci_observed": {
+    "success": 6,
+    "failed": 0,
+    "pending": 0,
+    "run": 41377797440
+  },
+  "coverage": {
+    "tracked_files": 111,
+    "fetched_files_byte_verified": 16,
+    "primary_semantic_unique_lines": 1769,
+    "newly_covered_lines": 897,
+    "statuses": {
+      "reviewed": 33,
+      "inventoried": 24,
+      "partially_reviewed": 16,
+      "checked_automatically": 16,
+      "blocked": 22
+    },
+    "remaining_unread_lines": 20271,
+    "unread_paths": 73
+  },
+  "timing": {
+    "prepared_utc": "2026-11-03T02:08:13.943110+00:00",
+    "wall_seconds_from_run_start": 790.39927,
+    "exclusive_cpu_tokens_cost": "unavailable",
+    "helper_actual_effort": "not exposed;15minute planning cap",
+    "remote_compute_new": 0
+  },
+  "weekly": "2026-W45 already aggregated; no duplicate weekly summary",
+  "four_week_assessment": "not due; baseline insufficient for four comparable weekly cycles",
+  "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "main_advanced": false
+}

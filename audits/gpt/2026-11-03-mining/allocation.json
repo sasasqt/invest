@@ -1,0 +1,296 @@
+{
+  "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+  "field": "mining",
+  "planned_percent": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "actual_discretionary_unique_lines": {
+    "exploitation": 201,
+    "exploration": 132,
+    "mandatory_callers_contracts": 1436
+  },
+  "actual_percent": {
+    "exploitation": 60.36036036036036,
+    "exploration": 39.63963963963964
+  },
+  "new_distinct_confirmed_roots": {
+    "exploitation": 0,
+    "exploration": 0
+  },
+  "pooled_rates_per_1000": {
+    "exploitation": 0.0,
+    "exploration": 0.0
+  },
+  "eligible_comparable_visits": 1,
+  "next_percent": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "rule": "Both reliable positive denominators; both rates zero => exploration +10 points per pinned tie rule; one visit, no detection-accuracy claim. Known-root recheck excluded from new yield. Legacy pre-rotation history retained separately.",
+  "seed": 5798509447757781902,
+  "eligible": [
+    "data-mining-framework/ALPHA_VALIDATION.md",
+    "data-mining-framework/src/invest_mining/diagnostics.py",
+    "data-mining-framework/tests/test_search_and_inference.py"
+  ],
+  "draw": "data-mining-framework/tests/test_search_and_inference.py",
+  "selection_phase": "after preliminary triage; no outcome-based redraw",
+  "lens": "membership and label-interval ownership; no four mining visits exist to assert prior lens absence",
+  "ranges": [
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          280,
+          345
+        ],
+        [
+          381,
+          386
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "10ced2bad043d0e0337a369a453a58168bb52f42"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          279
+        ],
+        [
+          346,
+          380
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "10ced2bad043d0e0337a369a453a58168bb52f42"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          140,
+          202
+        ],
+        [
+          280,
+          302
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          139
+        ],
+        [
+          203,
+          279
+        ],
+        [
+          303,
+          361
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          17,
+          34
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "05b80c6f7a3a8846647aa974cd70232512dcf520"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          16
+        ],
+        [
+          35,
+          77
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "05b80c6f7a3a8846647aa974cd70232512dcf520"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          35,
+          46
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          34
+        ],
+        [
+          47,
+          150
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          12,
+          36
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "6e46b63080124740f5ba56b768f8af7b53507752"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          11
+        ],
+        [
+          37,
+          67
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "6e46b63080124740f5ba56b768f8af7b53507752"
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          146
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "bbceb14b08bfda33a3f76e6faed9bae502d581e4"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          120
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "d6c179f34baf4cae3307c55b0dd85ccb99da6067"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          121,
+          164
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "d6c179f34baf4cae3307c55b0dd85ccb99da6067"
+    },
+    {
+      "path": "data-mining-framework/ALPHA_VALIDATION.md",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "b02bf5478505329027db917222e9b45b1c8221f5"
+    },
+    {
+      "path": "data-mining-framework/README.md",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          81
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "1e0437b7085eca64f513cfd1647a3e269ffdec16"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          76,
+          175
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "blob": "0e6f93023dfbb1fb6bc86495be75f281f0252b26"
+    }
+  ],
+  "helper_overlap_excluded": true,
+  "legacy_mining_allocation": [
+    50,
+    50
+  ],
+  "legacy_note": "Imported initial 50/50 retained in history; explicit dispatcher current 60/40 plan used."
+}

@@ -12,7 +12,7 @@
       "status": "known/open",
       "confidence": "high for static contradiction; runtime unverified",
       "evidence_label": "verified_static_contract_contradiction",
-      "runtime_label": "plausible",
+      "runtime_label": "plausible/unexecuted",
       "title": "Unary membership masking contradicts the full-history time-series contract",
       "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
       "locations": [
@@ -69,6 +69,14 @@
           "status": "known/open",
           "evidence": "2026-11-02-repro/verifier-a/independent-verdict.json",
           "scope": "independently corroborated static contradiction; peer runtime claim attributed, no fresh local runtime"
+        },
+        {
+          "date": "2026-11-03",
+          "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "known/open; independently revalidated static contract contradiction",
+          "evidence": "2026-11-03-mining/reviewer2/independent-verdict.json",
+          "advance": "All four unary operators, search/confirmation/export caller propagation, entrant/reentry cases13/61 and gap-label/purge boundary traced; no new root/yield or product runtime confirmation."
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -80,8 +88,16 @@
           "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        },
+        {
+          "date": "2026-11-03",
+          "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "current for stated static chain; runtime unavailable",
+          "why": "Fresh source/caller/contract/test review, not unchanged-byte inference."
         }
-      ]
+      ],
+      "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "current_static_evidence": "2026-11-03-mining/reviewer2/independent-verdict.json"
     },
     {
       "id": "GA-2026-10-31-2",
@@ -292,7 +308,7 @@
         "2026-11-02-data-rotation/reviewer2/independent-verdict.json"
       ],
       "acceptance": "After proving isolation and installed lock graph, run malformed/read and valid-key controls twice across CSV/SQLite/Parquet. Required row-key/non-null validation must work independent of key ordering or compatible redundant manifest keys. No product fix in this audit.",
-      "effort": "S\u2013M estimate",
+      "effort": "S–M estimate",
       "owner": "data contract maintainer; no action taken",
       "history": [
         {
@@ -368,6 +384,19 @@
       "reason": "same gross-cost root cause already tracked by BH-2026-10-15-1/PR26; no new GA discovery",
       "counterfactual": "A distinct failing invariant beyond PR26 would warrant a separate item",
       "evidence": "2026-10-31-repro/verifier-a.md"
+    },
+    {
+      "key": "2026-11-03-C2",
+      "root": "OPEN-MEMBERSHIP-LABELS-001",
+      "reason": "No extra future-membership or purge defect in traced path: full raw opens first, restrict at t; last dev exit k-embargo-1",
+      "counterfactual": "Future membership suppresses earlier label, or dev exit reaches confirmation/embargo",
+      "evidence": "2026-11-03-mining/reviewer2/independent-verdict.json"
+    },
+    {
+      "key": "2026-11-03-C3",
+      "reason": "Combined regression gap belongs to existing GA1 acceptance, no distinct root/new recommendation",
+      "counterfactual": "Different demonstrated contract boundary/root cause",
+      "evidence": "2026-11-03-mining/reviewer2/independent-verdict.json"
     }
   ],
   "run_history": [
@@ -376,6 +405,12 @@
       "date": "2026-11-02",
       "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
       "scope": "static continuation; historical remote evidence refreshed"
+    },
+    {
+      "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+      "date": "2026-11-03",
+      "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "scope": "mining static continuation; zero new roots/runtime verified defects"
     }
   ]
 }

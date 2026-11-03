@@ -1,0 +1,29 @@
+{
+  "id": "GA-2026-11-03-mining-candidates",
+  "source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "question": "Membership at decision time: do unary transforms prematurely erase rolling history, and do final score/label masks or chronological splits accidentally require future membership?",
+  "candidates": [
+    {
+      "id": "C1",
+      "root": "GA-2026-10-31-1 / RA-2026-11-01-2",
+      "r1": "keep known static contract contradiction; runtime unexecuted",
+      "severity": "medium",
+      "evidence": "build_panel doc288-293; OPS unary definitions; evaluate337-340; compute_scores restrict29-31; search labels/values restrict",
+      "unresolved": "untouched product repeated fixture and negative controls blocked; no new yield"
+    },
+    {
+      "id": "C2",
+      "root": "OPEN-MEMBERSHIP-LABELS-001",
+      "r1": "drop new forward membership leakage defect at traced scope",
+      "evidence": "forward_returns unmasked full opens shifted; restrict uses membership at decision-date not future end; split purges full label exit before confirmation",
+      "unresolved": "decide economics gaps versus data missingness, runtime endpoint/entrant/reentry fixtures"
+    },
+    {
+      "id": "C3",
+      "root": "test gap / missing unary entry regression",
+      "r1": "do not allocate new optional recommendation; include acceptance in C1",
+      "evidence": "test_fundamental_features_and_universe_restricted_cross_sections only cs_rank no entrants; scores_respect_universe checks final membership only",
+      "unresolved": "complete test sibling search"
+    }
+  ]
+}

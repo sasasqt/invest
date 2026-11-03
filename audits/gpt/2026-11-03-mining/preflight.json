@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-03",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "profile": "rotating mining static slice",
+  "isolation": "not established on current worker; no repository execution",
+  "dependencies": "installed locked graph unavailable; not claimed verified",
+  "runtime_gate": "Old a73149d runner remains prohibited. Primary maintained PR32 review reports INV-PR32-001 resolved at cd4d43b, but reports remaining INV-PR32-002/-003; current PR36 a4b3380 is a newer unverified audit route. No runner dispatched.",
+  "current_review_url": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
+  "runner_review_updated_at": "2026-11-02T20:13:30Z",
+  "jobs": [],
+  "jobs_scope": "No active named remote runtime job established by saved state; no duplicate dispatch/retry.",
+  "model_effort": "unavailable; audit continued as authorized",
+  "platforms": "No local product execution on any platform; same-SHA existing Linux CI only",
+  "decisions_md": "404 on output head, no user decisions invented/changed"
+}

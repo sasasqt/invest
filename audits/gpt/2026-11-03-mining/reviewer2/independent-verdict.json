@@ -1,0 +1,78 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "peer_sha": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+  "reviewer": "fresh Reviewer2 / Verifier A",
+  "model_effort": "unavailable",
+  "independent_saved_before_r1_comparison": true,
+  "product_execution": "blocked; no repository import/build/test/workflow executed",
+  "verdicts": [
+    {
+      "id": "C1",
+      "keep_drop": "keep known",
+      "stable_id": "GA-2026-10-31-1",
+      "peer_id": "RA-2026-11-01-2",
+      "severity": "medium / P2",
+      "confidence": "high static contradiction; runtime plausible/unexecuted",
+      "reason": "The contract expressly separates membership-restricted cross-sections from full-history time-series. All four pointwise unary OPS fall through evaluate's same else branch as cs, causing pre-entry/reentry history to become missing before an outer rolling/shift operator. compute_scores/run_search/confirm share evaluator; final restrict correctly removes nonmember output and does not require premature unary masking.",
+      "evidence": [
+        "expressions.py129-149,290-305,330-342,381-386",
+        "inference.py23-34",
+        "search.py153,188,294-298",
+        "ALPHA_VALIDATION.md28"
+      ],
+      "expected_control": "Entry at second date on positive close4,9,16 requires ts_sum(abs(close),2)=13 under documented warmup; all-member/no-universe controls=13; plain ts_sum(close,2)=13; current source trace with false,true,true yields missing at entry and25 next date.",
+      "runtime_repeats": 0,
+      "missing": "untouched pinned installed runtime twice + controls after isolation/graph, no historical verdict impact demonstrated",
+      "change_condition": "Explicitly separate true cs masking from pointwise unary with final eligibility preserved; operator version/migration reviewed; runtime case/control correct"
+    },
+    {
+      "id": "C2",
+      "keep_drop": "drop additional defect at traced scope",
+      "stable_id": "OPEN-MEMBERSHIP-LABELS-001",
+      "severity": "none established",
+      "confidence": "high static timing trace; end-to-end runtime unavailable",
+      "reason": "Labels use the unmasked open panel at t+1 and t+1+h, then restrict at decision date t. A later membership exit/reentry is not consulted. Missing entry/exit bars generate missing labels; lack of membership throughout holding interval is not a documented label-ineligibility rule. Split's last allowed i=cut-1 has exit k-embargo-1, strictly before confirmation/embargo. No additional future membership leakage or purge off-by-one established.",
+      "expected_control": "Fix opens and past/current membership, change future membership only: earlier labels/scores unchanged. Change future entry/exit price inside label interval: label legitimately changes; current-membership false masks decision. Gaps with missing endpoint prices produce missing labels.",
+      "missing": "Actual product runtime entrant/reentry/endpoints and downstream IC controls; whether mid-hold missing bars are desired policy is separate",
+      "drop_counterfactual": "Would keep if future membership, rather than decision membership, filtered a current label; if last dev exit reached k-embargo; or observed product outputs contradicted endpoint/membership contract."
+    },
+    {
+      "id": "C3",
+      "keep_drop": "drop separate new recommendation; fold into existing C1 acceptance",
+      "severity": "no new finding",
+      "confidence": "high for inspected tests",
+      "reason": "Expression tests only static-membership cs rank; random causality tests have no universe; score universe test checks output membership but not entry warmup. Missing combined unary/rolling entrant test is real coverage gap already explained by C1 root, not a second defect/novel recommendation.",
+      "evidence": [
+        "test_expressions.py90-110,121-146",
+        "test_search_and_inference.py118-156"
+      ],
+      "acceptance": "Add entrant/reentry cases for neg/abs/log/sign under rolling/delay, with no-universe/all-member and CS exclusion/final-membership controls, preserve operator-version compatibility decision.",
+      "drop_counterfactual": "Would keep separately if test gap concealed a distinct demonstrated timing defect with a different root or acceptance boundary."
+    }
+  ],
+  "checked_siblings": [
+    "all four unary and three CS OPS",
+    "search split/labels/dev/confirm",
+    "inference output mask",
+    "pit membership interval [start,end)",
+    "full test_expressions and test_search_and_inference",
+    "mining README/ALPHA selected claims",
+    "current TODO REVIEW25 and peer RA2; open PR metadata none fixing C1"
+  ],
+  "unchecked_priorities": [
+    {
+      "place": "Actual pinned product entrant/reentry/label-endpoint fixtures",
+      "reason": "isolation and installed graph blocked"
+    },
+    {
+      "place": "CLI search/confirm/export universe identity consistency",
+      "reason": "known REVIEW25 BH-2026-10-20-3; do not conflate with evaluator masking"
+    },
+    {
+      "place": "Point-in-time universe interval malformed keys and overlapping input validation",
+      "reason": "separate data-field contract boundary"
+    }
+  ],
+  "closing": "Is that all? What is missing? What else could be wrong that nobody looked at? Checked evaluate/OPS/restrict, raw-price forward labels, chronological split, compute_scores, membership intervals and full two test modules. No further confirmed defect found in that scope; actual product fixture and known CLI universe-evidence mismatch remain unchecked/queued."
+}

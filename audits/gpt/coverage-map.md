@@ -1,9 +1,7 @@
-# Coverage as of 2026-11-02
+# Coverage — 2026-11-03
 
-Source `9913f94b9b795bd9633a6a683e9f420301e400b3`; 111 tracked files. Audit incomplete.
+Source `9913f94b9b795bd9633a6a683e9f420301e400b3`. 111 files inventoried; 16 bytes-verified in this visit. 897 newly covered lines; 1769 primary semantic lines including rereads. Static and behavioral coverage remain distinct.
 
-{'reviewed': 30, 'inventoried': 28, 'partially_reviewed': 15, 'checked_automatically': 16, 'blocked': 22}
+Statuses: `{"reviewed": 33, "inventoried": 24, "partially_reviewed": 16, "checked_automatically": 16, "blocked": 22}`. 20271 unread lines across 73 paths; exact ranges in coverage-map.json and checkpoint rotation fields. No either-audit union computed: peer lacks compatible exact-range identities. Per-file test branch coverage unavailable from this visit.
 
-268 newly covered cumulative semantic lines; 21168 known unread text lines across 76 paths. Unknown binary line counts stay unknown. See [full coverage](coverage-map.json) and [current summary](2026-11-02-data-rotation/coverage-summary.json).
-
-Unchanged-byte static reading is reused only at its demonstrated scope; no current runtime coverage is claimed. Peer exact-range union unavailable.
+[Visit evidence](2026-11-03-mining/coverage-summary.json). Full audit incomplete; inventory/green CI is not complete semantic coverage.

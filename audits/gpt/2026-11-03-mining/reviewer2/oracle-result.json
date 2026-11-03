@@ -1,0 +1,165 @@
+{
+  "kind": "trusted independent stdlib contract arithmetic, not untouched product runtime",
+  "product_imports": 0,
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "repetitions": [
+    {
+      "repeat": 1,
+      "unary": {
+        "abs": {
+          "entry_expected": 13,
+          "reentry_expected": 61,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            13,
+            25,
+            41,
+            61
+          ]
+        },
+        "neg": {
+          "entry_expected": -13,
+          "reentry_expected": -61,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            -13,
+            -25,
+            -41,
+            -61
+          ]
+        },
+        "log": {
+          "entry_expected": 3.58351893845611,
+          "reentry_expected": 6.80239476332431,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            3.58351893845611,
+            4.969813299576001,
+            5.991464547107982,
+            6.80239476332431
+          ]
+        },
+        "sign": {
+          "entry_expected": 2,
+          "reentry_expected": 2,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            2,
+            2,
+            2,
+            2
+          ]
+        }
+      },
+      "label_control": [
+        1.0,
+        0.6666666666666667,
+        null,
+        null,
+        null,
+        null
+      ],
+      "future_membership_control_first2": [
+        1.0,
+        0.6666666666666667
+      ],
+      "missing_endpoint_control": [
+        null,
+        0.6666666666666667,
+        null,
+        null,
+        null,
+        null
+      ],
+      "purge_cases": 24,
+      "all_contract_controls": "passed"
+    },
+    {
+      "repeat": 2,
+      "unary": {
+        "abs": {
+          "entry_expected": 13,
+          "reentry_expected": 61,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            13,
+            25,
+            41,
+            61
+          ]
+        },
+        "neg": {
+          "entry_expected": -13,
+          "reentry_expected": -61,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            -13,
+            -25,
+            -41,
+            -61
+          ]
+        },
+        "log": {
+          "entry_expected": 3.58351893845611,
+          "reentry_expected": 6.80239476332431,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            3.58351893845611,
+            4.969813299576001,
+            5.991464547107982,
+            6.80239476332431
+          ]
+        },
+        "sign": {
+          "entry_expected": 2,
+          "reentry_expected": 2,
+          "entry_static_model": null,
+          "reentry_static_model": null,
+          "all_member_control": [
+            null,
+            2,
+            2,
+            2,
+            2
+          ]
+        }
+      },
+      "label_control": [
+        1.0,
+        0.6666666666666667,
+        null,
+        null,
+        null,
+        null
+      ],
+      "future_membership_control_first2": [
+        1.0,
+        0.6666666666666667
+      ],
+      "missing_endpoint_control": [
+        null,
+        0.6666666666666667,
+        null,
+        null,
+        null,
+        null
+      ],
+      "purge_cases": 24,
+      "all_contract_controls": "passed"
+    }
+  ]
+}

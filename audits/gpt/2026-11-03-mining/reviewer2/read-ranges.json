@@ -1,0 +1,204 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "producer": "VerifierA",
+  "reads": [
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "ranges": [
+        [
+          1,
+          35
+        ],
+        [
+          88,
+          151
+        ],
+        [
+          277,
+          347
+        ],
+        [
+          381,
+          386
+        ]
+      ],
+      "blob": "10ced2bad043d0e0337a369a453a58168bb52f42"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "ranges": [
+        [
+          1,
+          16
+        ],
+        [
+          56,
+          124
+        ],
+        [
+          127,
+          205
+        ],
+        [
+          224,
+          245
+        ],
+        [
+          275,
+          318
+        ]
+      ],
+      "blob": "e13793d334fcca18c47ea3d952ba8a3fd3c2c8d0"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "ranges": [
+        [
+          1,
+          77
+        ]
+      ],
+      "blob": "05b80c6f7a3a8846647aa974cd70232512dcf520"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "blob": "6e46b63080124740f5ba56b768f8af7b53507752"
+    },
+    {
+      "path": "data-mining-framework/tests/test_expressions.py",
+      "ranges": [
+        [
+          1,
+          146
+        ]
+      ],
+      "blob": "bbceb14b08bfda33a3f76e6faed9bae502d581e4"
+    },
+    {
+      "path": "data-mining-framework/tests/test_search_and_inference.py",
+      "ranges": [
+        [
+          1,
+          164
+        ]
+      ],
+      "blob": "d6c179f34baf4cae3307c55b0dd85ccb99da6067"
+    },
+    {
+      "path": "data-mining-framework/ALPHA_VALIDATION.md",
+      "ranges": [
+        [
+          9,
+          9
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          73,
+          74
+        ],
+        [
+          77,
+          77
+        ],
+        [
+          115,
+          115
+        ],
+        [
+          136,
+          136
+        ]
+      ],
+      "blob": "b02bf5478505329027db917222e9b45b1c8221f5"
+    },
+    {
+      "path": "data-mining-framework/README.md",
+      "ranges": [
+        [
+          7,
+          7
+        ],
+        [
+          13,
+          13
+        ],
+        [
+          16,
+          16
+        ]
+      ],
+      "blob": "1e0437b7085eca64f513cfd1647a3e269ffdec16"
+    },
+    {
+      "path": "TODO.md",
+      "ranges": [
+        [
+          16,
+          17
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          36,
+          36
+        ],
+        [
+          42,
+          42
+        ],
+        [
+          50,
+          53
+        ],
+        [
+          76,
+          81
+        ]
+      ],
+      "blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "ranges": [
+        [
+          125,
+          165
+        ],
+        [
+          220,
+          254
+        ],
+        [
+          370,
+          392
+        ],
+        [
+          482,
+          545
+        ]
+      ],
+      "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+    }
+  ]
+}

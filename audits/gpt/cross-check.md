@@ -33,3 +33,12 @@ Peer agrees with GA1 and supplies a BH-2026-10-21-2 duplicate lead for GA2. The 
 ## 2026-11-02 Monday rotation — GA-2026-11-02-data-092201Z
 
 Peer head remains `4930f9ee9ecf65735822456392d2253fdc93bd9e`, report2026-11-01 on source90b5ca03. No peer head change observed. Reused prior triage, not current-source revalidation of eleven RA findings. Their mining/evaluation/reporting checks remain queued for owning visits. Current data primary-key issue is known K14 / REVIEW-16, not a newly asserted RA match. Fresh internal Reviewer2 independently derived the trace; zero disagreements, zero Verifier B. [Record](2026-11-02-data-rotation/reviewer2/independent-verdict.json).
+
+## 2026-11-03 mining visit — 33b1ca3e-00cc-8323-bcbc-0a92db983696
+
+Peer remains `4930f9ee9ecf65735822456392d2253fdc93bd9e`, report2026-11-01 on90b5ca0; not stale. Freshly read peer findings and revalidated only the eligible mining root against `9913f94b9b795bd9633a6a683e9f420301e400b3`. Other-field findings retain prior triage and await their owner; no whole-peer revalidation claimed.
+
+| Claude ID | Verdict | Concrete reason/evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| RA-2026-11-01-2 | agree at static scope | Unary/cs shared masking branch contradicts full-history contract; all four unary operators and search/export consumers traced. Peer full search/numeric impact narrative not rerun. | 2026-11-03-mining/reviewer2/independent-verdict.json | 2026-11-03 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
+| RA-2026-11-01-6 | agree with existing correction direction | Separate true cross-sectional masking from pointwise history, retain final eligibility and operator-version compatibility decision. Existing recommendation, not newly ranked or implemented. | 2026-11-03-mining/reviewer2/independent-verdict.json | 2026-11-03 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |

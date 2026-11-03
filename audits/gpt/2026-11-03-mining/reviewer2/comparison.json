@@ -1,0 +1,33 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "r1_saved_path": "reviewer1-initial.json",
+  "r2_saved_path": "mining_verifier/independent-verdict.json",
+  "independent_record_saved_before_reading_r1": true,
+  "comparisons": [
+    {
+      "id": "C1",
+      "r1": "keep known static medium/P2",
+      "r2": "keep known static medium/P2",
+      "agreement": true
+    },
+    {
+      "id": "C2",
+      "r1": "drop new future-membership/purge defect at traced scope",
+      "r2": "drop additional defect at traced scope",
+      "agreement": true
+    },
+    {
+      "id": "C3",
+      "r1": "existing C1 acceptance; no additional ID",
+      "r2": "existing C1 acceptance; no additional ID",
+      "agreement": true
+    }
+  ],
+  "substantive_disagreements": 0,
+  "verifier_b_needed": false,
+  "oracle": "mining_verifier/oracle-result.json",
+  "oracle_scope": "two repetitions of independently authored stdlib contract arithmetic/static-path model + controls, not product execution",
+  "product_runtime_repetitions": 0,
+  "product_negative_controls": "blocked",
+  "model_effort": "unavailable"
+}
