@@ -1,0 +1,200 @@
+{
+  "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+  "date": "2026-11-03",
+  "field": "mining",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "main_advanced": false,
+  "report_commit": "526ca25461eaeb02f54f88c415a4629e08e6970d",
+  "report_parent": "5f92e53be31436dd111f9c6066bc7732a9fc2aff",
+  "started_commit": "5f92e53be31436dd111f9c6066bc7732a9fc2aff",
+  "report_url": "https://github.com/sasasqt/invest/blob/526ca25461eaeb02f54f88c415a4629e08e6970d/audits/gpt/2026-11-03.md",
+  "branch": "gpt/repo-audits",
+  "force": false,
+  "expected_sha_used": true,
+  "verified_utc": "2026-11-03 02:11:08 UTC",
+  "report_reachable_verified": true,
+  "changed_paths": [
+    {
+      "path": "audits/gpt/2026-11-03-mining/README.md",
+      "status": "added",
+      "sha": "2ff2d1b0b3f3cd7400367b41459d685b1d5198b9"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/allocation.json",
+      "status": "added",
+      "sha": "e0cfe76a0af0bc71814cbe1bf5f1faadd999e21e"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/ci.json",
+      "status": "added",
+      "sha": "e8d40336c445ca94717140c777c4a7e42e910ca0"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/contract-oracle.json",
+      "status": "added",
+      "sha": "eb29c2801ffb08903a4d03670dab4b2f68624be0"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/contract_oracle.py",
+      "status": "added",
+      "sha": "afe6e95ff6df4599ca8a7bb849cd86510f03116a"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/coverage-summary.json",
+      "status": "added",
+      "sha": "0a024a29e648a86402c16a53468554b225279701"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/inventory.json",
+      "status": "added",
+      "sha": "f72cb284b6f190079f67f4a06f5e4b88d5d1500d"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/open-prs.json",
+      "status": "added",
+      "sha": "ff13c808ded43c42eb40606384cf34142f0dc18e"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/preflight.json",
+      "status": "added",
+      "sha": "f9f00c1d4145e8695f06032842d2176b7bb09613"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/protocol-verification.json",
+      "status": "added",
+      "sha": "ae4f553a5f8daf124940af294749e3d989819cfd"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/result.json",
+      "status": "added",
+      "sha": "cefb77fe2731f5290f8699594fee9eef526fc01b"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer1-initial.json",
+      "status": "added",
+      "sha": "f3c58eeda5ff5c14778f17fc2f9561df0dcacd60"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer2/comparison.json",
+      "status": "added",
+      "sha": "94f5511288197157d6882dd4ca2c57bbf80f6dcf"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer2/contract_oracle.py",
+      "status": "added",
+      "sha": "eb1f0c1f3969ad024e040d6050495ced1246696b"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer2/independent-verdict.json",
+      "status": "added",
+      "sha": "3f281f1e5aae347e741852453b8e754c27f8673e"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer2/oracle-result.json",
+      "status": "added",
+      "sha": "2fceb40000965e467999c13183f2e8598f9382ab"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/reviewer2/read-ranges.json",
+      "status": "added",
+      "sha": "581383d62488eea3400f29a4c6234a20e7339966"
+    },
+    {
+      "path": "audits/gpt/2026-11-03-mining/source-verification.json",
+      "status": "added",
+      "sha": "965f091d3dab3cfab7abec3cb08a2eb7b921b533"
+    },
+    {
+      "path": "audits/gpt/2026-11-03.md",
+      "status": "added",
+      "sha": "6b139a7321677941adc9f5ab8533b7a98aa1947f"
+    },
+    {
+      "path": "audits/gpt/checkpoint.json",
+      "status": "modified",
+      "sha": "2e97f8413021917ec2c8750e3c07620de1dae926"
+    },
+    {
+      "path": "audits/gpt/coverage-map.json",
+      "status": "modified",
+      "sha": "3f16caf7e20b22cf8c4fcab03a309a94d624e0f3"
+    },
+    {
+      "path": "audits/gpt/coverage-map.md",
+      "status": "modified",
+      "sha": "dc44968f8b9c8d7e1783ff8dccf28e6153290238"
+    },
+    {
+      "path": "audits/gpt/coverage.csv",
+      "status": "modified",
+      "sha": "c608b690b80e16edf6a5353dbca242537a04fbc5"
+    },
+    {
+      "path": "audits/gpt/cross-check.md",
+      "status": "modified",
+      "sha": "d7039c17b19dfe3521d77695cb6422efab16cfd3"
+    },
+    {
+      "path": "audits/gpt/exploration.json",
+      "status": "modified",
+      "sha": "fb1efc3af0a3e7894822388a9ae092d4d350492d"
+    },
+    {
+      "path": "audits/gpt/findings.json",
+      "status": "modified",
+      "sha": "d072f09213b853c169e969fc20f1d3120ca0373a"
+    },
+    {
+      "path": "audits/gpt/findings.md",
+      "status": "modified",
+      "sha": "3d3fa97d6983c7f23b1ef8d9ebc383ddf0dc510a"
+    },
+    {
+      "path": "audits/gpt/state.json",
+      "status": "modified",
+      "sha": "a97950c4eb58214a453be9102aac661dad97e12f"
+    },
+    {
+      "path": "audits/gpt/validation.csv",
+      "status": "modified",
+      "sha": "b77eb9235790adf9d92fc7c6d1e1a793ecda14b4"
+    }
+  ],
+  "file_payload_git_blob_ids_verified": {
+    "audits/gpt/coverage.csv": "c608b690b80e16edf6a5353dbca242537a04fbc5",
+    "audits/gpt/state.json": "a97950c4eb58214a453be9102aac661dad97e12f",
+    "audits/gpt/coverage-map.json": "3f16caf7e20b22cf8c4fcab03a309a94d624e0f3",
+    "audits/gpt/coverage-map.md": "dc44968f8b9c8d7e1783ff8dccf28e6153290238",
+    "audits/gpt/2026-11-03.md": "6b139a7321677941adc9f5ab8533b7a98aa1947f",
+    "audits/gpt/exploration.json": "fb1efc3af0a3e7894822388a9ae092d4d350492d",
+    "audits/gpt/findings.json": "d072f09213b853c169e969fc20f1d3120ca0373a",
+    "audits/gpt/cross-check.md": "d7039c17b19dfe3521d77695cb6422efab16cfd3",
+    "audits/gpt/validation.csv": "b77eb9235790adf9d92fc7c6d1e1a793ecda14b4",
+    "audits/gpt/findings.md": "3d3fa97d6983c7f23b1ef8d9ebc383ddf0dc510a",
+    "audits/gpt/checkpoint.json": "2e97f8413021917ec2c8750e3c07620de1dae926",
+    "audits/gpt/2026-11-03-mining/reviewer1-initial.json": "f3c58eeda5ff5c14778f17fc2f9561df0dcacd60",
+    "audits/gpt/2026-11-03-mining/source-verification.json": "965f091d3dab3cfab7abec3cb08a2eb7b921b533",
+    "audits/gpt/2026-11-03-mining/inventory.json": "f72cb284b6f190079f67f4a06f5e4b88d5d1500d",
+    "audits/gpt/2026-11-03-mining/allocation.json": "e0cfe76a0af0bc71814cbe1bf5f1faadd999e21e",
+    "audits/gpt/2026-11-03-mining/ci.json": "e8d40336c445ca94717140c777c4a7e42e910ca0",
+    "audits/gpt/2026-11-03-mining/README.md": "2ff2d1b0b3f3cd7400367b41459d685b1d5198b9",
+    "audits/gpt/2026-11-03-mining/contract-oracle.json": "eb29c2801ffb08903a4d03670dab4b2f68624be0",
+    "audits/gpt/2026-11-03-mining/protocol-verification.json": "ae4f553a5f8daf124940af294749e3d989819cfd",
+    "audits/gpt/2026-11-03-mining/result.json": "cefb77fe2731f5290f8699594fee9eef526fc01b",
+    "audits/gpt/2026-11-03-mining/coverage-summary.json": "0a024a29e648a86402c16a53468554b225279701",
+    "audits/gpt/2026-11-03-mining/open-prs.json": "ff13c808ded43c42eb40606384cf34142f0dc18e",
+    "audits/gpt/2026-11-03-mining/preflight.json": "f9f00c1d4145e8695f06032842d2176b7bb09613",
+    "audits/gpt/2026-11-03-mining/contract_oracle.py": "afe6e95ff6df4599ca8a7bb849cd86510f03116a",
+    "audits/gpt/2026-11-03-mining/reviewer2/oracle-result.json": "2fceb40000965e467999c13183f2e8598f9382ab",
+    "audits/gpt/2026-11-03-mining/reviewer2/read-ranges.json": "581383d62488eea3400f29a4c6234a20e7339966",
+    "audits/gpt/2026-11-03-mining/reviewer2/comparison.json": "94f5511288197157d6882dd4ca2c57bbf80f6dcf",
+    "audits/gpt/2026-11-03-mining/reviewer2/contract_oracle.py": "eb1f0c1f3969ad024e040d6050495ced1246696b",
+    "audits/gpt/2026-11-03-mining/reviewer2/independent-verdict.json": "3f281f1e5aae347e741852453b8e754c27f8673e"
+  },
+  "scope": "Every changed path inside audits/gpt/; no deletions; out-of-scope tree entries and root README preserved. Audit-only output single-parent; no product ancestry attached.",
+  "final_metadata_note": "This record and state/checkpoint publication observations are a second single-parent metadata-only commit; containing commit is verified remotely before delivery.",
+  "model_effort": "unavailable; audit continued as authorized",
+  "product_execution": 0,
+  "new_remote_compute": 0
+}

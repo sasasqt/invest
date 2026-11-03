@@ -810,8 +810,8 @@
               "exploration": 0
             },
             "pooled_rates_per_1000": {
-              "exploitation": 0.0,
-              "exploration": 0.0
+              "exploitation": 0,
+              "exploration": 0
             },
             "eligible_comparable_visits": 1,
             "next_percent": {
@@ -819,7 +819,7 @@
               "exploration": 50
             },
             "rule": "Both reliable positive denominators; both rates zero => exploration +10 points per pinned tie rule; one visit, no detection-accuracy claim. Known-root recheck excluded from new yield. Legacy pre-rotation history retained separately.",
-            "seed": 5798509447757781902,
+            "seed": 5798509447757782000,
             "eligible": [
               "data-mining-framework/ALPHA_VALIDATION.md",
               "data-mining-framework/src/invest_mining/diagnostics.py",
@@ -2010,7 +2010,7 @@
     "standalone_contract_oracle_repeats_per_reviewer": 2,
     "model_effort": "unavailable; continued as authorized",
     "report": "2026-11-03.md",
-    "publication_status": "prepared; final remote verification recorded in publication.json",
+    "publication_status": "report published and exact scope/ref verified",
     "scope_counts": {
       "tracked_files": 111,
       "fetched_files_byte_verified": 16,
@@ -2025,6 +2025,25 @@
       },
       "remaining_unread_lines": 20271,
       "unread_paths": 73
+    },
+    "publication_verified_utc": "2026-11-03 02:11:08 UTC",
+    "report_commit": "526ca25461eaeb02f54f88c415a4629e08e6970d",
+    "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "main_advanced": false
+  },
+  "publication_history": [
+    {
+      "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+      "report_commit": "526ca25461eaeb02f54f88c415a4629e08e6970d",
+      "verified_utc": "2026-11-03 02:11:08 UTC",
+      "path": "2026-11-03-mining/publication.json"
     }
+  ],
+  "publication_current_run": {
+    "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+    "report_commit": "526ca25461eaeb02f54f88c415a4629e08e6970d",
+    "report_url": "https://github.com/sasasqt/invest/blob/526ca25461eaeb02f54f88c415a4629e08e6970d/audits/gpt/2026-11-03.md",
+    "verified": true,
+    "evidence": "2026-11-03-mining/publication.json"
   }
 }
