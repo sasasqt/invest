@@ -100,10 +100,10 @@ def _prepare_out(
     locked by another program fails here; where one is missing, its folder must take a new
     file. Folders in ``new_files_in`` get files whose names are not known yet, so they must
     take a new file too. Files matching the glob ``deleted`` are only deleted: on POSIX
-    that needs the folder's permission, checked above; Windows cannot delete a read-only
-    file, so there each must open for writing. Called after every refusal and before the
-    ledger records anything, so a refused run leaves no ``--out`` and an unusable one leaves
-    no record.
+    that needs the folder's permission, checked above, and a folder in their place cannot
+    be deleted; Windows cannot delete a read-only file, so there each must open for
+    writing. Called after every refusal and before the ledger records anything, so a
+    refused run leaves no ``--out`` and an unusable one leaves no record.
     """
     root = Path(out)
     probed: set[Path] = set()
@@ -128,7 +128,7 @@ def _prepare_out(
             else:
                 takes_new_file(path.parent)
         for existing in sorted(root.glob(deleted)) if deleted is not None else []:
-            if existing.is_dir():
+            if existing.is_dir() and not existing.is_symlink():
                 raise IsADirectoryError(f"cannot delete the folder {existing}")
             if os.name == "nt":
                 with existing.open("ab"):

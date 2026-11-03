@@ -1018,3 +1018,17 @@ def test_cli_search_rerun_refuses_a_folder_among_old_factor_files(tmp_path):
     with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
         main([*search, "--ledger", str(book)])
     assert not book.exists()
+
+
+@pytest.mark.skipif(os.name == "nt", reason="symbolic links need extra rights on Windows")
+def test_cli_search_rerun_deletes_an_old_factor_link_to_a_folder(tmp_path):
+    # Deleting a link removes the link, not the folder it points to, so the check must not
+    # refuse it as a folder.
+    data, out = tmp_path / "d", tmp_path / "s"
+    data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "200"])
+    (tmp_path / "elsewhere").mkdir()
+    (out / "factors").mkdir(parents=True)
+    (out / "factors" / "f_old.json").symlink_to(tmp_path / "elsewhere", target_is_directory=True)
+    assert main(["search", "--data", str(data), "--trials", "10", "--out", str(out)]) == 0
+    assert not (out / "factors" / "f_old.json").is_symlink()
+    assert (tmp_path / "elsewhere").is_dir()
