@@ -839,3 +839,23 @@ def test_sqlite_holds_any_column_name_like_csv_and_parquet(tmp_path, name):
     }
     assert len(hashes) == 1
     assert read_bundle(tmp_path / "sqlite")[1]["v"].tolist() == ["first", "second"]
+
+
+@pytest.mark.parametrize(
+    "names", [("A", "a"), ("rowid", "ROWID"), ("a\x00b",), ("rowid", "_ROWID_", "oid")]
+)
+def test_sqlite_refuses_column_names_it_cannot_hold(tmp_path, names):
+    """SQLite folds ASCII letter case in column names and takes no NUL in SQL text (these
+    raised sqlite3 errors), and readers need a free rowid alias to keep row order."""
+    frame = pd.DataFrame({name: [1] for name in names})
+    with pytest.raises(BundleError, match=r"SQLite column names|free rowid alias"):
+        write_bundle(frame, tmp_path / "b", dataset_id="t", fmt="sqlite")
+    assert not (tmp_path / "b").exists()
+
+
+@pytest.mark.parametrize("year", ["10000", "0000", "-0001"])
+def test_created_at_outside_years_1_to_9999_is_a_bundle_error(tmp_path, year):
+    """A pandas Timestamp can lie outside them; Timestamp.replace raised ValueError."""
+    when = pd.Timestamp(np.datetime64(f"{year}-06-01", "s"), tz="UTC")
+    with pytest.raises(BundleError, match="created_at"):
+        write_bundle(pd.DataFrame({"a": [1]}), tmp_path / "b", dataset_id="t", created_at=when)

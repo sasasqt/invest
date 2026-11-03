@@ -19,6 +19,7 @@ import os
 import re
 import shutil
 import sqlite3
+import string
 import tempfile
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
@@ -42,6 +43,8 @@ _MIN_DATE, _MAX_DATE = date(1677, 9, 22), date(2262, 4, 11)
 # A fraction of a second with digits beyond the nanosecond, which pandas drops when parsing.
 _SUB_NANOSECOND = re.compile(r"[.,]\d{9}\d*?[1-9]")
 _TICKS_PER_NANOSECOND = {"ps": 10**3, "fs": 10**6, "as": 10**9}
+# SQLite compares column names with ASCII letters folded to lower case.
+_ASCII_LOWER = str.maketrans(string.ascii_uppercase, string.ascii_lowercase)
 _SQLITE_TYPES = {
     "string": "TEXT",
     "int64": "INTEGER",
@@ -211,7 +214,8 @@ def _refuse_sub_nanosecond(col: Column, value: Any) -> None:
 
 def _utc_text(moment: datetime) -> str:
     """RFC 3339 text of a UTC time. strftime("%Y") writes years before 1000 with fewer
-    than four digits on some platforms (glibc: 999), which pandas then misreads."""
+    than four digits on some platforms (glibc: 999), which is not RFC 3339, and pandas
+    reads years 1 to 99 written that way as other years (50 as 2050)."""
     text = (
         f"{moment.year:04d}-{moment.month:02d}-{moment.day:02d}"
         f"T{moment.hour:02d}:{moment.minute:02d}:{moment.second:02d}"
@@ -338,14 +342,13 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
                 "of day or time zone"
             )
         # ts.date() raises NotImplementedError beyond year 9999, so the year is checked first.
-        if not _MIN_DATE.year <= ts.year <= _MAX_DATE.year or not (
-            _MIN_DATE <= ts.date() <= _MAX_DATE
-        ):
+        day = ts.date() if _MIN_DATE.year <= ts.year <= _MAX_DATE.year else None
+        if day is None or not _MIN_DATE <= day <= _MAX_DATE:
             raise BundleError(
                 f"column {col.name!r}: {ts.year:04d}-{ts.month:02d}-{ts.day:02d} is outside "
                 f"the dates a reader can return ({_MIN_DATE} to {_MAX_DATE})"
             )
-        return ts.date().isoformat()
+        return day.isoformat()
     if col.type == "timestamp":
         ts = _as_timestamp(col, value)
         if ts.tzinfo is None:
@@ -556,10 +559,10 @@ def write_bundle(
         utc = when.astimezone(UTC) if aware else None
     except (ValueError, OverflowError):
         utc = None
-    if utc is None:
+    if utc is None or not 1 <= utc.year <= 9999:  # a pandas Timestamp can lie beyond them
         raise BundleError(
             "created_at must be timezone-aware: a datetime with a UTC offset and a UTC time "
-            f"in years 1 to 9999, not {when!r}"
+            f"in years 1 to 9999, not {_show(when)}"
         )
     created = _utc_text(utc.replace(microsecond=0))
     storage = {"format": fmt, "path": STORAGE_FORMATS[fmt]}
@@ -646,6 +649,14 @@ def _quote(name: str) -> str:
 
 
 def _write_sqlite(path: Path, cols: Sequence[Column], rows: list[list[Any]], table: str) -> None:
+    folded = [c.name.translate(_ASCII_LOWER) for c in cols]
+    if len(set(folded)) != len(folded):
+        raise BundleError(
+            "SQLite column names must differ in more than ASCII letter case: "
+            f"{[c.name for c in cols]}"
+        )
+    if any("\x00" in c.name for c in cols):
+        raise BundleError("SQLite column names cannot hold a NUL character")
     con = sqlite3.connect(path)
     try:
         defs = ", ".join(f"{_quote(c.name)} {_SQLITE_TYPES[c.type]}" for c in cols)
