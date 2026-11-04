@@ -1,0 +1,24 @@
+{
+  "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+  "date": "2026-11-04",
+  "field": "evaluation",
+  "status": "started",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "output_parent": "21fa7f18c30cdb63c7f4564c2151761d4bfa0aea",
+  "started_utc": "2026-11-04T02:02:02.226773Z",
+  "scheduled_for": "2026-11-04T02:00:00Z",
+  "budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "review_reporting": 30
+  },
+  "reconciliation": "Nov3 final report and publication verified present; no duplicate or in-flight remote job established. Nov1 missing report remains unknown/not observed.",
+  "question": "Carried OPEN-DRAWDOWN-CENSOR-001: distinguish longest observed episode from current open episode; follow metric -> JSON/report consumers and cost/equity context. Final scope after common checks.",
+  "execution": "No repository execution until credentials boundary and installed graph proven.",
+  "model": "gpt-6.1-sol (exposed by current developer runtime metadata)",
+  "effort": "unavailable"
+}
