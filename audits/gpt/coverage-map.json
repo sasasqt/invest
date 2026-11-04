@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "date": "2026-11-03",
+  "date": "2026-11-04",
   "files": [
     {
       "path": ".github/workflows/ci.yml",
@@ -67,7 +67,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -116,7 +116,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -186,7 +186,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -251,7 +251,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -342,7 +342,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -412,7 +412,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -482,7 +482,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -561,7 +561,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -640,7 +640,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -731,32 +731,7 @@
         ]
       ],
       "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [
-        [
-          16,
-          17
-        ],
-        [
-          28,
-          28
-        ],
-        [
-          36,
-          36
-        ],
-        [
-          42,
-          42
-        ],
-        [
-          50,
-          53
-        ],
-        [
-          76,
-          81
-        ]
-      ],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -852,7 +827,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -933,38 +908,8 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          1,
-          80
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          9,
-          9
-        ],
-        [
-          28,
-          28
-        ],
-        [
-          73,
-          74
-        ],
-        [
-          77,
-          77
-        ],
-        [
-          115,
-          115
-        ],
-        [
-          136,
-          136
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -1013,13 +958,13 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
       "unread_ranges": [
         [
-          1,
+          81,
           155
         ]
       ]
@@ -1067,7 +1012,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -1121,7 +1066,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -1192,26 +1137,8 @@
           7
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          81
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          7,
-          7
-        ],
-        [
-          13,
-          13
-        ],
-        [
-          16,
-          16
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -1262,16 +1189,11 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": [
-        [
-          1,
-          81
-        ]
-      ]
+      "unread_ranges": []
     },
     {
       "path": "data-mining-framework/pyproject.toml",
@@ -1338,7 +1260,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -1388,7 +1310,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -1397,7 +1319,28 @@
           1,
           3
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 1,
+          "num_statements": 1,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/artifact.py",
@@ -1441,12 +1384,7 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          1,
-          72
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -1481,11 +1419,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 48,
+          "num_statements": 50,
+          "percent_covered": 93.10344827586206,
+          "percent_covered_display": "93",
+          "missing_lines": 2,
+          "excluded_lines": 0,
+          "percent_statements_covered": 96.0,
+          "percent_statements_covered_display": "96",
+          "num_branches": 8,
+          "num_partial_branches": 2,
+          "covered_branches": 6,
+          "missing_branches": 2,
+          "percent_branches_covered": 75.0,
+          "percent_branches_covered_display": "75"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/cli.py",
@@ -1550,30 +1509,8 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          76,
-          175
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          125,
-          165
-        ],
-        [
-          220,
-          254
-        ],
-        [
-          370,
-          392
-        ],
-        [
-          482,
-          545
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -1656,8 +1593,8 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
       "unread_ranges": [
@@ -1667,9 +1604,34 @@
         ],
         [
           71,
+          75
+        ],
+        [
+          176,
           760
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 311,
+          "num_statements": 320,
+          "percent_covered": 96.98492462311557,
+          "percent_covered_display": "97",
+          "missing_lines": 9,
+          "excluded_lines": 0,
+          "percent_statements_covered": 97.1875,
+          "percent_statements_covered_display": "97",
+          "num_branches": 78,
+          "num_partial_branches": 3,
+          "covered_branches": 75,
+          "missing_branches": 3,
+          "percent_branches_covered": 96.15384615384616,
+          "percent_branches_covered_display": "96"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/diagnostics.py",
@@ -1718,18 +1680,8 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          1,
-          150
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          74
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -1767,16 +1719,37 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
       "unread_ranges": [
         [
-          1,
+          151,
           363
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 172,
+          "num_statements": 174,
+          "percent_covered": 98.03921568627452,
+          "percent_covered_display": "98",
+          "missing_lines": 2,
+          "excluded_lines": 0,
+          "percent_statements_covered": 98.85057471264368,
+          "percent_statements_covered_display": "99",
+          "num_branches": 30,
+          "num_partial_branches": 2,
+          "covered_branches": 28,
+          "missing_branches": 2,
+          "percent_branches_covered": 93.33333333333333,
+          "percent_branches_covered_display": "93"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/expressions.py",
@@ -1831,30 +1804,8 @@
           386
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          386
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          35
-        ],
-        [
-          88,
-          151
-        ],
-        [
-          277,
-          347
-        ],
-        [
-          381,
-          386
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -1935,11 +1886,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 223,
+          "num_statements": 234,
+          "percent_covered": 93.93939393939394,
+          "percent_covered_display": "94",
+          "missing_lines": 11,
+          "excluded_lines": 0,
+          "percent_statements_covered": 95.2991452991453,
+          "percent_statements_covered_display": "95",
+          "num_branches": 96,
+          "num_partial_branches": 5,
+          "covered_branches": 87,
+          "missing_branches": 9,
+          "percent_branches_covered": 90.625,
+          "percent_branches_covered_display": "91"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/inference.py",
@@ -1994,18 +1966,8 @@
           77
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          77
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          77
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -2062,11 +2024,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 20,
+          "num_statements": 20,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 2,
+          "num_partial_branches": 0,
+          "covered_branches": 2,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/ledger.py",
@@ -2132,11 +2115,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 131,
+          "num_statements": 132,
+          "percent_covered": 98.91304347826087,
+          "percent_covered_display": "99",
+          "missing_lines": 1,
+          "excluded_lines": 0,
+          "percent_statements_covered": 99.24242424242425,
+          "percent_statements_covered_display": "99",
+          "num_branches": 52,
+          "num_partial_branches": 1,
+          "covered_branches": 51,
+          "missing_branches": 1,
+          "percent_branches_covered": 98.07692307692308,
+          "percent_branches_covered_display": "98"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/reporting.py",
@@ -2201,7 +2205,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2210,7 +2214,28 @@
           1,
           114
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 66,
+          "num_statements": 66,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 6,
+          "num_partial_branches": 0,
+          "covered_branches": 6,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/src/invest_mining/search.py",
@@ -2281,34 +2306,8 @@
           320
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          361
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          16
-        ],
-        [
-          56,
-          124
-        ],
-        [
-          127,
-          205
-        ],
-        [
-          224,
-          245
-        ],
-        [
-          275,
-          318
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -2376,16 +2375,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": [
-        [
-          1,
-          361
-        ]
-      ]
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 151,
+          "num_statements": 157,
+          "percent_covered": 94.31279620853081,
+          "percent_covered_display": "94",
+          "missing_lines": 6,
+          "excluded_lines": 2,
+          "percent_statements_covered": 96.17834394904459,
+          "percent_statements_covered_display": "96",
+          "num_branches": 54,
+          "num_partial_branches": 6,
+          "covered_branches": 48,
+          "missing_branches": 6,
+          "percent_branches_covered": 88.88888888888889,
+          "percent_branches_covered_display": "89"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-mining-framework/tests/conftest.py",
@@ -2431,7 +2446,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2495,7 +2510,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2559,7 +2574,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2643,7 +2658,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2707,18 +2722,8 @@
           146
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          146
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          146
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -2765,8 +2770,8 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
       "unread_ranges": []
@@ -2833,7 +2838,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -2863,7 +2868,7 @@
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
       "content_identity": "9b801218cd234efcf1b8003739ae772ca9992487",
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "line_count": 58,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
@@ -2929,18 +2934,8 @@
           156
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          164
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          164
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -2996,20 +2991,11 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": [
-        [
-          1,
-          117
-        ],
-        [
-          157,
-          164
-        ]
-      ]
+      "unread_ranges": []
     },
     {
       "path": "data-pipeline/README.md",
@@ -3070,7 +3056,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3148,7 +3134,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3224,7 +3210,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3274,7 +3260,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3283,7 +3269,28 @@
           1,
           3
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 1,
+          "num_statements": 1,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
@@ -3379,11 +3386,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 372,
+          "num_statements": 415,
+          "percent_covered": 88.15165876777252,
+          "percent_covered_display": "88",
+          "missing_lines": 43,
+          "excluded_lines": 2,
+          "percent_statements_covered": 89.63855421686748,
+          "percent_statements_covered_display": "90",
+          "num_branches": 218,
+          "num_partial_branches": 30,
+          "covered_branches": 186,
+          "missing_branches": 32,
+          "percent_branches_covered": 85.3211009174312,
+          "percent_branches_covered_display": "85"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
@@ -3445,11 +3473,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 93,
+          "num_statements": 95,
+          "percent_covered": 96.8,
+          "percent_covered_display": "97",
+          "missing_lines": 2,
+          "excluded_lines": 0,
+          "percent_statements_covered": 97.89473684210526,
+          "percent_statements_covered_display": "98",
+          "num_branches": 30,
+          "num_partial_branches": 2,
+          "covered_branches": 28,
+          "missing_branches": 2,
+          "percent_branches_covered": 93.33333333333333,
+          "percent_branches_covered_display": "93"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
@@ -3495,7 +3544,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3504,7 +3553,28 @@
           1,
           252
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 116,
+          "num_statements": 123,
+          "percent_covered": 91.30434782608695,
+          "percent_covered_display": "91",
+          "missing_lines": 7,
+          "excluded_lines": 0,
+          "percent_statements_covered": 94.3089430894309,
+          "percent_statements_covered_display": "94",
+          "num_branches": 38,
+          "num_partial_branches": 5,
+          "covered_branches": 31,
+          "missing_branches": 7,
+          "percent_branches_covered": 81.57894736842105,
+          "percent_branches_covered_display": "82"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
@@ -3559,18 +3629,8 @@
           67
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          67
-        ]
-      ],
-      "this_run_verifier_ranges": [
-        [
-          1,
-          67
-        ]
-      ],
+      "this_run_main_ranges": [],
+      "this_run_verifier_ranges": [],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -3622,11 +3682,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 34,
+          "num_statements": 35,
+          "percent_covered": 96.22641509433963,
+          "percent_covered_display": "96",
+          "missing_lines": 1,
+          "excluded_lines": 0,
+          "percent_statements_covered": 97.14285714285714,
+          "percent_statements_covered_display": "97",
+          "num_branches": 18,
+          "num_partial_branches": 1,
+          "covered_branches": 17,
+          "missing_branches": 1,
+          "percent_branches_covered": 94.44444444444444,
+          "percent_branches_covered_display": "94"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
@@ -3728,7 +3809,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -3741,7 +3822,28 @@
           418,
           418
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 223,
+          "num_statements": 236,
+          "percent_covered": 93.33333333333333,
+          "percent_covered_display": "93",
+          "missing_lines": 13,
+          "excluded_lines": 0,
+          "percent_statements_covered": 94.49152542372882,
+          "percent_statements_covered_display": "94",
+          "num_branches": 94,
+          "num_partial_branches": 9,
+          "covered_branches": 85,
+          "missing_branches": 9,
+          "percent_branches_covered": 90.42553191489361,
+          "percent_branches_covered_display": "90"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
@@ -3810,11 +3912,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 127,
+          "num_statements": 129,
+          "percent_covered": 97.60479041916167,
+          "percent_covered_display": "98",
+          "missing_lines": 2,
+          "excluded_lines": 0,
+          "percent_statements_covered": 98.44961240310077,
+          "percent_statements_covered_display": "98",
+          "num_branches": 38,
+          "num_partial_branches": 2,
+          "covered_branches": 36,
+          "missing_branches": 2,
+          "percent_branches_covered": 94.73684210526316,
+          "percent_branches_covered_display": "95"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
@@ -3870,11 +3993,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 23,
+          "num_statements": 23,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
@@ -3936,11 +4080,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 191,
+          "num_statements": 205,
+          "percent_covered": 90.6614785992218,
+          "percent_covered_display": "91",
+          "missing_lines": 14,
+          "excluded_lines": 0,
+          "percent_statements_covered": 93.17073170731707,
+          "percent_statements_covered_display": "93",
+          "num_branches": 52,
+          "num_partial_branches": 10,
+          "covered_branches": 42,
+          "missing_branches": 10,
+          "percent_branches_covered": 80.76923076923077,
+          "percent_branches_covered_display": "81"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "data-pipeline/data-preparation/tests/test_bundle.py",
@@ -4028,7 +4193,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4093,7 +4258,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4180,7 +4345,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4230,7 +4395,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4285,7 +4450,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4348,12 +4513,7 @@
           146
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          1,
-          85
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -4378,7 +4538,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable locally; existing CI separate",
       "static_evidence_freshness": "current for listed static ranges and traced callers",
@@ -4461,7 +4621,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4529,7 +4689,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4593,7 +4753,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4668,7 +4828,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4717,7 +4877,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4786,7 +4946,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4863,7 +5023,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4911,7 +5071,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -4966,7 +5126,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5021,7 +5181,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5075,7 +5235,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5129,7 +5289,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5178,7 +5338,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5227,7 +5387,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5277,7 +5437,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5331,7 +5491,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5385,7 +5545,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5439,7 +5599,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5493,7 +5653,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5547,7 +5707,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5601,7 +5761,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5655,7 +5815,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5704,7 +5864,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5753,7 +5913,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5807,7 +5967,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5861,7 +6021,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5915,7 +6075,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -5970,7 +6130,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6024,7 +6184,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6096,7 +6256,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6162,7 +6322,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6237,7 +6397,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6291,7 +6451,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6368,7 +6528,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6381,7 +6541,12 @@
       "category": "documentation",
       "line_count": 192,
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          98,
+          192
+        ]
+      ],
       "main_ranges": [],
       "verifier_a_ranges": [
         [
@@ -6402,10 +6567,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": "2026-11-02",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -6416,8 +6581,18 @@
           140
         ]
       ],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          100,
+          115
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          98,
+          192
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -6430,6 +6605,23 @@
           ],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              100,
+              115
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              98,
+              192
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "content_history": [
@@ -6447,14 +6639,14 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
       "unread_ranges": [
         [
           1,
-          192
+          97
         ]
       ]
     },
@@ -6526,8 +6718,8 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
       "unread_ranges": [
@@ -6544,7 +6736,12 @@
       "category": "configuration",
       "line_count": 15,
       "inspection_depth": "metadata/hash/parser only",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          1,
+          15
+        ]
+      ],
       "main_ranges": [],
       "verifier_a_ranges": [],
       "reviewer_producer": [
@@ -6559,17 +6756,27 @@
       "lenses": [
         "inventory"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": null,
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          15
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          1,
+          15
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -6577,19 +6784,31 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              1,
+              15
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              1,
+              15
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          1,
-          15
-        ]
-      ]
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": []
     },
     {
       "path": "strategy-evaluation/pyproject.toml",
@@ -6656,7 +6875,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6706,7 +6925,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6715,7 +6934,28 @@
           1,
           3
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 1,
+          "num_statements": 1,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 0,
+          "num_partial_branches": 0,
+          "covered_branches": 0,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/cli.py",
@@ -6761,7 +7001,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -6770,7 +7010,28 @@
           1,
           378
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 182,
+          "num_statements": 188,
+          "percent_covered": 95.86776859504133,
+          "percent_covered_display": "96",
+          "missing_lines": 6,
+          "excluded_lines": 0,
+          "percent_statements_covered": 96.80851063829788,
+          "percent_statements_covered_display": "97",
+          "num_branches": 54,
+          "num_partial_branches": 4,
+          "covered_branches": 50,
+          "missing_branches": 4,
+          "percent_branches_covered": 92.5925925925926,
+          "percent_branches_covered_display": "93"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/config.py",
@@ -6779,7 +7040,12 @@
       "category": "first_party_source",
       "line_count": 230,
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          1,
+          230
+        ]
+      ],
       "main_ranges": [
         [
           1,
@@ -6801,10 +7067,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": "2026-11-02",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -6815,8 +7081,18 @@
           115
         ]
       ],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          230
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          1,
+          230
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -6829,6 +7105,23 @@
           ],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              1,
+              230
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              1,
+              230
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "content_history": [
@@ -6846,16 +7139,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          1,
-          230
-        ]
-      ]
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 137,
+          "num_statements": 140,
+          "percent_covered": 96.7032967032967,
+          "percent_covered_display": "97",
+          "missing_lines": 3,
+          "excluded_lines": 0,
+          "percent_statements_covered": 97.85714285714286,
+          "percent_statements_covered_display": "98",
+          "num_branches": 42,
+          "num_partial_branches": 3,
+          "covered_branches": 39,
+          "missing_branches": 3,
+          "percent_branches_covered": 92.85714285714286,
+          "percent_branches_covered_display": "93"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/engine.py",
@@ -6864,7 +7173,12 @@
       "category": "first_party_source",
       "line_count": 608,
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          395,
+          480
+        ]
+      ],
       "main_ranges": [
         [
           1,
@@ -6903,10 +7217,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": "2026-11-02",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -6917,7 +7231,12 @@
           579
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          395,
+          480
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -6935,6 +7254,18 @@
             ]
           ],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              395,
+              480
+            ]
+          ],
+          "verifier_ranges": [],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "content_history": [
@@ -6952,16 +7283,41 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
       "unread_ranges": [
         [
           1,
+          394
+        ],
+        [
+          481,
           608
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 285,
+          "num_statements": 299,
+          "percent_covered": 93.82716049382717,
+          "percent_covered_display": "94",
+          "missing_lines": 14,
+          "excluded_lines": 0,
+          "percent_statements_covered": 95.31772575250837,
+          "percent_statements_covered_display": "95",
+          "num_branches": 106,
+          "num_partial_branches": 9,
+          "covered_branches": 95,
+          "missing_branches": 11,
+          "percent_branches_covered": 89.62264150943396,
+          "percent_branches_covered_display": "90"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
@@ -6972,12 +7328,16 @@
       "inspection_depth": "semantic exact ranges",
       "line_ranges": [
         [
-          50,
-          147
+          1,
+          212
         ],
         [
           250,
           337
+        ],
+        [
+          449,
+          491
         ]
       ],
       "main_ranges": [
@@ -7006,10 +7366,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "status": "partially_reviewed",
-      "last_review_date": "2026-11-02",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -7020,8 +7380,30 @@
           337
         ]
       ],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          147
+        ],
+        [
+          449,
+          491
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          26,
+          123
+        ],
+        [
+          126,
+          212
+        ],
+        [
+          449,
+          491
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7043,27 +7425,73 @@
             ]
           ],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              1,
+              147
+            ],
+            [
+              449,
+              491
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              26,
+              123
+            ],
+            [
+              126,
+              212
+            ],
+            [
+              449,
+              491
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
       "unread_ranges": [
         [
-          1,
-          49
-        ],
-        [
-          148,
+          213,
           249
         ],
         [
           338,
-          491
+          448
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 182,
+          "num_statements": 184,
+          "percent_covered": 98.70689655172414,
+          "percent_covered_display": "99",
+          "missing_lines": 2,
+          "excluded_lines": 0,
+          "percent_statements_covered": 98.91304347826087,
+          "percent_statements_covered_display": "99",
+          "num_branches": 48,
+          "num_partial_branches": 1,
+          "covered_branches": 47,
+          "missing_branches": 1,
+          "percent_branches_covered": 97.91666666666667,
+          "percent_branches_covered_display": "98"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
@@ -7144,7 +7572,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -7161,7 +7589,28 @@
           349,
           401
         ]
-      ]
+      ],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 189,
+          "num_statements": 192,
+          "percent_covered": 97.5,
+          "percent_covered_display": "98",
+          "missing_lines": 3,
+          "excluded_lines": 0,
+          "percent_statements_covered": 98.4375,
+          "percent_statements_covered_display": "98",
+          "num_branches": 48,
+          "num_partial_branches": 3,
+          "covered_branches": 45,
+          "missing_branches": 3,
+          "percent_branches_covered": 93.75,
+          "percent_branches_covered_display": "94"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
@@ -7191,17 +7640,27 @@
       "lenses": [
         "inventory"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "status": "reviewed",
-      "last_review_date": "2026-11-02",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          312
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          173,
+          312
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7219,14 +7678,52 @@
             ]
           ],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              1,
+              312
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              173,
+              312
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 173,
+          "num_statements": 174,
+          "percent_covered": 97.88135593220339,
+          "percent_covered_display": "98",
+          "missing_lines": 1,
+          "excluded_lines": 0,
+          "percent_statements_covered": 99.42528735632185,
+          "percent_statements_covered_display": "99",
+          "num_branches": 62,
+          "num_partial_branches": 4,
+          "covered_branches": 58,
+          "missing_branches": 4,
+          "percent_branches_covered": 93.54838709677419,
+          "percent_branches_covered_display": "94"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
@@ -7282,11 +7779,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 26,
+          "num_statements": 27,
+          "percent_covered": 94.87179487179488,
+          "percent_covered_display": "95",
+          "missing_lines": 1,
+          "excluded_lines": 0,
+          "percent_statements_covered": 96.29629629629629,
+          "percent_statements_covered_display": "96",
+          "num_branches": 12,
+          "num_partial_branches": 1,
+          "covered_branches": 11,
+          "missing_branches": 1,
+          "percent_branches_covered": 91.66666666666667,
+          "percent_branches_covered_display": "92"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/stats.py",
@@ -7298,7 +7816,7 @@
       "line_ranges": [
         [
           1,
-          155
+          213
         ]
       ],
       "main_ranges": [
@@ -7322,10 +7840,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "partially_reviewed",
-      "last_review_date": "2026-10-31",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -7336,7 +7854,12 @@
           155
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          156,
+          213
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -7345,19 +7868,47 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              156,
+              213
+            ]
+          ],
+          "verifier_ranges": [],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          156,
-          213
-        ]
-      ]
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 97,
+          "num_statements": 102,
+          "percent_covered": 92.42424242424242,
+          "percent_covered_display": "92",
+          "missing_lines": 5,
+          "excluded_lines": 0,
+          "percent_statements_covered": 95.09803921568627,
+          "percent_statements_covered_display": "95",
+          "num_branches": 30,
+          "num_partial_branches": 5,
+          "covered_branches": 25,
+          "missing_branches": 5,
+          "percent_branches_covered": 83.33333333333333,
+          "percent_branches_covered_display": "83"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
@@ -7424,11 +7975,32 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": []
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 103,
+          "num_statements": 107,
+          "percent_covered": 94.48275862068965,
+          "percent_covered_display": "94",
+          "missing_lines": 4,
+          "excluded_lines": 3,
+          "percent_statements_covered": 96.26168224299066,
+          "percent_statements_covered_display": "96",
+          "num_branches": 38,
+          "num_partial_branches": 4,
+          "covered_branches": 34,
+          "missing_branches": 4,
+          "percent_branches_covered": 89.47368421052632,
+          "percent_branches_covered_display": "89"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/src/invest_evaluation/validation.py",
@@ -7440,11 +8012,7 @@
       "line_ranges": [
         [
           1,
-          100
-        ],
-        [
-          175,
-          203
+          240
         ]
       ],
       "main_ranges": [
@@ -7473,10 +8041,10 @@
         "contract consistency",
         "causality/accounting"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "partially_reviewed",
-      "last_review_date": "2026-10-31",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -7491,8 +8059,18 @@
           203
         ]
       ],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          50,
+          174
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          56,
+          240
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7500,23 +8078,52 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              50,
+              174
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              56,
+              240
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          101,
-          174
-        ],
-        [
-          204,
-          240
-        ]
-      ]
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": [],
+      "remote_test_coverage": {
+        "run": 41620332472,
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "summary": {
+          "covered_lines": 80,
+          "num_statements": 80,
+          "percent_covered": 100.0,
+          "percent_covered_display": "100",
+          "missing_lines": 0,
+          "excluded_lines": 0,
+          "percent_statements_covered": 100.0,
+          "percent_statements_covered_display": "100",
+          "num_branches": 26,
+          "num_partial_branches": 0,
+          "covered_branches": 26,
+          "missing_branches": 0,
+          "percent_branches_covered": 100.0,
+          "percent_branches_covered_display": "100"
+        },
+        "scope": "existing installed-wheel CI coverage, no semantic credit"
+      }
     },
     {
       "path": "strategy-evaluation/tests/conftest.py",
@@ -7562,7 +8169,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -7580,7 +8187,12 @@
       "category": "tests",
       "line_count": 73,
       "inspection_depth": "metadata/hash/parser only",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          1,
+          73
+        ]
+      ],
       "main_ranges": [],
       "verifier_a_ranges": [],
       "reviewer_producer": [
@@ -7596,17 +8208,27 @@
       "lenses": [
         "inventory"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "checked_automatically",
-      "last_review_date": null,
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          73
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          1,
+          73
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7614,19 +8236,31 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              1,
+              73
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              1,
+              73
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          1,
-          73
-        ]
-      ]
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
+      "unread_ranges": []
     },
     {
       "path": "strategy-evaluation/tests/test_engine.py",
@@ -7709,7 +8343,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -7730,7 +8364,7 @@
       "line_ranges": [
         [
           75,
-          125
+          138
         ]
       ],
       "main_ranges": [],
@@ -7748,17 +8382,27 @@
       "lenses": [
         "inventory"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "status": "partially_reviewed",
-      "last_review_date": "2026-11-02",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_main_ranges": [
+        [
+          75,
+          125
+        ]
+      ],
+      "this_run_verifier_ranges": [
+        [
+          91,
+          138
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7771,20 +8415,37 @@
             ]
           ],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [
+            [
+              75,
+              125
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              91,
+              138
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
       "unread_ranges": [
         [
           1,
           74
         ],
         [
-          126,
+          139,
           186
         ]
       ]
@@ -7833,7 +8494,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -7851,7 +8512,16 @@
       "category": "tests",
       "line_count": 851,
       "inspection_depth": "metadata/hash/parser only",
-      "line_ranges": [],
+      "line_ranges": [
+        [
+          72,
+          112
+        ],
+        [
+          731,
+          762
+        ]
+      ],
       "main_ranges": [],
       "verifier_a_ranges": [],
       "reviewer_producer": [
@@ -7867,17 +8537,26 @@
       "lenses": [
         "inventory"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "checked_automatically",
-      "last_review_date": null,
+      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-04",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "this_run_main_ranges": [],
-      "this_run_verifier_ranges": [],
+      "this_run_verifier_ranges": [
+        [
+          72,
+          112
+        ],
+        [
+          731,
+          762
+        ]
+      ],
       "review_history": [
         {
           "date": "2026-11-02",
@@ -7885,16 +8564,40 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-04",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "main_ranges": [],
+          "verifier_ranges": [
+            [
+              72,
+              112
+            ],
+            [
+              731,
+              762
+            ]
+          ],
+          "scope": "static semantics; standalone synthetic oracle not product coverage"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-04",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for the named ranges and traced consumers",
       "unread_ranges": [
         [
           1,
+          71
+        ],
+        [
+          113,
+          730
+        ],
+        [
+          763,
           851
         ]
       ]
@@ -7943,7 +8646,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -7998,7 +8701,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -8072,7 +8775,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -8127,7 +8830,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -8191,7 +8894,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -8246,7 +8949,7 @@
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "inventory_date": "2026-11-03",
+      "inventory_date": "2026-11-04",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
       "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
@@ -8265,7 +8968,7 @@
     "output_commit": "34407920f681be71913f7457db116ed8c0a85b3e",
     "rows": 110
   },
-  "run_id": "33b1ca3e-00cc-8323-bcbc-0a92db983696",
+  "run_id": "223322f0-d428-8329-9139-ee662049dd92",
   "scope_note": "Whole inventory is current. Reused identical-blob ranges establish earlier static reading only; runtime/consumer changes can invalidate behavior evidence.",
-  "current_run_new_cumulative_semantic_lines": 268
+  "current_run_new_cumulative_semantic_lines": 911
 }

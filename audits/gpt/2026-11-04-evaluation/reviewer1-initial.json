@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-04",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "saved_before_independent_review": true,
+  "candidates": [
+    {
+      "id": "D1",
+      "related": "GA-2026-11-02-1 / RA-2026-11-01-4",
+      "kind": "known report contradiction",
+      "initial": "keep known static issue",
+      "severity": "medium",
+      "reason": "report _fmt ignores extra.censored; structured maximum duration lower-bound uncertainty invisible",
+      "evidence": "metrics108-112, reporting173-179/239-300, METRICS6",
+      "missing": "untouched product/report runtime twice+control"
+    },
+    {
+      "id": "D2",
+      "kind": "proposed additional max-duration censor defect",
+      "initial": "drop as separate confirmed bug; retain interpretation limit",
+      "severity": "medium if falsely attributed episode",
+      "reason": "censored bool describes any open episode; maximum final duration across all episodes is uncertain even when current observed open length < earlier completed max. Lower bound valid, so plus means aggregate lower-bound, not selected episode unrecovered. No specified metric-local flag semantics enough to assert wrongness.",
+      "inputs": {
+        "closedLongestThenShortOpen": [
+          90,
+          85,
+          90,
+          100,
+          95
+        ],
+        "openLongest": [
+          90,
+          100,
+          80,
+          85,
+          90
+        ],
+        "allRecovered": [
+          90,
+          85,
+          90,
+          100
+        ]
+      },
+      "missing": "explicit censor attribute contract; untouched execution"
+    },
+    {
+      "id": "D3",
+      "kind": "exploratory config/validation propagation",
+      "initial": "drop current blocker",
+      "severity": "none established",
+      "reason": "seeded example valid; config types/rates preserve declared V0 and annualization; no max_drawdown_duration input to validation. Check boundary consumers before final.",
+      "missing": "product runtime"
+    },
+    {
+      "id": "D4",
+      "related": "GA-2026-11-02-2 / RA-2026-11-01-5",
+      "kind": "known optional summary fields",
+      "initial": "keep prior optional status",
+      "severity": "low",
+      "reason": "computed recovery/time-under-water absent from picks; no value correction demonstrated",
+      "missing": "policy stronger than should; product report check"
+    }
+  ]
+}

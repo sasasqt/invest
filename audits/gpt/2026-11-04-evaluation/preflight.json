@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-04",
+  "field": "evaluation",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "local_execution": "not established; Docker absent; prior bwrap failure retained without unchanged retry; no product imports",
+  "network_status": "environment_status tool unavailable; /etc/codex/network-policy.json absent; connector reads available, no inferred execution isolation",
+  "new_remote_dispatch": "none; callable GitHub tools expose reads/artifact download and reruns, no workflow dispatch. No rerun solely for green results.",
+  "remote_evidence": "Nov3 run41620332472 newly acquired and verified at artifact/source/runner identity and manifest/control scope; tests652+repeat652, independent eval289; not custom fixture execution",
+  "runner_status": "INV-PR32-001 resolved per maintained independent source/CI review at cd4d43b; PR32 still has002/003/004/005; reviewed PR36 e0181fc contains corrections. No blanket claim PR36 current head is unreviewed or broken.",
+  "qualification_remaining": "No local native locked environment; expected-distribution verifier does not inventory unexpected packages; custom audit fixture dispatch unavailable; full-host resource/metadata limits remain.",
+  "active_jobs": [],
+  "old_named_jobs": "historical, no pending job inferred",
+  "model": "gpt-6.1-sol (exposed current runtime metadata)",
+  "effort": "unavailable",
+  "token_cost_allowance": "unavailable"
+}

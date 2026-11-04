@@ -36,3 +36,7 @@ GA-2026-11-02-3: **known K14 / REVIEW-16**, fundamentals reader required-key val
 GA-2026-10-31-1 / RA-2026-11-01-2 remains **known/open, medium/P2**, independently revalidated on `9913f94b9b795bd9633a6a683e9f420301e400b3`: all four pointwise unary operators lose pre-membership history before a surrounding time-series operation. Search/confirmation/export inherit the evaluator; final eligibility masking is separately correct. Entry/re-entry contract arithmetic gives13/61; premature-mask trace model gives missing. These are not product runtime reproductions.
 
 No new root cause, new optional recommendation or locally runtime-confirmed product defect. Additional future-membership/purge concern dropped at traced scope; runtime fixtures remain queued. [Independent record](2026-11-03-mining/reviewer2/independent-verdict.json). Earlier findings above remain historical at their stated SHAs; today's visit does not revalidate unrelated fields.
+
+## 2026-11-04 evaluation visit
+
+No new defect, runtime-confirmed defect or optional recommendation. GA-2026-11-02-1 / RA-2026-11-01-4 remains a known medium static report omission at `9913f94b9b795bd9633a6a683e9f420301e400b3`. Its censor flag can legitimately describe uncertainty in the eventual maximum even when the earlier longest observed episode recovered. Do not label that recovered episode open. GA-2026-11-02-2 remains optional. [Independent record](2026-11-04-evaluation/reviewer2/independent-verdict.json).

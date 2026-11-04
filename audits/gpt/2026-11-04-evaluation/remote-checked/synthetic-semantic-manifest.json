@@ -1,0 +1,188 @@
+{
+  "version": 2,
+  "volatile_json_keys": [
+    "created_at",
+    "created_utc",
+    "recorded_at",
+    "retrieved_at"
+  ],
+  "records": [
+    {
+      "path": "data/fundamentals/data.parquet",
+      "comparison": "raw bytes; no undeclared exclusion",
+      "sha256": "b043d42db1add6664ab9dfdb8a41fff509e4f1a4deee07f25b91e418c3ae6353"
+    },
+    {
+      "path": "data/fundamentals/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "90857978d353094928cfc820cd11dcd65332236f6e7cd9b2aebe7688bb4b9e1d"
+    },
+    {
+      "path": "data/market/data.parquet",
+      "comparison": "raw bytes; no undeclared exclusion",
+      "sha256": "7b2c70d580438e524a812c309cef096513a7c98ac0e4ae0bb50e31e058b10e66"
+    },
+    {
+      "path": "data/market/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "3ea5b5d04b345637d6e26ed229e5822c9362757b3da7d8b4a11676a26a4b6d59"
+    },
+    {
+      "path": "data/universe/data.parquet",
+      "comparison": "raw bytes; no undeclared exclusion",
+      "sha256": "5f5f186aa8fb1e4309d32047dda6b7709ff13aff74b8aa1482c228473284392c"
+    },
+    {
+      "path": "data/universe/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "33b503dff704f1d3c26da0df27a8a03ae2c752a9fe8e437e53766bfb3e218678"
+    },
+    {
+      "path": "eval/config.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "314dc4a88f776873953703cb496e993c55129eb79fc01cb04b871e6c3782e6d5"
+    },
+    {
+      "path": "eval/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "926204b253db58be47766906dd784b152e30c5707105334d294b8287d55ed51d"
+    },
+    {
+      "path": "eval/metrics.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "79682647814e2b2c66767bb3cc937d8f213cec6ab97a8a92f17fc57fae85d711"
+    },
+    {
+      "path": "eval/report.md",
+      "comparison": "UTF-8 text; output root normalized",
+      "sha256": "723230366217c4814d05442b64d8174a9d116611c1e34cc95d14a7a81f4d37a5"
+    },
+    {
+      "path": "eval/statistics.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "967ac9aad55d5e2ae7b6e2a362b0e16ebf480e616dba5b0b0858e5b65239a959"
+    },
+    {
+      "path": "eval/tables/daily.csv",
+      "comparison": "CSV bytes",
+      "sha256": "ef7855e60ddcb5ed21bd84f507b705ec9d3607486e40f5613760fcc9ceff0bd1"
+    },
+    {
+      "path": "eval/tables/episodes.csv",
+      "comparison": "CSV bytes",
+      "sha256": "368e14f06d5818d9fb56243b039fdf7cac039d90930a1f335f52b66898fee4ba"
+    },
+    {
+      "path": "eval/tables/scenarios.csv",
+      "comparison": "CSV bytes",
+      "sha256": "f11c4a0f8fdf61e9830ffc9f7f45d0bc994b2336f6c7599ea9deebc5c78f2636"
+    },
+    {
+      "path": "eval/tables/trades.csv",
+      "comparison": "CSV bytes",
+      "sha256": "bfea164da558e7f632b96c71aed3d27e7ccea3cda06dc52c3619ecdafc1fb9c7"
+    },
+    {
+      "path": "eval/verdict.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "43d12dc5048fafdfe14f40798cc0de52638d78dc897ccc0f7a1aace81c62a397"
+    },
+    {
+      "path": "mining/ledger.jsonl",
+      "comparison": "jsonl; record order retained; declared volatile keys normalized",
+      "sha256": "00ae2fbb4a1650245d9c8e959a6213b3878e6d2e31d4d72199cdc53dc3bc9692"
+    },
+    {
+      "path": "mining/search/config.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "b9454e94a8e51471765e7789c66ffaae1eee0e50fffa4fde58f9e57442573cb3"
+    },
+    {
+      "path": "mining/search/confirmation.csv",
+      "comparison": "CSV bytes",
+      "sha256": "e7cd5a0e961d20c480fbc32bd05d5f33bef04d847e722ecf0820085735256a18"
+    },
+    {
+      "path": "mining/search/factors/f_97e8945c84e9.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "a78301df79a7d7f67f5bc8c869ba600c17e4c20f870a9a2250575eaf1e1be3e6"
+    },
+    {
+      "path": "mining/search/factors/f_a763c814692c.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "0e4a41c25d64e549c6f5964eb09137afeeaa5c233818c439a135e8a482a41376"
+    },
+    {
+      "path": "mining/search/factors/f_c46b895a8bda.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "0331977ca27faaffbc5f5c7af95b8083db36eff56f8718d5a46f3e376f3df760"
+    },
+    {
+      "path": "mining/search/factors/f_de2c232de3dd.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "c1fb7ce3512f3af06f2c95ee4cfb40df810bc95f15abc5a9307798a0bba375aa"
+    },
+    {
+      "path": "mining/search/factors/f_f4031d273d5d.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "dcdf778d66dd59991c31fa51c115d6ab8ed16297d61080c2cacfafd1b455fb05"
+    },
+    {
+      "path": "mining/search/ledger.csv",
+      "comparison": "CSV bytes",
+      "sha256": "9b7f9c015cbac7eb81165c62d40702ca29a792368cc661c4e5eae9b102c9f5d3"
+    },
+    {
+      "path": "quantiles/config.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "fa309ea85e8e756b5a7574099c3f517c6b967f0fe9778a59f109286c617bc0ed"
+    },
+    {
+      "path": "quantiles/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "3792004d8eeab855a2cbb5ec9f30dfdd02ced9c4f689719787e6e6818c30f394"
+    },
+    {
+      "path": "quantiles/quantiles.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "c42f926f9774aab941cd9e5563cd6117b7db0084e06e782751ed929aaf726f52"
+    },
+    {
+      "path": "quantiles/report.md",
+      "comparison": "UTF-8 text; output root normalized",
+      "sha256": "5a0079a0b9d0dc499a9b3d8ac2a61fda0768e639079c59d45ab6f169d9364d14"
+    },
+    {
+      "path": "quantiles/tables/daily_returns.csv.gz",
+      "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+      "sha256": "315af256426366da679c4a608aca865fac8af5904b87b7fc7d9e08c2f8d79f91"
+    },
+    {
+      "path": "quantiles/tables/memberships.csv.gz",
+      "comparison": "decompressed CSV bytes; gzip header metadata excluded",
+      "sha256": "766d087aa9376d7c6b656351a0ade3ed62b9b22fa167bf9f363551c01d15d738"
+    },
+    {
+      "path": "quantiles/tables/portfolios.csv",
+      "comparison": "CSV bytes",
+      "sha256": "8bf8ecd6a089080d7d791610f3957358231f6d7e47450a16b5ad47d44c3d5318"
+    },
+    {
+      "path": "signals/data.parquet",
+      "comparison": "raw bytes; no undeclared exclusion",
+      "sha256": "9b2e5f7e2a44a20221d2b93afd67f338f2bb54e58ee55a7e70df28e63002897e"
+    },
+    {
+      "path": "signals/manifest.json",
+      "comparison": "json; declared volatile keys and output root normalized",
+      "sha256": "cf97d0aeece708c1501d6d0c97d8e841e899c04749ce68f27f70d46d780bf571"
+    }
+  ],
+  "figures_present_nonempty": [
+    "eval/figures/diagnostics.png",
+    "eval/figures/equity_drawdown.png",
+    "eval/figures/scenarios.png",
+    "quantiles/figures/quantile_portfolios.png"
+  ],
+  "figure_byte_comparison": "excluded; source tables participate in the gate"
+}

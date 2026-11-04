@@ -1,0 +1,104 @@
+[
+  {
+    "path": "CI_CD_GUIDELINES.md",
+    "blob": "7b6fb7fc18723458b71876e55cf36bbc795bc2d5",
+    "bytes": 8072,
+    "lines": 60
+  },
+  {
+    "path": "GIT_GUIDELINES.md",
+    "blob": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02",
+    "bytes": 14606,
+    "lines": 139
+  },
+  {
+    "path": "PYTHON_GUIDELINES.md",
+    "blob": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d",
+    "bytes": 11491,
+    "lines": 126
+  },
+  {
+    "path": "TODO.md",
+    "blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224",
+    "bytes": 43618,
+    "lines": 109
+  },
+  {
+    "path": "docs/ARCHITECTURE.md",
+    "blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb",
+    "bytes": 13923,
+    "lines": 146
+  },
+  {
+    "path": "strategy-evaluation/METRICS.md",
+    "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11",
+    "bytes": 22572,
+    "lines": 192
+  },
+  {
+    "path": "strategy-evaluation/README.md",
+    "blob": "da30fb6ad0907e28e082127a91fdafc8636e43fb",
+    "bytes": 16646,
+    "lines": 85
+  },
+  {
+    "path": "strategy-evaluation/examples/quantile_long_short.json",
+    "blob": "cbe0d7b22eb6c25198d74d83297924582a1c0a82",
+    "bytes": 705,
+    "lines": 15
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f",
+    "bytes": 10006,
+    "lines": 230
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+    "blob": "0a01b02d11f1c21c0a566e10c48b5cae49501ded",
+    "bytes": 27735,
+    "lines": 608
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75",
+    "bytes": 19776,
+    "lines": 491
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31",
+    "bytes": 12514,
+    "lines": 312
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+    "blob": "117d07804665b786884616be10f54e7fbf8e1fdb",
+    "bytes": 7738,
+    "lines": 213
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+    "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a",
+    "bytes": 8806,
+    "lines": 240
+  },
+  {
+    "path": "strategy-evaluation/tests/test_config.py",
+    "blob": "c414a7390315cec7bc80ee60e5f640f0c1c23cb8",
+    "bytes": 2343,
+    "lines": 73
+  },
+  {
+    "path": "strategy-evaluation/tests/test_metrics.py",
+    "blob": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee",
+    "bytes": 8129,
+    "lines": 186
+  },
+  {
+    "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+    "blob": "2b7f7a3641323d99eee8f8e01ae213a5b15ef7eb",
+    "bytes": 34392,
+    "lines": 851
+  }
+]

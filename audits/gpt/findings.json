@@ -213,6 +213,14 @@
           "date": "2026-11-02",
           "status": "known/open",
           "scope": "static verified, peer origin preserved"
+        },
+        {
+          "date": "2026-11-04",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "status": "known/open; independent static scope revalidated",
+          "advance": "Aggregate maximum-duration lower bound distinguished from per-episode recovery; no new numerical defect or verdict effect established.",
+          "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
         }
       ],
       "freshness_history": [
@@ -223,7 +231,9 @@
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
         }
-      ]
+      ],
+      "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "current_static_evidence": "2026-11-04-evaluation/reviewer-comparison.json"
     },
     {
       "id": "GA-2026-11-02-2",
@@ -261,6 +271,14 @@
         {
           "date": "2026-11-02",
           "status": "known/open; optional recommendation"
+        },
+        {
+          "date": "2026-11-04",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+          "status": "known/open; independent static scope revalidated",
+          "advance": "Aggregate maximum-duration lower bound distinguished from per-episode recovery; no new numerical defect or verdict effect established.",
+          "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
         }
       ],
       "freshness_history": [
@@ -271,7 +289,9 @@
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
         }
-      ]
+      ],
+      "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "current_static_evidence": "2026-11-04-evaluation/reviewer-comparison.json"
     },
     {
       "id": "GA-2026-11-02-3",
@@ -397,6 +417,19 @@
       "reason": "Combined regression gap belongs to existing GA1 acceptance, no distinct root/new recommendation",
       "counterfactual": "Different demonstrated contract boundary/root cause",
       "evidence": "2026-11-03-mining/reviewer2/independent-verdict.json"
+    },
+    {
+      "key": "2026-11-04-D2",
+      "related": "OPEN-DRAWDOWN-CENSOR-001",
+      "reason": "Both drop separate numeric bug: any-open flag is defensible aggregate uncertainty; do not call completed argmax episode unrecovered.",
+      "counterfactual": "Contract explicitly binds censored to selected argmax episode, or incorrect observed maximum demonstrated",
+      "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
+    },
+    {
+      "key": "2026-11-04-D3",
+      "reason": "Both drop extra config/verdict defect; censor field is downstream reporting only.",
+      "counterfactual": "Duration/censor reaches verdict or config changes capital/annualization semantics",
+      "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
     }
   ],
   "run_history": [

@@ -1,0 +1,16 @@
+{
+  "tracked_files": 111,
+  "local_files_byte_verified": 17,
+  "primary_semantic_lines": 1156,
+  "helper_semantic_lines_separate": 1087,
+  "newly_covered_lines": 911,
+  "statuses": {
+    "blocked": 22,
+    "checked_automatically": 14,
+    "inventoried": 20,
+    "partially_reviewed": 17,
+    "reviewed": 38
+  },
+  "remaining_unread_lines": 19360,
+  "unread_paths": 68
+}

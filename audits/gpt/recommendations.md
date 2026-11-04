@@ -29,3 +29,9 @@ Delivery reconciliation: existing **INV-PR32-001 P1/high** remains unresolved at
 ## 2026-11-02 data follow-up
 
 No optional new recommendation. Existing REVIEW-16 / K14 needs safe malformed-bundle/control verification; follow the existing correction scope rather than open a duplicate issue. No fix or saved-result regeneration performed.
+
+## 2026-11-04 current operational update
+
+Historical paragraphs above retain original provenance. Main CI is now six green checks at `9913f94b9b795bd9633a6a683e9f420301e400b3`; the earlier red-main statement is historical. INV-PR32-001 is resolved at the reviewed correction scope, while PR32 retains002/003/004/005 and PR36 e0181fc contains their corrections. Existing Nov3 remote evidence has now been hash/identity verified:652tests+652repeat,289independent evaluation, boundary controls and expected locked distributions. No custom fixture dispatch was available.
+
+Refresh existing GA-2026-11-02-1 acceptance: report maximum observed duration as a lower bound when any episode remains open, without saying an earlier recovered maximum remains open. Preserve values/statuses; test both orderings, tied lengths and recovered control. No new recommendation ID;0daily optional additions. Next: custom isolated report cases, complete installed-package inventory/runner qualification, and queued settlement benchmark check on the next feasible evaluation visit.

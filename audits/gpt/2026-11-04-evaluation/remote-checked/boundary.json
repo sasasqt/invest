@@ -1,0 +1,14 @@
+{
+  "unprivileged_uid": true,
+  "no_new_privileges": true,
+  "no_capabilities": true,
+  "outside_fixture_absent": true,
+  "host_process_not_visible": true,
+  "host_canary_env_absent": true,
+  "container_socket_absent": true,
+  "source_readable": true,
+  "source_write_denied": true,
+  "network_connection_denied": true,
+  "child_inherits_outside_file_and_env_denial": true,
+  "output_writable": true
+}

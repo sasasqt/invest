@@ -1,0 +1,26 @@
+[
+  {
+    "path": "strategy-evaluation/METRICS.md",
+    "sha": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/config.py",
+    "sha": "c4803c5d4d5814143a24b25611ce678c2b037b3f"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "sha": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "sha": "0d4475c784ea547dd7fc52aaf13f0643baa8db31"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+    "sha": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+  },
+  {
+    "path": "strategy-evaluation/tests/test_metrics.py",
+    "sha": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee"
+  }
+]

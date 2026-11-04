@@ -386,6 +386,202 @@
         50
       ],
       "legacy_note": "Imported initial 50/50 retained in history; explicit dispatcher current 60/40 plan used."
+    },
+    {
+      "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+      "field": "evaluation",
+      "planned_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "imported_legacy_allocation": [
+        50,
+        50
+      ],
+      "actual_unique_lines": {
+        "exploitation": 526,
+        "exploration": 318,
+        "mandatory_callers_contracts": 312
+      },
+      "actual_discretionary_percent": {
+        "exploitation": 62.322274881516584,
+        "exploration": 37.677725118483416
+      },
+      "ranges": [
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              1,
+              147
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              1,
+              312
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_metrics.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              75,
+              125
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee"
+        },
+        {
+          "path": "strategy-evaluation/METRICS.md",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              100,
+              115
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+        },
+        {
+          "path": "strategy-evaluation/examples/quantile_long_short.json",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              15
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "cbe0d7b22eb6c25198d74d83297924582a1c0a82"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/config.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              230
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_config.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              73
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "c414a7390315cec7bc80ee60e5f640f0c1c23cb8"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              449,
+              491
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              50,
+              174
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              395,
+              480
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "0a01b02d11f1c21c0a566e10c48b5cae49501ded"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              156,
+              213
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "117d07804665b786884616be10f54e7fbf8e1fdb"
+        }
+      ],
+      "selection": {
+        "seed": "77333262415347827661791097163978354099043051747661456174714419646704222482269",
+        "eligible": [
+          "docs/QUANTILE_ANALYSIS.md",
+          "strategy-evaluation/README.md",
+          "strategy-evaluation/examples/quantile_long_short.json",
+          "strategy-evaluation/src/invest_evaluation/__init__.py",
+          "strategy-evaluation/src/invest_evaluation/cli.py",
+          "strategy-evaluation/src/invest_evaluation/config.py",
+          "strategy-evaluation/src/invest_evaluation/quantiles.py",
+          "strategy-evaluation/src/invest_evaluation/stats.py",
+          "strategy-evaluation/src/invest_evaluation/validation.py",
+          "strategy-evaluation/tests/conftest.py",
+          "strategy-evaluation/tests/test_config.py",
+          "strategy-evaluation/tests/test_engine.py",
+          "strategy-evaluation/tests/test_quantiles.py",
+          "strategy-evaluation/tests/test_stats_and_cli.py",
+          "strategy-evaluation/tests/test_validation.py",
+          "tests/test_quantile_consistency.py"
+        ],
+        "draw": "strategy-evaluation/examples/quantile_long_short.json",
+        "lens": "right-censor uncertainty and config-to-verdict propagation",
+        "prior_four_comparable_visits": 0,
+        "note": "No claim lens absent in unavailable historical visits. Seeded example followed to actual config/validation consumers."
+      },
+      "new_confirmed_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "pooled_rates_per_1000": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "comparable_visits": 1,
+      "next_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "tie_rule": "Both rates zero with positive denominators => increase exploration10 points; legacy aggregate history retained.",
+      "helper_overlap": "tracked separately; excluded from primary denominator",
+      "research": "not scheduled; zero research lines/experiments, excluded from code yields"
     }
   ]
 }

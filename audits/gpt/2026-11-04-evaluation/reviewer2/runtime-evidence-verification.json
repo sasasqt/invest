@@ -1,0 +1,75 @@
+{
+  "reviewer": "Verifier A",
+  "checked_utc": "2026-11-04T02:12Z (approximate; clock observation in session)",
+  "evidence": {
+    "run_id": 41620332472,
+    "job_id": 125864532791,
+    "artifact_id": 13224610191,
+    "archive": "audit-audited-3.11.zip",
+    "expected_sha256": "e415cc213f7efc475e017e6794b4b67722422f47dac9ab469322ce51ee3050bb"
+  },
+  "independent_method": "Authored check_remote_archive.py; did not read or run the main reviewer's verify_remote_evidence.py. Read ZIP/JSON/TOML as data, recomputed digests, compared source manifest to independently freshly fetched main tree and runner/preview trees, checked original logs. No repository/runner code executed.",
+  "checks": {
+    "zip_sha256": "e415cc213f7efc475e017e6794b4b67722422f47dac9ab469322ce51ee3050bb",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "source_manifest_entries_match_fresh_main": 111,
+    "runner_head": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+    "actual_runner_checkout": "e01768fa81d08530021fef441f66c65a72ec78be",
+    "runner_workflow_blob_and_mode_matches": 17,
+    "workload_manifest_file_hashes_verified": 46,
+    "boundary_checks_true": 12,
+    "reported_expected_distributions_match_lock": 26,
+    "relevant_versions": {
+      "numpy": "2.4.6",
+      "packaging": "26.3",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.1",
+      "pytest": "9.1.1"
+    },
+    "original_validation_stages_exit0_no_timeout": 32,
+    "observed_log_pass_counts": {
+      "tests": 652,
+      "hash-seed-repeat": 652,
+      "strategy-evaluation-tests": 289
+    },
+    "environment": {
+      "platform": "Linux-7.0.0-1014-aws-x86_64-with-glibc2.36",
+      "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+      "cpu_model": "Intel(R) Xeon(R) 6975P-C",
+      "limits": {
+        "memory.max": "2147483648",
+        "cpu.max": "200000 100000",
+        "pids.max": "256"
+      },
+      "hash_seed": "0",
+      "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+      "parallel_benchmarks": false
+    }
+  },
+  "command": "env -i PATH=/usr/bin:/bin /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python -I wed-run/reviewer2/check_remote_archive.py",
+  "command_exit": 0,
+  "runner_workload_blob": "fd55ea7a05e7c7292739371246559f917d3b78ba",
+  "original_sequence": "runner_workload.py main311 calls prove_boundary before source copy354-355 and product build359 onward; installed-graph408 precedes test command427 in successful validation sequence.",
+  "interpretation": "This archive corroborates the existing remote Linux Python3.11 run of source9913f94 at actual runner checkout e01768f (17 relevant blobs identical to reviewed e0181fc). All original reported stages succeeded, and the inspected expected package versions match the pinned lock. This is reused original evidence, not a new dispatch or a current local product run.",
+  "limits": [
+    "source-identity.json is an exact111-entry blob-identity manifest matching fresh main; the archive does not itself contain every mounted source byte.",
+    "installed-graph.log enumerates26 expected distributions and three workspace origins. It is not a complete installed-distribution inventory or proof that no unexpected package exists; relevant branch markers contourpy/numpy match Linux Python3.11.",
+    "Boundary probes and Docker launch arguments support only this observed run and its stated host assumptions. This follow-up does not execute a new hostile collection test, prove Windows-with-Linux-Docker, or certify every future host setup.",
+    "No custom drawdown/report regression was run; the652 tests do not demonstrate an assertion absent from their inspected tests."
+  ],
+  "engineering_followup": {
+    "id": "OPEN-RUNNER-INSTALLED-GRAPH-FAILSTOP proposed lead (parent assigns stable queue ID)",
+    "status": "static lead, not runtime reproduced, outside today's bounded product question",
+    "location": "audits/gpt/runner/runner_workload.py e0181fc L406-421,443-444",
+    "observation": "Installed-graph execute result is stored in checks, then format/lint/types/tests execute without an immediate failure guard.",
+    "impact_scope": "A future graph mismatch might still permit product tests before final failure. This does not negate this archive, whose installed-graph stage succeeded.",
+    "next_check": "Friday engineering: inject installed-graph nonzero exit with a synthetic sentinel and establish no product import/test/workflow starts; preserve original successful control. No product fix implemented."
+  },
+  "closing_question": "Is that all? What is missing? What else could be wrong that nobody looked at?",
+  "closing_answer": "No further discrepancy found in ZIP identity,111-entry source manifest, runner/preview17-file identity,46-file collection, boundary/launch/environment,26 expected versions,32 validation steps and test logs checked.",
+  "prioritized_unchecked": [
+    "Future installed-graph mismatch fail-stop negative control, because current runner collects failure before proceeding.",
+    "Complete installed-distribution inventory and pinned build-environment provenance, because expected-version checks do not enumerate every installed package.",
+    "A new isolated custom drawdown report regression and hostile collector controls for the intended future execution, because this archive only demonstrates its original scope."
+  ]
+}

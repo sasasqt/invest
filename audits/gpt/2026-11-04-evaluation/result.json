@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-04",
+  "field": "evaluation",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "conclusion": "Audit incomplete",
+  "daily_scope": "static question complete; specific product reproduction pending; prior remote evidence verified",
+  "new_defects": 0,
+  "new_runtime_defects": 0,
+  "known_revalidated": [
+    "GA-2026-11-02-1"
+  ],
+  "known_optional": "GA-2026-11-02-2",
+  "new_optional_recommendations": 0,
+  "helpers": 1,
+  "disagreements": 0,
+  "coverage": {
+    "tracked_files": 111,
+    "local_files_byte_verified": 17,
+    "primary_semantic_lines": 1156,
+    "helper_semantic_lines_separate": 1087,
+    "newly_covered_lines": 911,
+    "statuses": {
+      "blocked": 22,
+      "checked_automatically": 14,
+      "inventoried": 20,
+      "partially_reviewed": 17,
+      "reviewed": 38
+    },
+    "remaining_unread_lines": 19360,
+    "unread_paths": 68
+  },
+  "prepared_utc": "2026-11-04T02:13:30.592404+00:00",
+  "wall_seconds_to_preparation": 688.365631,
+  "exclusive_compute_usage": "unavailable; no tokens/cost estimate",
+  "new_remote_compute": 0,
+  "weekly": "2026-W45 already aggregated; no duplicate",
+  "four_week_review": "not due; no four-week comparable baseline",
+  "new_single_reviewed_engineering_leads": 1
+}

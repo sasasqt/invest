@@ -1,0 +1,50 @@
+[
+  {
+    "number": 39,
+    "head": "c35059221022487a16c6030c7af15407b1491c59",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Fix data bundles: refuse what a bundle cannot store exactly; kind readers require their keys (REVIEW-16, stage 5)"
+  },
+  {
+    "number": 38,
+    "head": "d833686332327759d2f4a655c14db41440f9f2ff",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Fix mining ledger: keep reservations until a confirmation tests them (BH-2026-10-20-1, BH-2026-10-20-2, BH-2026-10-26-1)"
+  },
+  {
+    "number": 37,
+    "head": "3e8eca9dad3dc869ecb62c0e1f1224bdf243e583",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Keep tie groups together in QuantileStrategy's legs (BH-2026-11-02-1, REVIEW-32)"
+  },
+  {
+    "number": 36,
+    "head": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+    "base": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "title": "Audit runner (PR #32): review fixes and Windows host support"
+  },
+  {
+    "number": 35,
+    "head": "0f7e61b1f5406f03dc42fda1ee6fbbafbda597f1",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Fix stale docs: README pytest line matches CI (DA-2026-10-31-12)"
+  },
+  {
+    "number": 34,
+    "head": "87a72646e126ef4f907e59924261436d6aac6e1c",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Fix engine solvency: stop at an open whose equity is not positive (BH-2026-11-02-2, REVIEW-31)"
+  },
+  {
+    "number": 33,
+    "head": "56257f110dc55538c790957d3712d4c4372f095c",
+    "base": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "title": "Fix data import dates: read CSV dates as ISO 8601, refuse empty publishes and non-ISO Yahoo bounds (K13, BH-2026-10-13-3, BH-2026-10-13-4, BH-2026-10-13-6)"
+  },
+  {
+    "number": 32,
+    "head": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "base": "90b5ca038155b97833b120baa57dfecd05d6f641",
+    "title": "Add isolated runtime checks and benchmarks for repository audits"
+  }
+]

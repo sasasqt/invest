@@ -1,0 +1,121 @@
+{
+  "role": "Reviewer 2 / Verifier A",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "model": "gpt-6.1-sol (exposed by current runtime developer metadata)",
+  "effort": "unavailable",
+  "independent_verdict_saved_before_R1_comparison": true,
+  "product_execution": 0,
+  "constraints": "No product imports/builds/tests/workflows, credentials or reserved observations; all checks synthetic stdlib arithmetic/static source.",
+  "candidates": [
+    {
+      "id": "D1",
+      "kind": "known report contradiction",
+      "duplicate_ids": [
+        "GA-2026-11-02-1",
+        "RA-2026-11-01-4"
+      ],
+      "decision": "keep known issue; no new discovery",
+      "severity": "medium consequence (misleading recovery interpretation), high static confidence",
+      "reason": "METRICS.md6 explicitly calls unrecovered episodes right-censored. metrics108-112 emits an any-open censor flag; Metric.to_dict preserves extra; reporting173-179 renders only value/unit and239-300 selects the duration. No qualification survives to the readable row.",
+      "expected": "A lower-bound maximum observed duration and the presence/current length of an open episode are identifiable; no claim that an earlier longest completed episode remains open.",
+      "actual": "Static trace: max_duration4 with extra.censored=true becomes bare string4. No actual emitted product report was generated.",
+      "control": "Fully recovered [90,85,90,100] has maximum4 and no open episode; oracle twice succeeds.",
+      "final_evidence_label": "confirmed static contract/renderer omission, untouched product runtime unavailable",
+      "missing": "Two repeated untouched source report-generation controls in a proven isolated locked environment.",
+      "checked_siblings": [
+        "Metric.to_dict",
+        "return_metrics -> drawdown_metrics",
+        "compute_metrics -> serialized sections",
+        "reporting._write_summary/_fmt",
+        "test_metrics recovered/open cases",
+        "test_stats_and_cli report existence/detail cases"
+      ],
+      "change_condition": "Drop if readable report independently discloses the open/right-censored state or contract narrows summary scope.",
+      "acceptance": "Generate reports for open-longest, older-recovered-longest plus shorter-open, recovered control and equal durations; preserve statuses and numerical values; expose aggregate lower-bound semantics without attributing open state to wrong episode."
+    },
+    {
+      "id": "D2",
+      "kind": "proposed additional censor-attribution numeric defect",
+      "duplicate_ids": [
+        "OPEN-DRAWDOWN-CENSOR-001",
+        "peer-referenced BH-2026-10-14-8 (original evidence unavailable)"
+      ],
+      "decision": "drop as separate confirmed defect; retain semantic qualification in D1",
+      "severity": "no distinct verified defect",
+      "confidence": "high for arithmetic lower-bound argument, medium for intended API meaning",
+      "reason": "Any open episode means the final maximum duration over the observed episodes is not fully known. With recovered maximum4/current elapsed1, possible continuations end with maximum4 or6, so4 remains a valid lower bound. Current code does not say that the selected maximum4 episode itself lacks recovery. A separate defect would require that flag's contract to mean the selected argmax episode is open.",
+      "expected_actual_control": "Fraction brute-force oracle gives recovered4 plus open1 -> max4/any_open; open-longest gives max3/any_open; recovered control max4/no-open; equal peaks max2; equal durations max2. Identical prefix completions yield final max4 and6. All six cases and two continuation controls passed twice.",
+      "final_evidence_label": "dropped numeric-defect candidate; clarified aggregate versus per-episode semantics",
+      "missing": "Explicit metric-local interpretation for extra.censored, product runtime, original hunt reproduction.",
+      "drop_counterfactual": "An authoritative contract defining extra.censored as referring only to the argmax episode, or a valid path whose observed max is not a lower bound, would keep a defect candidate.",
+      "checked_siblings": [
+        "drawdown episodes/trough/recovery extraction",
+        "METRICS6 duration/recovery definitions",
+        "test_metrics equal/open/recovered coverage",
+        "report summary"
+      ],
+      "unchecked": [
+        "native product runtime and episode schema policy"
+      ]
+    },
+    {
+      "id": "D3",
+      "kind": "exploratory configuration and verdict propagation",
+      "decision": "drop blocker",
+      "severity": "none established",
+      "confidence": "high static",
+      "reason": "Example configuration values satisfy config's finite/range/type rules. compute_metrics passes initial capital, annualization, risk-free and MAR explicitly into return_metrics. portfolio_verdict uses returns, solvency, valid Sharpe, sample count, bootstrap, DSR, stress and optional information ratio; it never consumes max_drawdown_duration or its censor field. Reporting reads saved metrics/verdict and does not feed values back.",
+      "expected": "Changing only textual censor qualification must not change returns, cost accounting or portfolio verdict.",
+      "actual": "Static input/caller trace supports the invariant; product test not executed.",
+      "controls": "Recovered/open arithmetic fixtures do not establish engine behavior; existing test_config independently exercises invalid inputs and allowed negative rates, read only.",
+      "final_evidence_label": "no additional static defect; runtime unverified",
+      "drop_counterfactual": "A duration/censor value reaching portfolio_verdict or configuration mutating the reported initial-capital/annualization basis would keep it.",
+      "checked_siblings": [
+        "config.py1-230",
+        "example quantile_long_short.json1-15",
+        "test_config1-73",
+        "metrics449-491",
+        "validation56-240",
+        "reporting190-312"
+      ]
+    },
+    {
+      "id": "D4",
+      "kind": "known optional summary scope",
+      "duplicate_ids": [
+        "GA-2026-11-02-2",
+        "RA-2026-11-01-5"
+      ],
+      "decision": "keep existing optional improvement; no new defect",
+      "severity": "low",
+      "confidence": "high static omission, policy soft",
+      "reason": "METRICS9 says default summaries should show recovery and time under water; picks omits computed max_recovery_duration/time_under_water, among others. The JSON link retains full metrics; nothing printed is numerically false solely because fields are omitted.",
+      "expected_actual_control": "Trace confirms computed fields in metrics113-121 and absence in reporting239-277; no report runtime.",
+      "final_evidence_label": "known optional documentation/output scope improvement",
+      "cheapest_alternative": "Explicitly narrow documented short-summary scope while preserving full-metrics link.",
+      "strongest_counterargument": "A concise human summary need not duplicate every structured field; should is not a hard contract.",
+      "missing": "Maintainer's chosen report scope and product generated-report check.",
+      "drop_counterfactual": "A documented deliberate abbreviated summary would remove the inconsistency; a hard required field or decision depending on omitted information could keep a defect."
+    }
+  ],
+  "closing_question": "Is that all? What is missing? What else could be wrong that nobody looked at?",
+  "closing_answer": "Nothing else concrete found in metrics drawdown/serialization/caller path, reporting formatting/summary, METRICS6/9/10, config and validation callers, recovered/open tests and CLI report tests.",
+  "prioritized_unchecked": [
+    {
+      "place": "Untouched metrics -> save_run -> report execution under isolated locked Python3.11",
+      "reason": "Settles actual emitted output and status propagation; blocked by execution prerequisite."
+    },
+    {
+      "place": "Explicit episode-level output schema and metric-local censor semantics",
+      "reason": "Avoid treating global lower-bound uncertainty as a claim about a specific recovered episode."
+    },
+    {
+      "place": "Missing-price/settlement/insolvency engine paths feeding equity before drawdown",
+      "reason": "Could change the path before metrics; larger accounting investigation outside this bounded censor question."
+    }
+  ],
+  "oracle": "reviewer2/oracle-result.json",
+  "repeat_scope": "Two independent Fraction oracle executions; not two product reproductions.",
+  "elapsed": "started reading clock observation 2026-11-04 02:07:21 UTC; completion timestamp recorded separately"
+}

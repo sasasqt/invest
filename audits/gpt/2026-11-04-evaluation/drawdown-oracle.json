@@ -1,0 +1,323 @@
+{
+  "scope": "independent synthetic mathematical oracle, not untouched product behavior",
+  "cases": {
+    "earlier_recovered_max_then_short_open": [
+      90,
+      85,
+      90,
+      100,
+      95
+    ],
+    "open_episode_is_longest": [
+      90,
+      100,
+      80,
+      85,
+      90
+    ],
+    "all_recovered_control": [
+      90,
+      85,
+      90,
+      100
+    ],
+    "equal_peak_resets_origin": [
+      100,
+      100,
+      90,
+      100
+    ],
+    "tied_open_and_recovered_observed_lengths": [
+      90,
+      100,
+      90,
+      95
+    ],
+    "flat_control": [
+      100,
+      100,
+      100
+    ],
+    "prefix_then_early_recovery": [
+      90,
+      85,
+      90,
+      100,
+      95,
+      100
+    ],
+    "same_prefix_then_late_recovery": [
+      90,
+      85,
+      90,
+      100,
+      95,
+      95,
+      95,
+      95,
+      95,
+      100
+    ]
+  },
+  "repeats": [
+    {
+      "earlier_recovered_max_then_short_open": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": null,
+            "observed_sessions": 1,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": false
+      },
+      "open_episode_is_longest": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 2,
+            "observed_sessions": 2,
+            "censored": false
+          },
+          {
+            "peak_index": 2,
+            "recovery_index": null,
+            "observed_sessions": 3,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 3,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": true
+      },
+      "all_recovered_control": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "equal_peak_resets_origin": {
+        "episodes": [
+          {
+            "peak_index": 2,
+            "recovery_index": 4,
+            "observed_sessions": 2,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 2,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "tied_open_and_recovered_observed_lengths": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 2,
+            "observed_sessions": 2,
+            "censored": false
+          },
+          {
+            "peak_index": 2,
+            "recovery_index": null,
+            "observed_sessions": 2,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 2,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": true
+      },
+      "flat_control": {
+        "episodes": [],
+        "maximum_observed_sessions": 0,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "prefix_then_early_recovery": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": 6,
+            "observed_sessions": 2,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "same_prefix_then_late_recovery": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": 10,
+            "observed_sessions": 6,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 6,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      }
+    },
+    {
+      "earlier_recovered_max_then_short_open": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": null,
+            "observed_sessions": 1,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": false
+      },
+      "open_episode_is_longest": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 2,
+            "observed_sessions": 2,
+            "censored": false
+          },
+          {
+            "peak_index": 2,
+            "recovery_index": null,
+            "observed_sessions": 3,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 3,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": true
+      },
+      "all_recovered_control": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "equal_peak_resets_origin": {
+        "episodes": [
+          {
+            "peak_index": 2,
+            "recovery_index": 4,
+            "observed_sessions": 2,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 2,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "tied_open_and_recovered_observed_lengths": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 2,
+            "observed_sessions": 2,
+            "censored": false
+          },
+          {
+            "peak_index": 2,
+            "recovery_index": null,
+            "observed_sessions": 2,
+            "censored": true
+          }
+        ],
+        "maximum_observed_sessions": 2,
+        "any_open_episode": true,
+        "maximizing_observed_episode_open": true
+      },
+      "flat_control": {
+        "episodes": [],
+        "maximum_observed_sessions": 0,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "prefix_then_early_recovery": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": 6,
+            "observed_sessions": 2,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 4,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      },
+      "same_prefix_then_late_recovery": {
+        "episodes": [
+          {
+            "peak_index": 0,
+            "recovery_index": 4,
+            "observed_sessions": 4,
+            "censored": false
+          },
+          {
+            "peak_index": 4,
+            "recovery_index": 10,
+            "observed_sessions": 6,
+            "censored": false
+          }
+        ],
+        "maximum_observed_sessions": 6,
+        "any_open_episode": false,
+        "maximizing_observed_episode_open": false
+      }
+    }
+  ],
+  "passed": true
+}

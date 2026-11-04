@@ -1,0 +1,100 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "reviewer": "Verifier A",
+  "credit": "Independent semantic ranges, do not add duplicate helper lines to primary denominator",
+  "ranges": [
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "line_ranges": [
+        [
+          26,
+          123
+        ],
+        [
+          126,
+          212
+        ],
+        [
+          449,
+          491
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "line_ranges": [
+        [
+          173,
+          312
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/METRICS.md",
+      "line_ranges": [
+        [
+          98,
+          192
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "line_ranges": [
+        [
+          1,
+          230
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "line_ranges": [
+        [
+          56,
+          240
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "line_ranges": [
+        [
+          91,
+          138
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_config.py",
+      "line_ranges": [
+        [
+          1,
+          73
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/examples/quantile_long_short.json",
+      "line_ranges": [
+        [
+          1,
+          15
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "line_ranges": [
+        [
+          72,
+          112
+        ],
+        [
+          731,
+          762
+        ]
+      ]
+    }
+  ]
+}

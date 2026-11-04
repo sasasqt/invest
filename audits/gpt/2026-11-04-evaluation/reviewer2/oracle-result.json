@@ -1,0 +1,182 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "scope": "independent trusted stdlib arithmetic; no repository imports; no product runtime",
+  "repeat_count": 2,
+  "exit_codes": [
+    0,
+    0
+  ],
+  "outputs_identical": true,
+  "result": {
+    "scope": "trusted independent Fraction contract oracle, not product runtime",
+    "cases": {
+      "closed_longest_then_short_open": {
+        "synthetic_path": [
+          90,
+          85,
+          90,
+          100,
+          95
+        ],
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 2,
+            "recovery": 4,
+            "observed_duration": 4
+          },
+          {
+            "peak": 4,
+            "trough": 5,
+            "recovery": null,
+            "observed_duration": 1
+          }
+        ],
+        "maximum_observed_duration": 4,
+        "any_open_episode": true
+      },
+      "open_longest": {
+        "synthetic_path": [
+          90,
+          100,
+          80,
+          85,
+          90
+        ],
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 1,
+            "recovery": 2,
+            "observed_duration": 2
+          },
+          {
+            "peak": 2,
+            "trough": 3,
+            "recovery": null,
+            "observed_duration": 3
+          }
+        ],
+        "maximum_observed_duration": 3,
+        "any_open_episode": true
+      },
+      "recovered_control": {
+        "synthetic_path": [
+          90,
+          85,
+          90,
+          100
+        ],
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 2,
+            "recovery": 4,
+            "observed_duration": 4
+          }
+        ],
+        "maximum_observed_duration": 4,
+        "any_open_episode": false
+      },
+      "equal_peaks": {
+        "synthetic_path": [
+          100,
+          100,
+          90,
+          100,
+          95
+        ],
+        "episodes": [
+          {
+            "peak": 2,
+            "trough": 3,
+            "recovery": 4,
+            "observed_duration": 2
+          },
+          {
+            "peak": 4,
+            "trough": 5,
+            "recovery": null,
+            "observed_duration": 1
+          }
+        ],
+        "maximum_observed_duration": 2,
+        "any_open_episode": true
+      },
+      "equal_durations": {
+        "synthetic_path": [
+          90,
+          100,
+          90,
+          95
+        ],
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 1,
+            "recovery": 2,
+            "observed_duration": 2
+          },
+          {
+            "peak": 2,
+            "trough": 3,
+            "recovery": null,
+            "observed_duration": 2
+          }
+        ],
+        "maximum_observed_duration": 2,
+        "any_open_episode": true
+      },
+      "flat_control": {
+        "synthetic_path": [
+          100,
+          100,
+          100
+        ],
+        "episodes": [],
+        "maximum_observed_duration": 0,
+        "any_open_episode": false
+      }
+    },
+    "extensions_of_identical_prefix": {
+      "early_recovery": {
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 2,
+            "recovery": 4,
+            "observed_duration": 4
+          },
+          {
+            "peak": 4,
+            "trough": 5,
+            "recovery": 6,
+            "observed_duration": 2
+          }
+        ],
+        "maximum_observed_duration": 4,
+        "any_open_episode": false
+      },
+      "late_recovery": {
+        "episodes": [
+          {
+            "peak": 0,
+            "trough": 2,
+            "recovery": 4,
+            "observed_duration": 4
+          },
+          {
+            "peak": 4,
+            "trough": 5,
+            "recovery": 10,
+            "observed_duration": 6
+          }
+        ],
+        "maximum_observed_duration": 6,
+        "any_open_episode": false
+      }
+    },
+    "interpretation": "The prefix maximum4 is a lower bound of final maximum4 or6; the earlier maximum4 episode is recovered, while aggregate completion is uncertain.",
+    "checks": "six case expectations and two continuation controls passed"
+  }
+}

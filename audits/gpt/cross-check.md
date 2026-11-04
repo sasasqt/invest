@@ -42,3 +42,14 @@ Peer remains `4930f9ee9ecf65735822456392d2253fdc93bd9e`, report2026-11-01 on90b5
 |---|---|---|---|---|---|
 | RA-2026-11-01-2 | agree at static scope | Unary/cs shared masking branch contradicts full-history contract; all four unary operators and search/export consumers traced. Peer full search/numeric impact narrative not rerun. | 2026-11-03-mining/reviewer2/independent-verdict.json | 2026-11-03 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
 | RA-2026-11-01-6 | agree with existing correction direction | Separate true cross-sectional masking from pointwise history, retain final eligibility and operator-version compatibility decision. Existing recommendation, not newly ranked or implemented. | 2026-11-03-mining/reviewer2/independent-verdict.json | 2026-11-03 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
+
+## 2026-11-04 evaluation cross-check
+
+Peer head4930f9ee9ecf65735822456392d2253fdc93bd9e, report2026-11-01/source90b5ca0, freshly refreshed and not over14days old. No new peer report.
+
+| Claude ID | Verdict | Reason and evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| RA-2026-11-01-4 | agree at static scope | Readable duration drops open/lower-bound qualification; no additional wrong-number bug established. | 2026-11-04-evaluation/reviewer-comparison.json | 2026-11-04 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
+| RA-2026-11-01-5 | agree as existing optional gap | Computed recovery/time-under-water absent from abbreviated summary; soft contract, full JSON linked. | 2026-11-04-evaluation/reviewer2/independent-verdict.json | 2026-11-04 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
+
+Other-field leads retain their prior verdicts; they were not re-audited today. GA-2026-10-31-2 settlement-policy fixture remains queued; no new peer disagreement.

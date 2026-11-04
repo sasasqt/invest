@@ -1,0 +1,13 @@
+{
+  "platform": "Linux-7.0.0-1014-aws-x86_64-with-glibc2.36",
+  "python": "3.11.18 (main, Oct 28 2026, 02:05:49) [GCC 12.2.0]",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C",
+  "limits": {
+    "memory.max": "2147483648",
+    "cpu.max": "200000 100000",
+    "pids.max": "256"
+  },
+  "hash_seed": "0",
+  "lock_sha256": "4e14019237eefe5b318cfe68f5544729838566abfae279a75ba4d4b6b7eaa330",
+  "parallel_benchmarks": false
+}

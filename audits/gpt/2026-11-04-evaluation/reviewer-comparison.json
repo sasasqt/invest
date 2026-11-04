@@ -1,0 +1,13 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "R1_saved_before_A": true,
+  "candidates": {
+    "D1": "Both retain known static renderer omission; no new root/runtime reproduction.",
+    "D2": "Both drop separate numeric bug: any-open flag is defensible aggregate uncertainty; do not call completed argmax episode unrecovered.",
+    "D3": "Both drop extra config/verdict defect; censor field is downstream reporting only.",
+    "D4": "Both retain existing optional summary-scope improvement."
+  },
+  "substantive_disagreements": 0,
+  "verifier_B": 0,
+  "runtime_controls": "Each independently authored eight synthetic cases/control continuations, twice; not product runtime."
+}
