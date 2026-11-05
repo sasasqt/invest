@@ -5,3 +5,5 @@ Source `9913f94b9b795bd9633a6a683e9f420301e400b3`; {'tracked_files': 111, 'bytes
 GPT exact ranges are preserved in coverage-map.json. Peer exact byte/range union is unavailable. Per-file branch coverage unavailable for this static visit; existing runtime coverage is historical. Last28day records remain in review_history; no old byte identities were promoted to current behavior.
 
 Least covered current files: .gitignore, README.md, ROADMAP.md, data-mining-framework/LITERATURE_REVIEW.md, data-mining-framework/PRIMARY_SOURCE_CATALOG.md, data-mining-framework/src/invest_mining/__init__.py, data-mining-framework/src/invest_mining/reporting.py, data-mining-framework/tests/conftest.py, data-mining-framework/tests/test_cli.py, data-mining-framework/tests/test_diagnostics.py.
+
+Category totals and 28-day file-date status, with unknown per-range recency made explicit: [coverage-age.json](2026-11-05-integration/coverage-age.json).

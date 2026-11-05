@@ -1,0 +1,209 @@
+{
+  "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+  "date": "2026-11-05",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "output_branch": "gpt/repo-audits",
+  "started_commit": "2ee3206870ae2c424cdec0b7d42a737c5668c6fa",
+  "report_commit": "677b3d445bfd3698729c343c7920dd73caa753bc",
+  "report_url": "https://github.com/sasasqt/invest/blob/677b3d445bfd3698729c343c7920dd73caa753bc/audits/gpt/2026-11-05.md",
+  "parent": "2ee3206870ae2c424cdec0b7d42a737c5668c6fa",
+  "verified_utc": "2026-11-05T02:08:14Z",
+  "remote_ref_equals_report_commit": true,
+  "report_read_back": true,
+  "local_blob_matches": 31,
+  "exact_parent_diff": [
+    {
+      "path": "audits/gpt/checkpoint.json",
+      "before": "da581bdce785ed9fae855801a03db1b031ae3b46",
+      "after": "1ff7f095b65966cbb7d91002abf7fecd9cc61ceb",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/coverage-map.json",
+      "before": "593a532ba0799e7b8101ef9a17daac4db67144f0",
+      "after": "74c5128aed84d335f9345d5b409252c0e19c6a4f",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/coverage-map.md",
+      "before": "bc839040bcd9b9bbcce909e469a6b3e91d4bb0f9",
+      "after": "9706da8fca8833e939d5ef262f7a445d182a1702",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/coverage.csv",
+      "before": "6c0d78bdc35bacacd164e6c903182f6aa247846e",
+      "after": "a9d0380865bac8a73d911674300308a31b58250d",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/cross-check.md",
+      "before": "ac75fa28b91c2db6c544421a435c74d0e241fbb3",
+      "after": "b5617cf587272db90e35b1d1ab87d6ba0359ccbc",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/exploration.json",
+      "before": "1856b337d35381e342392d16640b21ca21ce030e",
+      "after": "4a09e60110f82bcb40130a575a53e21ffea5545c",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/findings.json",
+      "before": "1b0aca0422e1f624cbd74e3dda7efe72314bd646",
+      "after": "ddaa7172ecf34fff2b793c8b17b726ee5a464b3d",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/findings.md",
+      "before": "7ec1f1d4787b9005a709e4cd038719dbb4111a80",
+      "after": "26210d886c0f3fc30d847760590a4e43e5a0318a",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/recommendations.md",
+      "before": "b7c4e5ab23d60d6672ca2cee5e7d76db1a2c3e5c",
+      "after": "c16716178893985e49bd59178eda802426491b57",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/state.json",
+      "before": "5c19ca2feee33338fdcba231951253250d12c3e7",
+      "after": "09752b51ec56eba2a846ec133fe2cfba525d31ab",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/README.md",
+      "before": null,
+      "after": "0ebfbb34ee689e0de033f344010ba09100746849",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/allocation.json",
+      "before": null,
+      "after": "bdb32200c2bf7cb4e81a8138c2febd6f4bd8ecab",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/check_static.py",
+      "before": null,
+      "after": "baff7ef8c894e6115335f89952f401f8240deab4",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/ci.json",
+      "before": null,
+      "after": "e8d40336c445ca94717140c777c4a7e42e910ca0",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/coverage-summary.json",
+      "before": null,
+      "after": "82d57e58b992c2be64253168a7b921779c29503c",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/identities.json",
+      "before": null,
+      "after": "0cf73e5dd5d29fcabcf8e344fa42eab20856ae8c",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/inventory.json",
+      "before": null,
+      "after": "3703b866e5feba1027ca3c5f771022f7854e867a",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/open-prs.json",
+      "before": null,
+      "after": "e941d6ee9e93bd3ea8a05f3c16dd8e4e1266f58d",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/preflight.json",
+      "before": null,
+      "after": "16d5828a1c5d806479abc596a330347435690b7b",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reading-main.json",
+      "before": null,
+      "after": "900d6aa0a98486243f5f29007b30e8228f3f359e",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/result.json",
+      "before": null,
+      "after": "7bd9bac503c5b924f123246974328e62fc2a7574",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reviewer1-initial.json",
+      "before": null,
+      "after": "4567bffa9feac567121c42ead02f6159e0321941",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reviewer1-refinement.json",
+      "before": null,
+      "after": "63b2c723d97f5fa363a41e1a14b44c9d04063846",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reviewer2/byte-verification.json",
+      "before": null,
+      "after": "bb217b24e5f023c18d9b434f0f898e60684ed5a0",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reviewer2/independent-verdict.json",
+      "before": null,
+      "after": "8fdd4c8ad4343e33c770e58868d434ae9fd3be01",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/reviewer2/reviewer-comparison.json",
+      "before": null,
+      "after": "e4ee24d0b66b4e6673ebc08d832fc260a96ab9c4",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/static-results.json",
+      "before": null,
+      "after": "9f98122ab298561016a4dc85812e450981d16929",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/summary-for-report.json",
+      "before": null,
+      "after": "0566c4ee52f23f2ab83bd0f17b73927f37b790c7",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05-integration/validation.csv",
+      "before": null,
+      "after": "e50a1cf9c9a9e60b9efea533acaf879314c8a6ea",
+      "mode": "100644"
+    },
+    {
+      "path": "audits/gpt/2026-11-05.md",
+      "before": null,
+      "after": "0d180ad8c7b91607ae337b647a8d7b9149105259",
+      "mode": "100644"
+    }
+  ],
+  "outside_prefix_entries_preserved": true,
+  "force": false,
+  "one_parent": true,
+  "main_advanced": false,
+  "elapsed_to_report_verified_seconds": 738,
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable",
+  "new_product_executions": 0,
+  "remote_compute_dispatched": 0,
+  "helper_count": 1,
+  "helper_compute": "unavailable",
+  "publication_receipt_note": "Receipt is a follow-on single-parent commit; its ref is verified after publication, so it does not embed its own unknown hash."
+}
