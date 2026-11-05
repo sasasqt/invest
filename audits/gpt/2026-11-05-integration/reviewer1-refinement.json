@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-05",
+  "before_independent_verdict": true,
+  "candidate": "C2",
+  "prior": "keep plausible low concern",
+  "revised": "drop as demonstrated defect; keep only acceptance queue if needed",
+  "reason": "The recorder explicitly documents that any oversized file may be stored compressed and gives commands to recover it next to the .gz. A fixed report.md link working after that declared recovery is consistent with this contract; no requirement for directly browsing compressed reports or actual reachable generated report >1MB was established. Static filename mismatch alone does not establish unrecoverable/missing content.",
+  "drop_counterfactual": "An uncompressible-but-published file, hash/size mismatch after decompression, absent recovery metadata, or a link still broken after documented recovery would retain a defect."
+}

@@ -1,0 +1,10 @@
+check,scope,result,evidence
+source_git_blob,16_fetched_files,pass,static-results.json
+protocol_sha256,index_plus_13_modules,pass,static-results.json
+required_copy_patterns,27_paths,pass,static-results.json
+gzip_contract_oracle,2_repeats_plus_small_control,pass_not_product_runtime,static-results.json
+bash_syntax,2_scripts,pass,static-results.json
+main_CI,6_existing_checks,success_observed_not_rerun,ci.json
+custom_RECORD_workflow,untouched_product,blocked,preflight.json
+Windows_native,recorder_failure_cleanup,unavailable,reviewer2/independent-verdict.json
+historical_replay,permitted_snapshot,unavailable,preflight.json

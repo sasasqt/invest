@@ -1,0 +1,27 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "R2_verdict_saved_before_reading_R1": true,
+  "candidates": [
+    {
+      "id": "C1",
+      "R1": "drop",
+      "R2": "drop",
+      "agreement": true
+    },
+    {
+      "id": "C2",
+      "R1": "plausible low concern; manual recovery may be intended",
+      "R2": "conditional low navigation limitation only; recovery contract satisfied",
+      "agreement": "No substantive disagreement if retained as conditional optional navigation issue and not promoted to verified recovery defect. Actual oversized generated report and runtime are missing."
+    },
+    {
+      "id": "C3",
+      "R1": "keep known REVIEW17/K3",
+      "R2": "keep known REVIEW17/K3",
+      "agreement": true
+    }
+  ],
+  "verifier_B": "not required; no substantive disagreement",
+  "elapsed_minutes": "approximately 3; wall-clock read available 02:00:41 UTC; exact start not captured",
+  "final_recommendation": "No new verified material root. Preserve C1 drop, C2 conditional low navigation lead, and known REVIEW17/K3 static corroboration with runtime acceptance pending."
+}

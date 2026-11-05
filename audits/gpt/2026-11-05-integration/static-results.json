@@ -1,0 +1,248 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_files": [
+    {
+      "path": "GIT_GUIDELINES.md",
+      "git_blob": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02",
+      "sha256": "1829d9cc3969aa9d42088e84019cf81440b79979af35b161fc01d2fd2f729d68",
+      "bytes": 14606,
+      "lines": 139
+    },
+    {
+      "path": "CI_CD_GUIDELINES.md",
+      "git_blob": "7b6fb7fc18723458b71876e55cf36bbc795bc2d5",
+      "sha256": "797ae2bb19498614d9651a58d830fb5b71d5eebf98e9ee58f1c35069879995ff",
+      "bytes": 8072,
+      "lines": 60
+    },
+    {
+      "path": "PYTHON_GUIDELINES.md",
+      "git_blob": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d",
+      "sha256": "650ecead63569a64a4b4b8b85752332bf6be9dc1906fe1eb6399ff1309aa3eab",
+      "bytes": 11491,
+      "lines": 126
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "git_blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb",
+      "sha256": "16d73744d929144f15aa940dfcce1aa6008850ab011de21c9359b73977165792",
+      "bytes": 13923,
+      "lines": 146
+    },
+    {
+      "path": "scripts/save_run.py",
+      "git_blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8",
+      "sha256": "ee74236de9001ac3d680f7a87cb26b923396160101dae1cedbb9a9c06d424817",
+      "bytes": 11938,
+      "lines": 280
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "git_blob": "f266a908918ecf4e546185adf269894360f8c092",
+      "sha256": "01b8aa3b89778408e8de61c21e41378dd78564ae430f9af12930234f89277750",
+      "bytes": 11251,
+      "lines": 276
+    },
+    {
+      "path": "scripts/synthetic_workflow.sh",
+      "git_blob": "76d15783a6ad2dc81b1910a96d54466ed44bb8df",
+      "sha256": "86e169231cabf19e02623aebb72aa5c420d92084feeefb1f7000a2f5211bc8c0",
+      "bytes": 1768,
+      "lines": 35
+    },
+    {
+      "path": "scripts/historical_workflow.sh",
+      "git_blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86",
+      "sha256": "67087ebc67ccc421b69c2e8930fd7b2ff347bc59b74d069966d59976a7e4ccb1",
+      "bytes": 6189,
+      "lines": 129
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "git_blob": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf",
+      "sha256": "2a111db4a4de48e83503b07235a4476123708d7d804d74854d74bf170cdb3326",
+      "bytes": 16034,
+      "lines": 394
+    },
+    {
+      "path": "TODO.md",
+      "git_blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224",
+      "sha256": "2b62555e771712a5660399926bd09eeb8a9b84e61d30f0d5a9bd4c4284a4adbb",
+      "bytes": 43618,
+      "lines": 109
+    },
+    {
+      "path": "README.md",
+      "git_blob": "b97d7a363b3c2ccb3e187f7b7b964fd8495c9948",
+      "sha256": "9f27cfba70131c95dfba554b01db29975374f1ce4c87ec188294429428e494ae",
+      "bytes": 31531,
+      "lines": 182
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "git_blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31",
+      "sha256": "e5d4b508b57d9b1886bf0ca49a3149e958952fe3eb51411f8c1734f5fbcd1888",
+      "bytes": 12514,
+      "lines": 312
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "git_blob": "9460058caac73dfe33fee137b3b6b2680dd04900",
+      "sha256": "ca1a5ea057038c2fd6a7c41f0be6c29adf155dbfc4abd425e930085432367918",
+      "bytes": 15302,
+      "lines": 378
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "git_blob": "abb44a04793f657188da5b0feab9fc7a2b360494",
+      "sha256": "32c3e297a2f683c03262dc3f751fa029def74275ec235f947c09853411541f6a",
+      "bytes": 29923,
+      "lines": 760
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "git_blob": "d13b09146ddbe7ff6328af1481f7af90cc5b2121",
+      "sha256": "cac727b03eeada7d3fb3a8c3df640c95687fe8480b45fb6336ab94d5d61c7168",
+      "bytes": 10799,
+      "lines": 249
+    },
+    {
+      "path": "docs/REPORTING.md",
+      "git_blob": "9b6a1ace0696840d1e3ae39b9b3873ec760d5a47",
+      "sha256": "f7aa4cd52eb02b3607f3ac3a537f9bee9ae030e8ab2f201b5135e64f14ca224c",
+      "bytes": 3668,
+      "lines": 46
+    }
+  ],
+  "protocol": [
+    {
+      "key": "index",
+      "sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "bytes": 6525,
+      "verified": true
+    },
+    {
+      "key": "overview",
+      "sha256": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "bytes": 4730,
+      "verified": true
+    },
+    {
+      "key": "00-preflight",
+      "sha256": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "bytes": 5975,
+      "verified": true
+    },
+    {
+      "key": "01-scope",
+      "sha256": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+      "bytes": 3404,
+      "verified": true
+    },
+    {
+      "key": "13-continuity",
+      "sha256": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+      "bytes": 3863,
+      "verified": true
+    },
+    {
+      "key": "action-boundary",
+      "sha256": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "bytes": 1265,
+      "verified": true
+    },
+    {
+      "key": "03-consistency",
+      "sha256": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+      "bytes": 2910,
+      "verified": true
+    },
+    {
+      "key": "04-correctness",
+      "sha256": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+      "bytes": 1866,
+      "verified": true
+    },
+    {
+      "key": "07-independent-checks",
+      "sha256": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "bytes": 1273,
+      "verified": true
+    },
+    {
+      "key": "08-integration",
+      "sha256": "cbf0689b723a37643af61a5e4f900c0dfc4d453943cad32905bac33c1609d9b1",
+      "bytes": 3080,
+      "verified": true
+    },
+    {
+      "key": "14-crosscheck-publication",
+      "sha256": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+      "bytes": 12483,
+      "verified": true
+    },
+    {
+      "key": "02-coverage",
+      "sha256": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "bytes": 2035,
+      "verified": true
+    },
+    {
+      "key": "11-findings-review",
+      "sha256": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "bytes": 14408,
+      "verified": true
+    },
+    {
+      "key": "12-reporting",
+      "sha256": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "bytes": 5093,
+      "verified": true
+    }
+  ],
+  "required_paths": 27,
+  "all_required_have_copy_pattern": true,
+  "code_manifests": [
+    "eval/manifest.json",
+    "quantiles/manifest.json"
+  ],
+  "compression_oracle": [
+    {
+      "repeat": 1,
+      "input_bytes": 1360011,
+      "stored_bytes": 3357,
+      "decompressed_sha256": "b4a4a998fa5f5e68182738a4bcd057122832dee8932373b7c137bdd96029ee32",
+      "equal": true,
+      "small_negative_control": "below threshold; unchanged identity"
+    },
+    {
+      "repeat": 2,
+      "input_bytes": 1360011,
+      "stored_bytes": 3357,
+      "decompressed_sha256": "b4a4a998fa5f5e68182738a4bcd057122832dee8932373b7c137bdd96029ee32",
+      "equal": true,
+      "small_negative_control": "below threshold; unchanged identity"
+    }
+  ],
+  "oracle_scope": "independent stdlib reversible encoding contract; not untouched save_run or workflow execution",
+  "shell_syntax": [
+    {
+      "command": [
+        "bash",
+        "-n",
+        "historical_workflow.sh"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "bash",
+        "-n",
+        "synthetic_workflow.sh"
+      ],
+      "exit": 0
+    }
+  ],
+  "tracked_files": 111,
+  "runtime_product_runs": 0
+}

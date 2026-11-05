@@ -53,3 +53,8 @@ Peer head4930f9ee9ecf65735822456392d2253fdc93bd9e, report2026-11-01/source90b5ca
 | RA-2026-11-01-5 | agree as existing optional gap | Computed recovery/time-under-water absent from abbreviated summary; soft contract, full JSON linked. | 2026-11-04-evaluation/reviewer2/independent-verdict.json | 2026-11-04 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
 
 Other-field leads retain their prior verdicts; they were not re-audited today. GA-2026-10-31-2 settlement-policy fixture remains queued; no new peer disagreement.
+
+
+## 2026-11-05 integration cross-check
+
+Peer head4930f9ee9ecf65735822456392d2253fdc93bd9e is unchanged, report2026-11-01/source90b5ca0; not over14days old. No new integration peer finding. Existing other-field verdicts remain historical at their stated scope. Known REVIEW-17/K3 comes from current TODO, not a new RA alias; private bug-hunt provenance unavailable. One fresh internal Reviewer2 corroborated the static ledger/provenance chain, ordinary cleanup drop and documented gzip recovery. No substantive disagreement/VerifierB. [Record](2026-11-05-integration/reviewer2/independent-verdict.json).

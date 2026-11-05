@@ -1,0 +1,64 @@
+{
+  "summary": {
+    "tracked_files": 111,
+    "bytes_verified_files": 16,
+    "primary_semantic_lines": 2053,
+    "primary_by_bucket": {
+      "exploitation": 409,
+      "exploration": 414,
+      "mandatory_callers_contracts": 1230
+    },
+    "helper_lines_separate": 1082,
+    "new_cumulative_lines_all_reviewers": 1289,
+    "statuses": {
+      "reviewed": 42,
+      "inventoried": 16,
+      "partially_reviewed": 18,
+      "checked_automatically": 13,
+      "blocked": 22
+    },
+    "unread_lines": 18071,
+    "unread_paths": 64
+  },
+  "allocation": {
+    "planned_percent": {
+      "exploitation": 50,
+      "exploration": 50
+    },
+    "basis": "Inherited integration field allocation from latest state; no reset to activation snapshot",
+    "actual_unique_lines": {
+      "exploitation": 409,
+      "exploration": 414,
+      "mandatory_callers_contracts": 1230
+    },
+    "actual_discretionary_percent": {
+      "exploitation": 49.6962332928311,
+      "exploration": 50.3037667071689
+    },
+    "new_confirmed_distinct_roots": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "yield_note": "Known REVIEW17/K3 static recheck; no new runtime confirmation or original discovery; conservatively no yield promotion",
+    "eligible_comparable_visits": 1,
+    "pooled_rates_per_1000": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "next_percent": {
+      "exploitation": 40,
+      "exploration": 60
+    },
+    "rule": "Reliable positive denominators, zero/zero tie => exploration +10 percentage points from inherited50%; clamp30-70",
+    "seed": 14788399260181739728,
+    "eligible": [
+      "tests/test_pipeline.py",
+      "tests/test_save_run.py"
+    ],
+    "draw": "tests/test_pipeline.py",
+    "lens": "publication ownership, compressed recovery, source/ledger state transitions",
+    "selection_note": "Deterministic after initial triage; no outcome-based redraw; first integration visit cannot establish four-visit lens absence",
+    "research": "not scheduled; zero research reading/papers/experiments, excluded from denominator"
+  },
+  "prepared_utc": "2026-11-05T02:04:36.812376+00:00"
+}

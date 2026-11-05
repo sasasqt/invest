@@ -396,6 +396,18 @@
       "evidence_scope": "Primary maintained review inspected; own pinned static sink trace; prior two independent stdlib fixture controls attributed, not rerun. No full Docker exploit or actual secret exposure claimed.",
       "effect": "Do not execute this runner for untrusted revisions until hostile-output collection invariant is corrected and verified; earlier benign boundary probes and CSVGZ correction are not a whole-runner safety certificate.",
       "not_new": true
+    },
+    {
+      "id": "REVIEW-17/K3",
+      "fingerprint": "workflow:scripts/historical_workflow.sh:tracked-inspection-ledger-invalidates-record-code-cleanliness",
+      "status": "known/open; independently corroborated static chain; runtime pending",
+      "not_new": true,
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P2",
+      "severity": "medium integration/reproducibility",
+      "evidence_label": "precise independently corroborated static contradiction; untouched runtime unverified",
+      "evidence": "2026-11-05-integration/reviewer2/independent-verdict.json",
+      "acceptance": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history."
     }
   ],
   "dropped_candidates": [
@@ -430,6 +442,18 @@
       "reason": "Both drop extra config/verdict defect; censor field is downstream reporting only.",
       "counterfactual": "Duration/censor reaches verdict or config changes capital/annualization semantics",
       "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
+    },
+    {
+      "id": "C1-2026-11-05",
+      "decision": "drop; reviewed ownership/catchable cleanup paths supported",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-05-integration/reviewer2/independent-verdict.json"
+    },
+    {
+      "id": "C2-2026-11-05",
+      "decision": "drop material recovery defect; manual decompression is documented; conditional navigation limitation retained as observation only",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-05-integration/reviewer1-refinement.json"
     }
   ],
   "run_history": [
@@ -444,6 +468,21 @@
       "date": "2026-11-03",
       "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "scope": "mining static continuation; zero new roots/runtime verified defects"
+    },
+    {
+      "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+      "date": "2026-11-05",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "new_verified_defects": 0,
+      "known_static_rechecks": [
+        "REVIEW-17/K3"
+      ],
+      "new_unverified_concerns": 0,
+      "new_optional_recommendations": 0,
+      "dropped": [
+        "C1 ordinary failure data loss",
+        "C2 material compressed recovery defect"
+      ]
     }
   ]
 }

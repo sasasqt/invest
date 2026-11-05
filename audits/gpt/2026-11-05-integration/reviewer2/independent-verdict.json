@@ -1,0 +1,190 @@
+{
+  "reviewer": "Verifier A / fresh independent Reviewer 2",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
+  "recorded_at_utc": "2026-11-05T02:01:00Z",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "unavailable",
+  "execution": "Static only. No repository code imports, tests, builds or workflows. Eight canonical fetched files verified against original Git blobs and parent bytes; no reserved observations accessed.",
+  "candidates": [
+    {
+      "id": "C1",
+      "kind": "proposed drop",
+      "decision": "drop ordinary-failure deletion / partial-record defect",
+      "expected": "A save either publishes its own complete record or refuses/fails without replacing another writer's destination or deleting unrelated staging.",
+      "actual_static": "Missing required files, dirty manifests and compression overflow are checked before staging. The stage is under a fresh mkdtemp owned by this call. Other .partial directories are untouched. POSIX exclusively reserves destination; Windows rename refuses an existing destination. Catchable copy/README/rename failures clean only owned staging and a reserved empty destination.",
+      "sources": [
+        "scripts/save_run.py:130-151",
+        "scripts/save_run.py:217-265",
+        "tests/test_save_run.py:118-221",
+        "TODO.md:34-35"
+      ],
+      "tests_quality": "Tests inject publication/README failures and competing empty/nonempty destinations and preserve unrelated marker files. Windows rename is simulated, not native Windows execution.",
+      "severity_if_real": "P2/medium output loss",
+      "evidence_confidence": "high for inspected control flow; runtime unexecuted",
+      "runtime_repeats": 0,
+      "negative_control": "Successful complete-record and existing-target controls are present in repository tests; not rerun.",
+      "duplicate": "REVIEW-06 and REVIEW-07 are the existing corrected ownership/publication roots.",
+      "siblings_checked": [
+        "historical_workflow.sh initial RECORD existence/clean checks",
+        "test_pipeline.py existing RECORD refusal",
+        "compressed_files pre-staging errors"
+      ],
+      "unchecked": [
+        "native Windows rename/locked-file behavior",
+        "uncatchable process termination/power loss",
+        "malicious local writer replacing the reserved directory after mkdir"
+      ],
+      "change_condition": "Keep if a supported ordinary copy or rename failure deletes another call's staging or replaces an existing destination, or if an incomplete nonempty record is visible as the final destination.",
+      "drop_counterfactual": "An injected shutil.copyfile/_readme/Path.rename failure that deletes .day.other.partial/notes.txt or changes a competing DEST would retain it. Current code trace provides no such path.",
+      "final_label": "dropped candidate; ordinary exception paths statically supported; no runtime proof claimed"
+    },
+    {
+      "id": "C2",
+      "kind": "conditional navigation concern",
+      "decision": "narrow to optional low navigation improvement; no material storage/recovery defect",
+      "expected": "Every selected oversized file remains recoverable with exact uncompressed bytes, size and SHA-256, as explicitly documented.",
+      "actual_static": "A selected oversized eval/report.md or quantiles/report.md is stored only as .md.gz. README's introductory links still point to .md. Its Compressed files section explicitly tells the reader to decompress FILE.gz, lists the original path/size/hash, and thereby restores those paths. The data are not lost and exact manual recovery satisfies the stated storage contract.",
+      "sources": [
+        "scripts/save_run.py:16-19",
+        "scripts/save_run.py:104-127",
+        "scripts/save_run.py:159-164",
+        "scripts/save_run.py:200-213",
+        "scripts/save_run.py:238-248",
+        "tests/test_save_run.py:71-106"
+      ],
+      "trigger": "Any complete output directory with either report.md >1,000,000 bytes but gzip <=1,000,000 bytes. The script's declared size policy covers every selected file, although ordinary generated reports are much smaller; no untouched generated oversize report was observed.",
+      "impact": "Direct navigation in the committed record is temporarily broken until documented decompression. No wrong financial result, lost data, or corrupted recovery hash is established.",
+      "severity": "P3/low optional usability",
+      "evidence_confidence": "high static path transformation; practical default-workflow consequence unobserved",
+      "runtime_repeats": 0,
+      "negative_control": "Existing oversized CSV recovery test checks byte equality and README hash, while small-file control checks original-path storage; these tests were inspected, not run.",
+      "duplicates": "No corresponding ID found in own findings.json, cross-check.md or current TODO. Private bug-hunt/docs-audit ledgers were unavailable.",
+      "cheapest_adequate_alternative": "Keep the documented decompression workflow unchanged. Optional improvement is conditional README links to stored .gz files with a recovery note; no regeneration of historical runs is justified by the present evidence.",
+      "acceptance": "If promoted, create a synthetic >1MB compressible Markdown report twice; verify .gz and exact decompression/hash, conditional live link, and a small-report control. Run product recorder only after isolation prerequisites.",
+      "drop_counterfactual": "If reports are contractually guaranteed <MAX_FILE_BYTES, or README intentionally documents all direct links require prior decompression, there is no supported defect; current policy states no such size restriction but already documents recovery.",
+      "final_label": "optional navigation improvement / conditional static concern; not a verified material defect"
+    },
+    {
+      "id": "C3",
+      "kind": "known workflow defect cross-check",
+      "decision": "keep known REVIEW-17 / K3; no new finding ID",
+      "expected": "A clean RECORD workflow using committed code should be able to record a newly inspected permitted window without its required ledger append invalidating code provenance.",
+      "actual_static": "historical_workflow.sh defaults LEDGER to tracked ledgers/yahoo-test.jsonl and checks clean only at entry. invest-mine evaluate appends an inspection if the window was not already covered. Evaluator code_revision then checks the whole checkout with git status --porcelain --untracked-files=no, so the tracked ledger change produces code_dirty true. save_run refuses either dirty manifest.",
+      "sources": [
+        "scripts/historical_workflow.sh:37-50",
+        "scripts/historical_workflow.sh:105-128",
+        "data-mining-framework/src/invest_mining/cli.py:79-96,165-167",
+        "data-mining-framework/src/invest_mining/ledger.py:155-182",
+        "strategy-evaluation/src/invest_evaluation/cli.py:36-63,278-301,342-359",
+        "scripts/save_run.py:142-150",
+        "TODO.md:46"
+      ],
+      "impact": "Default RECORD run on a newly inspected allowed window computes outputs and records ledger use but refuses final record publication. Results remain in OUT_DIR and are not silently mislabeled clean.",
+      "severity": "P2/medium integration/reproducibility",
+      "evidence_confidence": "high precise static corroboration; untouched product runtime unverified",
+      "runtime_repeats": 0,
+      "negative_control": "Existing test pipeline uses a temporary copy of a ledger whose window is already inspected, then overwrites code_revision=0*40 and code_dirty=False before calling recorder; this is a labelled modified control, not proof of untouched shell RECORD success. A temp-ledger workflow outside checkout or an already-inspected clean window avoids the specific tracked-ledger cause.",
+      "duplicates": "TODO REVIEW-17 names K3 explicitly. Not a novel GPT discovery. Original private bug-hunt ledger unavailable.",
+      "siblings_checked": [
+        "evaluation run and quantiles provenance producers",
+        "mining inspection append/load",
+        "historical workflow RECORD precheck and recorder call",
+        "test_pipeline.py:178-195,283-314,327-346"
+      ],
+      "correction_scope": "Later product change must reconcile ledger mutation with honest code cleanliness/provenance; do not merely force code_dirty false or edit confirmation-use history. Preserve actual source identity and ledger-use lineage.",
+      "acceptance": "In an isolated genuine checkout, use fabricated pre-cutoff snapshot/temporary permitted ledger fixtures. Reproduce twice with tracked not-yet-inspected window and control with unchanged/externally held ledger; successful intended workflow must retain honest source/ledger provenance. No saved market runs need regeneration based on this static pass alone.",
+      "change_condition": "Drop if supported RECORD execution prevents tracked ledger mutation or excludes declared ledger state from code-dirty semantics while preserving its separate provenance before saving.",
+      "final_label": "known independently corroborated static workflow contradiction; runtime pending"
+    }
+  ],
+  "read_ranges": [
+    {
+      "path": "scripts/save_run.py",
+      "ranges": [
+        [
+          1,
+          280
+        ]
+      ]
+    },
+    {
+      "path": "tests/test_save_run.py",
+      "ranges": [
+        [
+          1,
+          276
+        ]
+      ]
+    },
+    {
+      "path": "scripts/historical_workflow.sh",
+      "ranges": [
+        [
+          28,
+          129
+        ]
+      ]
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "ranges": [
+        [
+          178,
+          195
+        ],
+        [
+          283,
+          346
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "ranges": [
+        [
+          55,
+          195
+        ]
+      ]
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "ranges": [
+        [
+          150,
+          210
+        ]
+      ]
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "ranges": [
+        [
+          30,
+          65
+        ],
+        [
+          265,
+          365
+        ]
+      ]
+    },
+    {
+      "path": "TODO.md",
+      "ranges": [
+        [
+          34,
+          35
+        ],
+        [
+          46,
+          46
+        ]
+      ]
+    }
+  ],
+  "closing_question": "Is that all? What is missing? What else could be wrong that nobody looked at?",
+  "closing_answer": "Nothing else concrete found in recorder staging/compression, historical workflow RECORD checks/call, mining inspection mutation, evaluator provenance, and inspected tests. At most three next places: (1) untouched fabricated RECORD workflow in a genuine isolated checkout with new tracked-ledger window and temp-ledger control; (2) native Windows rename/locked-file failure cleanup; (3) forced process-kill/power-loss between destination reservation and rename. These are unchecked queues, not additional defects.",
+  "independent_verdict_saved_before_R1_comparison": true
+}

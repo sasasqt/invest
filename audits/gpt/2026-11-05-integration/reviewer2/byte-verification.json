@@ -1,0 +1,42 @@
+[
+  {
+    "path": "scripts/save_run.py",
+    "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "tests/test_save_run.py",
+    "blob": "f266a908918ecf4e546185adf269894360f8c092",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "scripts/historical_workflow.sh",
+    "blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "blob": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "TODO.md",
+    "blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+    "blob": "9460058caac73dfe33fee137b3b6b2680dd04900",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "blob": "abb44a04793f657188da5b0feab9fc7a2b360494",
+    "remote_and_local_verified": true
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/ledger.py",
+    "blob": "d13b09146ddbe7ff6328af1481f7af90cc5b2121",
+    "remote_and_local_verified": true
+  }
+]

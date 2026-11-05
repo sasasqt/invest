@@ -1,0 +1,20 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_files_byte_verified": 16,
+  "methods_verified": 14,
+  "boundary": "local credential-inaccessible boundary unavailable",
+  "environment_status_tool": "not exposed",
+  "network_policy_snapshot": "missing",
+  "docker": "not installed",
+  "bwrap": "present; prior denied probe unchanged, not rerun",
+  "installed_locked_graph": "not established locally",
+  "remote_custom_dispatch": "not exposed",
+  "disk": "60GiB available at observed preflight",
+  "runtime_product_runs": 0,
+  "existing_evidence": "Nov4 verified run41620332472 only at original successful graph scope; no ZIP reread today",
+  "runner_new_review": "INV-PR36-001 separately independently confirmed Nov4; retain engineering queue",
+  "reserved_data": "no real market/vendor observations or committed ledger contents read; synthetic oracle only",
+  "prior_overlap": "Nov4 completed report/receipt confirmed; no active remote job known; Nov1 no final report remains unknown/not observed",
+  "weekly": "2026-W45 already aggregated; no duplicate weekly summary; four-week assessment not due",
+  "decisions": "No decisions.md in latest output inventory; no decision fabricated"
+}

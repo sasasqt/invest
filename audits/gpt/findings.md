@@ -40,3 +40,8 @@ No new root cause, new optional recommendation or locally runtime-confirmed prod
 ## 2026-11-04 evaluation visit
 
 No new defect, runtime-confirmed defect or optional recommendation. GA-2026-11-02-1 / RA-2026-11-01-4 remains a known medium static report omission at `9913f94b9b795bd9633a6a683e9f420301e400b3`. Its censor flag can legitimately describe uncertainty in the eventual maximum even when the earlier longest observed episode recovered. Do not label that recovered episode open. GA-2026-11-02-2 remains optional. [Independent record](2026-11-04-evaluation/reviewer2/independent-verdict.json).
+
+
+## 5 November 2026 integration visit
+
+No newly discovered verified defect or optional recommendation. Known REVIEW-17/K3 is independently corroborated at static scope: tracked inspection-ledger mutation makes evaluator provenance dirty and recorder refuses. Runtime repetition/control remain pending. [Verification](2026-11-05-integration/reviewer2/independent-verdict.json). C1 ordinary cleanup concern dropped; C2 material recovery concern dropped under the documented gzip recovery contract.

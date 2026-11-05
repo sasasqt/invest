@@ -1,5 +1,5 @@
 {
-  "run_id": "GA-2026-11-02-data-092201Z",
+  "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
   "start_date": "2026-11-02",
   "started_utc": "2026-11-02T02:00:18Z",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
@@ -54,10 +54,10 @@
     "report": "written",
     "publication": "published_verified"
   },
-  "status": "Audit incomplete",
+  "status": "audit_incomplete",
   "last_audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "last_audited_date": "2026-11-04",
-  "last_run_id": "223322f0-d428-8329-9139-ee662049dd92",
+  "last_audited_date": "2026-11-05",
+  "last_run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
   "coverage_counts": {
     "reviewed": 30,
     "inventoried": 28,
@@ -277,7 +277,14 @@
       "first_queued_utc": "2026-11-04T02:15:12.435411+00:00",
       "next_check": "Independent source trace and mismatch negative control: product commands must not run after installed-graph failure. Also inventory unexpected distributions.",
       "evidence": "2026-11-04-evaluation/reviewer2/runtime-evidence-verification.json",
-      "deferral_reason": "Engineering field; original observed graph passed; no harm shown in successful run."
+      "deferral_reason": "Engineering field; original observed graph passed; no harm shown in successful run.",
+      "history": [
+        {
+          "date": "2026-11-05",
+          "status": "separate PR review independently confirmed static blocker INV-PR36-001 on Nov4; audit engineering follow-up retained",
+          "evidence": "https://github.com/sasasqt/invest/pull/36#issuecomment-6587388697"
+        }
+      ]
     }
   ],
   "open_places": [
@@ -396,6 +403,20 @@
       "next_check": "Independent source trace and mismatch negative control: product commands must not run after installed-graph failure. Also inventory unexpected distributions.",
       "evidence": "2026-11-04-evaluation/reviewer2/runtime-evidence-verification.json",
       "deferral_reason": "Engineering field; original observed graph passed; no harm shown in successful run."
+    },
+    {
+      "id": "OPEN-RECORD-TRACKED-LEDGER-001",
+      "owner_field": "integration",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_fingerprint": "workflow:scripts/historical_workflow.sh:tracked-inspection-ledger-invalidates-record-code-cleanliness",
+      "priority": "P2",
+      "path": "scripts/historical_workflow.sh:37-50,105-129; scripts/save_run.py:142-155; strategy-evaluation/src/invest_evaluation/cli.py:36-63",
+      "status": "independent static review complete; runtime pending",
+      "first_queued_utc": "2026-11-05T02:04:36.812376+00:00",
+      "last_queued_utc": "2026-11-05T02:04:36.812376+00:00",
+      "originating_item": "REVIEW-17/K3",
+      "next_check": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history.",
+      "deferral_reason": "current runtime prerequisites missing; do not retry unchanged blocker daily"
     }
   ],
   "followup_queue_history": [
@@ -550,6 +571,57 @@
         "field": 70,
         "review_reporting": 30
       }
+    },
+    {
+      "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+      "date": "2026-11-05",
+      "field": "integration",
+      "scheduled_for": "2026-11-05T02:00:00Z",
+      "started_utc": "2026-11-05T01:55:56.493488Z",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "question": "Recorder atomic publication, content inventory and provenance across synthetic workflow -> saved run; static work until runtime prerequisites proven",
+      "status": "bounded static question complete; custom product runtime blocked",
+      "budget_minutes": {
+        "total": 120,
+        "common": 20,
+        "field": 70,
+        "review_report": 30
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable",
+      "prior_run_reconciliation": "Nov4 completed report and receipt present; no active remote jobs recorded; Nov1 missing final remains unknown execution",
+      "prepared_utc": "2026-11-05T02:04:36.812376+00:00",
+      "report": "2026-11-05.md",
+      "scope_counts": {
+        "tracked_files": 111,
+        "bytes_verified_files": 16,
+        "primary_semantic_lines": 2053,
+        "primary_by_bucket": {
+          "exploitation": 409,
+          "exploration": 414,
+          "mandatory_callers_contracts": 1230
+        },
+        "helper_lines_separate": 1082,
+        "new_cumulative_lines_all_reviewers": 1289,
+        "statuses": {
+          "reviewed": 42,
+          "inventoried": 16,
+          "partially_reviewed": 18,
+          "checked_automatically": 13,
+          "blocked": 22
+        },
+        "unread_lines": 18071,
+        "unread_paths": 64
+      },
+      "helper_count": 1,
+      "helper_budget_minutes": 15,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "publication_status": "prepared; remote verification receipt follows",
+      "elapsed_to_preparation_seconds": 520.318888,
+      "usage": "tokens/cost/helper compute unavailable; no invented allowance"
     }
   ],
   "latest_current_run_evidence": "audits/gpt/2026-11-04-evaluation",
@@ -1573,8 +1645,8 @@
       },
       "integration": {
         "weekday": 3,
-        "last_rotation_visit": null,
-        "last_substantive_advance": null,
+        "last_rotation_visit": "2026-11-05",
+        "last_substantive_advance": "2026-11-05",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -1763,52 +1835,76 @@
             ],
             "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
             "blob": "0e9548b4f97b5867d47dedbdbd95e7087f0a9b14"
-          },
-          {
-            "path": "scripts/save_run.py",
-            "unread_ranges": [
-              [
-                1,
-                280
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
-          },
-          {
-            "path": "tests/test_pipeline.py",
-            "unread_ranges": [
-              [
-                1,
-                394
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf"
-          },
-          {
-            "path": "tests/test_save_run.py",
-            "unread_ranges": [
-              [
-                1,
-                276
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "f266a908918ecf4e546185adf269894360f8c092"
           }
         ],
         "queue_refs": [
           "remaining-work:published-boundary-format-recovery",
           "remaining-work:permitted-snapshot-replay"
         ],
-        "deferrals": {},
+        "deferrals": {
+          "custom-record-workflow": {
+            "date": "2026-11-05",
+            "reason": "No current proven credential boundary or authorized custom dispatch; PR36 installed-graph fail-stop finding now confirmed in separate review. Prior successful run retained as scoped history.",
+            "consecutive_comparable_visits": 1,
+            "next_check": "genuine isolated checkout and fabricated pre-cutoff new tracked-ledger window plus controls"
+          }
+        },
         "reading_allocation": [
-          50,
-          50
+          40,
+          60
         ],
-        "field_yield_history": [],
-        "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented."
+        "field_yield_history": [
+          {
+            "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+            "field": "integration",
+            "planned_percent": {
+              "exploitation": 50,
+              "exploration": 50
+            },
+            "basis": "Inherited integration field allocation from latest state; no reset to activation snapshot",
+            "actual_unique_lines": {
+              "exploitation": 409,
+              "exploration": 414,
+              "mandatory_callers_contracts": 1230
+            },
+            "actual_discretionary_percent": {
+              "exploitation": 49.6962332928311,
+              "exploration": 50.3037667071689
+            },
+            "new_confirmed_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "yield_note": "Known REVIEW17/K3 static recheck; no new runtime confirmation or original discovery; conservatively no yield promotion",
+            "eligible_comparable_visits": 1,
+            "pooled_rates_per_1000": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 40,
+              "exploration": 60
+            },
+            "rule": "Reliable positive denominators, zero/zero tie => exploration +10 percentage points from inherited50%; clamp30-70",
+            "seed": 14788399260181739728,
+            "eligible": [
+              "tests/test_pipeline.py",
+              "tests/test_save_run.py"
+            ],
+            "draw": "tests/test_pipeline.py",
+            "lens": "publication ownership, compressed recovery, source/ledger state transitions",
+            "selection_note": "Deterministic after initial triage; no outcome-based redraw; first integration visit cannot establish four-visit lens absence",
+            "research": "not scheduled; zero research reading/papers/experiments, excluded from denominator"
+          }
+        ],
+        "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
+        "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "last_substantive_run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+        "validation_freshness": "current static recorder/provenance trace; custom runtime unavailable",
+        "completed_advances": [
+          "Known REVIEW17/K3 traced through mining ledger mutation, whole-checkout provenance and recorder refusal; test modified provenance identified. Ordinary cleanup and exact compressed recovery independently reviewed."
+        ],
+        "next_item": "Isolated fabricated RECORD tracked-ledger new-window/control workflow; native Windows failure cleanup; then cross-format recovery gate"
       },
       "engineering": {
         "weekday": 4,
@@ -2019,8 +2115,8 @@
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 19360,
-    "unread_paths": 68,
+    "unread_lines": 18071,
+    "unread_paths": 64,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -2036,11 +2132,12 @@
       "evidence": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
       "scope": "host collection follows container-produced links; no claim of actual secret exposure",
       "latest_observation": {
-        "date": "2026-11-04",
-        "original_route": "a73149d remains prohibited",
-        "current_reviewed_correction": "e0181fc PR36; no need to wait for Friday to reuse evidence",
-        "remote_evidence": "2026-11-04-evaluation/remote-evidence.json",
-        "qualification_gap": "No local native locked environment; expected-distribution verifier does not inventory unexpected packages; custom audit fixture dispatch unavailable; full-host resource/metadata limits remain."
+        "date": "2026-11-05",
+        "original_route": "a73149d prohibited; corrected collection evidence preserved",
+        "pr36_head": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+        "new_pr_review": "INV-PR36-001 confirmed static fail-stop issue in separate Nov4 review; no fresh runner investigation today",
+        "evidence": "https://github.com/sasasqt/invest/pull/36#issuecomment-6587388697",
+        "existing_successful_run": "41620332472 graph passed; reused Nov4 verified evidence retains demonstrated scope, no new dispatch"
       }
     },
     "overlap_at_activation": {
@@ -2141,6 +2238,13 @@
         "oldest_feasible_advanced": "OPEN-DRAWDOWN-CENSOR-001",
         "deferred_twice": "No two evaluation visits established",
         "14day_field_flags": "unvisited baseline dates unknown, no invented ages"
+      },
+      "integration_visit": {
+        "date": "2026-11-05",
+        "first_comparable_visit": true,
+        "14day_flags": "Unvisited fields have unknown baseline dates; no fabricated ages",
+        "twice_deferred": "No two comparable integration visits yet",
+        "oldest_feasible_advanced": "Recorder/provenance/recovery static chain; runtime and real historical replay remain blocked"
       }
     },
     "visit_history": [
@@ -2225,6 +2329,57 @@
           "field": 70,
           "review_reporting": 30
         }
+      },
+      {
+        "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+        "date": "2026-11-05",
+        "field": "integration",
+        "scheduled_for": "2026-11-05T02:00:00Z",
+        "started_utc": "2026-11-05T01:55:56.493488Z",
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
+        "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "question": "Recorder atomic publication, content inventory and provenance across synthetic workflow -> saved run; static work until runtime prerequisites proven",
+        "status": "bounded static question complete; custom product runtime blocked",
+        "budget_minutes": {
+          "total": 120,
+          "common": 20,
+          "field": 70,
+          "review_report": 30
+        },
+        "model": "gpt-6.1-sol",
+        "effort": "unavailable",
+        "prior_run_reconciliation": "Nov4 completed report and receipt present; no active remote jobs recorded; Nov1 missing final remains unknown execution",
+        "prepared_utc": "2026-11-05T02:04:36.812376+00:00",
+        "report": "2026-11-05.md",
+        "scope_counts": {
+          "tracked_files": 111,
+          "bytes_verified_files": 16,
+          "primary_semantic_lines": 2053,
+          "primary_by_bucket": {
+            "exploitation": 409,
+            "exploration": 414,
+            "mandatory_callers_contracts": 1230
+          },
+          "helper_lines_separate": 1082,
+          "new_cumulative_lines_all_reviewers": 1289,
+          "statuses": {
+            "reviewed": 42,
+            "inventoried": 16,
+            "partially_reviewed": 18,
+            "checked_automatically": 13,
+            "blocked": 22
+          },
+          "unread_lines": 18071,
+          "unread_paths": 64
+        },
+        "helper_count": 1,
+        "helper_budget_minutes": 15,
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "publication_status": "prepared; remote verification receipt follows",
+        "elapsed_to_preparation_seconds": 520.318888,
+        "usage": "tokens/cost/helper compute unavailable; no invented allowance"
       }
     ]
   },
@@ -2307,52 +2462,107 @@
       "report_commit": "526ca25461eaeb02f54f88c415a4629e08e6970d",
       "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "main_advanced": false
+    },
+    {
+      "current_run": {
+        "run_id": "223322f0-d428-8329-9139-ee662049dd92",
+        "date": "2026-11-04",
+        "field": "evaluation",
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "status": "bounded static question complete; custom runtime pending; prior remote runtime recovered and verified",
+        "scheduled_for": "2026-11-04T02:00:00Z",
+        "started_utc": "2026-11-04T02:02:02.226773Z",
+        "prepared_utc": "2026-11-04T02:13:30.592404+00:00",
+        "report": "2026-11-04.md",
+        "scope_counts": {
+          "tracked_files": 111,
+          "local_files_byte_verified": 17,
+          "primary_semantic_lines": 1156,
+          "helper_semantic_lines_separate": 1087,
+          "newly_covered_lines": 911,
+          "statuses": {
+            "blocked": 22,
+            "checked_automatically": 14,
+            "inventoried": 20,
+            "partially_reviewed": 17,
+            "reviewed": 38
+          },
+          "remaining_unread_lines": 19360,
+          "unread_paths": 68
+        },
+        "model": "gpt-6.1-sol",
+        "effort": "unavailable",
+        "helper_count": 1,
+        "helper_budget_minutes": 15,
+        "remote_compute_dispatched": 0,
+        "new_product_runs": 0,
+        "existing_runtime_run": 41620332472,
+        "publication_status": "published and remote diff/ref/report verified",
+        "budget_minutes": {
+          "total": 120,
+          "common": 20,
+          "field": 70,
+          "review_reporting": 30
+        },
+        "report_commit": "44529dc0db2429923a5e3e0b0a72ebdbad9022b0",
+        "publication_verified_utc": "2026-11-04 02:18:39 UTC",
+        "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+      },
+      "last_run_id": "223322f0-d428-8329-9139-ee662049dd92",
+      "snapshot_date": "2026-11-05"
     }
   ],
   "current_run": {
-    "run_id": "223322f0-d428-8329-9139-ee662049dd92",
-    "date": "2026-11-04",
-    "field": "evaluation",
+    "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+    "date": "2026-11-05",
+    "field": "integration",
+    "scheduled_for": "2026-11-05T02:00:00Z",
+    "started_utc": "2026-11-05T01:55:56.493488Z",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "status": "bounded static question complete; custom runtime pending; prior remote runtime recovered and verified",
-    "scheduled_for": "2026-11-04T02:00:00Z",
-    "started_utc": "2026-11-04T02:02:02.226773Z",
-    "prepared_utc": "2026-11-04T02:13:30.592404+00:00",
-    "report": "2026-11-04.md",
-    "scope_counts": {
-      "tracked_files": 111,
-      "local_files_byte_verified": 17,
-      "primary_semantic_lines": 1156,
-      "helper_semantic_lines_separate": 1087,
-      "newly_covered_lines": 911,
-      "statuses": {
-        "blocked": 22,
-        "checked_automatically": 14,
-        "inventoried": 20,
-        "partially_reviewed": 17,
-        "reviewed": 38
-      },
-      "remaining_unread_lines": 19360,
-      "unread_paths": 68
-    },
-    "model": "gpt-6.1-sol",
-    "effort": "unavailable",
-    "helper_count": 1,
-    "helper_budget_minutes": 15,
-    "remote_compute_dispatched": 0,
-    "new_product_runs": 0,
-    "existing_runtime_run": 41620332472,
-    "publication_status": "published and remote diff/ref/report verified",
+    "question": "Recorder atomic publication, content inventory and provenance across synthetic workflow -> saved run; static work until runtime prerequisites proven",
+    "status": "bounded static question complete; custom product runtime blocked",
     "budget_minutes": {
       "total": 120,
       "common": 20,
       "field": 70,
-      "review_reporting": 30
+      "review_report": 30
     },
-    "report_commit": "44529dc0db2429923a5e3e0b0a72ebdbad9022b0",
-    "publication_verified_utc": "2026-11-04 02:18:39 UTC",
-    "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+    "model": "gpt-6.1-sol",
+    "effort": "unavailable",
+    "prior_run_reconciliation": "Nov4 completed report and receipt present; no active remote jobs recorded; Nov1 missing final remains unknown execution",
+    "prepared_utc": "2026-11-05T02:04:36.812376+00:00",
+    "report": "2026-11-05.md",
+    "scope_counts": {
+      "tracked_files": 111,
+      "bytes_verified_files": 16,
+      "primary_semantic_lines": 2053,
+      "primary_by_bucket": {
+        "exploitation": 409,
+        "exploration": 414,
+        "mandatory_callers_contracts": 1230
+      },
+      "helper_lines_separate": 1082,
+      "new_cumulative_lines_all_reviewers": 1289,
+      "statuses": {
+        "reviewed": 42,
+        "inventoried": 16,
+        "partially_reviewed": 18,
+        "checked_automatically": 13,
+        "blocked": 22
+      },
+      "unread_lines": 18071,
+      "unread_paths": 64
+    },
+    "helper_count": 1,
+    "helper_budget_minutes": 15,
+    "new_product_runs": 0,
+    "remote_compute_dispatched": 0,
+    "publication_status": "prepared; remote verification receipt follows",
+    "elapsed_to_preparation_seconds": 520.318888,
+    "usage": "tokens/cost/helper compute unavailable; no invented allowance"
   },
   "publication_history": [
     {
@@ -2369,77 +2579,13 @@
     }
   ],
   "publication_current_run": {
-    "run_id": "223322f0-d428-8329-9139-ee662049dd92",
-    "date": "2026-11-04",
-    "status": "published_verified",
-    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "report_commit": "44529dc0db2429923a5e3e0b0a72ebdbad9022b0",
-    "parent": "33fd5193004aa4c39c802259be1b67e9bdadbdd4",
-    "report_url": "https://github.com/sasasqt/invest/blob/44529dc0db2429923a5e3e0b0a72ebdbad9022b0/audits/gpt/2026-11-04.md",
-    "verified_utc": "2026-11-04 02:18:39 UTC",
-    "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "main_advanced": false,
-    "scope_verification": {
-      "tree": "301458450e6d7bbe882a651cb82fd6bbab11b8cd",
-      "changed_paths": [
-        "audits/gpt/2026-11-04-evaluation/README.md",
-        "audits/gpt/2026-11-04-evaluation/allocation.json",
-        "audits/gpt/2026-11-04-evaluation/ci.json",
-        "audits/gpt/2026-11-04-evaluation/coverage-summary.json",
-        "audits/gpt/2026-11-04-evaluation/drawdown-oracle.json",
-        "audits/gpt/2026-11-04-evaluation/drawdown_oracle.py",
-        "audits/gpt/2026-11-04-evaluation/inventory.json",
-        "audits/gpt/2026-11-04-evaluation/open-prs.json",
-        "audits/gpt/2026-11-04-evaluation/preflight.json",
-        "audits/gpt/2026-11-04-evaluation/protocol-verification.json",
-        "audits/gpt/2026-11-04-evaluation/remote-checked/boundary.json",
-        "audits/gpt/2026-11-04-evaluation/remote-checked/environment.json",
-        "audits/gpt/2026-11-04-evaluation/remote-checked/installed-graph.log",
-        "audits/gpt/2026-11-04-evaluation/remote-checked/synthetic-semantic-manifest.json",
-        "audits/gpt/2026-11-04-evaluation/remote-evidence.json",
-        "audits/gpt/2026-11-04-evaluation/remote-reproduction.md",
-        "audits/gpt/2026-11-04-evaluation/result.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer-comparison.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer1-initial.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/check_remote_archive.py",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/drawdown_oracle.py",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/fresh-main-blobs.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/fresh-remote-identities.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/independent-verdict.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/oracle-result.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/read-ranges.json",
-        "audits/gpt/2026-11-04-evaluation/reviewer2/runtime-evidence-verification.json",
-        "audits/gpt/2026-11-04-evaluation/source-verification.json",
-        "audits/gpt/2026-11-04-evaluation/verify_remote_evidence.py",
-        "audits/gpt/2026-11-04-evaluation/wed-runtime-transfer.json",
-        "audits/gpt/2026-11-04-evaluation/wed-source-transfer.json",
-        "audits/gpt/2026-11-04.md",
-        "audits/gpt/checkpoint.json",
-        "audits/gpt/coverage-map.json",
-        "audits/gpt/coverage-map.md",
-        "audits/gpt/coverage.csv",
-        "audits/gpt/cross-check.md",
-        "audits/gpt/exploration.json",
-        "audits/gpt/findings.json",
-        "audits/gpt/findings.md",
-        "audits/gpt/recommendations.md",
-        "audits/gpt/state.json",
-        "audits/gpt/validation.csv"
-      ],
-      "files_sha_match": 43,
-      "outside_scope_preserved": true,
-      "no_deleted_entries": true
-    },
-    "remote_ref_verified": true,
-    "report_read_back": true,
-    "force": false,
-    "single_parent": true,
-    "notes": "Receipt is appended by a later single-parent scoped commit. No schedule changed."
+    "status": "prepared",
+    "report": "2026-11-05.md",
+    "receipt": "2026-11-05-integration/publication.json"
   },
   "remaining_work_current_visit": [
-    "Custom untouched drawdown/report reproductions twice+controls",
-    "Complete installed unexpected-package inventory and supported runner qualification/dispatch",
-    "GA-2026-10-31-2 settlement benchmark fixture; preserve financial policy uncertainty",
-    "Continue exact unread intervals; no other field added today"
+    "Isolated fabricated RECORD tracked-ledger new-window/control workflow; native Windows failure cleanup; then cross-format recovery gate",
+    "No permitted inspected historical snapshot available; no historical replay performed",
+    "Whole repository coverage incomplete; other fields retain own queues"
   ]
 }

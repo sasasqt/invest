@@ -1,0 +1,51 @@
+{
+  "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
+  "date": "2026-11-05",
+  "field": "integration",
+  "scheduled_for": "2026-11-05T02:00:00Z",
+  "started_utc": "2026-11-05T01:55:56.493488Z",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "question": "Recorder atomic publication, content inventory and provenance across synthetic workflow -> saved run; static work until runtime prerequisites proven",
+  "status": "bounded static question complete; custom product runtime blocked",
+  "budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "review_report": 30
+  },
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable",
+  "prior_run_reconciliation": "Nov4 completed report and receipt present; no active remote jobs recorded; Nov1 missing final remains unknown execution",
+  "prepared_utc": "2026-11-05T02:04:36.812376+00:00",
+  "report": "2026-11-05.md",
+  "scope_counts": {
+    "tracked_files": 111,
+    "bytes_verified_files": 16,
+    "primary_semantic_lines": 2053,
+    "primary_by_bucket": {
+      "exploitation": 409,
+      "exploration": 414,
+      "mandatory_callers_contracts": 1230
+    },
+    "helper_lines_separate": 1082,
+    "new_cumulative_lines_all_reviewers": 1289,
+    "statuses": {
+      "reviewed": 42,
+      "inventoried": 16,
+      "partially_reviewed": 18,
+      "checked_automatically": 13,
+      "blocked": 22
+    },
+    "unread_lines": 18071,
+    "unread_paths": 64
+  },
+  "helper_count": 1,
+  "helper_budget_minutes": 15,
+  "new_product_runs": 0,
+  "remote_compute_dispatched": 0,
+  "publication_status": "prepared; remote verification receipt follows",
+  "elapsed_to_preparation_seconds": 520.318888,
+  "usage": "tokens/cost/helper compute unavailable; no invented allowance"
+}

@@ -1,0 +1,21 @@
+{
+  "tracked_files": 111,
+  "bytes_verified_files": 16,
+  "primary_semantic_lines": 2053,
+  "primary_by_bucket": {
+    "exploitation": 409,
+    "exploration": 414,
+    "mandatory_callers_contracts": 1230
+  },
+  "helper_lines_separate": 1082,
+  "new_cumulative_lines_all_reviewers": 1289,
+  "statuses": {
+    "reviewed": 42,
+    "inventoried": 16,
+    "partially_reviewed": 18,
+    "checked_automatically": 13,
+    "blocked": 22
+  },
+  "unread_lines": 18071,
+  "unread_paths": 64
+}

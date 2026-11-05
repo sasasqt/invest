@@ -1,0 +1,35 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "candidates": [
+    {
+      "id": "C1",
+      "kind": "proposed drop",
+      "question": "ordinary failure/concurrent destination deletes somebody else's record",
+      "proposed": "drop",
+      "reason": "unique owned staging; refuses existing dest; cleanup removes owned stage and only reserved empty dir; native Windows still unexecuted",
+      "severity": "P2 if present",
+      "evidence": "scripts/save_run.py:215-265; tests/test_save_run.py:120-220",
+      "unresolved": "process kill/power-loss and hostile same-user races beyond exception cleanup"
+    },
+    {
+      "id": "C2",
+      "kind": "plausible concern",
+      "question": "compressed report link points to uncompressed absent file",
+      "proposed": "keep plausible low concern",
+      "reason": "all selected oversized files compressed but README fixed eval/report.md and quantiles/report.md links; documented gzip recovery may be intended",
+      "severity": "P3/low",
+      "evidence": "scripts/save_run.py:103-128,159-164,241-244",
+      "unresolved": "attainable generated report size and intended compressed-navigation contract; do not claim runtime reproduced"
+    },
+    {
+      "id": "C3",
+      "kind": "known defect crosscheck",
+      "question": "tracked confirmation ledger dirtied before RECORD saving",
+      "proposed": "keep known REVIEW17/K3 only",
+      "reason": "historical workflow checks clean at start, evaluate records inspected window, later evaluator manifests dirty -> recorder refuses; existing TODO explicitly records it",
+      "severity": "P2/medium",
+      "evidence": "TODO.md:46; scripts/historical_workflow.sh:39-50,111-128; save_run.py:147-155",
+      "unresolved": "untouched runtime repetition and temp-ledger negativecontrol blocked"
+    }
+  ]
+}

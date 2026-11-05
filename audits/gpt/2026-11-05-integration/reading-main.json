@@ -1,0 +1,206 @@
+[
+  {
+    "path": "scripts/save_run.py",
+    "ranges": [
+      [
+        1,
+        280
+      ]
+    ],
+    "bucket": "exploitation",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+  },
+  {
+    "path": "scripts/historical_workflow.sh",
+    "ranges": [
+      [
+        1,
+        129
+      ]
+    ],
+    "bucket": "exploitation",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86"
+  },
+  {
+    "path": "tests/test_save_run.py",
+    "ranges": [
+      [
+        1,
+        276
+      ]
+    ],
+    "bucket": "exploration",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "f266a908918ecf4e546185adf269894360f8c092"
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "ranges": [
+      [
+        1,
+        138
+      ]
+    ],
+    "bucket": "exploration",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf"
+  },
+  {
+    "path": "tests/test_pipeline.py",
+    "ranges": [
+      [
+        139,
+        394
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "40a9ac4946a2cc74a88d5ec4fd7b643a80124bcf"
+  },
+  {
+    "path": "scripts/synthetic_workflow.sh",
+    "ranges": [
+      [
+        1,
+        35
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "76d15783a6ad2dc81b1910a96d54466ed44bb8df"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+    "ranges": [
+      [
+        1,
+        68
+      ],
+      [
+        265,
+        304
+      ],
+      [
+        330,
+        365
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "ranges": [
+      [
+        65,
+        214
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/ledger.py",
+    "ranges": [
+      [
+        80,
+        186
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "d13b09146ddbe7ff6328af1481f7af90cc5b2121"
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "ranges": [
+      [
+        1,
+        90
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31"
+  },
+  {
+    "path": "docs/ARCHITECTURE.md",
+    "ranges": [
+      [
+        1,
+        146
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb"
+  },
+  {
+    "path": "docs/REPORTING.md",
+    "ranges": [
+      [
+        1,
+        46
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "9b6a1ace0696840d1e3ae39b9b3873ec760d5a47"
+  },
+  {
+    "path": "CI_CD_GUIDELINES.md",
+    "ranges": [
+      [
+        1,
+        60
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "7b6fb7fc18723458b71876e55cf36bbc795bc2d5"
+  },
+  {
+    "path": "PYTHON_GUIDELINES.md",
+    "ranges": [
+      [
+        1,
+        126
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "39564cc882cf5f1716bfb7466068e4a0f5f2c45d"
+  },
+  {
+    "path": "GIT_GUIDELINES.md",
+    "ranges": [
+      [
+        73,
+        139
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "05cadead5ccd22b0ebed87fcc345ec00a2a67b02"
+  },
+  {
+    "path": "TODO.md",
+    "ranges": [
+      [
+        34,
+        35
+      ],
+      [
+        46,
+        46
+      ]
+    ],
+    "bucket": "mandatory_callers_contracts",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "git_blob": "6d6ea0cc06a17e5d8d4e9d040c2910da8a111224"
+  }
+]

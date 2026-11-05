@@ -35,3 +35,9 @@ No optional new recommendation. Existing REVIEW-16 / K14 needs safe malformed-bu
 Historical paragraphs above retain original provenance. Main CI is now six green checks at `9913f94b9b795bd9633a6a683e9f420301e400b3`; the earlier red-main statement is historical. INV-PR32-001 is resolved at the reviewed correction scope, while PR32 retains002/003/004/005 and PR36 e0181fc contains their corrections. Existing Nov3 remote evidence has now been hash/identity verified:652tests+652repeat,289independent evaluation, boundary controls and expected locked distributions. No custom fixture dispatch was available.
 
 Refresh existing GA-2026-11-02-1 acceptance: report maximum observed duration as a lower bound when any episode remains open, without saying an earlier recovered maximum remains open. Preserve values/statuses; test both orderings, tied lengths and recovered control. No new recommendation ID;0daily optional additions. Next: custom isolated report cases, complete installed-package inventory/runner qualification, and queued settlement benchmark check on the next feasible evaluation visit.
+
+
+
+## 2026-11-05 integration continuation
+
+No new optional recommendation (daily0; rolling seven-day additions unchanged). Carry known REVIEW-17/K3 into the next permitted isolated fabricated RECORD workflow: new tracked-ledger window twice, already-inspected and external-ledger controls, preserving honest code/ledger provenance. Do not force code_dirty=false. Local execution remains unqualified; PR36 e0181fc now has independently confirmed INV-PR36-001 fail-stop blocker in the separate review. Existing successful run41620332472 remains scoped evidence. Next engineering visit owns deeper runner qualification; no schedule change.
