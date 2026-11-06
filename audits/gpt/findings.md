@@ -45,3 +45,10 @@ No new defect, runtime-confirmed defect or optional recommendation. GA-2026-11-0
 ## 5 November 2026 integration visit
 
 No newly discovered verified defect or optional recommendation. Known REVIEW-17/K3 is independently corroborated at static scope: tracked inspection-ledger mutation makes evaluator provenance dirty and recorder refuses. Runtime repetition/control remain pending. [Verification](2026-11-05-integration/reviewer2/independent-verdict.json). C1 ordinary cleanup concern dropped; C2 material recovery concern dropped under the documented gzip recovery contract.
+
+
+## Engineering update — 6 November 2026
+
+**OPEN-RUNNER-GRAPH-FAILSTOP-001** (alias **INV-PR36-001**) is independently confirmed as a **high / P1 audit-execution blocker** on runner base `cd4d43b48a8c86fc58299aa50cac88b28c508b5e` and PR #36 head `e0181fcbfda9814c53bccec4d0f1d5294487ec2d`. Workspace wheels are built and installed before `installed-graph`; a nonzero graph result is retained but does not stop later format/lint/type/test/CLI/independent-install/synthetic-workflow commands. Two static methods and guarded/vulnerable controls agree; exact-head CI covers only the matching-graph success path. No runtime mismatch or credential exposure is claimed. This is a carried root, so no new GA ID or discovery yield is allocated. [Evidence](2026-11-06-engineering/oracle-results.json) · [Independent review](2026-11-06-engineering/reviewer2/independent-verdict.json).
+
+The earlier host-output traversal **INV-PR32-001** remains resolved at reviewed `cd4d43b48a8c86fc58299aa50cac88b28c508b5e`/`e0181fcbfda9814c53bccec4d0f1d5294487ec2d` collection bytes; historical runner `a73149d3` remains blocked. The separate graph fail-stop defect prevents adopting either current runner revision for new product execution.

@@ -7,3 +7,8 @@ GPT exact ranges are preserved in coverage-map.json. Peer exact byte/range union
 Least covered current files: .gitignore, README.md, ROADMAP.md, data-mining-framework/LITERATURE_REVIEW.md, data-mining-framework/PRIMARY_SOURCE_CATALOG.md, data-mining-framework/src/invest_mining/__init__.py, data-mining-framework/src/invest_mining/reporting.py, data-mining-framework/tests/conftest.py, data-mining-framework/tests/test_cli.py, data-mining-framework/tests/test_diagnostics.py.
 
 Category totals and 28-day file-date status, with unknown per-range recency made explicit: [coverage-age.json](2026-11-05-integration/coverage-age.json).
+
+
+## 6 November engineering scope
+
+Product-main coverage counts remain unchanged: today's bounded question inspected unmerged runner refs, not new `9913f94b9b795bd9633a6a683e9f420301e400b3` product lines. Byte identities were verified for `runner_workload.py`, `verify_installed.py`, `Dockerfile` and `audit-runtime.yml` at both `cd4d43b48a8c86fc58299aa50cac88b28c508b5e` and `e0181fcbfda9814c53bccec4d0f1d5294487ec2d`. Primary semantic reading: 359 exploitation lines, 246 exploration lines and 195 mandatory contract lines; helper reading is not added to the denominator. Whole-repository coverage remains incomplete.

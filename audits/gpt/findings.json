@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-11-02-data-092201Z",
+  "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "findings": [
     {
@@ -339,6 +339,47 @@
           "scope": "static omission independently corroborated; runtime missing"
         }
       ]
+    },
+    {
+      "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
+      "aliases": [
+        "INV-PR36-001"
+      ],
+      "fingerprint": "audit-tooling:runner_workload.py:installed-graph-result-before-product-commands-failstop",
+      "category": "audit tooling / dependency isolation",
+      "title": "Installed graph failure does not stop repository execution",
+      "severity": "high",
+      "priority": "P1",
+      "status": "known/open",
+      "confidence": "high static; runtime failure injection unavailable",
+      "evidence_label": "confirmed_static_invariant_violation",
+      "independent_review_status": "independently reviewed; no technical disagreement",
+      "sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+      "product_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "novelty": "Carried audit queue and existing PR finding independently corroborated; no new root or GA ID.",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/e0181fcbfda9814c53bccec4d0f1d5294487ec2d/audits/gpt/runner/runner_workload.py#L354",
+        "https://github.com/sasasqt/invest/blob/e0181fcbfda9814c53bccec4d0f1d5294487ec2d/audits/gpt/runner/runner_workload.py#L406",
+        "https://github.com/sasasqt/invest/blob/e0181fcbfda9814c53bccec4d0f1d5294487ec2d/audits/gpt/runner/runner_workload.py#L443"
+      ],
+      "expected": "Verify exact locked build dependencies before any wheel build hook; after workspace install verify runtime versions and workspace origins, and fail immediately on either error.",
+      "observed_static": "Build/install precede installed-graph; its result is accumulated without a hard gate and later checks/imports/tests/workflow execute before final nonzero exit.",
+      "impact": "A drifted graph can still execute untrusted repository code and produce later evidence. No actual drift, credential exposure, or wrong product result was observed in the green success-path run.",
+      "evidence": [
+        "2026-11-06-engineering/oracle-results.json",
+        "2026-11-06-engineering/reviewer2/independent-verdict.json",
+        "https://github.com/sasasqt/invest/actions/runs/41620332472"
+      ],
+      "acceptance": "On corrected pinned bytes, force pre-build dependency drift and post-install version/origin failure in a credential-free container; assert no later repository subprocess starts; inventory unexpected distributions.",
+      "history": [
+        {
+          "date": "2026-11-06",
+          "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+          "status": "known/open; independently confirmed static",
+          "scope": "base and candidate head; no runtime failure injection"
+        }
+      ]
     }
   ],
   "known_external": [
@@ -454,6 +495,15 @@
       "decision": "drop material recovery defect; manual decompression is documented; conditional navigation limitation retained as observation only",
       "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "evidence": "2026-11-05-integration/reviewer1-refinement.json"
+    },
+    {
+      "id": "C-2026-11-06-GREEN-CI-DISPROVES-FAILSTOP",
+      "candidate": "Exact-head green runner CI disproves the fail-stop defect",
+      "disposition": "dropped",
+      "reason": "Run 41620332472 observed installed-graph exit0; it cannot discriminate behavior after a nonzero graph result.",
+      "counterfactual": "A credential-free forced mismatch that stops all later subprocesses on untouched corrected bytes would change the verdict.",
+      "date": "2026-11-06",
+      "evidence": "2026-11-06-engineering/ci.json"
     }
   ],
   "run_history": [
@@ -483,6 +533,15 @@
         "C1 ordinary failure data loss",
         "C2 material compressed recovery defect"
       ]
+    },
+    {
+      "date": "2026-11-06",
+      "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "runner_head_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "new_root_causes": 0,
+      "carried_confirmed_tooling_blockers": 1,
+      "independent_review": true
     }
   ]
 }

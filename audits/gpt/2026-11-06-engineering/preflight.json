@@ -1,0 +1,18 @@
+{
+  "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+  "scheduled_date": "2026-11-06",
+  "date_resolution": "scheduled_for 2026-11-06T02:00:00Z => Friday Europe/Berlin; no fallback",
+  "protocol_identity": "verified index and all 13 loaded module digests",
+  "source_identity": "main/tree unchanged; 111 tracked product files from cumulative state",
+  "output_reconciliation": "Nov5 report+receipt complete; started checkpoint committed at 1556fba",
+  "prior_missing_final": "Nov1 remains unknown/not-observed; no allowance exhaustion inferred",
+  "isolation": "unproven; unchanged blocker not retried",
+  "dependencies": "installed locked graph unavailable; repository execution blocked",
+  "execution": "trusted static parsing only; no product import/build/test/workflow",
+  "data_controls": "No market/vendor observations, runs, ledgers or reserved windows opened",
+  "same_sha_ci": "six main checks green; runner exact-head 13 checks green success path",
+  "remote_jobs": "none dispatched; prior run 41620332472 reused",
+  "network_policy": "current readiness tool unavailable; no readiness claim",
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable"
+}

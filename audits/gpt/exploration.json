@@ -112,8 +112,8 @@
         "exploration": 0
       },
       "pooled_rates_per_1000": {
-        "exploitation": 0.0,
-        "exploration": 0.0
+        "exploitation": 0,
+        "exploration": 0
       },
       "eligible_comparable_visits": 1,
       "next_percent": {
@@ -121,7 +121,7 @@
         "exploration": 50
       },
       "rule": "Both reliable positive denominators; both rates zero => exploration +10 points per pinned tie rule; one visit, no detection-accuracy claim. Known-root recheck excluded from new yield. Legacy pre-rotation history retained separately.",
-      "seed": 5798509447757781902,
+      "seed": 5798509447757782000,
       "eligible": [
         "data-mining-framework/ALPHA_VALIDATION.md",
         "data-mining-framework/src/invest_mining/diagnostics.py",
@@ -616,7 +616,7 @@
         "exploration": 60
       },
       "rule": "Reliable positive denominators, zero/zero tie => exploration +10 percentage points from inherited50%; clamp30-70",
-      "seed": 14788399260181739728,
+      "seed": 14788399260181740000,
       "eligible": [
         "tests/test_pipeline.py",
         "tests/test_save_run.py"
@@ -625,6 +625,46 @@
       "lens": "publication ownership, compressed recovery, source/ledger state transitions",
       "selection_note": "Deterministic after initial triage; no outcome-based redraw; first integration visit cannot establish four-visit lens absence",
       "research": "not scheduled; zero research reading/papers/experiments, excluded from denominator"
+    },
+    {
+      "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+      "field": "engineering",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "runner_base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+      "runner_candidate_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "planned_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 359,
+        "exploration": 246,
+        "mandatory_callers_contracts": 195
+      },
+      "actual_percent": {
+        "exploitation": 59.33884297520661,
+        "exploration": 40.66115702479339
+      },
+      "new_confirmed_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "yield_note": "Existing audit queue/PR blocker independently corroborated; no new root or product finding.",
+      "eligible_comparable_visits": 1,
+      "pooled_rates_per_1000": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "rule": "Positive denominators with zero/zero new-root rate: pinned tie rule increases exploration by 10 points.",
+      "lens": "fail-closed dependency proof and orchestration ordering",
+      "helper_overlap": "separate; excluded from primary denominator",
+      "research": "not scheduled; zero papers/ideas/experiments"
     }
-  ]
+  ],
+  "date": "2026-11-06",
+  "note": "Engineering field visit; known-root confirmation excluded from new-root yield."
 }

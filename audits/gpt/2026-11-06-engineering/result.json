@@ -1,0 +1,25 @@
+{
+  "conclusion": "audit_incomplete",
+  "bounded_question": "complete",
+  "new_verified_product_defects": 0,
+  "new_verified_roots": 0,
+  "carried_verified_audit_tooling_blockers": 1,
+  "new_unverified_concerns": 0,
+  "new_optional_recommendations": 0,
+  "finding": {
+    "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
+    "alias": "INV-PR36-001",
+    "status": "known/open; independently confirmed static",
+    "severity": "high",
+    "priority": "P1",
+    "confidence": "high",
+    "runtime_reproduced": false
+  },
+  "product_execution": "blocked",
+  "main_ci": "6/6 success",
+  "runner_ci": "13/13 success-path checks",
+  "benchmarks": "not scheduled; no comparison",
+  "peer": "no matching runner finding",
+  "research": "not scheduled",
+  "next": "On corrected pinned bytes, force pre-build dependency drift and post-install version/origin failure in a credential-free container; assert no later repository subprocess starts; inventory unexpected distributions."
+}

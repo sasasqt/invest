@@ -45,3 +45,9 @@ GA20261104-protocol,base64 canonical bytes -> sha256,9913f94b9b795bd9633a6a683e9
 GA20261104-oracle,python -I drawdown_oracle.py,9913f94b9b795bd9633a6a683e9f420301e400b3,trusted stdlib synthetic,passed,8cases x2; not product,,2026-11-04-evaluation/drawdown-oracle.json
 GA20261104-remote,verify_remote_evidence.py / existing run41620332472,9913f94b9b795bd9633a6a683e9f420301e400b3,existing remote Linux Python3.11.18,passed at recorded scope,652+652repeat;289eval;46hashes,,2026-11-04-evaluation/remote-evidence.json
 GA20261104-custom,untouched product drawdown/report fixture,9913f94b9b795bd9633a6a683e9f420301e400b3,new execution unavailable,blocked,0new product runs,,2026-11-04-evaluation/preflight.json
+
+2026-11-06-PROTOCOL,"SHA-256/byte verification of index plus 13 loaded modules",bab6ba12399787496ba1108a9a368e00f8643441,trusted static parser,passed,"index + 13 modules",,"2026-11-06-engineering/preflight.json"
+2026-11-06-BLOBS,"Git blob SHA-1 over canonical fetched bytes",e0181fcbfda9814c53bccec4d0f1d5294487ec2d,trusted static parser,passed,"4 head + 4 base blobs",,"2026-11-06-engineering/identities.json"
+2026-11-06-ORACLE,"AST fail-stop oracle twice per pinned source plus controls",e0181fcbfda9814c53bccec4d0f1d5294487ec2d,trusted static parser,failed-invariant,"head 2/2 fail; base 2/2 fail; guarded control pass; vulnerable control fail",,"2026-11-06-engineering/oracle-results.json"
+2026-11-06-RUNNER-CI,"read exact-head run 41620332472/job125864532791",e0181fcbfda9814c53bccec4d0f1d5294487ec2d,GitHub-hosted historical evidence,passed-success-path,"installed-graph exit0; later commands success",,"2026-11-06-engineering/ci.json"
+2026-11-06-PRODUCT,"repository imports/builds/tests/workflows",9913f94b9b795bd9633a6a683e9f420301e400b3,local worker,blocked,"0 product executions",,"credential-inaccessible boundary and locked installed graph unproven"

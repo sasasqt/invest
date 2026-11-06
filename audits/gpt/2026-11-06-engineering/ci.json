@@ -1,0 +1,156 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "main_checks": [
+    {
+      "name": "wheels",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:34:27Z"
+    },
+    {
+      "name": "independent-install (data-mining-framework)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:32:36Z"
+    },
+    {
+      "name": "checks (3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:37:45Z"
+    },
+    {
+      "name": "independent-install (strategy-evaluation)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:33:18Z"
+    },
+    {
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:32:02Z"
+    },
+    {
+      "name": "checks (3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:37:58Z"
+    }
+  ],
+  "runner_head_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+  "runner_checks": [
+    {
+      "name": "isolated-audit (audited, Python 3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:45:12Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864532862"
+    },
+    {
+      "name": "isolated-audit (audited, Python 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:46:12Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864532791"
+    },
+    {
+      "name": "collection-boundary (Python 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:34:55Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864123935"
+    },
+    {
+      "name": "collection-boundary (Python 3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:34:51Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864123872"
+    },
+    {
+      "name": "host-tests-windows (Python 3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:35:21Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864123853"
+    },
+    {
+      "name": "resolve-source",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:34:12Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864123819"
+    },
+    {
+      "name": "host-tests-windows (Python 3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:35:41Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332472/job/125864123735"
+    },
+    {
+      "name": "independent-install (strategy-evaluation)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:35:50Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864123048"
+    },
+    {
+      "name": "checks (3.13)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:39:57Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864123035"
+    },
+    {
+      "name": "wheels",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:37:49Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864122954"
+    },
+    {
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:34:18Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864122886"
+    },
+    {
+      "name": "independent-install (data-mining-framework)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:34:50Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864122827"
+    },
+    {
+      "name": "checks (3.11)",
+      "status": "completed",
+      "conclusion": "success",
+      "completed_at": "2026-11-03T10:41:05Z",
+      "details_url": "https://github.com/sasasqt/invest/actions/runs/41620332365/job/125864122518"
+    }
+  ],
+  "inspected_job": {
+    "id": 125864532791,
+    "run_id": 41620332472,
+    "installed_graph_exit": 0,
+    "sequence": [
+      "build-workspace",
+      "install-workspace",
+      "installed-graph",
+      "format",
+      "lint",
+      "types",
+      "tests",
+      "links",
+      "CLI",
+      "hash-seed-repeat",
+      "independent installs/tests",
+      "synth-S x8"
+    ],
+    "scope": "success path only; no injected mismatch"
+  },
+  "new_dispatches": 0
+}

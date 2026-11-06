@@ -41,3 +41,6 @@ Refresh existing GA-2026-11-02-1 acceptance: report maximum observed duration as
 ## 2026-11-05 integration continuation
 
 No new optional recommendation (daily0; rolling seven-day additions unchanged). Carry known REVIEW-17/K3 into the next permitted isolated fabricated RECORD workflow: new tracked-ledger window twice, already-inspected and external-ledger controls, preserving honest code/ledger provenance. Do not force code_dirty=false. Local execution remains unqualified; PR36 e0181fc now has independently confirmed INV-PR36-001 fail-stop blocker in the separate review. Existing successful run41620332472 remains scoped evidence. Next engineering visit owns deeper runner qualification; no schedule change.
+
+
+Engineering visit 2026-11-06: no new optional recommendation ID. Retain **OPEN-RUNNER-GRAPH-FAILSTOP-001 / INV-PR36-001** as the highest-priority execution prerequisite. Verify the exact build graph before wheel hooks, then make runtime-version/workspace-origin verification a post-install hard gate. Acceptance must force each failure independently and prove no later repository subprocess starts, with a matching success control and an explicit unexpected-distribution policy. Estimated effort S–M; runner maintainer. No product fix or workflow dispatch was performed.

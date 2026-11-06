@@ -1,0 +1,47 @@
+{
+  "reviewer": "Reviewer 2 (Verifier A)",
+  "date": "2026-11-06",
+  "candidate_disposition": "drop_as_exact_duplicate",
+  "underlying_behavior": "confirmed_defect",
+  "severity": "high",
+  "priority": "P1",
+  "confidence": "high",
+  "base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+  "head_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+  "pre_existing_in_base": true,
+  "present_in_head": true,
+  "reason": "In both pinned runner_workload.py bytes, build-workspace and install-workspace precede installed-graph. The installed-graph result is appended to checks without an immediate branch; format/lint/types/tests/links, CLI imports, hash-repeat, independent installs/tests, and synth-S continue before the final accumulated exit.",
+  "static_methods": [
+    "exact-source lexical ordering and local guard-shape check",
+    "Python AST top-level control-flow statement inspection"
+  ],
+  "guarded_control": {
+    "unsafe_fixture_rejected": true,
+    "hard_gate_fixture_accepted": true
+  },
+  "runtime_reproduction_claimed": false,
+  "ci": {
+    "run_id": 41620332472,
+    "exact_head_jobs_seen": 7,
+    "all_seen_jobs_success": true,
+    "failure_path_covered": false,
+    "note": "The inspected run exercises a successful installed-graph path; unit tests cover parser/version mismatch and success recording, not orchestration fail-stop or wrong-origin fail-stop."
+  },
+  "duplicates": [
+    "INV-PR36-001",
+    "OPEN-RUNNER-GRAPH-FAILSTOP-001",
+    "PR #36 maintained comment 6587388697",
+    "review run 4b6241e0-cc30-8332-9c6e-31e17c6a11a3"
+  ],
+  "acceptance_check": "Before wheel build, verify the exact locked build environment and fail closed. After workspace install, force both locked runtime-version drift and wrong workspace origin; assert no format/lint/types/tests/links/CLI/hash-repeat/independent-install-or-test/synth command is invoked. A matching graph must reach normal checks.",
+  "missing_evidence": [
+    "credential-isolated runtime failure injection",
+    "pre-build exact installed build-environment graph proof",
+    "unexpected extra-distribution inventory or policy"
+  ],
+  "drop_counterfactual": "Keep as a new blocker if the exact maintained PR finding and queue item did not already exist, or if a materially distinct unchecked execution path were demonstrated.",
+  "exposed_model": "not exposed to this agent",
+  "exposed_reasoning_effort": "not exposed to this agent",
+  "elapsed_seconds": null,
+  "elapsed_note": "not instrumented"
+}

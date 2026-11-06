@@ -1,0 +1,6 @@
+id,check,revision,environment,outcome,evidence
+protocol,index+13modules,bab6ba12399787496ba1108a9a368e00f8643441,trusted static,passed,preflight.json
+blobs,Git blob identity,base+head,trusted static,8/8 passed,identities.json
+oracle,fail-stop invariant,base+head,trusted static,failed invariant/oracle passed,oracle-results.json
+runner-ci,success path,e0181fcbfda9814c53bccec4d0f1d5294487ec2d,GitHub historical,13 checks green,ci.json
+product-runtime,imports/build/tests/workflows,9913f94b9b795bd9633a6a683e9f420301e400b3,local worker,blocked,preflight.json

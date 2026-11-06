@@ -58,3 +58,8 @@ Other-field leads retain their prior verdicts; they were not re-audited today. G
 ## 2026-11-05 integration cross-check
 
 Peer head4930f9ee9ecf65735822456392d2253fdc93bd9e is unchanged, report2026-11-01/source90b5ca0; not over14days old. No new integration peer finding. Existing other-field verdicts remain historical at their stated scope. Known REVIEW-17/K3 comes from current TODO, not a new RA alias; private bug-hunt provenance unavailable. One fresh internal Reviewer2 corroborated the static ledger/provenance chain, ordinary cleanup drop and documented gzip recovery. No substantive disagreement/VerifierB. [Record](2026-11-05-integration/reviewer2/independent-verdict.json).
+
+
+## 6 November 2026 engineering visit
+
+Peer branch `claude/repo-audits` remained at `4930f9ee9ecf65735822456392d2253fdc93bd9e` (latest report 1 November, source `90b5ca0`). Its accessible findings and cross-check contain no runner installed-graph fail-stop item, so no agree/disagree verdict is invented. The existing PR review finding `INV-PR36-001` was independently corroborated by this audit and retained under `OPEN-RUNNER-GRAPH-FAILSTOP-001`; this is cross-routine deduplication, not a Claude cross-check.

@@ -1,0 +1,37 @@
+{
+  "candidate_id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
+  "counterpart_id": "INV-PR36-001",
+  "kind": "audit tooling / fail-closed prerequisite",
+  "pinned_product_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "runner_base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+  "runner_candidate_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+  "fingerprint": "installed-graph-result-before-product-commands-failstop",
+  "reviewer1_disposition": "keep",
+  "proposed_evidence_label": "confirmed static invariant violation; runtime failure injection unavailable",
+  "proposed_priority": "P1 audit-execution blocker",
+  "reason": "Both pinned runner revisions build and install workspace wheels before installed-graph verification. The verification result is appended to checks without an immediate return, after which repository checks, CLI imports, independent tests and the synthetic workflow continue. The successful exact-head CI graph is a success-path control, not a failure-path test.",
+  "expected": "Locked runtime dependencies and workspace origins are proved before any repository build hook, import, test or workflow; any verification failure stops immediately.",
+  "actual": "runner_workload.py e0181fc lines 354-444 and 449-598 builds/installs first and continues after the failed check; cd4d43b has the same ordering.",
+  "static_oracle": {
+    "head_repeats": 2,
+    "base_repeats": 2,
+    "same_signature": true,
+    "guarded_negative_control": "pass",
+    "vulnerable_positive_control": "fail"
+  },
+  "impact": "A drifted or wrong installed graph can still execute untrusted repository code and produce later evidence; no actual drift, credential exposure or incorrect product result was observed in the green CI run.",
+  "missing_evidence": "Untouched-container injected version/origin mismatch proving no later subprocess starts after a correction; complete unexpected-distribution inventory.",
+  "acceptance": "Verify base image dependencies before workspace wheel build; verify workspace origins immediately after install; make both hard gates. Inject version and origin failures and assert no subsequent repository command; keep a matching success control.",
+  "checked_siblings": [
+    "verify_installed.py",
+    "Dockerfile",
+    "test_guards.py",
+    ".github/workflows/audit-runtime.yml",
+    "PR #36 maintained review",
+    "exact-head run 41620332472"
+  ],
+  "unresolved_questions": [
+    "Whether the base-image dependency graph can be separated from workspace-origin verification without importing workspace packages",
+    "Whether unexpected installed distributions should be rejected or merely inventoried"
+  ]
+}

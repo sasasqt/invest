@@ -1,0 +1,96 @@
+{
+  "planned_percent": {
+    "exploitation": 60,
+    "exploration": 40
+  },
+  "actual_unique_lines": {
+    "exploitation": 359,
+    "exploration": 246,
+    "mandatory_callers_contracts": 195
+  },
+  "actual_percent": {
+    "exploitation": 59.33884297520661,
+    "exploration": 40.66115702479339
+  },
+  "ranges": [
+    {
+      "path": "runner_workload.py",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          298,
+          598
+        ]
+      ]
+    },
+    {
+      "path": "verify_installed.py",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          1,
+          58
+        ]
+      ]
+    },
+    {
+      "path": "audit-runtime.yml",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          168
+        ]
+      ]
+    },
+    {
+      "path": "test_guards.py",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          100
+        ],
+        [
+          2693,
+          2715
+        ]
+      ]
+    },
+    {
+      "path": "Dockerfile",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          18
+        ]
+      ]
+    },
+    {
+      "path": "CONTRACT.md",
+      "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "bucket": "mandatory_callers_contracts",
+      "ranges": [
+        [
+          1,
+          195
+        ]
+      ]
+    }
+  ],
+  "new_roots": {
+    "exploitation": 0,
+    "exploration": 0
+  },
+  "next_percent": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "note": "Known root; helper overlap excluded. Research not scheduled."
+}

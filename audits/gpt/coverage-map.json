@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "date": "2026-11-05",
+  "date": "2026-11-06",
   "files": [
     {
       "path": ".github/workflows/ci.yml",
@@ -1449,17 +1449,17 @@
         "summary": {
           "covered_lines": 1,
           "num_statements": 1,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 0,
           "num_partial_branches": 0,
           "covered_branches": 0,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -1557,13 +1557,13 @@
           "percent_covered_display": "93",
           "missing_lines": 2,
           "excluded_lines": 0,
-          "percent_statements_covered": 96.0,
+          "percent_statements_covered": 96,
           "percent_statements_covered_display": "96",
           "num_branches": 8,
           "num_partial_branches": 2,
           "covered_branches": 6,
           "missing_branches": 2,
-          "percent_branches_covered": 75.0,
+          "percent_branches_covered": 75,
           "percent_branches_covered_display": "75"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -2177,17 +2177,17 @@
         "summary": {
           "covered_lines": 20,
           "num_statements": 20,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 2,
           "num_partial_branches": 0,
           "covered_branches": 2,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -2400,17 +2400,17 @@
         "summary": {
           "covered_lines": 66,
           "num_statements": 66,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 6,
           "num_partial_branches": 0,
           "covered_branches": 6,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -3455,17 +3455,17 @@
         "summary": {
           "covered_lines": 1,
           "num_statements": 1,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 0,
           "num_partial_branches": 0,
           "covered_branches": 0,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -4183,17 +4183,17 @@
         "summary": {
           "covered_lines": 23,
           "num_statements": 23,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 0,
           "num_partial_branches": 0,
           "covered_branches": 0,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -7215,17 +7215,17 @@
         "summary": {
           "covered_lines": 1,
           "num_statements": 1,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 0,
           "num_partial_branches": 0,
           "covered_branches": 0,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -8429,17 +8429,17 @@
         "summary": {
           "covered_lines": 80,
           "num_statements": 80,
-          "percent_covered": 100.0,
+          "percent_covered": 100,
           "percent_covered_display": "100",
           "missing_lines": 0,
           "excluded_lines": 0,
-          "percent_statements_covered": 100.0,
+          "percent_statements_covered": 100,
           "percent_statements_covered_display": "100",
           "num_branches": 26,
           "num_partial_branches": 0,
           "covered_branches": 26,
           "missing_branches": 0,
-          "percent_branches_covered": 100.0,
+          "percent_branches_covered": 100,
           "percent_branches_covered_display": "100"
         },
         "scope": "existing installed-wheel CI coverage, no semantic credit"
@@ -9347,5 +9347,75 @@
   },
   "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
   "scope_note": "Whole inventory is current. Reused identical-blob ranges establish earlier static reading only; runtime/consumer changes can invalidate behavior evidence.",
-  "current_run_new_cumulative_semantic_lines": 1289
+  "current_run_new_cumulative_semantic_lines": 1289,
+  "external_runner_scope": [
+    {
+      "date": "2026-11-06",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "runner_base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+      "runner_head_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+      "note": "Not product-main coverage; four critical blobs at each runner ref byte-verified, orchestration ranges semantically reviewed.",
+      "ranges": [
+        {
+          "path": "audits/gpt/runner/runner_workload.py",
+          "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+          "ranges": [
+            [
+              298,
+              598
+            ]
+          ],
+          "status": "reviewed external runner scope"
+        },
+        {
+          "path": "audits/gpt/runner/verify_installed.py",
+          "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+          "ranges": [
+            [
+              1,
+              58
+            ]
+          ],
+          "status": "reviewed external runner scope"
+        },
+        {
+          "path": ".github/workflows/audit-runtime.yml",
+          "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+          "ranges": [
+            [
+              1,
+              168
+            ]
+          ],
+          "status": "reviewed external runner scope"
+        },
+        {
+          "path": "audits/gpt/runner/test_guards.py",
+          "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+          "ranges": [
+            [
+              1,
+              100
+            ],
+            [
+              2693,
+              2715
+            ]
+          ],
+          "status": "partially reviewed external runner scope"
+        },
+        {
+          "path": "audits/gpt/runner/CONTRACT.md",
+          "ref": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+          "ranges": [
+            [
+              1,
+              195
+            ]
+          ],
+          "status": "reviewed contract"
+        }
+      ]
+    }
+  ]
 }

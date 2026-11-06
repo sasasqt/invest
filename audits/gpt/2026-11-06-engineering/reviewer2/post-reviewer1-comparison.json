@@ -1,0 +1,17 @@
+{
+  "reviewer1_disposition": "keep",
+  "reviewer2_initial_disposition": "drop_as_exact_duplicate",
+  "technical_disagreement": false,
+  "substantive_disagreement": "Disposition semantics only: Reviewer 1 treats OPEN-RUNNER-GRAPH-FAILSTOP-001 as the unresolved audit item to retain; my initial verdict treated its exact PR counterpart INV-PR36-001 as requiring candidate deduplication.",
+  "reconciled_recommendation": "keep the unresolved audit item, link it to INV-PR36-001 and maintained comment 6587388697, and do not create another finding ID",
+  "shared_findings": [
+    "The defect is present in cd4d43b48a8c86fc58299aa50cac88b28c508b5e and e0181fcbfda9814c53bccec4d0f1d5294487ec2d.",
+    "Wheel build and workspace install occur before installed-graph.",
+    "A nonzero installed-graph result is accumulated but does not hard-stop later repository commands.",
+    "Run 41620332472 proves only the success path.",
+    "No runtime failure injection is claimed."
+  ],
+  "severity": "high",
+  "priority": "P1",
+  "confidence": "high"
+}

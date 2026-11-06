@@ -1,0 +1,29 @@
+{
+  "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+  "date": "2026-11-06",
+  "field": "engineering",
+  "product": {
+    "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+    "date": "2026-11-02T02:27:01Z"
+  },
+  "output": {
+    "start_base": "37a83d74a66acc35ff0f0b7bea5aac1c29508f58",
+    "started_commit": "1556fba01c84f6d9c8dc213bb5965ec4e0678cdd",
+    "branch": "gpt/repo-audits"
+  },
+  "runner": {
+    "active_branch_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "candidate_pr36_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+    "pr36_state": "open draft"
+  },
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline_identity": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa"
+  },
+  "peer": {
+    "sha": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+    "latest_report": "2026-11-01.md"
+  }
+}

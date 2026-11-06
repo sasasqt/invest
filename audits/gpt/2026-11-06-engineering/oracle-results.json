@@ -1,0 +1,163 @@
+[
+  {
+    "expectation_met": true,
+    "expected": "fail",
+    "graph_immediately_guarded": false,
+    "graph_line": 407,
+    "label": "head-1",
+    "later_literal_execute_actions": [
+      {
+        "line": 452,
+        "name": "hash-seed-repeat"
+      },
+      {
+        "line": 495,
+        "name": "evaluation-independent-import"
+      }
+    ],
+    "pass": false,
+    "pre_graph_product_actions": [
+      {
+        "line": 359,
+        "name": "build-workspace"
+      },
+      {
+        "line": 386,
+        "name": "install-workspace"
+      }
+    ],
+    "signature": "installed-graph result is not an immediate return/raise gate; workspace build/install occurs before installed-graph verification"
+  },
+  {
+    "expectation_met": true,
+    "expected": "fail",
+    "graph_immediately_guarded": false,
+    "graph_line": 407,
+    "label": "head-2",
+    "later_literal_execute_actions": [
+      {
+        "line": 452,
+        "name": "hash-seed-repeat"
+      },
+      {
+        "line": 495,
+        "name": "evaluation-independent-import"
+      }
+    ],
+    "pass": false,
+    "pre_graph_product_actions": [
+      {
+        "line": 359,
+        "name": "build-workspace"
+      },
+      {
+        "line": 386,
+        "name": "install-workspace"
+      }
+    ],
+    "signature": "installed-graph result is not an immediate return/raise gate; workspace build/install occurs before installed-graph verification"
+  },
+  {
+    "expectation_met": true,
+    "expected": "fail",
+    "graph_immediately_guarded": false,
+    "graph_line": 291,
+    "label": "base-1",
+    "later_literal_execute_actions": [
+      {
+        "line": 336,
+        "name": "hash-seed-repeat"
+      },
+      {
+        "line": 379,
+        "name": "evaluation-independent-import"
+      }
+    ],
+    "pass": false,
+    "pre_graph_product_actions": [
+      {
+        "line": 243,
+        "name": "build-workspace"
+      },
+      {
+        "line": 270,
+        "name": "install-workspace"
+      }
+    ],
+    "signature": "installed-graph result is not an immediate return/raise gate; workspace build/install occurs before installed-graph verification"
+  },
+  {
+    "expectation_met": true,
+    "expected": "fail",
+    "graph_immediately_guarded": false,
+    "graph_line": 291,
+    "label": "base-2",
+    "later_literal_execute_actions": [
+      {
+        "line": 336,
+        "name": "hash-seed-repeat"
+      },
+      {
+        "line": 379,
+        "name": "evaluation-independent-import"
+      }
+    ],
+    "pass": false,
+    "pre_graph_product_actions": [
+      {
+        "line": 243,
+        "name": "build-workspace"
+      },
+      {
+        "line": 270,
+        "name": "install-workspace"
+      }
+    ],
+    "signature": "installed-graph result is not an immediate return/raise gate; workspace build/install occurs before installed-graph verification"
+  },
+  {
+    "expectation_met": true,
+    "expected": "pass",
+    "graph_immediately_guarded": true,
+    "graph_line": 3,
+    "label": "negative-control-guarded",
+    "later_literal_execute_actions": [
+      {
+        "line": 5,
+        "name": "build-workspace"
+      },
+      {
+        "line": 6,
+        "name": "install-workspace"
+      },
+      {
+        "line": 7,
+        "name": "tests"
+      }
+    ],
+    "pass": true,
+    "pre_graph_product_actions": [],
+    "signature": "ok"
+  },
+  {
+    "expectation_met": true,
+    "expected": "fail",
+    "graph_immediately_guarded": false,
+    "graph_line": 4,
+    "label": "positive-control-vulnerable",
+    "later_literal_execute_actions": [
+      {
+        "line": 5,
+        "name": "tests"
+      }
+    ],
+    "pass": false,
+    "pre_graph_product_actions": [
+      {
+        "line": 3,
+        "name": "build-workspace"
+      }
+    ],
+    "signature": "installed-graph result is not an immediate return/raise gate; workspace build/install occurs before installed-graph verification"
+  }
+]
