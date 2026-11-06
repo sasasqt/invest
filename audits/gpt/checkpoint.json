@@ -54,7 +54,7 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "audit_incomplete",
+  "status": "Audit incomplete; 2026-11-06 engineering bounded scope complete and published; carried runner fail-stop blocker independently confirmed",
   "last_audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "last_audited_date": "2026-11-06",
   "last_run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
@@ -214,7 +214,7 @@
   },
   "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
-  "completed_utc": "2026-11-02T09:35:26.734247+00:00",
+  "completed_utc": "2026-11-06T02:17:39Z",
   "total_elapsed_seconds_to_publication_verified": 1426.203018,
   "execution_recovery": {
     "date": "2026-10-31",
@@ -2672,9 +2672,12 @@
     "helper_budget_minutes": 15,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "prepared; remote verification pending",
+    "publication_status": "published_verified",
     "elapsed_to_preparation_seconds": 713,
-    "usage": "tokens/cost/helper compute unavailable; no invented allowance"
+    "usage": "tokens/cost/helper compute unavailable; no invented allowance",
+    "completed_utc": "2026-11-06T02:17:39Z",
+    "report_commit": "42689c9edbb442821eda17f33951ea59ea6a20ac",
+    "report_url": "https://github.com/sasasqt/invest/blob/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06.md"
   },
   "publication_history": [
     {
@@ -2897,10 +2900,145 @@
       "helper_count": 1,
       "helper_compute": "unavailable",
       "publication_receipt_note": "Receipt is a follow-on single-parent commit; its ref is verified after publication, so it does not embed its own unknown hash."
+    },
+    {
+      "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+      "date": "2026-11-06",
+      "field": "engineering",
+      "status": "published_verified",
+      "branch": "gpt/repo-audits",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "started_commit": "1556fba01c84f6d9c8dc213bb5965ec4e0678cdd",
+      "report_commit": "42689c9edbb442821eda17f33951ea59ea6a20ac",
+      "report_tree": "cd62f9c8c1c8e9c577122b5aa3888a48d5c963fd",
+      "report_url": "https://github.com/sasasqt/invest/blob/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06.md",
+      "evidence_url": "https://github.com/sasasqt/invest/tree/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06-engineering",
+      "verified_utc": "2026-11-06T02:17:39Z",
+      "verification": {
+        "remote_ref_equal_after_lease": true,
+        "guarded_expected_old_sha": true,
+        "force": false,
+        "one_parent": true,
+        "parent_to_commit_changed_paths": [
+          "audits/gpt/2026-11-06-engineering/README.md",
+          "audits/gpt/2026-11-06-engineering/ci.json",
+          "audits/gpt/2026-11-06-engineering/coverage-summary.json",
+          "audits/gpt/2026-11-06-engineering/identities.json",
+          "audits/gpt/2026-11-06-engineering/oracle-results.json",
+          "audits/gpt/2026-11-06-engineering/preflight.json",
+          "audits/gpt/2026-11-06-engineering/reading-main.json",
+          "audits/gpt/2026-11-06-engineering/result.json",
+          "audits/gpt/2026-11-06-engineering/reviewer-comparison.json",
+          "audits/gpt/2026-11-06-engineering/reviewer1-initial.json",
+          "audits/gpt/2026-11-06-engineering/reviewer2/independent-verdict.json",
+          "audits/gpt/2026-11-06-engineering/reviewer2/post-reviewer1-comparison.json",
+          "audits/gpt/2026-11-06-engineering/runner_failstop_oracle.py",
+          "audits/gpt/2026-11-06-engineering/validation.csv",
+          "audits/gpt/2026-11-06.md",
+          "audits/gpt/checkpoint.json",
+          "audits/gpt/coverage-map.json",
+          "audits/gpt/coverage-map.md",
+          "audits/gpt/cross-check.md",
+          "audits/gpt/exploration.json",
+          "audits/gpt/findings.json",
+          "audits/gpt/findings.md",
+          "audits/gpt/recommendations.md",
+          "audits/gpt/state.json",
+          "audits/gpt/validation.csv"
+        ],
+        "all_paths_under_audits_gpt": true,
+        "report_read_back": true,
+        "result_read_back": true,
+        "state_read_back": true,
+        "source_main_recheck": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "source_main_unchanged": true
+      },
+      "execution": {
+        "product_imports_builds_tests_workflows": 0,
+        "remote_compute_dispatched": 0,
+        "reason": "credential boundary and locked installed dependency graph not proven; trusted static work only"
+      },
+      "independent_review": {
+        "helpers": 1,
+        "verifier_b_used": false,
+        "reconciliation": "technical agreement; initial keep/drop difference was duplicate-record semantics only"
+      },
+      "runtime": {
+        "model": "gpt-6.1-sol",
+        "effort": "unavailable"
+      },
+      "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
     }
   ],
   "publication_current_run": {
-    "status": "prepared; remote verification pending"
+    "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+    "date": "2026-11-06",
+    "field": "engineering",
+    "status": "published_verified",
+    "branch": "gpt/repo-audits",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "started_commit": "1556fba01c84f6d9c8dc213bb5965ec4e0678cdd",
+    "report_commit": "42689c9edbb442821eda17f33951ea59ea6a20ac",
+    "report_tree": "cd62f9c8c1c8e9c577122b5aa3888a48d5c963fd",
+    "report_url": "https://github.com/sasasqt/invest/blob/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06.md",
+    "evidence_url": "https://github.com/sasasqt/invest/tree/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06-engineering",
+    "verified_utc": "2026-11-06T02:17:39Z",
+    "verification": {
+      "remote_ref_equal_after_lease": true,
+      "guarded_expected_old_sha": true,
+      "force": false,
+      "one_parent": true,
+      "parent_to_commit_changed_paths": [
+        "audits/gpt/2026-11-06-engineering/README.md",
+        "audits/gpt/2026-11-06-engineering/ci.json",
+        "audits/gpt/2026-11-06-engineering/coverage-summary.json",
+        "audits/gpt/2026-11-06-engineering/identities.json",
+        "audits/gpt/2026-11-06-engineering/oracle-results.json",
+        "audits/gpt/2026-11-06-engineering/preflight.json",
+        "audits/gpt/2026-11-06-engineering/reading-main.json",
+        "audits/gpt/2026-11-06-engineering/result.json",
+        "audits/gpt/2026-11-06-engineering/reviewer-comparison.json",
+        "audits/gpt/2026-11-06-engineering/reviewer1-initial.json",
+        "audits/gpt/2026-11-06-engineering/reviewer2/independent-verdict.json",
+        "audits/gpt/2026-11-06-engineering/reviewer2/post-reviewer1-comparison.json",
+        "audits/gpt/2026-11-06-engineering/runner_failstop_oracle.py",
+        "audits/gpt/2026-11-06-engineering/validation.csv",
+        "audits/gpt/2026-11-06.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/recommendations.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "all_paths_under_audits_gpt": true,
+      "report_read_back": true,
+      "result_read_back": true,
+      "state_read_back": true,
+      "source_main_recheck": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_main_unchanged": true
+    },
+    "execution": {
+      "product_imports_builds_tests_workflows": 0,
+      "remote_compute_dispatched": 0,
+      "reason": "credential boundary and locked installed dependency graph not proven; trusted static work only"
+    },
+    "independent_review": {
+      "helpers": 1,
+      "verifier_b_used": false,
+      "reconciliation": "technical agreement; initial keep/drop difference was duplicate-record semantics only"
+    },
+    "runtime": {
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable"
+    },
+    "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
   },
   "remaining_work_current_visit": [
     "On corrected pinned bytes, force pre-build dependency drift and post-install version/origin failure in a credential-free container; assert no later repository subprocess starts; inventory unexpected distributions.",
