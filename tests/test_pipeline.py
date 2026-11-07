@@ -381,8 +381,12 @@ def _no_global_git_config(monkeypatch, tmp_path):
     test first checks that Git reads the file the variable names, and is skipped when it
     does not. The system configuration is left out for the same reason."""
     monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    # The deprecated GIT_CONFIG variable names a config file for `git config` alone, which
+    # then refuses --global ("only one config file at a time"), and the check below would
+    # blame the Git version.
+    monkeypatch.delenv("GIT_CONFIG", raising=False)
     marker = tmp_path / "gitconfig-marker"
-    marker.write_text("[invest]\n\tisolated = yes\n", encoding="utf-8")
+    marker.write_text(f"[invest]\n\tisolated = {tmp_path.name}\n", encoding="utf-8")
     monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(marker))
     read = subprocess.run(
         ["git", "config", "--global", "invest.isolated"],
@@ -390,7 +394,7 @@ def _no_global_git_config(monkeypatch, tmp_path):
         text=True,
         check=False,
     )
-    if read.stdout.strip() != "yes":
+    if read.stdout.strip() != tmp_path.name:
         version = subprocess.run(["git", "--version"], capture_output=True, text=True, check=False)
         pytest.skip(
             "isolating the global Git configuration needs GIT_CONFIG_GLOBAL (Git 2.32 and "
