@@ -5,10 +5,18 @@ import contextlib
 import io
 import json
 import os
+import sys
 import uuid
 from pathlib import Path
 
-from isolated_runner import checked, execution_command, remove_container, run_bounded
+from isolated_runner import (
+    checked,
+    container_user,
+    docker_command,
+    execution_command,
+    remove_container,
+    run_bounded,
+)
 from output_collection import SUMMARY_NAMES, collect_workload
 
 FIXTURE = r"""
@@ -53,13 +61,19 @@ def main():
     parser.add_argument("--python-version", choices=("3.11", "3.13"), required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    # The container probes take a host path and process ID, which name nothing inside
+    # the Linux container when Docker runs in a virtual machine (Windows, macOS).
+    if sys.platform != "linux":
+        raise SystemExit("collection_checks.py runs on a Linux host with Docker only")
     output = args.output.resolve()
     output.mkdir(parents=True)
     evidence = output / "results"
     evidence.mkdir()
     source = output / "toy-source"
     source.mkdir()
-    (source / "pyproject.toml").write_text('[project]\nname="generated-boundary-fixture"\n')
+    (source / "pyproject.toml").write_text(
+        '[project]\nname="generated-boundary-fixture"\n', encoding="utf-8"
+    )
     sentinel = output / "host-only-canary"
     marker = ("NON_SECRET_CANARY_" + uuid.uuid4().hex).encode()
     sentinel.write_bytes(marker)
@@ -75,7 +89,7 @@ def main():
         "DOCKER_CERT_PATH",
     ):
         env.pop(key, None)
-    docker = ["docker", "--host=unix:///var/run/docker.sock"]
+    docker = docker_command()
     base = f"python:{args.python_version}-slim-bookworm"
     checked([*docker, "pull", base], env=env, timeout=300)
     image = checked([*docker, "image", "inspect", base, "--format", "{{.Id}}"], env=env)
@@ -99,8 +113,7 @@ def main():
             Path(__file__).resolve().parent,
             sentinel,
             os.getpid(),
-            os.getuid() or 65534,
-            os.getgid() or 65534,
+            *container_user(),
         )
         name = "invest-collection-check-" + uuid.uuid4().hex
         command[3:3] = ["--name", name]
@@ -136,7 +149,9 @@ def main():
         if mode == "ordinary":
             if not all(collected["summaries"]["boundary.json"].values()):
                 raise AssertionError("Ordinary boundary control failed")
-            if (target / "workload/ordinary.txt").read_text() != "ordinary evidence":
+            if (target / "workload/ordinary.txt").read_text(
+                encoding="utf-8"
+            ) != "ordinary evidence":
                 raise AssertionError("Ordinary output was not preserved")
         row = {
             "case": mode,
@@ -148,7 +163,17 @@ def main():
         rows.append(row)
         print("COLLECTION_CASE " + json.dumps(row), flush=True)
         (evidence / "acceptance.json").write_text(
-            json.dumps({"image_id": image, "base_digest": digest, "cases": rows}, indent=2)
+            json.dumps(
+                {
+                    "image_id": image,
+                    "base_digest": digest,
+                    # False until every case passed: a failed case stops the run early.
+                    "complete": len(rows) == len(cases),
+                    "cases": rows,
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
         )
     return 0
 

@@ -64,7 +64,7 @@ Apply [design by contract](DESIGN_BY_CONTRACT.md) to public APIs, artifact bound
 
 ## Linux and Windows
 
-Every change must work on both Linux and Windows. CI runs only on Linux until [BUILD-03](TODO.md#m1--packages-and-tooling) adds a Windows job, so the author checks the Windows side when writing the code, not after a user reports it.
+Every change must work on both Linux and Windows. CI runs only on Linux until [BUILD-03](TODO.md#m1--packages-and-tooling) adds a Windows job (only the conditional audit workflow already runs the audit runner's host tests on Windows), so the author checks the Windows side when writing the code, not after a user reports it.
 
 - **Paths:** build them with `pathlib.Path` and the `/` operator, never by joining strings with `/` or `\`. Compare paths as `Path` objects, not strings. Keep names valid on Windows: no `:` `*` `?` `"` `<` `>` `|`, no reserved names such as `CON` or `NUL`, no two names differing only in case, and full paths under 260 characters.
 - **Text files:** pass `encoding="utf-8"` to every `open`, `read_text` and `write_text`. Without it, Python 3.11 to 3.14 on Windows uses the locale code page (often cp1252), which cannot encode characters such as `≥` or `→`. Pass `newline=""` to files read or written by the `csv` module, and `newline="\n"` when written text must be byte-identical across platforms (reports, manifests, hashed or committed files).
@@ -93,7 +93,7 @@ Use pytest. Test observable behavior and business requirements rather than priva
 ## Development checks
 
 Audit-runner changes also require the [conditional Linux/Docker checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks).
-From `audits/gpt/runner`, run `python -m unittest -v test_guards test_output_collection test_execution_logs`.
+From `audits/gpt/runner`, run `python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety` on Linux or Windows (it needs `packaging`; the suites switch on the `CONTRACT_CHECKS=1` contract checks themselves).
 On a disposable Linux/Docker host, run `python collection_checks.py --python-version 3.11 --output /path/to/new-collection-check`
 and repeat with `--python-version 3.13` and a separate new output directory. This
 uses generated fixtures and records the Docker image identity; it is not a

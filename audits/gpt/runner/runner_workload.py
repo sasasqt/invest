@@ -6,10 +6,10 @@ import hashlib
 import json
 import os
 import platform
-import resource
 import shutil
 import signal
 import socket
+import stat
 import statistics
 import subprocess
 import sys
@@ -19,6 +19,48 @@ from pathlib import Path
 
 VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
 SEMANTIC_GATE_VERSION = 2
+# Set by main when it runs as the container's first process (PID 1, no --init).
+CONTAINER_INIT = False
+# The container's fixed paths; the host tests point them at a temporary folder.
+WORK = Path("/work")
+INPUT = Path("/input")
+AUDIT = Path("/audit")
+BUILD_PYTHON = "/buildenv/bin/python"
+REQUIREMENTS = "/requirements.txt"
+BUILD_REQUIREMENTS = "/build-requirements.txt"
+
+
+def output_files(directory):
+    """Every regular file of the workflow output, sorted. A symbolic link, a special
+    file or a folder that cannot be listed fails the gate (CONTRACT.md W5), so no
+    entry drops out of the comparison. The walk keeps its own stack: os.walk and
+    rglob recurse on Python 3.11, and a deep output raised RecursionError there."""
+    directory = Path(directory)
+    files, pending = [], [directory]
+    while pending:
+        folder = pending.pop()
+        try:
+            with os.scandir(folder) as listing:
+                entries = list(listing)
+        except OSError as exc:
+            # The cause goes into the reason: a root the workflow never created is not
+            # a permission problem, and the output folder itself is not collected.
+            name = folder.relative_to(directory)
+            cause = exc.strerror or type(exc).__name__
+            raise ValueError(f"Workflow output folder cannot be listed ({cause}): {name}") from exc
+        for entry in entries:
+            path = Path(entry.path)
+            mode = entry.stat(follow_symlinks=False).st_mode
+            if stat.S_ISDIR(mode):
+                pending.append(path)
+            elif stat.S_ISREG(mode):
+                files.append(path)
+            else:
+                raise ValueError(
+                    "Workflow output entry is not a plain file or folder: "
+                    f"{path.relative_to(directory)}"
+                )
+    return sorted(files)
 
 
 def semantic_manifest(directory):
@@ -33,25 +75,34 @@ def semantic_manifest(directory):
             return value.replace(str(directory), "$RUN")
         return value
 
+    def normalized(path, load):
+        """JSON of the cleaned value; one nested too deeply to parse fails the gate."""
+        try:
+            return json.dumps(load(), sort_keys=True).encode()
+        except RecursionError:
+            raise ValueError(f"JSON nested too deeply: {path.relative_to(directory)}") from None
+
+    files = output_files(directory)
     records = []
     figures = []
-    for path in sorted(directory.rglob("*")):
-        if not path.is_file():
-            continue
+    for path in files:
         if path.suffix == ".json":
-            payload = json.dumps(
-                clean(json.loads(path.read_text(encoding="utf-8"))), sort_keys=True
-            ).encode()
+            payload = normalized(
+                path, lambda path=path: clean(json.loads(path.read_text(encoding="utf-8")))
+            )
             comparison = "json; declared volatile keys and output root normalized"
         elif path.suffix == ".jsonl":
-            payload = json.dumps(
-                [
+            payload = normalized(
+                path,
+                lambda path=path: [
                     clean(json.loads(line))
-                    for line in path.read_text(encoding="utf-8").splitlines()
+                    # Only a line feed ends a JSONL row: splitlines would also split
+                    # at U+2028, U+2029 and U+0085, which a JSON string may hold raw.
+                    # read_text would also turn a lone CR into a line feed.
+                    for line in path.read_bytes().decode("utf-8").split("\n")
                     if line.strip()
                 ],
-                sort_keys=True,
-            ).encode()
+            )
             comparison = "jsonl; record order retained; declared volatile keys normalized"
         elif path.name.endswith(".csv.gz"):
             try:
@@ -98,26 +149,44 @@ def semantic_hash(directory):
     ).hexdigest()
 
 
+def capabilities_dropped(status):
+    """True when /proc/self/status shows the permitted, effective, bounding and (where
+    listed) ambient sets empty; no-new-privileges, probed separately, covers exec.
+
+    A non-root process has no effective capabilities whatever Docker granted it, so
+    --cap-drop=ALL shows only in the bounding set: every set must be empty.
+    """
+    sets = {
+        line.split(":", 1)[0]: int(line.split()[1], 16)
+        for line in status.splitlines()
+        if line.startswith(("CapPrm:", "CapEff:", "CapBnd:", "CapAmb:"))
+    }
+    return {"CapPrm", "CapEff", "CapBnd"} <= sets.keys() and not any(sets.values())
+
+
 def prove_boundary(sentinel, host_pid, results):
     status = Path("/proc/self/status").read_text()
     no_new_privs = next(
         line.split()[1] for line in status.splitlines() if line.startswith("NoNewPrivs:")
     )
-    capabilities = next(
-        line.split()[1] for line in status.splitlines() if line.startswith("CapEff:")
-    )
     checks = {
         "unprivileged_uid": os.getuid() != 0,
         "no_new_privileges": no_new_privs == "1",
-        "no_capabilities": int(capabilities, 16) == 0,
-        "outside_fixture_absent": not Path(sentinel).exists(),
-        "host_process_not_visible": not Path(f"/proc/{host_pid}/environ").exists(),
+        "no_capabilities": capabilities_dropped(status),
+    }
+    # A Windows host passes neither probe: its paths and process IDs name nothing
+    # inside the Linux container, so the checks would pass vacuously.
+    if sentinel is not None:
+        checks["outside_fixture_absent"] = not Path(sentinel).exists()
+    if host_pid is not None:
+        checks["host_process_not_visible"] = not Path(f"/proc/{host_pid}/environ").exists()
+    checks |= {
         "host_canary_env_absent": "AUDIT_HOST_CANARY" not in os.environ,
         "container_socket_absent": not Path("/var/run/docker.sock").exists(),
-        "source_readable": Path("/input/pyproject.toml").is_file(),
+        "source_readable": (INPUT / "pyproject.toml").is_file(),
     }
     try:
-        Path("/input/.audit-write-probe").write_text("harmless")
+        (INPUT / ".audit-write-probe").write_text("harmless")
         checks["source_write_denied"] = False
     except OSError:
         checks["source_write_denied"] = True
@@ -131,17 +200,17 @@ def prove_boundary(sentinel, host_pid, results):
             sys.executable,
             "-I",
             "-c",
-            "import os,pathlib,sys; print(int(not pathlib.Path(sys.argv[1]).exists() "
-            "and 'AUDIT_HOST_CANARY' not in os.environ))",
-            sentinel,
+            "import os,pathlib,sys; print(int(not any(pathlib.Path(p).exists() for p in "
+            "sys.argv[1:]) and 'AUDIT_HOST_CANARY' not in os.environ))",
+            *([] if sentinel is None else [sentinel]),
         ],
         capture_output=True,
         text=True,
         timeout=10,
     )
-    checks["child_inherits_outside_file_and_env_denial"] = (
-        child.returncode == 0 and child.stdout.strip() == "1"
-    )
+    # Without a sentinel (Windows host) the child checks only the environment.
+    child_key = "child_inherits_" + ("env" if sentinel is None else "outside_file_and_env")
+    checks[child_key + "_denial"] = child.returncode == 0 and child.stdout.strip() == "1"
     fixture = results / "write-positive-control"
     fixture.write_text("allowed")
     checks["output_writable"] = fixture.read_text() == "allowed"
@@ -151,7 +220,37 @@ def prove_boundary(sentinel, host_pid, results):
         raise RuntimeError("Execution boundary probe failed; no project code imported")
 
 
+def stop_session(session):
+    """SIGKILL every process left in the step's session (W2). A process that made its
+    own process group (GNU timeout, a shell with job control, setpgid) is still in the
+    session; only setsid leaves it. Linux keeps a session's ID unused while any of its
+    processes lives, so the ID names only this step's processes."""
+    for _ in range(100):
+        found = False
+        for entry in os.listdir("/proc"):
+            if not entry.isdigit():
+                continue
+            try:
+                with open(f"/proc/{entry}/stat", encoding="ascii", errors="replace") as stream:
+                    fields = stream.read().rsplit(")", 1)[1].split()
+            except (OSError, IndexError):
+                continue
+            # A leader whose main thread exited reads "Z" while its other threads
+            # (num_threads) still run; a signal to its ID still reaches them.
+            live = fields[0] not in ("Z", "X") or int(fields[17]) > 1
+            if int(fields[3]) == session and live:
+                found = True
+                try:
+                    os.kill(int(entry), signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+        if not found:
+            return
+
+
 def execute(name, argv, cwd, results, timeout=1200, env=None):
+    import resource  # POSIX only: imported here so host tests can load this module on Windows
+
     started = time.monotonic()
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
     log = results / f"{name}.log"
@@ -167,6 +266,27 @@ def execute(name, argv, cwd, results, timeout=1200, env=None):
             os.killpg(process.pid, signal.SIGKILL)
             process.wait()
             status = 124
+        # Processes the step left in its group would run on into later steps and
+        # their timings (and could still write the results folder); stop them.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stop_session(process.pid)
+        if CONTAINER_INIT:
+            # The container's first process: every other process in the container
+            # came from a step, also one that left the step's session (setsid), and
+            # orphans are reparented here. Stop them all and reap them, so no zombie
+            # holds a slot of --pids-limit and their CPU time is counted.
+            try:
+                os.kill(-1, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            while True:
+                try:
+                    os.waitpid(-1, 0)
+                except ChildProcessError:
+                    break
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
     result = {
         "name": name,
@@ -184,10 +304,13 @@ def execute(name, argv, cwd, results, timeout=1200, env=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sentinel", required=True)
-    parser.add_argument("--host-pid", required=True, type=int)
+    # Both are left out on a Windows host (isolated_runner.boundary_arguments).
+    parser.add_argument("--sentinel")
+    parser.add_argument("--host-pid", type=int)
     args = parser.parse_args()
-    work = Path("/work")
+    global CONTAINER_INIT
+    CONTAINER_INIT = os.getpid() == 1
+    work = WORK
     results = work / "results"
     results.mkdir()
     (work / "home").mkdir()
@@ -204,7 +327,7 @@ def main():
             "test_output_collection",
             "test_execution_logs",
         ],
-        Path("/audit"),
+        AUDIT,
         results,
         timeout=60,
     )["exit"]:
@@ -229,21 +352,34 @@ def main():
                 "cpu_model": cpu_model,
                 "limits": limits,
                 "hash_seed": os.environ.get("PYTHONHASHSEED"),
-                "lock_sha256": hashlib.sha256(Path("/input/uv.lock").read_bytes()).hexdigest(),
+                "lock_sha256": hashlib.sha256((INPUT / "uv.lock").read_bytes()).hexdigest(),
                 "parallel_benchmarks": False,
             },
             indent=2,
         )
     )
     source = work / "source"
-    shutil.copytree("/input", source)
+    shutil.copytree(INPUT, source)
     components = ["data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation"]
+    # The build environment makes the workspace wheels, so its locked versions are
+    # proved before any wheel is built; the runtime environment's are proved right
+    # after the wheels are installed. A failed check stops the workload before any
+    # product command runs (W6): a red final verdict alone would still have run the
+    # product's tests and workflows in an environment the check had rejected.
+    verifier = str(AUDIT / "verify_installed.py")
+    if execute(
+        "build-environment",
+        [BUILD_PYTHON, verifier, "--requirements", BUILD_REQUIREMENTS],
+        source,
+        results,
+    )["exit"]:
+        return 1
     built = work / "built"
     built.mkdir()
     stage = execute(
         "build-workspace",
         [
-            "/buildenv/bin/python",
+            BUILD_PYTHON,
             "-m",
             "pip",
             "wheel",
@@ -261,12 +397,12 @@ def main():
         return 1
     if execute(
         "create-environment",
-        [sys.executable, "-m", "venv", "--system-site-packages", "/work/env"],
+        [sys.executable, "-m", "venv", "--system-site-packages", str(work / "env")],
         source,
         results,
     )["exit"]:
         return 1
-    python = "/work/env/bin/python"
+    python = str(work / "env/bin/python")
     if execute(
         "install-workspace",
         [
@@ -284,7 +420,7 @@ def main():
         return 1
     env = dict(
         os.environ,
-        PATH="/work/env/bin:/usr/local/bin:/usr/bin:/bin",
+        PATH=f"{work / 'env/bin'}:/usr/local/bin:/usr/bin:/bin",
         COVERAGE_FILE=str(work / "coverage-data"),
     )
     checks = [
@@ -292,17 +428,19 @@ def main():
             "installed-graph",
             [
                 python,
-                "/audit/verify_installed.py",
+                verifier,
                 "--requirements",
-                "/requirements.txt",
+                REQUIREMENTS,
                 "--workspace-prefix",
-                "/work/env/",
+                f"{work / 'env'}/",
             ],
             source,
             results,
             env=env,
         )
     ]
+    if checks[0]["exit"]:
+        return 1
     commands = [
         ("format", [python, "-m", "ruff", "format", "--check", "."]),
         ("lint", [python, "-m", "ruff", "check", "."]),
@@ -318,7 +456,7 @@ def main():
                 "--cov=invest_evaluation",
                 "--cov-branch",
                 "--cov-report=term-missing",
-                "--cov-report=json:/work/results/coverage.json",
+                f"--cov-report=json:{results / 'coverage.json'}",
                 "--durations=25",
             ],
         ),
@@ -328,7 +466,7 @@ def main():
         checks.append(execute(name, argv, source, results, env=env))
     for cli in ("invest-data", "invest-mine", "invest-eval"):
         checks.append(
-            execute("cli-" + cli, ["/work/env/bin/" + cli, "--help"], work, results, env=env)
+            execute("cli-" + cli, [str(work / "env/bin" / cli), "--help"], work, results, env=env)
         )
     if sys.version_info[:2] == (3, 11):
         repeat_env = dict(env, PYTHONHASHSEED="12345")
@@ -446,7 +584,7 @@ def main():
                     }
                 )
                 sample["output_bytes"] = sum(
-                    p.stat().st_size for p in destination.rglob("*") if p.is_file()
+                    path.stat().st_size for path in output_files(destination)
                 )
             except (ValueError, OSError) as exc:
                 sample.update({"correctness_gate": False, "reason": str(exc)})
@@ -470,7 +608,10 @@ def main():
                 "comparison_baseline": None,
                 "regression_claim": "unavailable",
                 "memory_peak": "not measured",
-                "scope": "subprocess wall/CPU, startup included; hashing excluded",
+                "scope": (
+                    "subprocess wall/CPU, startup and leftover-process cleanup included; "
+                    "hashing excluded"
+                ),
                 "test_failures_retained": [x["name"] for x in checks if x["exit"]],
             },
             indent=2,

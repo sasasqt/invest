@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 from datetime import date
 from pathlib import Path, PurePosixPath
 
@@ -21,39 +22,105 @@ def _pairs(pairs):
 
 
 def _json(path):
-    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_pairs)
+    try:
+        return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_pairs)
+    except RecursionError:
+        raise SnapshotError(f"JSON nested too deeply: {path.name}") from None
+
+
+def _entry(symbol, entry):
+    """The safe relative raw path of one manifest entry; reject a malformed entry."""
+    # An entry that could never verify (a negative size, a digest that is not 64
+    # lower-case hex digits, the raw folder itself) is malformed, not "blocked".
+    if (
+        not isinstance(entry, dict)
+        or not isinstance(entry.get("path"), str)
+        or type(entry.get("bytes")) is not int
+        or entry["bytes"] < 0
+        or not isinstance(entry.get("sha256"), str)
+        or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"])
+    ):
+        raise SnapshotError(f"Malformed manifest entry for {symbol}")
+    relative = PurePosixPath(entry["path"])
+    # A backslash or colon makes a Windows path rooted, drive-relative or a stream. No
+    # Windows file name holds ? * " < > | or U+0000 to U+001F (its stat fails, which
+    # pathlib reads as "absent"), so those are refused on every host, as output names
+    # are; U+007F, which Windows allows, is refused as in output names.
+    if (
+        relative.is_absolute()
+        or ".." in relative.parts
+        or relative.parts[:1] != ("raw",)
+        or len(relative.parts) < 2
+        or any(
+            character in '\\:*?"<>|' or ord(character) < 32 or ord(character) == 127
+            for part in relative.parts
+            for character in part
+        )
+        or not all(_name_fits(part) for part in relative.parts)
+        # No Linux path call opens a path of PATH_MAX (4096) bytes or more, wherever
+        # the snapshot is, so such an entry could never verify.
+        or len(str(relative).encode("utf-8")) >= 4096
+    ):
+        raise SnapshotError(f"Unsafe raw path for {symbol}")
+    return relative, entry
+
+
+def _name_fits(part):
+    """A name of at most 255 UTF-8 bytes (Linux's limit) that is valid UTF-8. A lone
+    surrogate is refused on every host, as source and output names are: Linux reads
+    U+DC80-U+DCFF as a non-UTF-8 byte name (surrogateescape), and NTFS allows one."""
+    try:
+        return len(part.encode("utf-8")) <= 255
+    except UnicodeEncodeError:
+        return False
 
 
 def verify(expected_path, snapshot):
     expected_path, snapshot = Path(expected_path), Path(snapshot)
     expected = _json(expected_path)
-    request = expected.get("request", {})
+    if not isinstance(expected, dict) or not isinstance(expected.get("files"), dict):
+        raise SnapshotError("Manifest must be an object with a files object")
+    if not expected["files"]:
+        raise SnapshotError("Manifest lists no raw files")
+    request = expected.get("request")
+    if not isinstance(request, dict) or not all(
+        isinstance(request.get(key), str) for key in ("start", "end")
+    ):
+        raise SnapshotError("Manifest request must name its start and end dates")
     start, end = date.fromisoformat(request["start"]), date.fromisoformat(request["end"])
     if end < start or end >= date(2025, 1, 1):
         raise SnapshotError("Only an already-inspected pre-2025 request is permitted")
+    # Check every entry before looking at the snapshot: a malformed or unsafe manifest
+    # is rejected (W3), never reported as blocked because its snapshot is missing.
+    entries = {symbol: _entry(symbol, entry) for symbol, entry in expected["files"].items()}
+    paths = {str(relative) for relative, _ in entries.values()}
+    if len(paths) != len(entries):
+        raise SnapshotError("Duplicate raw path")
+    # A raw path that is also a folder of another raw path can never be a regular
+    # file while the other exists, so such a manifest could never verify (W3).
+    for relative, _ in entries.values():
+        if any(str(parent) in paths for parent in relative.parents):
+            raise SnapshotError("Raw path is a folder of another raw path")
     if snapshot.is_symlink():
         raise SnapshotError("Snapshot root must not be a symlink")
     if not snapshot.is_dir():
+        if snapshot.exists():
+            raise SnapshotError("Snapshot root is not a directory")
         return {"status": "blocked", "reason": "matching snapshot directory unavailable"}
     manifest = snapshot / "snapshot.json"
     if manifest.is_symlink():
         raise SnapshotError("Snapshot manifest must not be a symlink")
     if not manifest.is_file():
+        if manifest.exists():
+            raise SnapshotError("Snapshot manifest is not a regular file")
         return {"status": "blocked", "reason": "snapshot manifest unavailable"}
     actual = _json(manifest)
     if actual != expected:
         raise SnapshotError("Snapshot manifest differs from the recorded request/file identity")
-    seen = set()
     total = 0
     missing = []
     root = snapshot.resolve()
-    for symbol, entry in expected["files"].items():
-        relative = PurePosixPath(entry["path"])
-        if relative.is_absolute() or ".." in relative.parts or relative.parts[:1] != ("raw",):
-            raise SnapshotError(f"Unsafe raw path for {symbol}")
-        if str(relative) in seen:
-            raise SnapshotError("Duplicate raw path")
-        seen.add(str(relative))
+    for symbol, (relative, entry) in entries.items():
         path = snapshot.joinpath(*relative.parts)
         probe = path
         while probe != snapshot:
@@ -63,10 +130,12 @@ def verify(expected_path, snapshot):
         if not path.resolve().is_relative_to(root):
             raise SnapshotError(f"Raw path escapes snapshot for {symbol}")
         if not path.is_file():
+            if path.exists():
+                raise SnapshotError(f"Raw path is not a regular file for {symbol}")
             missing.append(str(relative))
             continue
         size = path.stat().st_size
-        if type(entry["bytes"]) is not int or size != entry["bytes"]:
+        if size != entry["bytes"]:
             raise SnapshotError(f"Wrong byte count for {symbol}")
         digest = hashlib.sha256()
         with path.open("rb") as stream:
@@ -77,7 +146,7 @@ def verify(expected_path, snapshot):
         total += size
     return {
         "status": "blocked" if missing else "verified",
-        "files": len(seen),
+        "files": len(entries),
         "verified_bytes": total,
         "missing": missing,
         "request": request,
