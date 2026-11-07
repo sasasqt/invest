@@ -1369,5 +1369,97 @@ class RoundFourteenCheckTests(unittest.TestCase):
             self.assertEqual(os.listdir(evidence), [])
 
 
+@POSIX_ONLY
+class RoundFifteenCheckTests(unittest.TestCase):
+    """Review round 15 (R15B-A1, R15B-A2): the cleanup after a rejection for an exhausted
+    descriptor table, and a host fault at a directory open."""
+
+    @unittest.skipUnless(os.path.isdir("/proc/self/fd"), "needs /proc to count descriptors")
+    def test_a_rejection_for_an_exhausted_table_leaves_no_snapshot(self):
+        """shutil.rmtree holds a descriptor per folder level, so when the path walk ran
+        out of descriptors at a file open, the cleanup ran out too: the OSError escaped
+        collect_results (the rejection's own error only as its context), no
+        collection.json was written and the partial snapshot stayed (Q2)."""
+        import resource
+
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory, "work")
+            folder = work.joinpath("results", *(["d"] * 8))
+            folder.mkdir(parents=True)
+            (folder / "f").write_bytes(b"x")
+            evidence = Path(directory, "evidence")
+            soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+            # The walk lists nine folders (results and eight below) with a descriptor
+            # each; the file open is then refused, and the cleanup needs one more.
+            held = len(os.listdir("/proc/self/fd")) - 1
+            resource.setrlimit(resource.RLIMIT_NOFILE, (held + 9, hard))
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    report = collect_workload(work, evidence, method="path")
+            finally:
+                resource.setrlimit(resource.RLIMIT_NOFILE, (soft, hard))
+            self.assertEqual(report["status"], "rejected")
+            self.assertEqual(report["reason"], "host descriptor limit reached during collection")
+            self.assertEqual(os.listdir(evidence), ["collection.json"])
+
+    @unittest.skipUnless(os.path.isdir("/proc/self/fd"), "needs /proc to count descriptors")
+    def test_the_snapshot_cleanup_removes_files_one_listing_at_a_time(self):
+        """Mutation testing of the fix above: its tree held folders only, so the
+        fallback's file removal ran on no file. When shutil.rmtree, which holds a
+        descriptor per folder level, meets the exhausted table, remove_snapshot takes
+        the private snapshot apart bottom-up, files and folders, with one listing open."""
+        import resource
+
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory, ".collect-test")
+            folder = snapshot
+            for level in range(8):
+                folder.mkdir(mode=0o700)
+                (folder / f"f{level}").write_bytes(b"x")
+                folder = folder / "d"
+            soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+            held = len(os.listdir("/proc/self/fd")) - 1
+            resource.setrlimit(resource.RLIMIT_NOFILE, (held + 4, hard))
+            try:
+                with self.assertRaises(OSError) as raised:
+                    shutil.rmtree(snapshot)
+                self.assertEqual(raised.exception.errno, errno.EMFILE)
+                output_collection.remove_snapshot(snapshot)
+            finally:
+                resource.setrlimit(resource.RLIMIT_NOFILE, (soft, hard))
+            self.assertFalse(snapshot.exists())
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "POSIX descriptor walk")
+    def test_a_host_fault_at_a_directory_open_is_no_i2_break(self):
+        """directory_fd wrapped every error but an exhausted table as "missing, linked or
+        unreadable output directory", so a transient host fault at a folder open (ENOMEM,
+        EIO) made the test mode walk the tree again by path, which collected it: a false
+        "I2: only the descriptor walk rejected". Such an error is the host's: it is
+        reported as one at any other call of the walk, and the I2 reference is skipped."""
+        real_open = os.open
+        for code in (errno.ENOMEM, errno.EIO):
+            pending = [code]
+
+            def opening(path, flags, *args, pending=pending, **kwargs):
+                if pending and path == "sub" and kwargs.get("dir_fd") is not None:
+                    raise OSError(pending.pop(), "host fault")
+                return real_open(path, flags, *args, **kwargs)
+
+            with self.subTest(errno=errno.errorcode[code]):
+                with tempfile.TemporaryDirectory() as directory:
+                    work = Path(directory, "work")
+                    (work / "results" / "sub").mkdir(parents=True)
+                    (work / "results" / "sub" / "f").write_bytes(b"x")
+                    evidence = Path(directory, "evidence")
+                    with patch("output_collection.os.open", side_effect=opening):
+                        with contextlib.redirect_stdout(io.StringIO()):
+                            report = collect_workload(work, evidence, method="descriptor")
+                    self.assertEqual(pending, [])
+                    self.assertEqual(report["status"], "rejected")
+                    self.assertEqual(report["reason"], "unreadable or changing output entry")
+                    self.assertEqual(os.listdir(evidence), ["collection.json"])
+
+
 if __name__ == "__main__":
     unittest.main()

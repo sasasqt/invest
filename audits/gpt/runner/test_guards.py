@@ -1559,9 +1559,11 @@ class StagingSafetyTests(unittest.TestCase):
             with patch("isolated_runner.run_captured", side_effect=record):
                 stage_source(source, staged, revision)
         expected = ["--version", "rev-parse", "ls-tree", "cat-file", "rev-parse"]
-        expected += ["pack-objects", "index-pack", "reset"]
+        # The staged copy's object set is compared with its own history on every run
+        # (round 15, R15A-M1); the source's listing is the test-mode reference.
+        expected += ["pack-objects", "index-pack", "reset", "cat-file", "rev-list"]
         if isolated_runner.contract.enabled():
-            expected += ["cat-file", "rev-list", "rev-list"]
+            expected += ["rev-list"]
         self.assertEqual([subcommand(argv) for argv, _ in calls], expected)
         for argv, kwargs in calls:
             with self.subTest(argv=argv):
@@ -1613,10 +1615,10 @@ class StagingSafetyTests(unittest.TestCase):
     def test_the_test_mode_reports_each_broken_staging_rule(self):
         """Mutation testing (round 12): no test broke a Q4 check of staging on purpose,
         so a check that lost its condition, rule or message still passed."""
-        real_digest, real_blobs, real_run = (
+        real_digest, real_blobs, real_checked = (
             isolated_runner.blob_digest,
             isolated_runner.read_blobs,
-            isolated_runner.run_captured,
+            isolated_runner.checked,
         )
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -1641,9 +1643,11 @@ class StagingSafetyTests(unittest.TestCase):
                 return real_blobs(folder, wanted)
 
             def every_ref(argv, **kwargs):
-                if "pack-objects" in argv:
+                # The source's listing (the test-mode reference) names every ref; the
+                # staged copy still holds exactly the commit's history.
+                if "rev-list" in argv and str(source) in argv:
                     argv = [*argv[:-1], "--all", argv[-1]]
-                return real_run(argv, **kwargs)
+                return real_checked(argv, **kwargs)
 
             cases = [
                 ("Q4: a.txt", patch("isolated_runner.blob_digest", side_effect=wrong_copy)),
@@ -1652,8 +1656,9 @@ class StagingSafetyTests(unittest.TestCase):
                     patch("isolated_runner.read_blobs", side_effect=extra_file),
                 ),
                 (
-                    "Q4: staged Git objects differ from the commit's history",
-                    patch("isolated_runner.run_captured", side_effect=every_ref),
+                    "Q4: staged Git objects differ from the source's listing of the commit's"
+                    " history",
+                    patch("isolated_runner.checked", side_effect=every_ref),
                 ),
             ]
             for number, (message, change) in enumerate(cases):
@@ -1661,6 +1666,34 @@ class StagingSafetyTests(unittest.TestCase):
                     with change, self.assertRaises(ContractViolation) as caught:
                         stage_source(source, root / f"staged-{number}", revision)
                     self.assertEqual(str(caught.exception), message)
+
+    def test_a_pack_with_more_objects_than_the_history_is_refused(self):
+        """Review round 15 (R15A-M1): the staged store is compared with the staged
+        copy's own history on every run, not only in test mode (a bent object index
+        in the source made pack-objects pack another branch; see the multi-pack-index
+        test), so a pack that holds more than the commit reaches is refused."""
+        real_run = isolated_runner.run_captured
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+            private = git_in(
+                source, "commit-tree", "-m", "private", write_tree(source, {"n.txt": b"p\n"})
+            )
+            git_in(source, "update-ref", "refs/heads/private", private)
+
+            def every_ref(argv, **kwargs):
+                if "pack-objects" in argv:
+                    argv = [*argv[:-1], "--all", argv[-1]]
+                return real_run(argv, **kwargs)
+
+            for mode in ("1", "0"):
+                with (
+                    self.subTest(CONTRACT_CHECKS=mode),
+                    patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                    patch("isolated_runner.run_captured", side_effect=every_ref),
+                    self.assertRaisesRegex(ValueError, "^Staged Git objects differ"),
+                ):
+                    stage_source(source, root / f"staged-{mode}", revision)
 
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
@@ -2023,6 +2056,42 @@ class StagingSafetyTests(unittest.TestCase):
             )
             self.assertEqual(verify.returncode, 1, verify.stderr)
             self.assert_staged_history(source, revision, first, canary)
+
+    def test_a_multi_pack_index_with_bent_offsets_does_not_stage_another_branch(self):
+        """Review round 15 (R15A-M1): a multi-pack-index (an object index, not a cache)
+        whose entry for the audited commit's parent points at the private root commit
+        made pack-objects pack that commit's tree; the test mode raised Q4, a production
+        run staged the private branch's objects. `git multi-pack-index verify` reports
+        such an index; a pack .idx bent the same way would do the same."""
+        with tempfile.TemporaryDirectory() as directory:
+            source, first, revision, private, _ = self.private_branch_fixture(Path(directory))
+            git_in(source, "repack", "-adq")
+            git_in(source, "multi-pack-index", "write")
+            git_in(source, "config", "core.multiPackIndex", "true")
+            index = source / ".git/objects/pack/multi-pack-index"
+            data = bytearray(index.read_bytes())
+            self.assertEqual(bytes(data[:6]), b"MIDX\x01\x01")  # version 1, SHA-1
+            chunks = {}
+            for item in range(data[6] + 1):
+                name, offset = struct.unpack(">4sQ", data[12 + 12 * item : 24 + 12 * item])
+                chunks[name] = offset
+            fanout, oids, offsets = chunks[b"OIDF"], chunks[b"OIDL"], chunks[b"OOFF"]
+            count = struct.unpack(">I", data[fanout + 1020 : fanout + 1024])[0]
+            listed = [data[oids + 20 * n : oids + 20 * n + 20].hex() for n in range(count)]
+            bent, other = offsets + 8 * listed.index(first), offsets + 8 * listed.index(private)
+            data[bent : bent + 8] = data[other : other + 8]
+            data[-20:] = hashlib.sha1(data[:-20]).digest()
+            index.chmod(0o644)  # Git writes the index read-only
+            index.write_bytes(data)
+            verify = subprocess.run(
+                ["git", "-C", str(source), "multi-pack-index", "verify"],
+                env=FIXTURE_GIT,
+                capture_output=True,
+            )
+            self.assertEqual(verify.returncode, 1, verify.stderr)
+            staged = source.parent / "staged"
+            with self.assertRaisesRegex(ValueError, "Staged Git objects differ"):
+                stage_source(source, staged, revision)
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -2814,20 +2883,30 @@ class WorkloadOrderTests(unittest.TestCase):
                 steps.append(name + "-tests")
         return steps + [f"synth-S-{repetition}" for repetition in range(8)]
 
-    def run_workload(self, failing, link_in=None):
+    WHEELS = ("invest_data", "invest_mining", "invest_evaluation")
+
+    def run_workload(self, failing, link_in=None, differ_in=None, wall_seconds=None):
         """Run main with every step faked: each records its call and exits 1 only for
-        the step named ``failing``; a workflow step writes a tiny repeatable output,
-        with a link in it for the step named ``link_in``. Returns the exit status, the
-        recorded calls, the benchmark records the workload wrote (None where it wrote
-        none) and the work folder."""
+        the step named ``failing``; the build step writes an empty wheel per workspace
+        package; a workflow step writes a tiny repeatable output, with a link in it for
+        the step named ``link_in`` and another table value for the step named
+        ``differ_in``; ``wall_seconds`` maps a step name to the wall time its record
+        reports (0.0 otherwise). Returns the exit status, the recorded calls, the
+        benchmark records the workload wrote (None where it wrote none) and the work
+        folder."""
         calls = []
 
         def fake_execute(name, argv, cwd, results, timeout=1200, env=None):
             calls.append({"name": name, "argv": argv, "cwd": cwd, "timeout": timeout, "env": env})
+            if name == "build-workspace":
+                wheels = Path(argv[argv.index("--wheel-dir") + 1])
+                for package in self.WHEELS:
+                    (wheels / f"{package}-1.0-py3-none-any.whl").write_bytes(b"")
             if name.startswith("synth-S-"):
                 destination = Path(argv[2])
                 destination.mkdir(parents=True)
-                (destination / "table.json").write_text('{"rows": 1}', encoding="utf-8")
+                rows = 2 if name == differ_in else 1
+                (destination / "table.json").write_text(f'{{"rows": {rows}}}', encoding="utf-8")
                 (destination / "figure.png").write_bytes(b"\x89PNG")
                 if name == link_in:
                     (destination / "link").symlink_to("table.json")
@@ -2836,7 +2915,7 @@ class WorkloadOrderTests(unittest.TestCase):
                 "argv": argv,
                 "exit": int(name == failing),
                 "timeout": False,
-                "wall_seconds": 0.0,
+                "wall_seconds": (wall_seconds or {}).get(name, 0.0),
                 "child_cpu_seconds": 0.0,
             }
 
@@ -2906,7 +2985,13 @@ class WorkloadOrderTests(unittest.TestCase):
         self.assertEqual(build["cwd"], source)
         self.assertEqual(by_name["build-workspace"]["argv"][0], runner_workload.BUILD_PYTHON)
         runtime = str(work / "env/bin/python")
-        self.assertEqual(by_name["install-workspace"]["argv"][0], runtime)
+        wheels = [
+            str(work / "built" / f"{package}-1.0-py3-none-any.whl") for package in self.WHEELS
+        ]
+        self.assertEqual(
+            by_name["install-workspace"]["argv"],
+            [runtime, "-m", "pip", "install", "--no-index", "--no-deps", *sorted(wheels)],
+        )
         graph = by_name["installed-graph"]
         self.assertEqual(
             graph["argv"],
@@ -3009,6 +3094,101 @@ class WorkloadOrderTests(unittest.TestCase):
         self.assertEqual(gates, [True, True, False])
         self.assertIn("link", records["raw"][-1]["reason"])
         self.assertEqual(records["summary"]["valid_measured_samples"], 1)
+
+    def test_a_workflow_output_that_differs_fails_the_gate_and_ends_the_measurement(self):
+        """The gate compares every later sample with the first one: a sample whose
+        output differs (here one table value) records its own hash with
+        correctness_gate false, and the measurement ends there (round 15 reviewer:
+        every faked output was the same, so a comparison that always passed, or that
+        compared each output with itself, survived these tests)."""
+        status, calls, records, _ = self.run_workload(None, differ_in="synth-S-4")
+        expected = self.expected_steps()
+        self.assertEqual(self.names(calls), expected[: expected.index("synth-S-4") + 1])
+        self.assertEqual(status, 1)
+        rows = records["raw"]
+        self.assertEqual([row["correctness_gate"] for row in rows], [True] * 4 + [False])
+        self.assertEqual(len({row["semantic_hash"] for row in rows}), 2)
+        self.assertNotEqual(rows[4]["semantic_hash"], rows[0]["semantic_hash"])
+        self.assertNotIn("reason", rows[4])
+        self.assertEqual(records["summary"]["valid_measured_samples"], 3)
+        self.assertIsNone(records["summary"]["median_seconds"])
+        self.assertEqual(records["summary"]["test_failures_retained"], [])
+
+    def test_the_summary_statistics_come_from_the_measured_samples(self):
+        """median_seconds is the median of the seven measured samples (not their mean),
+        min_seconds and max_seconds their extremes, and the warm-up sample is in none."""
+        seconds = (50.0, 3.0, 1.0, 8.0, 2.0, 9.0, 4.0, 30.0)
+        times = {f"synth-S-{repetition}": value for repetition, value in enumerate(seconds)}
+        _, _, records, _ = self.run_workload(None, wall_seconds=times)
+        self.assertEqual([row["wall_seconds"] for row in records["raw"]], list(seconds))
+        summary = records["summary"]
+        self.assertEqual(summary["valid_measured_samples"], 7)
+        self.assertEqual(summary["median_seconds"], 4.0)  # the mean would be 8.14...
+        self.assertEqual(summary["min_seconds"], 1.0)
+        self.assertEqual(summary["max_seconds"], 30.0)
+
+    def test_the_hash_seed_repeat_and_the_independent_installs_prove_what_they_claim(self):
+        """Python 3.11 only: the hash-seed repeat runs the product tests under another
+        hash seed than the container's fixed one; each independent install makes its
+        own interpreter, installs that package's wheel (and invest_data's) with pytest
+        from the image's wheelhouse only, and runs that package's tests; the evaluation
+        import check asserts that invest_mining is absent there."""
+        if sys.version_info[:2] != (3, 11):
+            self.skipTest("the hash-seed repeat and the independent installs run only on 3.11")
+        _, calls, _, work = self.run_workload(None)
+        by_name = {call["name"]: call for call in calls}
+        runtime = str(work / "env/bin/python")
+        source = work / "source"
+        repeat = by_name["hash-seed-repeat"]
+        self.assertEqual(repeat["argv"], [runtime, "-m", "pytest"])
+        self.assertEqual(repeat["cwd"], source)
+        self.assertEqual(repeat["env"]["PYTHONHASHSEED"], "12345")
+        self.assertNotEqual(by_name["tests"]["env"].get("PYTHONHASHSEED"), "12345")
+        wheel = lambda package: str(work / "built" / f"{package}-1.0-py3-none-any.whl")  # noqa: E731
+        components = {
+            "data-preparation": ("data-pipeline/data-preparation", "invest_data"),
+            "data-mining-framework": ("data-mining-framework", "invest_mining"),
+            "strategy-evaluation": ("strategy-evaluation", "invest_evaluation"),
+        }
+        for name, (component, package) in components.items():
+            with self.subTest(component=name):
+                isolated = work / f"independent-{name}"
+                interpreter = str(isolated / "bin/python")
+                self.assertEqual(
+                    by_name[name + "-venv"]["argv"], [sys.executable, "-m", "venv", str(isolated)]
+                )
+                self.assertEqual(
+                    by_name[name + "-install"]["argv"],
+                    [
+                        interpreter,
+                        "-m",
+                        "pip",
+                        "install",
+                        "--no-index",
+                        "--find-links=/wheelhouse",
+                        *sorted({wheel("invest_data"), wheel(package)}),
+                        "pytest",
+                    ],
+                )
+                self.assertEqual(
+                    by_name[name + "-tests"]["argv"],
+                    [
+                        interpreter,
+                        "-m",
+                        "pytest",
+                        "-p",
+                        "no:cacheprovider",
+                        str(source / component / "tests"),
+                    ],
+                )
+        self.assertEqual(
+            by_name["evaluation-independent-import"]["argv"],
+            [
+                str(work / "independent-strategy-evaluation/bin/python"),
+                "-c",
+                "import importlib.util as u; assert u.find_spec('invest_mining') is None",
+            ],
+        )
 
 
 class InstalledGraphTests(unittest.TestCase):

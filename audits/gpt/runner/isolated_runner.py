@@ -627,19 +627,46 @@ def stage_source(source, staged, expected_sha):
             env=git_environment(isolated=True),
             timeout=GIT_TIMEOUT,
         )
+    # The staged store must hold exactly what the commit reaches as the staged copy
+    # itself reads its history (its own shallow file, no grafts, replace refs or
+    # caches, objects named by their content when the pack was indexed). Packing read
+    # the source through its object index (a pack .idx or a multi-pack-index): an
+    # index whose entry for a commit in the history points at another object (a
+    # corrupted or planted index; `git multi-pack-index verify` reports one) makes
+    # Git pack that object's tree instead, and no configuration switches an index
+    # off, so the staged copy is compared here on every run, not only in test mode.
+    staged_objects = checked(
+        [
+            program("git"),
+            "-C",
+            str(staged),
+            "cat-file",
+            "--batch-all-objects",
+            "--batch-check=%(objectname)",
+        ],
+        env=git_environment(isolated=True),
+        timeout=GIT_TIMEOUT,
+    )
+    own = run_captured(
+        [
+            program("git"),
+            "-C",
+            str(staged),
+            "rev-list",
+            "--objects",
+            "--no-object-names",
+            expected_sha,
+        ],
+        env=git_environment(isolated=True),
+        timeout=GIT_TIMEOUT,
+    )
+    if own.returncode or set(staged_objects.split()) != set(
+        own.stdout.decode("ascii", "replace").split()
+    ):
+        raise ValueError("Staged Git objects differ from the commit's history")
     if contract.enabled():
-        staged_objects = checked(
-            [
-                program("git"),
-                "-C",
-                str(staged),
-                "cat-file",
-                "--batch-all-objects",
-                "--batch-check=%(objectname)",
-            ],
-            env=git_environment(isolated=True),
-            timeout=GIT_TIMEOUT,
-        )
+        # The source's own listing must agree too, so a view of the source that both
+        # packing and the staged copy share cannot hide a missing or extra object.
         reached = checked(
             [
                 program("git"),
@@ -653,29 +680,10 @@ def stage_source(source, staged, expected_sha):
             env=env,
             timeout=GIT_TIMEOUT,
         )
-        # Also as the staged copy itself reads its history (its own shallow file, no
-        # grafts or replace refs), so a view of the source that both packing and the
-        # first listing share cannot hide a missing or extra object.
-        own = run_captured(
-            [
-                program("git"),
-                "-C",
-                str(staged),
-                "rev-list",
-                "--objects",
-                "--no-object-names",
-                expected_sha,
-            ],
-            env=git_environment(isolated=True),
-            timeout=GIT_TIMEOUT,
-        )
         contract.require(
             "Q4",
-            not own.returncode
-            and set(staged_objects.split())
-            == set(reached.split())
-            == set(own.stdout.decode("ascii", "replace").split()),
-            "staged Git objects differ from the commit's history",
+            set(staged_objects.split()) == set(reached.split()),
+            "staged Git objects differ from the source's listing of the commit's history",
         )
     return records
 

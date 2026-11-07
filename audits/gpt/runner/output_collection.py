@@ -45,6 +45,19 @@ METHODS = ("descriptor", "path")
 # never the output's. The descriptor walk holds two descriptors per folder level, the
 # path walk one, so only the host's limit decides which walk meets it (I2).
 DESCRIPTORS_EXHAUSTED = {errno.EMFILE, errno.ENFILE}
+# Errors that describe the directory entry opened (absent, not a folder, a link under
+# O_NOFOLLOW, permissions, a path too long): the output's. Any other error of a directory
+# open (an exhausted descriptor table, ENOMEM, EIO) is the host's and is re-raised, so
+# that collect_results names it and the test mode skips the I2 reference as it does for
+# every OSError (a transient fault was reported as a walk disagreement otherwise).
+ENTRY_ERRORS = {
+    errno.ENOENT,
+    errno.ENOTDIR,
+    errno.ELOOP,
+    errno.EACCES,
+    errno.EPERM,
+    errno.ENAMETOOLONG,
+}
 DEFAULT_METHOD = "descriptor" if DESCRIPTOR_APIS else "path"
 # O_BINARY: without it Windows reads in text mode, rewriting CRLF and stopping at Ctrl-Z.
 READ_FLAGS = (
@@ -125,8 +138,8 @@ def directory_fd(path, parent=None, lookup_only=False):
     try:
         fd = os.open(path, access | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
     except OSError as exc:
-        if exc.errno in DESCRIPTORS_EXHAUSTED:
-            raise  # collect_results names the host's descriptor limit, not the output
+        if exc.errno not in ENTRY_ERRORS:
+            raise  # the host's limit or fault: collect_results names it, not the output
         raise RejectedOutput("missing, linked or unreadable output directory") from exc
     try:
         yield fd
@@ -452,6 +465,24 @@ def private_folder(parent):
     return Path(parent, Path(tempfile.mkdtemp(prefix=".collect-", dir=parent)).name)
 
 
+def remove_snapshot(snapshot):
+    """Remove a private ``.collect-*`` snapshot. ``shutil.rmtree`` holds a descriptor per
+    folder level, so after a rejection for an exhausted descriptor table it can run out
+    too and leave the snapshot behind (Q2); then the tree is removed bottom-up with one
+    listing open at a time. The snapshot is this process's own: mode 0o700, no links."""
+    try:
+        shutil.rmtree(snapshot)
+    except OSError as exc:
+        if exc.errno not in DESCRIPTORS_EXHAUSTED:
+            raise
+        for current, folders, files in os.walk(snapshot, topdown=False):
+            for name in files:
+                os.unlink(os.path.join(current, name))
+            for name in folders:
+                os.rmdir(os.path.join(current, name))
+        os.rmdir(snapshot)
+
+
 def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
     """Reject unsafe output atomically; return data only from the safe snapshot.
 
@@ -479,7 +510,7 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
         summaries = read_summaries(snapshot, method)
         snapshot.rename(destination)
     except (OSError, RejectedOutput) as exc:
-        shutil.rmtree(snapshot)
+        remove_snapshot(snapshot)
         if contract.enabled():
             check_rejected(work, destination, snapshot, limits, method, exc)
         if isinstance(exc, RejectedOutput):
@@ -490,7 +521,7 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
             raise RejectedOutput("host descriptor limit reached during collection") from exc
         raise RejectedOutput("unreadable or changing output entry") from exc
     except BaseException:
-        shutil.rmtree(snapshot)
+        remove_snapshot(snapshot)
         raise
     report = {
         "status": "collected",
@@ -553,7 +584,7 @@ def other_method_outcome(work, limits, method, beside):
             raise
         return "rejected", exc
     finally:
-        shutil.rmtree(snapshot)
+        remove_snapshot(snapshot)
     return "collected", sorted(records, key=lambda row: row["path"]), entries, byte_count, summaries
 
 

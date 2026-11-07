@@ -2,7 +2,8 @@
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
 `contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
-(P2 and P3 are always enforced by the code, and the suites check W1-W6); every test
+(P2, P3 and the staged copy's object set of Q4 are always enforced by the code, and
+the suites check W1-W6); every test
 suite, the CI host-test steps and the CI Docker controls step set it, production
 runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
@@ -25,7 +26,9 @@ rejection.
   the limits, and every file has a SHA-256 record. Checked after every successful
   collection (`check_collected`), against the source tree.
 - **Q2** Status `rejected`: the destination does not exist and no temporary snapshot
-  is left; `collection.json` records the rejection. Checked on every rejection
+  is left, also after a rejection for an exhausted descriptor table (the cleanup holds
+  a descriptor per folder level, so it then removes the snapshot one listing at a
+  time); `collection.json` records the rejection. Checked on every rejection
   (`check_rejected`).
 - **Q3** Every runner log line that carries untrusted text is one line, contains no
   `#`, does not start with `::`, and its JSON part decodes to the original value.
@@ -38,7 +41,11 @@ rejection.
   `.git`, and no two committed paths may reach the same staged file or folder.
   The staged object store holds exactly the objects the commit reaches (its
   history, cut at a shallow boundary), never a stash, another branch or an object
-  that no commit holds; checked in `stage_source` against `git rev-list --objects`.
+  that no commit holds. Always enforced against the staged copy's own
+  `git rev-list --objects` (an object index of the source, a pack `.idx` or a
+  multi-pack-index, that points a commit's entry at another object makes Git pack
+  that object's tree, and no setting switches an index off); checked in
+  `stage_source` against the source's listing too.
 - **Q5** Host-side uv runs with `--no-config`. Checked in `host_uv`.
 
 ## Invariants
@@ -66,7 +73,9 @@ rejection.
   collection with the descriptor walk, except a rejection for a change during the
   walk (P1 excludes the container as a writer, so only a test or another local
   account, see I1, can cause one) or for an `OSError` (an exhausted descriptor table,
-  like a full volume, is reported as the host's, never as the output's). A failure
+  like a full volume, is reported as the host's, never as the output's; a directory
+  open that fails for any reason but the entry's own, such as ENOMEM or EIO, is such an
+  `OSError` too, so a transient host fault is never reported as a disagreement). A failure
   of the check's own reference snapshot (beside the real one; its own path, a full
   volume or an exhausted descriptor table) is raised as that `OSError`, never
   reported as an I2 break; with a relative destination, a summary lookup that the
@@ -123,7 +132,11 @@ locked-version steps run for real there).
   two outputs that differ only in such an entry never pass as repeatable. A listing
   failure also gives the operating system's cause, so an output folder the workflow
   never created does not read as a permission problem. Checked in
-  `runner_workload.semantic_manifest`.
+  `runner_workload.semantic_manifest`. Every later sample's `correctness_gate` is
+  true only when its manifest hash equals the warm-up sample's, the measurement ends
+  at the first false gate, and `median_seconds`, `min_seconds` and `max_seconds` come
+  from the seven measured samples' wall times, else `median_seconds` is null. Checked
+  in `test_guards.WorkloadOrderTests`.
 - **W6** The workload runs no product command (format, lint, types, tests, links,
   the CLIs, the hash-seed repeat, the independent installs, the synthetic
   workflow) in an environment whose locked versions it has not proved: the build
