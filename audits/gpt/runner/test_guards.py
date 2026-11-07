@@ -2781,7 +2781,9 @@ class SemanticCoverageTests(unittest.TestCase):
         (self.root / ".cache").mkdir()
         (self.root / ".cache/rows.csv").write_bytes(b"a,1\n")
         paths = [row["path"] for row in semantic_manifest(self.root)["records"]]
-        self.assertEqual(paths, [".cache/rows.csv", ".state", "metrics.json"])
+        # The record spells the path with the host's separator (the gate runs in the
+        # Linux container; on windows-2025 the host tests see a backslash).
+        self.assertEqual(paths, [str(Path(".cache", "rows.csv")), ".state", "metrics.json"])
 
     def test_other_artifact_changes_are_not_silently_ignored(self):
         path = self.root / "artifact.bin"
