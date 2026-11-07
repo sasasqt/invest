@@ -370,13 +370,32 @@ def _run_workflow(script, out, env):
 
 
 def _no_global_git_config(monkeypatch, tmp_path):
-    """Git reads no global configuration for the rest of the test (Git 2.32 and later).
+    """Git reads no global configuration for the rest of the test.
 
     The developer's excludes file would otherwise decide what the workflow's own Git calls
     and the temporary repository see: one that ignores ``out/``, as JetBrains' template
     does, passes the output-location check for ``<checkout>/out``, and ``commit.gpgsign``
     would stop the checkout's commits. The evaluator's ``code_dirty`` and the test's own
-    ``code_revision()`` then read the same configuration."""
+    ``code_revision()`` then read the same configuration. Git before 2.32 does not know
+    ``GIT_CONFIG_GLOBAL`` and would read the developer's configuration as before, so the
+    test first checks that Git reads the file the variable names, and is skipped when it
+    does not. The system configuration is left out for the same reason."""
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    marker = tmp_path / "gitconfig-marker"
+    marker.write_text("[invest]\n\tisolated = yes\n", encoding="utf-8")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(marker))
+    read = subprocess.run(
+        ["git", "config", "--global", "invest.isolated"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if read.stdout.strip() != "yes":
+        version = subprocess.run(["git", "--version"], capture_output=True, text=True, check=False)
+        pytest.skip(
+            "isolating the global Git configuration needs GIT_CONFIG_GLOBAL (Git 2.32 and "
+            f"later); {version.stdout.strip() or 'git'} ignores it"
+        )
     monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "no-global-gitconfig"))
 
 
