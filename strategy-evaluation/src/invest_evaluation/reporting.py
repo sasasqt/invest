@@ -16,6 +16,7 @@ import pandas as pd
 
 from invest_evaluation.engine import BacktestResult
 from invest_evaluation.metrics import period_rate
+from invest_evaluation.stats import MIN_BOOTSTRAP_RETURNS, MIN_PSR_RETURNS
 
 
 def write_json(path: Path, obj: Any) -> None:
@@ -175,8 +176,22 @@ def _fmt(m: dict[str, Any]) -> str:
         return f"n/a ({m.get('reason')})"
     v = m["value"]
     if isinstance(v, float):
-        return f"{v:.2%}" if m.get("unit", "").startswith("fraction") else f"{v:,.3f}"
-    return str(v)
+        text = f"{v:.2%}" if m.get("unit", "").startswith("fraction") else f"{v:,.3f}"
+    else:
+        text = str(v)
+    if (m.get("extra") or {}).get("censored"):
+        # METRICS.md section 6: an unrecovered episode's duration is right-censored, so
+        # the value is a lower bound (the open episode need not be the longest one).
+        text += " (right-censored: last drawdown not recovered)"
+    return text
+
+
+def _unavailable(entry: dict[str, Any], minimum: int) -> str:
+    """``n/a (<reason>)`` for a statistic whose status is not ``ok``."""
+    status = entry.get("status")
+    if status == "insufficient_data" and entry.get("n") is not None:
+        return f"n/a (insufficient_data: {entry['n']} returns, needs {minimum})"
+    return f"n/a ({entry.get('reason') or status})"
 
 
 def _number(value: Any) -> str:
@@ -299,14 +314,20 @@ def _write_summary(root: Path) -> None:
             if k in metrics.get(section, {}):
                 lines.append(f"| {k} | {_fmt(metrics[section][k])} |")
         lines.append("")
-    b = stats.get("bootstrap", {})
+    # Every saved statistic gets a line; one that is not ``ok`` says why (REVIEW-21).
+    b = stats.get("bootstrap") or {}
     if b.get("status") == "ok" and b.get("sharpe_ci") is not None:
         lo, hi = b["sharpe_ci"]
         lines.append(f"Sharpe {b['level']:.0%} stationary-bootstrap CI: [{lo:.2f}, {hi:.2f}]")
-    elif b.get("status") == "undefined":
-        lines.append(f"Sharpe stationary-bootstrap CI: n/a ({b.get('reason')})")
-    dsr = stats.get("deflated_sharpe", {})
+    elif b:
+        lines.append(f"Sharpe stationary-bootstrap CI: {_unavailable(b, MIN_BOOTSTRAP_RETURNS)}")
+    dsr = stats.get("deflated_sharpe") or {}
+    label = "Deflated Sharpe ratio" + (
+        f" (n_trials={dsr['n_trials']})" if dsr.get("n_trials") is not None else ""
+    )
     if dsr.get("status") == "ok":
-        lines.append(f"Deflated Sharpe ratio (n_trials={dsr['n_trials']}): {dsr['dsr']:.3f}")
+        lines.append(f"{label}: {dsr['dsr']:.3f}")
+    elif dsr:
+        lines.append(f"{label}: {_unavailable(dsr, MIN_PSR_RETURNS)}")
     lines += ["", "Figures: `figures/`. Tables: `tables/`. Full metrics: `metrics.json`."]
     (root / "report.md").write_text("\n".join(lines) + "\n")

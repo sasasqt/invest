@@ -849,3 +849,270 @@ def test_cli_checks_each_delisting_record_before_backtesting(
     with pytest.raises(SystemExit, match=r"--delistings:.*event 2"):
         main([command, *inputs, "--delistings", str(path), "--out", str(out)])
     assert not out.exists()
+
+
+def test_statistics_of_an_insolvent_wealth_path_are_invalid():
+    """BH-2026-10-15-2: METRICS.md section 6 and README "Insolvency": once wealth reaches zero,
+    the Sharpe interval, PSR and DSR carry an invalid-input status, not a plausible value."""
+    from invest_evaluation.stats import strategy_statistics
+
+    returns = pd.Series(np.r_[np.full(99, 0.04), -1.0])  # wealth 1.04**99 * 0 = 0 at the end
+    stats = strategy_statistics(returns, 252, n_trials=3)
+    for key in ("bootstrap", "probabilistic_sharpe_vs_zero", "deflated_sharpe"):
+        assert stats[key]["status"] == "invalid_input", key
+        assert stats[key]["reason"] == "insolvent_wealth_path", key
+    assert stats["bootstrap"].get("sharpe_ci") is None
+    assert "dsr" not in stats["deflated_sharpe"]
+    assert stats["deflated_sharpe"]["n_trials"] == 3
+    assert "psr" not in stats["probabilistic_sharpe_vs_zero"]
+    # Quantile rows call the bootstrap directly; too few returns do not hide known insolvency.
+    assert bootstrap_ci(returns, 252)["status"] == "invalid_input"
+    assert bootstrap_ci(returns.iloc[-20:], 252)["reason"] == "insolvent_wealth_path"
+    assert bootstrap_ci(pd.Series(np.r_[np.full(80, 0.01), -1.5]), 252)["status"] == (
+        "invalid_input"
+    )
+    # Insolvency beats insufficient_data for PSR and DSR too (README: known insolvency
+    # gives `rejected`, even with too few sessions).
+    short = strategy_statistics(pd.Series([0.1, -1.0]), 252)
+    for key in ("bootstrap", "probabilistic_sharpe_vs_zero", "deflated_sharpe"):
+        assert short[key]["status"] == "invalid_input", key
+    solvent = returns.copy()
+    solvent.iloc[-1] = -0.5  # wealth halves but stays positive
+    statuses = strategy_statistics(solvent, 252)
+    assert statuses["bootstrap"]["status"] == "ok"
+    assert statuses["deflated_sharpe"]["status"] == "ok"
+
+
+def _insolvent_run_inputs(tmp_path):
+    """A long-only book in A, whose cash settlement at 0 on the last session ends all wealth."""
+    dates = pd.bdate_range("2020-01-01", periods=120)
+    closes = 10 * np.cumprod(np.full(len(dates), 1.04))
+    opens = np.r_[10.0, closes[:-1]]
+    market = pd.concat(
+        [
+            pd.DataFrame(
+                {
+                    "date": dates,
+                    "instrument": name,
+                    "open": opens * scale,
+                    "close": closes * scale,
+                    "high": closes * scale,
+                    "low": opens * scale,
+                    "volume": 1e15,
+                }
+            )
+            for name, scale in (("A", 1.0), ("B", 0.5))
+        ],
+        ignore_index=True,
+    )
+    signals = pd.concat(
+        [
+            pd.DataFrame({"decision_date": dates, "instrument": name, "score": score})
+            for name, score in (("A", 1.0), ("B", 0.0))
+        ],
+        ignore_index=True,
+    )
+    cfg = {
+        "initial_capital": 1000.0,
+        "strategy": {
+            "long_fraction": 0.5,
+            "short_fraction": 0.0,
+            "gross_leverage": 1.1,
+            "rebalance_every": 1,
+            "min_names": 1,
+        },
+        "execution": {"max_participation": 1.0, "min_price": 0.0},
+        "costs": {
+            "commission_bps": 0,
+            "half_spread_bps": 0,
+            "impact_coef": 0,
+            "borrow_bps_annual": 0,
+            "adv_window": 1,
+            "vol_window": 2,
+        },
+        "validation": {"stress_scenarios": []},
+    }
+    events = [{"date": str(dates[-1].date()), "instrument": "A", "settlement_price": 0.0}]
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        signals, tmp_path / "s", dataset_id="s", metadata={"factor_id": "fixed", "horizon_days": 1}
+    )
+    (tmp_path / "cfg.json").write_text(json.dumps(cfg))
+    (tmp_path / "events.json").write_text(json.dumps(events))
+    return [
+        "--data",
+        str(tmp_path / "m"),
+        "--signals",
+        str(tmp_path / "s"),
+        "--config",
+        str(tmp_path / "cfg.json"),
+        "--delistings",
+        str(tmp_path / "events.json"),
+    ]
+
+
+def test_cli_insolvent_run_reports_no_sharpe_interval_or_dsr(tmp_path, capsys):
+    """BH-2026-10-15-2 and RA-2026-11-01-4: report.md, statistics.json and verdict.json give
+    an insolvent run's Sharpe statistics with their invalid-input reason, and its unrecovered
+    drawdown duration as right-censored (METRICS.md section 6)."""
+    out = tmp_path / "run"
+    assert main(["run", *_insolvent_run_inputs(tmp_path), "--no-scenarios", "--out", str(out)]) == 0
+    capsys.readouterr()
+    assert json.loads((out / "metrics.json").read_text())["performance"]["sharpe"]["reason"] == (
+        "insolvent_wealth_path"
+    )
+    stats = json.loads((out / "statistics.json").read_text())
+    assert stats["bootstrap"]["status"] == "invalid_input"
+    assert stats["deflated_sharpe"]["status"] == "invalid_input"
+    lines = (out / "report.md").read_text().splitlines()
+    ci = [line for line in lines if "stationary-bootstrap CI" in line]
+    dsr = [line for line in lines if line.startswith("Deflated Sharpe ratio")]
+    assert ci == ["Sharpe stationary-bootstrap CI: n/a (insolvent_wealth_path)"]
+    assert dsr == ["Deflated Sharpe ratio (n_trials=1): n/a (insolvent_wealth_path)"]
+    duration = next(line for line in lines if line.startswith("| max_drawdown_duration |"))
+    assert "right-censored" in duration
+    portfolio = json.loads((out / "verdict.json").read_text())["portfolio"]
+    assert portfolio["status"] == "rejected"
+    checks = {c["name"]: c for c in portfolio["checks"]}
+    assert checks["net_sharpe_ci"]["status"] == "undefined"
+    assert checks["net_sharpe_ci"]["value"] is None
+    assert "insolvent_wealth_path" in checks["net_sharpe_ci"]["detail"]
+    assert checks["deflated_sharpe"]["status"] == "undefined"
+    assert checks["deflated_sharpe"]["detail"] == "insolvent_wealth_path"
+
+
+def test_cli_quantiles_give_an_insolvent_bucket_no_sharpe_interval(tmp_path, capsys):
+    """BH-2026-10-15-2: the quantile table leaves the interval of an invalid Sharpe empty."""
+    out = tmp_path / "quantiles"
+    args = ["quantiles", *_insolvent_run_inputs(tmp_path), "--buckets", "2", "--tails", "0.5"]
+    assert main([*args, "--min-names-per-bucket", "1", "--out", str(out)]) == 0
+    capsys.readouterr()
+    table = pd.read_csv(out / "tables" / "portfolios.csv").set_index("portfolio")
+    assert table.loc["q2", "reason"] == "insolvent_wealth_path"
+    assert table.loc["q2", ["net_sharpe_ci_low", "net_sharpe_ci_high"]].isna().all()
+    rows = json.loads((out / "quantiles.json").read_text())["portfolios"]
+    q2 = next(r for r in rows if r["portfolio"] == "q2")
+    assert q2["net_sharpe_ci_low"] is None and q2["net_sharpe_ci_high"] is None
+    line = next(x for x in (out / "report.md").read_text().splitlines() if x.startswith("| q2 |"))
+    assert line.split(" | ")[6] == "–"  # the Sharpe 95% CI column
+
+
+def test_report_names_every_unavailable_statistic_and_keeps_a_recovered_duration_bare(tmp_path):
+    """BH-2026-10-09-6: with too few returns the bootstrap and DSR lines say why they are
+    missing (the REVIEW-21 note: print every status with its reason); a flat book never
+    drew down, so its drawdown duration is not censored and stays a bare number."""
+    from invest_evaluation.config import BacktestConfig, ExecutionConfig, StrategyConfig
+    from invest_evaluation.engine import run_backtest
+    from invest_evaluation.metrics import compute_metrics
+    from invest_evaluation.reporting import save_run
+    from invest_evaluation.stats import strategy_statistics
+
+    class Flat:
+        def target_weights(self, scores):
+            return pd.Series(dtype=float)
+
+    dates = pd.bdate_range("2024-01-01", periods=20)
+    bars = pd.DataFrame(
+        [[d, "A", 10.0, 10.0, 10.0, 10.0, 1e9] for d in dates],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+    )
+    signals = pd.DataFrame({"decision_date": [dates[0]], "instrument": ["A"], "score": [1.0]})
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1), execution=ExecutionConfig(min_price=0.0)
+    )
+    result = run_backtest(bars, signals, cfg, Flat())
+    stats = strategy_statistics(result.returns, 252)
+    assert stats["bootstrap"]["status"] == "insufficient_data"
+    assert stats["deflated_sharpe"]["status"] == "insufficient_data"
+    metrics = compute_metrics(result)
+    assert not metrics["performance"]["max_drawdown_duration"].get("extra", {}).get("censored")
+    save_run(tmp_path / "run", result, metrics, stats, None, {})
+    lines = (tmp_path / "run" / "report.md").read_text().splitlines()
+    n = len(result.returns)
+    assert n < 30
+    assert (
+        f"Sharpe stationary-bootstrap CI: n/a (insufficient_data: {n} returns, needs 60)" in lines
+    )
+    assert (
+        f"Deflated Sharpe ratio (n_trials=1): n/a (insufficient_data: {n} returns, needs 30)"
+        in (lines)
+    )
+    assert "| max_drawdown_duration | 0 |" in lines
+
+
+@pytest.mark.parametrize(
+    ("closes", "censored"),
+    [
+        ([10.0] * 5 + [12.0, 11.0, 10.5, 11.0, 11.5], True),  # still below 12 at the end
+        ([10.0] * 5 + [12.0, 11.0, 10.5, 12.5, 13.0], False),  # back above 12
+    ],
+)
+def test_report_marks_a_right_censored_drawdown_duration(tmp_path, closes, censored):
+    """RA-2026-11-01-4: METRICS.md section 6 calls an unrecovered drawdown's duration
+    right-censored; report.md says so next to the count, and a recovered one stays bare."""
+    from invest_evaluation.config import (
+        BacktestConfig,
+        CostModel,
+        ExecutionConfig,
+        StrategyConfig,
+    )
+    from invest_evaluation.engine import run_backtest
+    from invest_evaluation.metrics import compute_metrics
+    from invest_evaluation.reporting import save_run
+    from invest_evaluation.stats import strategy_statistics
+
+    class Hold:
+        def target_weights(self, scores):
+            return pd.Series(1.0, index=scores.index[:1])
+
+    dates = pd.bdate_range("2024-01-01", periods=len(closes))
+    bars = pd.DataFrame(
+        [[d, "A", c, c, c, c, 1e12] for d, c in zip(dates, closes, strict=True)],
+        columns=["date", "instrument", "open", "high", "low", "close", "volume"],
+    )
+    signals = pd.DataFrame({"decision_date": dates, "instrument": "A", "score": 1.0})
+    cfg = BacktestConfig(
+        strategy=StrategyConfig(min_names=1, rebalance_every=1),
+        execution=ExecutionConfig(min_price=0.0),
+        costs=CostModel(
+            commission_bps=0,
+            half_spread_bps=0,
+            impact_coef=0,
+            borrow_bps_annual=0,
+            adv_window=1,
+            vol_window=2,
+        ),
+    )
+    result = run_backtest(bars, signals, cfg, Hold())
+    metrics = compute_metrics(result)
+    duration = metrics["performance"]["max_drawdown_duration"]
+    assert duration["value"] > 0
+    assert bool(duration.get("extra", {}).get("censored")) is censored
+    save_run(tmp_path / "run", result, metrics, strategy_statistics(result.returns, 252), None, {})
+    row = next(
+        line
+        for line in (tmp_path / "run" / "report.md").read_text().splitlines()
+        if line.startswith("| max_drawdown_duration |")
+    )
+    if censored:
+        assert row == (
+            f"| max_drawdown_duration | {duration['value']} "
+            "(right-censored: last drawdown not recovered) |"
+        )
+    else:
+        assert row == f"| max_drawdown_duration | {duration['value']} |"
+
+
+def test_censored_marker_does_not_claim_the_longest_drawdown_is_open():
+    """RA-2026-11-01-4: `censored` means the last drawdown is still open, which need not be
+    the longest one; the marker says exactly that (the longest value is then a lower bound)."""
+    from invest_evaluation.metrics import drawdown_metrics
+    from invest_evaluation.reporting import _fmt
+
+    # From 100: down to 100 after a 110 peak, recovered at 120 (2 sessions), then 119 open.
+    wealth = pd.Series([110.0, 100.0, 120.0, 119.0], index=pd.bdate_range("2024-01-01", periods=4))
+    duration = drawdown_metrics(wealth, 100.0)["max_drawdown_duration"].to_dict()
+    assert duration["value"] == 2 and duration["extra"]["censored"] is True
+    assert _fmt(duration) == "2 (right-censored: last drawdown not recovered)"
+    recovered = drawdown_metrics(wealth.iloc[:3], 100.0)["max_drawdown_duration"].to_dict()
+    assert recovered["value"] == 2 and _fmt(recovered) == "2"
