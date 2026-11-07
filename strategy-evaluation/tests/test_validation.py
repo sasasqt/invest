@@ -241,7 +241,7 @@ def test_cli_reports_factor_and_portfolio_verdicts_separately(
     assert not (tmp_path / "x").exists()
 
 
-def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, capsys):
+def test_cli_rejects_insolvent_portfolio_without_sharpe_statistics(tmp_path, capsys):
     dates = pd.bdate_range("2020-01-01", periods=400)
     closes = 10 * np.cumprod(np.full(len(dates), 1.04))
     opens = np.r_[10.0, closes[:-1]]

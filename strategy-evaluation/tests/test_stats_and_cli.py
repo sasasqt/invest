@@ -854,6 +854,7 @@ def test_cli_checks_each_delisting_record_before_backtesting(
 def test_statistics_of_an_insolvent_wealth_path_are_invalid():
     """BH-2026-10-15-2: METRICS.md section 6 and README "Insolvency": once wealth reaches zero,
     the Sharpe interval, PSR and DSR carry an invalid-input status, not a plausible value."""
+    from invest_evaluation.metrics import return_metrics
     from invest_evaluation.stats import strategy_statistics
 
     returns = pd.Series(np.r_[np.full(99, 0.04), -1.0])  # wealth 1.04**99 * 0 = 0 at the end
@@ -876,11 +877,30 @@ def test_statistics_of_an_insolvent_wealth_path_are_invalid():
     short = strategy_statistics(pd.Series([0.1, -1.0]), 252)
     for key in ("bootstrap", "probabilistic_sharpe_vs_zero", "deflated_sharpe"):
         assert short[key]["status"] == "invalid_input", key
+    # Every running product counts: two returns below -1 multiply back to a positive total.
+    twice = pd.Series(np.r_[np.full(80, 0.01), -1.5, -1.5])
+    assert bootstrap_ci(twice, 252)["status"] == "invalid_input"
+    assert strategy_statistics(twice, 252)["deflated_sharpe"]["status"] == "invalid_input"
+    # The HAC mean test and autocorrelations describe the observed returns and stay.
+    noisy = pd.Series(np.r_[np.random.default_rng(1).normal(0.01, 0.02, 99), -1.0])
+    observed = strategy_statistics(noisy, 252)
+    assert observed["deflated_sharpe"]["status"] == "invalid_input"
+    assert observed["hac_mean_return"]["status"] == "ok"
+    assert np.isfinite(observed["return_autocorrelation"]["lag_1"])
     solvent = returns.copy()
     solvent.iloc[-1] = -0.5  # wealth halves but stays positive
     statuses = strategy_statistics(solvent, 252)
     assert statuses["bootstrap"]["status"] == "ok"
     assert statuses["deflated_sharpe"]["status"] == "ok"
+    # Solvency is a property of the raw returns, not of the excess returns PSR/DSR use:
+    # a -99.999% day leaves wealth positive, though its excess return is below -1.
+    near_ruin = pd.Series(
+        np.r_[np.full(80, 0.01), -0.99999], index=pd.bdate_range("2020-01-01", periods=81)
+    )
+    assert return_metrics(near_ruin, v0=1.0, annualization=252)["sharpe"].status == "ok"
+    kept = strategy_statistics(near_ruin, 252, risk_free_annual=0.05)
+    for key in ("bootstrap", "probabilistic_sharpe_vs_zero", "deflated_sharpe"):
+        assert kept[key]["status"] != "invalid_input", key
 
 
 def _insolvent_run_inputs(tmp_path):
