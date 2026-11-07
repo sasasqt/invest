@@ -1706,26 +1706,29 @@ class StagingSafetyTests(unittest.TestCase):
             source, revision = fixture_repository(root, {"a.txt": b"a\n"})
 
             def failing(argv, **kwargs):
-                if "rev-list" in argv and str(root / "staged") in argv[:3]:
+                if "rev-list" in argv and any(
+                    str(item).startswith(str(root / "staged-")) for item in argv[:3]
+                ):
                     stderr = b"fatal: Out of memory, malloc failed (tried to allocate 1 \xff)\n"
                     return subprocess.CompletedProcess(argv, 128, b"", stderr)
                 return real_run(argv, **kwargs)
 
+            # One staged folder per mode: Git writes the staged pack index read-only,
+            # and Windows refuses shutil.rmtree on it (the temporary directory's own
+            # cleanup clears the attribute).
             for mode in ("1", "0"):
-                staged = root / "staged"
                 with (
                     self.subTest(CONTRACT_CHECKS=mode),
                     patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
                     patch("isolated_runner.run_captured", side_effect=failing),
                     self.assertRaises(ValueError) as caught,
                 ):
-                    stage_source(source, staged, revision)
+                    stage_source(source, root / f"staged-{mode}", revision)
                 self.assertEqual(
                     str(caught.exception),
                     "Staged Git history could not be listed: git exited 128: "
                     "fatal: Out of memory, malloc failed (tried to allocate 1 \ufffd)",
                 )
-                shutil.rmtree(staged)
 
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):

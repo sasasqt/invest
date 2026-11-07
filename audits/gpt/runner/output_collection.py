@@ -475,12 +475,24 @@ def remove_snapshot(snapshot):
     except OSError as exc:
         if exc.errno not in DESCRIPTORS_EXHAUSTED:
             raise
-        for current, folders, files in os.walk(snapshot, topdown=False):
-            for name in files:
-                os.unlink(os.path.join(current, name))
-            for name in folders:
-                os.rmdir(os.path.join(current, name))
-        os.rmdir(snapshot)
+        # os.walk enters a junction (Windows: no symlink, so followlinks=False does not
+        # stop it), so list each folder here and unlink every link or reparse point by
+        # name instead of entering it; one listing is open at a time.
+        pending, folders = [os.fspath(snapshot)], []
+        while pending:
+            current = pending.pop()
+            folders.append(current)
+            with os.scandir(current) as entries:
+                children = list(entries)
+            for entry in children:
+                if entry.is_dir(follow_symlinks=False) and not is_link(
+                    entry.stat(follow_symlinks=False)
+                ):
+                    pending.append(entry.path)
+                else:
+                    os.unlink(entry.path)
+        for current in reversed(folders):
+            os.rmdir(current)
 
 
 def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
