@@ -21,9 +21,13 @@
 #
 # RECORD (optional, e.g. runs/yahoo-test/2026-10-08) saves the run's small record (reports,
 # verdicts, metrics, figures, manifests; no vendor data) there for committing, with
-# scripts/save_run.py. It must not exist yet, and tracked files must be unmodified so the
-# recorded code revision describes the code that ran; save_run.py also refuses incomplete
-# outputs and evaluation or quantile manifests without a clean code revision.
+# scripts/save_run.py. It must not exist yet, and the checkout must be clean (no uncommitted
+# changes to tracked files, no untracked files Git does not ignore, and the outputs outside
+# the checkout or under a folder it ignores) so the recorded code revision describes the
+# code that ran; save_run.py also refuses incomplete outputs and evaluation or quantile
+# manifests without a clean code revision. A window the ledger does not yet record as
+# inspected is recorded first and the run stops before publishing: commit the ledger, then
+# rerun with the same settings (the saved snapshot replays offline).
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -44,10 +48,24 @@ if [[ -n "$record" ]]; then
     echo "RECORD $record already exists; run records are never overwritten" >&2
     exit 1
   fi
-  if [[ -n "$(git -C "$root" status --porcelain --untracked-files=no)" ]]; then
-    echo "RECORD needs a clean checkout: commit or stash changes to tracked files first" >&2
+  if [[ -n "$(git -C "$root" status --porcelain --untracked-files=normal)" ]]; then
+    echo "RECORD needs a clean checkout: commit changes to tracked files, and commit, remove or ignore untracked files first" >&2
     exit 1
   fi
+  # Outputs inside the checkout that Git does not ignore would be untracked files by the
+  # time the evaluation records code_dirty, and save_run.py would refuse the finished run.
+  for dir in "$out" "$snapshot"; do
+    # Written without a newline (a Windows Python ends a line in CRLF, which command
+    # substitution keeps) and with forward slashes, which Git takes on every platform.
+    abs="$(python -c 'import os, sys; sys.stdout.write(os.path.abspath(sys.argv[1]).replace(os.sep, "/"))' "$dir")"
+    # Asked about as a folder (trailing slash), so that a directory-only pattern such as
+    # /artifacts/ matches the folder itself before it exists.
+    git -C "$root" check-ignore -q -- "$abs/" 2> /dev/null && continue
+    if [[ $? -eq 1 ]]; then
+      echo "RECORD needs the outputs outside the checkout or under a folder Git ignores (such as artifacts/): $dir is neither" >&2
+      exit 1
+    fi
+  done
 fi
 
 if [[ -f "$snapshot/snapshot.json" ]]; then
@@ -67,6 +85,44 @@ PY
 )"
 read -r start end <<< "$range"
 invest-mine ledger check --ledger "$ledger" --start "$start" --end "$end" > /dev/null
+
+if [[ -n "$record" ]]; then
+  # The diagnostics record the market bundle's dates in the ledger unless an inspection
+  # already covers them. That append modified the tracked ledger before the evaluation
+  # recorded code_dirty, so save_run.py refused every record of a new window (K3). Record
+  # the inspection now and stop instead, so that the ledger is committed before the run.
+  # The selection and cleaning below mirror `invest-data yahoo publish --exclude` (_yahoo
+  # and _publish in invest_data/cli.py); a change there needs the same change here.
+  python - "$snapshot" "$benchmark" "$start" "$end" "$ledger" <<'PY'
+import sys
+
+from invest_data.cleaning import clean_bars
+from invest_data.yahoo import load_snapshot, read_snapshot_manifest
+from invest_mining import ledger
+
+snapshot, benchmark, start, end, path = sys.argv[1:]
+symbols = [s for s in read_snapshot_manifest(snapshot)["files"] if s != benchmark]
+raw, _ = load_snapshot(snapshot, symbols, start=start, end=end)
+bars, _ = clean_bars(raw)
+window = ledger.Window(bars["date"].min().date(), bars["date"].max().date())
+if not ledger.is_inspected(ledger.load(path), window):
+    ledger.append(
+        path,
+        "inspection",
+        {
+            "window": window.to_json(),
+            "dataset_id": f"yahoo-test-{start}-{end}",
+            "note": "invest-mine evaluate (full sample); recorded by the RECORD run before "
+            "it started, so that the ledger is committed first",
+        },
+    )
+    sys.exit(
+        f"RECORD: {path} now records {window} as inspected; commit it, then rerun with the "
+        "same settings (the saved snapshot replays offline; a ledger outside the checkout, or "
+        "under a folder Git ignores, needs no commit)"
+    )
+PY
+fi
 
 invest-data yahoo publish --snapshot "$snapshot" --exclude "$benchmark" --format parquet \
   --start "$start" --end "$end" \
