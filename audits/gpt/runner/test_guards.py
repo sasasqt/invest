@@ -1731,6 +1731,38 @@ class StagingSafetyTests(unittest.TestCase):
                     "fatal: Out of memory, malloc failed (tried to allocate 1 \ufffd)",
                 )
 
+    def test_a_failed_listing_of_the_staged_tree_names_gits_error(self):
+        """Review round 17 (mutation testing after R17A-X1): the staged copy's own
+        `ls-tree`, whose listing must equal the source's, can fail for a reason of its
+        own like the `rev-list` above; its error branch had no test, so ten mutants of
+        the message it raises survived the suites."""
+        real_run = isolated_runner.run_captured
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+
+            def failing(argv, **kwargs):
+                if "ls-tree" in argv and any(
+                    str(item).startswith(str(root / "staged-")) for item in argv[:3]
+                ):
+                    stderr = b"fatal: unable to read tree (1 \xff)\n"
+                    return subprocess.CompletedProcess(argv, 128, b"", stderr)
+                return real_run(argv, **kwargs)
+
+            for mode in ("1", "0"):
+                with (
+                    self.subTest(CONTRACT_CHECKS=mode),
+                    patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                    patch("isolated_runner.run_captured", side_effect=failing),
+                    self.assertRaises(ValueError) as caught,
+                ):
+                    stage_source(source, root / f"staged-{mode}", revision)
+                self.assertEqual(
+                    str(caught.exception),
+                    "Staged Git tree could not be listed: git exited 128: "
+                    "fatal: unable to read tree (1 \ufffd)",
+                )
+
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
         """Review round 12 (R12C-C1): with PYTHONLEGACYWINDOWSFSENCODING=1, os.fsdecode
@@ -2736,6 +2768,21 @@ class SemanticCoverageTests(unittest.TestCase):
         self.compressed(head + b"2\n")
         self.assertNotEqual(before, semantic_hash(self.root))
 
+    def test_hidden_files_and_folders_are_hashed_too(self):
+        """W5 hashes every file of the output: a file, or a folder, whose name starts
+        with a dot is content like any other (round 17 reviewer: no fixture had one, so
+        a walk that skipped hidden entries passed these tests)."""
+        before = semantic_hash(self.root)
+        (self.root / ".state").write_bytes(b"first")
+        hidden = semantic_hash(self.root)
+        self.assertNotEqual(before, hidden)
+        (self.root / ".state").write_bytes(b"second")
+        self.assertNotEqual(hidden, semantic_hash(self.root))
+        (self.root / ".cache").mkdir()
+        (self.root / ".cache/rows.csv").write_bytes(b"a,1\n")
+        paths = [row["path"] for row in semantic_manifest(self.root)["records"]]
+        self.assertEqual(paths, [".cache/rows.csv", ".state", "metrics.json"])
+
     def test_other_artifact_changes_are_not_silently_ignored(self):
         path = self.root / "artifact.bin"
         path.write_bytes(b"first")
@@ -2997,7 +3044,13 @@ class WorkloadOrderTests(unittest.TestCase):
     WHEELS = ("invest_data", "invest_mining", "invest_evaluation")
 
     def run_workload(
-        self, failing, link_in=None, differ_in=None, wall_seconds=None, probe_failure=None
+        self,
+        failing,
+        link_in=None,
+        differ_in=None,
+        wall_seconds=None,
+        probe_failure=None,
+        timed_out=None,
     ):
         """Run main with every step faked: each records its call and exits 1 only for
         the step named ``failing`` (or for each name of a tuple); the boundary probe
@@ -3006,7 +3059,8 @@ class WorkloadOrderTests(unittest.TestCase):
         package; a workflow step writes a tiny repeatable output, with a link in it for
         the step named ``link_in`` and another table value for the step named
         ``differ_in``; ``wall_seconds`` maps a step name to the wall time its record
-        reports (0.0 otherwise). Returns the exit status (the RuntimeError instead
+        reports (0.0 otherwise); the step named ``timed_out`` reports a timeout with
+        exit 124. Returns the exit status (the RuntimeError instead
         when the probe raised one), the recorded calls, the records the workload
         wrote (None where it wrote none: the summary, the benchmark rows, the
         environment record and each sample's manifest file, with each workflow
@@ -3017,7 +3071,7 @@ class WorkloadOrderTests(unittest.TestCase):
 
         def fake_probe(sentinel, host_pid, results):
             calls.append(
-                {"name": "boundary-probe", "argv": [sentinel, host_pid], "cwd": None}
+                {"name": "boundary-probe", "argv": [sentinel, host_pid, results], "cwd": None}
                 | {"timeout": None, "env": None}
             )
             if probe_failure is not None:
@@ -3040,8 +3094,8 @@ class WorkloadOrderTests(unittest.TestCase):
             return {
                 "name": name,
                 "argv": argv,
-                "exit": int(name in failing),
-                "timeout": False,
+                "exit": 124 if name == timed_out else int(name in failing),
+                "timeout": name == timed_out,
                 "wall_seconds": (wall_seconds or {}).get(name, 0.0),
                 "child_cpu_seconds": 0.0,
             }
@@ -3196,6 +3250,9 @@ class WorkloadOrderTests(unittest.TestCase):
                 self.assertEqual(self.names(calls), expected[: expected.index(failing) + 1])
                 self.assertEqual(status, 1)
                 self.assertIsNone(records["summary"])
+                # environment.json describes a container that passed the guard tests:
+                # it is written after them and before the build (round 17 reviewer).
+                self.assertEqual(records["environment"] is None, failing == "audit-guard-tests")
 
     def test_a_failed_product_check_is_recorded_but_stops_nothing(self):
         """PR #32's rule, kept: a red product check (here lint) lets every later step
@@ -3351,13 +3408,13 @@ class WorkloadOrderTests(unittest.TestCase):
         raises ends main before any step runs (round 16 reviewer: these tests replaced
         the probe with a no-op, so a main that never ran it, or ran it after the guard
         tests, passed them)."""
-        status, calls, _, _ = self.run_workload(None)
+        status, calls, _, work = self.run_workload(None)
         self.assertEqual(status, 0)
         self.assertEqual(
             calls[0],
             {
                 "name": "boundary-probe",
-                "argv": [None, None],
+                "argv": [None, None, work / "results"],
                 "cwd": None,
                 "timeout": None,
                 "env": None,
@@ -3494,6 +3551,40 @@ class WorkloadOrderTests(unittest.TestCase):
         self.assertEqual(by_name["audit-guard-tests"]["timeout"], 60)
         for name in ("format", "lint", "types", "tests", "links"):
             self.assertEqual(by_name[name]["env"]["COVERAGE_FILE"], str(work / "coverage-data"))
+
+    def test_a_step_that_timed_out_is_a_retained_failure(self):
+        """A product step that ``execute`` killed at its timeout records exit 124 with
+        timeout true: the summary lists it with the other failed checks and the workload
+        exits 1 (round 17 reviewer: no faked step ever timed out, so a summary that left
+        timed-out steps out passed these tests)."""
+        status, calls, records, _ = self.run_workload(None, timed_out="tests")
+        self.assertEqual(self.names(calls), self.expected_steps())
+        self.assertEqual(status, 1)
+        self.assertEqual(records["summary"]["test_failures_retained"], ["tests"])
+        self.assertEqual(records["summary"]["valid_measured_samples"], 7)
+
+    def test_every_step_runs_in_its_documented_folder(self):
+        """The guard tests run in the runner folder, the build, the environments, the
+        product checks and the synthetic workflow in the source copy, and the CLIs and
+        the independent installs in the work folder (round 17 reviewer: only the guard
+        tests' and the product checks' folders were pinned)."""
+        _, calls, _, work = self.run_workload(None)
+        in_work = (
+            "cli-",
+            "data-preparation-",
+            "data-mining-framework-",
+            "strategy-evaluation-",
+            "evaluation-independent-",
+        )
+        for call in calls[1:]:
+            name = call["name"]
+            with self.subTest(step=name):
+                if name == "audit-guard-tests":
+                    self.assertEqual(call["cwd"], runner_workload.AUDIT)
+                elif name.startswith(in_work):
+                    self.assertEqual(call["cwd"], work)
+                else:
+                    self.assertEqual(call["cwd"], work / "source")
 
 
 class InstalledGraphTests(unittest.TestCase):

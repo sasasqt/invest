@@ -466,11 +466,11 @@ def private_folder(parent):
 
 
 def remove_snapshot(snapshot):
-    """Remove a private ``.collect-*`` snapshot. On POSIX ``shutil.rmtree`` holds a
-    descriptor per folder level, so after a rejection for an exhausted descriptor table
+    """Remove a private ``.collect-*`` snapshot. ``shutil.rmtree`` holds a descriptor
+    per folder level on POSIX, so after a rejection for an exhausted descriptor table
     it can run out too and leave the snapshot behind (Q2); then the tree is removed
-    bottom-up with one listing open at a time, entering no link or junction. The
-    snapshot is this process's own: mode 0o700, no links."""
+    bottom-up with one listing open at a time, entering no link and, on Windows, no
+    junction. The snapshot is this process's own: mode 0o700, no links."""
     try:
         shutil.rmtree(snapshot)
     except OSError as exc:
