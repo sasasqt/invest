@@ -146,8 +146,8 @@ def record_files(out: Path) -> list[Path]:
             raise SystemExit(f"{out}: {rel} records no code revision")
         if code.get("code_dirty") is not False:
             raise SystemExit(
-                f"{out}: the code behind {rel} had uncommitted changes (or did not record "
-                "whether it had); rerun from a clean checkout"
+                f"{out}: the code behind {rel} had uncommitted changes or untracked files (or did "
+                "not record whether it had); rerun from a clean checkout"
             )
     return sorted({p.relative_to(out) for pattern in RECORD_GLOBS for p in out.glob(pattern)})
 

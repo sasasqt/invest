@@ -91,6 +91,8 @@ if [[ -n "$record" ]]; then
   # already covers them. That append modified the tracked ledger before the evaluation
   # recorded code_dirty, so save_run.py refused every record of a new window (K3). Record
   # the inspection now and stop instead, so that the ledger is committed before the run.
+  # The selection and cleaning below mirror `invest-data yahoo publish --exclude` (_yahoo
+  # and _publish in invest_data/cli.py); a change there needs the same change here.
   python - "$snapshot" "$benchmark" "$start" "$end" "$ledger" <<'PY'
 import sys
 

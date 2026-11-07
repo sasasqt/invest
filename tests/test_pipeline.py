@@ -369,7 +369,18 @@ def _run_workflow(script, out, env):
     )
 
 
-def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_path):
+def _no_global_git_config(monkeypatch, tmp_path):
+    """Git reads no global configuration for the rest of the test (Git 2.32 and later).
+
+    The developer's excludes file would otherwise decide what the workflow's own Git calls
+    and the temporary repository see: one that ignores ``out/``, as JetBrains' template
+    does, passes the output-location check for ``<checkout>/out``, and ``commit.gpgsign``
+    would stop the checkout's commits. The evaluator's ``code_dirty`` and the test's own
+    ``code_revision()`` then read the same configuration."""
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "no-global-gitconfig"))
+
+
+def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_path, monkeypatch):
     """K3: the diagnostics append the market bundle's dates to the ledger unless an
     inspection already covers them, which modified the tracked ledger before the evaluation
     recorded ``code_dirty``, so ``save_run.py`` refused every record of a new window. A
@@ -378,6 +389,7 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     from invest_data.sources import SyntheticConfig, synthetic_market
     from invest_data.testing import write_fake_snapshot
 
+    _no_global_git_config(monkeypatch, tmp_path)
     bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
     bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
     snapshot = tmp_path / "snapshot"
@@ -429,6 +441,8 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert (tmp_path / "record").is_dir() == (done.returncode == 0)
     assert ledger.read_text() == recorded
     market = json.loads((out / "data/market/manifest.json").read_text())
+    # The pre-check records the cleaned bundle's dates, as the diagnostics do; they equal
+    # the snapshot's observed range here because cleaning rejects nothing.
     selection = market["provenance"]["selection"]
     assert entries[-1]["window"] == {
         "start": selection["observed_start"],
@@ -438,10 +452,13 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert (out / "quantiles/manifest.json").is_file()
 
 
-def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(tmp_path):
+def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
+    tmp_path, monkeypatch
+):
     """K15: ``code_dirty`` counts untracked files Git does not ignore, so the workflow's
     own check does too, before any work, and outputs inside the checkout that Git would
     not ignore are refused for the same reason."""
+    _no_global_git_config(monkeypatch, tmp_path)
     checkout = tmp_path / "checkout"
     script = _clean_checkout_of_the_workflow(checkout)
     env = {"SNAPSHOT": str(tmp_path / "missing-snapshot"), "RECORD": str(tmp_path / "record")}

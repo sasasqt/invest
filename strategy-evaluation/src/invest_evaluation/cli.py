@@ -34,7 +34,7 @@ T = TypeVar("T")
 
 
 def code_revision(source: Path = Path(__file__)) -> tuple[str | None, bool | None]:
-    """Git revision and uncommitted-changes flag of the checkout this code was loaded from.
+    """Git revision of the checkout this code was loaded from, and whether it is dirty.
 
     Looked up from the module's own location, never the caller's working directory, so a run
     started from another repository cannot record that repository's commit. Code that Git
