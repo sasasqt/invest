@@ -1369,6 +1369,20 @@ class RoundFourteenCheckTests(unittest.TestCase):
             self.assertEqual(os.listdir(evidence), [])
 
 
+def descriptor_limit_leaving(free):
+    """A ``RLIMIT_NOFILE`` soft limit under which exactly ``free`` more descriptors can be
+    opened. The limit bounds descriptor numbers, not their count: a gap below it, or a
+    descriptor above it (a CI runner's own pipes), gives a process more room than the
+    count suggests, so the limit is found from the numbers in use."""
+    probe = os.open("/proc/self/fd", os.O_RDONLY)  # the lowest free number, reused below
+    os.close(probe)
+    taken = {int(name) for name in os.listdir("/proc/self/fd")} - {probe}
+    limit = 0
+    while limit - sum(1 for number in taken if number < limit) < free:
+        limit += 1
+    return limit
+
+
 @POSIX_ONLY
 class RoundFifteenCheckTests(unittest.TestCase):
     """Review round 15 (R15B-A1, R15B-A2): the cleanup after a rejection for an exhausted
@@ -1391,8 +1405,7 @@ class RoundFifteenCheckTests(unittest.TestCase):
             soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
             # The walk lists nine folders (results and eight below) with a descriptor
             # each; the file open is then refused, and the cleanup needs one more.
-            held = len(os.listdir("/proc/self/fd")) - 1
-            resource.setrlimit(resource.RLIMIT_NOFILE, (held + 9, hard))
+            resource.setrlimit(resource.RLIMIT_NOFILE, (descriptor_limit_leaving(9), hard))
             try:
                 with contextlib.redirect_stdout(io.StringIO()):
                     report = collect_workload(work, evidence, method="path")
@@ -1418,8 +1431,7 @@ class RoundFifteenCheckTests(unittest.TestCase):
                 (folder / f"f{level}").write_bytes(b"x")
                 folder = folder / "d"
             soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-            held = len(os.listdir("/proc/self/fd")) - 1
-            resource.setrlimit(resource.RLIMIT_NOFILE, (held + 4, hard))
+            resource.setrlimit(resource.RLIMIT_NOFILE, (descriptor_limit_leaving(4), hard))
             try:
                 with self.assertRaises(OSError) as raised:
                     shutil.rmtree(snapshot)
