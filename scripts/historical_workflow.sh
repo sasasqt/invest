@@ -49,14 +49,16 @@ if [[ -n "$record" ]]; then
     exit 1
   fi
   if [[ -n "$(git -C "$root" status --porcelain --untracked-files=normal)" ]]; then
-    echo "RECORD needs a clean checkout: commit changes to tracked files and remove or ignore untracked files first" >&2
+    echo "RECORD needs a clean checkout: commit changes to tracked files, and commit, remove or ignore untracked files first" >&2
     exit 1
   fi
   # Outputs inside the checkout that Git does not ignore would be untracked files by the
   # time the evaluation records code_dirty, and save_run.py would refuse the finished run.
   for dir in "$out" "$snapshot"; do
     abs="$(python -c 'import os, sys; print(os.path.abspath(sys.argv[1]))' "$dir")"
-    git -C "$root" check-ignore -q -- "$abs" 2> /dev/null && continue
+    # Asked about as a folder (trailing slash), so that a directory-only pattern such as
+    # /artifacts/ matches the folder itself before it exists.
+    git -C "$root" check-ignore -q -- "$abs/" 2> /dev/null && continue
     if [[ $? -eq 1 ]]; then
       echo "RECORD needs the outputs outside the checkout or under a folder Git ignores (such as artifacts/): $dir is neither" >&2
       exit 1
@@ -112,7 +114,7 @@ if not ledger.is_inspected(ledger.load(path), window):
     )
     sys.exit(
         f"RECORD: {path} now records {window} as inspected; commit it, then rerun with the "
-        "same settings (the saved snapshot replays offline)"
+        "same settings (the saved snapshot replays offline; a ledger Git does not track needs no commit)"
     )
 PY
 fi

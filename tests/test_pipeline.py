@@ -342,11 +342,12 @@ def _git(repo, *args):
 
 
 def _clean_checkout_of_the_workflow(path):
-    """A committed copy of the workflow script. RECORD needs a clean checkout and the one
-    running the tests may not be clean; the script resolves its own folder, so everything
-    else it needs comes from this checkout through the environment."""
+    """A committed copy of the workflow script and save_run.py. RECORD needs a clean
+    checkout and the one running the tests may not be clean; the script resolves its own
+    folder, so everything else it needs comes from this checkout through the environment."""
     (path / "scripts").mkdir(parents=True)
-    shutil.copy(ROOT / "scripts/historical_workflow.sh", path / "scripts")
+    for name in ("historical_workflow.sh", "save_run.py"):
+        shutil.copy(ROOT / "scripts" / name, path / "scripts")
     _git(path, "init", "-q")
     _git(path, "add", "scripts")
     _git(path, "commit", "-q", "-m", "workflow")
@@ -408,12 +409,18 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert not out.exists() and not (tmp_path / "record").exists()
     entries = [json.loads(line) for line in ledger.read_text().splitlines()]
     assert [e["kind"] for e in entries] == ["reservation", "inspection"]
-    # The rerun (without RECORD, because the evaluator records this checkout's own state)
-    # finds the window recorded and appends nothing.
+    # The rerun, again with RECORD, finds the window recorded, appends nothing and goes on
+    # to the run. Its last step, save_run.py, needs committed code, and the evaluator
+    # records the state of the checkout running the tests (dirty, or an installed wheel):
+    # only that refusal is accepted as a failure, once every workflow output exists.
     recorded = ledger.read_text()
-    del env["RECORD"]
     done = _run_workflow(script, out, env)
-    assert done.returncode == 0, done.stderr
+    assert "commit it, then rerun" not in done.stderr, done.stderr
+    if done.returncode != 0:
+        assert "rerun from a clean checkout" in done.stderr or "no code revision" in done.stderr, (
+            done.stderr
+        )
+    assert (tmp_path / "record").is_dir() == (done.returncode == 0)
     assert ledger.read_text() == recorded
     market = json.loads((out / "data/market/manifest.json").read_text())
     selection = market["provenance"]["selection"]
@@ -444,12 +451,13 @@ def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
         assert done.returncode != 0
         assert "under a folder Git ignores" in done.stderr, done.stderr
         assert not inside.exists()
-    # Ignored outputs and outputs outside the checkout pass both checks; the run then fails
-    # at the download, which has no symbols file here.
+    # Ignored outputs (the ignored folder itself included, before it exists) and outputs
+    # outside the checkout pass both checks; the run then fails at the download, which has
+    # no symbols file here.
     (checkout / ".gitignore").write_text("/artifacts/\n")
     _git(checkout, "add", ".gitignore")
     _git(checkout, "commit", "-q", "-m", "ignore artifacts")
-    for allowed in (checkout / "artifacts" / "wf", out):
+    for allowed in (checkout / "artifacts", checkout / "artifacts" / "wf", out):
         done = _run_workflow(script, allowed, {**env, "SYMBOLS_FILE": "/nonexistent"})
         assert done.returncode != 0
         assert "RECORD needs" not in done.stderr, done.stderr
