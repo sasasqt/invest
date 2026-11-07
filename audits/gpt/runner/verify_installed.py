@@ -39,13 +39,17 @@ def verify_versions(requirements, lookup):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--requirements", required=True)
-    parser.add_argument("--workspace-prefix", required=True)
+    # Without a prefix only the locked versions are checked: the build environment
+    # holds no workspace package.
+    parser.add_argument("--workspace-prefix")
     args = parser.parse_args()
     graph = verify_versions(
         applicable_requirements(Path(args.requirements).read_text()), metadata.version
     )
     origins = {}
-    for name in ("invest_data", "invest_mining", "invest_evaluation"):
+    for name in (
+        ("invest_data", "invest_mining", "invest_evaluation") if args.workspace_prefix else ()
+    ):
         spec = importlib.util.find_spec(name)
         if not spec or not spec.origin or not spec.origin.startswith(args.workspace_prefix):
             raise ValueError(f"Wrong installed workspace origin for {name}: {spec}")

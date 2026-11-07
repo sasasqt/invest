@@ -21,6 +21,13 @@ VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
 SEMANTIC_GATE_VERSION = 2
 # Set by main when it runs as the container's first process (PID 1, no --init).
 CONTAINER_INIT = False
+# The container's fixed paths; the host tests point them at a temporary folder.
+WORK = Path("/work")
+INPUT = Path("/input")
+AUDIT = Path("/audit")
+BUILD_PYTHON = "/buildenv/bin/python"
+REQUIREMENTS = "/requirements.txt"
+BUILD_REQUIREMENTS = "/build-requirements.txt"
 
 
 def output_files(directory):
@@ -176,10 +183,10 @@ def prove_boundary(sentinel, host_pid, results):
     checks |= {
         "host_canary_env_absent": "AUDIT_HOST_CANARY" not in os.environ,
         "container_socket_absent": not Path("/var/run/docker.sock").exists(),
-        "source_readable": Path("/input/pyproject.toml").is_file(),
+        "source_readable": (INPUT / "pyproject.toml").is_file(),
     }
     try:
-        Path("/input/.audit-write-probe").write_text("harmless")
+        (INPUT / ".audit-write-probe").write_text("harmless")
         checks["source_write_denied"] = False
     except OSError:
         checks["source_write_denied"] = True
@@ -303,7 +310,7 @@ def main():
     args = parser.parse_args()
     global CONTAINER_INIT
     CONTAINER_INIT = os.getpid() == 1
-    work = Path("/work")
+    work = WORK
     results = work / "results"
     results.mkdir()
     (work / "home").mkdir()
@@ -320,7 +327,7 @@ def main():
             "test_output_collection",
             "test_execution_logs",
         ],
-        Path("/audit"),
+        AUDIT,
         results,
         timeout=60,
     )["exit"]:
@@ -345,21 +352,34 @@ def main():
                 "cpu_model": cpu_model,
                 "limits": limits,
                 "hash_seed": os.environ.get("PYTHONHASHSEED"),
-                "lock_sha256": hashlib.sha256(Path("/input/uv.lock").read_bytes()).hexdigest(),
+                "lock_sha256": hashlib.sha256((INPUT / "uv.lock").read_bytes()).hexdigest(),
                 "parallel_benchmarks": False,
             },
             indent=2,
         )
     )
     source = work / "source"
-    shutil.copytree("/input", source)
+    shutil.copytree(INPUT, source)
     components = ["data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation"]
+    # The build environment makes the workspace wheels, so its locked versions are
+    # proved before any wheel is built; the runtime environment's are proved right
+    # after the wheels are installed. A failed check stops the workload before any
+    # product command runs (W6): a red final verdict alone would still have run the
+    # product's tests and workflows in an environment the check had rejected.
+    verifier = str(AUDIT / "verify_installed.py")
+    if execute(
+        "build-environment",
+        [BUILD_PYTHON, verifier, "--requirements", BUILD_REQUIREMENTS],
+        source,
+        results,
+    )["exit"]:
+        return 1
     built = work / "built"
     built.mkdir()
     stage = execute(
         "build-workspace",
         [
-            "/buildenv/bin/python",
+            BUILD_PYTHON,
             "-m",
             "pip",
             "wheel",
@@ -377,12 +397,12 @@ def main():
         return 1
     if execute(
         "create-environment",
-        [sys.executable, "-m", "venv", "--system-site-packages", "/work/env"],
+        [sys.executable, "-m", "venv", "--system-site-packages", str(work / "env")],
         source,
         results,
     )["exit"]:
         return 1
-    python = "/work/env/bin/python"
+    python = str(work / "env/bin/python")
     if execute(
         "install-workspace",
         [
@@ -400,7 +420,7 @@ def main():
         return 1
     env = dict(
         os.environ,
-        PATH="/work/env/bin:/usr/local/bin:/usr/bin:/bin",
+        PATH=f"{work / 'env/bin'}:/usr/local/bin:/usr/bin:/bin",
         COVERAGE_FILE=str(work / "coverage-data"),
     )
     checks = [
@@ -408,17 +428,19 @@ def main():
             "installed-graph",
             [
                 python,
-                "/audit/verify_installed.py",
+                verifier,
                 "--requirements",
-                "/requirements.txt",
+                REQUIREMENTS,
                 "--workspace-prefix",
-                "/work/env/",
+                f"{work / 'env'}/",
             ],
             source,
             results,
             env=env,
         )
     ]
+    if checks[0]["exit"]:
+        return 1
     commands = [
         ("format", [python, "-m", "ruff", "format", "--check", "."]),
         ("lint", [python, "-m", "ruff", "check", "."]),
@@ -434,7 +456,7 @@ def main():
                 "--cov=invest_evaluation",
                 "--cov-branch",
                 "--cov-report=term-missing",
-                "--cov-report=json:/work/results/coverage.json",
+                f"--cov-report=json:{results / 'coverage.json'}",
                 "--durations=25",
             ],
         ),
@@ -444,7 +466,7 @@ def main():
         checks.append(execute(name, argv, source, results, env=env))
     for cli in ("invest-data", "invest-mine", "invest-eval"):
         checks.append(
-            execute("cli-" + cli, ["/work/env/bin/" + cli, "--help"], work, results, env=env)
+            execute("cli-" + cli, [str(work / "env/bin" / cli), "--help"], work, results, env=env)
         )
     if sys.version_info[:2] == (3, 11):
         repeat_env = dict(env, PYTHONHASHSEED="12345")

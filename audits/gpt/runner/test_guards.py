@@ -2690,6 +2690,93 @@ class SemanticCoverageTests(unittest.TestCase):
             semantic_manifest(self.root)
 
 
+@unittest.skipUnless(os.name == "posix", "the workload reads /proc and runs only on Linux")
+class WorkloadOrderTests(unittest.TestCase):
+    """INV-PR36-001 (round 14): the workload recorded a failed installed-dependency check
+    and went on to run the product's format, lint, type, test, link, CLI and workflow
+    steps in that environment; only the final exit showed it. Both dependency checks
+    (the build environment before the wheels are built, the runtime environment after
+    the wheels are installed) must stop the workload at once (CONTRACT.md W6)."""
+
+    @staticmethod
+    def expected_steps():
+        steps = [
+            "audit-guard-tests",
+            "build-environment",
+            "build-workspace",
+            "create-environment",
+            "install-workspace",
+            "installed-graph",
+            "format",
+            "lint",
+            "types",
+            "tests",
+            "links",
+            "cli-invest-data",
+            "cli-invest-mine",
+            "cli-invest-eval",
+        ]
+        if sys.version_info[:2] == (3, 11):
+            steps.append("hash-seed-repeat")
+            for name in ("data-preparation", "data-mining-framework", "strategy-evaluation"):
+                steps += [name + "-venv", name + "-install"]
+                if name == "strategy-evaluation":
+                    steps.append("evaluation-independent-import")
+                steps.append(name + "-tests")
+        return steps + [f"synth-S-{repetition}" for repetition in range(8)]
+
+    def run_workload(self, failing):
+        """Run main with every step faked: each records its name and exits 1 only for
+        the step named ``failing``; a workflow step writes a tiny repeatable output."""
+        names = []
+
+        def fake_execute(name, argv, cwd, results, timeout=1200, env=None):
+            names.append(name)
+            if name.startswith("synth-S-"):
+                destination = Path(argv[2])
+                destination.mkdir(parents=True)
+                (destination / "table.json").write_text('{"rows": 1}', encoding="utf-8")
+                (destination / "figure.png").write_bytes(b"\x89PNG")
+            return {
+                "name": name,
+                "argv": argv,
+                "exit": int(name == failing),
+                "timeout": False,
+                "wall_seconds": 0.0,
+                "child_cpu_seconds": 0.0,
+            }
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "input").mkdir()
+            (root / "input/pyproject.toml").write_text("[project]\nname = 'x'\n", encoding="utf-8")
+            (root / "input/uv.lock").write_bytes(b"version = 1\n")
+            (root / "work").mkdir()
+            with (
+                patch.object(runner_workload, "WORK", root / "work"),
+                patch.object(runner_workload, "INPUT", root / "input"),
+                patch.object(runner_workload, "prove_boundary", lambda *args: None),
+                patch.object(runner_workload, "execute", fake_execute),
+                patch.object(sys, "argv", ["runner_workload.py"]),
+            ):
+                return runner_workload.main(), names
+
+    def test_every_step_runs_in_order_when_every_check_passes(self):
+        status, names = self.run_workload(failing=None)
+        self.assertEqual(names, self.expected_steps())
+        self.assertEqual(status, 0)
+        self.assertLess(names.index("build-environment"), names.index("build-workspace"))
+        self.assertLess(names.index("install-workspace"), names.index("installed-graph"))
+
+    def test_a_failed_dependency_check_stops_the_workload_at_once(self):
+        for failing in ("build-environment", "installed-graph"):
+            with self.subTest(failing=failing):
+                status, names = self.run_workload(failing)
+                expected = self.expected_steps()
+                self.assertEqual(names, expected[: expected.index(failing) + 1])
+                self.assertEqual(status, 1)
+
+
 class InstalledGraphTests(unittest.TestCase):
     def test_continuation_and_hashes_are_parsed(self):
         text = "demo==1.2 \\\n    --hash=sha256:abcdef \\\n    --hash=sha256:fedcba\n"
@@ -2713,6 +2800,35 @@ class InstalledGraphTests(unittest.TestCase):
         self.assertEqual(
             verify_versions(parsed, lambda name: "1.2"), [{"name": "demo", "version": "1.2"}]
         )
+
+    def test_the_verifier_checks_workspace_origins_only_with_a_prefix(self):
+        """Round 14 (W6): the build environment is verified with the same script, and it
+        holds no workspace package, so the origin check runs only when a prefix is
+        given; a prefix that no workspace package comes from still fails."""
+        import importlib.metadata
+
+        here = Path(__file__).resolve().parent
+        with tempfile.TemporaryDirectory() as directory:
+            listed = Path(directory) / "requirements.txt"
+            listed.write_text(
+                f"packaging=={importlib.metadata.version('packaging')} --hash=sha256:0\n",
+                encoding="ascii",
+            )
+            argv = [sys.executable, "-I", str(here / "verify_installed.py"), "--requirements"]
+            alone = subprocess.run([*argv, str(listed)], capture_output=True, text=True)
+            self.assertEqual(alone.returncode, 0, alone.stderr)
+            self.assertEqual(json.loads(alone.stdout)["origins"], {})
+            prefixed = subprocess.run(
+                [*argv, str(listed), "--workspace-prefix", directory + os.sep],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(prefixed.returncode, 1)
+            self.assertIn("Wrong installed workspace origin for invest_data", prefixed.stderr)
+            listed.write_text("packaging==0.0.1\n", encoding="ascii")
+            drifted = subprocess.run([*argv, str(listed)], capture_output=True, text=True)
+            self.assertEqual(drifted.returncode, 1)
+            self.assertIn("packaging: installed", drifted.stderr)
 
 
 if __name__ == "__main__":

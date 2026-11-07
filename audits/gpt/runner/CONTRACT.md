@@ -2,7 +2,7 @@
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
 `contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
-(P2 and P3 are always enforced by the code, and the suites check W1-W5); every test
+(P2 and P3 are always enforced by the code, and the suites check W1-W6); every test
 suite, the CI host-test steps and the CI Docker controls step set it, production
 runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary
@@ -71,11 +71,12 @@ rejection.
 
 ## Container workload and snapshot check (checked by the suites)
 
-W1-W3 and W5 run inside the Linux container or on raw input, and W4 is a property
+W1-W3, W5 and W6 run inside the Linux container or on raw input, and W4 is a property
 of the workflow, not of the host process, so `contract.py` does not check them;
-`test_guards.py` checks W1-W3 and W5 and `test_host_safety.py` checks W4. In a real
+`test_guards.py` checks W1-W3, W5 and W6 and `test_host_safety.py` checks W4. In a real
 container the CI Docker controls exercise W1 (they run only the boundary probe), and
-the full isolated audit jobs exercise W1, W2 and W5.
+the full isolated audit jobs exercise W1, W2, W5 and the passing path of W6 (both
+locked-version steps run for real there).
 
 - **W1** `boundary.json` reports `no_capabilities` true only when the permitted,
   effective and bounding capability sets are all empty (and the ambient set, where
@@ -119,6 +120,15 @@ the full isolated audit jobs exercise W1, W2 and W5.
   failure also gives the operating system's cause, so an output folder the workflow
   never created does not read as a permission problem. Checked in
   `runner_workload.semantic_manifest`.
+- **W6** The workload runs no product command (format, lint, types, tests, links,
+  the CLIs, the hash-seed repeat, the independent installs, the synthetic
+  workflow) in an environment whose locked versions it has not proved: the build
+  environment's are checked before any workspace wheel is built, the runtime
+  environment's (with the workspace import origins) right after the wheels are
+  installed, and a failed check ends the workload with exit 1 at once, after
+  recording that step. PR #32 recorded the runtime check's failure and ran every
+  later step anyway, so only the final exit showed it. Checked in
+  `test_guards.WorkloadOrderTests`.
 
 ## Deliberate behaviour differences from the Linux-only runner (PR #32)
 
