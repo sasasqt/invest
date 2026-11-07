@@ -227,9 +227,11 @@ def strategy_statistics(
 ) -> dict[str, Any]:
     """Uncertainty statistics of ``returns`` (simple returns of one wealth path).
 
-    On a path whose wealth reaches zero or below, the bootstrap Sharpe interval, PSR
-    and DSR are ``invalid_input`` (``insolvent_wealth_path``), as the Sharpe itself is in
-    ``metrics.json``; the HAC mean test and autocorrelations describe the raw returns.
+    On a path whose wealth reaches zero or below, the whole bootstrap entry (Sharpe and
+    annual-mean intervals), PSR and DSR are ``invalid_input`` (``insolvent_wealth_path``),
+    as the Sharpe itself is in ``metrics.json``: resampling would move the ruin into the
+    middle of paths that then go on. The HAC mean test and autocorrelations describe the
+    observed raw returns and stay.
     """
     excess = returns - period_rate(risk_free_annual, annualization)
     clean = returns.dropna().to_numpy(dtype=float)

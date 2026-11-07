@@ -314,7 +314,8 @@ def _write_summary(root: Path) -> None:
             if k in metrics.get(section, {}):
                 lines.append(f"| {k} | {_fmt(metrics[section][k])} |")
         lines.append("")
-    # Every saved statistic gets a line; one that is not ``ok`` says why (REVIEW-21).
+    # The bootstrap interval and the DSR get a line for every status; one that is not
+    # ``ok`` says why (REVIEW-21).
     b = stats.get("bootstrap") or {}
     if b.get("status") == "ok" and b.get("sharpe_ci") is not None:
         lo, hi = b["sharpe_ci"]
