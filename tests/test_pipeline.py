@@ -412,14 +412,20 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     # The rerun, again with RECORD, finds the window recorded, appends nothing and goes on
     # to the run. Its last step, save_run.py, needs committed code, and the evaluator
     # records the state of the checkout running the tests (dirty, or an installed wheel):
-    # only that refusal is accepted as a failure, once every workflow output exists.
+    # only that refusal is accepted as a failure, once every workflow output exists, and
+    # only when that state, read before the rerun, already warranted it, so a run that
+    # dirties the checkout itself cannot hide behind it.
+    from invest_evaluation.cli import code_revision
+
+    revision, dirty = code_revision()
     recorded = ledger.read_text()
     done = _run_workflow(script, out, env)
     assert "commit it, then rerun" not in done.stderr, done.stderr
-    if done.returncode != 0:
-        assert "rerun from a clean checkout" in done.stderr or "no code revision" in done.stderr, (
-            done.stderr
-        )
+    if revision and dirty is False:
+        assert done.returncode == 0, done.stderr
+    elif done.returncode != 0:
+        refusal = "rerun from a clean checkout" if revision else "no code revision"
+        assert refusal in done.stderr, done.stderr
     assert (tmp_path / "record").is_dir() == (done.returncode == 0)
     assert ledger.read_text() == recorded
     market = json.loads((out / "data/market/manifest.json").read_text())

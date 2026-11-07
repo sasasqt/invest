@@ -116,7 +116,8 @@ if not ledger.is_inspected(ledger.load(path), window):
     )
     sys.exit(
         f"RECORD: {path} now records {window} as inspected; commit it, then rerun with the "
-        "same settings (the saved snapshot replays offline; a ledger Git does not track needs no commit)"
+        "same settings (the saved snapshot replays offline; a ledger outside the checkout, or "
+        "under a folder Git ignores, needs no commit)"
     )
 PY
 fi
