@@ -11,7 +11,8 @@ overwritten.
 
 The output must be complete (every file the workflow writes and the README describes) and
 must come from committed code: the evaluation and quantile-portfolio manifests need a code
-revision and no uncommitted changes to tracked files.
+revision and a clean checkout (no uncommitted changes to tracked files and no untracked
+files Git does not ignore).
 
 A record file over ``MAX_FILE_BYTES`` (a long history's daily decile table, for example) is
 stored gzip-compressed as ``<name>.gz``, and the README lists its uncompressed size and

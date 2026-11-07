@@ -2,6 +2,7 @@
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -186,11 +187,18 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
     ledger = tmp_path / "ledger.jsonl"
     ledger.write_text((ROOT / "ledgers/yahoo-test.jsonl").read_text())
+    # A minimum cross-section that differs from the bucket count. With the example config's
+    # 10, the diagnostics report 10 with or without the workflow's --min-cross-section, and
+    # the comparison of the two reports below could not fail (BH-2026-10-08-1).
+    config = json.loads(CONFIG.read_text())
+    config["strategy"]["min_names"] = 12
+    (tmp_path / "config.json").write_text(json.dumps(config))
     env = {
         **os.environ,
         "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
         "SNAPSHOT": str(snapshot),
         "LEDGER": str(ledger),
+        "CONFIG": str(tmp_path / "config.json"),
         "SYMBOLS_FILE": "/nonexistent",  # never read: the snapshot exists
         "START": "2020-03-01" if subset else "",
         "END": "2020-11-30" if subset else "",
@@ -207,16 +215,15 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert done.returncode == 0, done.stderr
     assert "no download" in done.stderr
     # Yahoo bars have no as-traded close, so the price floor is off in both evaluations,
-    # while the rest of the configuration is the example's.
+    # while the rest of the configuration is the given one's.
     assert "execution.min_price 1.0 -> 0" in done.stderr
-    example = json.loads(CONFIG.read_text())
     for used in (
         json.loads((out / "eval" / "config.json").read_text()),
         json.loads((out / "quantiles" / "config.json").read_text())["backtest"],
     ):
         assert used["execution"]["min_price"] == 0.0
-        assert used["strategy"] == {**used["strategy"], **example["strategy"]}
-        assert used["execution"] == {**used["execution"], **example["execution"], "min_price": 0.0}
+        assert used["strategy"] == {**used["strategy"], **config["strategy"]}
+        assert used["execution"] == {**used["execution"], **config["execution"], "min_price": 0.0}
     manifest = json.loads((out / "eval" / "manifest.json").read_text())
     assert manifest["n_trials"] == 1
     assert manifest["external_benchmark"]["instrument"] == "SPY"
@@ -258,8 +265,8 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
     factor = json.loads((out / "mining/factor.json").read_text())
     assert diagnostic_config["orientation"] == factor["orientation"] == -1
-    # Both reports apply the same minimum cross-section threshold.
-    assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 10
+    # Both reports apply the same minimum cross-section threshold, the config's min_names.
+    assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 12
     assert diagnostic_config["tail_rule"] == TAIL_RULE
     assert diagnostic_config["bucket_rule"] == BUCKET_RULE
     values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
@@ -322,6 +329,131 @@ def _save_run_module():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _git(repo, *args):
+    done = subprocess.run(
+        ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return done.stdout.strip()
+
+
+def _clean_checkout_of_the_workflow(path):
+    """A committed copy of the workflow script. RECORD needs a clean checkout and the one
+    running the tests may not be clean; the script resolves its own folder, so everything
+    else it needs comes from this checkout through the environment."""
+    (path / "scripts").mkdir(parents=True)
+    shutil.copy(ROOT / "scripts/historical_workflow.sh", path / "scripts")
+    _git(path, "init", "-q")
+    _git(path, "add", "scripts")
+    _git(path, "commit", "-q", "-m", "workflow")
+    return path / "scripts/historical_workflow.sh"
+
+
+def _run_workflow(script, out, env):
+    return subprocess.run(
+        ["bash", str(script), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=script.parents[1],
+        env={
+            **os.environ,
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+            **env,
+        },
+    )
+
+
+def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_path):
+    """K3: the diagnostics append the market bundle's dates to the ledger unless an
+    inspection already covers them, which modified the tracked ledger before the evaluation
+    recorded ``code_dirty``, so ``save_run.py`` refused every record of a new window. A
+    RECORD run now records the inspection first and stops before publishing; the rerun
+    finds the window recorded and leaves the ledger as it is."""
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
+    bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    snapshot = tmp_path / "snapshot"
+    write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
+    script = _clean_checkout_of_the_workflow(tmp_path / "checkout")
+    # Only the reservation: nothing records the fabricated snapshot's dates as inspected.
+    committed = [
+        json.loads(line)
+        for line in (ROOT / "ledgers/yahoo-test.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    ledger = tmp_path / "ledger.jsonl"
+    ledger.write_text(
+        "".join(json.dumps(e) + "\n" for e in committed if e["kind"] == "reservation")
+    )
+    env = {
+        "SNAPSHOT": str(snapshot),
+        "LEDGER": str(ledger),
+        "CONFIG": str(CONFIG),
+        "SYMBOLS_FILE": "/nonexistent",
+        "RECORD": str(tmp_path / "record"),
+        "START": "",
+        "END": "",
+    }
+    out = tmp_path / "wf"
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "commit it, then rerun" in done.stderr, done.stderr
+    assert not out.exists() and not (tmp_path / "record").exists()
+    entries = [json.loads(line) for line in ledger.read_text().splitlines()]
+    assert [e["kind"] for e in entries] == ["reservation", "inspection"]
+    # The rerun (without RECORD, because the evaluator records this checkout's own state)
+    # finds the window recorded and appends nothing.
+    recorded = ledger.read_text()
+    del env["RECORD"]
+    done = _run_workflow(script, out, env)
+    assert done.returncode == 0, done.stderr
+    assert ledger.read_text() == recorded
+    market = json.loads((out / "data/market/manifest.json").read_text())
+    selection = market["provenance"]["selection"]
+    assert entries[-1]["window"] == {
+        "start": selection["observed_start"],
+        "end": selection["observed_end"],
+    }
+    assert entries[-1]["dataset_id"] == market["dataset_id"]
+    assert (out / "quantiles/manifest.json").is_file()
+
+
+def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(tmp_path):
+    """K15: ``code_dirty`` counts untracked files Git does not ignore, so the workflow's
+    own check does too, before any work, and outputs inside the checkout that Git would
+    not ignore are refused for the same reason."""
+    checkout = tmp_path / "checkout"
+    script = _clean_checkout_of_the_workflow(checkout)
+    env = {"SNAPSHOT": str(tmp_path / "missing-snapshot"), "RECORD": str(tmp_path / "record")}
+    out = tmp_path / "wf"
+    (checkout / "notes.txt").write_text("")
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "remove or ignore untracked files" in done.stderr, done.stderr
+    assert not out.exists()
+    (checkout / "notes.txt").unlink()
+    for inside in (checkout / "out", checkout / "runs" / "wf"):
+        done = _run_workflow(script, inside, env)
+        assert done.returncode != 0
+        assert "under a folder Git ignores" in done.stderr, done.stderr
+        assert not inside.exists()
+    # Ignored outputs and outputs outside the checkout pass both checks; the run then fails
+    # at the download, which has no symbols file here.
+    (checkout / ".gitignore").write_text("/artifacts/\n")
+    _git(checkout, "add", ".gitignore")
+    _git(checkout, "commit", "-q", "-m", "ignore artifacts")
+    for allowed in (checkout / "artifacts" / "wf", out):
+        done = _run_workflow(script, allowed, {**env, "SYMBOLS_FILE": "/nonexistent"})
+        assert done.returncode != 0
+        assert "RECORD needs" not in done.stderr, done.stderr
+        assert not allowed.exists()
 
 
 def test_historical_workflow_refuses_an_existing_record_before_work(tmp_path):
