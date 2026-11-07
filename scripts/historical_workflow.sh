@@ -55,7 +55,9 @@ if [[ -n "$record" ]]; then
   # Outputs inside the checkout that Git does not ignore would be untracked files by the
   # time the evaluation records code_dirty, and save_run.py would refuse the finished run.
   for dir in "$out" "$snapshot"; do
-    abs="$(python -c 'import os, sys; print(os.path.abspath(sys.argv[1]))' "$dir")"
+    # Written without a newline (a Windows Python ends a line in CRLF, which command
+    # substitution keeps) and with forward slashes, which Git takes on every platform.
+    abs="$(python -c 'import os, sys; sys.stdout.write(os.path.abspath(sys.argv[1]).replace(os.sep, "/"))' "$dir")"
     # Asked about as a folder (trailing slash), so that a directory-only pattern such as
     # /artifacts/ matches the folder itself before it exists.
     git -C "$root" check-ignore -q -- "$abs/" 2> /dev/null && continue
