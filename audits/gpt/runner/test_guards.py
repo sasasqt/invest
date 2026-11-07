@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import stat
+import struct
 import subprocess
 import sys
 import tempfile
@@ -1407,7 +1408,9 @@ class StagingSafetyTests(unittest.TestCase):
     def test_staging_from_another_drive_than_the_output(self):
         """Review round 13 (R13A-X1, Windows side): Git for Windows makes a pack it writes
         to a named file in the source's own store and then moves it, which fails across
-        drives; the CI checkout is on D: and the temporary folder on C:."""
+        drives; the CI checkout is on D: and the temporary folder on C:, and the verbose
+        logs of both windows-2025 jobs show this test as run, not skipped (checked on
+        6ff172b, 2026-11-07)."""
         here = Path(__file__).resolve().parent
         with (
             tempfile.TemporaryDirectory() as directory,
@@ -1899,7 +1902,15 @@ class StagingSafetyTests(unittest.TestCase):
                 env.get(key)
                 for key in ("GIT_CONFIG_COUNT", "GIT_CONFIG_KEY_0", "GIT_CONFIG_VALUE_0")
             ],
-            ["2", "core.useReplaceRefs", "false"],
+            ["4", "core.useReplaceRefs", "false"],
+        )
+        self.assertEqual(
+            [
+                env.get(f"GIT_CONFIG_{part}_{index}")
+                for index in (2, 3)
+                for part in ("KEY", "VALUE")
+            ],
+            ["core.commitGraph", "false", "pack.useBitmaps", "false"],
         )
 
     def test_a_host_graft_file_does_not_change_the_staged_history(self):
@@ -1934,6 +1945,84 @@ class StagingSafetyTests(unittest.TestCase):
             ).stdout
             self.assertNotIn(canary.encode(), every)
             self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision, first])
+
+    def private_branch_fixture(self, root):
+        """Two commits on main and a private root commit (older, so a crafted graph
+        stays consistent) whose tree holds a canary."""
+        source, first = fixture_repository(root, {"a.txt": b"one\n"})
+        (source / "a.txt").write_bytes(b"two\n")
+        git_in(source, "commit", "-qam", "second")
+        revision = git_in(source, "rev-parse", "HEAD")
+        canary = f"CANARY_cache_{uuid.uuid4().hex}"
+        dated = dict(FIXTURE_GIT, GIT_AUTHOR_DATE="2000-01-01T00:00:00Z")
+        dated["GIT_COMMITTER_DATE"] = dated["GIT_AUTHOR_DATE"]
+        private = git_in(
+            source,
+            "commit-tree",
+            "-m",
+            "private",
+            write_tree(source, {"notes.txt": canary.encode()}),
+            env=dated,
+        )
+        git_in(source, "update-ref", "refs/heads/private", private)
+        return source, first, revision, private, canary
+
+    def assert_staged_history(self, source, revision, first, canary):
+        staged = source.parent / "staged"
+        stage_source(source, staged, revision)
+        every = subprocess.run(
+            ["git", "-C", str(staged), "cat-file", "--batch-all-objects", "--batch"],
+            env=FIXTURE_GIT,
+            capture_output=True,
+            check=True,
+        ).stdout
+        self.assertNotIn(canary.encode(), every)
+        self.assertEqual(git_in(staged, "rev-list", "HEAD").split(), [revision, first])
+
+    def test_a_bitmap_written_under_a_graft_does_not_change_the_staged_history(self):
+        """Review round 14 (R14A-G1): `git repack -adb` writes a pack bitmap under a
+        graft file, and pack-objects takes a commit's reachable set from a bitmap, so
+        the grafted history (the private branch) was packed although the graft file
+        itself was ignored, and the Q4 check raised."""
+        with tempfile.TemporaryDirectory() as directory:
+            source, first, revision, private, canary = self.private_branch_fixture(Path(directory))
+            (source / ".git/info").mkdir(exist_ok=True)
+            (source / ".git/info/grafts").write_text(f"{revision} {private}\n", encoding="ascii")
+            git_in(source, "-c", "repack.writeBitmaps=true", "repack", "-adb", "-q")
+            (source / ".git/info/grafts").unlink()
+            self.assertTrue(list((source / ".git/objects/pack").glob("*.bitmap")))
+            self.assert_staged_history(source, revision, first, canary)
+
+    def test_a_commit_graph_with_other_parents_does_not_change_the_staged_history(self):
+        """Review round 14 (R14A-G1): Git takes a commit's parents from a commit-graph
+        file without reading the commit, so a corrupted or planted graph naming the
+        private commit as the audited commit's parent packed that branch and left the
+        real parent out (`git commit-graph verify` reports such a graph)."""
+        with tempfile.TemporaryDirectory() as directory:
+            source, first, revision, private, canary = self.private_branch_fixture(Path(directory))
+            git_in(source, "commit-graph", "write", "--reachable")
+            graph = source / ".git/objects/info/commit-graph"
+            data = bytearray(graph.read_bytes())
+            self.assertEqual(bytes(data[:6]), b"CGPH\x01\x01")  # version 1, SHA-1
+            chunks = {}
+            for index in range(data[6] + 1):
+                name, offset = struct.unpack(">4sQ", data[8 + 12 * index : 20 + 12 * index])
+                chunks[name] = offset
+            fanout, oids = chunks[b"OIDF"], chunks[b"OIDL"]
+            count = struct.unpack(">I", data[fanout + 1020 : fanout + 1024])[0]
+            listed = [data[oids + 20 * n : oids + 20 * n + 20].hex() for n in range(count)]
+            entry = chunks[b"CDAT"] + 36 * listed.index(revision)
+            data[entry + 20 : entry + 24] = struct.pack(">I", listed.index(private))
+            data[-20:] = hashlib.sha1(data[:-20]).digest()
+            graph.chmod(0o644)  # Git writes the graph read-only
+            graph.write_bytes(data)
+            verify = subprocess.run(
+                ["git", "-C", str(source), "commit-graph", "verify"],
+                env=FIXTURE_GIT,
+                capture_output=True,
+            )
+            self.assertEqual(verify.returncode, 1, verify.stderr)
+            self.assert_staged_history(source, revision, first, canary)
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -2725,18 +2814,23 @@ class WorkloadOrderTests(unittest.TestCase):
                 steps.append(name + "-tests")
         return steps + [f"synth-S-{repetition}" for repetition in range(8)]
 
-    def run_workload(self, failing):
-        """Run main with every step faked: each records its name and exits 1 only for
-        the step named ``failing``; a workflow step writes a tiny repeatable output."""
-        names = []
+    def run_workload(self, failing, link_in=None):
+        """Run main with every step faked: each records its call and exits 1 only for
+        the step named ``failing``; a workflow step writes a tiny repeatable output,
+        with a link in it for the step named ``link_in``. Returns the exit status, the
+        recorded calls, the benchmark records the workload wrote (None where it wrote
+        none) and the work folder."""
+        calls = []
 
         def fake_execute(name, argv, cwd, results, timeout=1200, env=None):
-            names.append(name)
+            calls.append({"name": name, "argv": argv, "cwd": cwd, "timeout": timeout, "env": env})
             if name.startswith("synth-S-"):
                 destination = Path(argv[2])
                 destination.mkdir(parents=True)
                 (destination / "table.json").write_text('{"rows": 1}', encoding="utf-8")
                 (destination / "figure.png").write_bytes(b"\x89PNG")
+                if name == link_in:
+                    (destination / "link").symlink_to("table.json")
             return {
                 "name": name,
                 "argv": argv,
@@ -2759,27 +2853,167 @@ class WorkloadOrderTests(unittest.TestCase):
                 patch.object(runner_workload, "execute", fake_execute),
                 patch.object(sys, "argv", ["runner_workload.py"]),
             ):
-                return runner_workload.main(), names
+                status = runner_workload.main()
+            results = root / "work/results"
+            summary = results / "benchmark-summary.json"
+            raw = results / "benchmark-raw.jsonl"
+            records = {
+                "summary": json.loads(summary.read_text("utf-8")) if summary.is_file() else None,
+                "raw": (
+                    [json.loads(line) for line in raw.read_text("utf-8").splitlines()]
+                    if raw.is_file()
+                    else None
+                ),
+            }
+            return status, calls, records, root / "work"
+
+    @staticmethod
+    def names(calls):
+        return [call["name"] for call in calls]
 
     def test_every_step_runs_in_order_when_every_check_passes(self):
-        status, names = self.run_workload(failing=None)
+        status, calls, records, _ = self.run_workload(failing=None)
+        names = self.names(calls)
         self.assertEqual(names, self.expected_steps())
         self.assertEqual(status, 0)
         self.assertLess(names.index("build-environment"), names.index("build-workspace"))
         self.assertLess(names.index("install-workspace"), names.index("installed-graph"))
+        self.assertEqual(records["summary"]["valid_measured_samples"], 7)
+        self.assertIsInstance(records["summary"]["median_seconds"], float)
+        self.assertEqual(records["summary"]["test_failures_retained"], [])
+        self.assertEqual([row["warmup"] for row in records["raw"]], [True] + [False] * 7)
+        self.assertTrue(all(row["correctness_gate"] for row in records["raw"]))
+
+    def test_both_locked_version_checks_use_the_environment_they_prove(self):
+        """W6: the build check runs the build interpreter against the build lock, the
+        runtime check runs the runtime interpreter against the runtime lock with the
+        workspace prefix, and every later product command runs that interpreter with
+        its folder first on PATH."""
+        _, calls, _, work = self.run_workload(failing=None)
+        by_name = {call["name"]: call for call in calls}
+        verifier = str(runner_workload.AUDIT / "verify_installed.py")
+        source = work / "source"
+        build = by_name["build-environment"]
+        self.assertEqual(
+            build["argv"],
+            [
+                runner_workload.BUILD_PYTHON,
+                verifier,
+                "--requirements",
+                runner_workload.BUILD_REQUIREMENTS,
+            ],
+        )
+        self.assertEqual(build["cwd"], source)
+        self.assertEqual(by_name["build-workspace"]["argv"][0], runner_workload.BUILD_PYTHON)
+        runtime = str(work / "env/bin/python")
+        self.assertEqual(by_name["install-workspace"]["argv"][0], runtime)
+        graph = by_name["installed-graph"]
+        self.assertEqual(
+            graph["argv"],
+            [
+                runtime,
+                verifier,
+                "--requirements",
+                runner_workload.REQUIREMENTS,
+                "--workspace-prefix",
+                f"{work / 'env'}/",
+            ],
+        )
+        self.assertEqual(graph["cwd"], source)
+        path = f"{work / 'env/bin'}:/usr/local/bin:/usr/bin:/bin"
+        self.assertEqual(graph["env"]["PATH"], path)
+        later = calls[calls.index(graph) + 1 :]
+        self.assertTrue(later)
+        for call in later:
+            name = call["name"]
+            with self.subTest(step=name):
+                if name.startswith("cli-"):
+                    self.assertEqual(call["argv"], [str(work / "env/bin" / name[4:]), "--help"])
+                elif name.startswith("synth-S-"):
+                    workflow = str(source / "scripts/synthetic_workflow.sh")
+                    self.assertEqual(call["argv"][:2], ["bash", workflow])
+                    self.assertEqual(call["timeout"], 60)
+                elif name in ("format", "lint", "types", "tests", "links", "hash-seed-repeat"):
+                    self.assertEqual(call["argv"][0], runtime)
+                    self.assertEqual(call["cwd"], source)
+                else:
+                    continue  # the independent installs run their own interpreters
+                self.assertEqual(call["env"]["PATH"], path)
 
     def test_a_failed_dependency_check_stops_the_workload_at_once(self):
-        for failing in ("build-environment", "installed-graph"):
+        steps = (
+            "audit-guard-tests",
+            "build-environment",
+            "build-workspace",
+            "create-environment",
+            "install-workspace",
+            "installed-graph",
+        )
+        for failing in steps:
             with self.subTest(failing=failing):
-                status, names = self.run_workload(failing)
+                status, calls, records, _ = self.run_workload(failing)
                 expected = self.expected_steps()
-                self.assertEqual(names, expected[: expected.index(failing) + 1])
+                self.assertEqual(self.names(calls), expected[: expected.index(failing) + 1])
                 self.assertEqual(status, 1)
+                self.assertIsNone(records["summary"])
+
+    def test_a_failed_product_check_is_recorded_but_stops_nothing(self):
+        """PR #32's rule, kept: a red product check (here lint) lets every later step
+        run and shows in the summary and in the exit status."""
+        status, calls, records, _ = self.run_workload("lint")
+        self.assertEqual(self.names(calls), self.expected_steps())
+        self.assertEqual(status, 1)
+        self.assertEqual(records["summary"]["test_failures_retained"], ["lint"])
+        self.assertEqual(records["summary"]["valid_measured_samples"], 7)
+
+    def test_a_failed_independent_install_skips_only_its_own_later_steps(self):
+        if sys.version_info[:2] != (3, 11):
+            self.skipTest("the independent installs run only on Python 3.11")
+        cases = {
+            "data-preparation-venv": ["data-preparation-install", "data-preparation-tests"],
+            "data-mining-framework-install": ["data-mining-framework-tests"],
+            "strategy-evaluation-install": [
+                "evaluation-independent-import",
+                "strategy-evaluation-tests",
+            ],
+        }
+        for failing, skipped in cases.items():
+            with self.subTest(failing=failing):
+                status, calls, records, _ = self.run_workload(failing)
+                expected = [step for step in self.expected_steps() if step not in skipped]
+                self.assertEqual(self.names(calls), expected)
+                self.assertEqual(status, 1)
+                self.assertEqual(records["summary"]["test_failures_retained"], [failing])
+
+    def test_a_failed_workflow_case_ends_the_measurement(self):
+        status, calls, records, _ = self.run_workload("synth-S-3")
+        expected = self.expected_steps()
+        self.assertEqual(self.names(calls), expected[: expected.index("synth-S-3") + 1])
+        self.assertEqual(status, 1)
+        self.assertEqual(records["summary"]["valid_measured_samples"], 2)
+        self.assertIsNone(records["summary"]["median_seconds"])
+        self.assertEqual(records["summary"]["test_failures_retained"], [])
+        gates = [row["correctness_gate"] for row in records["raw"]]
+        self.assertEqual(gates, [True, True, True, False])
+
+    @unittest.skipUnless(os.name == "posix", "a link in the workload's output")
+    def test_a_workflow_output_the_gate_refuses_ends_the_measurement(self):
+        """W5: a link in a workflow output makes the semantic gate raise; the sample
+        records the refusal and its reason, and the measurement ends there too
+        (round 14 reviewer: the gate's exception branch had no test)."""
+        status, calls, records, _ = self.run_workload(None, link_in="synth-S-2")
+        expected = self.expected_steps()
+        self.assertEqual(self.names(calls), expected[: expected.index("synth-S-2") + 1])
+        self.assertEqual(status, 1)
+        gates = [row["correctness_gate"] for row in records["raw"]]
+        self.assertEqual(gates, [True, True, False])
+        self.assertIn("link", records["raw"][-1]["reason"])
+        self.assertEqual(records["summary"]["valid_measured_samples"], 1)
 
 
 class InstalledGraphTests(unittest.TestCase):
     def test_continuation_and_hashes_are_parsed(self):
-        text = "demo==1.2 \\\n    --hash=sha256:abcdef \\\n    --hash=sha256:fedcba\n"
+        text = "# a lock\n\ndemo==1.2 \\\n    --hash=sha256:abcdef \\\n    --hash=sha256:fedcba\n"
         parsed = applicable_requirements(text)
         self.assertEqual([str(item) for item in parsed], ["demo==1.2"])
 
@@ -2798,7 +3032,8 @@ class InstalledGraphTests(unittest.TestCase):
     def test_matching_version_is_recorded(self):
         parsed = applicable_requirements("demo==1.2\n")
         self.assertEqual(
-            verify_versions(parsed, lambda name: "1.2"), [{"name": "demo", "version": "1.2"}]
+            verify_versions(parsed, {"demo": "1.2"}.__getitem__),
+            [{"name": "demo", "version": "1.2"}],
         )
 
     def test_the_verifier_checks_workspace_origins_only_with_a_prefix(self):
@@ -2817,6 +3052,7 @@ class InstalledGraphTests(unittest.TestCase):
             argv = [sys.executable, "-I", str(here / "verify_installed.py"), "--requirements"]
             alone = subprocess.run([*argv, str(listed)], capture_output=True, text=True)
             self.assertEqual(alone.returncode, 0, alone.stderr)
+            self.assertEqual(sorted(json.loads(alone.stdout)), ["origins", "python", "resolved"])
             self.assertEqual(json.loads(alone.stdout)["origins"], {})
             prefixed = subprocess.run(
                 [*argv, str(listed), "--workspace-prefix", directory + os.sep],
@@ -2829,6 +3065,42 @@ class InstalledGraphTests(unittest.TestCase):
             drifted = subprocess.run([*argv, str(listed)], capture_output=True, text=True)
             self.assertEqual(drifted.returncode, 1)
             self.assertIn("packaging: installed", drifted.stderr)
+            # Planted workspace packages: every origin is checked by name against the prefix.
+            listed.write_text(
+                f"packaging=={importlib.metadata.version('packaging')}\n", encoding="ascii"
+            )
+            planted = Path(directory) / "planted"
+            packages = ("invest_data", "invest_mining", "invest_evaluation")
+            for name in packages:
+                (planted / name).mkdir(parents=True)
+                (planted / name / "__init__.py").write_text("", encoding="ascii")
+            loader = [
+                sys.executable,
+                "-I",
+                "-c",
+                "import runpy, sys\nsys.path.insert(0, sys.argv[1])\nsys.argv = sys.argv[2:]\n"
+                "runpy.run_path(sys.argv[0], run_name='__main__')",
+                str(planted),
+                str(here / "verify_installed.py"),
+                "--requirements",
+                str(listed),
+            ]
+            run = lambda prefix: subprocess.run(  # noqa: E731
+                [*loader, "--workspace-prefix", prefix], capture_output=True, text=True
+            )
+            accepted = run(str(planted) + os.sep)
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+            self.assertEqual(
+                json.loads(accepted.stdout)["origins"],
+                {name: str(planted / name / "__init__.py") for name in packages},
+            )
+            elsewhere = run(str(Path(directory) / "other") + os.sep)
+            self.assertEqual(elsewhere.returncode, 1)
+            self.assertIn("Wrong installed workspace origin for invest_data", elsewhere.stderr)
+            shutil.rmtree(planted / "invest_evaluation")
+            partial = run(str(planted) + os.sep)
+            self.assertEqual(partial.returncode, 1)
+            self.assertIn("Wrong installed workspace origin for invest_evaluation", partial.stderr)
 
 
 if __name__ == "__main__":

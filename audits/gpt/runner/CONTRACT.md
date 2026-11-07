@@ -32,8 +32,9 @@ rejection.
   Checked in `log_line`.
 - **Q4** Every staged source file's Git blob hash equals the commit's entry, on
   every host, and the staged tree holds exactly the commit's paths. Always enforced
-  for the bytes read from Git (with replace refs, grafts and inherited `GIT_*`
-  variables ignored); checked again on the written file in `stage_source`. No path enters
+  for the bytes read from Git (with replace refs, grafts, inherited `GIT_*`
+  variables and the store's cached history, commit-graph files and pack bitmaps,
+  ignored); checked again on the written file in `stage_source`. No path enters
   `.git`, and no two committed paths may reach the same staged file or folder.
   The staged object store holds exactly the objects the commit reaches (its
   history, cut at a shallow boundary), never a stash, another branch or an object
@@ -60,14 +61,17 @@ rejection.
 - **I2** On POSIX, where both walks run, the descriptor walk and the path walk give
   the same outcome, records and summaries for the same unchanging tree whose paths
   fit the host's path length limit (the path walk cannot open a longer path; the
-  descriptor walk can). Checked after every collection with the descriptor walk,
-  except a rejection for a change during the walk (P1 excludes the container as a
-  writer, so only a test or another local account, see I1, can cause one) or for an
-  `OSError`. A failure of the check's own reference snapshot (beside the real one;
-  its own path, or a full volume) is raised as that `OSError`, never reported as an
-  I2 break; with a relative destination, a summary lookup that the path walk's
-  full spelling (under the current folder) puts past the limit skips the check
-  like a tree path past it.
+  descriptor walk can) and whose depth fits its open-file limit (the descriptor walk
+  holds two descriptors per folder level, the path walk one). Checked after every
+  collection with the descriptor walk, except a rejection for a change during the
+  walk (P1 excludes the container as a writer, so only a test or another local
+  account, see I1, can cause one) or for an `OSError` (an exhausted descriptor table,
+  like a full volume, is reported as the host's, never as the output's). A failure
+  of the check's own reference snapshot (beside the real one; its own path, a full
+  volume or an exhausted descriptor table) is raised as that `OSError`, never
+  reported as an I2 break; with a relative destination, a summary lookup that the
+  path walk's full spelling (under the current folder) puts past the limit skips
+  the check like a tree path past it.
 
 ## Container workload and snapshot check (checked by the suites)
 

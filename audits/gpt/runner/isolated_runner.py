@@ -365,14 +365,25 @@ def git_environment(isolated=False):
     configuration, which Git 2.31 and later (every Git that require_git accepts)
     reads last. Grafts (``info/grafts``, replace refs' deprecated predecessor) would
     rewrite a commit's parents, so packing its history would take another branch:
-    Git reads an empty graft file instead, without its hint about grafts.
+    Git reads an empty graft file instead, without its hint about grafts. A commit-graph
+    file or a pack bitmap in the store caches parents and reachability as they were
+    when it was written (a bitmap Git wrote under a graft keeps the grafted history;
+    a corrupted or planted commit-graph can name any parent), so packing and the
+    history listings read the commit objects themselves and use neither.
     ``isolated`` also drops system and global configuration.
     """
     env = {key: value for key, value in os.environ.items() if not key.upper().startswith("GIT_")}
     env.update(GIT_NO_REPLACE_OBJECTS="1", GIT_TERMINAL_PROMPT="0", GIT_GRAFT_FILE=os.devnull)
-    env.update(GIT_CONFIG_COUNT="2", GIT_CONFIG_KEY_0="core.useReplaceRefs")
-    env.update(GIT_CONFIG_VALUE_0="false", GIT_CONFIG_KEY_1="advice.graftFileDeprecated")
-    env.update(GIT_CONFIG_VALUE_1="false")
+    settings = {
+        "core.useReplaceRefs": "false",
+        "advice.graftFileDeprecated": "false",
+        "core.commitGraph": "false",
+        "pack.useBitmaps": "false",
+    }
+    env["GIT_CONFIG_COUNT"] = str(len(settings))
+    for index, (key, value) in enumerate(settings.items()):
+        env[f"GIT_CONFIG_KEY_{index}"] = key
+        env[f"GIT_CONFIG_VALUE_{index}"] = value
     if isolated:
         env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
     return env

@@ -1297,5 +1297,77 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
             self.rejected("output file changed during collection")
 
 
+@POSIX_ONLY
+class RoundFourteenCheckTests(unittest.TestCase):
+    """Review round 14 (R14B-A1): the descriptor walk holds two descriptors per folder
+    level and the path walk one. When the host's descriptor table ran out (EMFILE from
+    the process limit, ENFILE from the system's) the directory open's error was wrapped
+    as "missing, linked or unreadable output directory", and a listing's as "unreadable
+    or changing output entry": a host limit blamed on the container output, as a full
+    volume once was (round 9). In the test mode the path walk, which still fit, then
+    collected the same tree, a false "I2: only the descriptor walk rejected"."""
+
+    def test_an_exhausted_descriptor_table_is_named_as_the_hosts_limit(self):
+        real_open, real_scandir = os.open, os.scandir
+        for code in (errno.EMFILE, errno.ENFILE):
+            # Each injection fires once, on the walk's first use of the results subfolder;
+            # the snapshot cleanup and the test mode's reference walk run undisturbed.
+            pending = []
+
+            def opening(path, flags, *args, pending=pending, **kwargs):
+                if pending and path == "sub" and kwargs.get("dir_fd") is not None:
+                    raise OSError(pending.pop(), "exhausted")
+                return real_open(path, flags, *args, **kwargs)
+
+            def listing(target, pending=pending):
+                if pending and isinstance(target, str) and target.endswith(os.sep + "sub"):
+                    raise OSError(pending.pop(), "exhausted", target)
+                return real_scandir(target)
+
+            for method, name, failing in (
+                ("descriptor", "open", opening),
+                ("path", "scandir", listing),
+            ):
+                with self.subTest(method=method, errno=errno.errorcode[code]):
+                    with tempfile.TemporaryDirectory() as directory:
+                        work = Path(directory, "work")
+                        (work / "results" / "sub").mkdir(parents=True)
+                        (work / "results" / "sub" / "f").write_bytes(b"x")
+                        pending.append(code)
+                        with patch(f"output_collection.os.{name}", side_effect=failing):
+                            report = collect_workload(
+                                work, Path(directory, "results"), method=method
+                            )
+                    self.assertEqual(pending, [])
+                    self.assertEqual(report["status"], "rejected")
+                    self.assertEqual(
+                        report["reason"], "host descriptor limit reached during collection"
+                    )
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "POSIX descriptor walk")
+    def test_the_test_mode_runs_the_other_walk_after_a_rejection(self):
+        """Mutation testing (round 14): no test showed that a rejection by the descriptor
+        walk makes the test mode walk the same tree by path (I2). A planted rejection
+        of the descriptor walk alone must be reported as an I2 break, and neither
+        snapshot may be left behind."""
+        real = output_collection.copy_tree
+
+        def descriptor_only_rejection(work, snapshot, limits, method):
+            if method == "descriptor":
+                raise RejectedOutput("planted rejection of the descriptor walk")
+            return real(work, snapshot, limits, method)
+
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory, "work")
+            (work / "results").mkdir(parents=True)
+            (work / "results" / "f").write_bytes(b"x")
+            evidence = Path(directory, "evidence")
+            with patch("output_collection.copy_tree", side_effect=descriptor_only_rejection):
+                with self.assertRaisesRegex(ContractViolation, "^I2: only the descriptor walk"):
+                    collect_results(work, evidence / "workload", method="descriptor")
+            self.assertEqual(os.listdir(evidence), [])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -41,6 +41,10 @@ DESCRIPTOR_APIS = (
     and os.scandir in os.supports_fd
 )
 METHODS = ("descriptor", "path")
+# An exhausted descriptor table (the process limit, or the host's): the host's problem,
+# never the output's. The descriptor walk holds two descriptors per folder level, the
+# path walk one, so only the host's limit decides which walk meets it (I2).
+DESCRIPTORS_EXHAUSTED = {errno.EMFILE, errno.ENFILE}
 DEFAULT_METHOD = "descriptor" if DESCRIPTOR_APIS else "path"
 # O_BINARY: without it Windows reads in text mode, rewriting CRLF and stopping at Ctrl-Z.
 READ_FLAGS = (
@@ -121,6 +125,8 @@ def directory_fd(path, parent=None, lookup_only=False):
     try:
         fd = os.open(path, access | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
     except OSError as exc:
+        if exc.errno in DESCRIPTORS_EXHAUSTED:
+            raise  # collect_results names the host's descriptor limit, not the output
         raise RejectedOutput("missing, linked or unreadable output directory") from exc
     try:
         yield fd
@@ -480,6 +486,8 @@ def collect_results(work, destination, limits=DEFAULT_LIMITS, method=None):
             raise
         if exc.errno in VOLUME_FULL:
             raise RejectedOutput("host volume full during collection") from exc
+        if exc.errno in DESCRIPTORS_EXHAUSTED:
+            raise RejectedOutput("host descriptor limit reached during collection") from exc
         raise RejectedOutput("unreadable or changing output entry") from exc
     except BaseException:
         shutil.rmtree(snapshot)
@@ -536,8 +544,9 @@ def other_method_outcome(work, limits, method, beside):
         # A failure on the reference snapshot's own path says nothing about the tree;
         # as an outcome it could pass for path_too_long. A full volume (a write or
         # close carries no file name) can only be the snapshot's: the tree is only read.
+        # An exhausted descriptor table says nothing about the tree either.
         name = getattr(exc, "filename", None)
-        if getattr(exc, "errno", None) in VOLUME_FULL or (
+        if getattr(exc, "errno", None) in VOLUME_FULL | DESCRIPTORS_EXHAUSTED or (
             isinstance(name, (str, bytes))
             and (os.fsdecode(name) == scratch or os.fsdecode(name).startswith(scratch + os.sep))
         ):
