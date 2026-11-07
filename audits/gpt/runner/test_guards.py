@@ -2665,6 +2665,30 @@ class SemanticCoverageTests(unittest.TestCase):
         self.ledger(recorded_at="later")
         self.assertEqual(before, semantic_hash(self.root))
 
+    def test_volatile_keys_match_case_exactly(self):
+        """Only the declared keys are left out of the comparison: a key that differs
+        from one in case alone (Created_At) is content, so its change is detected
+        (round 16 reviewer: a gate that folded case passed these tests)."""
+        for key in ("Created_At", "CREATED_AT", "recorded_At"):
+            with self.subTest(key=key):
+                for value in ("first", "second"):
+                    (self.root / "metrics.json").write_text(
+                        json.dumps({"return": 0.25, key: value}), encoding="utf-8"
+                    )
+                    if value == "first":
+                        before = semantic_hash(self.root)
+                self.assertNotEqual(before, semantic_hash(self.root))
+
+    def test_a_compressed_table_is_hashed_to_its_end(self):
+        """W5 hashes every file whole: a change past the first MiB of a decompressed
+        table is detected (round 16 reviewer: every fixture was tiny, so a gate that
+        read a bounded prefix of the stream passed these tests)."""
+        head = b"value\n" + b"1\n" * (1 << 20)
+        self.compressed(head + b"1\n")
+        before = semantic_hash(self.root)
+        self.compressed(head + b"2\n")
+        self.assertNotEqual(before, semantic_hash(self.root))
+
     def test_other_artifact_changes_are_not_silently_ignored(self):
         path = self.root / "artifact.bin"
         path.write_bytes(b"first")
@@ -2898,6 +2922,7 @@ class WorkloadOrderTests(unittest.TestCase):
     @staticmethod
     def expected_steps():
         steps = [
+            "boundary-probe",
             "audit-guard-tests",
             "build-environment",
             "build-workspace",
@@ -2924,16 +2949,32 @@ class WorkloadOrderTests(unittest.TestCase):
 
     WHEELS = ("invest_data", "invest_mining", "invest_evaluation")
 
-    def run_workload(self, failing, link_in=None, differ_in=None, wall_seconds=None):
+    def run_workload(
+        self, failing, link_in=None, differ_in=None, wall_seconds=None, probe_failure=None
+    ):
         """Run main with every step faked: each records its call and exits 1 only for
-        the step named ``failing``; the build step writes an empty wheel per workspace
+        the step named ``failing`` (or for each name of a tuple); the boundary probe
+        records its call as the step ``boundary-probe`` and raises ``probe_failure``
+        when one is given; the build step writes an empty wheel per workspace
         package; a workflow step writes a tiny repeatable output, with a link in it for
         the step named ``link_in`` and another table value for the step named
         ``differ_in``; ``wall_seconds`` maps a step name to the wall time its record
-        reports (0.0 otherwise). Returns the exit status, the recorded calls, the
-        benchmark records the workload wrote (None where it wrote none) and the work
-        folder."""
+        reports (0.0 otherwise). Returns the exit status (the RuntimeError instead
+        when the probe raised one), the recorded calls, the records the workload
+        wrote (None where it wrote none: the summary, the benchmark rows, the
+        environment record and each sample's manifest file, with each workflow
+        output's own manifest, hash and byte count, and the lock file's hash) and
+        the work folder."""
         calls = []
+        failing = {failing} if isinstance(failing, str) else set(failing or ())
+
+        def fake_probe(sentinel, host_pid, results):
+            calls.append(
+                {"name": "boundary-probe", "argv": [sentinel, host_pid], "cwd": None}
+                | {"timeout": None, "env": None}
+            )
+            if probe_failure is not None:
+                raise probe_failure
 
         def fake_execute(name, argv, cwd, results, timeout=1200, env=None):
             calls.append({"name": name, "argv": argv, "cwd": cwd, "timeout": timeout, "env": env})
@@ -2952,7 +2993,7 @@ class WorkloadOrderTests(unittest.TestCase):
             return {
                 "name": name,
                 "argv": argv,
-                "exit": int(name == failing),
+                "exit": int(name in failing),
                 "timeout": False,
                 "wall_seconds": (wall_seconds or {}).get(name, 0.0),
                 "child_cpu_seconds": 0.0,
@@ -2967,14 +3008,23 @@ class WorkloadOrderTests(unittest.TestCase):
             with (
                 patch.object(runner_workload, "WORK", root / "work"),
                 patch.object(runner_workload, "INPUT", root / "input"),
-                patch.object(runner_workload, "prove_boundary", lambda *args: None),
+                patch.object(runner_workload, "prove_boundary", fake_probe),
                 patch.object(runner_workload, "execute", fake_execute),
                 patch.object(sys, "argv", ["runner_workload.py"]),
             ):
-                status = runner_workload.main()
+                try:
+                    status = runner_workload.main()
+                except RuntimeError as error:
+                    status = error
             results = root / "work/results"
             summary = results / "benchmark-summary.json"
             raw = results / "benchmark-raw.jsonl"
+            environment = results / "environment.json"
+            outputs = [
+                call
+                for call in calls
+                if call["name"].startswith("synth-S-") and call["name"] != link_in
+            ]
             records = {
                 "summary": json.loads(summary.read_text("utf-8")) if summary.is_file() else None,
                 "raw": (
@@ -2982,6 +3032,25 @@ class WorkloadOrderTests(unittest.TestCase):
                     if raw.is_file()
                     else None
                 ),
+                "environment": (
+                    json.loads(environment.read_text("utf-8")) if environment.is_file() else None
+                ),
+                "manifests": {
+                    path.name: json.loads(path.read_text("utf-8"))
+                    for path in results.glob("*-semantic-manifest.json")
+                },
+                "outputs": {
+                    call["name"]: {
+                        "manifest": runner_workload.semantic_manifest(call["argv"][2]),
+                        "hash": runner_workload.semantic_hash(call["argv"][2]),
+                        "bytes": sum(
+                            path.stat().st_size
+                            for path in runner_workload.output_files(call["argv"][2])
+                        ),
+                    }
+                    for call in outputs
+                },
+                "lock_sha256": hashlib.sha256((root / "input/uv.lock").read_bytes()).hexdigest(),
             }
             return status, calls, records, root / "work"
 
@@ -3228,6 +3297,156 @@ class WorkloadOrderTests(unittest.TestCase):
                 "import importlib.util as u; assert u.find_spec('invest_mining') is None",
             ],
         )
+
+    def test_the_boundary_probe_runs_first_and_its_failure_stops_the_workload(self):
+        """W1, and the README's "failed boundary probes stop product execution": the
+        probe is the workload's first act, before the guard tests, and a probe that
+        raises ends main before any step runs (round 16 reviewer: these tests replaced
+        the probe with a no-op, so a main that never ran it, or ran it after the guard
+        tests, passed them)."""
+        status, calls, _, _ = self.run_workload(None)
+        self.assertEqual(status, 0)
+        self.assertEqual(
+            calls[0],
+            {
+                "name": "boundary-probe",
+                "argv": [None, None],
+                "cwd": None,
+                "timeout": None,
+                "env": None,
+            },
+        )
+        failure = RuntimeError("Execution boundary probe failed; no project code imported")
+        status, calls, records, _ = self.run_workload(None, probe_failure=failure)
+        self.assertIs(status, failure)
+        self.assertEqual(self.names(calls), ["boundary-probe"])
+        self.assertEqual(
+            (records["summary"], records["raw"], records["environment"]), (None, None, None)
+        )
+
+    def test_a_failed_warm_up_ends_the_measurement(self):
+        """W5: the measurement ends at the first false gate, also the warm-up's (every
+        earlier test failed a later sample, so a loop that went on after a failed
+        warm-up passed them)."""
+        status, calls, records, _ = self.run_workload("synth-S-0")
+        expected = self.expected_steps()
+        self.assertEqual(self.names(calls), expected[: expected.index("synth-S-0") + 1])
+        self.assertEqual(status, 1)
+        self.assertEqual([row["correctness_gate"] for row in records["raw"]], [False])
+        summary = records["summary"]
+        self.assertEqual(summary["valid_measured_samples"], 0)
+        self.assertEqual(
+            (summary["median_seconds"], summary["min_seconds"], summary["max_seconds"]),
+            (None, None, None),
+        )
+
+    def test_every_failed_product_check_is_retained(self):
+        status, calls, records, _ = self.run_workload(("lint", "types", "cli-invest-eval"))
+        self.assertEqual(self.names(calls), self.expected_steps())
+        self.assertEqual(status, 1)
+        self.assertEqual(
+            records["summary"]["test_failures_retained"], ["lint", "types", "cli-invest-eval"]
+        )
+
+    def test_the_records_describe_the_workflow_that_ran(self):
+        """The benchmark rows, the summary, each sample's manifest file and
+        environment.json are the evidence a reader gets: a row's parameters are the
+        ones its workflow step was given, its hash is the hash of the whole manifest
+        (the figure list included) written beside it, its byte count is the output's,
+        and environment.json hashes the staged lock file."""
+        _, calls, records, _ = self.run_workload(None, differ_in="synth-S-5")
+        by_name = {call["name"]: call for call in calls}
+        version = runner_workload.SEMANTIC_GATE_VERSION
+        self.assertEqual(records["summary"]["semantic_gate_version"], version)
+        self.assertEqual(len(records["raw"]), 6)
+        for row in records["raw"]:
+            with self.subTest(sample=row["name"]):
+                env = by_name[row["name"]]["env"]
+                self.assertEqual(
+                    (env["INSTRUMENTS"], env["DAYS"], env["TRIALS"]),
+                    (str(row["instruments"]), str(row["sessions"]), str(row["trials"])),
+                )
+                self.assertEqual(row["semantic_gate_version"], version)
+                self.assertEqual(
+                    (row["case"], row["repetition"]), ("synth-S", int(row["name"][8:]))
+                )
+                output = records["outputs"][row["name"]]
+                self.assertEqual(row["semantic_hash"], output["hash"])
+                self.assertEqual(row["output_bytes"], output["bytes"])
+                written = records["manifests"][row["semantic_manifest"]]
+                self.assertEqual(written, output["manifest"])
+                self.assertEqual(
+                    row["semantic_hash"],
+                    hashlib.sha256(json.dumps(written, sort_keys=True).encode()).hexdigest(),
+                )
+        environment = records["environment"]
+        self.assertEqual(environment["lock_sha256"], records["lock_sha256"])
+        self.assertEqual(environment["hash_seed"], os.environ.get("PYTHONHASHSEED"))
+        self.assertIs(environment["parallel_benchmarks"], False)
+
+    def test_the_product_commands_are_pinned(self):
+        """W6 names the product commands: one that checks less (a format step without
+        --check, which would rewrite the source copy and pass; a lint step with
+        --exit-zero; a type check of one component; a links step that runs nothing;
+        guard tests without a module; a build without --no-build-isolation) must not
+        pass these tests (round 15 noted the coverage report flag as unpinned)."""
+        _, calls, _, work = self.run_workload(None)
+        by_name = {call["name"]: call for call in calls}
+        source, runtime = work / "source", str(work / "env/bin/python")
+        parts = ["data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation"]
+        expected = {
+            "audit-guard-tests": [
+                sys.executable,
+                "-m",
+                "unittest",
+                "-v",
+                "test_guards",
+                "test_output_collection",
+                "test_execution_logs",
+            ],
+            "build-workspace": [
+                runner_workload.BUILD_PYTHON,
+                "-m",
+                "pip",
+                "wheel",
+                "--no-index",
+                "--no-deps",
+                "--no-build-isolation",
+                "--wheel-dir",
+                str(work / "built"),
+                *[str(source / part) for part in parts],
+            ],
+            "create-environment": [
+                sys.executable,
+                "-m",
+                "venv",
+                "--system-site-packages",
+                str(work / "env"),
+            ],
+            "format": [runtime, "-m", "ruff", "format", "--check", "."],
+            "lint": [runtime, "-m", "ruff", "check", "."],
+            "types": [runtime, "-m", "mypy", *[str(source / part / "src") for part in parts]],
+            "tests": [
+                runtime,
+                "-m",
+                "pytest",
+                "--cov=invest_data",
+                "--cov=invest_mining",
+                "--cov=invest_evaluation",
+                "--cov-branch",
+                "--cov-report=term-missing",
+                f"--cov-report=json:{work / 'results/coverage.json'}",
+                "--durations=25",
+            ],
+            "links": [runtime, "scripts/check_markdown_links.py"],
+        }
+        for name, argv in expected.items():
+            with self.subTest(step=name):
+                self.assertEqual(by_name[name]["argv"], argv)
+        self.assertEqual(by_name["audit-guard-tests"]["cwd"], runner_workload.AUDIT)
+        self.assertEqual(by_name["audit-guard-tests"]["timeout"], 60)
+        for name in ("format", "lint", "types", "tests", "links"):
+            self.assertEqual(by_name[name]["env"]["COVERAGE_FILE"], str(work / "coverage-data"))
 
 
 class InstalledGraphTests(unittest.TestCase):

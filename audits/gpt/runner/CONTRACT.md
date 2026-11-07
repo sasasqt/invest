@@ -26,9 +26,10 @@ rejection.
   the limits, and every file has a SHA-256 record. Checked after every successful
   collection (`check_collected`), against the source tree.
 - **Q2** Status `rejected`: the destination does not exist and no temporary snapshot
-  is left, also after a rejection for an exhausted descriptor table (the cleanup holds
-  a descriptor per folder level, so it then removes the snapshot one listing at a
-  time); `collection.json` records the rejection. Checked on every rejection
+  is left, also after a rejection for an exhausted descriptor table (on POSIX the
+  cleanup holds a descriptor per folder level, so it then removes the snapshot one
+  listing at a time, entering no link or junction); `collection.json` records the
+  rejection. Checked on every rejection
   (`check_rejected`).
 - **Q3** Every runner log line that carries untrusted text is one line, contains no
   `#`, does not start with `::`, and its JSON part decodes to the original value.
