@@ -669,6 +669,23 @@ def stage_source(source, staged, expected_sha):
         )
     if set(staged_objects.split()) != set(own.stdout.decode("ascii", "replace").split()):
         raise ValueError("Staged Git objects differ from the commit's history")
+    # The file list came from the source's view of the commit's trees (ls-tree, through
+    # the same object index that steered packing): an index entry that names a tree
+    # with the same blobs under other names or modes leaves the object set unchanged,
+    # so the staged copy, which reads the genuine tree bytes by name, lists the
+    # commit's paths itself, and they must be the ones the files were written from.
+    own_listing = run_captured(
+        [program("git"), "-C", str(staged), "ls-tree", "-rz", "--full-tree", expected_sha],
+        env=git_environment(isolated=True),
+        timeout=GIT_TIMEOUT,
+    )
+    if own_listing.returncode:
+        message = own_listing.stderr.decode("utf-8", errors="replace").strip()
+        raise ValueError(
+            f"Staged Git tree could not be listed: git exited {own_listing.returncode}: {message}"
+        )
+    if own_listing.stdout != listing.stdout:
+        raise ValueError("Staged Git tree differs from the commit's paths")
     if contract.enabled():
         # The source's own listing must agree too, so a view of the source that both
         # packing and the staged copy share cannot hide a missing or extra object.

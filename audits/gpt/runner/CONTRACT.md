@@ -46,7 +46,11 @@ rejection.
   `git rev-list --objects` (an object index of the source, a pack `.idx` or a
   multi-pack-index, that points a commit's entry at another object makes Git pack
   that object's tree, and no setting switches an index off); checked in
-  `stage_source` against the source's listing too.
+  `stage_source` against the source's listing too. The staged copy also lists the
+  commit's tree itself (`git ls-tree`), and that listing must equal the source's
+  listing the files were written from: an index entry that points a tree at another
+  tree holding the same blobs under other names or modes leaves the object set
+  unchanged. Always enforced.
 - **Q5** Host-side uv runs with `--no-config`. Checked in `host_uv`.
 
 ## Invariants

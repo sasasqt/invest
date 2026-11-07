@@ -1560,8 +1560,9 @@ class StagingSafetyTests(unittest.TestCase):
                 stage_source(source, staged, revision)
         expected = ["--version", "rev-parse", "ls-tree", "cat-file", "rev-parse"]
         # The staged copy's object set is compared with its own history on every run
-        # (round 15, R15A-M1); the source's listing is the test-mode reference.
-        expected += ["pack-objects", "index-pack", "reset", "cat-file", "rev-list"]
+        # (round 15, R15A-M1) and its own listing of the commit's tree with the file
+        # list (round 17, R17A-X1); the source's listing is the test-mode reference.
+        expected += ["pack-objects", "index-pack", "reset", "cat-file", "rev-list", "ls-tree"]
         if isolated_runner.contract.enabled():
             expected += ["rev-list"]
         self.assertEqual([subcommand(argv) for argv, _ in calls], expected)
@@ -2092,6 +2093,36 @@ class StagingSafetyTests(unittest.TestCase):
             self.assertEqual(verify.returncode, 1, verify.stderr)
             self.assert_staged_history(source, revision, first, canary)
 
+    def bend_multi_pack_index(self, source, victim, other):
+        """Repack the source into one pack with a multi-pack-index whose offset entry for
+        ``victim`` is replaced by ``other``'s (trailer checksum recomputed), so that every
+        read of ``victim`` through the index returns ``other``'s bytes; `git
+        multi-pack-index verify` reports such an index."""
+        git_in(source, "repack", "-adq")
+        git_in(source, "multi-pack-index", "write")
+        git_in(source, "config", "core.multiPackIndex", "true")
+        index = source / ".git/objects/pack/multi-pack-index"
+        data = bytearray(index.read_bytes())
+        self.assertEqual(bytes(data[:6]), b"MIDX\x01\x01")  # version 1, SHA-1
+        chunks = {}
+        for item in range(data[6] + 1):
+            name, offset = struct.unpack(">4sQ", data[12 + 12 * item : 24 + 12 * item])
+            chunks[name] = offset
+        fanout, oids, offsets = chunks[b"OIDF"], chunks[b"OIDL"], chunks[b"OOFF"]
+        count = struct.unpack(">I", data[fanout + 1020 : fanout + 1024])[0]
+        listed = [data[oids + 20 * n : oids + 20 * n + 20].hex() for n in range(count)]
+        bent, source_entry = offsets + 8 * listed.index(victim), offsets + 8 * listed.index(other)
+        data[bent : bent + 8] = data[source_entry : source_entry + 8]
+        data[-20:] = hashlib.sha1(data[:-20]).digest()
+        index.chmod(0o644)  # Git writes the index read-only
+        index.write_bytes(data)
+        verify = subprocess.run(
+            ["git", "-C", str(source), "multi-pack-index", "verify"],
+            env=FIXTURE_GIT,
+            capture_output=True,
+        )
+        self.assertEqual(verify.returncode, 1, verify.stderr)
+
     def test_a_multi_pack_index_with_bent_offsets_does_not_stage_another_branch(self):
         """Review round 15 (R15A-M1): a multi-pack-index (an object index, not a cache)
         whose entry for the audited commit's parent points at the private root commit
@@ -2100,30 +2131,7 @@ class StagingSafetyTests(unittest.TestCase):
         such an index; a pack .idx bent the same way would do the same."""
         with tempfile.TemporaryDirectory() as directory:
             source, first, revision, private, _ = self.private_branch_fixture(Path(directory))
-            git_in(source, "repack", "-adq")
-            git_in(source, "multi-pack-index", "write")
-            git_in(source, "config", "core.multiPackIndex", "true")
-            index = source / ".git/objects/pack/multi-pack-index"
-            data = bytearray(index.read_bytes())
-            self.assertEqual(bytes(data[:6]), b"MIDX\x01\x01")  # version 1, SHA-1
-            chunks = {}
-            for item in range(data[6] + 1):
-                name, offset = struct.unpack(">4sQ", data[12 + 12 * item : 24 + 12 * item])
-                chunks[name] = offset
-            fanout, oids, offsets = chunks[b"OIDF"], chunks[b"OIDL"], chunks[b"OOFF"]
-            count = struct.unpack(">I", data[fanout + 1020 : fanout + 1024])[0]
-            listed = [data[oids + 20 * n : oids + 20 * n + 20].hex() for n in range(count)]
-            bent, other = offsets + 8 * listed.index(first), offsets + 8 * listed.index(private)
-            data[bent : bent + 8] = data[other : other + 8]
-            data[-20:] = hashlib.sha1(data[:-20]).digest()
-            index.chmod(0o644)  # Git writes the index read-only
-            index.write_bytes(data)
-            verify = subprocess.run(
-                ["git", "-C", str(source), "multi-pack-index", "verify"],
-                env=FIXTURE_GIT,
-                capture_output=True,
-            )
-            self.assertEqual(verify.returncode, 1, verify.stderr)
+            self.bend_multi_pack_index(source, first, private)
             staged = source.parent / "staged"
             # The genuine parent's tree was never packed, so the staged copy cannot list
             # its history (round 16: the refusal carries Git's words).
@@ -2131,6 +2139,45 @@ class StagingSafetyTests(unittest.TestCase):
                 ValueError, "^Staged Git history could not be listed: git exited 128: "
             ):
                 stage_source(source, staged, revision)
+
+    def test_a_bent_tree_entry_with_the_same_blobs_under_other_names_is_refused(self):
+        """Review round 17 (R17A-X1): a multi-pack-index entry for a tree of the audited
+        commit that points at a tree holding the same blob under another name, or with
+        another mode, leaves the object closure unchanged, so the staged store equalled
+        its own history and both Q4 checks passed, while ls-tree (the file list) had
+        followed the bent entry: the staged copy carried the other tree's names and
+        modes, not the commit's, in both modes."""
+        cases = (
+            ("rename", "100644 blob {blob}\trenamed.txt", "\tdir/renamed.txt"),
+            ("mode", "100755 blob {blob}\tx.txt", "100755 blob"),
+        )
+        for label, entry, shown in cases:
+            for mode in ("1", "0"):
+                with (
+                    tempfile.TemporaryDirectory() as directory,
+                    self.subTest(case=label, CONTRACT_CHECKS=mode),
+                    patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                ):
+                    root = Path(directory)
+                    source, revision = fixture_repository(
+                        root, {"a.txt": b"one\n", "dir/x.txt": b"X1\n"}
+                    )
+                    blob = git_in(source, "rev-parse", f"{revision}:dir/x.txt")
+                    entry_row = (entry.format(blob=blob) + "\n").encode()
+                    other_dir = git_in(source, "mktree", data=entry_row)
+                    a_row = git_in(source, "ls-tree", write_tree(source, {"a.txt": b"one\n"}))
+                    root_rows = f"040000 tree {other_dir}\tdir\n{a_row}\n".encode()
+                    other_root = git_in(source, "mktree", data=root_rows)
+                    other = git_in(source, "commit-tree", "-m", "other", other_root)
+                    git_in(source, "update-ref", "refs/heads/other", other)
+                    victim = git_in(source, "rev-parse", f"{revision}:dir")
+                    self.bend_multi_pack_index(source, victim, other_dir)
+                    # The source's own view of the commit now lists the other tree's entry.
+                    self.assertIn(shown, git_in(source, "ls-tree", "-r", revision))
+                    with self.assertRaisesRegex(
+                        ValueError, "^Staged Git tree differs from the commit's paths$"
+                    ):
+                        stage_source(source, root / "staged", revision)
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
         with tempfile.TemporaryDirectory() as directory:
