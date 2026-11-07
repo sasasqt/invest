@@ -134,9 +134,10 @@ locked-version steps run for real there).
   never created does not read as a permission problem. Checked in
   `runner_workload.semantic_manifest`. Every later sample's `correctness_gate` is
   true only when its manifest hash equals the warm-up sample's, the measurement ends
-  at the first false gate, and `median_seconds`, `min_seconds` and `max_seconds` come
-  from the seven measured samples' wall times, else `median_seconds` is null. Checked
-  in `test_guards.WorkloadOrderTests`.
+  at the first false gate, `median_seconds` is the median of the seven measured
+  samples' wall times (null when fewer passed the gate), and `min_seconds` and
+  `max_seconds` are the extremes of the samples that passed (null when none did).
+  Checked in `test_guards.WorkloadOrderTests`.
 - **W6** The workload runs no product command (format, lint, types, tests, links,
   the CLIs, the hash-seed repeat, the independent installs, the synthetic
   workflow) in an environment whose locked versions it has not proved: the build

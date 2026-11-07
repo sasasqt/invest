@@ -1473,5 +1473,39 @@ class RoundFifteenCheckTests(unittest.TestCase):
                     self.assertEqual(os.listdir(evidence), ["collection.json"])
 
 
+class RoundSixteenCheckTests(unittest.TestCase):
+    """Review round 16 (R16B-C1): the snapshot cleanup's fallback never enters a link or a
+    junction planted into the private snapshot; it removes only the snapshot (Q2)."""
+
+    def test_the_snapshot_cleanup_fallback_enters_no_link_or_junction(self):
+        """os.walk with followlinks=False still enters a Windows junction (it is no
+        symlink), so the fallback unlinked the junction target's files; a POSIX symlink
+        to a folder stopped it with ENOTDIR and left the snapshot behind."""
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = Path(directory, ".collect-test")
+            (snapshot / "d" / "d").mkdir(parents=True)
+            (snapshot / "d" / "f").write_bytes(b"x")
+            target = Path(directory, "target")
+            (target / "sub").mkdir(parents=True)
+            (target / "keep").write_bytes(b"k")
+            (target / "sub" / "keep2").write_bytes(b"k")
+            link = snapshot / "d" / "d" / "planted"
+            if os.name == "nt":
+                import _winapi
+
+                _winapi.CreateJunction(str(target), str(link))
+            else:
+                link.symlink_to(target)
+
+            def exhausted(path, *args, **kwargs):
+                raise OSError(errno.EMFILE, "too many open files", str(path))
+
+            with patch("output_collection.shutil.rmtree", side_effect=exhausted):
+                output_collection.remove_snapshot(snapshot)
+            self.assertFalse(snapshot.exists())
+            self.assertTrue((target / "keep").exists())
+            self.assertTrue((target / "sub" / "keep2").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

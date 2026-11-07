@@ -660,9 +660,14 @@ def stage_source(source, staged, expected_sha):
         env=git_environment(isolated=True),
         timeout=GIT_TIMEOUT,
     )
-    if own.returncode or set(staged_objects.split()) != set(
-        own.stdout.decode("ascii", "replace").split()
-    ):
+    if own.returncode:
+        # Git's own words: a missing object (a bent source index) reads as "unable to
+        # read tree"; a host fault (memory, a signal) must not read as a difference.
+        message = own.stderr.decode("utf-8", errors="replace").strip()
+        raise ValueError(
+            f"Staged Git history could not be listed: git exited {own.returncode}: {message}"
+        )
+    if set(staged_objects.split()) != set(own.stdout.decode("ascii", "replace").split()):
         raise ValueError("Staged Git objects differ from the commit's history")
     if contract.enabled():
         # The source's own listing must agree too, so a view of the source that both

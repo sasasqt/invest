@@ -1695,6 +1695,38 @@ class StagingSafetyTests(unittest.TestCase):
                 ):
                     stage_source(source, root / f"staged-{mode}", revision)
 
+    def test_a_failed_listing_of_the_staged_history_names_gits_error(self):
+        """Review round 16 (R16A-E1): a `rev-list` on the staged copy that fails for a
+        reason of its own (memory, a signal, a read error) was reported as "Staged Git
+        objects differ from the commit's history", Git's status and words discarded, so
+        a reader would look for a corrupted source index instead of the host fault."""
+        real_run = isolated_runner.run_captured
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n"})
+
+            def failing(argv, **kwargs):
+                if "rev-list" in argv and str(root / "staged") in argv[:3]:
+                    stderr = b"fatal: Out of memory, malloc failed (tried to allocate 1 \xff)\n"
+                    return subprocess.CompletedProcess(argv, 128, b"", stderr)
+                return real_run(argv, **kwargs)
+
+            for mode in ("1", "0"):
+                staged = root / "staged"
+                with (
+                    self.subTest(CONTRACT_CHECKS=mode),
+                    patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                    patch("isolated_runner.run_captured", side_effect=failing),
+                    self.assertRaises(ValueError) as caught,
+                ):
+                    stage_source(source, staged, revision)
+                self.assertEqual(
+                    str(caught.exception),
+                    "Staged Git history could not be listed: git exited 128: "
+                    "fatal: Out of memory, malloc failed (tried to allocate 1 \ufffd)",
+                )
+                shutil.rmtree(staged)
+
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
         """Review round 12 (R12C-C1): with PYTHONLEGACYWINDOWSFSENCODING=1, os.fsdecode
@@ -2090,7 +2122,11 @@ class StagingSafetyTests(unittest.TestCase):
             )
             self.assertEqual(verify.returncode, 1, verify.stderr)
             staged = source.parent / "staged"
-            with self.assertRaisesRegex(ValueError, "Staged Git objects differ"):
+            # The genuine parent's tree was never packed, so the staged copy cannot list
+            # its history (round 16: the refusal carries Git's words).
+            with self.assertRaisesRegex(
+                ValueError, "^Staged Git history could not be listed: git exited 128: "
+            ):
                 stage_source(source, staged, revision)
 
     def test_inherited_git_variables_do_not_redirect_staging(self):
