@@ -513,12 +513,13 @@ def _confirmation_evidence(
                 f"{root}: config.json does not record the {option} the confirmation used; "
                 "rerun the confirmation"
             )
-        if identity[key] != inputs[key]:
+        used = identity[key]
+        if used != inputs[key]:
+            remedy = f"omit {option}" if used is None else f"pass the confirmation's own {option}"
             raise SystemExit(
-                f"{root}: the confirmation used {_identity_input(option, identity[key])}, "
-                f"but this export uses {_identity_input(option, inputs[key])}; pass the "
-                f"confirmation's own {option}, or export the factor without evidence "
-                "(--factor without --confirmation)"
+                f"{root}: the confirmation used {_identity_input(option, used)}, but this "
+                f"export uses {_identity_input(option, inputs[key])}; {remedy}, or export "
+                "the factor without evidence (--factor without --confirmation)"
             )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,

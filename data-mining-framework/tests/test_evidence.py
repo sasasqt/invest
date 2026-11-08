@@ -335,9 +335,13 @@ def inputs(tmp_path):
     )
     # A valid bundle whose manifest has no content hash (the hash is optional).
     shutil.copytree(path / "universe", path / "universe_hashless")
-    manifest = json.loads((path / "universe_hashless" / "manifest.json").read_text())
+    manifest = json.loads(
+        (path / "universe_hashless" / "manifest.json").read_text(encoding="utf-8")
+    )
     del manifest["content_sha256"]
-    (path / "universe_hashless" / "manifest.json").write_text(json.dumps(manifest))
+    (path / "universe_hashless" / "manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
     return path
 
 
@@ -366,6 +370,14 @@ def test_search_evidence_needs_the_universe_the_search_used(tmp_path, inputs):
     assert _export(inputs / "market", tmp_path / "sig", *source, *copy) == 0
     evidence = read_signals(tmp_path / "sig")[0].metadata["factor_evidence"]
     assert evidence["experiment_id"] == _experiment_id(tmp_path / "s")
+
+    # The search's own factor file with --confirmation follows the same rule.
+    own = tmp_path / "s" / "factors" / f"{evidence['factor_id']}.json"
+    source = ("--factor", str(own), "--confirmation", str(tmp_path / "s"))
+    with pytest.raises(SystemExit, match="--universe"):
+        _export(inputs / "market", tmp_path / "x", *source)
+    assert not (tmp_path / "x").exists()
+    assert _export(inputs / "market", tmp_path / "sig2", *source, *copy) == 0
 
 
 def test_search_without_universe_gives_no_evidence_to_universe_scores(tmp_path, inputs):
@@ -418,9 +430,9 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
     assert not (tmp_path / "x").exists()
 
     # A config.json that does not record the universe gives no evidence.
-    config = json.loads((tmp_path / "s" / "config.json").read_text())
+    config = json.loads((tmp_path / "s" / "config.json").read_text(encoding="utf-8"))
     del config["experiment"]["identity"]["universe_sha256"]
-    (tmp_path / "s" / "config.json").write_text(json.dumps(config))
+    (tmp_path / "s" / "config.json").write_text(json.dumps(config), encoding="utf-8")
     with pytest.raises(SystemExit, match="does not record the --universe"):
         _export(inputs / "market", tmp_path / "x", *source)
     assert not (tmp_path / "x").exists()
