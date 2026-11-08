@@ -431,11 +431,43 @@ def _json_number(value: Any) -> float | int | None:
     return value if isinstance(value, int | float) and math.isfinite(value) else None
 
 
-def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
+# The export options whose bundles the experiment identity records by content hash.
+_IDENTITY_INPUTS = (("--universe", "universe_sha256"), ("--fundamentals", "fundamentals_sha256"))
+
+
+def _evidence_inputs(args: argparse.Namespace) -> dict[str, str | None]:
+    """Content hashes of the export's ``--universe`` and ``--fundamentals``, for evidence.
+
+    A bundle without a content hash cannot be matched with the one the confirmation used.
+    """
+    try:
+        hashes = _input_hashes(args)
+    except BundleError as exc:
+        raise SystemExit(f"{args.out}: {exc}") from exc
+    for option, key in _IDENTITY_INPUTS:
+        path = getattr(args, option[2:])
+        if path and hashes[key] is None:
+            raise SystemExit(
+                f"{path}: the {option} bundle has no content_sha256, so it cannot be matched "
+                "with the confirmation's; export the factor without evidence "
+                "(--factor without --confirmation)"
+            )
+    return hashes
+
+
+def _identity_input(option: str, value: Any) -> str:
+    return f"no {option}" if value is None else f"a {option} bundle with content hash {value!s:.12}"
+
+
+def _confirmation_evidence(
+    root: Path, factor: FrozenFactor, inputs: dict[str, str | None]
+) -> dict[str, Any]:
     """Factor evidence from a ``search`` or ``confirm`` output, for the exported signals.
 
     Called only after the factor is chosen: the outcome describes the factor and travels
     with its signals to portfolio reports, but never decides which factor is exported.
+    ``inputs`` holds the export's universe and fundamentals hashes: the evidence covers
+    scores on the bundles the confirmation used, so other bundles get none.
     """
     try:
         table = pd.read_csv(root / "confirmation.csv")
@@ -475,6 +507,19 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
             f"{root}: confirmation horizon {tested_horizon!r} does not match "
             f"factor horizon {factor.horizon_days!r}"
         )
+    for option, key in _IDENTITY_INPUTS:
+        if key not in identity:
+            raise SystemExit(
+                f"{root}: config.json does not record the {option} the confirmation used; "
+                "rerun the confirmation"
+            )
+        if identity[key] != inputs[key]:
+            raise SystemExit(
+                f"{root}: the confirmation used {_identity_input(option, identity[key])}, "
+                f"but this export uses {_identity_input(option, inputs[key])}; pass the "
+                f"confirmation's own {option}, or export the factor without evidence "
+                "(--factor without --confirmation)"
+            )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
         "factor_id": factor.factor_id,
@@ -537,11 +582,13 @@ def _export(args: argparse.Namespace) -> int:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor = _from_search(args.from_search, args.rank)
-        evidence = _confirmation_evidence(args.from_search, factor)
+        evidence = _confirmation_evidence(args.from_search, factor, _evidence_inputs(args))
     else:
         factor = FrozenFactor.load(args.factor)
         evidence = (
-            None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
+            None
+            if args.confirmation is None
+            else _confirmation_evidence(args.confirmation, factor, _evidence_inputs(args))
         )
     if evidence is not None and evidence["source"] == "search":
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
@@ -717,7 +764,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--confirmation",
         type=Path,
         help="with --factor: `search` or `confirm` output whose confirmation of this factor "
-        "is attached to the signals as evidence (it never selects the factor)",
+        "is attached to the signals as evidence (it never selects the factor); evidence, "
+        "also with --from-search, needs the confirmation's own --universe and --fundamentals",
     )
 
     for p in (ev, se, co, ex):

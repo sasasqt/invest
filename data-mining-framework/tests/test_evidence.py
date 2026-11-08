@@ -292,3 +292,152 @@ def test_search_evidence_is_refused_for_a_refrozen_formula(tmp_path, data):
             str(tmp_path / "s"),
         )
     assert not (tmp_path / "x").exists()
+
+
+@pytest.fixture
+def inputs(tmp_path):
+    """Market data with a universe and fundamentals, plus bundles that differ from them."""
+    # Imported here so the module's import lines stay as they are on main.
+    import shutil
+
+    from invest_data.schemas import (
+        publish_fundamentals,
+        publish_universe,
+        read_fundamentals,
+        read_universe,
+    )
+
+    path = tmp_path / "inputs"
+    data_main(
+        [
+            "synthetic",
+            "--out",
+            str(path / "market"),
+            "--instruments",
+            "25",
+            "--days",
+            "260",
+            "--universe-out",
+            str(path / "universe"),
+            "--fundamentals-out",
+            str(path / "fundamentals"),
+        ]
+    )
+    shutil.copytree(path / "universe", path / "universe_copy")
+    _, frame = read_universe(path / "universe")
+    dropped = sorted(frame["instrument"].unique())[0]
+    publish_universe(
+        frame[frame["instrument"] != dropped], path / "universe_other", dataset_id="other"
+    )
+    _, frame = read_fundamentals(path / "fundamentals")
+    publish_fundamentals(
+        frame[frame["instrument"] != dropped], path / "fundamentals_other", dataset_id="other"
+    )
+    # A valid bundle whose manifest has no content hash (the hash is optional).
+    shutil.copytree(path / "universe", path / "universe_hashless")
+    manifest = json.loads((path / "universe_hashless" / "manifest.json").read_text())
+    del manifest["content_sha256"]
+    (path / "universe_hashless" / "manifest.json").write_text(json.dumps(manifest))
+    return path
+
+
+def _search_on(inputs, out, *options):
+    book = out.parent / f"{out.name}.jsonl"
+    args = ["search", "--data", str(inputs / "market"), "--trials", "10", "--top-k", "2"]
+    return main([*args, *options, "--out", str(out), "--seed", "0", "--ledger", str(book)])
+
+
+def test_search_evidence_needs_the_universe_the_search_used(tmp_path, inputs):
+    """The evidence describes scores on the search's universe (BH-2026-10-20-3).
+
+    The experiment identity in config.json records the universe's content hash; scores
+    computed without it, or on another universe, include names or ranks it never tested.
+    """
+    universe = ("--universe", str(inputs / "universe"))
+    assert _search_on(inputs, tmp_path / "s", *universe) == 0
+    source = ("--from-search", str(tmp_path / "s"))
+    for options in [(), ("--universe", str(inputs / "universe_other"))]:
+        with pytest.raises(SystemExit, match="--universe"):
+            _export(inputs / "market", tmp_path / "x", *source, *options)
+        assert not (tmp_path / "x").exists()
+
+    # The same universe content under another path is the same input.
+    copy = ("--universe", str(inputs / "universe_copy"))
+    assert _export(inputs / "market", tmp_path / "sig", *source, *copy) == 0
+    evidence = read_signals(tmp_path / "sig")[0].metadata["factor_evidence"]
+    assert evidence["experiment_id"] == _experiment_id(tmp_path / "s")
+
+
+def test_search_without_universe_gives_no_evidence_to_universe_scores(tmp_path, inputs):
+    assert _search_on(inputs, tmp_path / "s") == 0
+    source = ("--from-search", str(tmp_path / "s"))
+    with pytest.raises(SystemExit, match="--universe"):
+        _export(inputs / "market", tmp_path / "x", *source, "--universe", str(inputs / "universe"))
+    assert not (tmp_path / "x").exists()
+    assert _export(inputs / "market", tmp_path / "sig", *source) == 0
+
+
+def test_search_evidence_needs_the_fundamentals_the_search_used(tmp_path, inputs):
+    universe = ("--universe", str(inputs / "universe"))
+    fundamentals = ("--fundamentals", str(inputs / "fundamentals"))
+    assert _search_on(inputs, tmp_path / "s", *universe, *fundamentals) == 0
+    source = ("--from-search", str(tmp_path / "s"), *universe)
+    for options in [(), ("--fundamentals", str(inputs / "fundamentals_other"))]:
+        with pytest.raises(SystemExit, match="--fundamentals"):
+            _export(inputs / "market", tmp_path / "x", *source, *options)
+        assert not (tmp_path / "x").exists()
+    assert _export(inputs / "market", tmp_path / "sig", *source, *fundamentals) == 0
+
+    # A search without fundamentals gives no evidence to an export that uses them.
+    assert _search_on(inputs, tmp_path / "s2", *universe) == 0
+    source = ("--from-search", str(tmp_path / "s2"), *universe)
+    with pytest.raises(SystemExit, match="--fundamentals"):
+        _export(inputs / "market", tmp_path / "x", *source, *fundamentals)
+    assert not (tmp_path / "x").exists()
+
+
+def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
+    """Unreadable, unhashed or unrecorded inputs end in a refusal, not in evidence."""
+    universe = ("--universe", str(inputs / "universe"))
+    assert _search_on(inputs, tmp_path / "s", *universe) == 0
+    source = ("--from-search", str(tmp_path / "s"))
+    # Another kind of bundle is refused with a message, not a traceback.
+    with pytest.raises(SystemExit, match="dataset_kind"):
+        _export(
+            inputs / "market", tmp_path / "x", *source, "--universe", str(inputs / "fundamentals")
+        )
+    # A bundle without a content hash cannot be shown to be the search's universe.
+    with pytest.raises(SystemExit, match="content_sha256"):
+        _export(
+            inputs / "market",
+            tmp_path / "x",
+            *source,
+            "--universe",
+            str(inputs / "universe_hashless"),
+        )
+    assert not (tmp_path / "x").exists()
+
+    # A config.json that does not record the universe gives no evidence.
+    config = json.loads((tmp_path / "s" / "config.json").read_text())
+    del config["experiment"]["identity"]["universe_sha256"]
+    (tmp_path / "s" / "config.json").write_text(json.dumps(config))
+    with pytest.raises(SystemExit, match="does not record the --universe"):
+        _export(inputs / "market", tmp_path / "x", *source)
+    assert not (tmp_path / "x").exists()
+
+
+def test_confirm_evidence_needs_the_universe_the_confirmation_used(tmp_path, inputs):
+    book, factor = tmp_path / "ledger.jsonl", tmp_path / "f.json"
+    freeze = ["freeze", "--expr", "close / delay(close, 5) - 1", "--horizon", "5"]
+    assert main([*freeze, "--orientation", "-1", "--out", str(factor)]) == 0
+    universe = ("--universe", str(inputs / "universe"))
+    confirm = ["confirm", "--data", str(inputs / "market"), "--factor", str(factor), *universe]
+    confirm += ["--ledger", str(book), "--confirm-start", "2020-09-01"]
+    assert main([*confirm, "--out", str(tmp_path / "c")]) == 0
+    source = ("--factor", str(factor), "--confirmation", str(tmp_path / "c"))
+    with pytest.raises(SystemExit, match="--universe"):
+        _export(inputs / "market", tmp_path / "x", *source)
+    assert not (tmp_path / "x").exists()
+    assert _export(inputs / "market", tmp_path / "sig", *source, *universe) == 0
+    # Without evidence, any universe may be used.
+    assert _export(inputs / "market", tmp_path / "plain", "--factor", str(factor)) == 0
