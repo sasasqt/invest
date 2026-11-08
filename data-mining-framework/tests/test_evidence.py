@@ -438,6 +438,22 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
     assert not (tmp_path / "x").exists()
 
 
+def test_refusal_does_not_claim_a_hashless_universe_was_none(tmp_path, inputs):
+    """A search on a universe without a content hash recorded none: the refusal says only that.
+
+    Telling the user to omit --universe would publish the non-member scores the search's
+    universe excluded (the documented limit of hashless bundles).
+    """
+    hashless = ("--universe", str(inputs / "universe_hashless"))
+    assert _search_on(inputs, tmp_path / "s", *hashless) == 0
+    source = ("--from-search", str(tmp_path / "s"))
+    with pytest.raises(SystemExit, match="recorded no --universe content hash") as refused:
+        _export(inputs / "market", tmp_path / "x", *source, "--universe", str(inputs / "universe"))
+    assert "the confirmation used no --universe" not in str(refused.value)
+    assert "omit --universe only if" in str(refused.value)
+    assert not (tmp_path / "x").exists()
+
+
 def test_confirm_evidence_needs_the_universe_the_confirmation_used(tmp_path, inputs):
     book, factor = tmp_path / "ledger.jsonl", tmp_path / "f.json"
     freeze = ["freeze", "--expr", "close / delay(close, 5) - 1", "--horizon", "5"]

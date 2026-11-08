@@ -515,11 +515,19 @@ def _confirmation_evidence(
             )
         used = identity[key]
         if used != inputs[key]:
-            remedy = f"omit {option}" if used is None else f"pass the confirmation's own {option}"
+            if used is None:  # also a bundle without a content hash, so say only what is known
+                recorded = (
+                    f"recorded no {option} content hash (it used no {option}, or one "
+                    "without content_sha256)"
+                )
+                remedy = f"omit {option} only if the confirmation used none"
+            else:
+                recorded = f"used {_identity_input(option, used)}"
+                remedy = f"pass the confirmation's own {option}"
             raise SystemExit(
-                f"{root}: the confirmation used {_identity_input(option, used)}, but this "
-                f"export uses {_identity_input(option, inputs[key])}; {remedy}, or export "
-                "the factor without evidence (--factor without --confirmation)"
+                f"{root}: the confirmation {recorded}, but this export uses "
+                f"{_identity_input(option, inputs[key])}; {remedy}, or export the factor "
+                "without evidence (--factor without --confirmation)"
             )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
@@ -766,7 +774,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         help="with --factor: `search` or `confirm` output whose confirmation of this factor "
         "is attached to the signals as evidence (it never selects the factor); evidence, "
-        "also with --from-search, needs the confirmation's own --universe and --fundamentals",
+        "also with --from-search, needs the same --universe and --fundamentals as the "
+        "confirmation, or none where it used none",
     )
 
     for p in (ev, se, co, ex):
