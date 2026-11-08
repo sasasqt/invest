@@ -1,8 +1,8 @@
 {
  "coverage_unmatched": {
-  "date": "2026-11-01",
+  "date": "2026-11-08",
   "paths": [],
-  "run_id": "repo-audit-2026-11-01"
+  "run_id": "repo-audit-2026-11-08"
  },
  "files": {
   ".github/workflows/ci.yml": {
@@ -45,10 +45,45 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "ci-parity",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 77,
    "present": true
@@ -86,11 +121,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 40,
    "present": true
   },
@@ -127,11 +183,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 60,
    "present": true
   },
@@ -154,10 +231,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 147,
    "present": true
@@ -188,12 +279,26 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
-   "lines": 137,
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
+   "lines": 139,
    "present": true
   },
   "PYTHON_GUIDELINES.md": {
@@ -222,11 +327,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 126,
    "present": true
   },
@@ -256,11 +382,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 106,
    "present": true
   },
@@ -297,12 +437,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 184,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 182,
    "present": true
   },
   "ROADMAP.md": {
@@ -338,11 +499,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 65,
    "present": true
   },
@@ -379,12 +554,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 100,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 109,
    "present": true
   },
   "data-mining-framework/ALPHA_VALIDATION.md": {
@@ -406,10 +602,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 155,
    "present": true
@@ -433,10 +643,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 282,
    "present": true
@@ -460,10 +684,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 358,
    "present": true
@@ -494,11 +732,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 81,
    "present": true
   },
@@ -535,11 +787,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 17,
    "present": true
   },
@@ -548,12 +821,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -585,11 +858,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 3,
    "present": true
   },
@@ -598,12 +892,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 75.0,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 93.1,
     "missing_branches": 2,
     "missing_lines": 2,
     "num_branches": 8,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 50
    },
    "first_seen": "2026-11-01",
@@ -642,11 +936,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 72,
    "present": true
   },
@@ -654,14 +969,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 95.83,
-    "date": "2026-11-01",
-    "line_pct": 97.31,
+    "branch_pct": 96.15,
+    "date": "2026-11-08",
+    "line_pct": 96.98,
     "missing_branches": 3,
-    "missing_lines": 7,
-    "num_branches": 72,
-    "run_id": "repo-audit-2026-11-01",
-    "statements": 300
+    "missing_lines": 9,
+    "num_branches": 78,
+    "run_id": "repo-audit-2026-11-08",
+    "statements": 320
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -706,12 +1021,47 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
-   "lines": 727,
+   "lines": 760,
    "present": true
   },
   "data-mining-framework/src/invest_mining/diagnostics.py": {
@@ -719,13 +1069,13 @@
    "category": "source",
    "coverage": {
     "branch_pct": 93.33,
-    "date": "2026-11-01",
-    "line_pct": 97.92,
+    "date": "2026-11-08",
+    "line_pct": 98.04,
     "missing_branches": 2,
     "missing_lines": 2,
     "num_branches": 30,
-    "run_id": "repo-audit-2026-11-01",
-    "statements": 162
+    "run_id": "repo-audit-2026-11-08",
+    "statements": 174
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -770,12 +1120,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 315,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 363,
    "present": true
   },
   "data-mining-framework/src/invest_mining/expressions.py": {
@@ -783,12 +1161,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 90.62,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 93.94,
     "missing_branches": 9,
     "missing_lines": 11,
     "num_branches": 96,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 234
    },
    "first_seen": "2026-11-01",
@@ -834,11 +1212,46 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 386,
    "present": true
   },
@@ -847,12 +1260,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 100.0,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 2,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 20
    },
    "first_seen": "2026-11-01",
@@ -898,10 +1311,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
    "lines": 77,
    "present": true
@@ -911,12 +1352,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 98.08,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 98.91,
     "missing_branches": 1,
     "missing_lines": 1,
     "num_branches": 52,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 132
    },
    "first_seen": "2026-11-01",
@@ -955,11 +1396,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 249,
    "present": true
   },
@@ -967,14 +1436,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": null,
-    "date": "2026-11-01",
+    "branch_pct": 100.0,
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
-    "num_branches": 0,
-    "run_id": "repo-audit-2026-11-01",
-    "statements": 49
+    "num_branches": 6,
+    "run_id": "repo-audit-2026-11-08",
+    "statements": 66
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -1012,26 +1481,54 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
-   "lines": 72,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 114,
    "present": true
   },
   "data-mining-framework/src/invest_mining/search.py": {
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 92.59,
-    "date": "2026-11-01",
-    "line_pct": 96.19,
-    "missing_branches": 4,
-    "missing_lines": 4,
+    "branch_pct": 88.89,
+    "date": "2026-11-08",
+    "line_pct": 94.31,
+    "missing_branches": 6,
+    "missing_lines": 6,
     "num_branches": 54,
-    "run_id": "repo-audit-2026-11-01",
-    "statements": 156
+    "run_id": "repo-audit-2026-11-08",
+    "statements": 157
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -1069,12 +1566,47 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
-   "lines": 359,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 361,
    "present": true
   },
   "data-mining-framework/tests/conftest.py": {
@@ -1110,11 +1642,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 33,
    "present": true
   },
@@ -1151,12 +1704,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 258,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 338,
    "present": true
   },
   "data-mining-framework/tests/test_diagnostics.py": {
@@ -1192,12 +1773,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 258,
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
+   "lines": 295,
    "present": true
   },
   "data-mining-framework/tests/test_evidence.py": {
@@ -1233,12 +1835,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 252,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 294,
    "present": true
   },
   "data-mining-framework/tests/test_expressions.py": {
@@ -1274,11 +1904,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 146,
    "present": true
   },
@@ -1308,12 +1959,81 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 471,
+   "present": true
+  },
+  "data-mining-framework/tests/test_reporting.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-08",
+   "history": [
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
+    }
+   ],
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 58,
    "present": true
   },
   "data-mining-framework/tests/test_search_and_inference.py": {
@@ -1342,12 +2062,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
-   "lines": 156,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 164,
    "present": true
   },
   "data-pipeline/README.md": {
@@ -1369,10 +2117,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 7,
    "present": true
@@ -1403,11 +2165,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 41,
    "present": true
   },
@@ -1444,11 +2220,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 13,
    "present": true
   },
@@ -1457,12 +2254,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -1487,10 +2284,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 3,
    "present": true
@@ -1500,12 +2318,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 85.32,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 88.15,
     "missing_branches": 32,
     "missing_lines": 43,
     "num_branches": 218,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 415
    },
    "first_seen": "2026-11-01",
@@ -1544,11 +2362,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 630,
    "present": true
   },
@@ -1557,12 +2403,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 93.33,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 96.8,
     "missing_branches": 2,
     "missing_lines": 2,
     "num_branches": 30,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 95
    },
    "first_seen": "2026-11-01",
@@ -1594,11 +2440,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 155,
    "present": true
   },
@@ -1607,12 +2474,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 81.58,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 91.3,
     "missing_branches": 7,
     "missing_lines": 7,
     "num_branches": 38,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 123
    },
    "first_seen": "2026-11-01",
@@ -1651,10 +2518,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
    "lines": 252,
    "present": true
@@ -1664,12 +2559,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 94.44,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 96.23,
     "missing_branches": 1,
     "missing_lines": 1,
     "num_branches": 18,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 35
    },
    "first_seen": "2026-11-01",
@@ -1701,11 +2596,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 67,
    "present": true
   },
@@ -1714,12 +2630,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 90.43,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 93.33,
     "missing_branches": 9,
     "missing_lines": 13,
     "num_branches": 94,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 236
    },
    "first_seen": "2026-11-01",
@@ -1758,11 +2674,46 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 544,
    "present": true
   },
@@ -1771,12 +2722,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 94.74,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 97.6,
     "missing_branches": 2,
     "missing_lines": 2,
     "num_branches": 38,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 129
    },
    "first_seen": "2026-11-01",
@@ -1808,10 +2759,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
    "lines": 229,
    "present": true
@@ -1821,12 +2800,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 23
    },
    "first_seen": "2026-11-01",
@@ -1851,11 +2830,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 96,
    "present": true
   },
@@ -1864,12 +2871,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 80.77,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 90.66,
     "missing_branches": 10,
     "missing_lines": 14,
     "num_branches": 52,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 205
    },
    "first_seen": "2026-11-01",
@@ -1901,11 +2908,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 412,
    "present": true
   },
@@ -1935,11 +2970,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 229,
    "present": true
   },
@@ -1969,11 +3032,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 383,
    "present": true
   },
@@ -2003,11 +3094,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "test-quality",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 115,
    "present": true
   },
@@ -2037,10 +3156,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 288,
    "present": true
@@ -2071,11 +3211,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 407,
    "present": true
   },
@@ -2098,10 +3266,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 146,
    "present": true
@@ -2132,11 +3314,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 83,
    "present": true
   },
@@ -2173,12 +3369,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
-   "lines": 69,
+   "lines": 74,
    "present": true
   },
   "docs/QUANTILE_ANALYSIS.md": {
@@ -2207,11 +3424,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 60,
    "present": true
   },
@@ -2234,11 +3472,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "inventoried",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 46,
    "present": true
   },
@@ -2261,10 +3520,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "inventoried",
    "lines": 12,
    "present": true
@@ -2295,10 +3568,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 2,
    "present": true
@@ -2336,11 +3630,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
    "lines": 52,
    "present": true
   },
@@ -2377,10 +3699,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 24,
    "present": true
@@ -2411,10 +3754,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 220,
    "present": true
@@ -2445,10 +3809,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 1210,
    "present": true
@@ -2479,10 +3864,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 39,
    "present": true
@@ -2513,10 +3919,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -2547,10 +3974,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -2581,10 +4029,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -2615,10 +4084,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 49,
    "present": true
@@ -2649,10 +4139,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 628,
    "present": true
@@ -2683,10 +4194,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 93,
    "present": true
@@ -2717,10 +4249,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 62,
    "present": true
@@ -2751,10 +4304,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 9,
    "present": true
@@ -2785,10 +4359,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 85,
    "present": true
@@ -2819,10 +4414,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 7,
    "present": true
@@ -2853,10 +4469,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -2887,10 +4524,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -2921,10 +4579,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 23,
    "present": true
@@ -2955,10 +4634,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 3775,
    "present": true
@@ -2989,10 +4689,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 10,
    "present": true
@@ -3023,10 +4744,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 21,
    "present": true
@@ -3057,10 +4799,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 67,
    "present": true
@@ -3091,10 +4854,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "saved-results",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 626,
    "present": true
@@ -3125,11 +4909,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 111,
    "present": true
   },
@@ -3166,10 +4964,45 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "benchmark",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 129,
    "present": true
@@ -3200,12 +5033,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
-   "lines": 217,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 280,
    "present": true
   },
   "scripts/sp100_members.txt": {
@@ -3234,11 +5088,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 104,
    "present": true
   },
@@ -3275,10 +5143,45 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "benchmark",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 35,
    "present": true
@@ -3309,12 +5212,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
-   "lines": 191,
+   "lines": 192,
    "present": true
   },
   "strategy-evaluation/README.md": {
@@ -3343,11 +5267,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "inventoried",
    "lines": 85,
    "present": true
   },
@@ -3377,10 +5315,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "reviewed",
    "lines": 15,
    "present": true
@@ -3418,11 +5377,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 17,
    "present": true
   },
@@ -3431,12 +5411,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -3461,10 +5441,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 3,
    "present": true
@@ -3474,12 +5475,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 92.59,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 95.87,
     "missing_branches": 4,
     "missing_lines": 6,
     "num_branches": 54,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 188
    },
    "first_seen": "2026-11-01",
@@ -3518,10 +5519,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
    "last_status": "partially_reviewed",
    "lines": 378,
    "present": true
@@ -3531,12 +5560,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 92.86,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 96.7,
     "missing_branches": 3,
     "missing_lines": 3,
     "num_branches": 42,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 140
    },
    "first_seen": "2026-11-01",
@@ -3568,12 +5597,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
-   "lines": 226,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "reviewed",
+   "lines": 230,
    "present": true
   },
   "strategy-evaluation/src/invest_evaluation/engine.py": {
@@ -3581,13 +5638,13 @@
    "category": "source",
    "coverage": {
     "branch_pct": 89.62,
-    "date": "2026-11-01",
-    "line_pct": 93.69,
+    "date": "2026-11-08",
+    "line_pct": 93.83,
     "missing_branches": 11,
     "missing_lines": 14,
     "num_branches": 106,
-    "run_id": "repo-audit-2026-11-01",
-    "statements": 290
+    "run_id": "repo-audit-2026-11-08",
+    "statements": 299
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -3625,12 +5682,54 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
-   "lines": 579,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 608,
    "present": true
   },
   "strategy-evaluation/src/invest_evaluation/metrics.py": {
@@ -3638,12 +5737,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 97.92,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 98.71,
     "missing_branches": 1,
     "missing_lines": 2,
     "num_branches": 48,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 184
    },
    "first_seen": "2026-11-01",
@@ -3682,11 +5781,46 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 491,
    "present": true
   },
@@ -3695,12 +5829,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 93.75,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 97.5,
     "missing_branches": 3,
     "missing_lines": 3,
     "num_branches": 48,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 192
    },
    "first_seen": "2026-11-01",
@@ -3739,11 +5873,46 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 429,
    "present": true
   },
@@ -3752,12 +5921,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 93.55,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 97.88,
     "missing_branches": 4,
     "missing_lines": 1,
     "num_branches": 62,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 174
    },
    "first_seen": "2026-11-01",
@@ -3796,11 +5965,46 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "cross-check",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 312,
    "present": true
   },
@@ -3809,12 +6013,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 91.67,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 94.87,
     "missing_branches": 1,
     "missing_lines": 1,
     "num_branches": 12,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 27
    },
    "first_seen": "2026-11-01",
@@ -3846,11 +6050,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 79,
    "present": true
   },
@@ -3859,12 +6084,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 83.33,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 92.42,
     "missing_branches": 5,
     "missing_lines": 5,
     "num_branches": 30,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 102
    },
    "first_seen": "2026-11-01",
@@ -3903,11 +6128,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 213,
    "present": true
   },
@@ -3916,12 +6169,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 89.47,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 94.48,
     "missing_branches": 4,
     "missing_lines": 4,
     "num_branches": 38,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 107
    },
    "first_seen": "2026-11-01",
@@ -3960,11 +6213,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 202,
    "present": true
   },
@@ -3973,12 +6247,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 100.0,
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 26,
-    "run_id": "repo-audit-2026-11-01",
+    "run_id": "repo-audit-2026-11-08",
     "statements": 80
    },
    "first_seen": "2026-11-01",
@@ -4017,11 +6291,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "workflow",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
    "lines": 240,
    "present": true
   },
@@ -4051,10 +6353,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 19,
    "present": true
@@ -4085,10 +6408,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 73,
    "present": true
@@ -4119,12 +6463,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
-   "lines": 511,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 990,
    "present": true
   },
   "strategy-evaluation/tests/test_metrics.py": {
@@ -4153,10 +6525,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 186,
    "present": true
@@ -4187,10 +6580,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 439,
    "present": true
@@ -4221,10 +6635,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 851,
    "present": true
@@ -4255,10 +6690,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 425,
    "present": true
@@ -4289,10 +6745,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 96,
    "present": true
@@ -4323,12 +6800,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
-   "lines": 390,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 394,
    "present": true
   },
   "tests/test_quantile_consistency.py": {
@@ -4357,10 +6862,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-01",
+   "last_seen": "2026-11-08",
    "last_status": "checked_automatically",
    "lines": 99,
    "present": true
@@ -4391,12 +6917,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "tests-run",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "deep-read",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-01",
-   "last_status": "checked_automatically",
-   "lines": 211,
+   "last_reviewed": "2026-11-08",
+   "last_seen": "2026-11-08",
+   "last_status": "partially_reviewed",
+   "lines": 276,
    "present": true
   },
   "uv.lock": {
@@ -4432,11 +6986,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-01",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "config",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-08",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-08",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-01",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-08",
+   "last_status": "checked_automatically",
    "lines": 1517,
    "present": true
   }
@@ -4447,6 +7022,12 @@
    "date": "2026-11-01",
    "inventory_files": 110,
    "run_id": "repo-audit-2026-11-01"
+  },
+  {
+   "credited": 255,
+   "date": "2026-11-08",
+   "inventory_files": 111,
+   "run_id": "repo-audit-2026-11-08"
   }
  ],
  "schema": 1,
@@ -4460,6 +7041,14 @@
    "data-mining-framework/tests/test_diagnostics.py",
    "data-mining-framework/tests/test_evidence.py",
    "data-mining-framework/tests/test_expressions.py"
+  ],
+  "2026-11-08": [
+   "data-mining-framework/tests/test_ledger.py",
+   "data-mining-framework/tests/test_reporting.py",
+   "data-mining-framework/tests/test_search_and_inference.py",
+   "data-pipeline/data-preparation/tests/test_bundle.py",
+   "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+   "data-pipeline/data-preparation/tests/test_point_in_time.py"
   ]
  }
 }

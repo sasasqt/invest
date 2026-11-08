@@ -21,3 +21,26 @@ date,check,minutes,findings,findings another routine already had,unique findings
 2026-11-01,s6 test-quality deep read (mining tests slice),10,0 (gap noted: no ts-op-over-universe test),0,0,"GPT audit 2026-10-31 (its coverage.csv: test_expressions.py reviewed in full, test_engine.py partially, the other test files inventoried only)"
 2026-11-01,s6 GPT cross-check (GA-1 own check; GA-2 hunt repro),8,1 (GA-1 two-model confirmation),2 (GA-1 by GPT; GA-2 = BH-2026-10-21-2),0,GPT audit 2026-10-31
 2026-11-01,s6 exploration: gzip artifact bytes; CLI defaults vs docs,3,1 (gzip MTIME),0,1,none
+2026-11-08,s2 uv lock --check + pyproject consistency + dependency declarations,2,0,0,0,none (GPT audit 2026-11-02 read pyprojects statically)
+2026-11-08,s2 ci.yml pins/permissions + docs commands vs ci.yml,2,0,0,0,docs audit (DA-2026-10-31-12 still open; fix in PR #35)
+2026-11-08,s2 portability static scan (encoding/newline/rename),3,1 (7 new default-encoding test sites; consistency row + recommendation RA-2026-11-08-6),1 (BUILD-03 class),0,GPT audit static scan; bug fix routine REVIEW-17/REVIEW-40/41 (ledger CRLF) found the same class in PRs #38/#40
+2026-11-08,s3 checks (3.13),6,0,0,0,GitHub CI same SHA (green)
+2026-11-08,s3 checks (3.11),8,0,0,0,GitHub CI same SHA (green)
+2026-11-08,s3 wheels job,4,0 (RA-2026-11-01-3 re-confirmed with pandas 3.1.1),1 (RA-2026-11-01-3),0,GitHub CI same SHA (green; warnings not surfaced)
+2026-11-08,s3 independent installs x3,3,0,0,0,GitHub CI same SHA
+2026-11-08,s3 flaky detection (hash-seed repeat; 3.11 vs 3.13 outcomes),4,0,0,0,none
+2026-11-08,s3 GitHub parity (job-level),1,0,0,0,none
+2026-11-08,s4 replay at recorded revision + compare_record,2,0,0,0,bug hunt real-data replay (not comparable)
+2026-11-08,s4 replay at main + drift attribution + doc numbers,4,0,0,0,docs audit numbers check (HISTORICAL_BASELINE rows)
+2026-11-08,s4 ledger validity,1,0,0,0,none
+2026-11-08,s5 benchmarks (8 cases),20,0,0,0,none
+2026-11-08,s6 statistics lens (29 metrics recomputed from daily.csv),3,0,0,0,bug hunt Wednesday statistics check (synthetic run only)
+2026-11-08,s6 reported-outputs lens (report cells vs metrics.json),2,0 by the run (RA-2026-11-01-4 re-confirmed); the window gap seen here became RA-2026-11-08-3 through reviewer 2,1 (RA-2026-11-01-4),0,none
+2026-11-08,s6 timing lens (prefix invariance),2,0,0,0,bug hunt causality tests (not comparable)
+2026-11-08,s6 contracts lens (formats round trip),1,0,0,0,tests/test_pipeline.py::test_prepare_mine_evaluate[fmt] (CI)
+2026-11-08,s6 test-quality deep read (6-file slice),8,0,0,0,GPT audit (test_bundle/test_cleaning/test_point_in_time partially reviewed 2026-11-02)
+2026-11-08,s6 GPT cross-check (5 items),8,0,3 (GA-2026-11-02-1/-3 and GA-2026-10-31-2 = existing rows),0,GPT audit 2026-11-02 to 2026-11-06
+2026-11-08,s6 open places from 2026-11-01 (6),6,0,0,0,none
+2026-11-08,s6 exploration: random draw yahoo.py (download path),12,2 (RA-2026-11-08-1 Windows publish; RA-2026-11-08-2 truncated response aborts),0,2,none (GPT reviewed yahoo.py 2026-10-31 without these; bug hunt rows BH-2026-10-23-7/BF-2026-11-01-2 are neighbours)
+2026-11-08,s6 re-runs of earlier checks on main (RA-2/3/4; BH-2026-10-21-2; K14),4,0,5 (all still open),0,bug fix routine (PR #39 fixes K14)
+2026-11-08,"s6 reviewer 2 (Fable 5.1 xhigh, blind; 14 min wall) and dispositions",16,"1 (RA-2026-11-08-3 evaluation window, found while settling RA-2026-11-01-5)",1 (C1 already in TODO.md BUILD-03),1,"bug fix routine reviews (Fable high) are per-PR, not per-main"
