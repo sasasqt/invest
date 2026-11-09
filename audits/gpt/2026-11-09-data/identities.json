@@ -1,0 +1,47 @@
+{
+  "source": {
+    "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+    "commit_date": "2026-11-02T02:27:01Z",
+    "tracked_entries": 147
+  },
+  "output": {
+    "base": "4586af034989a78e8453c56485b4b1027c2ee01e",
+    "branch": "gpt/repo-audits"
+  },
+  "runner": {
+    "active": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "pr36_candidate": "44aa87557404b0ae29561e82d35f6b46396527be",
+    "status": "candidate not adopted/qualified for this audit"
+  },
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "all_loaded_module_digests_verified": true
+  },
+  "peer": {
+    "sha": "f73a1d1136502f6faee9134a65301aa5a090c817",
+    "report": "audits/claude/2026-11-08.md",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+  },
+  "open_prs": {
+    "relevant": [
+      {
+        "number": 33,
+        "head": "56257f110dc55538c790957d3712d4c4372f095c",
+        "scope": "CSV/Yahoo date import fixes"
+      },
+      {
+        "number": 39,
+        "head": "c35059221022487a16c6030c7af15407b1491c59",
+        "scope": "bundle exactness and financial kind keys"
+      },
+      {
+        "number": 36,
+        "head": "44aa87557404b0ae29561e82d35f6b46396527be",
+        "scope": "runner fixes; unqualified for current execution"
+      }
+    ]
+  }
+}

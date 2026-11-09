@@ -1,0 +1,20 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "status_counts": {
+    "reviewed": 46,
+    "inventoried": 16,
+    "partially_reviewed": 16,
+    "checked_automatically": 11,
+    "blocked": 22
+  },
+  "remaining_unread_lines": 17312,
+  "remaining_unread_paths": 60,
+  "new_cumulative_lines": 759,
+  "closed_unread_paths": [
+    "data-pipeline/data-preparation/src/invest_data/cli.py",
+    "data-pipeline/data-preparation/src/invest_data/schemas.py",
+    "data-pipeline/data-preparation/tests/test_bundle.py",
+    "data-pipeline/data-preparation/tests/test_signal_metadata.py"
+  ],
+  "whole_repository": "incomplete"
+}

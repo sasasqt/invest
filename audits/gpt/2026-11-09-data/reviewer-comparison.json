@@ -1,0 +1,15 @@
+{
+  "candidate_id": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "reviewer1": "drop defect; optional P3 hardening",
+  "reviewer2": "drop as repository defect; retain only P3 optional contract-hardening improvement",
+  "agreement": true,
+  "verifier_b_used": false,
+  "final": "dropped as defect; history preserved",
+  "evidence_label": "dropped after independent static review",
+  "severity": "none demonstrated",
+  "confidence": "high static",
+  "reason": "Both reviewers independently found row available_date authoritative and current consumers manifest-agnostic. No current timing, metric or verdict impact.",
+  "counterfactual": "Contract requires exact field, a current consumer uses it, or isolated evidence changes decisions/metrics.",
+  "remaining_runtime_check": "blocked by unchanged isolation/dependency prerequisite"
+}

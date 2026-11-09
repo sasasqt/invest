@@ -1,7 +1,7 @@
 {
-  "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
-  "start_date": "2026-11-02",
-  "started_utc": "2026-11-02T02:00:18Z",
+  "run_id": "GA-2026-11-09-data-0300-CET",
+  "start_date": "2026-11-09",
+  "started_utc": "2026-11-09T02:03:24.601Z",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
   "profile": "rotating_daily_data_static_slice",
@@ -30,7 +30,7 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "model_effort": "gpt-6.1-sol exposed; effort unavailable",
+  "model_effort": "model gpt-6.1-sol; effort unavailable",
   "preflight": {
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_inventory_blobs": 111,
@@ -54,16 +54,21 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "Audit incomplete; 2026-11-06 engineering bounded scope complete and published; carried runner fail-stop blocker independently confirmed",
+  "status": "Audit incomplete; 2026-11-09 data bounded static scope complete; no new verified defect",
   "last_audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "last_audited_date": "2026-11-06",
-  "last_run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+  "last_audited_date": "2026-11-09",
+  "last_run_id": "GA-2026-11-09-data-0300-CET",
   "coverage_counts": {
-    "reviewed": 30,
-    "inventoried": 28,
-    "partially_reviewed": 15,
-    "checked_automatically": 16,
-    "blocked": 22
+    "tracked_files": 111,
+    "statuses": {
+      "reviewed": 46,
+      "inventoried": 16,
+      "partially_reviewed": 16,
+      "checked_automatically": 11,
+      "blocked": 22
+    },
+    "remaining_unread_lines": 17312,
+    "unread_paths": 60
   },
   "last_four_completed_runs": [
     {
@@ -89,7 +94,7 @@
       "confirmed_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations"
     }
   ],
-  "last_peer_revision": "4930f9ee9ecf65735822456392d2253fdc93bd9e",
+  "last_peer_revision": "f73a1d1136502f6faee9134a65301aa5a090c817",
   "peer_fingerprints": [
     "RA-2026-11-01-1",
     "RA-2026-11-01-2",
@@ -214,7 +219,7 @@
   },
   "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
-  "completed_utc": "2026-11-06T02:17:39Z",
+  "completed_utc": "2026-11-09T02:10:45.754Z",
   "total_elapsed_seconds_to_publication_verified": 1426.203018,
   "execution_recovery": {
     "date": "2026-10-31",
@@ -353,21 +358,6 @@
       "deferral_reason": "Proven isolation/installed graph unavailable; do not dispatch known unsafe runner"
     },
     {
-      "id": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
-      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py:534,538-544",
-      "source_fingerprint": "contract:fundamentals-available-at-override-policy",
-      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "priority": "P3",
-      "originating_item": "C3",
-      "originating_reviewer": "Reviewer1 + Reviewer2",
-      "risk": "Unsupported timing metadata can contradict fixed schema convention; no actual timing leak established",
-      "next_check": "Clarify metadata policy, then safe malformed publish/read and canonical control",
-      "first_queued_utc": "2026-11-02T09:34:01.210069+00:00",
-      "last_queued_utc": "2026-11-02T09:34:01.210069+00:00",
-      "status": "unverified concern, independently reviewed static lead",
-      "deferral_reason": "Policy and runtime evidence missing"
-    },
-    {
       "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
       "kind": "audit-tooling/static lead",
       "owner_field": "engineering",
@@ -404,6 +394,51 @@
       "originating_item": "REVIEW-17/K3",
       "next_check": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history.",
       "deferral_reason": "current runtime prerequisites missing; do not retry unchanged blocker daily"
+    },
+    {
+      "id": "OPEN-DATA-METADATA-IDENTITY-001",
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py:content hash construction",
+      "source_fingerprint": "contract:bundle-content-sha256:metadata-semantic-identity",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P3",
+      "originating_item": "Reviewer2 closing question 2026-11-09",
+      "originating_reviewer": "Reviewer 2",
+      "risk": "Documented content hash covers schema and rows, not metadata; whether semantic metadata belongs in dataset identity is an unreviewed contract decision, not a defect.",
+      "next_check": "Contract-wide review of hash consumers and timing/adjustment/currency/calendar identity; preserve current documented design unless a concrete false-equivalence consumer is found.",
+      "first_queued_utc": "2026-11-09T02:10:45.754Z",
+      "last_queued_utc": "2026-11-09T02:10:45.754Z",
+      "status": "queued lead; no defect asserted",
+      "deferral_reason": "outside bounded question"
+    },
+    {
+      "id": "OPEN-PEER-RA-2026-11-08-1",
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py:192,230",
+      "source_fingerprint": "peer:OPEN-PEER-RA-2026-11-08-1:9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P3",
+      "originating_item": "RA-2026-11-08-1",
+      "originating_reviewer": "Claude audit at f73a1d1136502f6faee9134a65301aa5a090c817",
+      "risk": "Low operational data-ingestion failure; peer evidence not independently rerun by this audit.",
+      "next_check": "Independently verify Windows snapshot publication claim on a supported isolated Windows route or precise API invariant.",
+      "first_queued_utc": "2026-11-09T02:10:45.754Z",
+      "last_queued_utc": "2026-11-09T02:10:45.754Z",
+      "status": "peer lead queued; cannot check today",
+      "deferral_reason": "bounded question and runtime gate"
+    },
+    {
+      "id": "OPEN-PEER-RA-2026-11-08-2",
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py:71-76,134-139,203-215",
+      "source_fingerprint": "peer:OPEN-PEER-RA-2026-11-08-2:9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P3",
+      "originating_item": "RA-2026-11-08-2",
+      "originating_reviewer": "Claude audit at f73a1d1136502f6faee9134a65301aa5a090c817",
+      "risk": "Low operational data-ingestion failure; peer evidence not independently rerun by this audit.",
+      "next_check": "Independently verify truncated-body failure twice with a negative control in a proven isolated runtime.",
+      "first_queued_utc": "2026-11-09T02:10:45.754Z",
+      "last_queued_utc": "2026-11-09T02:10:45.754Z",
+      "status": "peer lead queued; cannot check today",
+      "deferral_reason": "bounded question and runtime gate"
     }
   ],
   "followup_queue_history": [
@@ -462,6 +497,14 @@
       "utc": "2026-11-06T02:12:16Z",
       "resolution": "Keep existing audit item; independently confirmed static fail-stop invariant violation. Deduplicate to INV-PR36-001; no new GA ID. Runtime mismatch injection remains open.",
       "evidence": "2026-11-06-engineering/reviewer2/independent-verdict.json"
+    },
+    {
+      "id": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
+      "action": "resolved_dropped_as_defect",
+      "utc": "2026-11-09T02:10:45.754Z",
+      "run_id": "GA-2026-11-09-data-0300-CET",
+      "resolution": "Current contract and consumers derive timing from rows; optional P3 metadata hardening only.",
+      "evidence": "2026-11-09-data/reviewer-comparison.json"
     }
   ],
   "latest_runtime_validation": {
@@ -616,16 +659,70 @@
       "publication_status": "prepared; remote verification receipt follows",
       "elapsed_to_preparation_seconds": 520.318888,
       "usage": "tokens/cost/helper compute unavailable; no invented allowance"
+    },
+    {
+      "run_id": "GA-2026-11-09-data-0300-CET",
+      "date": "2026-11-09",
+      "field": "data",
+      "scheduled_for": "2026-11-09T02:00:00Z",
+      "started_utc": "2026-11-09T02:03:24.601Z",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+      "output_base": "4586af034989a78e8453c56485b4b1027c2ee01e",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "runner_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+      "question": "Does externally supplied fundamentals timing metadata alter point-in-time behavior, and can the carried available_at concern be resolved from all current callers/consumers?",
+      "status": "bounded static question complete; no new verified defect; product runtime blocked",
+      "budget_minutes": {
+        "total": 120,
+        "common": 20,
+        "field": 70,
+        "review_report": 30
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable",
+      "missed_dates_reconciliation": [
+        "2026-11-07: no final report observed; execution unknown",
+        "2026-11-08: no final report observed; execution unknown"
+      ],
+      "scope_counts": {
+        "tracked_files": 111,
+        "primary_semantic_lines": 888,
+        "new_cumulative_lines": 759,
+        "primary_by_bucket": {
+          "exploitation": 452,
+          "exploration": 307,
+          "mandatory_callers_contracts": 129
+        },
+        "helper_lines_separate": "not added",
+        "statuses": {
+          "reviewed": 46,
+          "inventoried": 16,
+          "partially_reviewed": 16,
+          "checked_automatically": 11,
+          "blocked": 22
+        },
+        "remaining_unread_lines": 17312,
+        "unread_paths": 60
+      },
+      "helper_count": 1,
+      "verifier_b_used": false,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "publication_status": "prepared; awaiting remote verification",
+      "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+      "completed_utc": "2026-11-09T02:10:45.754Z",
+      "usage": "tokens/cost/helper compute unavailable; no invented allowance",
+      "report": "2026-11-09.md"
     }
   ],
   "latest_current_run_evidence": {
-    "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+    "run_id": "GA-2026-11-09-data-0300-CET",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "runner_base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
-    "runner_head_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
-    "static_oracle": "2026-11-06-engineering/oracle-results.json",
-    "review": "2026-11-06-engineering/reviewer-comparison.json",
-    "ci": "2026-11-06-engineering/ci.json"
+    "selection": "2026-11-09-data/selection.json",
+    "review": "2026-11-09-data/reviewer-comparison.json",
+    "peer_report": "audits/claude/2026-11-08.md",
+    "ci": "2026-11-09-data/ci.json"
   },
   "report_summary_counts": {
     "new_verified_product_defects": 0,
@@ -649,8 +746,8 @@
     "fields": {
       "data": {
         "weekday": 0,
-        "last_rotation_visit": "2026-11-02",
-        "last_substantive_advance": "2026-11-02",
+        "last_rotation_visit": "2026-11-09",
+        "last_substantive_advance": "2026-11-09",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -663,43 +760,6 @@
             ],
             "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
             "blob": "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f"
-          },
-          {
-            "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
-            "unread_ranges": [
-              [
-                1,
-                252
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "d4d78d93f1e3751053d9c34fd73bf67c1102fa25"
-          },
-          {
-            "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
-            "unread_ranges": [
-              [
-                176,
-                374
-              ],
-              [
-                418,
-                418
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "7e7407928a2d8d50c0b0c46d9c818a1d69a23721"
-          },
-          {
-            "path": "data-pipeline/data-preparation/tests/test_bundle.py",
-            "unread_ranges": [
-              [
-                211,
-                229
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "ddf1ed68b4fcfcba46110ac01b8fda9f5d8d7f39"
           },
           {
             "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
@@ -715,17 +775,6 @@
             ],
             "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
             "blob": "5ec7d14c286b10e652a706a605efa14d7a7282bc"
-          },
-          {
-            "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
-            "unread_ranges": [
-              [
-                1,
-                288
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "7765a54f06829dc13ac674fb7c098a53273da904"
           },
           {
             "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
@@ -752,12 +801,21 @@
         ],
         "queue_refs": [
           "OPEN-FUNDAMENTALS-KEYS-001",
-          "OPEN-FUNDAMENTALS-AVAILABLE-AT-001"
+          "OPEN-DATA-METADATA-IDENTITY-001",
+          "OPEN-PEER-RA-2026-11-08-1",
+          "OPEN-PEER-RA-2026-11-08-2"
         ],
-        "deferrals": {},
+        "deferrals": {
+          "k14-runtime-controls": {
+            "date": "2026-11-09",
+            "reason": "current credential isolation and exact installed locked graph unavailable; active runner remains unqualified",
+            "consecutive_comparable_visits": 2,
+            "next_check": "Run malformed/read and valid-key controls twice across CSV/SQLite/Parquet only after a qualified runner exists."
+          }
+        },
         "reading_allocation": [
-          50,
-          50
+          40,
+          60
         ],
         "field_yield_history": [
           {
@@ -795,16 +853,108 @@
             "actual_deviation": "Shared generic validation and financial-reader boundary required more exploration than planned; no extra field appended.",
             "selection": "2026-11-02-data-rotation/selection.json",
             "research": "not scheduled; zero research reading/experiments; excluded from code denominator"
+          },
+          {
+            "run_id": "GA-2026-11-09-data-0300-CET",
+            "field": "data",
+            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "planned_percent": {
+              "exploitation": 50,
+              "exploration": 50
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 452,
+              "exploration": 307,
+              "mandatory_callers_contracts": 129
+            },
+            "actual_percent": {
+              "exploitation": 59.55204216073781,
+              "exploration": 40.44795783926219
+            },
+            "new_cumulative_lines_all_reviewers": 759,
+            "new_verified_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "root_count_scope": "No new root; carried available_at concern dropped as a defect after independent static review.",
+            "pooled_eligible_visits": 2,
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 0,
+              "exploration": 1.0256410256410255
+            },
+            "next_percent": {
+              "exploitation": 40,
+              "exploration": 60
+            },
+            "rule": "Across two comparable data visits, exploration retains one confirmed root and exploitation zero; increase exploration 10 points from the current 50/50 plan.",
+            "selection": "2026-11-09-data/selection.json",
+            "ranges": [
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    1,
+                    252
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "d4d78d93f1e3751053d9c34fd73bf67c1102fa25"
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    176,
+                    374
+                  ],
+                  [
+                    418,
+                    418
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "7e7407928a2d8d50c0b0c46d9c818a1d69a23721"
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    211,
+                    229
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "ddf1ed68b4fcfcba46110ac01b8fda9f5d8d7f39"
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    288
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "7765a54f06829dc13ac674fb7c098a53273da904"
+              }
+            ],
+            "helper_overlap_excluded": true,
+            "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
         "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
         "completed_advances": [
-          "Independent static trace of known K14 / REVIEW-16 through generic reader, financial reader and feature consumer; C1 dropped with separately derived reference controls."
+          "Independent static trace of known K14 / REVIEW-16 through generic reader, financial reader and feature consumer; C1 dropped with separately derived reference controls.",
+          "Resolved OPEN-FUNDAMENTALS-AVAILABLE-AT-001 as not a repository defect after full current-consumer trace and fresh independent review; closed four unread data ranges (759 cumulative lines)."
         ],
-        "validation_freshness": "current static scope; runtime blocked",
-        "next_item": "Known K14 malformed-read/control job after isolation; otherwise oldest feasible unread data range",
-        "last_substantive_run_id": "GA-2026-11-02-data-092201Z"
+        "validation_freshness": "current static scope at 9913f94b9b795bd9633a6a683e9f420301e400b3; same-SHA GitHub CI reused; custom runtime unavailable",
+        "next_item": "Known K14/GA-2026-11-02-3 runtime controls after a qualified runner; otherwise oldest remaining unread data range and queued peer Yahoo leads.",
+        "last_substantive_run_id": "GA-2026-11-09-data-0300-CET"
       },
       "mining": {
         "weekday": 1,
@@ -2448,7 +2598,7 @@
     "current_unread_lines": 17827,
     "current_unread_paths": 69
   },
-  "prepared_utc": "2026-11-06T02:12:16Z",
+  "prepared_utc": "2026-11-09T02:10:45.754Z",
   "elapsed_wall_seconds_from_supplied_run_context": 713,
   "elapsed_clock_limitation": "Wall-clock difference from scheduled run start; not exclusive model/tool CPU.",
   "delivery_observation": {
@@ -2626,19 +2776,18 @@
     }
   ],
   "current_run": {
-    "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
-    "date": "2026-11-06",
-    "field": "engineering",
-    "scheduled_for": "2026-11-06T02:00:00Z",
-    "started_utc": "2026-11-06T02:00:23.178639Z",
+    "run_id": "GA-2026-11-09-data-0300-CET",
+    "date": "2026-11-09",
+    "field": "data",
+    "scheduled_for": "2026-11-09T02:00:00Z",
+    "started_utc": "2026-11-09T02:03:24.601Z",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
-    "output_base": "1556fba01c84f6d9c8dc213bb5965ec4e0678cdd",
+    "output_base": "4586af034989a78e8453c56485b4b1027c2ee01e",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "runner_base_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
-    "runner_candidate_sha": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
-    "question": "Installed dependency/workspace-origin verification fail-stop before repository execution",
-    "status": "bounded static question complete; carried runner blocker independently confirmed; product runtime remains blocked",
+    "runner_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "question": "Does externally supplied fundamentals timing metadata alter point-in-time behavior, and can the carried available_at concern be resolved from all current callers/consumers?",
+    "status": "bounded static question complete; no new verified defect; product runtime blocked",
     "budget_minutes": {
       "total": 120,
       "common": 20,
@@ -2647,37 +2796,38 @@
     },
     "model": "gpt-6.1-sol",
     "effort": "unavailable",
-    "prepared_utc": "2026-11-06T02:12:16Z",
-    "report": "2026-11-06.md",
+    "missed_dates_reconciliation": [
+      "2026-11-07: no final report observed; execution unknown",
+      "2026-11-08: no final report observed; execution unknown"
+    ],
     "scope_counts": {
-      "product_tracked_files": 111,
-      "product_coverage_statuses": {
-        "reviewed": 30,
-        "inventoried": 28,
-        "partially_reviewed": 15,
-        "checked_automatically": 16,
+      "tracked_files": 111,
+      "primary_semantic_lines": 888,
+      "new_cumulative_lines": 759,
+      "primary_by_bucket": {
+        "exploitation": 452,
+        "exploration": 307,
+        "mandatory_callers_contracts": 129
+      },
+      "helper_lines_separate": "not added",
+      "statuses": {
+        "reviewed": 46,
+        "inventoried": 16,
+        "partially_reviewed": 16,
+        "checked_automatically": 11,
         "blocked": 22
       },
-      "runner_blobs_byte_verified": 8,
-      "primary_semantic_lines": 800,
-      "primary_by_bucket": {
-        "exploitation": 359,
-        "exploration": 246,
-        "mandatory_callers_contracts": 195
-      },
-      "helper_lines_separate": "not claimed",
-      "new_product_lines": 0
+      "remaining_unread_lines": 17312,
+      "unread_paths": 60
     },
     "helper_count": 1,
-    "helper_budget_minutes": 15,
+    "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
-    "elapsed_to_preparation_seconds": 713,
-    "usage": "tokens/cost/helper compute unavailable; no invented allowance",
-    "completed_utc": "2026-11-06T02:17:39Z",
-    "report_commit": "42689c9edbb442821eda17f33951ea59ea6a20ac",
-    "report_url": "https://github.com/sasasqt/invest/blob/42689c9edbb442821eda17f33951ea59ea6a20ac/audits/gpt/2026-11-06.md"
+    "publication_status": "prepared; awaiting remote verification",
+    "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+    "completed_utc": "2026-11-09T02:10:45.754Z",
+    "usage": "tokens/cost/helper compute unavailable; no invented allowance"
   },
   "publication_history": [
     {
@@ -3041,8 +3191,8 @@
     "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
   },
   "remaining_work_current_visit": [
-    "On corrected pinned bytes, force pre-build dependency drift and post-install version/origin failure in a credential-free container; assert no later repository subprocess starts; inventory unexpected distributions.",
-    "Do not use cd4d43b/e0181fc for new product execution until corrected and independently qualified.",
-    "Whole-repository product coverage remains incomplete; other fields retain their queues."
+    "Run GA-2026-11-02-3/K14 malformed and control cases only after credential isolation and exact installed locked graph are proven.",
+    "Independently check queued peer RA-2026-11-08-1/-2 on a later bounded data visit; no peer claim promoted today.",
+    "Whole-repository coverage remains incomplete; other fields retain their queues."
   ]
 }

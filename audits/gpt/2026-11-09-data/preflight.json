@@ -1,0 +1,46 @@
+{
+  "run_id": "GA-2026-11-09-data-0300-CET",
+  "date": "2026-11-09",
+  "field": "data",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+  "output_base": "4586af034989a78e8453c56485b4b1027c2ee01e",
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "all_loaded_module_digests_verified": true
+  },
+  "source_access": "passed",
+  "output_branch": "present; audit-only history",
+  "runner": {
+    "active": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
+    "qualified": false,
+    "reason": "known INV-PR32-001 route restriction and exact installed-graph fail-stop not qualified on active runner"
+  },
+  "isolation": {
+    "status": "blocked for product execution",
+    "reason": "current worker credential filesystem isolation and exact installed locked dependency graph not proven"
+  },
+  "profile": "rotating daily slice; trusted static only",
+  "product_runs": 0,
+  "remote_compute_dispatched": 0,
+  "missed_dates": [
+    {
+      "date": "2026-11-07",
+      "status": "no final report observed; execution unknown"
+    },
+    {
+      "date": "2026-11-08",
+      "status": "no final report observed; execution unknown"
+    }
+  ],
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable",
+  "budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "verification_reporting": 30
+  }
+}

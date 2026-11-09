@@ -1,0 +1,37 @@
+{
+  "run_id": "GA-2026-11-09-data-0300-CET",
+  "date": "2026-11-09",
+  "field": "data integrity and point-in-time correctness",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+  "conclusion": "Audit incomplete",
+  "bounded_scope": "complete",
+  "new_verified_defects": 0,
+  "new_unverified_concerns": 0,
+  "new_optional_recommendations": 0,
+  "dropped_candidates": 1,
+  "carried_material_findings": [
+    "GA-2026-11-02-3 / K14 remains open; PR #39 head c35059221022487a16c6030c7af15407b1491c59 is unmerged"
+  ],
+  "checks": {
+    "new_static": true,
+    "new_product_execution": 0,
+    "same_sha_ci": "six GitHub checks completed success on 2026-11-02; reused observation",
+    "runtime_gate": "blocked"
+  },
+  "advance": "Resolved available_at concern as not a defect; closed 759 cumulative semantic lines across four previously unread data ranges.",
+  "peer": {
+    "head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+    "report": "2026-11-08.md",
+    "new_data_leads": [
+      "RA-2026-11-08-1",
+      "RA-2026-11-08-2"
+    ],
+    "verdict": "queued, not independently checked"
+  },
+  "publication": "prepared; awaiting guarded remote verification",
+  "weekly": "2026-W45 already present; no duplicate. 2026-W46 aggregation deferred to Sunday or first subsequent report.",
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable",
+  "completed_utc": "2026-11-09T02:10:45.754Z"
+}

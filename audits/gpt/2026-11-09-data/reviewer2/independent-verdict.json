@@ -1,0 +1,29 @@
+{
+  "candidate_id": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
+  "reviewer": "fresh Reviewer 2",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_head_at_delegation": "4586af034989a78e8453c56485b4b1027c2ee01e",
+  "verdict": "drop as repository defect; retain only P3 optional contract-hardening improvement",
+  "severity": "none for demonstrated behavior",
+  "confidence": "high static; no runtime evidence",
+  "reason": "Contract and current consumers derive fundamentals visibility from row available_date. Contradictory non-required metadata is ignored by the sole production consumer and cannot change current timing or metrics.",
+  "checked": [
+    "schemas.py writer/reader and signal sibling",
+    "pit.py fundamentals_asof",
+    "data and mining CLI callers",
+    "expressions.py consumer",
+    "DATA_CONTRACT.md and architecture/README",
+    "point-in-time and expression tests",
+    "bundle content hash contract",
+    "open PR #39 and accessible audit state"
+  ],
+  "missing": [
+    "isolated contradictory-metadata controls in CSV/SQLite/Parquet",
+    "actual consumer using metadata for timing",
+    "maintainer decision making the field normative"
+  ],
+  "change_condition": "Contract requires exact field, a current consumer uses it, or isolated evidence changes decisions/metrics.",
+  "closing_answer": "Is that all? What is missing? What else could be wrong that nobody looked at? No additional defect found in checked places. Prioritized unchecked: isolated three-format control; external consumers; contract-wide review of metadata exclusion from content hash.",
+  "configuration": "model/effort not exposed to helper",
+  "runtime": "none; static only"
+}

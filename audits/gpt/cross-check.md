@@ -63,3 +63,13 @@ Peer head4930f9ee9ecf65735822456392d2253fdc93bd9e is unchanged, report2026-11-01
 ## 6 November 2026 engineering visit
 
 Peer branch `claude/repo-audits` remained at `4930f9ee9ecf65735822456392d2253fdc93bd9e` (latest report 1 November, source `90b5ca0`). Its accessible findings and cross-check contain no runner installed-graph fail-stop item, so no agree/disagree verdict is invented. The existing PR review finding `INV-PR36-001` was independently corroborated by this audit and retained under `OPEN-RUNNER-GRAPH-FAILSTOP-001`; this is cross-routine deduplication, not a Claude cross-check.
+
+## 9 November 2026 data visit
+
+Peer head advanced to `f73a1d1136502f6faee9134a65301aa5a090c817`, report `audits/claude/2026-11-08.md`, on the same product source `9913f94b9b795bd9633a6a683e9f420301e400b3`.
+
+- `RA-2026-11-08-1` (Windows Yahoo snapshot publication) — **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-1`; no Windows execution or independent stand-in run.
+- `RA-2026-11-08-2` (truncated chart response aborts download) — **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-2`; no safe product runtime.
+- Peer agrees that `GA-2026-11-02-3` / K14 remains open and points to unmerged PR #39. This visit did not rerun the blocked malformed-bundle controls.
+
+No peer claim was promoted from reading alone. Today's fundamentals-`available_at` candidate was independently reviewed by a fresh internal Reviewer 2, not by the peer routine.

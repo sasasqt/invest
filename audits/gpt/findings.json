@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
+  "run_id": "GA-2026-11-09-data-0300-CET",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "findings": [
     {
@@ -337,6 +337,13 @@
           "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "known/open",
           "scope": "static omission independently corroborated; runtime missing"
+        },
+        {
+          "date": "2026-11-09",
+          "run_id": "GA-2026-11-09-data-0300-CET",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "status": "known/open",
+          "scope": "runtime control still blocked; open PR #39 head c35059221022487a16c6030c7af15407b1491c59 proposes key validation but is unmerged"
         }
       ]
     },
@@ -504,6 +511,18 @@
       "counterfactual": "A credential-free forced mismatch that stops all later subprocesses on untouched corrected bytes would change the verdict.",
       "date": "2026-11-06",
       "evidence": "2026-11-06-engineering/ci.json"
+    },
+    {
+      "id": "C-2026-11-09-FUNDAMENTALS-AVAILABLE-AT",
+      "candidate": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
+      "disposition": "dropped as repository defect; optional P3 contract hardening only",
+      "reason": "The authoritative fundamentals contract and sole production consumer derive visibility from row available_date. The overridable, non-required metadata field is ignored by current consumers and cannot change default timing or metrics.",
+      "severity": "none demonstrated",
+      "confidence": "high static; runtime negative control blocked",
+      "counterfactual": "Keep if the contract requires the exact metadata value, a current consumer uses it for timing, or an isolated control changes decisions or metrics.",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "date": "2026-11-09",
+      "evidence": "2026-11-09-data/reviewer-comparison.json"
     }
   ],
   "run_history": [

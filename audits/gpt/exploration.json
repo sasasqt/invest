@@ -1,27 +1,28 @@
 {
-  "run_id": "GA-2026-11-02",
+  "run_id": "GA-2026-11-09-data-0300-CET",
   "planned_percent": {
     "exploitation": 50,
     "exploration": 50
   },
   "actual_primary_unique_lines": {
-    "exploitation": 1326,
-    "exploration": 1295
+    "exploitation": 452,
+    "exploration": 307,
+    "mandatory_callers_contracts": 129
   },
   "new_verified_distinct_root_causes": {
-    "exploitation": 1,
+    "exploitation": 0,
     "exploration": 0
   },
   "evidence_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations",
   "pooled_rates_per_1000_lines": {
-    "exploitation": 0.20234722784297854,
-    "exploration": 0
+    "exploitation": 0,
+    "exploration": 1.0256410256410255
   },
   "runs": 2,
   "completed_full_audits": 0,
   "next_planned_percent": {
-    "exploitation": 60,
-    "exploration": 40
+    "exploitation": 40,
+    "exploration": 60
   },
   "last_four_completed_runs": [
     {
@@ -48,10 +49,16 @@
     }
   ],
   "helper_overlap": "tracked in coverage, not added to primary reading denominators or root counts",
-  "selection": "2026-11-02-repro/selection.json",
+  "selection": {
+    "seed_material": "2026-11-09",
+    "sha256": "d66834b1e2633b31445f067d3c463d9b29e4990cf25a07f695578ef8d99b21d3",
+    "draw": "data-pipeline/data-preparation/tests/test_bundle.py",
+    "eligible_count": 8,
+    "lens": "metadata authority versus row-derived timing"
+  },
   "actual_percent": {
-    "exploitation": 50.59137733689432,
-    "exploration": 49.40862266310568
+    "exploitation": 59.55204216073781,
+    "exploration": 40.44795783926219
   },
   "limitations": "No detection-accuracy/recall claim; tiny sample, static scope, repeated prior reading included as actual effort; optional recommendation excluded.",
   "rotation_v3_visits": [
@@ -663,8 +670,99 @@
       "lens": "fail-closed dependency proof and orchestration ordering",
       "helper_overlap": "separate; excluded from primary denominator",
       "research": "not scheduled; zero papers/ideas/experiments"
+    },
+    {
+      "run_id": "GA-2026-11-09-data-0300-CET",
+      "field": "data",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "planned_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 452,
+        "exploration": 307,
+        "mandatory_callers_contracts": 129
+      },
+      "actual_percent": {
+        "exploitation": 59.55204216073781,
+        "exploration": 40.44795783926219
+      },
+      "new_cumulative_lines_all_reviewers": 759,
+      "new_verified_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "root_count_scope": "No new root; carried available_at concern dropped as a defect after independent static review.",
+      "pooled_eligible_visits": 2,
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 0,
+        "exploration": 1.0256410256410255
+      },
+      "next_percent": {
+        "exploitation": 40,
+        "exploration": 60
+      },
+      "rule": "Across two comparable data visits, exploration retains one confirmed root and exploitation zero; increase exploration 10 points from the current 50/50 plan.",
+      "selection": "2026-11-09-data/selection.json",
+      "ranges": [
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              1,
+              252
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "d4d78d93f1e3751053d9c34fd73bf67c1102fa25"
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              176,
+              374
+            ],
+            [
+              418,
+              418
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "7e7407928a2d8d50c0b0c46d9c818a1d69a23721"
+        },
+        {
+          "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              211,
+              229
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "ddf1ed68b4fcfcba46110ac01b8fda9f5d8d7f39"
+        },
+        {
+          "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              288
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "7765a54f06829dc13ac674fb7c098a53273da904"
+        }
+      ],
+      "helper_overlap_excluded": true,
+      "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
     }
   ],
-  "date": "2026-11-06",
-  "note": "Engineering field visit; known-root confirmation excluded from new-root yield."
+  "date": "2026-11-09",
+  "note": "Monday data visit; no research allocation. Actual split differs from planned because full carried-contract closure required more exploitation lines."
 }

@@ -1,0 +1,111 @@
+{
+  "run_id": "GA-2026-11-09-data-0300-CET",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "main_ranges": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "ranges": [
+        [
+          1,
+          252
+        ]
+      ],
+      "bucket": "exploitation",
+      "blob": "d4d78d93f1e3751053d9c34fd73bf67c1102fa25"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "ranges": [
+        [
+          176,
+          374
+        ],
+        [
+          418,
+          418
+        ],
+        [
+          461,
+          544
+        ]
+      ],
+      "bucket": "exploitation/mandatory",
+      "blob": "7e7407928a2d8d50c0b0c46d9c818a1d69a23721"
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "bucket": "mandatory callers",
+      "blob": "6e46b63080124740f5ba56b768f8af7b53507752"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+      "ranges": [
+        [
+          211,
+          229
+        ]
+      ],
+      "bucket": "exploration",
+      "blob": "ddf1ed68b4fcfcba46110ac01b8fda9f5d8d7f39"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "ranges": [
+        [
+          1,
+          115
+        ]
+      ],
+      "bucket": "mandatory controls",
+      "blob": "471dec9402e250c7af5201d06fa065d00f941b1c"
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "ranges": [
+        [
+          1,
+          288
+        ]
+      ],
+      "bucket": "exploration sibling",
+      "blob": "7765a54f06829dc13ac674fb7c098a53273da904"
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "ranges": [
+        [
+          1,
+          84
+        ]
+      ],
+      "bucket": "mandatory contract",
+      "blob": "602dfd528c0191c3f86de2d3bf20f0ef42e78067"
+    },
+    {
+      "path": "data-pipeline/data-preparation/README.md",
+      "ranges": [
+        [
+          1,
+          42
+        ]
+      ],
+      "bucket": "mandatory documentation",
+      "blob": "08ee9e2a1dbb23745d42c1bda33cb1e1b64c366b"
+    }
+  ],
+  "new_cumulative_lines": 759,
+  "primary_unique_lines_this_visit": 888,
+  "helper_overlap_excluded": true,
+  "code_search": [
+    "read_fundamentals",
+    "publish_fundamentals",
+    "fundamentals_asof",
+    "available_date_close"
+  ]
+}
