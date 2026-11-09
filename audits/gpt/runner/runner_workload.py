@@ -166,8 +166,11 @@ def capabilities_dropped(status):
 
 def prove_boundary(sentinel, host_pid, results):
     status = Path("/proc/self/status").read_text()
+    # Linux before 4.10 lists no NoNewPrivs line: the bit is then not proved, so the
+    # probe fails with its record written (StopIteration ended the workload before).
     no_new_privs = next(
-        line.split()[1] for line in status.splitlines() if line.startswith("NoNewPrivs:")
+        (line.split()[1] for line in status.splitlines() if line.startswith("NoNewPrivs:")),
+        None,
     )
     checks = {
         "unprivileged_uid": os.getuid() != 0,

@@ -2,6 +2,8 @@ import contextlib
 import copy
 import gzip
 import hashlib
+import io
+import ipaddress
 import json
 import os
 import re
@@ -383,6 +385,39 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(SnapshotError, "Symlink"):
             verify(self.reference, self.snapshot)
 
+    def test_a_linked_folder_inside_the_snapshot_is_rejected(self):
+        """Review round 19 (R19C-T2): only a linked raw file was tested, so a check of the
+        last path component alone passed every suite, and a raw path through a linked
+        folder that stays inside the snapshot verified."""
+        real = self.snapshot / "raw" / "real"
+        real.mkdir()
+        self.file.rename(real / "AAA.json")
+        try:
+            (self.snapshot / "raw" / "sub").symlink_to(real, target_is_directory=True)
+        except (OSError, NotImplementedError) as exc:  # Windows without the right
+            self.skipTest(f"cannot create a symbolic link here: {exc}")
+        self.expected["files"]["AAA"]["path"] = "raw/sub/AAA.json"
+        self.save()
+        with self.assertRaises(SnapshotError) as caught:
+            verify(self.reference, self.snapshot)
+        self.assertEqual(str(caught.exception), "Symlink in raw path for AAA")
+
+    def test_both_request_dates_must_be_text(self):
+        """Review round 19 (R19C-T2): only a missing request was tested, so a check of the
+        start date alone passed; a non-text end date then failed in date.fromisoformat
+        with Python's message instead of the manifest's reason."""
+        for key in ("start", "end"):
+            for value in (None, 20240101, ["2024-01-01"]):
+                with self.subTest(key=key, value=value):
+                    self.expected["request"] = {"start": "2010-01-01", "end": "2024-12-31"}
+                    self.expected["request"][key] = value
+                    self.save()
+                    with self.assertRaises(SnapshotError) as caught:
+                        verify(self.reference, self.snapshot)
+                    self.assertEqual(
+                        str(caught.exception), "Manifest request must name its start and end dates"
+                    )
+
     def test_duplicate_manifest_key_is_rejected(self):
         (self.snapshot / "snapshot.json").write_text('{"request":{},"request":{}}')
         with self.assertRaisesRegex(SnapshotError, "Duplicate"):
@@ -614,6 +649,55 @@ class EvidenceTests(unittest.TestCase):
         item = next(x for x in result if x["name"] == "checks (3.11)")
         self.assertEqual(item["job_id"], 2)
         self.assertEqual(item["conclusion"], "failure")
+
+    def test_each_row_reports_the_chosen_job_in_full(self):
+        """Review round 19 (R19C-T2): the tests read one or two fields of one row, so
+        eleven hand mutants of classify passed every suite: a job started at the request
+        time read as reused, the oldest of two unstarted attempts was chosen, a queued
+        newer attempt was hidden behind a started older one, rows came in set order, and
+        a row lost its job ID, status, conclusion, start time or link."""
+        import ci_evidence
+
+        def url(number):
+            return f"https://example.invalid/job/{number}"
+
+        def classify_one(*jobs):
+            result = classify({"head_sha": "pinned"}, list(jobs), "pinned", requested)
+            self.assertEqual([row["name"] for row in result], sorted(ci_evidence.EXPECTED_JOBS))
+            return next(x for x in result if x["name"] == "checks (3.11)")
+
+        requested = "2026-10-31T07:40:00Z"
+        started = self.job(requested, id=7, status="in_progress", conclusion=None, html_url=url(7))
+        self.assertEqual(
+            classify_one(started),
+            {
+                "name": "checks (3.11)",
+                "job_id": 7,
+                "status": "in_progress",
+                "conclusion": None,
+                "evidence": "fresh",  # started at the request time, not before it
+                "started_at": requested,
+                "url": url(7),
+            },
+        )
+        queued = self.job(None, id=3, status="queued", conclusion=None, html_url=url(3))
+        cancelled = self.job(None, id=4, status="completed", conclusion="cancelled")
+        cancelled["html_url"] = url(4)
+        pending = {
+            "name": "checks (3.11)",
+            "job_id": 4,
+            "status": "completed",
+            "conclusion": "cancelled",
+            "evidence": "pending_not_started",
+            "started_at": None,
+            "url": url(4),
+        }
+        self.assertEqual(classify_one(cancelled, queued), pending)
+        self.assertEqual(classify_one(queued, cancelled), pending)
+        # A newer attempt that has not started yet keeps an older started one from
+        # counting as the evidence.
+        older = self.job("2026-10-31T07:41:00Z", id=2, html_url=url(2))
+        self.assertEqual(classify_one(older, cancelled), pending)
 
 
 REAL_HOST_TOOL = isolated_runner.host_tool
@@ -1222,6 +1306,145 @@ class PortableHostTests(unittest.TestCase):
                     with self.assertRaisesRegex(RuntimeError, "No CA bundle"):
                         ca_bundle(Path(directory))
 
+    def test_container_removal_is_forced_and_verified_among_stopped_containers(self):
+        """Review round 19 (R19A-T1), P1: only the listing's exit status and output were
+        tested, so leaving out the forced removal, its --force or its timeout, the
+        listing's --all (Docker lists a stopped container only with it), its anchored
+        name filter, or the cleaned environment of either call passed every suite."""
+        calls = []
+
+        def docker(argv, **kwargs):
+            calls.append((list(argv), kwargs))
+            return subprocess.CompletedProcess(argv, 0, "", "")
+
+        name = "invest-audit-" + "0" * 32
+        env = {"AUDIT_HOST_CANARY": "NON_SECRET_HOST_ENV_FIXTURE"}
+        with (
+            patch("isolated_runner.program", return_value="/abs/docker"),
+            patch("isolated_runner.run_captured", side_effect=docker),
+        ):
+            self.assertIs(isolated_runner.remove_container(name, env), True)
+        host = f"--host={isolated_runner.DOCKER_ENDPOINT}"
+        self.assertEqual(
+            [argv for argv, _ in calls],
+            [
+                ["/abs/docker", host, "container", "rm", "--force", name],
+                [
+                    "/abs/docker",
+                    host,
+                    "container",
+                    "ls",
+                    "--all",
+                    "--filter",
+                    f"name=^/{name}$",
+                    "--format",
+                    "{{.ID}}",
+                ],
+            ],
+        )
+        for argv, kwargs in calls:
+            with self.subTest(step=argv[3]):
+                self.assertIs(kwargs.get("env"), env)
+                self.assertEqual(kwargs.get("timeout"), 30)
+
+    @unittest.skipIf(os.name == "nt", "Windows has no executable bit")
+    def test_a_file_without_the_executable_bit_is_skipped(self):
+        """Review round 19 (R19A-T2): no test had a non-executable file of a program's
+        name ahead of the real one, so dropping the X_OK check passed the suites (the
+        runner then failed to start the shadowing file instead of using the program)."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for folder, mode in (("first", 0o644), ("second", 0o755)):
+                (root / folder).mkdir()
+                (root / folder / "tool").write_text("", encoding="utf-8")
+                (root / folder / "tool").chmod(mode)
+            listed = os.pathsep.join([str(root / "first"), str(root / "second")])
+            with patch.dict(os.environ, {"PATH": listed}):
+                self.assertEqual(host_tool("tool"), str(root / "second" / "tool"))
+
+    @unittest.skipIf(os.name == "nt", "simulates the Windows lookup with POSIX file names")
+    def test_windows_lookup_never_takes_a_bare_name_without_a_listed_suffix(self):
+        """Review round 19 (R19A-T2): a file named exactly like the program but without a
+        PATHEXT suffix (CreateProcess would append .exe to it) was never in a test folder,
+        so also trying the bare name first passed the suites."""
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            for filename in ("tool", "tool.bat"):
+                (folder / filename).write_text("", encoding="utf-8")
+                (folder / filename).chmod(0o755)
+            with (
+                patch.object(isolated_runner.os, "name", "nt"),
+                patch.object(isolated_runner.os.path, "splitdrive", lambda path: ("C:", path)),
+                patch.dict(os.environ, {"PATH": directory, "PATHEXT": ".BAT"}),
+            ):
+                self.assertEqual(host_tool("tool"), str(folder / "tool.bat"))
+
+    def test_an_image_id_with_trailing_text_is_refused(self):
+        """Review round 19 (R19A-T2): only a tag was tested, so matching the image ID's
+        start instead of all of it passed the suites."""
+        for image in ("sha256:" + "0" * 64 + "-mutable", "sha256:" + "0" * 64 + "\n"):
+            with self.subTest(image=image), self.assertRaises(ValueError) as caught:
+                execution_command(image, "/tmp/a", "/tmp/b", "/tmp/c", None, None, 1, 1)
+            self.assertEqual(
+                str(caught.exception), "Execution requires a recorded immutable image ID"
+            )
+
+    def test_a_file_and_a_folder_of_the_same_name_are_refused_as_listed(self):
+        """Review round 19 (R19A-T2): a crafted tree can hold a file and a folder of the
+        same name. Only names differing in case were tested, so dropping the file/folder
+        kind from the clash check passed the suites (the refusal then came only while
+        writing, as an alias on this host)."""
+        rows = [("100644", "blob", "a"), ("100644", "blob", "a/b")]
+        with self.assertRaises(ValueError) as caught:
+            source_entries(listing(*rows))
+        self.assertEqual(str(caught.exception), "Source paths clash when case is ignored: a/b")
+
+    def test_host_uv_has_a_timeout(self):
+        """Review round 19 (R19A-T3): no test reached host_uv's timeout, so dropping it
+        passed the suites and a hanging uv would hold the runner past every deadline."""
+        with patch("isolated_runner.checked", return_value="") as called:
+            flags = ["--no-config", "--offline", "--no-build", "--no-python-downloads"]
+            isolated_runner.host_uv(["/abs/uv", "lock", *flags])
+        self.assertEqual(called.call_args.kwargs, {"timeout": 600})
+
+    def test_a_folder_where_a_ca_bundle_is_expected_is_skipped(self):
+        """Review round 19 (R19A-T2): only files were tested, so accepting any existing
+        path passed the suites; a folder would reach the build's secret and fail it."""
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory) / "system.pem"
+            folder.mkdir()
+            bundle = Path(directory) / "python.pem"
+            bundle.write_text("-----BEGIN CERTIFICATE-----\n", encoding="ascii")
+            paths = isolated_runner.ssl.DefaultVerifyPaths(
+                str(bundle), None, "SSL_CERT_FILE", str(bundle), "SSL_CERT_DIR", None
+            )
+            with (
+                patch.object(isolated_runner, "SYSTEM_CA_BUNDLE", str(folder)),
+                patch.object(isolated_runner.ssl, "get_default_verify_paths", return_value=paths),
+            ):
+                self.assertEqual(ca_bundle(Path(directory)), bundle)
+
+    def test_a_docker_daemon_query_that_times_out_blocks_as_unreachable(self):
+        """Review round 19 (R19A-T3): only a failing `docker info` was tested, so catching
+        RuntimeError alone passed the suites, and a hanging daemon then ended in a
+        traceback with no runner.json instead of the documented blocked result."""
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "output"
+            argv = ["isolated_runner.py", "--source", directory, "--expected-sha", "0" * 40]
+            argv += ["--python-version", "3.11", "--output", str(output)]
+            hung = subprocess.TimeoutExpired(["docker", "info"], 60)
+            with (
+                patch.object(sys, "argv", argv),
+                patch("isolated_runner.host_tool", return_value="/abs/docker"),
+                patch("isolated_runner.checked", side_effect=hung) as called,
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                self.assertEqual(isolated_runner.main(), 2)
+            self.assertEqual(called.call_args.kwargs["timeout"], 60)
+            report = json.loads((output / "results/runner.json").read_text("utf-8"))
+            self.assertEqual(report, {"status": "blocked", "reason": "Docker daemon unreachable"})
+            self.assertFalse((output / "verified-source").exists())
+
 
 FIXTURE_GIT = dict(
     os.environ,
@@ -1825,6 +2048,43 @@ class StagingSafetyTests(unittest.TestCase):
                         stage_source(source, root / f"staged-{number}-{mode}", revision)
                     self.assertEqual(str(caught.exception), message)
 
+    def test_a_path_query_or_pack_step_killed_by_a_signal_names_the_signal(self):
+        """Review round 19 (R19A-T4): round 18 pinned negative statuses for the listings,
+        checked() and read_blobs, not for checked_path or the two pack steps, so
+        `returncode > 0` there still passed every suite: a killed path query (no output)
+        read as "No Git object store in the common Git folder: ." (the current folder),
+        and a killed pack-objects or index-pack surfaced as the next Git step's error."""
+        real_run = isolated_runner.run_captured
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n", "d/b.txt": b"b\n"})
+            # checked_path names the program file (git.exe on Windows); the pack steps say git.
+            program_name = Path(isolated_runner.program("git")).name
+            cases = {
+                "common Git folder query": (
+                    lambda argv: "--git-common-dir" in argv,
+                    f"{program_name} exited -9: ",
+                ),
+                "pack-objects": (lambda argv: "pack-objects" in argv, "git exited -9: "),
+                "index-pack": (lambda argv: "index-pack" in argv, "git exited -9: "),
+            }
+            for number, (case, (matches, message)) in enumerate(cases.items()):
+
+                def killed(argv, matches=matches, **kwargs):
+                    if matches([str(item) for item in argv]):
+                        return subprocess.CompletedProcess(argv, -9, b"", b"")
+                    return real_run(argv, **kwargs)
+
+                for mode in ("1", "0"):
+                    with (
+                        self.subTest(case, CONTRACT_CHECKS=mode),
+                        patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                        patch("isolated_runner.run_captured", side_effect=killed),
+                        self.assertRaises(RuntimeError) as caught,
+                    ):
+                        stage_source(source, root / f"killed-{number}-{mode}", revision)
+                    self.assertEqual(str(caught.exception), message)
+
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
         """Review round 12 (R12C-C1): with PYTHONLEGACYWINDOWSFSENCODING=1, os.fsdecode
@@ -2349,6 +2609,203 @@ class StagingSafetyTests(unittest.TestCase):
         self.assertTrue(runner_workload.capabilities_dropped(no_ambient))
         ambient = empty.replace("CapAmb:\t0000000000000000", "CapAmb:\t0000000000000400")
         self.assertFalse(runner_workload.capabilities_dropped(ambient))
+
+    def test_each_listed_capability_set_must_be_present_and_empty(self):
+        """Review round 19 (R19C-T1, W1): no test granted only the permitted or only the
+        effective set, or left out one of the three required lines, so a check that read
+        the bounding (and ambient) set alone passed every suite."""
+        names = ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")
+        for granted in ("CapPrm", "CapEff", "CapBnd"):
+            with self.subTest(granted=granted):
+                status = "".join(
+                    f"{name}:\t{'0000000000000400' if name == granted else '0' * 16}\n"
+                    for name in names
+                )
+                self.assertFalse(runner_workload.capabilities_dropped(status))
+        for missing in ("CapPrm", "CapEff", "CapBnd"):
+            with self.subTest(missing=missing):
+                status = "".join(f"{name}:\t{'0' * 16}\n" for name in names if name != missing)
+                self.assertFalse(runner_workload.capabilities_dropped(status))
+
+    @staticmethod
+    def proc_status(no_new_privs="1", **granted):
+        """A /proc/self/status text: every capability set empty unless ``granted``; the
+        seccomp line (mode 2 under Docker's default profile) precedes NoNewPrivs."""
+        sets = {name: 0 for name in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")}
+        sets.update(granted)
+        return (
+            "Name:\tpython\nUid:\t65534\t65534\t65534\t65534\n"
+            + "".join(f"{name}:\t{value:016x}\n" for name, value in sets.items())
+            + f"Seccomp:\t2\nNoNewPrivs:\t{no_new_privs}\n"
+        )
+
+    def probe_boundary(
+        self,
+        windows=False,
+        uid=65534,
+        status=None,
+        sentinel_present=False,
+        sentinel_hidden=False,
+        host_visible=False,
+        canary=False,
+        socket_present=False,
+        source_present=True,
+        source_writable=False,
+        connects=False,
+        read_back="allowed",
+    ):
+        """Run prove_boundary against a faked container: the status text, the Docker
+        socket and the host process's /proc entry are faked by path, the source folder,
+        the sentinel and the results folder are real, and so is the child interpreter.
+        ``sentinel_hidden`` hides a present sentinel from this process only, so the
+        child alone finds it. Returns the recorded checks, whether the probe raised, the
+        names left in the results folder and the addresses it tried to connect to."""
+        real_read, real_exists = Path.read_text, Path.exists
+        host_pid = 4242
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "input"
+            source.mkdir()
+            if source_present:
+                (source / "pyproject.toml").write_text("[project]\n", encoding="utf-8")
+            if not source_writable:
+                (source / ".audit-write-probe").mkdir()  # a write there fails even as root
+            results = root / "results"
+            results.mkdir()
+            sentinel = root / "host-only-sentinel"
+            if sentinel_present:
+                sentinel.write_text("NON_SECRET_OUTSIDE_FIXTURE", encoding="utf-8")
+            faked = {
+                "/var/run/docker.sock": socket_present,
+                f"/proc/{host_pid}/environ": host_visible,
+            }
+            if sentinel_hidden:
+                faked[str(sentinel)] = False
+            text = status if status is not None else self.proc_status()
+
+            def read_text(path, *args, **kwargs):
+                if str(path) == "/proc/self/status":
+                    return text
+                if path.name == "write-positive-control" and read_back != "allowed":
+                    return read_back
+                return real_read(path, *args, **kwargs)
+
+            def exists(path, *args, **kwargs):
+                if str(path) in faked:
+                    return faked[str(path)]
+                return real_exists(path, *args, **kwargs)
+
+            addresses = []
+
+            def connect(address, *args, **kwargs):
+                addresses.append(address)
+                if connects:
+                    return contextlib.nullcontext()
+                raise OSError("Network is unreachable")
+
+            with (
+                patch.object(Path, "read_text", read_text),
+                patch.object(Path, "exists", exists),
+                patch.object(runner_workload, "INPUT", source),
+                patch.object(runner_workload.os, "getuid", lambda: uid, create=True),
+                patch.object(runner_workload.socket, "create_connection", connect),
+                patch.dict(os.environ),
+            ):
+                os.environ.pop("AUDIT_HOST_CANARY", None)
+                if canary:
+                    os.environ["AUDIT_HOST_CANARY"] = "NON_SECRET_HOST_ENV_FIXTURE"
+                try:
+                    runner_workload.prove_boundary(
+                        None if windows else str(sentinel),
+                        None if windows else host_pid,
+                        results,
+                    )
+                    raised = False
+                except RuntimeError as error:
+                    self.assertIn("boundary probe failed", str(error))
+                    raised = True
+            checks = json.loads((results / "boundary.json").read_text(encoding="utf-8"))
+            return checks, raised, sorted(path.name for path in results.iterdir()), addresses
+
+    @unittest.skipUnless(os.name == "posix", "the workload runs only in the Linux container")
+    def test_each_boundary_probe_reports_what_it_found(self):
+        """Review round 19 (R19C-T1): the only host test of prove_boundary checked which
+        keys boundary.json names, never their values, and the Docker controls run only a
+        container where every probe passes; 18 of 20 hand mutants (a probe that always
+        reports success, the child checking nothing, a wrong status line, the last check
+        left out of the verdict) passed every suite. Each probe must report what it found,
+        and any probe that fails must stop the workload."""
+        child = "child_inherits_outside_file_and_env_denial"
+        expected = {
+            "unprivileged_uid": True,
+            "no_new_privileges": True,
+            "no_capabilities": True,
+            "outside_fixture_absent": True,
+            "host_process_not_visible": True,
+            "host_canary_env_absent": True,
+            "container_socket_absent": True,
+            "source_readable": True,
+            "source_write_denied": True,
+            "network_connection_denied": True,
+            child: True,
+            "output_writable": True,
+        }
+        checks, raised, left, addresses = self.probe_boundary()
+        self.assertEqual(checks, expected)
+        self.assertFalse(raised)
+        self.assertEqual(left, ["boundary.json"])  # the write control is removed again
+        # The network probe must aim at an address outside the container: a loopback
+        # address is refused under any network setting.
+        self.assertTrue(addresses)
+        self.assertTrue(all(ipaddress.ip_address(host).is_global for host, _ in addresses))
+        broken = {
+            ("unprivileged_uid",): {"uid": 0},
+            ("no_new_privileges",): {"status": self.proc_status(no_new_privs="0")},
+            ("no_capabilities",): {"status": self.proc_status(CapBnd=0xA80425FB)},
+            ("outside_fixture_absent", child): {"sentinel_present": True},
+            ("host_process_not_visible",): {"host_visible": True},
+            ("host_canary_env_absent", child): {"canary": True},
+            ("container_socket_absent",): {"socket_present": True},
+            ("source_readable",): {"source_present": False},
+            ("source_write_denied",): {"source_writable": True},
+            ("network_connection_denied",): {"connects": True},
+            (child,): {"sentinel_present": True, "sentinel_hidden": True},
+            ("output_writable",): {"read_back": "changed"},
+        }
+        for failing, setting in broken.items():
+            with self.subTest(failing=failing):
+                checks, raised, left, _ = self.probe_boundary(**setting)
+                self.assertEqual(checks, {key: key not in failing for key in expected})
+                self.assertTrue(raised)
+        # A Windows host passes neither host probe; the child checks the environment only.
+        windows = {
+            key: value
+            for key, value in expected.items()
+            if key not in ("outside_fixture_absent", "host_process_not_visible", child)
+        } | {"child_inherits_env_denial": True}
+        checks, raised, _, _ = self.probe_boundary(windows=True)
+        self.assertEqual((checks, raised), (windows, False))
+        checks, raised, _, _ = self.probe_boundary(windows=True, canary=True)
+        self.assertEqual(
+            checks,
+            windows | {"host_canary_env_absent": False, "child_inherits_env_denial": False},
+        )
+        self.assertTrue(raised)
+
+    @unittest.skipUnless(os.name == "posix", "the workload runs only in the Linux container")
+    def test_a_status_without_a_no_new_privs_line_fails_the_probe_with_its_record(self):
+        """Review round 19 (R19C-F1): Linux before 4.10 lists no NoNewPrivs line (the
+        capability check already allows the ambient line that Linux before 4.3 lacks), and
+        the probe ended with StopIteration: a traceback and no boundary.json."""
+        status = "".join(
+            line + "\n"
+            for line in self.proc_status().splitlines()
+            if not line.startswith(("NoNewPrivs:", "CapAmb:"))
+        )
+        checks, raised, left, _ = self.probe_boundary(status=status)
+        self.assertTrue(raised)
+        self.assertEqual(left, ["boundary.json"])
+        self.assertEqual([key for key, value in checks.items() if not value], ["no_new_privileges"])
 
     @unittest.skipUnless(sys.platform.startswith("linux"), "process groups and /proc")
     def test_a_workload_step_leaves_no_process_running(self):
@@ -2911,6 +3368,23 @@ class SemanticCoverageTests(unittest.TestCase):
                 else:
                     path.chmod(0o700)
                     shutil.rmtree(path)
+
+    def test_a_nested_entry_that_fails_the_gate_is_named_by_its_path(self):
+        """Review round 19 (R19C-T2): every refused entry in the tests sat at the output
+        root, so a reason that gave only the entry's last name (W5: the reason names it)
+        passed every suite."""
+        (self.root / "cases" / "S").mkdir(parents=True)
+        try:
+            os.symlink("missing-target", self.root / "cases" / "S" / "table.json")
+        except (OSError, NotImplementedError) as exc:  # Windows without the right
+            self.skipTest(f"cannot create a symbolic link here: {exc}")
+        with self.assertRaises(ValueError) as caught:
+            semantic_hash(self.root)
+        self.assertEqual(
+            str(caught.exception),
+            "Workflow output entry is not a plain file or folder: "
+            + str(Path("cases", "S", "table.json")),
+        )
 
     def test_an_output_deeper_than_the_recursion_limit_is_hashed(self):
         """Review round 12 (own check): os.walk and rglob recurse on Python 3.11, so a
@@ -3681,6 +4155,30 @@ class InstalledGraphTests(unittest.TestCase):
             verify_versions(parsed, {"demo": "1.2"}.__getitem__),
             [{"name": "demo", "version": "1.2"}],
         )
+
+    def test_the_verifier_prints_every_version_it_proved(self):
+        """Review round 19 (R19C-T2): the command-line test read only the keys of the
+        printed record, so a verifier that printed "resolved": [] after checking every
+        version (the installed-graph log is the evidence of what was proved) passed."""
+        import importlib.metadata
+
+        version = importlib.metadata.version("packaging")
+        script = Path(__file__).resolve().parent / "verify_installed.py"
+        with tempfile.TemporaryDirectory() as directory:
+            listed = Path(directory) / "requirements.txt"
+            listed.write_text(
+                f"# exported\npackaging=={version} \\\n    --hash=sha256:0\n", encoding="ascii"
+            )
+            run = subprocess.run(
+                [sys.executable, "-I", str(script), "--requirements", str(listed)],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+        self.assertEqual(run.returncode, 0, run.stderr)
+        printed = json.loads(run.stdout)
+        self.assertEqual(printed["resolved"], [{"name": "packaging", "version": version}])
+        self.assertEqual((printed["origins"], printed["python"]), ({}, sys.version))
 
     def test_the_verifier_checks_workspace_origins_only_with_a_prefix(self):
         """Round 14 (W6): the build environment is verified with the same script, and it

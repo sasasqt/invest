@@ -179,6 +179,61 @@ class ExecutionLogTests(unittest.TestCase):
         os.kill(int(done.stdout.split()[0]), signal.SIGTERM)
         self.assertLess(elapsed, 20, "the host process waited for the reader thread")
 
+    def lagging_reader(self, delay, first_only):
+        """Popen whose log reader waits ``delay`` seconds before a read."""
+        real = subprocess.Popen
+
+        class Lagging:
+            def __init__(self, inner):
+                self.inner, self.reads = inner, 0
+
+            def read1(self, size):
+                self.reads += 1
+                if self.reads == 1 or not first_only:
+                    time.sleep(delay)
+                return self.inner.read1(size)
+
+            def close(self):
+                self.inner.close()
+
+        def popen(*args, **kwargs):
+            process = real(*args, **kwargs)
+            process.stdout = Lagging(process.stdout)
+            return process
+
+        return patch("isolated_runner.subprocess.Popen", side_effect=popen)
+
+    def test_a_log_limit_the_reader_reaches_after_the_child_exited_still_fails(self):
+        """Review round 19 (R19A-T5): when the reader crosses the limit after the child
+        has exited, the wait loop ends without seeing it; no test reached the check after
+        the loop, so dropping it passed the suites and a cut log read as exit 0."""
+        script = "import sys; sys.stdout.write('x' * 2048)"
+        with self.lagging_reader(0.5, first_only=False):
+            result, reason = run_bounded([sys.executable, "-c", script], max_log_bytes=1024)
+        self.assertEqual((result.returncode, reason), (125, "log_limit"))
+        self.assertEqual(result.stdout, "x" * 1024)
+
+    def test_a_timed_out_child_keeps_the_log_it_wrote_before_the_deadline(self):
+        """Review round 19 (R19A-T5): no test had a reader still busy at the deadline, so
+        returning without waiting for it passed the suites and dropped the last lines a
+        timed-out container wrote, which are what a reader of execution.log needs."""
+        script = "import sys, time; print('last words', flush=True); time.sleep(30)"
+        with self.lagging_reader(1.5, first_only=True):
+            result, reason = run_bounded([sys.executable, "-c", script], timeout=0.5)
+        self.assertEqual((result.returncode, reason), (124, "timeout"))
+        self.assertEqual(result.stdout.split(), ["last", "words"])
+
+    def test_the_deadline_is_the_timeout_given(self):
+        """Review round 19 (R19A-T5): the timeout tests allowed up to 15 s for a 1 s
+        timeout, so a deadline twice as far passed the suites."""
+        script = "import time; time.sleep(30)"
+        started = time.monotonic()
+        result, reason = run_bounded([sys.executable, "-c", script], timeout=4)
+        elapsed = time.monotonic() - started
+        self.assertEqual((result.returncode, reason), (124, "timeout"))
+        self.assertGreaterEqual(elapsed, 4)
+        self.assertLess(elapsed, 6.5)
+
     def test_limits_must_be_positive(self):
         for limits in ({"timeout": 0}, {"max_log_bytes": 0}):
             with self.assertRaisesRegex(ValueError, "^execution limits must be positive$"):

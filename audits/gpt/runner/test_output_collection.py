@@ -10,6 +10,7 @@ import shutil
 import socket
 import stat
 import tempfile
+import threading
 import unittest
 from dataclasses import asdict
 from pathlib import Path
@@ -208,7 +209,10 @@ class CollectionCases:
                 self.assertEqual(result["status"], "rejected")
                 self.assertFalse(self.destination.exists())
                 self.assertNotIn(self.marker.decode(), captured.getvalue())
-                self.assertNotIn(self.marker, (self.evidence / "collection.json").read_bytes())
+                record = (self.evidence / "collection.json").read_bytes()
+                self.assertNotIn(self.marker, record)
+                # Written with newline="\n": no CRLF line ends on a Windows host either.
+                self.assertNotIn(b"\r\n", record)
                 self.assertFalse(any(p.is_symlink() for p in self.evidence.rglob("*")))
                 (self.evidence / "collection.json").unlink()
                 link.unlink()
@@ -239,6 +243,24 @@ class CollectionCases:
         with patch("output_collection.os.fstat", side_effect=grown):
             with self.assertRaisesRegex(RejectedOutput, "^summary size limit exceeded$"):
                 read_summaries(self.produced, self.method)
+
+    def test_a_summary_read_past_its_limit_stops_at_the_limit(self):
+        """Review round 19 (coverage): the read itself stops a summary that yields more
+        than 64 KiB after its checks (it grew while it was read); no test reached that
+        branch, so a copy without it read the whole file into memory unnoticed."""
+        (self.produced / "boundary.json").write_text("{}", encoding="utf-8")
+        real_read, reads = os.read, []
+
+        def growing(fd, size):
+            reads.append(size)
+            if len(reads) == 1:
+                return b" " * (SUMMARY_MAX_BYTES + 1)
+            return real_read(fd, size)
+
+        with patch("output_collection.os.read", side_effect=growing):
+            with self.assertRaisesRegex(RejectedOutput, "^summary size limit exceeded$"):
+                read_summaries(self.produced, self.method)
+        self.assertEqual(len(reads), 1)
 
     def test_an_output_file_that_grows_after_its_check_names_the_file_limit(self):
         """Mutation testing (round 12): the reason for an output file that grew past its
@@ -403,6 +425,101 @@ class CollectionCases:
         with patch("output_collection.os.read", side_effect=growing):
             self.rejected("output file changed during collection")
 
+    def test_a_file_rewritten_in_place_while_it_is_read_is_rejected(self):
+        """Review round 19: only a file that grew while it was read was tested, so a copy
+        that compared the size alone after the read collected a file whose bytes were
+        rewritten in place (same size, new times) while it was read."""
+        source = self.produced / "rewritten.log"
+        source.write_bytes(b"first part\n")
+        real_read, rewritten = os.read, []
+
+        def rewriting(fd, size):
+            data = real_read(fd, size)
+            if data and not rewritten:
+                rewritten.append(True)
+                before = os.stat(source)
+                with source.open("r+b") as stream:
+                    stream.write(b"FIRST PART\n")
+                # Set the time explicitly: a coarse clock can leave it unchanged.
+                os.utime(source, ns=(before.st_atime_ns, before.st_mtime_ns - 3600 * 10**9))
+            return data
+
+        with patch("output_collection.os.read", side_effect=rewriting):
+            self.rejected("^output file changed during collection$")
+        self.assertTrue(rewritten)
+
+    @POSIX_ONLY
+    def test_a_file_replaced_by_a_fifo_before_its_open_never_blocks(self):
+        """Review round 19: a FIFO is refused by name, but no test swapped one in after
+        that check, so a walk that opened files without O_NONBLOCK (or O_NOFOLLOW)
+        passed every suite; it waits for a writer that never comes. A timer stands in
+        for that writer so that such a copy fails here instead of hanging."""
+        target = self.produced / "table.csv"
+        target.write_bytes(b"a\n")
+        swapped, unblocked = [], []
+
+        def unblock():
+            try:  # succeeds only while a reader waits in a blocking open
+                os.close(os.open(target, os.O_WRONLY | os.O_NONBLOCK))
+                unblocked.append(True)
+            except OSError:
+                pass
+
+        timer = threading.Timer(5, unblock)
+
+        def fifo_after_check(original):
+            def lstat(folder, name):
+                info = original(folder, name)
+                if name == "table.csv" and not swapped:
+                    swapped.append(True)
+                    target.unlink()
+                    os.mkfifo(target)
+                    timer.start()
+                return info
+
+            return lstat
+
+        try:
+            with (
+                patch.object(DescriptorFolder, "lstat", fifo_after_check(DescriptorFolder.lstat)),
+                patch.object(PathFolder, "lstat", fifo_after_check(PathFolder.lstat)),
+            ):
+                self.rejected(f"^{LINKED}$")
+        finally:
+            timer.cancel()
+            if swapped:
+                timer.join()
+        self.assertEqual((swapped, unblocked), ([True], []))
+
+    def test_a_file_unlike_its_check_by_name_at_open_is_rejected(self):
+        """Review round 19: only the path walk's file ID was ever made to differ between
+        the check by name and the open, so a descriptor walk that compared no inode, size
+        or time there (I1: device, inode, size and times) passed every suite. The path
+        walk compares the file ID alone (stale size and times are tolerated above)."""
+        fields = ("st_ino",)
+        if self.method == "descriptor":
+            fields += ("st_size", "st_mtime_ns", "st_ctime_ns")
+        for field in fields:
+            with self.subTest(field=field):
+                self.fresh_output()
+                (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+
+                def shifted(original, field=field):
+                    def lstat(folder, name):
+                        info = original(folder, name)
+                        if name != "table.csv":
+                            return info
+                        values = {k: getattr(info, k) for k in dir(info) if k.startswith("st_")}
+                        return SimpleNamespace(**dict(values, **{field: values[field] - 1}))
+
+                    return lstat
+
+                with (
+                    patch.object(DescriptorFolder, "lstat", shifted(DescriptorFolder.lstat)),
+                    patch.object(PathFolder, "lstat", shifted(PathFolder.lstat)),
+                ):
+                    self.rejected("^output file changed during collection$")
+
     def test_output_exactly_at_each_limit_is_collected(self):
         (self.produced / "one").mkdir()
         (self.produced / "one/four").write_bytes(b"1234")
@@ -508,6 +625,38 @@ class CollectionCases:
         result = self.collect()
         self.assertEqual((self.destination / "binary.bin").read_bytes(), payload)
         self.assertEqual(result["files"][0]["sha256"], hashlib.sha256(payload).hexdigest())
+
+    @unittest.skipUnless(os.path.isdir("/proc/self/fd"), "Linux descriptor listing")
+    def test_a_collection_leaves_no_descriptor_open(self):
+        """Review round 19: no test counted open descriptors, so a walk that never closed
+        its folder descriptors passed every suite."""
+        (self.produced / "sub").mkdir()
+        (self.produced / "sub/table.csv").write_bytes(b"a\n")
+        (self.produced / "boundary.json").write_text("{}", encoding="utf-8")
+        before = sorted(os.listdir("/proc/self/fd"))
+        self.assertEqual(self.collect()["status"], "collected")
+        self.assertEqual(sorted(os.listdir("/proc/self/fd")), before)
+        shutil.rmtree(self.evidence)
+        self.evidence.mkdir()
+        os.mkfifo(self.produced / "sub/fifo")
+        self.rejected(f"^{LINKED}$")
+        self.assertEqual(sorted(os.listdir("/proc/self/fd")), before)
+
+    def test_a_destination_that_resolves_into_work_or_is_a_dangling_link_is_refused(self):
+        """Review round 19 (P2, always enforced): only destinations spelled inside the work
+        folder were tested, so a check without its resolved comparison (a link outside
+        the work folder that leads into it) or without its link test (a dangling link,
+        which exists() calls absent) passed every suite."""
+        self.link(self.root / "into-work", self.work, directory=True)
+        with self.assertRaisesRegex(
+            ValueError, "^collection destination must be outside the writable container mount$"
+        ):
+            collect_results(self.work, self.root / "into-work/copy", method=self.method)
+        self.link(self.destination, self.root / "nowhere", directory=True)
+        with self.assertRaisesRegex(ValueError, "^collection destination already exists$"):
+            self.collect()
+        self.assertTrue(self.destination.is_symlink())
+        self.assertEqual(sorted(p.name for p in self.evidence.iterdir()), ["workload"])
 
     def test_an_entry_on_another_device_is_rejected_by_name(self):
         """Review round 18: no test reached the cross-device folder refusal or the
@@ -1381,6 +1530,58 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
             self.rejected(LINKED)
         self.assertTrue(swapped)
 
+    @POSIX_ONLY  # as the parent test above: it renames a folder while its listing is open
+    def test_a_file_or_results_replaced_by_link_before_an_open_is_rejected_as_linked(self):
+        """Review round 19: only a subfolder was swapped for a link before the re-check of
+        the chain, so a re-check that skipped the file's own name, or started below the
+        results folder, passed every suite (the no-follow open, the file ID check or the
+        final check of the results folder then rejected the link with another reason)."""
+
+        def file_link():
+            (self.produced / "file").unlink()
+            self.link(self.produced / "file", self.canary)
+
+        def results_link():
+            real = self.work / "results-real"
+            self.produced.rename(real)
+            self.link(self.produced, real, directory=True)
+
+        for label, swap in (("file", file_link), ("results", results_link)):
+            with self.subTest(swapped=label):
+                self.fresh_output()
+                (self.produced / "file").write_bytes(b"ordinary")
+                real, swapped = PathFolder.lstat, []
+
+                def lstat(folder, name, real=real, swapped=swapped, swap=swap):
+                    info = real(folder, name)
+                    if name == "file" and not swapped:
+                        swapped.append(True)
+                        swap()
+                    return info
+
+                with patch.object(PathFolder, "lstat", lstat):
+                    self.rejected(f"^{LINKED}$")
+                self.assertTrue(swapped)
+
+    def test_a_results_folder_that_is_a_reparse_point_is_refused_by_name(self):
+        """Review round 19: a Windows junction is a folder with the reparse-point
+        attribute, not a link by mode, and no test gave the results folder that
+        attribute, so a check that tested only the mode passed every suite (the folder's
+        later re-check then refused it as changed). Modelled here on every host."""
+        (self.produced / "table.csv").write_bytes(b"ordinary output\n")
+        real = os.lstat
+
+        def lstat(path, *args, **kwargs):
+            info = real(path, *args, **kwargs)
+            if os.path.basename(path) != "results":
+                return info
+            fields = {k: getattr(info, k) for k in dir(info) if k.startswith("st_")}
+            attributes = fields.get("st_file_attributes", 0) | stat.FILE_ATTRIBUTE_REPARSE_POINT
+            return SimpleNamespace(**dict(fields, st_file_attributes=attributes))
+
+        with patch("output_collection.os.lstat", side_effect=lstat):
+            self.rejected(f"^{MISSING}$")
+
     @NEEDS_CHECKS
     def test_contract_check_catches_a_comparison_that_misses_a_different_file(self):
         """Review round 5 (B1): the I1 check repeated the type tests and never compared
@@ -1606,6 +1807,213 @@ class RoundSixteenCheckTests(unittest.TestCase):
             self.assertFalse(snapshot.exists())
             self.assertTrue((target / "keep").exists())
             self.assertTrue((target / "sub" / "keep2").exists())
+
+
+class RoundNineteenCheckTests(unittest.TestCase):
+    """Review round 19 (mutation testing): each clause of the I1, Q2 and Q3 checks must
+    fire on its own, and the I2 check must keep to its documented scope. The code's own
+    checks run first, so only a broken one lets a case reach a check; each case stands
+    in for that."""
+
+    I1 = "^I1: about to read an entry that is not the one-link regular file checked by name$"
+
+    @NEEDS_CHECKS
+    def test_each_clause_of_the_i1_check_reports_the_entry(self):
+        def changed(info, **fields):
+            values = {name: getattr(info, name) for name in dir(info) if name.startswith("st_")}
+            return SimpleNamespace(**dict(values, **fields))
+
+        def blind(info, opened):
+            return True
+
+        # (case, change to the checked by-name stat, change to the opened stat, same)
+        cases = (
+            ("a link checked by name", {"st_mode": stat.S_IFLNK | 0o777}, {}, "identity"),
+            ("a folder opened", {}, {"st_mode": stat.S_IFDIR | 0o755}, "identity"),
+            ("a file with two links opened", {}, {"st_nlink": 2}, "identity"),
+            # The path walk's comparison: only the volume and file ID tie the two.
+            ("another file opened", {"st_ino": None}, {}, "file"),
+            ("a file on another volume opened", {"st_dev": None}, {}, "file"),
+            # The descriptor walk's: size and times must match too.
+            ("a file that grew after its check", {"st_size": None}, {}, "blind"),
+            ("a file changed after its check", {"st_mtime_ns": None}, {}, "blind"),
+        )
+        for case, by_name, opened_change, same in cases:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                path = Path(directory, "f")
+                path.write_bytes(b"data\n")
+                info = os.lstat(path)
+                by_name = {
+                    key: (getattr(info, key) + 1 if value is None else value)
+                    for key, value in by_name.items()
+                }
+                checked = changed(info, **by_name)
+                real_fstat, read = os.fstat, []
+
+                def fstat(fd, real_fstat=real_fstat, opened_change=opened_change):
+                    return changed(real_fstat(fd), **opened_change)
+
+                fd = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0))
+                try:
+                    with (
+                        patch("output_collection.regular_file"),
+                        patch("output_collection.os.fstat", side_effect=fstat),
+                        patch("output_collection.same_file", blind),
+                    ):
+                        compare = {
+                            "identity": output_collection.same_identity,
+                            "file": blind,  # the patched same_file itself
+                            "blind": lambda info, opened: True,
+                        }[same]
+                        with self.assertRaisesRegex(ContractViolation, self.I1):
+                            output_collection.read_opened(
+                                fd, checked, info.st_dev, 100, "changed", read.append, compare
+                            )
+                finally:
+                    os.close(fd)
+                self.assertEqual(read, [])
+
+    @NEEDS_CHECKS
+    def test_each_clause_of_the_q3_check_reports_the_line(self):
+        """No test broke log_line's escaping, so each clause of its Q3 check could be
+        dropped unnoticed. A text whose replace() keeps it stands for a broken escape."""
+
+        class Raw(str):
+            def replace(self, *args):
+                return self
+
+        cases = (
+            ("TAG", {"a": 1}, '{\n"a": 1}'),  # a raw line feed between tokens
+            ("TAG", {"a": 1}, '{\r"a": 1}'),  # a raw carriage return
+            ("TAG", {"a#": 1}, '{"a#": 1}'),  # '#' left unescaped
+            ("::error", 1, "1"),  # a workflow command at the line start
+            ("TAG", 1, "2"),  # a text that does not decode to the value
+        )
+        for tag, value, text in cases:
+            with self.subTest(text=text, tag=tag):
+                stream = io.StringIO()
+                with patch("output_collection.json.dumps", return_value=Raw(text)):
+                    with self.assertRaisesRegex(
+                        ContractViolation,
+                        "^Q3: log line is not one escaped line that decodes to its value$",
+                    ):
+                        log_line(tag, value, stream)
+                self.assertEqual(stream.getvalue(), "")
+
+    @NEEDS_CHECKS
+    def test_each_clause_of_the_q2_checks_reports_what_was_left(self):
+        """No test left a destination or snapshot behind after a rejection, or recorded
+        another status, so the Q2 checks could lose a clause unnoticed."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            destination, snapshot = root / "ev/workload", root / "ev/.collect-test"
+            (root / "ev").mkdir()
+            error = RejectedOutput("unsafe artifact filename")
+
+            def folder(path):
+                path.mkdir()
+
+            def dangling(path):
+                path.symlink_to(root / "nowhere", target_is_directory=True)
+
+            for label, path, make in (
+                ("destination", destination, folder),
+                ("dangling destination link", destination, dangling),
+                ("snapshot", snapshot, folder),
+            ):
+                with self.subTest(left=label):
+                    try:
+                        make(path)
+                    except OSError as exc:
+                        self.skipTest(f"cannot make a {label} here: {exc}")
+                    try:
+                        with self.assertRaisesRegex(
+                            ContractViolation,
+                            "^Q2: a rejected collection left a snapshot or destination$",
+                        ):
+                            output_collection.check_rejected(
+                                root / "work", destination, snapshot, DEFAULT_LIMITS, "path", error
+                            )
+                    finally:
+                        if path.is_symlink():
+                            path.unlink()
+                        else:
+                            path.rmdir()
+            real_write = Path.write_text
+
+            def other_status(path, text, *args, **kwargs):
+                if path.name == "collection.json":
+                    text = text.replace('"collected"', '"rejected"', 1)
+                return real_write(path, text, *args, **kwargs)
+
+            with patch.object(Path, "write_text", other_status):
+                with self.assertRaisesRegex(ContractViolation, "^Q2: collection.json differs$"):
+                    collect_workload(root / "work", root / "ev", method="path")
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_an_exhausted_table_under_the_reference_walk_is_no_i2_break(self):
+        """I2: an exhausted descriptor table in the check's own reference walk is raised
+        as that OSError; no test made the reference walk meet one, so a check that
+        reported it as the outcome 'rejected' (a false I2 break) passed every suite."""
+        real = output_collection.copy_tree
+
+        def exhausted(work, snapshot, limits, method):
+            if method == "path":
+                raise OSError(errno.EMFILE, os.strerror(errno.EMFILE))
+            return real(work, snapshot, limits, method)
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+            with patch("output_collection.copy_tree", side_effect=exhausted):
+                with self.assertRaises(OSError) as caught:
+                    try:
+                        collect_results(root / "work", root / "ev/workload", method="descriptor")
+                    except ContractViolation as violation:
+                        self.fail(f"false contract violation: {violation}")
+            self.assertEqual(caught.exception.errno, errno.EMFILE)
+            self.assertEqual(sorted(path.name for path in (root / "ev").iterdir()), ["workload"])
+
+    @NEEDS_CHECKS
+    def test_the_q1_check_reads_the_source_by_path_without_descriptors(self):
+        """Without descriptor APIs (Windows) the Q1 check reads each source file by path;
+        on POSIX no test reached that read, so a check that read nothing there passed."""
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory, "work")
+            (work / "results/sub").mkdir(parents=True)
+            (work / "results/sub/f").write_bytes(b"x")
+            destination = Path(directory, "destination")
+            report = collect_results(work, destination, method="path")
+            with patch("output_collection.DESCRIPTOR_APIS", False):
+                check_collected(work, destination, report, DEFAULT_LIMITS, "path")
+                (work / "results/sub/f").write_bytes(b"y")
+                with self.assertRaisesRegex(ContractViolation, "^Q1: source bytes differ: sub/f$"):
+                    check_collected(work, destination, report, DEFAULT_LIMITS, "path")
+
+    @NEEDS_CHECKS
+    @unittest.skipUnless(DESCRIPTOR_APIS, "descriptor walk")
+    def test_a_path_walk_rejection_is_not_compared_with_the_descriptor_walk(self):
+        """I2 is checked after collections with the descriptor walk only: the path walk
+        refuses paths past the host's limit that the descriptor walk collects. No test
+        rejected a path walk collection in the test mode, so a check that compared every
+        rejection reported such a tree as a false I2 break unnoticed."""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "work/results").mkdir(parents=True)
+            (root / "work/results/table.csv").write_text("a\n", encoding="utf-8")
+            real = output_collection.path_directory
+
+            def refused(path):
+                if os.path.basename(path) == "results":
+                    raise RejectedOutput(MISSING)
+                return real(path)
+
+            with patch("output_collection.path_directory", side_effect=refused):
+                with self.assertRaisesRegex(RejectedOutput, f"^{MISSING}$"):
+                    collect_results(root / "work", root / "ev/workload", method="path")
 
 
 if __name__ == "__main__":

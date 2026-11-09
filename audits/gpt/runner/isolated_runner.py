@@ -719,9 +719,12 @@ def blocked(results, reason):
 
 
 def host_uv(argv):
-    """Q5: host-side uv never reads uv settings from the audited pyproject.toml."""
+    """Q5: host-side uv reads no uv settings from the audited pyproject.toml, stays
+    offline, builds nothing and downloads no Python."""
     if contract.enabled():
-        contract.require("Q5", "--no-config" in argv, "host uv ran without --no-config")
+        flags = ("--no-config", "--offline", "--no-build", "--no-python-downloads")
+        missing = [flag for flag in flags if flag not in argv]
+        contract.require("Q5", not missing, f"host uv ran without {', '.join(missing)}")
     return checked(argv, timeout=600)
 
 

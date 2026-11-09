@@ -39,6 +39,23 @@ import os, sys
 
 args = sys.argv[1:]
 digest = "0" * 64
+if os.environ.get("FAKE_LOG"):  # what each call received, for the host-step test
+    import json
+
+    names = ("AUDIT_HOST_CANARY",) + tuple(k for k in os.environ if k.startswith("DOCKER_"))
+    record = {"argv": args, "env": {k: os.environ[k] for k in names if k in os.environ}}
+    if "run" in args:
+        for value in args:
+            if value.startswith("type=bind,") and ",dst=/work" in value:
+                work = value.split("src=", 1)[1].split(",dst=", 1)[0]
+                record["work_mode"] = os.stat(work).st_mode & 0o777
+        if "--sentinel" in args:
+            sentinel = args[args.index("--sentinel") + 1]
+            with open(sentinel, encoding="utf-8") as stream:
+                record["sentinel"] = stream.read()
+            record["parent"] = os.getppid()
+    with open(os.environ["FAKE_LOG"], "a", encoding="utf-8") as stream:
+        stream.write(json.dumps(record) + "\\n")
 if "image" in args and "inspect" in args:
     print("python@sha256:" + digest)
 elif "info" in args:
@@ -65,6 +82,18 @@ elif "run" in args:
                 os.makedirs(os.path.join(work, "results"), exist_ok=True)
                 with open(os.path.join(work, "results", "result.txt"), "w") as stream:
                     stream.write(os.environ["FAKE_RUN_RESULT"])
+    if os.environ.get("FAKE_RUN_FLOOD"):  # more log than the runner keeps
+        sys.stdout.write("x" * int(os.environ["FAKE_RUN_FLOOD"]))
+        sys.stdout.flush()
+    sys.exit(int(os.environ.get("FAKE_RUN_EXIT", "0")))
+"""
+RECORDING_UV = """
+# Records each host uv command line, then runs the real uv with it.
+import json, os, subprocess, sys
+
+with open(os.environ["FAKE_UV_LOG"], "a", encoding="utf-8") as stream:
+    stream.write(json.dumps(sys.argv[1:]) + "\\n")
+sys.exit(subprocess.call([os.environ["FAKE_REAL_UV"], *sys.argv[1:]]))
 """
 
 
@@ -78,6 +107,19 @@ def install_fake_docker(tools):
         )
     else:
         launcher = tools / "docker"
+        launcher.write_text(
+            f'#!/bin/sh\nexec "{sys.executable}" "{script}" "$@"\n', encoding="utf-8"
+        )
+        launcher.chmod(0o755)
+
+
+def install_launcher(folder, name, script):
+    """A program ``name`` in ``folder`` that runs the Python file ``script``."""
+    if os.name == "nt":
+        launcher = folder / (name + ".cmd")
+        launcher.write_text(f'@"{sys.executable}" "{script}" %*\r\n', encoding="utf-8", newline="")
+    else:
+        launcher = folder / name
         launcher.write_text(
             f'#!/bin/sh\nexec "{sys.executable}" "{script}" "$@"\n', encoding="utf-8"
         )
@@ -361,6 +403,180 @@ class HostSafetyTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("ordinary build step", output)
         self.assertEqual(forged_lines(output), [], quoted(output))
+        # Review round 19 (R19A-T3): a failed build must stop the run before the launch.
+        self.assertFalse((self.root / "output/results/launch.json").exists(), quoted(output))
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_the_host_steps_run_the_documented_commands_and_record_them(self):
+        """Review round 19 (R19A-T3): the stand-in Docker CLI accepted any command line
+        and always exited 0, and host uv was checked only for --no-config, so every
+        other uv flag (--offline, --no-build, --frozen...), the build's base digest and
+        secret id, the container's --name, the cleaned Docker environment and canary,
+        the outside-file fixture, the work folder's mode, and the exit, image ID and
+        termination reason in runner.json could change and every suite passed."""
+        revision = self.workspace()
+        calls, uv_calls = self.root / "docker-calls.jsonl", self.root / "uv-calls.jsonl"
+        uv_folder = self.root / "uv-bin"
+        uv_folder.mkdir()
+        (uv_folder / "recording_uv.py").write_text(RECORDING_UV, encoding="utf-8")
+        install_launcher(uv_folder, "uv", uv_folder / "recording_uv.py")
+        hostile = {
+            "DOCKER_HOST": "tcp://192.0.2.1:2375",
+            "DOCKER_CONTEXT": "elsewhere",
+            "DOCKER_TLS": "1",
+            "DOCKER_TLS_VERIFY": "1",
+            "DOCKER_CERT_PATH": str(self.root / "certs"),
+        }
+        result = self.run_runner(
+            revision,
+            PATH=str(uv_folder) + os.pathsep + self.env["PATH"],
+            FAKE_LOG=str(calls),
+            FAKE_UV_LOG=str(uv_calls),
+            FAKE_REAL_UV=shutil.which("uv"),
+            FAKE_RUN_OUTPUT="container line",
+            FAKE_RUN_RESULT="ok\n",
+            FAKE_RUN_EXIT="3",
+            **hostile,
+        )
+        text = result.stdout + result.stderr
+        self.assertEqual(result.returncode, 3, quoted(text))
+        output = (self.root / "output").resolve()
+        results = output / "results"
+        metadata = output / "build-context" / "metadata"
+        common = ["--no-config", "--offline", "--no-build", "--no-python-downloads"]
+        common += ["--python", sys.executable, "--directory", str(metadata)]
+        export = ["export", "--frozen", "--no-emit-workspace", *common]
+        export += ["--output-file", str(output / "build-context" / "requirements.txt")]
+        recorded_uv = [json.loads(line) for line in uv_calls.read_text("utf-8").splitlines()]
+        self.assertEqual(recorded_uv, [["lock", "--check", *common], export])
+        records = [json.loads(line) for line in calls.read_text("utf-8").splitlines()]
+        for record in records:
+            with self.subTest(call=record["argv"][1:3]):
+                self.assertEqual(
+                    record["env"], {"AUDIT_HOST_CANARY": "NON_SECRET_HOST_ENV_FIXTURE"}
+                )
+                self.assertTrue(record["argv"][0].startswith("--host="), record["argv"])
+        argvs = [record["argv"][1:] for record in records]
+        base, digest = "python:3.11-slim-bookworm", "python@sha256:" + "0" * 64
+        self.assertEqual(
+            argvs[:3],
+            [
+                ["info", "--format", "{{.OSType}}"],
+                ["pull", base],
+                ["image", "inspect", base, "--format", "{{index .RepoDigests 0}}"],
+            ],
+        )
+        build = argvs[3]
+        secret = build[build.index("--secret") + 1]
+        self.assertEqual(
+            build,
+            [
+                "build",
+                "--pull=false",
+                "--build-arg",
+                f"BASE_IMAGE={digest}",
+                "--iidfile",
+                str(output / "image-id"),
+                "--secret",
+                secret,
+                str(output / "build-context"),
+            ],
+        )
+        secret_id, _, bundle = secret.partition(",src=")
+        dockerfile = (HERE / "Dockerfile").read_text(encoding="utf-8")
+        self.assertEqual(secret_id, "id=proxy_ca")
+        self.assertIn("--mount=type=secret,id=proxy_ca ", dockerfile)
+        self.assertTrue(Path(bundle).is_file(), secret)
+        launch = json.loads((results / "launch.json").read_text("utf-8"))
+        run = records[4]
+        self.assertEqual(launch["command"][1:], run["argv"])
+        self.assertEqual(run["argv"][1:3], ["run", "--name"])
+        name = run["argv"][3]
+        self.assertRegex(name, r"^invest-audit-[0-9a-f]{32}$")
+        # The exact filter is pinned in test_guards; cmd.exe, which runs the stand-in's
+        # launcher on Windows, reads a caret as its escape character.
+        listing = argvs[6][:4] + argvs[6][5:]
+        self.assertIn(name, argvs[6][4])
+        self.assertEqual(
+            [argvs[5], listing, len(argvs)],
+            [
+                ["container", "rm", "--force", name],
+                ["container", "ls", "--all", "--filter", "--format", "{{.ID}}"],
+                7,
+            ],
+        )
+        image = "sha256:" + "0" * 64
+        self.assertEqual(
+            launch,
+            {
+                "base_digest": digest,
+                "image_id": image,
+                "command": launch["command"],
+                "sha": revision,
+            },
+        )
+        if os.name != "nt":  # Windows runs neither probe (CONTRACT.md)
+            sentinel = output / "host-only-sentinel"
+            self.assertEqual(
+                run["argv"][-4:], ["--sentinel", str(sentinel), "--host-pid", str(run["parent"])]
+            )
+            self.assertEqual(run["sentinel"], "NON_SECRET_OUTSIDE_FIXTURE")
+            self.assertEqual(run["work_mode"], 0o777)
+        else:
+            self.assertEqual(run["argv"][-1], "/audit/runner_workload.py")
+        report = json.loads((results / "runner.json").read_text("utf-8"))
+        self.assertEqual(
+            report,
+            {
+                "exit": 3,
+                "collection_status": "collected",
+                "termination_reason": None,
+                "image_id": image,
+                "sha": revision,
+            },
+        )
+        self.assertEqual(
+            (results / "execution.log").read_text("utf-8").splitlines(), ["container line"]
+        )
+        listed = subprocess.check_output(["git", "ls-tree", "-rz", revision], cwd=self.source)
+        files = []
+        for item in listed.split(b"\0"):
+            if item:
+                header, path = item.split(b"\t", 1)
+                files.append({"path": path.decode("utf-8"), "git_blob": header.split()[2].decode()})
+        identity = json.loads((results / "source-identity.json").read_text("utf-8"))
+        self.assertEqual(identity, {"sha": revision, "files": files})
+
+    @unittest.skipUnless(shutil.which("uv"), "uv not installed")
+    def test_a_container_log_past_the_limit_is_recorded_as_the_termination_reason(self):
+        """Review round 19 (R19A-T3): every test container ended on its own, so writing
+        a fixed termination_reason into runner.json passed the suites."""
+        revision = self.workspace()
+        result = self.run_runner(revision, FAKE_RUN_FLOOD=str(8 * 1024 * 1024 + 1))
+        self.assertEqual(result.returncode, 125, quoted(result.stderr[-2000:]))
+        report = json.loads((self.root / "output/results/runner.json").read_text("utf-8"))
+        self.assertEqual((report["exit"], report["termination_reason"]), (125, "log_limit"))
+
+    def test_an_empty_output_folder_is_used_and_a_file_is_refused(self):
+        """Review round 19 (R19A-T3): CONTRACT.md refuses only a used --output (one that
+        exists and is not empty). No test gave an existing empty folder or a file, so
+        refusing the first with a traceback, or reaching the second's listing with a
+        traceback instead of the refusal, passed the suites."""
+        empty = self.root / "empty-path"
+        empty.mkdir()
+        output = self.root / "output"
+        output.mkdir()
+        result = self.run_runner("0" * 40, PATH=str(empty))
+        self.assertEqual(result.returncode, 2, quoted(result.stdout + result.stderr))
+        report = json.loads((output / "results/runner.json").read_text("utf-8"))
+        self.assertEqual(report["reason"], "Docker executable unavailable")
+        shutil.rmtree(output)
+        output.write_text("kept", encoding="utf-8")
+        result = self.run_runner("0" * 40, PATH=str(empty))
+        self.assertEqual(result.returncode, 1, quoted(result.stdout + result.stderr))
+        self.assertIn("--output must be a new or empty folder", result.stderr)
+        self.assertNotIn("AUDIT_RUNNER_ERROR", result.stderr)
+        self.assertEqual(output.read_text("utf-8"), "kept")
 
     @unittest.skipUnless(shutil.which("uv"), "uv not installed")
     def test_the_last_line_names_the_collection_as_well_as_the_exit(self):

@@ -52,7 +52,10 @@ rejection.
   listing the files were written from: an index entry that points a tree at another
   tree holding the same blobs under other names or modes leaves the object set
   unchanged. Always enforced.
-- **Q5** Host-side uv runs with `--no-config`. Checked in `host_uv`.
+- **Q5** Host-side uv runs with `--no-config`, `--offline`, `--no-build` and
+  `--no-python-downloads`: it reads no uv settings from the audited files, stays
+  offline, runs no build backend on the host and downloads no Python. Checked in
+  `host_uv`.
 
 ## Invariants
 
@@ -101,6 +104,9 @@ locked-version steps run for real there).
   effective and bounding capability sets are all empty (and the ambient set, where
   listed). The effective set alone is empty for any non-root process, so it cannot
   show a missing `--cap-drop=ALL`. Checked in `runner_workload.capabilities_dropped`.
+  `boundary.json` is written before the probe's verdict, also when
+  `/proc/self/status` lists no `NoNewPrivs` line (Linux before 4.10), which then
+  counts as `no_new_privileges` false.
 - **W2** No process a workload step started still runs when the next step starts:
   every step runs in its own session, and every process left in that session is
   killed once the step ends, also one that made its own process group (GNU
