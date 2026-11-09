@@ -435,24 +435,39 @@ def _json_number(value: Any) -> float | int | None:
 _IDENTITY_INPUTS = (("--universe", "universe_sha256"), ("--fundamentals", "fundamentals_sha256"))
 
 
-def _evidence_inputs(args: argparse.Namespace) -> dict[str, str | None]:
-    """Content hashes of the export's ``--universe`` and ``--fundamentals``, for evidence.
+_INPUT_READERS = {"--universe": read_universe, "--fundamentals": read_fundamentals}
 
-    A bundle without a content hash cannot be matched with the one the confirmation used.
+
+def _evidence_inputs(
+    args: argparse.Namespace,
+) -> tuple[dict[str, str | None], dict[str, pd.DataFrame | None]]:
+    """Read the export's ``--universe`` and ``--fundamentals`` once, for evidence and scores.
+
+    Returns their content hashes, to compare with the confirmation's, and the rows to score,
+    from the same read: a path that names another bundle by the time it would be read again
+    (an alias switched in between) cannot pair one bundle's scores with evidence checked
+    against another's. A bundle without a content hash cannot be matched with the one the
+    confirmation used.
     """
-    try:
-        hashes = _input_hashes(args)
-    except BundleError as exc:
-        raise SystemExit(f"{args.out}: {exc}") from exc
+    hashes: dict[str, str | None] = {}
+    rows: dict[str, pd.DataFrame | None] = {}
     for option, key in _IDENTITY_INPUTS:
         path = getattr(args, option[2:])
-        if path and hashes[key] is None:
+        if not path:
+            hashes[key] = rows[option[2:]] = None
+            continue
+        try:
+            manifest, rows[option[2:]] = _INPUT_READERS[option](path)
+        except BundleError as exc:
+            raise SystemExit(f"{args.out}: {exc}") from exc
+        if manifest.content_sha256 is None:
             raise SystemExit(
                 f"{path}: the {option} bundle has no content_sha256, so it cannot be matched "
                 "with the confirmation's; export the factor without evidence "
                 "(--factor without --confirmation)"
             )
-    return hashes
+        hashes[key] = manifest.content_sha256
+    return hashes, rows
 
 
 def _identity_input(option: str, value: Any) -> str:
@@ -510,8 +525,11 @@ def _confirmation_evidence(
     for option, key in _IDENTITY_INPUTS:
         if key not in identity:
             raise SystemExit(
-                f"{root}: config.json does not record the {option} the confirmation used; "
-                "rerun the confirmation"
+                f"{root}: config.json does not record the {option} content hash the "
+                "confirmation used, so this export's inputs cannot be matched with it; restore "
+                "the confirmation's original config.json, or export the factor without "
+                "evidence (--factor without --confirmation); new evidence needs a new "
+                "confirmation on untouched data recorded in the ledger"
             )
         used = identity[key]
         if used != inputs[key]:
@@ -586,19 +604,19 @@ def _export(args: argparse.Namespace) -> int:
             parsed = None
         if parsed != start:  # fromisoformat also takes other ISO forms, such as 20200901
             raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date")
-    evidence: dict[str, Any] | None
+    evidence: dict[str, Any] | None = None
+    inputs: dict[str, pd.DataFrame | None] | None = None  # rows read for evidence, scored as read
     if args.from_search is not None:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor = _from_search(args.from_search, args.rank)
-        evidence = _confirmation_evidence(args.from_search, factor, _evidence_inputs(args))
+        hashes, inputs = _evidence_inputs(args)
+        evidence = _confirmation_evidence(args.from_search, factor, hashes)
     else:
         factor = FrozenFactor.load(args.factor)
-        evidence = (
-            None
-            if args.confirmation is None
-            else _confirmation_evidence(args.confirmation, factor, _evidence_inputs(args))
-        )
+        if args.confirmation is not None:
+            hashes, inputs = _evidence_inputs(args)
+            evidence = _confirmation_evidence(args.confirmation, factor, hashes)
     if evidence is not None and evidence["source"] == "search":
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
@@ -617,7 +635,7 @@ def _export(args: argparse.Namespace) -> int:
             start=start,
             fmt=args.format,
             evidence=evidence,
-            **_optional_inputs(args),
+            **(_optional_inputs(args) if inputs is None else inputs),
         )
     except BundleError as exc:
         raise SystemExit(f"{args.out}: {exc}") from exc

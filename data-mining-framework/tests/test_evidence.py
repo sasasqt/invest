@@ -345,6 +345,12 @@ def inputs(tmp_path):
     return path
 
 
+def _universe_hash(path):
+    from invest_data.schemas import read_universe
+
+    return read_universe(path)[0].content_sha256
+
+
 def _search_on(inputs, out, *options):
     book = out.parent / f"{out.name}.jsonl"
     args = ["search", "--data", str(inputs / "market"), "--trials", "10", "--top-k", "2"]
@@ -433,8 +439,19 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
     config = json.loads((tmp_path / "s" / "config.json").read_text(encoding="utf-8"))
     del config["experiment"]["identity"]["universe_sha256"]
     (tmp_path / "s" / "config.json").write_text(json.dumps(config), encoding="utf-8")
-    with pytest.raises(SystemExit, match="does not record the --universe"):
+    with pytest.raises(SystemExit, match="does not record the --universe") as refused:
         _export(inputs / "market", tmp_path / "x", *source)
+    assert not (tmp_path / "x").exists()
+    # The remedy keeps the protocol: no rerun of a used confirmation (INV-PR41-O1).
+    assert "without evidence" in str(refused.value)
+    assert "untouched data" in str(refused.value)
+    assert "rerun the confirmation" not in str(refused.value)
+    del config["experiment"]["identity"]["fundamentals_sha256"]
+    config["experiment"]["identity"]["universe_sha256"] = _universe_hash(inputs / "universe")
+    (tmp_path / "s" / "config.json").write_text(json.dumps(config), encoding="utf-8")
+    with pytest.raises(SystemExit, match="does not record the --fundamentals") as refused:
+        _export(inputs / "market", tmp_path / "x", *source, *universe)
+    assert "without evidence" in str(refused.value)
     assert not (tmp_path / "x").exists()
 
 
@@ -469,3 +486,61 @@ def test_confirm_evidence_needs_the_universe_the_confirmation_used(tmp_path, inp
     assert _export(inputs / "market", tmp_path / "sig", *source, *universe) == 0
     # Without evidence, any universe may be used.
     assert _export(inputs / "market", tmp_path / "plain", "--factor", str(factor)) == 0
+
+
+@pytest.mark.parametrize("route", ["from-search", "confirmation"])
+@pytest.mark.parametrize("option", ["universe", "fundamentals"])
+def test_scores_use_the_bundle_read_whose_hash_was_checked(
+    tmp_path, inputs, monkeypatch, option, route
+):
+    """Evidence and scores come from one read of each bundle (INV-PR41-001).
+
+    A path that points to another valid bundle by the time scoring reads it (an alias
+    switched between the evidence check and scoring, both published bundles unchanged)
+    must not pair the second bundle's scores with evidence checked against the first.
+    """
+    import os
+    import shutil
+
+    import invest_mining.cli as cli
+    from invest_data.schemas import read_fundamentals, read_universe
+
+    paths = {name: inputs / name for name in ("universe", "fundamentals")}
+    options = [f"--{name}={path}" for name, path in paths.items()]
+    assert _search_on(inputs, tmp_path / "s", *options) == 0
+    if route == "from-search":
+        source = ("--from-search", str(tmp_path / "s"))
+    else:
+        confirmed = pd.read_csv(tmp_path / "s" / "confirmation.csv")["factor_id"]
+        own = tmp_path / "s" / "factors" / f"{confirmed.iloc[0]}.json"
+        source = ("--factor", str(own), "--confirmation", str(tmp_path / "s"))
+    reader = {"universe": read_universe, "fundamentals": read_fundamentals}[option]
+    checked = reader(paths[option])[1]
+    assert not checked.equals(reader(inputs / f"{option}_other")[1])
+
+    scored = []
+    real_export, real_bars = cli.export_signals, cli._market_bars
+
+    def spy(*args, **kwargs):
+        scored.append(kwargs[option])
+        return real_export(*args, **kwargs)
+
+    monkeypatch.setattr(cli, "export_signals", spy)
+    for attempt in range(2):
+        alias = tmp_path / f"alias{attempt}"
+        shutil.copytree(paths[option], alias)
+
+        def switch(*args, alias=alias, attempt=attempt, **kwargs):
+            # Between the evidence check and scoring: the alias now names the other bundle.
+            bars = real_bars(*args, **kwargs)
+            os.replace(alias, tmp_path / f"old{attempt}")
+            shutil.copytree(inputs / f"{option}_other", alias)
+            return bars
+
+        monkeypatch.setattr(cli, "_market_bars", switch)
+        used = [o for o in options if not o.startswith(f"--{option}=")]
+        out = tmp_path / f"sig{attempt}"
+        assert _export(inputs / "market", out, *source, *used, f"--{option}={alias}") == 0
+        pd.testing.assert_frame_equal(scored[-1], checked)
+        evidence = read_signals(out)[0].metadata["factor_evidence"]
+        assert evidence["experiment_id"] == _experiment_id(tmp_path / "s")
