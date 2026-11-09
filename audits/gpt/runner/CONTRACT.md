@@ -2,8 +2,9 @@
 
 These rules hold on Linux and Windows hosts. The container side always runs Linux.
 `contract.py` checks the host rules P1, Q1-Q5 and I1-I2 while `CONTRACT_CHECKS=1`
-(P2, P3 and the staged copy's object set of Q4 are always enforced by the code, and
-the suites check W1-W6); every test
+(P2, P3 and, of Q4, the digest of every blob read from Git and the staged copy's
+object set and own tree listing are always enforced by the code, and the suites check
+W1-W6); every test
 suite, the CI host-test steps and the CI Docker controls step set it, production
 runs do not.
 A failed check raises `ContractViolation` (an `AssertionError`), never an ordinary

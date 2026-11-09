@@ -27,6 +27,7 @@ from output_collection import (
     SUMMARY_MAX_BYTES,
     SUMMARY_NAMES,
     CollectionLimits,
+    DescriptorFolder,
     PathFolder,
     RejectedOutput,
     check_collected,
@@ -126,6 +127,13 @@ class CollectionCases:
         self.assertFalse(self.destination.exists())
         self.assertEqual(list(self.evidence.iterdir()), [])
         self.assertEqual(self.canary.read_bytes(), self.marker)
+
+    def fresh_output(self):
+        """An empty results folder and evidence folder, so that subtests stay apart."""
+        shutil.rmtree(self.work)
+        self.produced.mkdir(parents=True)
+        shutil.rmtree(self.evidence)
+        self.evidence.mkdir()
 
     def test_regular_files_and_empty_directories_are_preserved(self):
         (self.produced / "nested").mkdir()
@@ -500,6 +508,79 @@ class CollectionCases:
         result = self.collect()
         self.assertEqual((self.destination / "binary.bin").read_bytes(), payload)
         self.assertEqual(result["files"][0]["sha256"], hashlib.sha256(payload).hexdigest())
+
+    def test_an_entry_on_another_device_is_rejected_by_name(self):
+        """Review round 18: no test reached the cross-device folder refusal or the
+        device check of a file, so a copy that entered a folder on another volume (and
+        collected it when it held no file), or read a file there, passed every suite.
+        Both walks see the entry's device moved by one, so the test mode's I2 reference
+        rejects it too."""
+
+        def moved(original):
+            def lstat(folder, name):
+                info = original(folder, name)
+                if not name.startswith("mounted"):
+                    return info
+                fields = {key: getattr(info, key) for key in dir(info) if key.startswith("st_")}
+                return SimpleNamespace(**dict(fields, st_dev=info.st_dev + 1))
+
+            return lstat
+
+        cases = (("mounted", "^cross-device output directory$"), ("mounted.csv", f"^{LINKED}$"))
+        for name, reason in cases:
+            with self.subTest(name=name):
+                self.fresh_output()
+                entry = self.produced / name
+                if name.endswith(".csv"):
+                    entry.write_text("a\n", encoding="utf-8")
+                else:
+                    entry.mkdir()
+                with (
+                    patch.object(DescriptorFolder, "lstat", moved(DescriptorFolder.lstat)),
+                    patch.object(PathFolder, "lstat", moved(PathFolder.lstat)),
+                ):
+                    self.rejected(reason)
+
+    @POSIX_ONLY
+    def test_unsafe_folder_names_are_rejected(self):
+        """Review round 18: only file names were planted, so a copy that checked the
+        names of files alone (a folder named CON or ending in a dot reached the
+        artifact) passed every suite."""
+        for name in ("CON", "trailing.", "drive:C", "PROGRA~1", "del\x7f"):
+            with self.subTest(name=name):
+                self.fresh_output()
+                folder = self.produced / name
+                folder.mkdir()
+                (folder / "table.csv").write_text("a\n", encoding="utf-8")
+                self.rejected("^unsafe artifact filename$")
+
+    def test_each_summary_is_printed_once_after_the_collection_line(self):
+        """Review round 18: the tests only looked for what must not be printed, so a
+        collector that printed no AUDIT_EVIDENCE line (the README's printed summaries)
+        passed every suite."""
+        values = {name: {"name": name, "note": "# ok"} for name in SUMMARY_NAMES}
+        for name, value in values.items():
+            (self.produced / name).write_text(json.dumps(value), encoding="utf-8")
+        captured = io.StringIO()
+        with contextlib.redirect_stdout(captured):
+            report = collect_workload(self.work, self.evidence, method=self.method)
+        self.assertEqual(report["status"], "collected")
+        lines = captured.getvalue().splitlines()
+        self.assertEqual(lines[0], 'AUDIT_COLLECTION {"status": "collected"}')
+        printed = {}
+        for line in lines[1:]:
+            tag, name, text = line.split(" ", 2)
+            self.assertEqual(tag, "AUDIT_EVIDENCE")
+            self.assertNotIn(name, printed)
+            printed[name] = json.loads(text)
+        self.assertEqual(printed, values)
+        (self.produced / "boundary.json").write_text("not-json", encoding="utf-8")
+        shutil.rmtree(self.evidence)
+        captured = io.StringIO()
+        with contextlib.redirect_stdout(captured):
+            report = collect_workload(self.work, self.evidence, method=self.method)
+        self.assertEqual(report["status"], "rejected")
+        self.assertEqual(captured.getvalue(), 'AUDIT_COLLECTION {"status": "rejected"}\n')
 
 
 @unittest.skipUnless(DESCRIPTOR_APIS, "POSIX descriptor walk")
@@ -1261,6 +1342,26 @@ class PathCollectionTests(CollectionCases, unittest.TestCase):
 
         with patch("output_collection.os.scandir", side_effect=switched):
             self.rejected("output directory changed during collection")
+
+    def test_a_folder_replaced_after_it_was_walked_is_rejected(self):
+        """Review round 18: the path walk checks each folder, the results folder too,
+        again after walking it (README, Execution limits), but no test replaced a
+        folder then, so a copy without either check passed every suite."""
+        real = PathFolder.names
+        for swapped in ("sub", "results"):
+            with self.subTest(folder=swapped):
+                self.fresh_output()
+                (self.produced / "sub").mkdir()
+                (self.produced / "sub/table.csv").write_text("a\n", encoding="utf-8")
+
+                def names(folder, swapped=swapped):
+                    yield from real(folder)
+                    if os.path.basename(folder.path) == swapped:
+                        os.rename(folder.path, folder.path + "-before")
+                        os.mkdir(folder.path)
+
+                with patch.object(PathFolder, "names", names):
+                    self.rejected("^output directory changed during collection$")
 
     @POSIX_ONLY
     def test_parent_replaced_by_link_before_a_file_open_is_rejected(self):

@@ -960,6 +960,24 @@ class PortableHostTests(unittest.TestCase):
             isolated_runner.checked([sys.executable, "-c", script], timeout=2)
         self.assertLess(time.monotonic() - started, 10)
 
+    def test_a_container_listing_ended_by_a_signal_never_counts_as_removed(self):
+        """Review round 18 (R18A-T1), P1: a program that a signal ends exits negative on
+        POSIX and may print nothing. checked() was tested only with positive statuses,
+        so `returncode > 0` passed the suites, and then a killed `docker container ls`
+        (no output) verified the removal and collection started."""
+
+        def docker(argv, **kwargs):
+            status = -9 if "ls" in argv else 0
+            return subprocess.CompletedProcess(argv, status, "", "")
+
+        with (
+            patch("isolated_runner.program", return_value=str(Path("bin", "docker"))),
+            patch("isolated_runner.run_captured", side_effect=docker),
+            self.assertRaises(RuntimeError) as caught,
+        ):
+            isolated_runner.remove_container("invest-audit-" + "0" * 32, {})
+        self.assertEqual(str(caught.exception), "docker exited -9: ")
+
     def test_every_host_program_runs_through_the_bounded_helper(self):
         """Review round 6 (C4): the image build (a Docker CLI plugin), the Git object
         reads, the tree listing and the container removal called subprocess.run
@@ -1763,6 +1781,50 @@ class StagingSafetyTests(unittest.TestCase):
                     "fatal: unable to read tree (1 \ufffd)",
                 )
 
+    def test_a_listing_killed_by_a_signal_names_the_signal(self):
+        """Review round 18 (R18A-T1): a listing that a signal ends has a negative exit
+        status on POSIX and may print nothing. The tests above pinned only 128, so a
+        check written as `returncode > 0` passed the suites and read such a host fault
+        as a bent source index ("Staged Git objects differ...", "Staged Git tree
+        differs..."), the misreport round 16 fixed."""
+        real_run = isolated_runner.run_captured
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, revision = fixture_repository(root, {"a.txt": b"a\n", "d/b.txt": b"b\n"})
+            cases = {
+                "source ls-tree": (
+                    lambda argv: "ls-tree" in argv and argv[2] == str(source),
+                    RuntimeError,
+                    "git exited -9: ",
+                ),
+                "staged rev-list": (
+                    lambda argv: "rev-list" in argv and argv[2].startswith(str(root / "staged-")),
+                    ValueError,
+                    "Staged Git history could not be listed: git exited -9: ",
+                ),
+                "staged ls-tree": (
+                    lambda argv: "ls-tree" in argv and argv[2].startswith(str(root / "staged-")),
+                    ValueError,
+                    "Staged Git tree could not be listed: git exited -9: ",
+                ),
+            }
+            for number, (case, (matches, kind, message)) in enumerate(cases.items()):
+
+                def killed(argv, matches=matches, **kwargs):
+                    if matches([str(item) for item in argv]):
+                        return subprocess.CompletedProcess(argv, -9, b"", b"")
+                    return real_run(argv, **kwargs)
+
+                for mode in ("1", "0"):
+                    with (
+                        self.subTest(case, CONTRACT_CHECKS=mode),
+                        patch.dict(os.environ, {"CONTRACT_CHECKS": mode}),
+                        patch("isolated_runner.run_captured", side_effect=killed),
+                        self.assertRaises(kind) as caught,
+                    ):
+                        stage_source(source, root / f"staged-{number}-{mode}", revision)
+                    self.assertEqual(str(caught.exception), message)
+
     @unittest.skipUnless(os.name == "nt", "the legacy file-name encoding exists only on Windows")
     def test_a_checkout_under_a_non_ascii_folder_stages_with_the_legacy_encoding(self):
         """Review round 12 (R12C-C1): with PYTHONLEGACYWINDOWSFSENCODING=1, os.fsdecode
@@ -2537,6 +2599,8 @@ class RunnerBranchTests(unittest.TestCase):
         digest = blob_digest(good)
         cases = {
             "exited 1": subprocess.CompletedProcess([], 1, b"", b""),
+            # A signal (negative on POSIX) fails the read even when the output looks whole.
+            "exited -9": subprocess.CompletedProcess([], -9, git_output((digest, good)), b""),
             "ended early": subprocess.CompletedProcess([], 0, git_output((digest, good))[:-3], b""),
             "does not match": subprocess.CompletedProcess(
                 [], 0, git_output((digest, b"payload!")).replace(b" 9\n", b" 8\n"), b""
@@ -2780,10 +2844,11 @@ class SemanticCoverageTests(unittest.TestCase):
         self.assertNotEqual(hidden, semantic_hash(self.root))
         (self.root / ".cache").mkdir()
         (self.root / ".cache/rows.csv").write_bytes(b"a,1\n")
-        paths = [row["path"] for row in semantic_manifest(self.root)["records"]]
-        # The record spells the path with the host's separator (the gate runs in the
-        # Linux container; on windows-2025 the host tests see a backslash).
-        self.assertEqual(paths, [str(Path(".cache", "rows.csv")), ".state", "metrics.json"])
+        paths = [Path(row["path"]) for row in semantic_manifest(self.root)["records"]]
+        # Compared as paths: the record spells the host's separator today (the gate runs
+        # in the Linux container; on windows-2025 the host tests see a backslash), and
+        # either spelling of the same path passes.
+        self.assertEqual(paths, [Path(".cache", "rows.csv"), Path(".state"), Path("metrics.json")])
 
     def test_other_artifact_changes_are_not_silently_ignored(self):
         path = self.root / "artifact.bin"
@@ -3114,6 +3179,9 @@ class WorkloadOrderTests(unittest.TestCase):
                 patch.object(runner_workload, "prove_boundary", fake_probe),
                 patch.object(runner_workload, "execute", fake_execute),
                 patch.object(sys, "argv", ["runner_workload.py"]),
+                # main() sets the module global from os.getpid(); restore it, so a later
+                # test in a run as PID 1 does not inherit True.
+                patch.object(runner_workload, "CONTAINER_INIT", runner_workload.CONTAINER_INIT),
             ):
                 try:
                     status = runner_workload.main()
