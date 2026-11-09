@@ -443,6 +443,8 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
         _export(inputs / "market", tmp_path / "x", *source)
     assert not (tmp_path / "x").exists()
     # The remedy keeps the protocol: no rerun of a used confirmation (INV-PR41-O1).
+    assert "cannot be matched" in str(refused.value)
+    assert "restore the confirmation's original config.json" in str(refused.value)
     assert "without evidence" in str(refused.value)
     assert "untouched data" in str(refused.value)
     assert "rerun the confirmation" not in str(refused.value)
