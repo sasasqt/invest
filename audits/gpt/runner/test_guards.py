@@ -1407,6 +1407,24 @@ class PortableHostTests(unittest.TestCase):
             isolated_runner.host_uv(["/abs/uv", "lock", *flags])
         self.assertEqual(called.call_args.kwargs, {"timeout": 600})
 
+    def test_host_uv_without_any_one_safety_flag_is_a_q5_violation(self):
+        """ChatGPT's INV-PR42-O2: Q5 names four flags since round 19, but the suites only
+        ran callers that pass all four, so dropping one flag from the check passed them.
+        Each missing flag must be named in the violation, before uv runs."""
+        flags = ["--no-config", "--offline", "--no-build", "--no-python-downloads"]
+        with patch.dict(os.environ, {"CONTRACT_CHECKS": "1"}):
+            for missing in flags:
+                with self.subTest(missing=missing):
+                    argv = ["/abs/uv", "lock", *[flag for flag in flags if flag != missing]]
+                    with patch("isolated_runner.checked") as called:
+                        with self.assertRaises(ContractViolation) as caught:
+                            isolated_runner.host_uv(argv)
+                    self.assertEqual(str(caught.exception), f"Q5: host uv ran without {missing}")
+                    called.assert_not_called()
+            with patch("isolated_runner.checked", return_value="") as called:
+                isolated_runner.host_uv(["/abs/uv", "lock", *flags])
+            called.assert_called_once()
+
     def test_a_folder_where_a_ca_bundle_is_expected_is_skipped(self):
         """Review round 19 (R19A-T2): only files were tested, so accepting any existing
         path passed the suites; a folder would reach the build's secret and fail it."""

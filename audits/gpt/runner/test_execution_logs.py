@@ -2,6 +2,7 @@ import os
 import signal
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import unittest
@@ -179,18 +180,24 @@ class ExecutionLogTests(unittest.TestCase):
         os.kill(int(done.stdout.split()[0]), signal.SIGTERM)
         self.assertLess(elapsed, 20, "the host process waited for the reader thread")
 
-    def lagging_reader(self, delay, first_only):
-        """Popen whose log reader waits ``delay`` seconds before a read."""
+    def controlled_popen(
+        self, *, after_start=None, before_first_read=None, first_read_delay=0, kill_log=None
+    ):
+        """Popen that runs ``after_start(process)`` before it returns, and whose log reader
+        runs ``before_first_read(process)`` and then waits ``first_read_delay`` seconds
+        before its first read; ``kill_log`` gets the times the child started and was killed."""
         real = subprocess.Popen
 
-        class Lagging:
-            def __init__(self, inner):
-                self.inner, self.reads = inner, 0
+        class Controlled:
+            def __init__(self, inner, process):
+                self.inner, self.process, self.reads = inner, process, 0
 
             def read1(self, size):
                 self.reads += 1
-                if self.reads == 1 or not first_only:
-                    time.sleep(delay)
+                if self.reads == 1:
+                    if before_first_read:
+                        before_first_read(self.process)
+                    time.sleep(first_read_delay)
                 return self.inner.read1(size)
 
             def close(self):
@@ -198,7 +205,18 @@ class ExecutionLogTests(unittest.TestCase):
 
         def popen(*args, **kwargs):
             process = real(*args, **kwargs)
-            process.stdout = Lagging(process.stdout)
+            if kill_log is not None:
+                kill_log["started"] = time.monotonic()
+                kill = process.kill
+
+                def recorded_kill():
+                    kill_log.setdefault("killed", time.monotonic())
+                    kill()
+
+                process.kill = recorded_kill
+            process.stdout = Controlled(process.stdout, process)
+            if after_start:
+                after_start(process)
             return process
 
         return patch("isolated_runner.subprocess.Popen", side_effect=popen)
@@ -206,9 +224,21 @@ class ExecutionLogTests(unittest.TestCase):
     def test_a_log_limit_the_reader_reaches_after_the_child_exited_still_fails(self):
         """Review round 19 (R19A-T5): when the reader crosses the limit after the child
         has exited, the wait loop ends without seeing it; no test reached the check after
-        the loop, so dropping it passed the suites and a cut log read as exit 0."""
+        the loop, so dropping it passed the suites and a cut log read as exit 0.
+        ChatGPT's INV-PR42-O1: the reader now reads only once the child has exited, and
+        the caller resumes only once the reader has stopped, so the wait loop never runs
+        and the check after it is the only one that can see the limit."""
         script = "import sys; sys.stdout.write('x' * 2048)"
-        with self.lagging_reader(0.5, first_only=False):
+
+        class ReaderFirst(threading.Thread):
+            def start(self):
+                super().start()
+                self.join(30)
+
+        with (
+            self.controlled_popen(before_first_read=lambda process: process.wait(30)),
+            patch("isolated_runner.threading.Thread", ReaderFirst),
+        ):
             result, reason = run_bounded([sys.executable, "-c", script], max_log_bytes=1024)
         self.assertEqual((result.returncode, reason), (125, "log_limit"))
         self.assertEqual(result.stdout, "x" * 1024)
@@ -216,23 +246,40 @@ class ExecutionLogTests(unittest.TestCase):
     def test_a_timed_out_child_keeps_the_log_it_wrote_before_the_deadline(self):
         """Review round 19 (R19A-T5): no test had a reader still busy at the deadline, so
         returning without waiting for it passed the suites and dropped the last lines a
-        timed-out container wrote, which are what a reader of execution.log needs."""
-        script = "import sys, time; print('last words', flush=True); time.sleep(30)"
-        with self.lagging_reader(1.5, first_only=True):
-            result, reason = run_bounded([sys.executable, "-c", script], timeout=0.5)
+        timed-out container wrote, which are what a reader of execution.log needs.
+        ChatGPT's INV-PR42-O1: the child is handed over only once it says its line is
+        written (a marker file), so a slow child start cannot leave the log empty, and the
+        reader reads 1.5 s after it starts, so it is always still busy at the deadline."""
+        with tempfile.TemporaryDirectory() as folder:
+            marker = os.path.join(folder, "written")
+            script = (
+                "import pathlib, sys, time; print('last words', flush=True); "
+                f"pathlib.Path({marker!r}).touch(); time.sleep(30)"
+            )
+
+            def line_written(process):
+                limit = time.monotonic() + 30
+                while not os.path.exists(marker) and time.monotonic() < limit:
+                    time.sleep(0.01)
+
+            with self.controlled_popen(after_start=line_written, first_read_delay=1.5):
+                result, reason = run_bounded([sys.executable, "-c", script], timeout=0.5)
         self.assertEqual((result.returncode, reason), (124, "timeout"))
         self.assertEqual(result.stdout.split(), ["last", "words"])
 
     def test_the_deadline_is_the_timeout_given(self):
         """Review round 19 (R19A-T5): the timeout tests allowed up to 15 s for a 1 s
-        timeout, so a deadline twice as far passed the suites."""
+        timeout, so a deadline twice as far passed the suites. ChatGPT's INV-PR42-O1:
+        the bound is measured from the child's start to its kill, so the child's start,
+        reaping and the reader's join do not count."""
+        times = {}
         script = "import time; time.sleep(30)"
         started = time.monotonic()
-        result, reason = run_bounded([sys.executable, "-c", script], timeout=4)
-        elapsed = time.monotonic() - started
+        with self.controlled_popen(kill_log=times):
+            result, reason = run_bounded([sys.executable, "-c", script], timeout=3)
         self.assertEqual((result.returncode, reason), (124, "timeout"))
-        self.assertGreaterEqual(elapsed, 4)
-        self.assertLess(elapsed, 6.5)
+        self.assertGreaterEqual(times["killed"] - started, 3)
+        self.assertLess(times["killed"] - times["started"], 4.5)
 
     def test_limits_must_be_positive(self):
         for limits in ({"timeout": 0}, {"max_log_bytes": 0}):
