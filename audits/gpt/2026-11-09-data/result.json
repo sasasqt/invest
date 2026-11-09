@@ -29,7 +29,12 @@
     ],
     "verdict": "queued, not independently checked"
   },
-  "publication": "prepared; awaiting guarded remote verification",
+  "publication": {
+    "status": "published_verified",
+    "report_commit": "0bfa69384a36a85f905bd9aca85bc3b29bca29e9",
+    "report_url": "https://github.com/sasasqt/invest/blob/0bfa69384a36a85f905bd9aca85bc3b29bca29e9/audits/gpt/2026-11-09.md",
+    "verified_utc": "2026-11-09T02:14:00.983Z"
+  },
   "weekly": "2026-W45 already present; no duplicate. 2026-W46 aggregation deferred to Sunday or first subsequent report.",
   "model": "gpt-6.1-sol",
   "effort": "unavailable",
