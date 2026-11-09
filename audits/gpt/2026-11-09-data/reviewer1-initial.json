@@ -1,0 +1,21 @@
+{
+  "candidate_id": "OPEN-FUNDAMENTALS-AVAILABLE-AT-001",
+  "kind": "carried point-in-time metadata concern",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "locations": [
+    "data-pipeline/data-preparation/src/invest_data/schemas.py:522-544",
+    "data-pipeline/data-preparation/src/invest_data/pit.py:36-67",
+    "data-mining-framework/src/invest_mining/cli.py (read_fundamentals consumer)",
+    "docs/DATA_CONTRACT.md:optional v1 fundamentals semantics",
+    "data-pipeline/data-preparation/tests/test_point_in_time.py:87-105"
+  ],
+  "observed": "publish_fundamentals allows caller metadata to override the default available_at string; read_fundamentals does not validate that metadata value.",
+  "contract_trace": "The authoritative contract defines usability from the row's available_date and does not list available_at as required fundamentals metadata. fundamentals_asof derives availability only from row available_date. Code search found one production consumer, mining CLI, which discards the manifest and passes rows to fundamentals_asof.",
+  "proposed_disposition": "drop as repository defect; retain history and optionally harden metadata only if the project decides available_at is a normative externally consumed field",
+  "proposed_severity": "none as demonstrated behavior; P3 optional contract-hardening",
+  "evidence_confidence": "high static scope, runtime acceptance test blocked",
+  "impact": "No demonstrated timing leak, metric change, or default-workflow effect. A third-party consumer that elects to trust the non-required metadata could be confused, but that behavior is not established by the current contract.",
+  "missing_evidence": "Safe isolated publish/read negative control with a contradictory metadata value; external consumer contract evidence.",
+  "counterfactual_to_keep": "Keep as a defect if an authoritative contract requires available_at='available_date_close' on fundamentals, a current consumer changes decision timing from the field, or an isolated control shows the override bypasses row-based timing.",
+  "reviewer1_saved_before_independent_review": true
+}

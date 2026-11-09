@@ -1,0 +1,24 @@
+{
+  "run_id": "GA-2026-11-09-data-0300-CET",
+  "date": "2026-11-09",
+  "field": "data",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "question": "Does externally supplied fundamentals timing metadata alter point-in-time behavior, and can the carried available_at concern be resolved from all current callers/consumers?",
+  "expected_evidence": "Authoritative data contract, writer/reader, point-in-time helper, all code-search callers/consumers, relevant tests; no product execution.",
+  "stopping_condition": "Classify OPEN-FUNDAMENTALS-AVAILABLE-AT-001 as confirmed/plausible/dropped and record unchecked runtime acceptance test; stop without retrying unchanged isolation blocker.",
+  "allocation": {
+    "planned": {
+      "exploitation": 50,
+      "exploration": 50
+    },
+    "exploration_seed_sha256": "d66834b1e2633b31445f067d3c463d9b29e4990cf25a07f695578ef8d99b21d3",
+    "eligible_count": 8,
+    "draw": "data-pipeline/data-preparation/tests/test_bundle.py:211-229",
+    "lens": "metadata authority versus row-derived timing and downstream consumption"
+  },
+  "carried_priority": "OPEN-FUNDAMENTALS-KEYS-001 remains higher priority but runtime-blocked; no unchanged retry",
+  "missed_dates": [
+    "2026-11-07 final report absent on current output head; execution not observed",
+    "2026-11-08 final report absent on current output head; execution not observed"
+  ]
+}
