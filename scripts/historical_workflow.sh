@@ -27,7 +27,9 @@
 # code that ran; save_run.py also refuses incomplete outputs and evaluation or quantile
 # manifests without a clean code revision. A window the ledger does not yet record as
 # inspected is recorded first and the run stops before publishing: commit the ledger, then
-# rerun with the same settings (the saved snapshot replays offline).
+# rerun with the same settings (the saved snapshot replays offline). An invocation that
+# publication or CONFIG would refuse (a benchmark missing from the snapshot, say) stops
+# before that and leaves the ledger unchanged.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -91,19 +93,47 @@ if [[ -n "$record" ]]; then
   # already covers them. That append modified the tracked ledger before the evaluation
   # recorded code_dirty, so save_run.py refused every record of a new window (K3). Record
   # the inspection now and stop instead, so that the ledger is committed before the run.
-  # The selection and cleaning below mirror `invest-data yahoo publish --exclude` (_yahoo
-  # and _publish in invest_data/cli.py); a change there needs the same change here.
-  python - "$snapshot" "$benchmark" "$start" "$end" "$ledger" <<'PY'
+  # The selection, checks and cleaning below mirror both `invest-data yahoo publish` calls
+  # (_yahoo and _publish in invest_data/cli.py, publish_market_bars in invest_data/schemas.py)
+  # and the CONFIG step, all of which run before the diagnostics record the window without
+  # RECORD; a change there needs the same change here. An invocation they would refuse (a
+  # benchmark missing from the snapshot, say, or an invalid CONFIG) stops here and leaves the
+  # ledger unchanged, as it does without RECORD (inputs are validated before an inspection is
+  # recorded, REVIEW-15).
+  python - "$snapshot" "$benchmark" "$start" "$end" "$ledger" "$config" <<'PY'
 import sys
 
+from invest_data.bundle import BundleError
 from invest_data.cleaning import clean_bars
-from invest_data.yahoo import load_snapshot, read_snapshot_manifest
+from invest_data.schemas import market_bar_columns, validate_market_frame
+from invest_data.yahoo import SourceError, load_snapshot, read_snapshot_manifest
+from invest_evaluation.config import BacktestConfig
 from invest_mining import ledger
 
-snapshot, benchmark, start, end, path = sys.argv[1:]
+snapshot, benchmark, start, end, path, config = sys.argv[1:]
+
+
+def publishable(symbols, dataset_id):
+    """The bars `invest-data yahoo publish` would publish, or its refusal; writes nothing."""
+    try:
+        raw, provenance = load_snapshot(snapshot, symbols, start=start, end=end)
+        currencies = set(provenance["currencies"].values())
+        if len(currencies) != 1 or None in currencies:
+            sys.exit(f"cannot publish mixed or unknown currencies {sorted(map(str, currencies))}")
+        try:
+            bars, _ = clean_bars(raw)
+        except ValueError as exc:
+            sys.exit(f"{dataset_id}: {exc}")
+        validate_market_frame(bars[[c.name for c in market_bar_columns(bars.columns)]])
+    except (SourceError, BundleError) as exc:
+        sys.exit(f"RECORD: {exc}")
+    return bars
+
+
 symbols = [s for s in read_snapshot_manifest(snapshot)["files"] if s != benchmark]
-raw, _ = load_snapshot(snapshot, symbols, start=start, end=end)
-bars, _ = clean_bars(raw)
+bars = publishable(symbols, f"yahoo-test-{start}-{end}")
+publishable([benchmark], f"yahoo-test-{benchmark}-{start}-{end}")
+BacktestConfig.load(config)
 window = ledger.Window(bars["date"].min().date(), bars["date"].max().date())
 if not ledger.is_inspected(ledger.load(path), window):
     ledger.append(

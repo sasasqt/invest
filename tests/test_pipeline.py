@@ -475,6 +475,57 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert (out / "quantiles/manifest.json").is_file()
 
 
+@pytest.mark.parametrize("invalid", ["benchmark", "config"])
+def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocation(
+    tmp_path, monkeypatch, invalid
+):
+    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot or an invalid
+    CONFIG stops the workflow at publication or at the CONFIG step, before the diagnostics
+    record the window. The RECORD pre-check, which runs before both, must refuse the same
+    invocation and leave the ledger as it was, instead of recording an inspection that the
+    retry cannot use."""
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    _no_global_git_config(monkeypatch, tmp_path)
+    bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
+    bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    snapshot = tmp_path / "snapshot"
+    write_fake_snapshot(bars, snapshot)
+    script = _clean_checkout_of_the_workflow(tmp_path / "checkout")
+    committed = [
+        json.loads(line)
+        for line in (ROOT / "ledgers/yahoo-test.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    ledger = tmp_path / "ledger.jsonl"
+    ledger.write_text(
+        "".join(json.dumps(e) + "\n" for e in committed if e["kind"] == "reservation")
+    )
+    before = ledger.read_bytes()
+    config = json.loads(CONFIG.read_text())
+    if invalid == "config":
+        config["strategy"]["min_names"] = 0  # BacktestConfig refuses it
+    (tmp_path / "config.json").write_text(json.dumps(config))
+    env = {
+        "SNAPSHOT": str(snapshot),
+        "LEDGER": str(ledger),
+        "CONFIG": str(tmp_path / "config.json"),
+        "SYMBOLS_FILE": "/nonexistent",
+        "RECORD": str(tmp_path / "record"),
+        "START": "",
+        "END": "",
+        "BENCHMARK": "QQQ" if invalid == "benchmark" else "SPY",
+    }
+    out = tmp_path / "wf"
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "commit it, then rerun" not in done.stderr, done.stderr
+    assert ("QQQ" if invalid == "benchmark" else "min_names") in done.stderr, done.stderr
+    assert ledger.read_bytes() == before
+    assert not out.exists() and not (tmp_path / "record").exists()
+
+
 def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
     tmp_path, monkeypatch
 ):
