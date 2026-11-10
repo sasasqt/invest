@@ -12,7 +12,7 @@
   "evidence": {
     "static": "Exact current-main trace in cli.py",
     "external_corroboration": "PR #41 discussion records BF-2026-11-09-1 / REVIEW-45 and reports two identical main reproductions",
-    "local_control": "pending trusted synthetic two-read oracle; no product import"
+    "local_control": "completed: trusted synthetic two-read oracle reproduced A rows/B hash twice; stable A control passed; no product import"
   },
   "unresolved_questions": [
     "Whether the repository contract requires immutable path semantics or same-read row/hash binding",

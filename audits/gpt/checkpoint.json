@@ -1487,8 +1487,8 @@
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
         "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-        "last_report": "2026-11-03.md",
-        "last_advance": "Expanded known unary-mask static root through all four operators and callers; closed extra static future-membership/purge suspicion, product controls remain blocked.",
+        "last_report": "2026-11-10.md",
+        "last_advance": "Confirmed GA-2026-11-10-1 source-level identity split-read defect with independent review and trusted synthetic control; untouched runtime acceptance remains blocked.",
         "last_substantive_run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
         "completed_advances": [
           "Confirmed GA-2026-11-10-1: search/confirm optional-input rows and recorded hashes can come from different reads; fresh independent source-level review and two-repeat trusted synthetic oracle."
@@ -2437,7 +2437,24 @@
       "reviewed_corrected_runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
       "evidence": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
       "corrected_scope": "collector/summary/upload traversal controls and later fail-stop fixes independently reviewed; exact current worker boundary and installed graph still unproven",
-      "current_effect": "No repository imports/builds/tests/workflows in this run."
+      "current_effect": "No repository imports/builds/tests/workflows in this run.",
+      "history": [
+        {
+          "id": "INV-PR32-001",
+          "status": "unresolved at reviewed runner; revalidate before execution",
+          "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+          "evidence": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
+          "scope": "host collection follows container-produced links; no claim of actual secret exposure",
+          "latest_observation": {
+            "date": "2026-11-05",
+            "original_route": "a73149d prohibited; corrected collection evidence preserved",
+            "pr36_head": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
+            "new_pr_review": "INV-PR36-001 confirmed static fail-stop issue in separate Nov4 review; no fresh runner investigation today",
+            "evidence": "https://github.com/sasasqt/invest/pull/36#issuecomment-6587388697",
+            "existing_successful_run": "41620332472 graph passed; reused Nov4 verified evidence retains demonstrated scope, no new dispatch"
+          }
+        }
+      ]
     },
     "overlap_at_activation": {
       "run_id": "ece15988-b4f0-8331-b102-0ce2475df4f6",
@@ -2953,7 +2970,7 @@
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "prepared",
+    "publication_status": "published_verified",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
     "completed_utc": "2026-11-10T02:12:23.250Z",
     "usage": "tokens/cost/helper compute unavailable; no invented allowance",
@@ -2965,7 +2982,9 @@
       "candidates": 0,
       "experiments": 0,
       "status": "not scheduled"
-    }
+    },
+    "report_commit": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
+    "report_url": "https://github.com/sasasqt/invest/blob/dca877a468a6dda06dbad9a0457bd1d6a8da2d50/audits/gpt/2026-11-10.md"
   },
   "publication_history": [
     {
@@ -3326,80 +3345,45 @@
         "week_2026_W46": "deferred to Sunday or first subsequent report"
       },
       "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
+    },
+    {
+      "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+      "date": "2026-11-10",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "report_commit": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
+      "report_path": "audits/gpt/2026-11-10.md",
+      "status": "verified; parent-to-commit diff restricted to audits/gpt/",
+      "receipt_note": "Follow-up receipt also corrects allocation.json selection and preserves prior runtime/runner observations as history."
     }
   ],
   "publication_current_run": {
-    "run_id": "GA-2026-11-09-data-0300-CET",
-    "date": "2026-11-09",
-    "field": "data",
     "status": "published_verified",
-    "branch": "gpt/repo-audits",
-    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "started_commit": "6749f5c628159f1a47ddc18e2fee39399d17cc7f",
-    "selection_commit": "4586af034989a78e8453c56485b4b1027c2ee01e",
-    "report_commit": "0bfa69384a36a85f905bd9aca85bc3b29bca29e9",
-    "report_url": "https://github.com/sasasqt/invest/blob/0bfa69384a36a85f905bd9aca85bc3b29bca29e9/audits/gpt/2026-11-09.md",
-    "evidence_url": "https://github.com/sasasqt/invest/tree/0bfa69384a36a85f905bd9aca85bc3b29bca29e9/audits/gpt/2026-11-09-data",
-    "verified_utc": "2026-11-09T02:14:00.983Z",
-    "verification": {
-      "remote_ref_equal_after_lease": true,
-      "guarded_expected_old_sha": true,
-      "force": false,
-      "one_parent": true,
-      "parent_to_commit_changed_paths": [
-        "audits/gpt/2026-11-09-data/README.md",
-        "audits/gpt/2026-11-09-data/allocation.json",
-        "audits/gpt/2026-11-09-data/ci.json",
-        "audits/gpt/2026-11-09-data/coverage-summary.json",
-        "audits/gpt/2026-11-09-data/identities.json",
-        "audits/gpt/2026-11-09-data/preflight.json",
-        "audits/gpt/2026-11-09-data/protocol-verification.json",
-        "audits/gpt/2026-11-09-data/reading-main.json",
-        "audits/gpt/2026-11-09-data/result.json",
-        "audits/gpt/2026-11-09-data/reviewer-comparison.json",
-        "audits/gpt/2026-11-09-data/reviewer2/independent-verdict.json",
-        "audits/gpt/2026-11-09.md",
-        "audits/gpt/checkpoint.json",
-        "audits/gpt/coverage-map.json",
-        "audits/gpt/coverage-map.md",
-        "audits/gpt/coverage.csv",
-        "audits/gpt/cross-check.md",
-        "audits/gpt/exploration.json",
-        "audits/gpt/findings.json",
-        "audits/gpt/state.json",
-        "audits/gpt/validation.csv"
-      ],
-      "all_paths_under_audits_gpt": true,
-      "report_read_back": true,
-      "result_read_back": true,
-      "state_read_back": true,
-      "source_main_recheck": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "source_main_unchanged": true
-    },
-    "execution": {
-      "product_imports_builds_tests_workflows": 0,
-      "remote_compute_dispatched": 0,
-      "reason": "credential boundary and exact installed locked graph not proven; trusted static work only"
-    },
-    "independent_review": {
-      "helpers": 1,
-      "verifier_b_used": false,
-      "reconciliation": "agreement; candidate dropped as defect"
-    },
-    "runtime": {
-      "model": "gpt-6.1-sol",
-      "effort": "unavailable"
-    },
-    "weekly": {
-      "week_2026_W45": "already present; not duplicated",
-      "week_2026_W46": "deferred to Sunday or first subsequent report"
-    },
-    "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
+    "report_commit": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
+    "report_url": "https://github.com/sasasqt/invest/blob/dca877a468a6dda06dbad9a0457bd1d6a8da2d50/audits/gpt/2026-11-10.md",
+    "verified_head_at_report": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
+    "diff_scope": "18 paths, all under audits/gpt/",
+    "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
   },
   "remaining_work_current_visit": [
     "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
     "Recheck combined behavior after PRs #38/#41 changes.",
     "Bundle-reader within-call path mutation remains unchecked."
+  ],
+  "runtime_validation_history": [
+    {
+      "superseded_as_latest_on": "2026-11-10",
+      "record": {
+        "run_id": 41208034002,
+        "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+        "semantic_gate_version": 2,
+        "guard_tests": 40,
+        "report": "audits/gpt/2026-10-31-adaptation.md",
+        "evidence": "audits/gpt/2026-10-31-adaptation/runtime-evidence.json",
+        "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+        "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
+        "status": "all boundary/lock/gate checks passed; main retains known test failure; control validation all passed",
+        "verified_utc": "2026-10-31T14:14:41.347132+00:00"
+      }
+    }
   ]
 }
