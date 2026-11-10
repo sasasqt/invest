@@ -1,28 +1,28 @@
 {
-  "run_id": "GA-2026-11-09-data-0300-CET",
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
   "planned_percent": {
     "exploitation": 50,
     "exploration": 50
   },
   "actual_primary_unique_lines": {
-    "exploitation": 452,
-    "exploration": 307,
-    "mandatory_callers_contracts": 129
+    "exploitation": 175,
+    "exploration": 175,
+    "mandatory_callers_contracts": 371
   },
   "new_verified_distinct_root_causes": {
-    "exploitation": 0,
+    "exploitation": 1,
     "exploration": 0
   },
   "evidence_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations",
   "pooled_rates_per_1000_lines": {
-    "exploitation": 0,
-    "exploration": 1.0256410256410255
+    "exploitation": 2.6595744680851063,
+    "exploration": 0
   },
   "runs": 2,
   "completed_full_audits": 0,
   "next_planned_percent": {
-    "exploitation": 40,
-    "exploration": 60
+    "exploitation": 60,
+    "exploration": 40
   },
   "last_four_completed_runs": [
     {
@@ -761,8 +761,84 @@
       ],
       "helper_overlap_excluded": true,
       "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
+    },
+    {
+      "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+      "date": "2026-11-10",
+      "field": "mining",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "planned_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 175,
+        "exploration": 175,
+        "mandatory_callers_contracts": 371
+      },
+      "actual_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "new_verified_distinct_root_causes": {
+        "exploitation": 1,
+        "exploration": 0
+      },
+      "pooled_eligible_visits": 2,
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 2.6595744680851063,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "rule": "Across two comparable mining visits exploitation has one confirmed root over 376 lines; exploration has zero over 307 lines. Decrease exploration 10 points from 50% to 40%.",
+      "ranges": [
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              215,
+              389
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+        },
+        {
+          "path": "data-mining-framework/tests/test_ledger.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              201,
+              329
+            ],
+            [
+              356,
+              401
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "181df2f5347892c72ebd3699494b3ed9598b24ff"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              390,
+              760
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+        }
+      ],
+      "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
     }
   ],
-  "date": "2026-11-09",
+  "date": "2026-11-10",
   "note": "Monday data visit; no research allocation. Actual split differs from planned because full carried-contract closure required more exploitation lines."
 }

@@ -1,0 +1,39 @@
+{
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "observed_at": "2026-11-10",
+  "fresh_execution": false,
+  "check_runs": [
+    {
+      "name": "wheels",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:34:27Z"
+    },
+    {
+      "name": "independent-install (data-mining-framework)",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:32:36Z"
+    },
+    {
+      "name": "checks (3.13)",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:37:45Z"
+    },
+    {
+      "name": "independent-install (strategy-evaluation)",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:33:18Z"
+    },
+    {
+      "name": "independent-install (data-pipeline/data-preparation)",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:32:02Z"
+    },
+    {
+      "name": "checks (3.11)",
+      "conclusion": "success",
+      "completed_at": "2026-11-02T02:37:58Z"
+    }
+  ],
+  "scope": "same-SHA historical GitHub metadata reused; not current-worker execution and not proof of candidate absence"
+}

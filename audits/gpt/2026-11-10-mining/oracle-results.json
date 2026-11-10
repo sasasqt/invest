@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "kind": "trusted synthetic two-read filesystem oracle",
+  "product_code_executed": false,
+  "reserved_data_accessed": false,
+  "modified_control": true,
+  "command_scope": "synthetic A/B CSV files and symlink alias only",
+  "results": [
+    {
+      "case": "A_to_B",
+      "repeat": 1,
+      "scored_row": "A,2020-01-01,",
+      "recorded_hash": "e6f2090839ca24209f6aa5de13fb8c30d9b25575cc6644fea4167d52c84f7459",
+      "expected_A_hash": "66ee9651d79844002c27a6d0046fcadcf16bd3d67b05bc9e6a54f3c03a6227fb",
+      "outcome": "mismatch reproduced"
+    },
+    {
+      "case": "A_to_B",
+      "repeat": 2,
+      "scored_row": "A,2020-01-01,",
+      "recorded_hash": "e6f2090839ca24209f6aa5de13fb8c30d9b25575cc6644fea4167d52c84f7459",
+      "expected_A_hash": "66ee9651d79844002c27a6d0046fcadcf16bd3d67b05bc9e6a54f3c03a6227fb",
+      "outcome": "same mismatch reproduced"
+    },
+    {
+      "case": "stable_A",
+      "repeat": 1,
+      "scored_row": "A,2020-01-01,",
+      "recorded_hash": "66ee9651d79844002c27a6d0046fcadcf16bd3d67b05bc9e6a54f3c03a6227fb",
+      "outcome": "negative control passed"
+    }
+  ],
+  "limitation": "Demonstrates the two-read race mechanism, not untouched repository CLI behavior."
+}

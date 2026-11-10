@@ -1,0 +1,22 @@
+{
+  "candidate_id": "CAND-MINING-IDENTITY-2026-11-10",
+  "kind": "repository defect",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "proposed_stable_id": "GA-2026-11-10-1",
+  "fingerprint": "provenance:data-mining-framework/src/invest_mining/cli.py:optional-input-rows-and-recorded-hash-from-different-reads",
+  "proposed_keep_drop": "keep",
+  "proposed_severity": "medium",
+  "confidence": "high static plus independently reported runtime evidence; local product execution blocked",
+  "reason": "_search lines 202-203 and _confirm lines 321-322 score rows returned by _optional_inputs, while identities at lines 226-233 and 333-345 call _input_hashes, which reopens universe and fundamentals paths at lines 62-70. A path transition A to B can record B's hash for outputs scored on A.",
+  "impact": "Experiment IDs and confirmation-use decisions can describe different optional inputs from those actually scored; export evidence can later bind results on A to signals scored on B.",
+  "evidence": {
+    "static": "Exact current-main trace in cli.py",
+    "external_corroboration": "PR #41 discussion records BF-2026-11-09-1 / REVIEW-45 and reports two identical main reproductions",
+    "local_control": "pending trusted synthetic two-read oracle; no product import"
+  },
+  "unresolved_questions": [
+    "Whether the repository contract requires immutable path semantics or same-read row/hash binding",
+    "Whether hashless optional bundles create a separate root or only weaken this finding",
+    "Whether evaluate's absent optional-input provenance is the same root or a separate known limitation"
+  ]
+}

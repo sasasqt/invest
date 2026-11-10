@@ -1,9 +1,9 @@
-# Cumulative coverage — 9 November 2026
+# Cumulative coverage — 10 November 2026
 
-Source `9913f94b9b795bd9633a6a683e9f420301e400b3`; 111 tracked files: 46 reviewed, 16 partially reviewed, 11 checked automatically, 16 inventoried and 22 blocked. Exact ranges remain in [coverage-map.json](coverage-map.json).
+Source `9913f94b9b795bd9633a6a683e9f420301e400b3`; 111 tracked files: 47 reviewed, 15 partially reviewed, 11 checked automatically, 16 inventoried and 22 blocked. Exact ranges remain in [coverage-map.json](coverage-map.json).
 
-This Monday data visit added 759 cumulative semantic lines and closed four unread ranges: `invest_data/cli.py` (1–252), `schemas.py` (176–374 plus the previously isolated line 418), `test_bundle.py` (211–229), and `test_signal_metadata.py` (1–288). Current remaining unread scope is 17,312 lines across 60 paths. Product behavior evidence was not refreshed because credential isolation and the exact installed locked graph were not proven.
+This Tuesday mining visit added 721 cumulative semantic lines. Discretionary reading was exactly 175 exploitation and 175 exploration lines, plus 371 mandatory caller/consumer lines. `invest_mining/cli.py` is now fully semantically covered at the current blob, and `tests/test_ledger.py` advanced through lines 201–329 and 356–401. Remaining unread scope is 16,591 lines across 59 paths.
 
-The static scope is current for source `9913f94b9b795bd9633a6a683e9f420301e400b3`. Same-SHA GitHub CI is a reused observation, not this run's execution. Peer head `f73a1d1` reports broader file coverage, but exact peer byte/range union remains unavailable and is not credited here.
+Behavioral evidence was not refreshed on this worker because credential isolation and the exact installed locked graph were not proven. The six successful same-SHA GitHub checks are reused only for their original scope. Peer head `f73a1d1` has no new exact-range mining finding for this question.
 
 Whole-repository coverage remains incomplete.

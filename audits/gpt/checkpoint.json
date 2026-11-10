@@ -1,7 +1,7 @@
 {
-  "run_id": "GA-2026-11-09-data-0300-CET",
-  "start_date": "2026-11-09",
-  "started_utc": "2026-11-09T02:03:24.601Z",
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "start_date": "2026-11-10",
+  "started_utc": "2026-11-10T02:03:53.323965Z",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
   "profile": "rotating_daily_data_static_slice",
@@ -30,7 +30,10 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "model_effort": "model gpt-6.1-sol; effort unavailable",
+  "model_effort": {
+    "model": "gpt-6.1-sol",
+    "effort": "unavailable"
+  },
   "preflight": {
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_inventory_blobs": 111,
@@ -54,21 +57,19 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "Audit incomplete; 2026-11-09 data bounded static scope complete; no new verified defect",
+  "status": "bounded static mining question complete; one verified medium source-level defect; product runtime blocked",
   "last_audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "last_audited_date": "2026-11-09",
-  "last_run_id": "GA-2026-11-09-data-0300-CET",
+  "last_audited_date": "2026-11-10",
+  "last_run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
   "coverage_counts": {
     "tracked_files": 111,
-    "statuses": {
-      "reviewed": 46,
-      "inventoried": 16,
-      "partially_reviewed": 16,
-      "checked_automatically": 11,
-      "blocked": 22
-    },
-    "remaining_unread_lines": 17312,
-    "unread_paths": 60
+    "reviewed": 47,
+    "partially_reviewed": 15,
+    "checked_automatically": 11,
+    "inventoried": 16,
+    "blocked": 22,
+    "remaining_unread_lines": 16591,
+    "unread_paths": 59
   },
   "last_four_completed_runs": [
     {
@@ -219,7 +220,7 @@
   },
   "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
-  "completed_utc": "2026-11-09T02:10:45.754Z",
+  "completed_utc": "2026-11-10T02:12:23.250Z",
   "total_elapsed_seconds_to_publication_verified": 1426.203018,
   "execution_recovery": {
     "date": "2026-10-31",
@@ -439,6 +440,21 @@
       "last_queued_utc": "2026-11-09T02:10:45.754Z",
       "status": "peer lead queued; cannot check today",
       "deferral_reason": "bounded question and runtime gate"
+    },
+    {
+      "id": "OPEN-MINING-IDENTITY-SAME-READ-001",
+      "path": "data-mining-framework/src/invest_mining/cli.py:55-70,201-282,308-372",
+      "source_fingerprint": "provenance:data-mining-framework/src/invest_mining/cli.py:optional-input-rows-and-recorded-hash-from-different-reads",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P2",
+      "risk": "Experiment evidence may bind results to a different optional-input snapshot.",
+      "originating_item": "GA-2026-11-10-1",
+      "originating_reviewer": "Reviewer 1 + fresh Reviewer 2",
+      "next_check": "On untouched supported runtime after prerequisite qualification, run A→B twice for search/confirm × universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
+      "first_queued_utc": "2026-11-10T02:12:23.250Z",
+      "last_queued_utc": "2026-11-10T02:12:23.250Z",
+      "status": "runtime acceptance pending; source-level defect independently verified",
+      "deferral_reason": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment."
     }
   ],
   "followup_queue_history": [
@@ -508,16 +524,11 @@
     }
   ],
   "latest_runtime_validation": {
-    "run_id": 41208034002,
-    "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
-    "semantic_gate_version": 2,
-    "guard_tests": 40,
-    "report": "audits/gpt/2026-10-31-adaptation.md",
-    "evidence": "audits/gpt/2026-10-31-adaptation/runtime-evidence.json",
-    "source_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-    "control_sha": "a943dbf4a318fc2cb12f93b1d2a875ee51774572",
-    "status": "all boundary/lock/gate checks passed; main retains known test failure; control validation all passed",
-    "verified_utc": "2026-10-31T14:14:41.347132+00:00"
+    "date": "2026-11-10",
+    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "status": "blocked",
+    "reason": "current worker lacks proven credential-inaccessible filesystem boundary and exact installed locked graph",
+    "same_sha_ci": "six successful checks from 2026-11-02 reused; no custom product execution"
   },
   "run_history": [
     {
@@ -727,12 +738,10 @@
     "ci": "2026-11-09-data/ci.json"
   },
   "report_summary_counts": {
-    "new_verified_product_defects": 0,
-    "new_verified_root_causes": 0,
-    "carried_verified_audit_tooling_blockers": 1,
-    "new_unverified_concerns": 0,
-    "new_optional_recommendations": 0,
-    "dropped_candidates": 1
+    "verified_defects": 1,
+    "unverified_concerns": 0,
+    "optional_improvements": 0,
+    "dropped_candidates": 0
   },
   "rotation_v3": {
     "version": 3,
@@ -960,8 +969,8 @@
       },
       "mining": {
         "weekday": 1,
-        "last_rotation_visit": "2026-11-03",
-        "last_substantive_advance": "2026-11-03",
+        "last_rotation_visit": "2026-11-10",
+        "last_substantive_advance": "2026-11-10",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -1081,19 +1090,26 @@
           }
         ],
         "queue_refs": [
-          "GA-2026-10-31-1"
+          "GA-2026-10-31-1",
+          "GA-2026-11-10-1"
         ],
         "deferrals": {
           "runtime-entry-reentry-controls": {
             "date": "2026-11-03",
             "reason": "current isolation and installed locked graph unavailable",
-            "consecutive_comparable_visits": 1,
+            "consecutive_comparable_visits": 2,
             "next_check": "Untouched source twice with no-universe/all-member/cross-section and label endpoint controls"
+          },
+          "identity-same-read-runtime-controls": {
+            "date": "2026-11-10",
+            "reason": "current credential isolation and exact installed locked graph unavailable",
+            "consecutive_comparable_visits": 1,
+            "next_check": "Untouched A→B search/confirm × universe/fundamentals twice plus stable A/B controls after runner qualification."
           }
         },
         "reading_allocation": [
-          50,
-          50
+          60,
+          40
         ],
         "field_yield_history": [
           {
@@ -1391,12 +1407,94 @@
               50
             ],
             "legacy_note": "Imported initial 50/50 retained in history; explicit dispatcher current 60/40 plan used."
+          },
+          {
+            "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+            "date": "2026-11-10",
+            "field": "mining",
+            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "planned_percent": {
+              "exploitation": 50,
+              "exploration": 50
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 175,
+              "exploration": 175,
+              "mandatory_callers_contracts": 371
+            },
+            "actual_percent": {
+              "exploitation": 50,
+              "exploration": 50
+            },
+            "new_verified_distinct_root_causes": {
+              "exploitation": 1,
+              "exploration": 0
+            },
+            "pooled_eligible_visits": 2,
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 2.6595744680851063,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 60,
+              "exploration": 40
+            },
+            "rule": "Across two comparable mining visits exploitation has one confirmed root over 376 lines; exploration has zero over 307 lines. Decrease exploration 10 points from 50% to 40%.",
+            "ranges": [
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    215,
+                    389
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+              },
+              {
+                "path": "data-mining-framework/tests/test_ledger.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    201,
+                    329
+                  ],
+                  [
+                    356,
+                    401
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "181df2f5347892c72ebd3699494b3ed9598b24ff"
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "mandatory_callers_contracts",
+                "ranges": [
+                  [
+                    390,
+                    760
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+              }
+            ],
+            "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
         "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
         "last_report": "2026-11-03.md",
-        "last_advance": "Expanded known unary-mask static root through all four operators and callers; closed extra static future-membership/purge suspicion, product controls remain blocked."
+        "last_advance": "Expanded known unary-mask static root through all four operators and callers; closed extra static future-membership/purge suspicion, product controls remain blocked.",
+        "last_substantive_run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+        "completed_advances": [
+          "Confirmed GA-2026-11-10-1: search/confirm optional-input rows and recorded hashes can come from different reads; fresh independent source-level review and two-repeat trusted synthetic oracle."
+        ],
+        "validation_freshness": "current source-level trace at 9913f94b9b795bd9633a6a683e9f420301e400b3; same-SHA GitHub CI reused; custom product runtime unavailable",
+        "next_item": "Run untouched A→B search/confirm controls only after a qualified runner exists; otherwise oldest feasible remaining mining range, with PR #38/#41 integration recheck."
       },
       "evaluation": {
         "weekday": 2,
@@ -2334,18 +2432,12 @@
     "last_four_week_assessment": null,
     "known_runner_blocker": {
       "id": "INV-PR32-001",
-      "status": "unresolved at reviewed runner; revalidate before execution",
-      "runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "status": "historical unsafe runner remains prohibited; independently reviewed corrected source exists, current worker still unqualified",
+      "historical_runner_sha": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "reviewed_corrected_runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
       "evidence": "https://github.com/sasasqt/invest/pull/32#issuecomment-6548582767",
-      "scope": "host collection follows container-produced links; no claim of actual secret exposure",
-      "latest_observation": {
-        "date": "2026-11-05",
-        "original_route": "a73149d prohibited; corrected collection evidence preserved",
-        "pr36_head": "e0181fcbfda9814c53bccec4d0f1d5294487ec2d",
-        "new_pr_review": "INV-PR36-001 confirmed static fail-stop issue in separate Nov4 review; no fresh runner investigation today",
-        "evidence": "https://github.com/sasasqt/invest/pull/36#issuecomment-6587388697",
-        "existing_successful_run": "41620332472 graph passed; reused Nov4 verified evidence retains demonstrated scope, no new dispatch"
-      }
+      "corrected_scope": "collector/summary/upload traversal controls and later fail-stop fixes independently reviewed; exact current worker boundary and installed graph still unproven",
+      "current_effect": "No repository imports/builds/tests/workflows in this run."
     },
     "overlap_at_activation": {
       "run_id": "ece15988-b4f0-8331-b102-0ce2475df4f6",
@@ -2587,6 +2679,55 @@
         "publication_status": "prepared; remote verification receipt follows",
         "elapsed_to_preparation_seconds": 520.318888,
         "usage": "tokens/cost/helper compute unavailable; no invented allowance"
+      },
+      {
+        "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+        "date": "2026-11-10",
+        "field": "mining",
+        "scheduled_for": "2026-11-10T02:00:00Z",
+        "started_utc": "2026-11-10T02:03:53.323965Z",
+        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+        "output_base": "0f5fc580b3a733872d8ebe117d7940bb220d6b59",
+        "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
+        "question": "Do mining search and confirmation hash and record the same immutable bundle bytes that they score and use for evidence?",
+        "status": "bounded static question complete; GA-2026-11-10-1 verified source-level; product runtime blocked",
+        "budget_minutes": {
+          "total": 120,
+          "common": 20,
+          "field": 70,
+          "review_report": 30
+        },
+        "model": "gpt-6.1-sol",
+        "effort": "unavailable",
+        "scope_counts": {
+          "tracked_files": 111,
+          "reviewed": 47,
+          "partially_reviewed": 15,
+          "checked_automatically": 11,
+          "inventoried": 16,
+          "blocked": 22,
+          "remaining_unread_lines": 16591,
+          "unread_paths": 59
+        },
+        "helper_count": 1,
+        "verifier_b_used": false,
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "publication_status": "prepared",
+        "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+        "completed_utc": "2026-11-10T02:12:23.250Z",
+        "usage": "tokens/cost/helper compute unavailable; no invented allowance",
+        "new_findings": [
+          "GA-2026-11-10-1"
+        ],
+        "research": {
+          "papers": 0,
+          "candidates": 0,
+          "experiments": 0,
+          "status": "not scheduled"
+        }
       }
     ]
   },
@@ -2778,18 +2919,18 @@
     }
   ],
   "current_run": {
-    "run_id": "GA-2026-11-09-data-0300-CET",
-    "date": "2026-11-09",
-    "field": "data",
-    "scheduled_for": "2026-11-09T02:00:00Z",
-    "started_utc": "2026-11-09T02:03:24.601Z",
+    "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+    "date": "2026-11-10",
+    "field": "mining",
+    "scheduled_for": "2026-11-10T02:00:00Z",
+    "started_utc": "2026-11-10T02:03:53.323965Z",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
-    "output_base": "4586af034989a78e8453c56485b4b1027c2ee01e",
+    "output_base": "0f5fc580b3a733872d8ebe117d7940bb220d6b59",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "runner_sha": "cd4d43b48a8c86fc58299aa50cac88b28c508b5e",
-    "question": "Does externally supplied fundamentals timing metadata alter point-in-time behavior, and can the carried available_at concern be resolved from all current callers/consumers?",
-    "status": "bounded static question complete; no new verified defect; product runtime blocked",
+    "runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
+    "question": "Do mining search and confirmation hash and record the same immutable bundle bytes that they score and use for evidence?",
+    "status": "bounded static question complete; GA-2026-11-10-1 verified source-level; product runtime blocked",
     "budget_minutes": {
       "total": 120,
       "common": 20,
@@ -2798,40 +2939,33 @@
     },
     "model": "gpt-6.1-sol",
     "effort": "unavailable",
-    "missed_dates_reconciliation": [
-      "2026-11-07: no final report observed; execution unknown",
-      "2026-11-08: no final report observed; execution unknown"
-    ],
     "scope_counts": {
       "tracked_files": 111,
-      "primary_semantic_lines": 888,
-      "new_cumulative_lines": 759,
-      "primary_by_bucket": {
-        "exploitation": 452,
-        "exploration": 307,
-        "mandatory_callers_contracts": 129
-      },
-      "helper_lines_separate": "not added",
-      "statuses": {
-        "reviewed": 46,
-        "inventoried": 16,
-        "partially_reviewed": 16,
-        "checked_automatically": 11,
-        "blocked": 22
-      },
-      "remaining_unread_lines": 17312,
-      "unread_paths": 60
+      "reviewed": 47,
+      "partially_reviewed": 15,
+      "checked_automatically": 11,
+      "inventoried": 16,
+      "blocked": 22,
+      "remaining_unread_lines": 16591,
+      "unread_paths": 59
     },
     "helper_count": 1,
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
+    "publication_status": "prepared",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
-    "completed_utc": "2026-11-09T02:14:00.983Z",
+    "completed_utc": "2026-11-10T02:12:23.250Z",
     "usage": "tokens/cost/helper compute unavailable; no invented allowance",
-    "report_commit": "0bfa69384a36a85f905bd9aca85bc3b29bca29e9",
-    "report_url": "https://github.com/sasasqt/invest/blob/0bfa69384a36a85f905bd9aca85bc3b29bca29e9/audits/gpt/2026-11-09.md"
+    "new_findings": [
+      "GA-2026-11-10-1"
+    ],
+    "research": {
+      "papers": 0,
+      "candidates": 0,
+      "experiments": 0,
+      "status": "not scheduled"
+    }
   },
   "publication_history": [
     {
@@ -3264,8 +3398,8 @@
     "note": "This verifies the substantive report commit. This receipt is appended by a later scoped single-parent commit and therefore does not embed that later commit's unknown SHA."
   },
   "remaining_work_current_visit": [
-    "Run GA-2026-11-02-3/K14 malformed and control cases only after credential isolation and exact installed locked graph are proven.",
-    "Independently check queued peer RA-2026-11-08-1/-2 on a later bounded data visit; no peer claim promoted today.",
-    "Whole-repository coverage remains incomplete; other fields retain their queues."
+    "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
+    "Recheck combined behavior after PRs #38/#41 changes.",
+    "Bundle-reader within-call path mutation remains unchecked."
   ]
 }

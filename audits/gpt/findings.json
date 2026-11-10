@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-11-09-data-0300-CET",
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "findings": [
     {
@@ -387,6 +387,69 @@
           "scope": "base and candidate head; no runtime failure injection"
         }
       ]
+    },
+    {
+      "id": "GA-2026-11-10-1",
+      "fingerprint": "provenance:data-mining-framework/src/invest_mining/cli.py:optional-input-rows-and-recorded-hash-from-different-reads",
+      "category": "research provenance / experiment identity",
+      "severity": "medium",
+      "priority": "P2",
+      "status": "new",
+      "confidence": "high source-level confidence; untouched product runtime unavailable",
+      "evidence_label": "verified_source_level_defect_with_independent_review",
+      "runtime_label": "untouched CLI reproduction blocked locally; external two-repeat claim attributed",
+      "title": "Search and confirm can record hashes from inputs they did not score",
+      "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-mining-framework/src/invest_mining/cli.py#L55",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-mining-framework/src/invest_mining/cli.py#L201",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-mining-framework/src/invest_mining/cli.py#L308",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-mining-framework/src/invest_mining/ledger.py#L88"
+      ],
+      "expected": "Each experiment identity and confirmation-use ledger entry describes the exact optional-input bundle rows used to build the scored panel.",
+      "observed_static": "_optional_inputs returns rows and discards manifests; _input_hashes later reopens the same paths. Search and fixed-formula confirm therefore score read A but can record the hash from read B.",
+      "trigger": "A valid --universe or --fundamentals path changes between the panel read and identity-hash read, such as an atomically rotated symlink or current-directory alias.",
+      "impact": "Experiment IDs, result config and ledger entries can claim universe/fundamentals B for confirmation or search actually scored on A. Later evidence checks can bind A's result to B's input identity; repeat versus overlap reasons can also be misstated.",
+      "evidence": [
+        "2026-11-10-mining/oracle-results.json",
+        "2026-11-10-mining/reviewer2/independent-verdict.json",
+        "https://github.com/sasasqt/invest/pull/41#issuecomment-6750947794"
+      ],
+      "runtime_repeats": 0,
+      "standalone_oracle": {
+        "repeats": 2,
+        "negative_controls": 1,
+        "scope": "trusted synthetic two-read filesystem oracle; modified control, no product import"
+      },
+      "correction_boundary": "Read each optional bundle once and retain its manifest/hash with its rows. Use those rows for the panel and those matching manifests for identity in both search and confirm. Reconcile overlapping PRs #38 and #41.",
+      "acceptance": "On untouched supported runtime after prerequisite qualification, run A→B twice for search/confirm × universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
+      "effort": "S-M estimate",
+      "owner": "mining maintainer",
+      "also_found_by": [
+        "BF-2026-11-09-1",
+        "REVIEW-45"
+      ],
+      "duplicate_status": "Same root externally recorded in PR #41 discussion; no prior GA finding.",
+      "overlaps": [
+        "PR #38 d833686332327759d2f4a655c14db41440f9f2ff edits search/confirm ledger behavior",
+        "PR #41 67273b4d6f1dc36c1f288709c31c5cd7a6c6871a fixes export-side sibling and leaves recording side open"
+      ],
+      "history": [
+        {
+          "date": "2026-11-10",
+          "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+          "status": "new; independently reviewed",
+          "evidence": "source trace + two-repeat standalone oracle + stable control; external product reproduction attributed"
+        }
+      ],
+      "checked_siblings": {
+        "evaluate": "single optional row read but absent optional-input provenance is separate known limitation",
+        "export": "related sibling addressed by open PR #41",
+        "hashless": "separate BF-2026-11-08-2 / REVIEW-43"
+      },
+      "missing_evidence": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
+      "change_condition": "Drop only if the supported contract explicitly forbids and enforces stable path resolution for the full command, or an untouched valid A→B reproduction demonstrates same-snapshot rows and identity.",
+      "discovery_bucket": "exploitation"
     }
   ],
   "known_external": [
@@ -561,6 +624,16 @@
       "new_root_causes": 0,
       "carried_confirmed_tooling_blockers": 1,
       "independent_review": true
+    },
+    {
+      "date": "2026-11-10",
+      "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "new_findings": [
+        "GA-2026-11-10-1"
+      ],
+      "dropped_candidates": [],
+      "independent_review": "completed; no disagreement"
     }
   ]
 }

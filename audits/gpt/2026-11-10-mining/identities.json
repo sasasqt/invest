@@ -1,0 +1,19 @@
+{
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "source": {
+    "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+    "commit_date": "2026-11-02T02:27:01Z",
+    "tracked_entries": 147
+  },
+  "output_base": "0f5fc580b3a733872d8ebe117d7940bb220d6b59",
+  "runner": "44aa87557404b0ae29561e82d35f6b46396527be",
+  "peer": "f73a1d1136502f6faee9134a65301aa5a090c817",
+  "selected_blobs": {
+    "data-mining-framework/src/invest_mining/cli.py": "abb44a04793f657188da5b0feab9fc7a2b360494",
+    "data-mining-framework/src/invest_mining/ledger.py": "d13b09146ddbe7ff6328af1481f7af90cc5b2121",
+    "data-mining-framework/tests/test_ledger.py": "181df2f5347892c72ebd3699494b3ed9598b24ff",
+    "data-mining-framework/ALPHA_VALIDATION.md": "b02bf5478505329027db917222e9b45b1c8221f5",
+    "docs/DATA_CONTRACT.md": "602dfd528c0191c3f86de2d3bf20f0ef42e78067"
+  }
+}

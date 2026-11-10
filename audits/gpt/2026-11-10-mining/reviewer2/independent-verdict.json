@@ -1,0 +1,57 @@
+{
+  "candidate_id": "CAND-MINING-IDENTITY-2026-11-10",
+  "reviewer": "Reviewer 2 / Verifier A",
+  "model": "gpt-6.1-sol",
+  "effort": "unavailable",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "cli_blob": "abb44a04793f657188da5b0feab9fc7a2b360494",
+  "verdict": "keep",
+  "final_evidence_label": "verified source-level defect",
+  "severity": "medium",
+  "confidence": "high",
+  "independent_reason": "_optional_inputs returns rows while discarding manifests; _input_hashes independently reopens paths. Search and confirm use the former for panels and the latter for identities, ledger assessment, config and entries.",
+  "contract": [
+    "ALPHA_VALIDATION.md:9,99,115",
+    "data-mining-framework/README.md:48",
+    "docs/DATA_CONTRACT.md:7"
+  ],
+  "consequence": "A mutable alias can cause A rows to be scored while B hash is recorded. This corrupts reproducibility and downstream evidence binding; default stable paths do not trigger it.",
+  "checked_siblings": [
+    "evaluate optional provenance is separate known limitation",
+    "export is related sibling under PR #41",
+    "ledger experiment_id and assess_confirmation",
+    "tests/test_ledger.py and tests/test_cli.py",
+    "TODO and GPT findings/state",
+    "PR #38 overlap"
+  ],
+  "duplicates": [
+    "BF-2026-11-09-1",
+    "REVIEW-45",
+    "PR #41 discussion"
+  ],
+  "missing_evidence": "Untouched CLI reproduction blocked by unproven isolation and installed locked graph.",
+  "correction": "Read each optional bundle once, retain manifest/hash and rows, and use that pair for panel and identity in search and confirm.",
+  "acceptance": "A→B twice per route and optional input; stable A/B controls; downstream export cannot attach A evidence to B.",
+  "change_condition": "Drop only if supported contract forbids and enforces stable full-command paths, or untouched valid A→B shows a same-snapshot result.",
+  "drop_counterfactual": "One read returned both rows and identity manifest, or a post-read check proved the path still resolved to the scored bundle.",
+  "closing_question": {
+    "answer": "No additional concrete defect found in checked paths.",
+    "checked": [
+      "cli.py",
+      "ledger.py",
+      "ALPHA_VALIDATION.md",
+      "README.md",
+      "DATA_CONTRACT.md",
+      "test_cli.py",
+      "test_ledger.py",
+      "TODO.md",
+      "GPT findings/state",
+      "PRs #38/#41"
+    ],
+    "unchecked": [
+      "export_signals and evidence serialization after combined PRs #38/#41",
+      "bundle-reader behavior when a path changes during one reader call",
+      "saved mining outputs for mutable-alias provenance indicators without reserved observations"
+    ]
+  }
+}

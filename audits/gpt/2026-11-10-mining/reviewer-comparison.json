@@ -1,0 +1,27 @@
+{
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "candidate_id": "CAND-MINING-IDENTITY-2026-11-10",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "reviewer1": {
+    "disposition": "keep",
+    "severity": "medium",
+    "confidence": "high source-level plus external corroboration; product runtime blocked"
+  },
+  "reviewer2": {
+    "disposition": "keep",
+    "severity": "medium",
+    "confidence": "high source-level; product runtime blocked"
+  },
+  "agreement": true,
+  "verifier_b_used": false,
+  "final": {
+    "stable_id": "GA-2026-11-10-1",
+    "evidence_label": "verified source-level defect",
+    "runtime_scope": "unexecuted locally",
+    "aliases": [
+      "BF-2026-11-09-1",
+      "REVIEW-45"
+    ]
+  },
+  "elapsed": "not exposed"
+}
