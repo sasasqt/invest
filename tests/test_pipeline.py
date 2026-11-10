@@ -475,15 +475,15 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert (out / "quantiles/manifest.json").is_file()
 
 
-@pytest.mark.parametrize("invalid", ["benchmark", "config"])
+@pytest.mark.parametrize("invalid", ["benchmark", "config", "stale_output"])
 def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocation(
     tmp_path, monkeypatch, invalid
 ):
-    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot or an invalid
-    CONFIG stops the workflow at publication or at the CONFIG step, before the diagnostics
-    record the window. The RECORD pre-check, which runs before both, must refuse the same
-    invocation and leave the ledger as it was, instead of recording an inspection that the
-    retry cannot use."""
+    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot, an invalid
+    CONFIG or a market bundle left in OUT_DIR by an earlier run that stopped stops the
+    workflow at publication or at the CONFIG step, before the diagnostics record the window.
+    The RECORD pre-check, which runs before both, must refuse the same invocation and leave
+    the ledger as it was, instead of recording an inspection that the retry cannot use."""
     from invest_data.sources import SyntheticConfig, synthetic_market
     from invest_data.testing import write_fake_snapshot
 
@@ -518,12 +518,16 @@ def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocati
         "BENCHMARK": "QQQ" if invalid == "benchmark" else "SPY",
     }
     out = tmp_path / "wf"
+    if invalid == "stale_output":
+        (out / "data/market").mkdir(parents=True)
     done = _run_workflow(script, out, env)
     assert done.returncode != 0
     assert "commit it, then rerun" not in done.stderr, done.stderr
-    assert ("QQQ" if invalid == "benchmark" else "min_names") in done.stderr, done.stderr
+    expected = {"benchmark": "QQQ", "config": "min_names", "stale_output": "already exists"}
+    assert expected[invalid] in done.stderr, done.stderr
     assert ledger.read_bytes() == before
-    assert not out.exists() and not (tmp_path / "record").exists()
+    assert out.exists() == (invalid == "stale_output")
+    assert not (tmp_path / "record").exists()
 
 
 def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
