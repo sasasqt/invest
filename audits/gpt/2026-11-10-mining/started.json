@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "scheduled_for": "2026-11-10T02:00:00Z",
+  "berlin_date": "2026-11-10",
+  "field": "mining",
+  "status": "started",
+  "started_utc": "2026-11-10T02:03:53.323965Z",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+  "output_base": "2d15d1dc71d4fc8440663045ff5c5dd0a6f23997",
+  "runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "question": "Do mining search and confirmation hash and record the same immutable bundle bytes that they score and use for evidence?",
+  "prerequisites": {
+    "execution_boundary": "unproven on current worker",
+    "installed_locked_graph": "unverified",
+    "product_execution": "blocked",
+    "static_work": "authorized"
+  },
+  "note": "Write-ahead checkpoint only. Prior automation in_progress is the same run ID and does not independently prove liveness."
+}
