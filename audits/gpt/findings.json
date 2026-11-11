@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
   "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
   "findings": [
     {
@@ -103,47 +103,52 @@
       "id": "GA-2026-10-31-2",
       "fingerprint": "benchmark:strategy-evaluation/src/invest_evaluation/engine.py:universe-ew-omits-explicit-settlement",
       "category": "financial benchmark",
-      "severity": "medium if policy confirmed",
+      "severity": "medium",
       "priority": "P2",
-      "status": "new",
-      "confidence": "high source omission; medium intended-policy interpretation",
-      "evidence_label": "plausible",
+      "status": "known/open",
+      "confidence": "high static contract/dataflow evidence with independent review; same-SHA peer runtime corroboration; local untouched runtime not executed",
+      "evidence_label": "confirmed_static_contract_mismatch",
       "title": "Universe benchmark omits explicit cash settlements",
-      "sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
+      "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "locations": [
-        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/engine.py#L539",
-        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/engine.py#L406",
-        "https://github.com/sasasqt/invest/blob/90b5ca038155b97833b120baa57dfecd05d6f641/strategy-evaluation/src/invest_evaluation/metrics.py#L282"
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/strategy-evaluation/src/invest_evaluation/engine.py#L427",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/strategy-evaluation/src/invest_evaluation/engine.py#L568",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/strategy-evaluation/src/invest_evaluation/validation.py#L184",
+        "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/strategy-evaluation/README.md#L71"
       ],
-      "expected": "Declare whether gross universe EW total returns incorporate valid settlement/retirement events consistently with portfolio economics.",
-      "observed_static": "Benchmark uses close ratios and prior membership only; no settlement_events/retired input.",
+      "expected": "The gross universe equal-weight benchmark must share the declared total-return/settlement basis when supplied settlements affect investable universe performance, or be explicitly labeled and gated as a close-only proxy.",
+      "observed_static": "Portfolio holdings settle through settlement_events, but the universe benchmark is computed only from close ratios and prior-close membership; settlement_events and retired state never enter it.",
       "synthetic_example": {
         "previous_closes": [
           20,
           20
         ],
-        "current_closes": [
+        "event_date_closes": [
           20,
           20
         ],
         "settlement_A": 5,
-        "prior_EW_wealth": 100,
+        "current_source_benchmark_return": 0,
         "settlement_inclusive_expected_return": -0.375,
-        "price_only_static_result": 0,
-        "control": "No settlement or settlement equals close =>0"
+        "control_no_event_or_settlement_equals_close": 0
       },
-      "impact": "Relative metrics and optional universe-IR rule can change under settlements; default benchmark validation is none. Actual metric/verdict flip unobserved.",
+      "impact": "Reported relative metrics are wrong under a supplied settlement. With validation.benchmark='universe', the information-ratio rule can change a portfolio verdict. The rule is optional and defaults to none.",
       "runtime_repeats": 0,
-      "negative_control_execution": "blocked",
+      "negative_control_execution": "trusted arithmetic oracle repeated twice; untouched product execution blocked",
       "evidence": [
-        "2026-10-31-repro/verifier-a.md"
+        "2026-10-31-repro/verifier-a.md",
+        "2026-11-11-evaluation/reviewer-comparison.json",
+        "2026-11-11-evaluation/oracle-results.json",
+        "https://github.com/sasasqt/invest/blob/f73a1d1136502f6faee9134a65301aa5a090c817/audits/claude/cross-check.md"
       ],
-      "correction_boundary": "Clarify intended policy before implementation; if intentional price-only proxy, label and restrict comparability. External benchmark not subject to strategy delisting events.",
-      "acceptance": "Explicit policy; twice-repeated event/control checks; >=20-session relative-metric fixture; retirement and prefix causality; preserve missing-value statuses.",
+      "correction_boundary": "Benchmark construction, documentation, saved metrics and verdict regression tests. Do not change external benchmark semantics unless separately justified.",
+      "acceptance": "On untouched supported runtime, run the settlement/event case and no-event/equal-close controls twice, cover membership ending on the settlement date, zero settlements and shorts, and a >=20-session relative-metric fixture. The saved benchmark and verdict must follow the declared policy.",
       "effort": "M estimate",
       "owner": "evaluation maintainer; user decides",
       "also_found_by": [
-        "BH-2026-10-21-2 (peer-reported alias; original hunt ledger unavailable)"
+        "BH-2026-10-21-2 (peer-reported alias; original hunt ledger unavailable)",
+        "BH-2026-10-21-2",
+        "Claude cross-check 2026-11-08"
       ],
       "history": [
         {
@@ -156,6 +161,14 @@
           "status": "known/open, plausible",
           "evidence": "cross-check.md",
           "scope": "peer supplied duplicate lead; original hunt reproduction unavailable; no policy/runtime promotion"
+        },
+        {
+          "date": "2026-11-11",
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+          "status": "known/open; confirmed static contract mismatch",
+          "advance": "Fresh Reviewer 2 independently confirmed the dataflow/contract mismatch; same-SHA peer runtime evidence reports the expected wrong settlement-day benchmark. Local untouched runtime and verdict-flip fixture remain pending.",
+          "evidence": "2026-11-11-evaluation/reviewer-comparison.json"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -168,7 +181,8 @@
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
         }
-      ]
+      ],
+      "runtime_label": "same-SHA peer reproduction corroborated; local product execution unavailable"
     },
     {
       "id": "GA-2026-11-02-1",
@@ -328,7 +342,7 @@
         "2026-11-02-data-rotation/reviewer2/independent-verdict.json"
       ],
       "acceptance": "After proving isolation and installed lock graph, run malformed/read and valid-key controls twice across CSV/SQLite/Parquet. Required row-key/non-null validation must work independent of key ordering or compatible redundant manifest keys. No product fix in this audit.",
-      "effort": "S–M estimate",
+      "effort": "SâM estimate",
       "owner": "data contract maintainer; no action taken",
       "history": [
         {
@@ -422,7 +436,7 @@
         "scope": "trusted synthetic two-read filesystem oracle; modified control, no product import"
       },
       "correction_boundary": "Read each optional bundle once and retain its manifest/hash with its rows. Use those rows for the panel and those matching manifests for identity in both search and confirm. Reconcile overlapping PRs #38 and #41.",
-      "acceptance": "On untouched supported runtime after prerequisite qualification, run A→B twice for search/confirm × universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
+      "acceptance": "On untouched supported runtime after prerequisite qualification, run AâB twice for search/confirm Ã universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
       "effort": "S-M estimate",
       "owner": "mining maintainer",
       "also_found_by": [
@@ -448,7 +462,7 @@
         "hashless": "separate BF-2026-11-08-2 / REVIEW-43"
       },
       "missing_evidence": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
-      "change_condition": "Drop only if the supported contract explicitly forbids and enforces stable path resolution for the full command, or an untouched valid A→B reproduction demonstrates same-snapshot rows and identity.",
+      "change_condition": "Drop only if the supported contract explicitly forbids and enforces stable path resolution for the full command, or an untouched valid AâB reproduction demonstrates same-snapshot rows and identity.",
       "discovery_bucket": "exploitation"
     }
   ],
