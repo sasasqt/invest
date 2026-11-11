@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "date": "2026-11-10",
+  "date": "2026-11-11",
   "files": [
     {
       "path": ".github/workflows/ci.yml",
@@ -7219,8 +7219,18 @@
       "category": "documentation",
       "line_count": 85,
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
-      "line_ranges": [],
-      "main_ranges": [],
+      "line_ranges": [
+        [
+          1,
+          85
+        ]
+      ],
+      "main_ranges": [
+        [
+          1,
+          85
+        ]
+      ],
       "verifier_a_ranges": [
         [
           18,
@@ -7241,9 +7251,9 @@
         "causality/accounting"
       ],
       "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": "2026-10-31",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "reviewed",
+      "last_review_date": "2026-11-11",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -7263,6 +7273,27 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-11",
+          "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+          "main_ranges": [
+            [
+              1,
+              85
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              16,
+              28
+            ],
+            [
+              71,
+              83
+            ]
+          ],
+          "scope": "trusted static contract read"
         }
       ],
       "content_history": [
@@ -7281,15 +7312,10 @@
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "inventory_date": "2026-11-05",
-      "bytes_verified_this_run": false,
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
-      "unread_ranges": [
-        [
-          1,
-          85
-        ]
-      ]
+      "static_evidence_freshness": "current full-file semantic coverage; benchmark and settlement contracts rechecked",
+      "unread_ranges": []
     },
     {
       "path": "strategy-evaluation/examples/quantile_long_short.json",
@@ -7519,25 +7545,13 @@
       "line_ranges": [
         [
           1,
-          68
-        ],
-        [
-          265,
-          365
+          378
         ]
       ],
       "main_ranges": [
         [
           1,
-          68
-        ],
-        [
-          265,
-          304
-        ],
-        [
-          330,
-          365
+          378
         ]
       ],
       "verifier_a_ranges": [
@@ -7565,8 +7579,8 @@
       ],
       "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-05-integration/reading-main.json; 2026-11-05-integration/reviewer2/independent-verdict.json",
       "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "status": "partially_reviewed",
-      "last_review_date": "2026-11-05",
+      "status": "reviewed",
+      "last_review_date": "2026-11-11",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -7632,23 +7646,39 @@
             ]
           ],
           "scope": "static integration; no repository execution"
+        },
+        {
+          "date": "2026-11-11",
+          "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+          "main_ranges": [
+            [
+              69,
+              264
+            ],
+            [
+              366,
+              378
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              120,
+              135
+            ],
+            [
+              155,
+              303
+            ]
+          ],
+          "scope": "trusted static settlement and provenance trace; no repository execution"
         }
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "inventory_date": "2026-11-05",
       "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "product execution unavailable; existing same-source CI separately observed",
-      "static_evidence_freshness": "current for stated recorder/workflow/provenance trace; no runtime claim",
-      "unread_ranges": [
-        [
-          69,
-          264
-        ],
-        [
-          366,
-          378
-        ]
-      ],
+      "static_evidence_freshness": "current full-file semantic coverage by cumulative exact ranges; settlement input/provenance path rechecked",
+      "unread_ranges": [],
       "remote_test_coverage": {
         "run": 41620332472,
         "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
@@ -8857,8 +8887,26 @@
       "category": "tests",
       "line_count": 990,
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
-      "line_ranges": [],
-      "main_ranges": [],
+      "line_ranges": [
+        [
+          231,
+          272
+        ],
+        [
+          523,
+          557
+        ]
+      ],
+      "main_ranges": [
+        [
+          231,
+          272
+        ],
+        [
+          523,
+          557
+        ]
+      ],
       "verifier_a_ranges": [
         [
           1,
@@ -8884,9 +8932,9 @@
         "causality/accounting"
       ],
       "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": "2026-10-31",
+      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-11",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -8910,6 +8958,31 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-11",
+          "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+          "main_ranges": [
+            [
+              231,
+              272
+            ],
+            [
+              523,
+              557
+            ]
+          ],
+          "verifier_ranges": [
+            [
+              231,
+              272
+            ],
+            [
+              523,
+              557
+            ]
+          ],
+          "scope": "trusted static test-quality review"
         }
       ],
       "content_history": [
@@ -8932,12 +9005,20 @@
       ],
       "inventory_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "inventory_date": "2026-11-05",
-      "bytes_verified_this_run": false,
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "unavailable in this audit; same-SHA CI is a separate observation",
-      "static_evidence_freshness": "historical at recorded scope; not revalidated in current mining visit",
+      "static_evidence_freshness": "current for settlement accounting and benchmark missing-session tests; no joined settlement-benchmark test",
       "unread_ranges": [
         [
           1,
+          230
+        ],
+        [
+          273,
+          522
+        ],
+        [
+          558,
           990
         ]
       ]
@@ -9628,9 +9709,9 @@
     "output_commit": "34407920f681be71913f7457db116ed8c0a85b3e",
     "rows": 110
   },
-  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
-  "scope_note": "Tuesday mining visit: 350 discretionary unique lines (175 exploitation, 175 exploration) plus 371 mandatory caller/consumer lines; source-level review only.",
-  "current_run_new_cumulative_semantic_lines": 721,
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "scope_note": "Wednesday evaluation visit; settlement-aware universe benchmark contract and consumers, plus deterministic CLI exploration slice. Product execution blocked by unproved credential-inaccessible boundary and installed locked graph.",
+  "current_run_new_cumulative_semantic_lines": 371,
   "external_runner_scope": [
     {
       "date": "2026-11-06",
