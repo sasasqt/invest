@@ -1842,19 +1842,23 @@ class RoundNineteenCheckTests(unittest.TestCase):
             with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
                 path = Path(directory, "f")
                 path.write_bytes(b"data\n")
-                info = os.lstat(path)
-                by_name = {
-                    key: (getattr(info, key) + 1 if value is None else value)
-                    for key, value in by_name.items()
-                }
-                checked = changed(info, **by_name)
-                real_fstat, read = os.fstat, []
-
-                def fstat(fd, real_fstat=real_fstat, opened_change=opened_change):
-                    return changed(real_fstat(fd), **opened_change)
-
                 fd = os.open(path, os.O_RDONLY | getattr(os, "O_BINARY", 0))
                 try:
+                    # The open handle's own stat stands for the by-name one. On Windows
+                    # a by-name stat can carry the folder entry's older size and times
+                    # (see same_file), so the "identity" cases ended at the "changed"
+                    # rejection before the I1 check (windows-2025, Python 3.13).
+                    info = os.fstat(fd)
+                    by_name = {
+                        key: (getattr(info, key) + 1 if value is None else value)
+                        for key, value in by_name.items()
+                    }
+                    checked = changed(info, **by_name)
+                    real_fstat, read = os.fstat, []
+
+                    def fstat(fd, real_fstat=real_fstat, opened_change=opened_change):
+                        return changed(real_fstat(fd), **opened_change)
+
                     with (
                         patch("output_collection.regular_file"),
                         patch("output_collection.os.fstat", side_effect=fstat),
