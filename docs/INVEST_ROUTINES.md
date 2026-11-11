@@ -75,13 +75,13 @@ flowchart TD
 | No blocking issues found | The completed review supports technical readiness within its stated validation limits. |
 | Review incomplete | Material evidence is missing or the relevant revisions moved before validation finished. |
 
-**Publication.** The routine maintains one detailed top-level Conversation comment per PR, with stable finding IDs, dated history, commit-linked locations, and acceptance checks. Every eligible completed clean review adds a brief new timeline notice, including an unchanged review that reuses earlier validation. The first clean notice may also serve as the initial summary. A new qualifying notice adds one published comment. A notice that only refreshes unchanged evidence adds zero substantive rounds. Before posting, the routine rechecks open status, revisions, and caps, deduplicates by PR, head, target, and run, then verifies the comment on GitHub. If revisions move and the routine cannot finish, any incomplete review names exactly what was examined. The daily summary records reviewed, capped, deferred, and blocked PRs. This routine's write access is limited to its own PR Conversation comments. Maintainers own approvals and merges.
+**Publication.** The routine maintains one detailed top-level Conversation comment per PR, with stable finding IDs, dated history, commit-linked locations, and acceptance checks. Every eligible completed clean review adds a brief new timeline notice, including an unchanged review that reuses earlier validation. The first clean notice may also serve as the initial summary. A new qualifying notice adds one published comment. A notice that only refreshes unchanged evidence adds zero substantive rounds. Before posting, the routine rechecks open status, revisions, and caps, deduplicates by PR, head, target, and run, then verifies the comment on GitHub. If revisions move and the routine cannot finish, any incomplete review names exactly what was examined. The daily summary records reviewed, capped, deferred, and blocked PRs. The routine may write only its own PR Conversation comments. Maintainers own approvals and merges.
 
 [Repository review guidelines](../GIT_GUIDELINES.md#when-reviewing) · [Example detailed review](https://github.com/sasasqt/invest/pull/41#issuecomment-6726530636) · [Example clean timeline notice](https://github.com/sasasqt/invest/pull/41#issuecomment-6777953452)
 
 ## Independent verification
 
-Both routines apply this path to material new or changed candidates, including proposed drops. A PR status refresh that reuses unchanged evidence needs no fresh candidate review.
+Both routines apply this path to new or changed candidates, including proposed drops, within the review budget. A PR status refresh that reuses unchanged evidence needs no fresh candidate review.
 
 ```mermaid
 flowchart TD
