@@ -99,8 +99,9 @@ if [[ -n "$record" ]]; then
   # and write_bundle's refusal of an existing bundle in invest_data/bundle.py) and the CONFIG
   # step, all of which run before the diagnostics record the window without RECORD; a change
   # there needs the same change here. An invocation they would refuse (a benchmark missing
-  # from the snapshot, an invalid CONFIG, or a bundle that an earlier run into OUT_DIR
-  # published before it stopped) stops here and leaves the ledger unchanged, as it does
+  # from the snapshot, market bars or a benchmark with no row left after cleaning, an
+  # invalid CONFIG, or a bundle that an earlier run into OUT_DIR published before it
+  # stopped) stops here and leaves the ledger unchanged, as it does
   # without RECORD (inputs are validated before an inspection is recorded, REVIEW-15).
   # Output paths that cannot be created (OUT_DIR or OUT_DIR/data naming a file, a dangling
   # link at a bundle's path) are not checked here: publication still refuses them, after
@@ -127,9 +128,16 @@ def publishable(symbols, dataset_id, target):
         if len(currencies) != 1 or None in currencies:
             sys.exit(f"cannot publish mixed or unknown currencies {sorted(map(str, currencies))}")
         try:
-            bars, _ = clean_bars(raw)
+            bars, report = clean_bars(raw)
         except ValueError as exc:
             sys.exit(f"{dataset_id}: {exc}")
+        if bars.empty:  # _publish refuses a bundle without bars, the benchmark's too
+            if not len(report.rejected):
+                sys.exit(f"RECORD: {dataset_id}: the input has no rows; nothing was recorded")
+            reasons = report.summary()["rejected_by_reason"]
+            sys.exit(
+                f"RECORD: {dataset_id}: every row was rejected ({reasons}); nothing was recorded"
+            )
         validate_market_frame(bars[[c.name for c in market_bar_columns(bars.columns)]])
         if target.exists():
             raise BundleError(f"bundle already exists: {target}")
@@ -142,8 +150,6 @@ symbols = [s for s in read_snapshot_manifest(snapshot)["files"] if s != benchmar
 bars = publishable(symbols, f"yahoo-test-{start}-{end}", Path(out, "data", "market"))
 publishable([benchmark], f"yahoo-test-{benchmark}-{start}-{end}", Path(out, "data", "benchmark"))
 BacktestConfig.load(config)
-if bars.empty:  # the diagnostics refuse a bundle without bars before recording anything
-    sys.exit(f"RECORD: no market bars in {start}..{end} remain after cleaning")
 window = ledger.Window(bars["date"].min().date(), bars["date"].max().date())
 if not ledger.is_inspected(ledger.load(path), window):
     ledger.append(

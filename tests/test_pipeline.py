@@ -475,21 +475,25 @@ def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_
     assert (out / "quantiles/manifest.json").is_file()
 
 
-@pytest.mark.parametrize("invalid", ["benchmark", "config", "stale_output"])
+@pytest.mark.parametrize("invalid", ["benchmark", "benchmark_rejected", "config", "stale_output"])
 def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocation(
     tmp_path, monkeypatch, invalid
 ):
-    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot, an invalid
-    CONFIG or a market bundle left in OUT_DIR by an earlier run that stopped stops the
-    workflow at publication or at the CONFIG step, before the diagnostics record the window.
-    The RECORD pre-check, which runs before both, must refuse the same invocation and leave
-    the ledger as it was, instead of recording an inspection that the retry cannot use."""
+    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot, a benchmark whose
+    every bar cleaning rejects, an invalid CONFIG or a market bundle left in OUT_DIR by an
+    earlier run that stopped stops the workflow at publication or at the CONFIG step, before
+    the diagnostics record the window. The RECORD pre-check, which runs before both, must
+    refuse the same invocation and leave the ledger as it was, instead of recording an
+    inspection that the retry cannot use."""
     from invest_data.sources import SyntheticConfig, synthetic_market
     from invest_data.testing import write_fake_snapshot
 
     _no_global_git_config(monkeypatch, tmp_path)
     bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
     bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    if invalid == "benchmark_rejected":  # each SPY bar's high is below its open and close
+        spy = bars["instrument"] == "SPY"
+        bars.loc[spy, ["high", "low"]] = bars.loc[spy, ["open", "close"]].min(axis=1) * 0.9
     snapshot = tmp_path / "snapshot"
     write_fake_snapshot(bars, snapshot)
     script = _clean_checkout_of_the_workflow(tmp_path / "checkout")
@@ -523,11 +527,26 @@ def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocati
     done = _run_workflow(script, out, env)
     assert done.returncode != 0
     assert "commit it, then rerun" not in done.stderr, done.stderr
-    expected = {"benchmark": "QQQ", "config": "min_names", "stale_output": "already exists"}
+    expected = {
+        "benchmark": "QQQ",
+        "benchmark_rejected": "yahoo-test-SPY-",
+        "config": "min_names",
+        "stale_output": "already exists",
+    }
     assert expected[invalid] in done.stderr, done.stderr
+    if invalid == "benchmark_rejected":
+        assert "every row was rejected" in done.stderr, done.stderr
     assert ledger.read_bytes() == before
     assert out.exists() == (invalid == "stale_output")
     assert not (tmp_path / "record").exists()
+    # Without RECORD the same invocation stops as well, and the ledger stays as it was.
+    plain = tmp_path / "wf-plain"
+    if invalid == "stale_output":
+        (plain / "data/market").mkdir(parents=True)
+    done = _run_workflow(script, plain, {**env, "RECORD": ""})
+    assert done.returncode != 0
+    assert expected[invalid] in done.stderr, done.stderr
+    assert ledger.read_bytes() == before
 
 
 def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
