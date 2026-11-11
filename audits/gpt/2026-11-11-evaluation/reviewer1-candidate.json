@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "scheduled_date": "2026-11-11",
+  "field": "evaluation",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "candidate": {
+    "id": "GA-2026-10-31-2",
+    "kind": "existing plausible finding revalidation",
+    "title": "Universe benchmark omits explicit cash settlements",
+    "proposed_disposition": "keep plausible",
+    "severity": "medium if the universe benchmark is contractually settlement-inclusive",
+    "confidence": "high source omission, medium intended-policy interpretation",
+    "reason": "run_backtest applies supplied delisting settlements to portfolio holdings at engine.py:427-452, but constructs the universe equal-weight benchmark solely from close ratios and prior-close membership at engine.py:568-571. CLI records the same supplied settlements and can make universe information ratio a portfolio verdict rule. README documents reliable settlement data as required for credible historical delisting performance but does not explicitly define whether the universe benchmark is a price-only proxy.",
+    "expected": "Benchmark policy must be explicit. If the universe benchmark represents investable gross universe performance under the same observed delisting events, event-date settlement returns must enter it. If intentionally price-only, reports and validation must identify that limitation.",
+    "actual": "Settlement events are not an input to benchmark construction. A member with no post-event close produces no settlement loss in the benchmark while the portfolio reflects it.",
+    "control": "No event, or a settlement equal to the last valid close, should leave the benchmark return unchanged.",
+    "unresolved_questions": [
+      "Is the declared universe benchmark intentionally a close-only proxy even when --delistings is supplied?",
+      "Does the omission flip information-ratio validation in a minimum 20-session synthetic case?"
+    ],
+    "checked": [
+      "engine.py:114-145,415-452,568-571",
+      "cli.py:120-135,216-264,293-303",
+      "validation.py:184-209",
+      "README.md:24-28,71-83",
+      "METRICS.md:121-136",
+      "tests/test_engine.py:231-272,523-557",
+      "tests/test_validation.py benchmark rules"
+    ],
+    "runtime": "not executed because current execution boundary does not prove credential inaccessibility or exact installed locked graph"
+  }
+}
