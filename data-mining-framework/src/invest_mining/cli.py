@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
+import tempfile
 from collections.abc import Sequence
 from dataclasses import replace
 from datetime import date
@@ -28,6 +30,7 @@ from invest_mining import ledger
 from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import (
     BUCKET_RULE,
+    MIN_CROSS_SECTION,
     TAIL_RULE,
     daily_ic,
     forward_returns,
@@ -49,7 +52,13 @@ from invest_mining.expressions import (
 from invest_mining.inference import export_signals
 from invest_mining.ledger import LedgerError, Window
 from invest_mining.reporting import write_factor_report
-from invest_mining.search import chronological_split, confirm, mark_confirmation_use, run_search
+from invest_mining.search import (
+    MIN_CONFIRM_DATES,
+    chronological_split,
+    confirm,
+    mark_confirmation_use,
+    run_search,
+)
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
@@ -74,6 +83,110 @@ def _span(dates: pd.DatetimeIndex, what: str) -> Window:
     if len(dates) == 0:
         raise SystemExit(f"the {what} period is empty; adjust the split")
     return Window(dates[0].date(), dates[-1].date())
+
+
+# Windows cannot delete a read-only file; POSIX deletes with the folder's permission.
+_DELETE_NEEDS_WRITABLE_FILE = os.name == "nt"
+
+
+def _open_for_writing(path: Path) -> None:
+    """Open an existing file for writing without creating or truncating it."""
+    os.close(os.open(path, os.O_WRONLY))
+
+
+def _prepare_out(
+    out: str | Path,
+    files: Sequence[str],
+    *,
+    new_files_in: Sequence[str] = (),
+    deleted: str | None = None,
+) -> Path:
+    """Create ``out`` and its folders and check that it can take the command's outputs.
+
+    The check asks only for what the run will do. Each output in ``files`` (paths relative
+    to ``out``) that already exists, such as an earlier run's result before a rerun into the
+    same folder, must open for writing (not appending), so a read-only or append-only file,
+    a folder in its place or a file locked by another program fails here. A broken link in
+    its place is refused too, on purpose: the run does not write through a dangling link,
+    even one whose target could be created. Where an output is missing, its folder must
+    take a new file. Folders in ``new_files_in`` get files whose names are not known yet,
+    so they must take a new file too. Files matching the glob ``deleted`` are only
+    deleted: on POSIX that needs the folder's permission, checked above, and a folder in
+    their place cannot be deleted; Windows cannot delete a read-only file, so there each
+    must open for writing. A link is deleted as a link and needs nothing more; a Windows
+    junction is refused as a folder, although deleting it would work. Not checked:
+    immutable files and another user's files in a shared (sticky) folder on POSIX, and
+    hidden or system files on Windows; such a run fails after the record, and the error
+    names the experiment. Called after every refusal and before the ledger records
+    anything, so a refused run leaves no ``--out`` and an unusable one leaves no record; a
+    run that fails after the check, for example on a ledger it cannot append to, keeps
+    its folders.
+    """
+    root = Path(out)
+    probed: set[Path] = set()
+
+    def takes_new_file(folder: Path) -> None:
+        if folder not in probed:
+            probed.add(folder)
+            with tempfile.TemporaryFile(dir=folder):
+                pass
+
+    try:
+        for folder in [root, *(root / name for name in new_files_in)]:
+            folder.mkdir(parents=True, exist_ok=True)
+            if folder != root:
+                takes_new_file(folder)
+        for name in files:
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if path.exists():
+                _open_for_writing(path)
+            elif path.is_symlink():
+                raise FileNotFoundError(f"{path} is a broken link")
+            else:
+                takes_new_file(path.parent)
+        for existing in sorted(root.glob(deleted)) if deleted is not None else []:
+            if existing.is_symlink():
+                continue
+            if existing.is_dir():
+                raise IsADirectoryError(f"cannot delete the folder {existing}")
+            if _DELETE_NEEDS_WRITABLE_FILE:
+                _open_for_writing(existing)
+    except OSError as exc:
+        raise SystemExit(f"--out {out}: {exc}") from exc
+    return root
+
+
+def _unwritten(out: Path, exc: OSError, exp_id: str, use: str) -> SystemExit:
+    """The error for outputs that failed after the ledger recorded the experiment."""
+    return SystemExit(
+        f"--out {out}: {exc}; the ledger already recorded experiment {exp_id} ({use})"
+    )
+
+
+def _require_labels(label: pd.DataFrame, confirmation: Window, horizon: int) -> None:
+    """Refuse a confirmation window too short for the confirmation test.
+
+    ``label`` holds the confirmation dates' forward returns, restricted to traded universe
+    members. Decision ``t`` needs the opens at ``t+1`` and ``t+1+h``
+    (:func:`~invest_mining.diagnostics.forward_returns`), a date's rank IC needs
+    ``MIN_CROSS_SECTION`` labelled names, and the test needs ``MIN_CONFIRM_DATES`` such
+    dates; with fewer it reports ``insufficient_data`` while the ledger would record the
+    window as used. Only which labels exist is read, never their values, and no candidate
+    is involved, so a factor with missing values can still fall short.
+    """
+    n_dates = int((label.notna().sum(axis=1) >= MIN_CROSS_SECTION).sum())
+    if n_dates < MIN_CONFIRM_DATES:
+        raise SystemExit(
+            f"confirmation window {confirmation} has {n_dates} decision date(s) with a "
+            f"complete {horizon}-session label for at least {MIN_CROSS_SECTION} names; the "
+            f"confirmation test needs {MIN_CONFIRM_DATES}, so it would test nothing and "
+            "still use the window up; wait for more data after its start"
+        )
+
+
+def _session_days(dates: pd.DatetimeIndex) -> list[date]:
+    return [ts.date() for ts in dates]
 
 
 def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> None:
@@ -130,11 +243,19 @@ def _evaluate(args: argparse.Namespace) -> int:
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
     # An unwritable --out must fail here, not after the inspection is recorded.
-    try:
-        for sub in ("tables", "figures"):
-            (Path(args.out) / sub).mkdir(parents=True, exist_ok=True)
-    except OSError as exc:
-        raise SystemExit(f"--out {args.out}: {exc}") from exc
+    _prepare_out(
+        args.out,
+        (
+            "config.json",
+            "metrics.json",
+            "tables/daily_ic.csv",
+            "tables/quantile_returns.csv",
+            "tables/quantile_summary.csv",
+            "tables/tail_returns.csv",
+            "figures/ic.png",
+            "figures/quantiles.png",
+        ),
+    )
     panel = build_panel(bars, **_optional_inputs(args))
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
@@ -237,7 +358,11 @@ def _search(args: argparse.Namespace) -> int:
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
             use, reasons = ledger.assess_confirmation(
-                ledger.load(args.ledger), development, confirmation, exp_id
+                ledger.load(args.ledger),
+                development,
+                confirmation,
+                exp_id,
+                sessions=_session_days(pd.DatetimeIndex(panel["close"].index)),
             )
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
@@ -245,6 +370,16 @@ def _search(args: argparse.Namespace) -> int:
             raise SystemExit(
                 f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
             )
+        # A window too short for the test would be recorded as used with nothing tested.
+        label = restrict(forward_returns(panel["open"], args.horizon), panel)
+        _require_labels(label.loc[split.confirm_dates], confirmation, args.horizon)
+    # An unusable --out must fail before the ledger records the experiment.
+    out = _prepare_out(
+        args.out,
+        ("ledger.csv", "confirmation.csv", "config.json"),
+        new_files_in=("factors",),
+        deleted="factors/*.json",
+    )
     result = run_search(
         panel,
         n_trials=args.trials,
@@ -281,17 +416,20 @@ def _search(args: argparse.Namespace) -> int:
                 "reasons": reasons,
             },
         )
-    out = Path(args.out)
-    (out / "factors").mkdir(parents=True, exist_ok=True)
-    # A rerun into the same directory replaces the family; stale factor files would be
-    # taken for members of it.
-    for stale in (out / "factors").glob("*.json"):
-        stale.unlink()
-    result.ledger.to_csv(out / "ledger.csv", index=False)
-    result.confirmation.to_csv(out / "confirmation.csv", index=False)
-    (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
-    for factor in result.family:
-        factor.save(out / "factors" / f"{factor.factor_id}.json")
+    try:
+        # A rerun into the same directory replaces the family; stale factor files would be
+        # taken for members of it.
+        for stale in (out / "factors").glob("*.json"):
+            stale.unlink()
+        result.ledger.to_csv(out / "ledger.csv", index=False)
+        result.confirmation.to_csv(out / "confirmation.csv", index=False)
+        (out / "config.json").write_text(json.dumps(result.config, indent=2) + "\n")
+        for factor in result.family:
+            factor.save(out / "factors" / f"{factor.factor_id}.json")
+    except OSError as exc:
+        if args.ledger is None:
+            raise SystemExit(f"--out {out}: {exc}") from exc
+        raise _unwritten(out, exc, exp_id, use) from exc
     if not result.family:
         print("No candidates qualified for confirmation; see ledger.csv for rejection reasons.")
         return 0
@@ -346,7 +484,7 @@ def _confirm(args: argparse.Namespace) -> int:
     exp_id = ledger.experiment_id(identity)
     try:
         use, reasons = ledger.assess_confirmation(
-            ledger.load(args.ledger), context, confirmation, exp_id
+            ledger.load(args.ledger), context, confirmation, exp_id, sessions=_session_days(dates)
         )
     except LedgerError as exc:
         raise SystemExit(f"{args.ledger}: {exc}") from exc
@@ -354,10 +492,14 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
+    # A window too short for the test would be recorded as used with nothing tested.
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
+    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
+    # An unusable --out must fail before the ledger records the experiment.
+    out = _prepare_out(args.out, ("confirmation.csv", "config.json"))
     ledger.append(
         args.ledger,
         "experiment",
@@ -371,9 +513,6 @@ def _confirm(args: argparse.Namespace) -> int:
             "reasons": reasons,
         },
     )
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
-    table.to_csv(out / "confirmation.csv", index=False)
     config = {
         "factor": factor.to_json(),
         "horizon": factor.horizon_days,
@@ -386,7 +525,11 @@ def _confirm(args: argparse.Namespace) -> int:
             "identity": identity,
         },
     }
-    (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    try:
+        table.to_csv(out / "confirmation.csv", index=False)
+        (out / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+    except OSError as exc:
+        raise _unwritten(out, exc, exp_id, use) from exc
     print(
         table[
             ["factor_id", "expression", "confirm_mean_rank_ic", "p_one_sided", "status"]
@@ -431,11 +574,56 @@ def _json_number(value: Any) -> float | int | None:
     return value if isinstance(value, int | float) and math.isfinite(value) else None
 
 
-def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
+# The export options whose bundles the experiment identity records by content hash.
+_IDENTITY_INPUTS = (("--universe", "universe_sha256"), ("--fundamentals", "fundamentals_sha256"))
+
+
+def _evidence_inputs(
+    args: argparse.Namespace,
+) -> tuple[dict[str, str | None], dict[str, pd.DataFrame | None]]:
+    """Read the export's ``--universe`` and ``--fundamentals`` once, for evidence and scores.
+
+    Returns their content hashes, to compare with the confirmation's, and the rows to score,
+    from the same read: a path that names another bundle by the time it would be read again
+    (an alias switched in between) cannot pair one bundle's scores with evidence checked
+    against another's. A bundle without a content hash cannot be matched with the one the
+    confirmation used.
+    """
+    hashes: dict[str, str | None] = {}
+    rows: dict[str, pd.DataFrame | None] = {}
+    for option, key in _IDENTITY_INPUTS:
+        path = getattr(args, option[2:])
+        if not path:
+            hashes[key] = rows[option[2:]] = None
+            continue
+        try:
+            reader = read_universe if option == "--universe" else read_fundamentals
+            manifest, rows[option[2:]] = reader(path)
+        except BundleError as exc:
+            raise SystemExit(f"{args.out}: {exc}") from exc
+        if manifest.content_sha256 is None:
+            raise SystemExit(
+                f"{path}: the {option} bundle has no content_sha256, so it cannot be matched "
+                "with the confirmation's; export the factor without evidence "
+                "(--factor without --confirmation)"
+            )
+        hashes[key] = manifest.content_sha256
+    return hashes, rows
+
+
+def _identity_input(option: str, value: Any) -> str:
+    return f"no {option}" if value is None else f"a {option} bundle with content hash {value!s:.12}"
+
+
+def _confirmation_evidence(
+    root: Path, factor: FrozenFactor, inputs: dict[str, str | None]
+) -> dict[str, Any]:
     """Factor evidence from a ``search`` or ``confirm`` output, for the exported signals.
 
     Called only after the factor is chosen: the outcome describes the factor and travels
     with its signals to portfolio reports, but never decides which factor is exported.
+    ``inputs`` holds the export's universe and fundamentals hashes: the evidence covers
+    scores on the bundles the confirmation used, so other bundles get none.
     """
     try:
         table = pd.read_csv(root / "confirmation.csv")
@@ -475,6 +663,31 @@ def _confirmation_evidence(root: Path, factor: FrozenFactor) -> dict[str, Any]:
             f"{root}: confirmation horizon {tested_horizon!r} does not match "
             f"factor horizon {factor.horizon_days!r}"
         )
+    for option, key in _IDENTITY_INPUTS:
+        if key not in identity:
+            raise SystemExit(
+                f"{root}: config.json does not record the {option} content hash the "
+                "confirmation used, so this export's inputs cannot be matched with it; restore "
+                "the confirmation's original config.json, or export the factor without "
+                "evidence (--factor without --confirmation); new evidence needs a new "
+                "confirmation on untouched data recorded in the ledger"
+            )
+        used = identity[key]
+        if used != inputs[key]:
+            if used is None:  # also a bundle without a content hash, so say only what is known
+                recorded = (
+                    f"recorded no {option} content hash (it used no {option}, or one "
+                    "without content_sha256)"
+                )
+                remedy = f"omit {option} only if the confirmation used none"
+            else:
+                recorded = f"used {_identity_input(option, used)}"
+                remedy = f"pass the confirmation's own {option}"
+            raise SystemExit(
+                f"{root}: the confirmation {recorded}, but this export uses "
+                f"{_identity_input(option, inputs[key])}; {remedy}, or export the factor "
+                "without evidence (--factor without --confirmation)"
+            )
     evidence = {
         "evidence_version": FACTOR_EVIDENCE_VERSION,
         "factor_id": factor.factor_id,
@@ -532,17 +745,19 @@ def _export(args: argparse.Namespace) -> int:
             parsed = None
         if parsed != start:  # fromisoformat also takes other ISO forms, such as 20200901
             raise SystemExit(f"--start {start!r} is not a YYYY-MM-DD date")
-    evidence: dict[str, Any] | None
+    evidence: dict[str, Any] | None = None
+    input_rows: dict[str, pd.DataFrame | None] | None = None  # read for evidence, scored as read
     if args.from_search is not None:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor = _from_search(args.from_search, args.rank)
-        evidence = _confirmation_evidence(args.from_search, factor)
+        hashes, input_rows = _evidence_inputs(args)
+        evidence = _confirmation_evidence(args.from_search, factor, hashes)
     else:
         factor = FrozenFactor.load(args.factor)
-        evidence = (
-            None if args.confirmation is None else _confirmation_evidence(args.confirmation, factor)
-        )
+        if args.confirmation is not None:
+            hashes, input_rows = _evidence_inputs(args)
+            evidence = _confirmation_evidence(args.confirmation, factor, hashes)
     if evidence is not None and evidence["source"] == "search":
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
@@ -561,7 +776,7 @@ def _export(args: argparse.Namespace) -> int:
             start=start,
             fmt=args.format,
             evidence=evidence,
-            **_optional_inputs(args),
+            **(_optional_inputs(args) if input_rows is None else input_rows),
         )
     except BundleError as exc:
         raise SystemExit(f"{args.out}: {exc}") from exc
@@ -592,7 +807,7 @@ def _ledger(args: argparse.Namespace) -> int:
                 e
                 for e in entries
                 if e["kind"] != "reservation"
-                and any(window.overlaps(observed) for observed in ledger.entry_windows(e).values())
+                and any(window.overlaps(observed) for observed in ledger.used_windows(e).values())
             ]
             if used:
                 raise LedgerError(f"{window} was already inspected or used by a search")
@@ -648,8 +863,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     se.add_argument("--top-k", type=int, default=5)
     se.add_argument(
         "--confirm-start",
-        help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction, "
-        "e.g. to confirm on a reserved window",
+        help="first confirmation date (YYYY-MM-DD); overrides --dev-fraction; to confirm "
+        "on a reserved window, its first date (a date that skips reserved sessions is "
+        "refused)",
     )
     se.add_argument(
         "--require-confirmatory",
@@ -678,7 +894,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     co.add_argument(
         "--confirm-start",
         required=True,
-        help="first confirmation date (YYYY-MM-DD), e.g. the start of a reserved window",
+        help="first confirmation date (YYYY-MM-DD), e.g. the first date of a reserved "
+        "window (a date that skips reserved sessions is refused)",
     )
     co.add_argument(
         "--ledger",
@@ -717,7 +934,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--confirmation",
         type=Path,
         help="with --factor: `search` or `confirm` output whose confirmation of this factor "
-        "is attached to the signals as evidence (it never selects the factor)",
+        "is attached to the signals as evidence (it never selects the factor); evidence, "
+        "also with --from-search, needs the same --universe and --fundamentals as the "
+        "confirmation, or none where it used none",
     )
 
     for p in (ev, se, co, ex):

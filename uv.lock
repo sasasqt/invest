@@ -491,7 +491,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "numpy", specifier = ">=1.26" },
-    { name = "pandas", specifier = ">=2.1" },
+    { name = "pandas", specifier = ">=3" },
     { name = "pyarrow", specifier = ">=15" },
 ]
 
