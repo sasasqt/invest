@@ -30,11 +30,11 @@ Peer agrees with GA1 and supplies a BH-2026-10-21-2 duplicate lead for GA2. The 
 
 
 
-## 2026-11-02 Monday rotation — GA-2026-11-02-data-092201Z
+## 2026-11-02 Monday rotation â GA-2026-11-02-data-092201Z
 
 Peer head remains `4930f9ee9ecf65735822456392d2253fdc93bd9e`, report2026-11-01 on source90b5ca03. No peer head change observed. Reused prior triage, not current-source revalidation of eleven RA findings. Their mining/evaluation/reporting checks remain queued for owning visits. Current data primary-key issue is known K14 / REVIEW-16, not a newly asserted RA match. Fresh internal Reviewer2 independently derived the trace; zero disagreements, zero Verifier B. [Record](2026-11-02-data-rotation/reviewer2/independent-verdict.json).
 
-## 2026-11-03 mining visit — 33b1ca3e-00cc-8323-bcbc-0a92db983696
+## 2026-11-03 mining visit â 33b1ca3e-00cc-8323-bcbc-0a92db983696
 
 Peer remains `4930f9ee9ecf65735822456392d2253fdc93bd9e`, report2026-11-01 on90b5ca0; not stale. Freshly read peer findings and revalidated only the eligible mining root against `9913f94b9b795bd9633a6a683e9f420301e400b3`. Other-field findings retain prior triage and await their owner; no whole-peer revalidation claimed.
 
@@ -68,8 +68,17 @@ Peer branch `claude/repo-audits` remained at `4930f9ee9ecf65735822456392d2253fdc
 
 Peer head advanced to `f73a1d1136502f6faee9134a65301aa5a090c817`, report `audits/claude/2026-11-08.md`, on the same product source `9913f94b9b795bd9633a6a683e9f420301e400b3`.
 
-- `RA-2026-11-08-1` (Windows Yahoo snapshot publication) — **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-1`; no Windows execution or independent stand-in run.
-- `RA-2026-11-08-2` (truncated chart response aborts download) — **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-2`; no safe product runtime.
+- `RA-2026-11-08-1` (Windows Yahoo snapshot publication) â **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-1`; no Windows execution or independent stand-in run.
+- `RA-2026-11-08-2` (truncated chart response aborts download) â **cannot check today**. Low operational data lead queued as `OPEN-PEER-RA-2026-11-08-2`; no safe product runtime.
 - Peer agrees that `GA-2026-11-02-3` / K14 remains open and points to unmerged PR #39. This visit did not rerun the blocked malformed-bundle controls.
 
 No peer claim was promoted from reading alone. Today's fundamentals-`available_at` candidate was independently reviewed by a fresh internal Reviewer 2, not by the peer routine.
+
+
+## 2026-11-11 evaluation cross-check
+
+Peer head `f73a1d1136502f6faee9134a65301aa5a090c817` reports a same-source rerun of BH-2026-10-21-2 at main `9913f94b9b795bd9633a6a683e9f420301e400b3`: strategy settlement return -33.33% versus universe benchmark 0%. This audit independently traced the current settlement, comparator, metrics and verdict paths and derived a separate -37.5% two-member control. Verdict: **agree** on GA-2026-10-31-2 / BH-2026-10-21-2 as a medium/P2 settlement-basis mismatch. Local product execution was blocked, so the peer runtime result is corroboration rather than a check executed by this run. No substantive disagreement; no Verifier B.
+
+| Claude / counterpart ID | Verdict | Concrete reason and evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| BH-2026-10-21-2 / peer GA-2026-10-31-2 row | agree | Settlement events affect portfolio accounting but not engine.py universe benchmark; same-SHA peer rerun reports the wrong event-day comparator. | 2026-11-11-evaluation/reviewer-comparison.json | 2026-11-11 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
