@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "task": "daily-rotating-invest-audit",
+  "scheduled_date": "2026-11-11",
+  "timezone": "Europe/Berlin",
+  "field": "strategy evaluation and financial accounting",
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "scheduled_for": "2026-11-11T02:00:00Z",
+  "started_at": "2026-11-11T02:03:57.305582Z",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_parent_sha": "62613a3bcaa0e799006627d0f21f255eb64856b8",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "method_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "method_identity": "verified",
+  "status": "started",
+  "execution_profile": "trusted static only pending credential-isolation and locked-installed-graph proof",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "unavailable"
+}
