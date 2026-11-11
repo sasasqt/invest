@@ -89,7 +89,8 @@ def clean_bars(
     positive (or whose converted values would not be finite and positive) are rejected as
     ``invalid_adjusted_close``, and the rest are converted with :func:`total_return_adjust`.
     ``as_traded`` says the given closes are as traded (raw prices); they are then kept as
-    ``close_as_traded``.
+    ``close_as_traded``. Dates that share one time zone become the local calendar dates they
+    name (``2024-01-05T23:00:00-05:00`` is 5 January), because a date column holds no zone.
     """
     raw = raw.reset_index(drop=True)  # rows are matched by position, whatever the labels
     missing_cols = [c for c in REQUIRED if c not in raw.columns]
@@ -113,6 +114,8 @@ def clean_bars(
     df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = iso_dates(df["date"])
+    if isinstance(df["date"].dtype, pd.DatetimeTZDtype):  # one zone: keep the local dates
+        df["date"] = df["date"].dt.tz_localize(None)
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:

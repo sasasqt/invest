@@ -600,6 +600,50 @@ def test_dates_in_one_time_zone_still_parse_on_pandas_2(tmp_path, monkeypatch):
         assert [str(d.date()) for d in dates] == ["2024-01-05", "2024-01-08"]
 
 
+SHARED_ZONE_ROWS = {
+    "utc": (["2024-01-02T00:00:00Z", "2024-01-03T00:00:00Z"], ["2024-01-02", "2024-01-03"]),
+    "evening_west": (
+        ["2024-01-05T23:00:00-05:00", "2024-01-08T23:00:00-05:00"],
+        ["2024-01-05", "2024-01-08"],
+    ),
+    "morning_east": (
+        ["2024-01-05T01:00:00+09:00", "2024-01-08T01:00:00+09:00"],
+        ["2024-01-05", "2024-01-08"],
+    ),
+}
+
+
+@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
+@pytest.mark.parametrize("case", sorted(SHARED_ZONE_ROWS))
+def test_import_csv_publishes_the_local_dates_of_one_shared_zone(tmp_path, case, fmt):
+    """Dates that share one zone publish as the local dates they name (S5-1, REVIEW-38).
+
+    A ``date`` column refuses a time zone, so before this fix the import ended in a
+    ``BundleError`` traceback; ``main`` before stage 5 published these local dates.
+    """
+    text, expected = SHARED_ZONE_ROWS[case]
+    src = tmp_path / "in.csv"
+    src.write_text(HEADER + _rows(*text), encoding="utf-8")
+    out = tmp_path / "b"
+    args = ["import-csv", str(src), "--out", str(out), "--dataset-id", "b", "--format", fmt]
+    assert main([*args, *IMPORT_FLAGS]) == 0
+    dates = read_market_bars(out)[1]["date"]
+    assert [str(d.date()) for d in dates] == expected
+    assert dates.dt.tz is None
+
+
+def test_clean_bars_keeps_the_local_dates_of_zoned_datetimes(tmp_path):
+    """Zoned datetimes from Python callers also become local dates that can be published."""
+    raw = raw_rows().iloc[:1].copy()
+    raw["date"] = pd.DatetimeIndex(["2024-03-10 23:30"]).tz_localize("America/New_York")
+    clean, report = clean_bars(raw)
+    assert report.summary()["rejected_rows"] == 0
+    assert clean["date"].dt.tz is None
+    assert list(clean["date"]) == [pd.Timestamp("2024-03-10")]
+    publish_market_bars(clean, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    assert list(read_market_bars(tmp_path / "m")[1]["date"]) == [pd.Timestamp("2024-03-10")]
+
+
 @pytest.mark.parametrize(
     "rows",
     ["2024-01-05,A,10,11,9,10.5,100\n", "05/01/2024,A,10,11,9,10.5,100\n"],
