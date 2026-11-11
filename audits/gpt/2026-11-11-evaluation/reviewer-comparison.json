@@ -1,0 +1,57 @@
+{
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "candidate": "GA-2026-10-31-2",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "reviewer1": {
+    "disposition": "keep",
+    "evidence_label": "confirmed static contract mismatch after current peer corroboration",
+    "severity": "medium",
+    "priority": "P2"
+  },
+  "reviewer2": {
+    "disposition": "keep",
+    "evidence_label": "confirmed static contract mismatch",
+    "severity": "medium",
+    "priority": "P2"
+  },
+  "agreement": true,
+  "verifier_b_used": false,
+  "deciding_evidence": [
+    "current source settlement and comparator dataflow",
+    "README and METRICS total-return/settlement contracts",
+    "independently derived arithmetic control repeated twice",
+    "same-SHA peer runtime cross-check"
+  ],
+  "final": {
+    "status": "known/open",
+    "evidence_label": "confirmed_static_contract_mismatch",
+    "runtime_label": "same-SHA peer corroboration; local untouched runtime pending",
+    "confidence": "high static and corroborated same-SHA behavior"
+  },
+  "missing": [
+    "local untouched product reproduction twice",
+    "saved metric and verdict fixture",
+    "membership-boundary, zero and short cases"
+  ],
+  "closing_question": {
+    "nothing_else_confirmed": true,
+    "checked_places": "listed above",
+    "unchecked": [
+      {
+        "priority": 1,
+        "place": "stress-scenario benchmark series",
+        "next": "verify settlement-aware comparator consistency"
+      },
+      {
+        "priority": 2,
+        "place": "membership ending on settlement date",
+        "next": "ensure event return enters exactly once"
+      },
+      {
+        "priority": 3,
+        "place": "short positions and zero settlements",
+        "next": "verify meaningful comparator policy"
+      }
+    ]
+  }
+}
