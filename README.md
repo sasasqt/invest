@@ -6,7 +6,7 @@ A modular Python investment research framework made of three independently insta
 
 ## Components
 
-- [Data preparation](data-pipeline/data-preparation/README.md): download, clean, preprocess, and publish CSV, SQLite or Parquet datasets.
+- [Data preparation](data-pipeline/data-preparation/README.md) (inside the [data pipeline folder](data-pipeline/README.md)): download, clean, preprocess, and publish CSV, SQLite or Parquet datasets.
 - [Strategy evaluation](strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
 - [Data mining framework](data-mining-framework/README.md): consume published datasets for factor discovery, model training, inference, and signal diagnostics.
 
@@ -25,6 +25,8 @@ Every change must work on both Linux and Windows. CI tests only Linux for now, s
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, review fixes delivered by editing the existing pull request (or closing it and opening a new one), and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
+
+Scheduled routines hunt for bugs every weekday night, open fix pull requests every day, and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews open pull requests, and only the user merges into `main`. [Workflow and routines](docs/WORKFLOW.md) describes their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams.
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
@@ -175,7 +177,7 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 
 ## Documentation maintenance
 
-Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
+Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change, and [docs/WORKFLOW.md](docs/WORKFLOW.md) when a routine, the review ladder or the merge rules change. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
 
 ## Local files
 

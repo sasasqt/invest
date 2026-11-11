@@ -1,0 +1,279 @@
+# Workflow and routines
+
+This page describes how work on invest is organized: the five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end.
+
+The routines follow their own instruction files, which live in the **project library**: the shared folder of the Claude project that runs them, outside Git. Paths such as `review/bug-hunt/findings.md` below are in that library unless they name a branch. Where this page and those files differ, the files win, and the weekly docs audit should report the difference.
+
+## Who does what
+
+- **The user** decides what gets built and fixed, answers the questions the routines raise, runs the GPT audit and the ChatGPT pull-request reviews, and merges every pull request.
+- **Claude** works in project threads on the user's requests (for example the staged bug-fix pull requests) and runs the five scheduled routines below.
+- **GPT** (ChatGPT / OpenAI) audits the whole repository on its own branch and reviews each open pull request in one maintained comment.
+
+## The big picture
+
+Four routines only report. The bug fix is the only routine that changes code, and it only opens pull requests. Nothing reaches `main` without the user's merge.
+
+```mermaid
+flowchart TD
+  G["GPT audit<br/>run by the user"] --> LG[("gpt/repo-audits<br/>GA rows")]
+  R["Repo audit<br/>Sun 00:37"] --> LR[("claude/repo-audits<br/>RA rows")]
+  LG -->|"step 4e, nightly"| H["Bug hunt<br/>Mon to Fri 01:55"]
+  H --> LH[("Hunt ledger<br/>BH, BF, RA rows")]
+  R -->|"defect rows"| LH
+  D["Docs audit<br/>Sat 05:00"] --> LD[("Docs-audit ledger<br/>DA rows")]
+  S["Idea scout<br/>Sat 02:30"] --> LI[("Idea store<br/>IS rows")]
+  LH --> F["Bug fix<br/>daily 04:00"]
+  LD -->|"repo rows"| F
+  LR -->|"mirror/"| F
+  LI -->|"adopted ideas"| F
+  F --> PR["Fix, docs and mirrors<br/>pull requests"]
+  PR --> U{"User reviews<br/>and merges"}
+  U --> M[("main")]
+```
+
+The repo audit and the GPT audit also cross-check each other, and the idea scout reads GPT's research notes; the [audit diagram](#whole-repo-audit-sundays-and-the-gpt-audit) shows those links.
+
+## Routines and schedules
+
+| Routine | Starts (Europe/Berlin) | Writes to the repository | Main outputs | Runs on, normally |
+|---|---|---|---|---|
+| [Bug hunt](#bug-hunt-weekdays) | Monday to Friday, 01:55 | nothing (report only) | `review/bug-hunt/`: nightly report, saved reproductions, the ledger `findings.md`, the generated `open-bugs.md`, `state.json` | Fable 5.1, xhigh |
+| [Bug fix](#bug-fix-daily) | every day, 04:00 | pull requests from its own branches `claude/project-thread-7rf56w-<topic>`; never merges | pull requests; `review/bug-fix/`: report, `decisions.md`, `state.json` | Opus 5.5, xhigh writes; Fable 5.1 reviews |
+| [Idea scout](#idea-scout-saturdays) | Saturday, 02:30 | nothing (report only) | `ideas/new-ideas.md` (every scouted idea, never deleted); `ideas/scout/`: weekly report, research tests | Fable 5.1, high |
+| [Docs audit](#docs-audit-saturdays) | Saturday, 05:00 | nothing (report only) | `review/docs-audit/`: weekly report, the ledger `findings.md`, `state.json` | Fable 5.1, high |
+| [Repo audit](#whole-repo-audit-sundays-and-the-gpt-audit) | Sunday, 00:37 | only the folder `audits/claude/` on its branch `claude/repo-audits` | that folder; defect rows in the hunt ledger | Fable 5.1, xhigh |
+
+- **Results.** Every run posts one message in its own thread of the Claude project and sends one phone notification, also when nothing is new. The repo audit opens a fresh thread for each run; the other four post into one long-lived thread each. The project's coordinator then posts a one-line pointer in the project chat.
+- **Instructions.** The bug hunt, bug fix, idea scout and docs audit each have a prompt that points to a skill, kept in the library as `.notes/<skill>/SKILL.md`; the bug hunt loads the copy saved in the user's account first and falls back to the library copy. The repo audit's short fixed prompt reads the live file `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` at every run. A routine is changed only from the thread that owns it, after the user's yes, and each change keeps a versioned copy in `.notes/`.
+- **Models.** When Fable reaches its weekly usage limit, a run moves the affected steps to Opus 5.5 at xhigh and says so; the user can also order a period of Opus only. Each run names the model and effort that actually served it.
+
+On a weekday night the bug fix starts after the hunt, so it can fix what the hunt found that night:
+
+```mermaid
+sequenceDiagram
+  participant H as Bug hunt, 01:55
+  participant L as Hunt ledger
+  participant F as Bug fix, 04:00
+  participant GH as GitHub
+  participant U as User
+  H->>GH: fetch main and both audit branches
+  H->>L: add or refresh rows, regenerate open-bugs.md
+  H->>U: post (one line on a quiet night) and one phone push
+  F->>L: check that the hunt's state.json shows today's run
+  F->>GH: maintain open pull requests first
+  F->>GH: at most one new fix PR and one docs-only PR
+  F->>GH: refresh the mirrors PR (docs/audits/)
+  F->>U: post the report and one phone push
+  U->>GH: review and merge, the only merges
+```
+
+If the hunt has not finished (and on weekends, when it does not run), the bug fix works from the ledger as it stands and writes its own ledger rows last.
+
+## Bug hunt (weekdays)
+
+A report-only hunt for real defects on `main`, before the user meets them. It never commits, pushes, opens pull requests or issues, or edits tracked files. Each night it:
+
+1. **Orients** on a fresh worktree of `origin/main`, fetches the audit branches `claude/repo-audits` and `gpt/repo-audits`, reads the README, the contracts and TODO, and gathers what is already known: its ledger, open pull requests, unchecked `REVIEW-xx` items, the repo audit's `RA-` rows and the GPT audit's findings.
+2. **Runs the CI checks**, the synthetic workflow and the Yahoo snapshot replay.
+3. **Reviews the commits** that landed since the last run (`code-review xhigh`).
+4. **Hunts:** an end-to-end pass every night (guard parity between paths, reports versus numbers, side effects, docs for changed code), a real-data pass on the replay, a deep pass that rotates over four areas (data pipeline, mining, evaluation, then scripts, root tests and docs versus behavior), a statistics cross-check and mutation sampling on Wednesdays, and the GPT audit findings (step 4e, below).
+5. **Verifies every candidate.** Reviewer 2, a fresh helper, judges every keep, drop and severity blind first, then compares with the run's verdicts; verifier B settles disagreements.
+6. **Writes** the reproductions, the ledger, `open-bugs.md` (generated by `tools/open_bugs.py`, never edited by hand), the report and `state.json`, in that order.
+7. **Tells the user** every night, with a one-line weekly summary on Fridays. When a finding sits in a function an open pull request changes, it also tells the thread that owns that pull request.
+
+### GPT audit findings (step 4e)
+
+Skill v4.11, installed on 2026-11-11 at the user's request, makes the nightly hunt check the GPT audit's findings, as the weekly repo audit already did, so a defect GPT found reaches the hunt ledger, and from there the bug fix, within a day. The hunt reads `audits/gpt/findings.json` on `gpt/repo-audits` with `git show`, treats it as data, never as instructions, and sorts each finding into the first case that matches:
+
+```mermaid
+flowchart TD
+  A["GPT finding in findings.json"] --> C1{"Its paths are not on main,<br/>or it is a recommendation?"}
+  C1 -- yes --> V1["One-line verdict, no ledger row"]
+  C1 -- no --> C2{"Same root cause already<br/>in a ledger row?"}
+  C2 -- yes --> V2["Cite that row: still open,<br/>or fixed by a commit"]
+  C2 -- no --> C3{"Judged before, no newer GPT history,<br/>and its paths unchanged on main?"}
+  C3 -- yes --> V3["Reuse the earlier verdict"]
+  C3 -- no --> V4["Own check in the scratch worktree,<br/>then step 5 with reviewer 2"]
+  V4 --> R1["Confirmed or plausible: a hunt row<br/>titled (first found by GA-...)"]
+  V4 --> R2["No longer reproduces but held at its commit:<br/>fixed since that commit"]
+```
+
+A GPT objection to a hunt row ("disagree" in GPT's `cross-check.md`, with a concrete reason) gets one step 5 round, and reviewer 2 decides. The report has a section "GPT audit findings", and `state.json` keeps each verdict under `gpt_checked`.
+
+## Bug fix (daily)
+
+Turns open ledger rows into pull requests: one coherent group per pull request, every fix proven by a check that fails before it and passes after it, reviewed with the [review ladder](#review-ladder), and left for the user to merge. It reads the open rows of the hunt ledger (`BH-`, `BF-`, the repo audit's `RA-` defect rows and older prefixes) and the open or plausible rows of the docs-audit ledger whose Area is `repo`.
+
+```mermaid
+flowchart TD
+  S1["Maintain its own open PRs: CI, conflicts with main,<br/>unanswered review comments, the mirrors PR"] --> S1b["Small, confident fixes on other open PRs,<br/>shared with the thread that opened them"]
+  S1b --> CAP{"Five or more of its<br/>own PRs still open?"}
+  CAP -- yes --> S9["Report and state, post, one phone push"]
+  CAP -- no --> S2["Gather open rows, re-verify each on current main"]
+  S2 --> S4["Group by relevance, then severity, then location;<br/>drop groups an open PR overlaps; pick one"]
+  S4 --> S4b["Fix plan checked by reviewer 2"]
+  S4b --> S5["Fix, failing check first"]
+  S5 --> S6["CI checks; synthetic workflow and Yahoo replay,<br/>main compared with the branch"]
+  S6 --> S7["Review ladder: always two fresh full-diff rounds"]
+  S7 --> S7b["Reviewer 2 checks every judgment call"]
+  S7b --> S8["Final overlap check, push, open the PR,<br/>assign the user"]
+  S8 --> S8b["Mirrors: refresh or open the mirrors PR"]
+  S8b --> S9
+```
+
+- **Never merges.** It never merges, pushes to `main`, approves, enables auto-merge, or closes or reopens a pull request, and never force-pushes; it brings `main` into a branch with a merge commit.
+- **Limits.** At most one new fix pull request and one new docs-only pull request per run, and none while five or more of its own pull requests are open (it then only maintains them). It installs nothing and makes no structural change beyond the fix: those go under "Decisions needed" in its report.
+- **Overlap filter.** A group is blocked when any line it would touch is in the same file as, and within 10 lines of, a line an open pull request changes, or when an open pull request claims one of its bugs. `README.md`, `ROADMAP.md` and `TODO.md` are exempt, except for a docs finding's own lines.
+- **Unrelated bugs** found while fixing get a `BF-<date>-<n>` row in the hunt ledger, a `REVIEW-xx` item in `TODO.md` and a "Found, not fixed" line in the pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 6).
+- **Docs findings.** A docs finding rides in the bug pull request when that pull request edits its lines; the others go into one docs-only pull request. In the docs-audit ledger it changes only the Status and Resolved by cells of the rows it fixed.
+- **Mirrors.** It keeps one standing docs-only pull request that regenerates the read-only copies under `docs/audits/` ([ledgers](#ledgers-and-mirrors-on-main)).
+
+## Docs audit (Saturdays)
+
+A report-only check that everything describing the project still agrees: the repository's Markdown on `main`, the project library (skill and prompt copies, ledgers, notes), project memory, the project instructions, the artifacts published in the project, and the live state they describe (merged and open pull requests, the scheduled tasks, ledger counts). It does not check docs against code behavior; the bug hunt does that. Each finding gets an ID `DA-<date>-<n>` and an Area (`repo`, `library`, `memory`, `instructions`, `artifact` or `routine`), and each fix is proposed as a diff grouped by owner. The bug fix fixes the `repo` rows; the other rows go to the thread or person that owns them. Verifier A checks every finding and drop blind first, and verifier B settles disputes.
+
+## Idea scout (Saturdays)
+
+Weekly self-directed research that proposes a few well-evidenced improvement ideas. Themes rotate weekly: data and market realism, alpha mining and learned models, evaluation and statistics, engineering quality, and an open scan. Each run also scouts new papers and strategies, reads the GPT audit's research notes (`audits/gpt/research/` on `gpt/repo-audits`) as leads, and tests at most two candidates on the saved Yahoo test snapshot, never in the reserved period that starts 2025-01-01 (see [confirmation-use ledger](../README.md#confirmation-use-ledger)). A fresh second reviewer judges every candidate blind, kept or dropped, before the run compares verdicts. Every idea, kept, parked or rejected, goes into `ideas/new-ideas.md` with an ID `IS-<date>-<n>`, and nothing there is deleted; the user's edits win. Adopted ideas reach `TODO.md` or `ROADMAP.md` only when someone adds them by hand.
+
+## Whole-repo audit (Sundays) and the GPT audit
+
+The weekly repo audit covers what the other routines do not: every CI job reproduced locally, configuration and portability drift, saved results that no longer reproduce, cross-component inconsistencies in real outputs, test blind spots, and benchmarks kept as raw measurements. It ends with prioritized recommendations, each with evidence, effort and acceptance criteria, and keeps a coverage map. Its only repository writes are commits to [`audits/claude/`](https://github.com/sasasqt/invest/tree/claude/repo-audits/audits/claude) on the branch `claude/repo-audits`, which never syncs with `main`. A confirmed defect also gets an `RA-` row in the hunt ledger, where the bug fix picks it up.
+
+The user runs a second, independent audit by GPT, which writes [`audits/gpt/`](https://github.com/sasasqt/invest/tree/gpt/repo-audits/audits/gpt) on the branch `gpt/repo-audits` with `GA-` IDs. Each side writes a `cross-check.md` with its verdicts on the other side's findings.
+
+```mermaid
+flowchart TD
+  RA["Repo audit, Claude"] --> CF["claude/repo-audits<br/>audits/claude/: findings.md,<br/>recommendations.md, cross-check.md,<br/>reports, mirror/"]
+  GA["GPT audit, run by the user"] --> GF["gpt/repo-audits<br/>audits/gpt/: findings.json,<br/>cross-check.md, reports, research/"]
+  CF -->|"read for GPT's cross-check"| GA
+  GF -->|"read for Claude's cross-check"| RA
+  RA -->|"defect rows"| L[("Hunt ledger")]
+  GF -->|"step 4e, nightly"| H["Bug hunt"]
+  CF -->|"RA rows count as known"| H
+  GF -->|"research leads"| S["Idea scout"]
+  CF -->|"mirror/ copied by the bug fix"| M["docs/audits/claude/<br/>on main after the user merges"]
+```
+
+## Ledgers and mirrors on main
+
+Each ledger has one owner that adds rows; others change only what the table says.
+
+| Ledger | Where | IDs | Written by | Copy on `main` |
+|---|---|---|---|---|
+| Hunt ledger | `review/bug-hunt/findings.md`, with the generated `open-bugs.md` | `BH-`, `BF-`, `RA-` (defects); older `K`, `S`, `N`, `INV` | bug hunt; bug fix appends `BF-` rows; repo audit appends `RA-` defect rows | `docs/audits/open-bugs.md` |
+| Docs-audit ledger | `review/docs-audit/findings.md` | `DA-` | docs audit; bug fix sets Status and Resolved by on `repo` rows it fixed | `docs/audits/docs-audit.md` |
+| Bug-fix reports and decisions | `review/bug-fix/` | none | bug fix | `docs/audits/bug-fix.md`, `docs/audits/bug-fix-decisions.md` |
+| Idea store | `ideas/new-ideas.md` | `IS-` | idea scout; the user's edits win | `docs/audits/ideas.md` (adopted ideas not yet in TODO or ROADMAP) |
+| Repo-audit ledgers | `audits/claude/` on `claude/repo-audits` | `RA-` | repo audit | `docs/audits/claude/` |
+| GPT audit | `audits/gpt/` on `gpt/repo-audits` | `GA-` | GPT audit | none of its own; `docs/audits/claude/gpt.md` lists its open findings with Claude's verdicts |
+| TODO items | [`TODO.md`](../TODO.md) on `main` | `REVIEW-` | pull requests ([author steps](../GIT_GUIDELINES.md#before-marking-ready) 6 and 7) | it is on `main` |
+
+```mermaid
+flowchart LR
+  H["Bug hunt"] -->|"BH rows"| LH[("Hunt ledger")]
+  RA["Repo audit"] -->|"RA defect rows"| LH
+  F["Bug fix"] -->|"BF rows"| LH
+  LH -->|"tools/open_bugs.py"| OB["open-bugs.md"]
+  D["Docs audit"] -->|"DA rows"| LD[("Docs-audit ledger")]
+  F -->|"Status, Resolved by"| LD
+  S["Idea scout"] -->|"IS rows"| LI[("Idea store")]
+  LH --> F
+  LD --> F
+  F -->|"fixes, REVIEW-xx items"| PR["Fix and docs PRs"]
+  OB --> MP["Mirrors PR<br/>docs/audits/"]
+  LD --> MP
+  LI -->|"adopted ideas"| MP
+  CB["claude/repo-audits mirror/"] --> MP
+  FR["Bug-fix reports, decisions"] --> MP
+  PR --> U{"User merges"}
+  MP --> U
+  U --> MAIN[("main")]
+```
+
+- **Mirrors are generated copies.** The bug fix regenerates every file under `docs/audits/` from its source at each run; each file starts with a line naming its source and saying not to edit it by hand. Closing or renumbering an item there changes nothing: change the source instead. `docs/audits/README.md` lists each copy and its source.
+- **Only the user's merge updates them.** Until the user merges the mirrors pull request, `docs/audits/` exists only on that pull request's branch.
+- **Audit candidate lines.** The same pull request adds the repo audit's paste-ready lines: TODO candidates as new `REVIEW-xx` items, ROADMAP candidates under "Proposed by audits (undecided)" at the end of `ROADMAP.md`. The user promotes or deletes them.
+- **Medium and high hunt findings** get a `REVIEW-xx` item in `TODO.md` with the next bug-fix pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 7).
+
+## Pull requests and the merge gate
+
+Every pull request, from a routine or a thread, follows the same path:
+
+```mermaid
+sequenceDiagram
+  participant A as Author, thread or bug fix
+  participant PR as Pull request
+  participant CI as GitHub CI
+  participant GPT as ChatGPT review
+  participant U as User
+  A->>A: review ladder and end-to-end checks
+  A->>PR: open, ready for review, assign the user
+  PR->>CI: checks
+  GPT->>PR: maintained review comment
+  opt Changes needed
+    A->>PR: fix on the same branch, answer each finding in a comment
+    GPT->>PR: review the new head
+  end
+  U->>PR: merge, usually squash
+```
+
+### Review ladder
+
+Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder that raises effort and switches model only when a round finds real defects:
+
+| Round | Model | Effort | Scope |
+|---|---|---|---|
+| 1 | Opus | high | Full diff |
+| 2 | Opus | medium | Fix commits |
+| 3 | Fable | high | Full diff |
+| 4 | Fable | medium | Fix commits |
+| 5 | Fable | xhigh | Full diff |
+| 6 | Fable | high | Fix commits |
+| 7 | Fable | max | Full diff |
+| 8 | Fable | xhigh | Fix commits |
+
+```mermaid
+flowchart TD
+  A["Full-diff round 1, 3, 5 or 7, run fresh"] --> B{"Verified findings led to<br/>non-trivial fixes?"}
+  B -- yes --> C["Fix-commits round 2, 4, 6 or 8"]
+  C --> D{"Real defect in the fix code?"}
+  D -- "yes, after round 8" --> K["Checkpoint due:<br/>the requester decides"]
+  D -- "yes: next full-diff round" --> A
+  D -- no --> E{"Only one full-diff round so far, and results<br/>change or over about 100 source lines change?"}
+  B -- no --> E
+  E -- "yes: next full-diff round" --> A
+  E -- no --> R["Ready for review"]
+```
+
+- A full-diff round sees earlier findings only after it has reported its own. Docs-, comment-, rename-, test- or formatting-only fixes never move a pull request up.
+- A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area starts at round 3.
+- The pull request states each round's number, model, effort, scope and finding count, and how each finding was resolved. Green CI alone is not readiness.
+- **In the bug fix:** every fix gets two fresh full-diff rounds (the user's rule of 2026-10-27, stricter than the conditional extra round), starting at round 3 because every hunt finding counts as escaped. A docs-only pull request gets one round (round 3); a pull request that carries only mirrors gets none. The fix-commit rounds 4, 6 and 8 run on Opus in the main session, and when Fable is at its limit the Fable rounds run on Opus 5.5 at xhigh, named "Opus stand-in for Fable".
+- Before a milestone closes, or earlier when the same kind of defect keeps recurring, a [checkpoint review](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system comes before the next feature.
+
+### ChatGPT review
+
+The user has ChatGPT review each open pull request. The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found" or "Review — Changes needed", with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, as [author step 5](../GIT_GUIDELINES.md#before-marking-ready) asks; ChatGPT then reviews the new head.
+
+### Merge gate
+
+- **Only the user merges into `main`.** A Claude thread merges only a pull request the user names in words, and the bug fix never merges.
+- **Staged fix pull requests** from a thread stop after each pull request until the user says to go on.
+- **Generated content** (the mirrors and the audit candidate lines) reaches `main` only through the user's merge of the mirrors pull request.
+- [Git guidelines](../GIT_GUIDELINES.md#pull-requests-and-checks) suggest squash merging as the default for focused branches.
+
+## Sources
+
+Checked on 2026-11-11. Library paths are in the project library.
+
+- Review ladder, author steps and merge strategy: [`GIT_GUIDELINES.md`](../GIT_GUIDELINES.md); checkpoint reviews: [`RAPID_DEVELOPMENT.md` §11](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones).
+- Bug hunt: `.notes/invest-bug-hunt/SKILL.md` (v4.11) and the routine prompt `.notes/invest-daily-bug-hunt_prompt_v8.txt`.
+- Bug fix: `.notes/invest-bug-fix/SKILL.md` and `.notes/invest-daily-bug-fix_prompt_v7.txt`.
+- Idea scout: `.notes/invest-idea-scout/SKILL.md` and `.notes/invest-weekly-idea-scout_prompt_v6.txt`.
+- Docs audit: `.notes/invest-docs-audit/SKILL.md` and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
+- Repo audit: `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` (v3, 2026-11-01) and its scheduled task (Sundays 00:37 Berlin, read live on 2026-11-11).
+- Schedules of the other four routines, their thread models and the merge rules: project memory, as recorded at each routine's last read-back.
+- ChatGPT review format: the review comments on pull request #41.
+- Audit branches: the commit history and file lists of `claude/repo-audits` and `gpt/repo-audits`.
