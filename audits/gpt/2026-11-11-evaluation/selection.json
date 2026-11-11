@@ -1,0 +1,39 @@
+{
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "date": "2026-11-11",
+  "field": "evaluation",
+  "planned_percent": {
+    "exploitation": 50,
+    "exploration": 50
+  },
+  "seed_material": "2026-11-11",
+  "sha256": "4e9c38edd9fe3c0bdf16b4dad77c1241b1d98163621b9ba96a81c39308d39a58",
+  "eligible_sorted": [
+    "docs/QUANTILE_ANALYSIS.md",
+    "strategy-evaluation/METRICS.md",
+    "strategy-evaluation/README.md",
+    "strategy-evaluation/src/invest_evaluation/__init__.py",
+    "strategy-evaluation/src/invest_evaluation/cli.py",
+    "strategy-evaluation/src/invest_evaluation/metrics.py",
+    "strategy-evaluation/src/invest_evaluation/quantiles.py",
+    "strategy-evaluation/tests/conftest.py",
+    "strategy-evaluation/tests/test_engine.py",
+    "strategy-evaluation/tests/test_metrics.py",
+    "strategy-evaluation/tests/test_quantiles.py",
+    "strategy-evaluation/tests/test_stats_and_cli.py",
+    "strategy-evaluation/tests/test_validation.py",
+    "tests/test_quantile_consistency.py"
+  ],
+  "draw_index": 4,
+  "draw": "strategy-evaluation/src/invest_evaluation/cli.py",
+  "lens": "settlement basis across portfolio, comparator, metrics and verdict",
+  "actual_unique_lines": {
+    "exploitation": 188,
+    "exploration": 209,
+    "mandatory_callers_contracts": 77
+  },
+  "next_percent": {
+    "exploitation": 60,
+    "exploration": 40
+  }
+}
