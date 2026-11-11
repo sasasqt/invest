@@ -1,0 +1,36 @@
+{
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "kind": "independently derived arithmetic control; no repository import",
+  "case": {
+    "members": [
+      "A",
+      "B"
+    ],
+    "previous_closes": [
+      20,
+      20
+    ],
+    "event_date_closes": [
+      20,
+      20
+    ],
+    "settlement_A": 5,
+    "current_source_close_ratio_mean": 0,
+    "settlement_inclusive_equal_weight_return": -0.375,
+    "active_return_difference": 0.375
+  },
+  "negative_control": {
+    "no_event_or_settlement_equals_close": 0
+  },
+  "repeats": [
+    {
+      "repeat": 1,
+      "match": true
+    },
+    {
+      "repeat": 2,
+      "match": true
+    }
+  ],
+  "scope": "demonstrates the arithmetic consequence if the comparator contract is settlement-inclusive; not untouched product runtime"
+}
