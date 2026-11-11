@@ -114,8 +114,9 @@ def clean_bars(
     df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = iso_dates(df["date"])
-    if isinstance(df["date"].dtype, pd.DatetimeTZDtype):  # one zone: keep the local dates
-        df["date"] = df["date"].dt.tz_localize(None)
+    dtype = df["date"].dtype  # pyarrow-backed timestamps keep their zone on pyarrow_dtype
+    if getattr(getattr(dtype, "pyarrow_dtype", dtype), "tz", None) is not None:
+        df["date"] = df["date"].dt.tz_localize(None)  # one zone: keep the local dates
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:

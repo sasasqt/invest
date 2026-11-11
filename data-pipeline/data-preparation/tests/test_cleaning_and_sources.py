@@ -2,6 +2,7 @@ import json
 
 import numpy as np
 import pandas as pd
+import pyarrow as pa
 import pytest
 
 from invest_data.bundle import BundleError
@@ -640,6 +641,23 @@ def test_clean_bars_keeps_the_local_dates_of_zoned_datetimes(tmp_path):
     assert report.summary()["rejected_rows"] == 0
     assert clean["date"].dt.tz is None
     assert list(clean["date"]) == [pd.Timestamp("2024-03-10")]
+    publish_market_bars(clean, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    assert list(read_market_bars(tmp_path / "m")[1]["date"]) == [pd.Timestamp("2024-03-10")]
+
+
+@pytest.mark.parametrize("zone", ["UTC", "America/New_York"])
+def test_clean_bars_keeps_the_local_dates_of_pyarrow_zoned_datetimes(tmp_path, zone):
+    """pyarrow-backed zoned timestamps become local dates too (review round 3, R3-1).
+
+    ``pd.read_csv(..., engine="pyarrow", dtype_backend="pyarrow")`` reads ``...Z`` text as
+    ``timestamp[s, tz=UTC][pyarrow]``, whose dtype is no ``DatetimeTZDtype``.
+    """
+    raw = raw_rows().iloc[:1].copy()
+    raw["date"] = pd.array(
+        [pd.Timestamp("2024-03-10 23:30", tz=zone)], dtype=pd.ArrowDtype(pa.timestamp("us", zone))
+    )
+    clean, report = clean_bars(raw)
+    assert report.summary()["rejected_rows"] == 0
     publish_market_bars(clean, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
     assert list(read_market_bars(tmp_path / "m")[1]["date"]) == [pd.Timestamp("2024-03-10")]
 
