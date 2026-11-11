@@ -112,6 +112,12 @@ def clean_bars(
                 "is taken from close"
             )
     df = raw[columns].copy()
+    if isinstance(df["date"].dtype, pd.ArrowDtype):
+        import pyarrow as pa  # loaded already: the column is pyarrow-backed
+
+        encoded = df["date"].dtype.pyarrow_dtype
+        if pa.types.is_dictionary(encoded):  # pandas reads zoned values as UTC: decode first
+            df["date"] = df["date"].astype(pd.ArrowDtype(encoded.value_type))
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
         df["date"] = iso_dates(df["date"])
     dtype = df["date"].dtype  # pyarrow-backed timestamps keep their zone on pyarrow_dtype
