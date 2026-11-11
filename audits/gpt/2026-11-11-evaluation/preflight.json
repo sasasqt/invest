@@ -1,0 +1,33 @@
+{
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "scheduled_date": "2026-11-11",
+  "field": "evaluation",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "source_acquisition": "GitHub connector immutable commit reads",
+  "output_start_head": "62613a3bcaa0e799006627d0f21f255eb64856b8",
+  "started_checkpoint_commit": "832195785046adc91a51fbd2e0371134da80c285",
+  "protocol_identity": "verified",
+  "execution_boundary": {
+    "status": "blocked",
+    "reason": "credential-inaccessible filesystem boundary not proven; cloud environment readiness/status capability unavailable"
+  },
+  "installed_dependency_graph": {
+    "status": "blocked",
+    "reason": "exact locked installed graph not verified on current worker"
+  },
+  "profile": "trusted static only",
+  "product_imports_builds_tests_workflows": 0,
+  "remote_compute_dispatched": 0,
+  "same_sha_ci": {
+    "status": "reused_success",
+    "checks": 6,
+    "source": "preserved prior audit and peer report",
+    "direct_connector_lookup_runs": 0
+  },
+  "data": {
+    "real_observations_2025_or_later": 0,
+    "reserved_windows_read": 0,
+    "committed_ledgers_mutated": false
+  },
+  "main_unchanged": true
+}
