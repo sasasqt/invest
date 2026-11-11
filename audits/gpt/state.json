@@ -3154,7 +3154,7 @@
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "prepared",
+    "publication_status": "published_verified",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
     "completed_utc": "2026-11-11T02:20:00Z",
     "usage": "tokens/cost/helper compute unavailable; no invented allowance",
@@ -3166,7 +3166,9 @@
       "candidates": 0,
       "experiments": 0,
       "status": "not scheduled"
-    }
+    },
+    "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+    "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md"
   },
   "publication_history": [
     {
@@ -3536,12 +3538,23 @@
       "report_path": "audits/gpt/2026-11-10.md",
       "status": "verified; parent-to-commit diff restricted to audits/gpt/",
       "receipt_note": "Follow-up receipt also corrects allocation.json selection and preserves prior runtime/runner observations as history."
+    },
+    {
+      "date": "2026-11-11",
+      "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+      "status": "published_verified",
+      "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+      "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md",
+      "verified_head_at_report": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+      "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
     }
   ],
   "publication_current_run": {
-    "status": "prepared",
-    "report_path": "audits/gpt/2026-11-11.md",
-    "output_parent": "5d583a1dfb8db3a9782c2ef86c71709e41593461",
+    "status": "published_verified",
+    "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+    "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md",
+    "verified_head_at_report": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+    "diff_scope": "17 paths, all under audits/gpt/",
     "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
   },
   "remaining_work_current_visit": [
