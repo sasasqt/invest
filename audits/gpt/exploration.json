@@ -1,21 +1,21 @@
 {
-  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
   "planned_percent": {
     "exploitation": 50,
     "exploration": 50
   },
   "actual_primary_unique_lines": {
-    "exploitation": 175,
-    "exploration": 175,
-    "mandatory_callers_contracts": 371
+    "exploitation": 188,
+    "exploration": 209,
+    "mandatory_callers_contracts": 77
   },
   "new_verified_distinct_root_causes": {
     "exploitation": 1,
     "exploration": 0
   },
-  "evidence_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations",
+  "evidence_scope": "GA-2026-10-31-2 first promoted from plausible to confirmed static contract mismatch; existing ID, not a new discovery. Local runtime remains blocked.",
   "pooled_rates_per_1000_lines": {
-    "exploitation": 2.6595744680851063,
+    "exploitation": 1.400560224089636,
     "exploration": 0
   },
   "runs": 2,
@@ -50,17 +50,17 @@
   ],
   "helper_overlap": "tracked in coverage, not added to primary reading denominators or root counts",
   "selection": {
-    "seed_material": "2026-11-09",
-    "sha256": "d66834b1e2633b31445f067d3c463d9b29e4990cf25a07f695578ef8d99b21d3",
-    "draw": "data-pipeline/data-preparation/tests/test_bundle.py",
-    "eligible_count": 8,
-    "lens": "metadata authority versus row-derived timing"
+    "seed_material": "2026-11-11",
+    "sha256": "4e9c38edd9fe3c0bdf16b4dad77c1241b1d98163621b9ba96a81c39308d39a58",
+    "draw": "strategy-evaluation/src/invest_evaluation/cli.py",
+    "eligible_count": 14,
+    "lens": "settlement basis across portfolio, comparator, metrics and verdict"
   },
   "actual_percent": {
-    "exploitation": 59.55204216073781,
-    "exploration": 40.44795783926219
+    "exploitation": 47.3551637279597,
+    "exploration": 52.6448362720403
   },
-  "limitations": "No detection-accuracy/recall claim; tiny sample, static scope, repeated prior reading included as actual effort; optional recommendation excluded.",
+  "limitations": "No accuracy/recall claim. Static scope; current worker did not execute product code. Same-SHA peer runtime is corroboration, not this run's execution.",
   "rotation_v3_visits": [
     {
       "run_id": "GA-2026-11-02-data-092201Z",
@@ -837,8 +837,135 @@
         }
       ],
       "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
+    },
+    {
+      "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+      "date": "2026-11-11",
+      "field": "evaluation",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "planned_percent": {
+        "exploitation": 50,
+        "exploration": 50
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 188,
+        "exploration": 209,
+        "mandatory_callers_contracts": 77
+      },
+      "actual_percent": {
+        "exploitation": 47.3551637279597,
+        "exploration": 52.6448362720403
+      },
+      "new_cumulative_lines_all_reviewers": 371,
+      "new_verified_distinct_root_causes": {
+        "exploitation": 1,
+        "exploration": 0
+      },
+      "root_count_scope": "GA-2026-10-31-2 first promoted from plausible to confirmed static contract mismatch; existing ID, not a new discovery. Local runtime remains blocked.",
+      "pooled_eligible_visits": 2,
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 1.400560224089636,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "rule": "Across two comparable evaluation visits exploitation has one first-confirmed root over 714 lines; exploration has zero over 527 lines. Decrease exploration 10 points from 50% to 40%.",
+      "selection": "2026-11-11-evaluation/selection.json",
+      "ranges": [
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              415,
+              452
+            ],
+            [
+              568,
+              571
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "0a01b02d11f1c21c0a566e10c48b5cae49501ded"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_engine.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              231,
+              272
+            ],
+            [
+              523,
+              557
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "d232bfd7382641fb012530a78c1e9a9d027584c4"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              184,
+              223
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              69,
+              264
+            ],
+            [
+              366,
+              378
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+        },
+        {
+          "path": "strategy-evaluation/README.md",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              24,
+              28
+            ],
+            [
+              71,
+              83
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "da30fb6ad0907e28e082127a91fdafc8636e43fb"
+        },
+        {
+          "path": "strategy-evaluation/METRICS.md",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              121,
+              136
+            ]
+          ],
+          "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+          "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+        }
+      ],
+      "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
     }
   ],
-  "date": "2026-11-10",
-  "note": "Monday data visit; no research allocation. Actual split differs from planned because full carried-contract closure required more exploitation lines."
+  "date": "2026-11-11",
+  "note": "Wednesday evaluation visit; research not scheduled."
 }
