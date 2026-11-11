@@ -988,3 +988,220 @@ def test_two_missing_bars_a_few_sessions_apart_do_not_block_the_exit(vol_window,
     assert bool(sale["shares"].iloc[0] < 0)
     assert res.daily["gross_exposure"].max() <= 1.0 + 1e-9
     assert res.daily["cash"].min() >= -1e-9
+
+
+def gap_market(b_event_open, b_event_close, b_volume_before=1e9):
+    """A at 10 and B at 20 for eight sessions, except that B opens at ``b_event_open`` and
+    closes at ``b_event_close`` on session 5 (2024-01-08) and stays at that close afterwards.
+    B trades ``b_volume_before`` shares on session 4, the decision before the event (its
+    ADV with ``adv_window`` 1). Signals score both names from session 2 on, the first
+    session with a volatility estimate (``vol_window`` 2), so both are eligible on every
+    decision."""
+    dates = pd.bdate_range("2024-01-01", periods=8)
+    rows = []
+    for k, d in enumerate(dates):
+        rows.append([d, "A", 10.0, 10.0, 10.0, 10.0, 1e9])
+        b_open = 20.0 if k < 5 else b_event_open if k == 5 else b_event_close
+        b_close = 20.0 if k < 5 else b_event_close
+        b_volume = b_volume_before if k == 4 else 1e9
+        rows.append([d, "B", b_open, max(b_open, b_close), min(b_open, b_close), b_close, b_volume])
+    bars = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    signals = pd.DataFrame(
+        [[d, name, 1.0] for d in dates[2:] for name in ("A", "B")],
+        columns=["decision_date", "instrument", "score"],
+    )
+    return dates, bars, signals
+
+
+def long_short_config(rebalance_every=1, delay=0, **costs):
+    return replace(
+        hand_config(**costs),
+        strategy=StrategyConfig(rebalance_every=rebalance_every, min_names=1),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0, delay=delay),
+    )
+
+
+def insolvency_warnings(res):
+    return [w for w in res.warnings if "insolvent" in w]
+
+
+@pytest.mark.parametrize("delay", [0, 1])
+def test_a_fill_session_that_opens_insolvent_stops_before_sizing_orders(delay):
+    """BH-2026-11-02-2: long A and short B at half of 1000 each (50 and 25 shares, cash
+    1000). B opens at 100 on 2024-01-08, so equity at the open is 1000 + 50 * 10 - 25 * 100
+    = -1000. Orders sized on it would invert both targets (A short 50, B long 5) and that
+    inverted book closes at +500 when B closes at 400, so the close check never saw the
+    insolvency. The run must stop at that open, with no order filled on that session."""
+    dates, bars, signals = gap_market(100.0, 400.0)
+    res = run_backtest(bars, signals, long_short_config(delay=delay), Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    assert res.daily.index[-1] == dates[5]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
+    fills = res.trades[res.trades["status"] == "filled"]
+    assert not (fills["date"] == dates[5]).any()
+    held = fills.groupby("instrument")["shares"].sum()
+    assert held.to_dict() == pytest.approx({"A": 50.0, "B": -25.0})
+    perf = compute_metrics(res)["performance"]
+    assert perf["insolvency"]["value"] == "2024-01-08"
+    assert perf["sharpe"]["reason"] == "insolvent_wealth_path"
+
+
+def test_a_session_without_orders_that_opens_insolvent_is_flagged():
+    """Same book, a single rebalance (fill on 2024-01-04), and B back at 20 by the close of
+    2024-01-08: equity is -1000 at that open and +1000 at its close. A NAV at or below zero
+    is insolvency whenever it is observed (METRICS.md section 6), at an open as at a close."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    res = run_backtest(
+        bars, signals, long_short_config(rebalance_every=100), Fixed({"A": 0.5, "B": -0.5})
+    )
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    assert res.daily.index[-1] == dates[5]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
+
+
+def test_an_open_stop_row_has_no_borrow_or_cash_interest():
+    """The run never reaches the close of the session it stops at, so that row carries no
+    borrow and no cash interest. Borrow 2500 bp and cash interest 25% a year over 250
+    sessions are 0.001 a day each. The window starts on 2024-01-03: interest 1, cash 1001.
+    The fill on 2024-01-04 is sized on 1001 (A +50.05, B -25.025); that close and the next
+    pay borrow 25.025 * 20 * 0.001 = 0.5005 each and earn 1.001 and 1.0015005: cash
+    1002.0015005. B opens at 100 on 2024-01-08: equity 1002.0015005 + 500.5 - 2502.5 =
+    -999.9984995, cum_costs 2 * 0.5005 = 1.001. Both positions, entered on 2024-01-04, end
+    open after 2 sessions."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    config = replace(
+        long_short_config(rebalance_every=100, borrow_bps_annual=2500, cash_rate_annual=0.25),
+        annualization=250,
+    )
+    res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    last, before = res.daily.iloc[-1], res.daily.iloc[-2]
+    assert res.daily.index[-1] == dates[5]
+    assert last["equity"] == pytest.approx(-999.9984995)
+    assert last["borrow_cost"] == 0.0 and last["financing"] == 0.0
+    assert last["traded_notional"] == 0.0
+    assert last["cum_costs"] == pytest.approx(1.001)
+    assert last["cum_costs"] == before["cum_costs"]
+    assert last["equity_before_costs"] == pytest.approx(
+        before["equity_before_costs"] * last["equity"] / before["equity"]
+    )
+    held = res.episodes.set_index("instrument")
+    assert held["status"].tolist() == ["open", "open"]
+    assert held["holding_sessions"].tolist() == [2, 2]
+
+
+def test_equity_of_exactly_zero_at_the_open_stops_without_liquidating():
+    """B opens at 60: equity at the open is 1000 + 500 - 25 * 60 = 0. Sizing on it would sell
+    every position (targets times zero equity); the run stops at that open instead."""
+    dates, bars, signals = gap_market(60.0, 60.0)
+    res = run_backtest(bars, signals, long_short_config(), Fixed({"A": 0.5, "B": -0.5}))
+    fills = res.trades[res.trades["status"] == "filled"]
+    assert not (fills["date"] == dates[5]).any(), fills[fills["date"] == dates[5]]
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity 0.00"]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(0.0)
+
+
+def test_a_gap_that_leaves_equity_positive_at_the_open_sizes_orders_as_before():
+    """Guard: B opens at 30, so equity at the open is 1000 + 500 - 25 * 30 = 750. Targets of
+    half of 750 are 37.5 shares of A (sell 12.5) and -12.5 shares of B (buy 12.5 at 30)."""
+    dates, bars, signals = gap_market(30.0, 30.0)
+    res = run_backtest(bars, signals, long_short_config(), Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == []
+    assert res.daily.index[-1] == dates[-1]
+    fills = res.trades[(res.trades["status"] == "filled") & (res.trades["date"] == dates[5])]
+    assert fills.set_index("instrument")["shares"].to_dict() == pytest.approx(
+        {"A": -12.5, "B": 12.5}
+    )
+    assert res.daily.loc[dates[5], "equity"] == pytest.approx(750.0)
+
+
+def test_an_open_insolvency_uses_the_last_mark_of_a_name_without_an_open_bar():
+    """A has no bar on 2024-01-08, when B gaps to 100 at the open and is back at 20 by the
+    close. Equity at the open values A at its last mark (10): 1000 + 50 * 10 - 25 * 100 =
+    -1000 (it would be -1500 if A counted as 0), and the run stops there with A's last mark
+    in the long value. One rebalance only, so no later decision needs A's broken windows."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    bars = bars[~((bars["date"] == dates[5]) & (bars["instrument"] == "A"))]
+    config = long_short_config(rebalance_every=100)
+    res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    last = res.daily.iloc[-1]
+    assert res.daily.index[-1] == dates[5]
+    assert last["long_value"] == pytest.approx(500.0)
+    assert last["short_value"] == pytest.approx(2500.0)
+    assert last["equity"] == pytest.approx(-1000.0)
+
+
+def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
+    """Equity after the open's fills is checked too. One fill on 2024-01-04 (A +50, B -25)
+    at 150 bp (commission 100, half-spread 50) costs 15: cash 985. B opens at 59.36 on
+    2024-01-08: equity at the open is 985 + 500 - 25 * 59.36 = 1.00 > 0, so orders are sized
+    on it. A sells to 0.05 shares (49.95, notional 499.5, cost 7.4925); B buys back at most
+    its ADV of 20 * 7.5 = 150 (2.52695 shares, cost 2.25). Equity after the fills is
+    1.00 - 9.7425 = -8.7425; the capped short then gains as B closes at 20 (+875.80), so the
+    close check alone missed it."""
+    dates, bars, signals = gap_market(59.36, 20.0, b_volume_before=7.5)
+    config = long_short_config(rebalance_every=2, commission_bps=100, half_spread_bps=50)
+    res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
+    assert insolvency_warnings(res) == [
+        "insolvent after the open's fills on 2024-01-08: equity -8.74"
+    ]
+    last = res.daily.iloc[-1]
+    assert res.daily.index[-1] == dates[5]
+    assert last["equity"] == pytest.approx(-8.7425)
+    assert last["cash"] == pytest.approx(1324.7575)
+    assert last["traded_notional"] == pytest.approx(649.5)
+    assert last["n_clipped"] == 1 and last["n_rejected"] == 0
+    assert last["commission_cost"] + last["spread_cost"] == pytest.approx(9.7425)
+    assert last["cum_costs"] == pytest.approx(15.0 + 9.7425)
+    fills = res.trades[(res.trades["status"] == "filled") & (res.trades["date"] == dates[5])]
+    assert fills.set_index("instrument")["shares"].to_dict() == pytest.approx(
+        {"A": -49.95, "B": 150.0 / 59.36}
+    )
+    # Gross of costs, the stop row's return is (-8.7425 + 9.7425) / 985 - 1 on a gross path
+    # still at 1000 (the first fill's 15 is added back that day).
+    assert last["equity_before_costs"] == pytest.approx(1000.0 / 985.0)
+    held = res.episodes.set_index("instrument")
+    assert held["status"].tolist() == ["open", "open"]
+    assert held["holding_sessions"].tolist() == [2, 2]
+    assert compute_metrics(res)["performance"]["insolvency"]["value"] == "2024-01-08"
+
+
+def test_fill_costs_that_leave_equity_at_exactly_zero_stop_after_the_fills():
+    """Boundary of the check after the open's fills: equity of exactly 0 stops there, as at
+    the open and the close. All of 1000 into A at 10 on 2024-01-04 (100 shares) with a
+    commission of 100% of notional (cost 1000): cash 1000 - 1000 - 1000 = -1000, equity
+    after the fills -1000 + 100 * 10 = 0."""
+    dates, bars, signals = gap_market(20.0, 20.0)
+    config = long_short_config(rebalance_every=100, commission_bps=10000)
+    res = run_backtest(bars, signals, config, Fixed({"A": 1.0}))
+    assert insolvency_warnings(res) == [
+        "insolvent after the open's fills on 2024-01-04: equity 0.00"
+    ]
+    last = res.daily.iloc[-1]
+    assert res.daily.index[-1] == dates[3]
+    assert last["equity"] == pytest.approx(0.0)
+    assert last["commission_cost"] == pytest.approx(1000.0)
+    assert last["cum_costs"] == pytest.approx(1000.0)
+
+
+def test_an_open_insolvency_stops_before_a_settlement_at_that_close():
+    """B, short 25 shares, gaps to 100 at the open of 2024-01-08 (equity -1000) and is
+    settled at 20 at that close, which would bring equity back to 1000. The run stops at
+    the open, so the settlement is never applied and no settlement row is written."""
+    dates, bars, signals = gap_market(100.0, 20.0)
+    settlements = pd.DataFrame([{"date": dates[5], "instrument": "B", "settlement_price": 20.0}])
+    res = run_backtest(
+        bars,
+        signals,
+        long_short_config(rebalance_every=100),
+        Fixed({"A": 0.5, "B": -0.5}),
+        delistings=settlements,
+    )
+    assert insolvency_warnings(res) == ["insolvent at the open on 2024-01-08: equity -1000.00"]
+    assert res.daily.index[-1] == dates[5]
+    assert res.daily["equity"].iloc[-1] == pytest.approx(-1000.0)
+    assert not (res.trades["reason"] == "delisted_liquidation").any()
+    assert not any("settled" in w for w in res.warnings)
