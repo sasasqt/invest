@@ -2,7 +2,7 @@
 
 Claude wrote this page and keeps it current. It describes how work on invest is organized around Claude's five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). The two ChatGPT routines that work on invest, the daily repository audit and the daily pull-request review, are described with the user's other ChatGPT tasks in [GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end.
 
-The routines follow their own instruction files, which live in the **project library**: the shared folder of the Claude project that runs them, outside Git. Below, paths under `review/`, `ideas/`, `.notes/` and `routines/` are in that library, `audits/...` paths are on the branch named with them, and all other paths are in this repository. Where this page and those files differ, the files win, and the weekly docs audit should report the difference.
+The routines follow their own instruction files, which live in the **project library**: the shared folder of the Claude project that runs them, outside Git. Below, paths under `review/`, `ideas/`, `.notes/` and `routines/` are in that library, `audits/...` paths are on the branch named with them, and all other paths are in this repository. Where this page and those files differ, the files win, and the weekly docs audit reports the difference (see [Docs audit](#docs-audit-saturdays)).
 
 ## Who does what
 
@@ -133,7 +133,7 @@ flowchart TD
 
 ## Docs audit (Saturdays)
 
-A report-only check that everything describing the project still agrees: the repository's Markdown on `main`, the project library (skill and prompt copies, ledgers, notes), project memory, the project instructions, the artifacts published in the project, and the live state they describe (merged and open pull requests, the scheduled tasks, ledger counts). It does not check docs against code behavior; the bug hunt does that. Each finding gets an ID `DA-<date>-<n>` and an Area (`repo`, `library`, `memory`, `instructions`, `artifact` or `routine`), and each fix is proposed as a diff grouped by owner. The bug fix fixes the `repo` rows; the other rows go to the thread or person that owns them. Verifier A checks every finding and drop blind first, and verifier B settles disputes.
+A report-only check that everything describing the project still agrees: the repository's Markdown on `main`, the project library (skill and prompt copies, ledgers, notes), project memory, the project instructions, the artifacts published in the project, and the live state they describe (merged and open pull requests, the scheduled tasks, ledger counts). It does not check docs against code behavior; the bug hunt does that. Each finding gets an ID `DA-<date>-<n>` and an Area (`repo`, `library`, `memory`, `instructions`, `artifact` or `routine`), and each fix is proposed as a diff grouped by owner. The bug fix fixes the `repo` rows; the other rows go to the thread or person that owns them. Verifier A checks every finding and every dropped candidate blind first, and verifier B settles disputes. Every week it also compares this page and the [ChatGPT routines page](GPT_OPENAI_ROUTINES.md) with the routines' own files: a script checks the schedules and the times in the diagrams, the review-ladder table, the version labels and the `audits/...` paths, and fingerprints the sources listed below, so the run reads closely the sections whose sources changed. A difference becomes a `repo` row that the next daily bug fix applies in its docs-only pull request, unless the user first needs to decide which side is right.
 
 ## Idea scout (Saturdays)
 
@@ -276,7 +276,7 @@ Checked on 2026-11-11. Library paths are in the project library.
 - Bug hunt: `.notes/invest-bug-hunt/SKILL.md` (v4.11) and the routine prompt `.notes/invest-daily-bug-hunt_prompt_v8.txt`.
 - Bug fix: `.notes/invest-bug-fix/SKILL.md` and `.notes/invest-daily-bug-fix_prompt_v7.txt`.
 - Idea scout: `.notes/invest-idea-scout/SKILL.md` and `.notes/invest-weekly-idea-scout_prompt_v6.txt`.
-- Docs audit: `.notes/invest-docs-audit/SKILL.md` and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
+- Docs audit: `.notes/invest-docs-audit/SKILL.md` (v3) and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
 - Repo audit: `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` (v3, 2026-11-01) and its scheduled task (Sundays 00:37 Berlin, read live on 2026-11-11).
 - Schedules of the other four routines, their thread models and the merge rules: project memory, as recorded at each routine's last read-back.
 - ChatGPT routines (schedules, the five-round cap): [`docs/GPT_OPENAI_ROUTINES.md`](GPT_OPENAI_ROUTINES.md) (#44, renamed in #45); review format: the review comments on pull request #41.
