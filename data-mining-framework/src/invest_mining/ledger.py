@@ -6,7 +6,8 @@ date window only, because a re-download of the same market has a new content has
 same history. Each line is an object with ``ledger_version`` and one ``kind``:
 
 - ``reservation``: a window kept untouched for a future confirmation. Nothing may inspect
-  it (descriptive diagnostics, development data) until a search confirms on it.
+  it (descriptive diagnostics, development data) until a search confirms on it. A
+  confirmation uses it up, so it must start on the reservation's first session.
 - ``inspection``: a window already looked at outside a confirmatory search, such as a
   full-sample diagnostic or a backtest. It can never again provide confirmatory evidence.
 - ``experiment``: one search, or one fixed-formula confirmation (``invest-mine confirm``),
@@ -17,9 +18,13 @@ same history. Each line is an object with ``ledger_version`` and one ``kind``:
 
 A search is ``confirmatory`` only if its confirmation window overlaps no inspection, no
 earlier experiment's development or confirmation window, and is not a repeat of an
-earlier experiment. Otherwise it is ``exploratory`` and the reasons are recorded. A search
-whose development window touches an unused reservation, or whose confirmation window
-starts before a reservation it reaches into, is refused before any data is evaluated.
+earlier experiment. Otherwise it is ``exploratory`` and the reasons are recorded. An
+experiment whose ``family`` is empty selected nothing, so no statistic was computed on its
+confirmation window: that window neither uses up a reservation nor counts as used later
+(:func:`used_windows`). A search whose development window touches an unused reservation,
+or whose confirmation window starts before a reservation it reaches into, is refused
+before any data is evaluated; so is one that starts after the first session of a
+reservation it overlaps, when the data's sessions are given (the CLI always gives them).
 
 The file is the record: writers append one line and fsync. It assumes a single writer.
 """
@@ -29,7 +34,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -182,15 +187,56 @@ def append(
     return entry
 
 
-def _experiments(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [e for e in entries if e["kind"] == "experiment"]
+def used_windows(entry: Mapping[str, Any]) -> dict[str, Window]:
+    """Windows an inspection or experiment has observed, by field name.
+
+    Like :func:`entry_windows`, except that an experiment whose ``family`` is an empty list
+    tested nothing on its confirmation window (every candidate was rejected on development
+    data), so only its development window counts. An experiment without a ``family``
+    field counts as tested. A reservation observes nothing and yields no window.
+    """
+    if entry["kind"] == "reservation":
+        return {}
+    windows = entry_windows(entry)
+    if entry["kind"] == "experiment" and entry.get("family") == []:
+        windows.pop("confirmation", None)
+    return windows
 
 
 def unused_reservations(entries: list[dict[str, Any]]) -> list[Window]:
-    """Reserved windows that no experiment has confirmed on yet."""
-    confirmed = [Window.from_json(e["confirmation"]) for e in _experiments(entries)]
+    """Reserved windows that no experiment has tested anything on yet.
+
+    A reservation that any used window overlaps counts as used, an inspection or a
+    development window included: no command records those over an unused reservation, so
+    such a ledger was written when the window already counted as used (for example by an
+    empty-family search before such searches stopped counting), and its data has been
+    looked at.
+    """
+    confirmed = [
+        window
+        for e in entries
+        if e["kind"] in ("experiment", "inspection")
+        for window in used_windows(e).values()
+    ]
     reserved = [Window.from_json(e["window"]) for e in entries if e["kind"] == "reservation"]
     return [r for r in reserved if not any(r.overlaps(c) for c in confirmed)]
+
+
+def _reserved_regions(entries: list[dict[str, Any]]) -> list[Window]:
+    """Unused reservations, overlapping ones merged into one window.
+
+    Overlapping reservations protect one stretch of data, so a confirmation has to start
+    on the first session of their union; checked one by one, no start would pass both.
+    """
+    regions: list[Window] = []
+    for reserved in sorted(unused_reservations(entries), key=lambda w: w.start):
+        if regions and regions[-1].overlaps(reserved):
+            last = regions[-1]
+            end = None if last.end is None or reserved.end is None else max(last.end, reserved.end)
+            regions[-1] = Window(last.start, end)
+        else:
+            regions.append(reserved)
+    return regions
 
 
 def check_inspection(entries: list[dict[str, Any]], window: Window) -> None:
@@ -212,15 +258,30 @@ def is_inspected(entries: list[dict[str, Any]], window: Window) -> bool:
 
 
 def assess_confirmation(
-    entries: list[dict[str, Any]], development: Window | None, confirmation: Window, exp_id: str
+    entries: list[dict[str, Any]],
+    development: Window | None,
+    confirmation: Window,
+    exp_id: str,
+    *,
+    sessions: Iterable[date] | None = None,
 ) -> tuple[str, list[str]]:
     """Classify a planned search as ``confirmatory`` or ``exploratory``, with reasons.
 
     Raises :class:`LedgerError` (before any data is evaluated) when the development window
     touches an unused reservation, or the confirmation window starts before one it reaches.
     A zero-lookback fixed formula has no history window and passes ``development=None``.
+
+    ``sessions`` are the data's session dates. With them, a confirmation that overlaps an
+    unused reservation is also refused when a session lies between the reservation's start
+    and the confirmation's first date: confirming would use up reserved sessions that
+    nothing tested. Without them a reservation that starts on a non-session day cannot be
+    told apart from skipped sessions, so this check is not made. The data's own sessions
+    are the calendar: reserved sessions before the data's first session are not seen, so
+    a confirmation needs data that covers the reservation's start. Overlapping unused
+    reservations are checked as one window, their union.
     """
-    for reserved in unused_reservations(entries):
+    days = None if sessions is None else sorted(sessions)
+    for reserved in _reserved_regions(entries):
         if development is not None and development.overlaps(reserved):
             raise LedgerError(
                 f"development window {development} overlaps the reserved confirmation "
@@ -231,6 +292,19 @@ def assess_confirmation(
                 f"confirmation window {confirmation} starts before the reserved window "
                 f"{reserved}; start confirmation on or after {reserved.start} "
                 "(--confirm-start) so reserved data is not mixed with inspected data"
+            )
+        skipped = (
+            []
+            if days is None or not confirmation.overlaps(reserved)
+            else [d for d in days if reserved.start <= d < confirmation.start]
+        )
+        if skipped:
+            span = f"{skipped[0]}" if len(skipped) == 1 else f"{skipped[0]}..{skipped[-1]}"
+            raise LedgerError(
+                f"confirmation window {confirmation} starts after the reserved window "
+                f"{reserved} begins, so its reserved session(s) {span} would be used up "
+                "untested; start confirmation on the reservation's first session "
+                f"(--confirm-start {reserved.start})"
             )
     reasons = []
     for entry in entries:
@@ -243,7 +317,7 @@ def assess_confirmation(
             if other == exp_id:
                 reasons.append(f"repeat of experiment {other}")
                 continue
-            for name, window in entry_windows(entry).items():
+            for name, window in used_windows(entry).items():
                 if confirmation.overlaps(window):
                     reasons.append(f"confirmation overlaps the {name} window of {other}")
     return ("exploratory" if reasons else "confirmatory"), reasons
