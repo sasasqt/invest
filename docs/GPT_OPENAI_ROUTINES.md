@@ -1,13 +1,22 @@
-# Invest routine workflow
+# GPT / OpenAI routines
 
-This guide records the two ChatGPT routines for `sasasqt/invest` and their handoffs with GitHub CI and the peer routines, as verified on **11 November 2026**.
+This guide records the GPT/OpenAI automation inventory verified on **11 November 2026**. It covers nine ChatGPT tasks across repository work, job search, equity research, and market monitoring. Two tasks are enabled and seven are paused. The schedule column gives the configured cadence for each task.
 
-| Enabled ChatGPT task | Schedule (`Europe/Berlin`) | Input | Published output |
+| ChatGPT task | Status | Schedule | Result |
 | --- | --- | --- | --- |
-| Audit invest repository | Daily at **03:00** | A pinned `main` commit, the day's field, and prior audit state | Dated report, evidence, and cumulative state under `audits/gpt/` on [`gpt/repo-audits`](https://github.com/sasasqt/invest/tree/gpt/repo-audits/audits/gpt), plus a chat result |
-| Review open invest PRs | Daily at **21:00** | Open PRs, including drafts, with their head and target commits | PR Conversation comments and a daily chat summary |
+| Audit invest repository | Enabled | Daily, **03:00 Europe/Berlin** | Dated report, evidence, and cumulative state on [`gpt/repo-audits`](https://github.com/sasasqt/invest/tree/gpt/repo-audits/audits/gpt), plus a chat result |
+| Review open invest PRs | Enabled | Daily, **21:00 Europe/Berlin** | PR Conversation comments and a daily chat summary |
+| Daily Technical Job Alert | Paused | Weekdays | Recent graduate or entry-level technical engineering vacancies |
+| Daily Software Job Alert | Paused | Weekdays | Recent graduate or entry-level software and infrastructure vacancies |
+| Software Job Alert | Paused | Weekdays, flexible | General software job opportunities |
+| S&P 500 Mispricing Research (Sunday) | Paused | Weekly, Sunday 05:00 Europe/Berlin | Full-universe screen and up to six company deep dives |
+| S&P 500 Mispricing Research (Monday) | Paused | Weekly, Monday, flexible | Company-level research across the requested universe, with coverage gaps recorded |
+| BTC Pionex Action Plan | Paused | Daily, 20:15 Europe/Berlin | Timestamped market analysis and a written action plan |
+| ZEC Short Setup | Paused | Hourly condition check | Alert when the configured setup is met |
 
-## 03:00 · Rotating repository audit
+## Invest repository routines
+
+### 03:00 · Rotating repository audit
 
 | Berlin day | Primary field |
 | --- | --- |
@@ -42,7 +51,7 @@ flowchart TD
 
 [Pinned audit method index](https://github.com/sasasqt/invest/blob/bab6ba12399787496ba1108a9a368e00f8643441/audits/gpt/protocol/rotation-v3-2026-11-02/index.json) · [Continuity state](https://github.com/sasasqt/invest/blob/gpt/repo-audits/audits/gpt/state.json) · [11 November report](https://github.com/sasasqt/invest/blob/0c9863e95ab38b93fa22093e6cfdc2149b77bacc/audits/gpt/2026-11-11.md) · [Publication receipt](https://github.com/sasasqt/invest/blob/0c9863e95ab38b93fa22093e6cfdc2149b77bacc/audits/gpt/2026-11-11-evaluation/publication.json)
 
-## 21:00 · Open pull-request review
+### 21:00 · Open pull-request review
 
 ```mermaid
 flowchart TD
@@ -79,7 +88,7 @@ flowchart TD
 
 [Repository review guidelines](../GIT_GUIDELINES.md#when-reviewing) · [Example detailed review](https://github.com/sasasqt/invest/pull/41#issuecomment-6726530636) · [Example clean timeline notice](https://github.com/sasasqt/invest/pull/41#issuecomment-6777953452)
 
-## Independent verification
+### Independent verification
 
 Both routines apply this path to new or changed candidates, including proposed drops, within the review budget. A PR status refresh that reuses unchanged evidence needs no fresh candidate review.
 
@@ -97,7 +106,7 @@ flowchart TD
 
 Reviewer 2 starts with the pinned source and evidence before seeing the primary reviewer's verdict. The checks cover source identity, expected and actual behavior, negative controls where feasible, impact, related code and docs, and duplicate findings. Verifier B weighs both positions and runs a decisive check if it is permitted and takes under a minute. A run can use at most two active helpers. The primary reviewer owns the final evidence labels and publication. [Pinned audit review method](https://github.com/sasasqt/invest/blob/bab6ba12399787496ba1108a9a368e00f8643441/audits/gpt/protocol/rotation-v3-2026-11-02/methods/11-findings-review.md).
 
-## Repository handoffs and peer routines
+### Repository handoffs and peer routines
 
 ```mermaid
 flowchart TD
@@ -122,3 +131,58 @@ GitHub Actions runs on PRs and pushes to `main`. The six jobs cover two Python v
 | Idea scout | Records research and engineering proposals. The [ideas mirror](audits/ideas.md) lists proposals marked for adoption that are absent from `TODO.md` and `ROADMAP.md`. |
 
 The [mirror index](audits/README.md) identifies each authoritative source. Files under `docs/audits/` are generated snapshots refreshed by a merged mirrors PR. Check the source date and the current code or PR before relying on a snapshot's status.
+
+## Job alerts
+
+The technical alert covers AI and machine learning, robotics, research software, and related engineering roles. The software alert focuses on backend, platform, DevOps, cloud, and adjacent software roles. Both dedicated alerts look for graduate or entry-level openings originally posted or materially refreshed within seven days. They prefer direct employer pages, confirm whether applications are open, avoid repeating unchanged listings, and report the publication date and application link. Suitable unsolicited application opportunities and optional older active listings appear separately. The general Software Job Alert has a shorter prompt to find relevant opportunities.
+
+```mermaid
+flowchart TD
+    A["Search for relevant openings"] --> B["Check employer listing and application status"]
+    B --> C{"Open and within seven days?"}
+    C -->|Yes| D["Deduplicate and add to verified results"]
+    C -->|Older and open| E["Consider for older fallback"]
+    C -->|Closed or unverified| F["Exclude from verified results"]
+    D --> G["Publish dated alert"]
+    E --> G
+    F --> G
+    H["Check for unsolicited applications"] --> G
+```
+
+The diagram describes the two dedicated alerts. If the recent search yields zero verified matches, the result states that explicitly.
+
+## S&P 500 mispricing research
+
+The Sunday and Monday tasks share the same evidence workflow. They reconcile index membership and share classes, retain ticker-level coverage, verify filings and timestamped prices, and use metrics suited to each business. The Sunday task screens the full universe and prioritizes up to six evidence-backed deep dives. The Monday task calls for company-level deep dives across the requested universe and reports complete, partial, and unresearched coverage if it runs out of time or access. The outputs are a dated Markdown report, calculation code, an input table, and the ticker coverage ledger, delivered in chat.
+
+```mermaid
+flowchart TD
+    A["Reconcile constituents and share classes"] --> B["Retrieve filings and timestamped prices"]
+    B --> C{"Material evidence sufficient?"}
+    C -->|No| D["Record missing inputs and coverage gaps"]
+    C -->|Yes| E["Assess business quality and valuation"]
+    E --> F{"Which scheduled research task?"}
+    F -->|Sunday| G["Screen the universe and select up to six deep dives"]
+    F -->|Monday| H["Run company-level deep dives across the universe"]
+    D --> I["Deliver research report and coverage ledger"]
+    G --> I
+    H --> I
+```
+
+Material evidence gaps suspend the affected valuation. The report distinguishes verified inputs, derived values, and estimates, and records the research cutoff.
+
+## Crypto market monitoring
+
+The BTC task checks timestamped market and product data, computes indicators from completed candles, and reports the resulting market regime and written plan. It reports unavailable metrics when fresh values cannot be verified. The ZEC task checks price action, funding, open interest, and key levels. It sends an alert only when the configured setup is sufficiently clear. The alert includes the observed trigger, current price, a nearby invalidation level, and downside levels to watch.
+
+```mermaid
+flowchart TD
+    A["BTC daily schedule"] --> B["Verify data freshness and calculate indicators"]
+    B --> C{"Current input verified?"}
+    C -->|Yes| D["Assess regime and write plan"]
+    C -->|No| E["Flag unavailable inputs in report"]
+    F["ZEC hourly check"] --> G["Check price action and derivatives data"]
+    G --> H{"Configured setup clear?"}
+    H -->|Yes| I["Send alert with trigger and levels"]
+    H -->|No| J["Wait for next check"]
+```

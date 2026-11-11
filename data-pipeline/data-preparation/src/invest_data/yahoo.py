@@ -76,8 +76,18 @@ def http_get(url: str, timeout: float) -> bytes:
     return body
 
 
+def _iso_day(value: object) -> bool:
+    """True for a ``YYYY-MM-DD`` calendar date, the only form a snapshot replays."""
+    try:
+        return isinstance(value, str) and date.fromisoformat(value).isoformat() == value
+    except ValueError:
+        return False
+
+
 def chart_url(symbol: str, start: str, end: str) -> str:
     """Daily chart URL covering sessions ``start`` to ``end`` inclusive (YYYY-MM-DD)."""
+    if not (_iso_day(start) and _iso_day(end)):
+        raise ValueError(f"start and end must be YYYY-MM-DD dates, got {start!r} and {end!r}")
     first = pd.Timestamp(start, tz="UTC")
     stop = pd.Timestamp(end, tz="UTC") + pd.Timedelta(days=1)
     if stop <= first:
@@ -368,8 +378,8 @@ def snapshot_range(
     """Resolve inclusive replay bounds; reject requests beyond the saved download range."""
     request = read_snapshot_manifest(path)["request"]
     first, last = start or request["start"], end or request["end"]
-    if any(date.fromisoformat(bound).isoformat() != bound for bound in (first, last)):
-        raise ValueError("snapshot dates must use YYYY-MM-DD")
+    if not (_iso_day(first) and _iso_day(last)):
+        raise ValueError(f"snapshot dates must use YYYY-MM-DD, got {first!r} and {last!r}")
     chart_url("range-validation", first, last)
     if pd.Timestamp(first) < pd.Timestamp(request["start"]) or pd.Timestamp(last) > pd.Timestamp(
         request["end"]
