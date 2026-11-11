@@ -1,0 +1,27 @@
+{
+  "index": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "path": "audits/gpt/protocol/rotation-v3-2026-11-02/index.json",
+    "bytes": 6525,
+    "sha256_expected": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "sha256_actual": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "verified": true,
+    "baseline_identity": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa"
+  },
+  "loaded": [
+    "overview",
+    "00-preflight",
+    "01-scope",
+    "13-continuity",
+    "action-boundary",
+    "03-consistency",
+    "04-correctness",
+    "05-financial-validity",
+    "07-independent-checks",
+    "02-coverage",
+    "11-findings-review",
+    "12-reporting",
+    "14-crosscheck-publication"
+  ],
+  "all_declared_digests_verified": true
+}
