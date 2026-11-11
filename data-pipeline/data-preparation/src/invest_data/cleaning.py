@@ -18,6 +18,7 @@ from invest_data.schemas import AS_TRADED_CLOSE, non_real, real_dtype
 
 REQUIRED = ["date", "instrument", "open", "high", "low", "close", "volume"]
 OPTIONAL = [AS_TRADED_CLOSE.name]  # positive prices, kept when the source has them
+MIXED_TIME_ZONES = "dates mix time zones; give plain YYYY-MM-DD dates"
 # Values that mean "unknown" in an optional column, compared case-insensitively
 # (pandas' default CSV null markers).
 NULL_TOKENS = frozenset(
@@ -62,6 +63,22 @@ def total_return_adjust(raw: pd.DataFrame, adjusted_close: str = "adjclose") -> 
     return out
 
 
+def iso_dates(values: pd.Series) -> pd.Series:
+    """Parse ISO 8601 dates, NaT where unreadable; refuse text that mixes time zones.
+
+    pandas 3 raises on mixed offsets even when coercing. The result's dtype is checked as
+    well, because pandas 2 (below this package's ``pandas>=3`` floor) returns an object
+    column of datetimes instead.
+    """
+    try:
+        dates = pd.to_datetime(values, format="ISO8601", errors="coerce")
+    except ValueError as exc:
+        raise ValueError(f"{MIXED_TIME_ZONES} ({exc})") from exc
+    if not pd.api.types.is_datetime64_any_dtype(dates):
+        raise ValueError(MIXED_TIME_ZONES)
+    return dates
+
+
 def clean_bars(
     raw: pd.DataFrame, *, adjusted_close: str | None = None, as_traded: bool = False
 ) -> tuple[pd.DataFrame, CleaningReport]:
@@ -95,7 +112,7 @@ def clean_bars(
             )
     df = raw[columns].copy()
     if not pd.api.types.is_datetime64_any_dtype(df["date"]):
-        df["date"] = pd.to_datetime(df["date"], format="ISO8601", errors="coerce")
+        df["date"] = iso_dates(df["date"])
     df["date"] = df["date"].dt.normalize()
     df["instrument"] = df["instrument"].astype("string").str.strip()
     for col in columns[2:]:

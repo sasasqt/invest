@@ -10,13 +10,14 @@ specific. An adapter returns a raw bars DataFrame with the columns of
 from __future__ import annotations
 
 import os
+import re
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 
 import numpy as np
 import pandas as pd
 
-from invest_data.cleaning import REQUIRED
+from invest_data.cleaning import REQUIRED, iso_dates
 from invest_data.schemas import AS_TRADED_CLOSE
 
 
@@ -126,6 +127,10 @@ SYNTHETIC_METADATA = {
     "note": "Synthetic data with a planted 5-day reversal effect. Not market data.",
 }
 
+# The start of an ISO 8601 calendar date with a day: YYYYMMDD, or year, month and day with
+# one separator each (pandas' ISO 8601 parser decides which forms it accepts).
+_ISO_DAY_PREFIX = re.compile(r"\d{4}(?:\d{4}|[-/. ]\d{1,2}[-/. ]\d{1,2})(?!\d)")
+
 
 def load_csv_bars(
     path: str | os.PathLike[str],
@@ -142,6 +147,14 @@ def load_csv_bars(
 
     ``extra_columns`` (not bar columns) are kept as given, for example an adjusted close
     for ``clean_bars(bars, adjusted_close=...)``.
+
+    Without ``date_format`` dates are read as ISO 8601 calendar dates: year, month and
+    day, optionally followed by a time of day.
+    Any other form becomes NaT, which cleaning rejects as ``invalid_date``, instead of
+    being guessed: day-first or month-first dates such as ``05/01/2024`` (ambiguous),
+    named months such as ``Jan 5 2024``, and a year or a year and month without a day.
+    Dates that mix time-zone offsets raise ``ValueError``. An explicit ``date_format``
+    is passed to :func:`pandas.to_datetime` as given.
     """
     raw = pd.read_csv(path, dtype=str, keep_default_na=False)
     if column_map:
@@ -149,12 +162,13 @@ def load_csv_bars(
     missing = [c for c in REQUIRED if c not in raw.columns]
     if missing:
         raise ValueError(f"CSV is missing required columns {missing}")
-    out = pd.DataFrame(
-        {
-            "date": pd.to_datetime(raw["date"], format=date_format, errors="coerce"),
-            "instrument": raw["instrument"].str.strip(),
-        }
-    )
+    if date_format is None:
+        text = raw["date"].str.strip()
+        # ISO 8601 also reads "2024-01" or "2024" as its first day; a daily bar needs its day.
+        dates = iso_dates(text.where(text.str.match(_ISO_DAY_PREFIX), ""))
+    else:
+        dates = pd.to_datetime(raw["date"], format=date_format, errors="coerce")
+    out = pd.DataFrame({"date": dates, "instrument": raw["instrument"].str.strip()})
     for col in REQUIRED[2:]:
         out[col] = pd.to_numeric(raw[col], errors="coerce")
     # Parsed by cleaning, which judges null markers.
