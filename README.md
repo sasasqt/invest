@@ -26,7 +26,7 @@ Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
 
-Scheduled routines hunt for bugs every weekday night, work on fix pull requests every day (at most one new one per run), and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews open pull requests, and nothing merges into `main` without the user's word. [Workflow and routines](docs/WORKFLOW.md) describes their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams. Read-only copies of the routines' open findings, ideas and decisions are in [audit mirrors](docs/audits/README.md).
+Scheduled routines hunt for bugs every weekday night, work on fix pull requests every day (at most one new one per run), and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews open pull requests every day, and nothing merges into `main` without the user's word. [Claude workflow and routines](docs/CLAUDE_WORKFLOW.md) describes Claude's routines and their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams; [Invest routine workflow](docs/INVEST_ROUTINES.md) describes the two ChatGPT routines. Read-only copies of the routines' open findings, ideas and decisions are in [audit mirrors](docs/audits/README.md).
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
@@ -177,7 +177,7 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 
 ## Documentation maintenance
 
-Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change, and [docs/WORKFLOW.md](docs/WORKFLOW.md) when the review ladder or the merge rules change, or when a routine change (made in the project library) makes it wrong. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
+Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change, and [docs/CLAUDE_WORKFLOW.md](docs/CLAUDE_WORKFLOW.md) when the review ladder or the merge rules change, or when a routine change (made in the project library) makes it wrong. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
 
 ## Local files
 

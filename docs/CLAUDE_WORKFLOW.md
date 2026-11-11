@@ -1,14 +1,14 @@
-# Workflow and routines
+# Claude workflow and routines
 
-This page describes how work on invest is organized: the five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end.
+Claude wrote this page and keeps it current. It describes how work on invest is organized around Claude's five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). The two ChatGPT routines, the daily repository audit and the daily pull-request review, have their own page, [Invest routine workflow](INVEST_ROUTINES.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end.
 
 The routines follow their own instruction files, which live in the **project library**: the shared folder of the Claude project that runs them, outside Git. Below, paths under `review/`, `ideas/`, `.notes/` and `routines/` are in that library, `audits/...` paths are on the branch named with them, and all other paths are in this repository. Where this page and those files differ, the files win, and the weekly docs audit should report the difference.
 
 ## Who does what
 
-- **The user** decides what gets built and fixed, answers the questions the routines raise, runs the GPT audit and the ChatGPT pull-request reviews, and decides every merge.
+- **The user** decides what gets built and fixed, answers the questions the routines raise, set up the two ChatGPT routines, and decides every merge.
 - **Claude** works in project threads on the user's requests (for example the staged bug-fix pull requests) and runs the five scheduled routines below.
-- **GPT** (ChatGPT / OpenAI) audits the whole repository on its own branch and reviews each open pull request in one maintained comment.
+- **GPT** (ChatGPT / OpenAI) runs two scheduled tasks: a repository audit on its own branch every day at 03:00 Berlin, and a review of every open pull request in one maintained comment every day at 21:00 Berlin ([Invest routine workflow](INVEST_ROUTINES.md)).
 
 ## The big picture
 
@@ -16,7 +16,7 @@ Four routines only report. The bug fix is the only routine that changes code: it
 
 ```mermaid
 flowchart TD
-  G["GPT audit<br/>run by the user"] --> LG[("gpt/repo-audits<br/>GA rows")]
+  G["GPT audit<br/>ChatGPT, daily 03:00"] --> LG[("gpt/repo-audits<br/>GA rows")]
   R["Repo audit<br/>Sun 00:37"] --> LR[("claude/repo-audits<br/>RA rows")]
   LG -->|"step 4e, nightly"| H["Bug hunt<br/>Mon to Fri 01:55"]
   H --> LH[("Hunt ledger<br/>BH, BF, RA rows")]
@@ -143,12 +143,12 @@ Weekly self-directed research that proposes a few well-evidenced improvement ide
 
 The weekly repo audit covers what the other routines do not: every CI job reproduced locally, configuration and portability drift, saved results that no longer reproduce, cross-component inconsistencies in real outputs, test blind spots, and benchmarks kept as raw measurements. It ends with prioritized recommendations, each with evidence, effort and acceptance criteria, and keeps a coverage map. Its only repository writes are commits to [`audits/claude/`](https://github.com/sasasqt/invest/tree/claude/repo-audits/audits/claude) on the branch `claude/repo-audits`, which never syncs with `main`. A confirmed defect also gets an `RA-` row in the hunt ledger, where the bug fix picks it up.
 
-The user runs a second, independent audit by GPT, which writes [`audits/gpt/`](https://github.com/sasasqt/invest/tree/gpt/repo-audits/audits/gpt) on the branch `gpt/repo-audits` with `GA-` IDs. Each side writes a `cross-check.md` with its verdicts on the other side's findings.
+A second, independent audit runs every day at 03:00 Berlin as a ChatGPT task, rotating over seven fields by weekday ([Invest routine workflow](INVEST_ROUTINES.md)). It writes [`audits/gpt/`](https://github.com/sasasqt/invest/tree/gpt/repo-audits/audits/gpt) on the branch `gpt/repo-audits` with `GA-` IDs. Each side writes a `cross-check.md` with its verdicts on the other side's findings.
 
 ```mermaid
 flowchart TD
   RA["Repo audit, Claude"] --> CF["claude/repo-audits<br/>audits/claude/: findings.md,<br/>recommendations.md, cross-check.md,<br/>reports, mirror/"]
-  GA["GPT audit, run by the user"] --> GF["gpt/repo-audits<br/>audits/gpt/: findings.json,<br/>cross-check.md, reports, research/"]
+  GA["GPT audit, ChatGPT, daily 03:00"] --> GF["gpt/repo-audits<br/>audits/gpt/: findings.json,<br/>cross-check.md, reports, research/"]
   CF -->|"read for GPT's cross-check"| GA
   GF -->|"read for Claude's cross-check"| RA
   RA -->|"defect rows"| L[("Hunt ledger")]
@@ -259,7 +259,7 @@ flowchart TD
 
 ### ChatGPT review
 
-The user has ChatGPT review each open pull request. The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found" or "Review — Changes needed", with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head.
+A ChatGPT task reviews every open pull request, drafts included, every day at 21:00 Berlin ([Invest routine workflow](INVEST_ROUTINES.md)). The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found" or "Review — Changes needed", with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head. A head gets at most five ChatGPT review rounds or comments; a new head resets the count.
 
 ### Merge gate
 
@@ -279,5 +279,5 @@ Checked on 2026-11-11. Library paths are in the project library.
 - Docs audit: `.notes/invest-docs-audit/SKILL.md` and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
 - Repo audit: `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` (v3, 2026-11-01) and its scheduled task (Sundays 00:37 Berlin, read live on 2026-11-11).
 - Schedules of the other four routines, their thread models and the merge rules: project memory, as recorded at each routine's last read-back.
-- ChatGPT review format: the review comments on pull request #41.
+- ChatGPT routines (schedules, the five-round cap): [`docs/INVEST_ROUTINES.md`](INVEST_ROUTINES.md) (#44); review format: the review comments on pull request #41.
 - Audit branches: the commit history and file lists of `claude/repo-audits` and `gpt/repo-audits`.
