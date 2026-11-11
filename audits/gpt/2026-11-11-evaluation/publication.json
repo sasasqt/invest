@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "date": "2026-11-11",
+  "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "output_parent_before_report": "5d583a1dfb8db3a9782c2ef86c71709e41593461",
+  "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+  "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md",
+  "verified_reachable_head": "0a1331c844404db291f9cbe6c5335b2b7730168e",
+  "diff": {
+    "status": "ahead",
+    "commits": 17,
+    "paths": 17,
+    "scope": "all changed paths strictly under audits/gpt/",
+    "out_of_scope_paths": []
+  },
+  "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "force": false,
+  "publication_method": "GitHub contents API sequential single-parent commits",
+  "readback": {
+    "report_blob": "f47c50b74d6883e3b7486361e46a5c0049ec5733",
+    "state_blob": "26e5881c53b41978ef5665ab690d8d6dd69ef98c"
+  },
+  "status": "published_verified"
+}
