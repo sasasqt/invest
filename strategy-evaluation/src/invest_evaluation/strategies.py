@@ -28,8 +28,9 @@ class Strategy(Protocol):
 
 def leg_size(n: int, fraction: float) -> int:
     """Most names ``k`` with ``k / n <= fraction``: the cutpoint rule of the bucket
-    portfolios. ``floor(n * fraction)`` can fall one short in floating point
-    (``100 * 0.29`` is ``28.999...``)."""
+    portfolios, and the size of a ``QuantileStrategy`` leg when the scores are distinct.
+    ``floor(n * fraction)`` can fall one short in floating point (``100 * 0.29`` is
+    ``28.999...``)."""
     if n <= 0:
         return 0
     k = int(np.floor(n * fraction))
@@ -41,29 +42,42 @@ def leg_size(n: int, fraction: float) -> int:
 
 
 class QuantileStrategy:
+    """Long the top ``long_fraction`` of the eligible names, short the bottom
+    ``short_fraction``, equal-weighted within each leg.
+
+    The legs use the bucket portfolios' tail rule (``Slice`` kinds ``top`` and
+    ``bottom``): the long leg holds the names whose percentile counted from the highest
+    score is at most ``long_fraction``, the short leg those whose percentile from the
+    lowest score is at most ``short_fraction``. Percentiles are average ranks, so tied
+    scores share one and a tie group is held whole or not at all; instrument ids never
+    decide membership. With distinct scores a leg holds ``leg_size(n, fraction)`` names;
+    ties can make it larger or smaller. A decision whose long leg, or whose short leg
+    when ``short_fraction > 0``, holds no name holds nothing, as a bucket portfolio does.
+    """
+
     def __init__(self, config: StrategyConfig) -> None:
         self.config = config
 
     def target_weights(self, scores: pd.Series) -> pd.Series:
         cfg = self.config
         scores = scores.dropna()
-        n = len(scores)
-        if n < cfg.min_names:
+        if len(scores) < cfg.min_names:
             return pd.Series(dtype=float)
-        # Deterministic tie-break by instrument id so results don't depend on input order.
-        ranked = sorted(scores.items(), key=lambda kv: (kv[1], str(kv[0])))
-        names = [k for k, _ in ranked]
-        n_long = max(1, leg_size(n, cfg.long_fraction))
-        n_short = leg_size(n, cfg.short_fraction)
+        from_top = percentile_ranks(scores, descending=True)
+        longs = scores.index[(from_top <= cfg.long_fraction).to_numpy()]
+        shorts = pd.Index([])
         if cfg.short_fraction > 0:
-            n_short = max(1, n_short)
-        if n_long + n_short > n:
-            return pd.Series(dtype=float)  # too few names for disjoint long/short legs
-        longs = names[n - n_long :]
-        shorts = names[:n_short]
-        leg = cfg.gross_leverage / (2 if n_short else 1)
-        weights = {k: leg / n_long for k in longs}
-        weights.update({k: -leg / n_short for k in shorts})
+            shorts = scores.index[(percentile_ranks(scores) <= cfg.short_fraction).to_numpy()]
+            if shorts.empty:
+                return pd.Series(dtype=float)
+        if longs.empty:
+            return pd.Series(dtype=float)
+        # Unreachable for a valid config: p + q = (n + 1) / n > 1 >= the two fractions.
+        if longs.intersection(shorts).size:
+            raise ValueError("long and short legs overlap")
+        leg = cfg.gross_leverage / (2 if cfg.short_fraction > 0 else 1)
+        weights = {k: leg / len(longs) for k in longs}
+        weights.update({k: -leg / len(shorts) for k in shorts})
         return pd.Series(weights, dtype=float)
 
 
