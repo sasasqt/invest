@@ -66,7 +66,7 @@ sequenceDiagram
   F->>GH: at most one new fix PR and one docs-only PR
   F->>GH: if no mirrors PR is open, the docs-only PR carries the mirrors
   F->>U: post the report and one phone push
-  U->>GH: review; merge, or name the PRs a thread may merge
+  U->>GH: review, then merge or name the PRs a thread may merge
 ```
 
 If the hunt has not finished (and on weekends, when it does not run), the bug fix works from the ledger as it stands and writes its own ledger rows last.
@@ -129,7 +129,7 @@ flowchart TD
 - **Overlap filter.** A group is blocked when any line its bugs cite or its fix would change is in the same file as, and within 10 lines of, a line an open pull request changes, or when an open pull request claims one of its bugs. `README.md`, `ROADMAP.md` and `TODO.md` are exempt, except for a docs finding's own lines.
 - **Unrelated bugs** found while fixing get a `BF-<date>-<n>` row in the hunt ledger, a `REVIEW-xx` item in `TODO.md` and a "Found, not fixed" line in the pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 6).
 - **Docs findings.** A docs finding rides in the bug pull request when that pull request edits its lines or changes the behavior it describes; the others go into one docs-only pull request. In the docs-audit ledger it changes only the Status and Resolved by cells of the rows it fixed.
-- **Mirrors.** It keeps one standing docs-only pull request that regenerates the read-only copies under `docs/audits/` ([ledgers](#ledgers-and-mirrors-on-main)).
+- **Mirrors.** It keeps one standing docs-only pull request that regenerates the read-only copies under [`docs/audits/`](audits/README.md) ([ledgers](#ledgers-and-mirrors-on-main)).
 
 ## Docs audit (Saturdays)
 
@@ -155,7 +155,7 @@ flowchart TD
   GF -->|"step 4e, nightly"| H["Bug hunt"]
   CF -->|"RA rows count as known"| H
   GF -->|"research leads"| S["Idea scout"]
-  CF -->|"mirror/ copied by the bug fix"| M["docs/audits/claude/<br/>on main after the user merges"]
+  CF -->|"mirror/ copied by the bug fix"| M["docs/audits/claude/<br/>on main once the mirrors PR merges"]
 ```
 
 ## Ledgers and mirrors on main
@@ -164,12 +164,12 @@ Each ledger has one owner; the table names who else may add rows or change cells
 
 | Ledger | Where | IDs | Written by | Copy on `main` |
 |---|---|---|---|---|
-| Hunt ledger | `review/bug-hunt/findings.md`, with the generated `open-bugs.md` | `BH-`, `BF-`, `RA-` (defects); older `K`, `S`, `N`, `INV` | bug hunt; bug fix appends `BF-` rows; repo audit appends `RA-` defect rows | `docs/audits/open-bugs.md` |
-| Docs-audit ledger | `review/docs-audit/findings.md` | `DA-` | docs audit; bug fix sets Status and Resolved by on `repo` rows it fixed | `docs/audits/docs-audit.md` |
-| Bug-fix reports and decisions | `review/bug-fix/` | none | bug fix | `docs/audits/bug-fix.md`, `docs/audits/bug-fix-decisions.md` |
-| Idea store | `ideas/new-ideas.md` | `IS-` | idea scout; the user's edits win | `docs/audits/ideas.md` (adopted ideas not yet in TODO or ROADMAP) |
-| Repo-audit ledgers | `audits/claude/` on `claude/repo-audits` | `RA-` | repo audit | `docs/audits/claude/` |
-| GPT audit | `audits/gpt/` on `gpt/repo-audits` | `GA-` | GPT audit | none of its own; `docs/audits/claude/gpt.md` lists its open findings with Claude's verdicts |
+| Hunt ledger | `review/bug-hunt/findings.md`, with the generated `open-bugs.md` | `BH-`, `BF-`, `RA-` (defects); older `K`, `S`, `N`, `INV` | bug hunt; bug fix appends `BF-` rows; repo audit appends `RA-` defect rows | [docs/audits/open-bugs.md](audits/open-bugs.md) |
+| Docs-audit ledger | `review/docs-audit/findings.md` | `DA-` | docs audit; bug fix sets Status and Resolved by on `repo` rows it fixed | [docs/audits/docs-audit.md](audits/docs-audit.md) |
+| Bug-fix reports and decisions | `review/bug-fix/` | none | bug fix | [docs/audits/bug-fix.md](audits/bug-fix.md), [docs/audits/bug-fix-decisions.md](audits/bug-fix-decisions.md) |
+| Idea store | `ideas/new-ideas.md` | `IS-` | idea scout; the user's edits win | [docs/audits/ideas.md](audits/ideas.md) (adopted ideas not yet in TODO or ROADMAP) |
+| Repo-audit ledgers | `audits/claude/` on `claude/repo-audits` | `RA-` | repo audit | [docs/audits/claude/](audits/claude/README.md): [findings](audits/claude/findings.md), [recommendations](audits/claude/recommendations.md), [coverage](audits/claude/coverage.md) |
+| GPT audit | `audits/gpt/` on `gpt/repo-audits` | `GA-` | GPT audit | none of its own; [docs/audits/claude/gpt.md](audits/claude/gpt.md) lists its open findings with Claude's verdicts |
 | TODO items | [`TODO.md`](../TODO.md) on `main` | `REVIEW-` | pull requests ([author steps](../GIT_GUIDELINES.md#before-marking-ready) 6 and 7) | it is on `main` |
 
 ```mermaid
@@ -194,8 +194,8 @@ flowchart LR
   U --> MAIN[("main")]
 ```
 
-- **Mirrors are generated copies.** The bug fix regenerates every file under `docs/audits/` from its source at each run; each file starts with a line naming its source and saying not to edit it by hand. Closing or renumbering an item there changes nothing: change the source instead. `docs/audits/README.md` lists each copy and its source.
-- **Only the user's merge updates them.** Until the user merges the mirrors pull request, `docs/audits/` exists only on that pull request's branch.
+- **Mirrors are generated copies.** The bug fix regenerates every file under `docs/audits/` from its source at each run; each file names its source at the top and says not to edit it by hand. Closing or renumbering an item there changes nothing: change the source instead. [The mirrors index](audits/README.md) lists each copy and its source.
+- **Only a merge updates them.** The copies on `main` change only when a mirrors pull request merges with the user's word, so they can lag their sources; the line at the top of each copy says when its source last changed (the repo audit's copies name their run instead).
 - **Audit candidate lines.** The same pull request adds the repo audit's paste-ready lines: TODO candidates as new `REVIEW-xx` items, ROADMAP candidates under "Proposed by audits (undecided)" at the end of `ROADMAP.md`. The user promotes or deletes them.
 - **New medium and high hunt findings** get a `REVIEW-xx` item in `TODO.md` in the next bug-fix pull request, or in the next pull request of any kind when none is planned ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 7).
 
@@ -219,7 +219,7 @@ sequenceDiagram
     A->>PR: fix on the same branch, answer each finding in a comment
     GPT->>PR: review the new head
   end
-  U->>PR: merge, or name it for a thread to merge; usually squash
+  U->>PR: merge (usually squash) or name it for a thread to merge
 ```
 
 ### Review ladder
