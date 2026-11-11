@@ -1,4 +1,4 @@
-# Invest routine workflow
+# GPT / OpenAI routines for Invest
 
 This guide records the two ChatGPT routines for `sasasqt/invest` and their handoffs with GitHub CI and the peer routines, as verified on **11 November 2026**.
 
