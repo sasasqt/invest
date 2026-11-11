@@ -12,7 +12,7 @@ The routines follow their own instruction files, which live in the **project lib
 
 ## The big picture
 
-Four routines only report. The bug fix is the only routine that changes code: it opens pull requests from its own branches and pushes small, in-scope fixes to other open pull requests, and it never merges. Nothing merges into `main` without the user's word.
+Four routines only report; one of them, the repo audit, commits its reports to its own branch `claude/repo-audits`. The bug fix is the only routine that changes code: it opens pull requests from its own branches and pushes small, in-scope fixes to other open pull requests, and it never merges. Nothing merges into `main` without the user's word.
 
 ```mermaid
 flowchart TD
@@ -89,7 +89,7 @@ Skill v4.11, installed on 2026-11-11 at the user's request, makes the nightly hu
 
 ```mermaid
 flowchart TD
-  A["GPT finding with status new,<br/>known/open or partially resolved"] --> C1{"Its paths are not on main,<br/>or it is a recommendation?"}
+  A["GPT finding not marked verified resolved<br/>or superseded (any other status counts as open)"] --> C1{"Its paths are not on main,<br/>or it is a recommendation?"}
   C1 -- yes --> V1["One-line verdict, no ledger row"]
   C1 -- no --> C2{"Same root cause already<br/>in a ledger row?"}
   C2 -- yes --> V2["Cite that row: still open,<br/>or fixed by a commit"]
@@ -97,7 +97,7 @@ flowchart TD
   C3 -- yes --> V3["Reuse the earlier verdict"]
   C3 -- no --> V4["Own check in the scratch worktree,<br/>then step 5 with reviewer 2"]
   V4 --> R1["Confirmed or plausible: a hunt row<br/>titled (first found by GA-...)"]
-  V4 --> R2["No longer reproduces but held at its commit:<br/>fixed since that commit"]
+  V4 --> R2["No longer reproduces but held at its commit:<br/>fixed since the commit that git log -L names"]
   V4 --> R3["Disproved: dropped, verdict kept<br/>in state.json"]
 ```
 
@@ -129,7 +129,7 @@ flowchart TD
 - **Overlap filter.** A group is blocked when any line its bugs cite or its fix would change is in the same file as, and within 10 lines of, a line an open pull request changes, or when an open pull request claims one of its bugs. `README.md`, `ROADMAP.md` and `TODO.md` are exempt, except for a docs finding's own lines.
 - **Unrelated bugs** found while fixing get a `BF-<date>-<n>` row in the hunt ledger, a `REVIEW-xx` item in `TODO.md` and a "Found, not fixed" line in the pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 6).
 - **Docs findings.** A docs finding rides in the bug pull request when that pull request edits its lines or changes the behavior it describes; the others go into one docs-only pull request. In the docs-audit ledger it changes only the Status and Resolved by cells of the rows it fixed.
-- **Mirrors.** It keeps one standing docs-only pull request that regenerates the read-only copies under [`docs/audits/`](audits/README.md) ([ledgers](#ledgers-and-mirrors-on-main)).
+- **Mirrors.** It keeps at most one open docs-only pull request that regenerates the read-only copies under [`docs/audits/`](audits/README.md) ([ledgers](#ledgers-and-mirrors-on-main)); after one merges, the next run opens a new one once a copy differs from `main`.
 
 ## Docs audit (Saturdays)
 
@@ -224,7 +224,7 @@ sequenceDiagram
 
 ### Review ladder
 
-Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder that starts at round 1 and raises effort or switches model only when a round finds real defects:
+Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder that starts at round 1 and moves up one round only when the current round earns it (a full-diff round whose verified findings lead to non-trivial fixes, or a fix-commits round that finds a real defect in the fix code), with one exception, the extra full-diff round in the chart below:
 
 | Round | Model | Effort | Scope |
 |---|---|---|---|
@@ -254,12 +254,12 @@ flowchart TD
 - A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area starts at round 3.
 - The pull request states each round's number, model, effort, scope and finding count, and how each finding was resolved. Green CI alone is not readiness.
 - **In the bug fix:** every fix gets two fresh full-diff rounds (the user's rule of 2026-10-27, stricter than the conditional extra round): rounds 3 and 5 when the area had an escaped bug, and every hunt finding counts as one, otherwise rounds 1 and 3. A docs-only pull request gets one round (round 3); a pull request that carries only mirrors gets none. The fix-commit rounds 4, 6 and 8 always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
-- **Bug-free requests:** when the user asks for a change to be made bug free, review rounds go on past round 8 until a round is clean or the stop rule the user set for that pull request applies (PR #32 ran 19 rounds).
+- **Bug-free requests:** when the user asks for a change to be made bug free or hardened, the user's standing rule for such requests applies instead of the ladder's checkpoint after round 8: rounds of up to three independent reviewers go on until a round finds no real bug (when that round ran below max effort, one more round at max must also be clean), or until 10 rounds unless the user sets another cap for that pull request (PR #32 ran 19 rounds after the user lifted the cap at round 10 and later set a stop rule).
 - Before a milestone closes, or earlier when the same kind of defect keeps recurring, a [checkpoint review](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system comes before the next feature.
 
 ### ChatGPT review
 
-A ChatGPT task reviews every open pull request, drafts included, every day at 21:00 Berlin ([Invest routine workflow](INVEST_ROUTINES.md)). The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found" or "Review — Changes needed", with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head. A head gets at most five ChatGPT review rounds or comments; a new head resets the count.
+A ChatGPT task reviews every open pull request, drafts included, every day at 21:00 Berlin ([Invest routine workflow](INVEST_ROUTINES.md)). The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found", "Review — Changes needed" or "Review — Review incomplete" (evidence is missing, or the revisions moved before validation finished), with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head. A head gets at most five ChatGPT review rounds or comments; a new head resets the count.
 
 ### Merge gate
 
