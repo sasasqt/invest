@@ -450,11 +450,27 @@
       "risk": "Experiment evidence may bind results to a different optional-input snapshot.",
       "originating_item": "GA-2026-11-10-1",
       "originating_reviewer": "Reviewer 1 + fresh Reviewer 2",
-      "next_check": "On untouched supported runtime after prerequisite qualification, run A→B twice for search/confirm × universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
+      "next_check": "On untouched supported runtime after prerequisite qualification, run AâB twice for search/confirm Ã universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
       "first_queued_utc": "2026-11-10T02:12:23.250Z",
       "last_queued_utc": "2026-11-10T02:12:23.250Z",
       "status": "runtime acceptance pending; source-level defect independently verified",
       "deferral_reason": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment."
+    },
+    {
+      "id": "OPEN-SETTLEMENT-BENCHMARK-RUNTIME-001",
+      "owner_field": "evaluation",
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py:415-452,568-571; validation.py:184-209",
+      "source_fingerprint": "benchmark:strategy-evaluation/src/invest_evaluation/engine.py:universe-ew-omits-explicit-settlement",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P2",
+      "risk": "Settlement-aware portfolio and close-only universe comparator can produce wrong relative metrics and optional verdict gate.",
+      "originating_item": "GA-2026-10-31-2",
+      "originating_reviewer": "Reviewer 1 + fresh Reviewer 2",
+      "status": "confirmed static mismatch; local runtime acceptance pending",
+      "first_queued_utc": "2026-11-11T02:20:00Z",
+      "last_queued_utc": "2026-11-11T02:20:00Z",
+      "next_check": "Untouched settlement/event/control repetitions twice, membership ending on event date, zero/short cases, and >=20-session information-ratio verdict fixture.",
+      "deferral_reason": "credential-inaccessible boundary and exact installed locked graph unproven"
     }
   ],
   "followup_queue_history": [
@@ -524,11 +540,11 @@
     }
   ],
   "latest_runtime_validation": {
-    "date": "2026-11-10",
+    "date": "2026-11-11",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "status": "blocked",
     "reason": "current worker lacks proven credential-inaccessible filesystem boundary and exact installed locked graph",
-    "same_sha_ci": "six successful checks from 2026-11-02 reused; no custom product execution"
+    "same_sha_ci": "six successful checks from 2026-11-02 reused from preserved evidence; connector returned no runs for direct commit lookup; no custom product execution"
   },
   "run_history": [
     {
@@ -727,6 +743,40 @@
       "report": "2026-11-09.md",
       "report_commit": "0bfa69384a36a85f905bd9aca85bc3b29bca29e9",
       "report_url": "https://github.com/sasasqt/invest/blob/0bfa69384a36a85f905bd9aca85bc3b29bca29e9/audits/gpt/2026-11-09.md"
+    },
+    {
+      "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+      "date": "2026-11-11",
+      "field": "evaluation",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "status": "bounded static question complete; local product runtime blocked",
+      "scheduled_for": "2026-11-11T02:00:00Z",
+      "started_utc": "2026-11-11T02:03:57.305582Z",
+      "prepared_utc": "2026-11-11T02:20:00Z",
+      "report": "2026-11-11.md",
+      "scope_counts": {
+        "tracked_files": 111,
+        "reviewed": 49,
+        "partially_reviewed": 15,
+        "checked_automatically": 11,
+        "inventoried": 14,
+        "blocked": 22,
+        "remaining_unread_lines": 16220,
+        "unread_paths": 57
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable",
+      "helper_count": 1,
+      "remote_compute_dispatched": 0,
+      "new_product_runs": 0,
+      "publication_status": "prepared",
+      "budget_minutes": {
+        "total": 120,
+        "common": 20,
+        "field": 70,
+        "review_report": 30
+      }
     }
   ],
   "latest_current_run_evidence": {
@@ -1104,7 +1154,7 @@
             "date": "2026-11-10",
             "reason": "current credential isolation and exact installed locked graph unavailable",
             "consecutive_comparable_visits": 1,
-            "next_check": "Untouched A→B search/confirm × universe/fundamentals twice plus stable A/B controls after runner qualification."
+            "next_check": "Untouched AâB search/confirm Ã universe/fundamentals twice plus stable A/B controls after runner qualification."
           }
         },
         "reading_allocation": [
@@ -1494,12 +1544,12 @@
           "Confirmed GA-2026-11-10-1: search/confirm optional-input rows and recorded hashes can come from different reads; fresh independent source-level review and two-repeat trusted synthetic oracle."
         ],
         "validation_freshness": "current source-level trace at 9913f94b9b795bd9633a6a683e9f420301e400b3; same-SHA GitHub CI reused; custom product runtime unavailable",
-        "next_item": "Run untouched A→B search/confirm controls only after a qualified runner exists; otherwise oldest feasible remaining mining range, with PR #38/#41 integration recheck."
+        "next_item": "Run untouched AâB search/confirm controls only after a qualified runner exists; otherwise oldest feasible remaining mining range, with PR #38/#41 integration recheck."
       },
       "evaluation": {
         "weekday": 2,
-        "last_rotation_visit": "2026-11-04",
-        "last_substantive_advance": "2026-11-04",
+        "last_rotation_visit": "2026-11-11",
+        "last_substantive_advance": "2026-11-11",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -1684,10 +1734,17 @@
         "queue_refs": [
           "GA-2026-10-31-2"
         ],
-        "deferrals": {},
+        "deferrals": {
+          "settlement-benchmark-runtime-controls": {
+            "date": "2026-11-11",
+            "reason": "current worker lacks proven credential-inaccessible filesystem boundary and exact installed locked graph",
+            "consecutive_comparable_visits": 1,
+            "next_check": "Run settlement/event/no-event/equal-close controls twice plus >=20-session metric/verdict case on untouched source."
+          }
+        },
         "reading_allocation": [
-          50,
-          50
+          60,
+          40
         ],
         "field_yield_history": [
           {
@@ -1885,14 +1942,141 @@
             "tie_rule": "Both rates zero with positive denominators => increase exploration10 points; legacy aggregate history retained.",
             "helper_overlap": "tracked separately; excluded from primary denominator",
             "research": "not scheduled; zero research lines/experiments, excluded from code yields"
+          },
+          {
+            "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+            "date": "2026-11-11",
+            "field": "evaluation",
+            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "planned_percent": {
+              "exploitation": 50,
+              "exploration": 50
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 188,
+              "exploration": 209,
+              "mandatory_callers_contracts": 77
+            },
+            "actual_percent": {
+              "exploitation": 47.3551637279597,
+              "exploration": 52.6448362720403
+            },
+            "new_cumulative_lines_all_reviewers": 371,
+            "new_verified_distinct_root_causes": {
+              "exploitation": 1,
+              "exploration": 0
+            },
+            "root_count_scope": "GA-2026-10-31-2 first promoted from plausible to confirmed static contract mismatch; existing ID, not a new discovery. Local runtime remains blocked.",
+            "pooled_eligible_visits": 2,
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 1.400560224089636,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 60,
+              "exploration": 40
+            },
+            "rule": "Across two comparable evaluation visits exploitation has one first-confirmed root over 714 lines; exploration has zero over 527 lines. Decrease exploration 10 points from 50% to 40%.",
+            "selection": "2026-11-11-evaluation/selection.json",
+            "ranges": [
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    415,
+                    452
+                  ],
+                  [
+                    568,
+                    571
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "0a01b02d11f1c21c0a566e10c48b5cae49501ded"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_engine.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    231,
+                    272
+                  ],
+                  [
+                    523,
+                    557
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "d232bfd7382641fb012530a78c1e9a9d027584c4"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    184,
+                    223
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    69,
+                    264
+                  ],
+                  [
+                    366,
+                    378
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "bucket": "mandatory_callers_contracts",
+                "ranges": [
+                  [
+                    24,
+                    28
+                  ],
+                  [
+                    71,
+                    83
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "da30fb6ad0907e28e082127a91fdafc8636e43fb"
+              },
+              {
+                "path": "strategy-evaluation/METRICS.md",
+                "bucket": "mandatory_callers_contracts",
+                "ranges": [
+                  [
+                    121,
+                    136
+                  ]
+                ],
+                "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+                "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+              }
+            ],
+            "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
         "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-        "last_report": "2026-11-04.md",
-        "last_advance": "Resolved aggregate-vs-episode censor question; recovered and verified source-pinned remote runtime evidence; known renderer omission retained.",
-        "validation_freshness": "current static range scope; existing Nov3 remote test evidence verified, custom fixture unavailable",
-        "next_item": "Custom drawdown/report controls; then GA-2026-10-31-2 settlement policy fixture"
+        "last_report": "2026-11-11.md",
+        "last_advance": "Promoted GA-2026-10-31-2 from plausible to confirmed static contract mismatch after fresh independent review and same-SHA peer runtime corroboration; current CLI and settlement/benchmark test coverage advanced.",
+        "validation_freshness": "current static contract/dataflow scope at 9913f94; same-SHA peer runtime settlement reproduction corroborated; local untouched runtime and verdict-flip fixture unavailable",
+        "next_item": "Untouched settlement/event/control repetitions and >=20-session information-ratio verdict fixture after runner qualification; then remaining evaluation ranges."
       },
       "integration": {
         "weekday": 3,
@@ -2936,18 +3120,18 @@
     }
   ],
   "current_run": {
-    "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
-    "date": "2026-11-10",
-    "field": "mining",
-    "scheduled_for": "2026-11-10T02:00:00Z",
-    "started_utc": "2026-11-10T02:03:53.323965Z",
+    "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+    "date": "2026-11-11",
+    "field": "evaluation",
+    "scheduled_for": "2026-11-11T02:00:00Z",
+    "started_utc": "2026-11-11T02:03:57.305582Z",
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
-    "output_base": "0f5fc580b3a733872d8ebe117d7940bb220d6b59",
+    "output_base": "62613a3bcaa0e799006627d0f21f255eb64856b8",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
     "runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
-    "question": "Do mining search and confirmation hash and record the same immutable bundle bytes that they score and use for evidence?",
-    "status": "bounded static question complete; GA-2026-11-10-1 verified source-level; product runtime blocked",
+    "question": "Does the universe equal-weight benchmark incorporate supplied delisting settlements on the same total-return basis as the portfolio and verdict gate?",
+    "status": "bounded static question complete; GA-2026-10-31-2 confirmed static mismatch; local product runtime blocked",
     "budget_minutes": {
       "total": 120,
       "common": 20,
@@ -2958,33 +3142,31 @@
     "effort": "unavailable",
     "scope_counts": {
       "tracked_files": 111,
-      "reviewed": 47,
+      "reviewed": 49,
       "partially_reviewed": 15,
       "checked_automatically": 11,
-      "inventoried": 16,
+      "inventoried": 14,
       "blocked": 22,
-      "remaining_unread_lines": 16591,
-      "unread_paths": 59
+      "remaining_unread_lines": 16220,
+      "unread_paths": 57
     },
     "helper_count": 1,
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
+    "publication_status": "prepared",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
-    "completed_utc": "2026-11-10T02:12:23.250Z",
+    "completed_utc": "2026-11-11T02:20:00Z",
     "usage": "tokens/cost/helper compute unavailable; no invented allowance",
-    "new_findings": [
-      "GA-2026-11-10-1"
+    "finding_changes": [
+      "GA-2026-10-31-2 promoted from plausible to confirmed static contract mismatch"
     ],
     "research": {
       "papers": 0,
       "candidates": 0,
       "experiments": 0,
       "status": "not scheduled"
-    },
-    "report_commit": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
-    "report_url": "https://github.com/sasasqt/invest/blob/dca877a468a6dda06dbad9a0457bd1d6a8da2d50/audits/gpt/2026-11-10.md"
+    }
   },
   "publication_history": [
     {
@@ -3357,17 +3539,15 @@
     }
   ],
   "publication_current_run": {
-    "status": "published_verified",
-    "report_commit": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
-    "report_url": "https://github.com/sasasqt/invest/blob/dca877a468a6dda06dbad9a0457bd1d6a8da2d50/audits/gpt/2026-11-10.md",
-    "verified_head_at_report": "dca877a468a6dda06dbad9a0457bd1d6a8da2d50",
-    "diff_scope": "18 paths, all under audits/gpt/",
+    "status": "prepared",
+    "report_path": "audits/gpt/2026-11-11.md",
+    "output_parent": "5d583a1dfb8db3a9782c2ef86c71709e41593461",
     "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
   },
   "remaining_work_current_visit": [
-    "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
-    "Recheck combined behavior after PRs #38/#41 changes.",
-    "Bundle-reader within-call path mutation remains unchecked."
+    "Untouched product settlement/event/control repetitions twice after runner qualification",
+    ">=20-session information-ratio and portfolio-verdict fixture",
+    "Membership-ending-on-event-date, zero-settlement and short comparator policy cases"
   ],
   "runtime_validation_history": [
     {
