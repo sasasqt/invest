@@ -28,9 +28,10 @@
 # manifests without a clean code revision. A window the ledger does not yet record as
 # inspected is recorded first and the run stops before publishing: commit the ledger, then
 # rerun with the same settings (the saved snapshot replays offline). A benchmark missing
-# from the snapshot, an invalid CONFIG or a bundle an earlier run left in OUT_DIR stops the
-# run before that and leaves the ledger unchanged; an output path that cannot be created
-# (OUT_DIR naming a file, say) is not checked first.
+# from the snapshot, market bars or a benchmark with no row left after cleaning, an invalid
+# CONFIG or a bundle an earlier run left in OUT_DIR stops the run before that and leaves
+# the ledger unchanged; an output path that cannot be created (OUT_DIR naming a file, say)
+# is not checked first.
 set -euo pipefail
 
 out="${1:-artifacts/historical-workflow}"
@@ -104,8 +105,9 @@ if [[ -n "$record" ]]; then
   # stopped) stops here and leaves the ledger unchanged, as it does
   # without RECORD (inputs are validated before an inspection is recorded, REVIEW-15).
   # Output paths that cannot be created (OUT_DIR or OUT_DIR/data naming a file, a dangling
-  # link at a bundle's path) are not checked here: publication still refuses them, after
-  # this records the window.
+  # link at a bundle's path, a folder where a later step writes a file) are not checked
+  # here: publication, the CONFIG step or the diagnostics refuse them, after this records
+  # the window.
   python - "$snapshot" "$benchmark" "$start" "$end" "$ledger" "$config" "$out" <<'PY'
 import sys
 from pathlib import Path
