@@ -31,7 +31,9 @@ def test_split_development_share_is_exact(fraction, k):
     assert split.confirm_dates[0] == dates[k]
 
 
-@pytest.mark.parametrize("command", [["search", "--trials", "2"], ["evaluate", "--expr", "close"]])
+@pytest.mark.parametrize(
+    "command", [["search", "--trials", "2"], ["evaluate", "--expr", "close_as_traded"]]
+)
 def test_cli_refuses_an_empty_market_bundle(tmp_path, command):
     from invest_data.schemas import publish_market_bars
     from invest_data.sources import SYNTHETIC_METADATA
@@ -73,6 +75,10 @@ def test_search_recovers_planted_signal_and_records_every_trial(bars):
     result = run_search(build_panel(bars), n_trials=60, seed=1, top_k=3)
     assert len(result.ledger) == 60 + 7  # random proposals + templates, none dropped
     assert result.ledger["selected"].sum() == len(result.family) == 3
+    # This seed repeats a selected expression; the duplicate row is not selected (BH-2026-10-14-1).
+    duplicates = result.ledger[result.ledger["status"] == "duplicate"]
+    assert set(duplicates["expression"]) & {f.expression for f in result.family}
+    assert not duplicates["selected"].any()
     best = result.confirmation.iloc[0]
     assert best["expression"] == "((close / delay(close, 5)) - 1.0)"
     assert best["orientation"] == -1  # reversal: chosen on development data

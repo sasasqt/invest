@@ -215,7 +215,10 @@ def run_search(
     ledger = pd.DataFrame(rows)
     family = _select_family(ledger, dev_values, top_k, max_family_corr)
     for text in family:
-        ledger.loc[ledger["expression"] == text, "selected"] = True
+        # Only the evaluated row: a later duplicate of the same text was never scored.
+        ledger.loc[
+            (ledger["expression"] == text) & (ledger["status"] == "evaluated"), "selected"
+        ] = True
     ledger["selected"] = ledger.get("selected", pd.Series(False, index=ledger.index))
     ledger["selected"] = ledger["selected"].fillna(False).astype(bool)
 
