@@ -20,6 +20,8 @@ Three rules apply to every change, in code, data, research results and documenta
 2. **Verify under real conditions, at the scope of the claim.** Evidence counts only when it comes from the actual inputs and covers the same scope as the claim. Convenient inputs and partial checks prove less than they appear to.
 3. **Seek disconfirmation.** When a check disagrees with the work, change the work, not the check, and try to prove a change wrong before handing it off.
 
+Use the type system: CI runs mypy in strict mode on the three `src/` trees and `scripts/`, and the rule covers all code, tests included. Annotate every function, prefer precise types (`Literal`, enums, `NewType`, `TypedDict`, frozen dataclasses) over `Any` and bare strings, and make invalid states impossible to write, keeping the runtime checks where data enters. Follow the [type rules](PYTHON_GUIDELINES.md#use-the-type-system); typing the older code is [QUALITY-04](TODO.md#m1--packages-and-tooling).
+
 Every change must work on both Linux and Windows. The standard CI workflow tests only Linux for now (the audit runner's workflow also runs its host tests on Windows), so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
 
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, review fixes delivered by editing the existing pull request (or closing it and opening a new one), and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
@@ -114,7 +116,7 @@ Checks (the same as CI):
 
 ```sh
 uv run ruff format --check . && uv run ruff check .
-uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
 uv run python scripts/check_markdown_links.py
 ```

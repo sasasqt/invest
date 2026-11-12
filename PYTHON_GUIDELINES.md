@@ -47,7 +47,7 @@ Apply [design by contract](DESIGN_BY_CONTRACT.md) to public APIs, artifact bound
 - Pass dependencies explicitly. Inject external clients, repositories, clocks, and random generators when tests or alternate implementations need control.
 - Use `typing.Protocol` at boundaries with multiple implementations; do not introduce an interface for every class.
 - Keep side effects at application boundaries. Avoid network requests, file writes, or service initialization during imports.
-- Validate untrusted data at boundaries and use typed internal representations, such as dataclasses, where useful.
+- Validate untrusted data at boundaries and turn it into typed internal representations (frozen dataclasses, `Literal` and enum types, `TypedDict`s; see [Use the type system](#use-the-type-system)).
 - Use explicit configuration objects. Load environment variables at startup and fail clearly when required configuration is absent.
 - Add extension points for demonstrated needs. Avoid speculative plugin systems, broad inheritance hierarchies, and premature abstractions.
 - If handling financial amounts, use `decimal.Decimal` with explicit currency and rounding rules. Use timezone-aware timestamps and document units.
@@ -56,7 +56,7 @@ Apply [design by contract](DESIGN_BY_CONTRACT.md) to public APIs, artifact bound
 
 - Follow PEP 8 naming conventions and PEP 257 docstring conventions. Let automated formatting handle layout.
 - Use Ruff for linting and formatting, and mypy for type checking. Configure them in `pyproject.toml` and keep local and CI settings consistent.
-- Add type hints to public APIs and important internal boundaries. Prefer precise types over `Any` and explain necessary suppressions.
+- Annotate every function and keep mypy in strict mode, following [Use the type system](#use-the-type-system).
 - Write docstrings that explain behavior, contracts, and exceptions; comments should explain decisions that code cannot make obvious.
 - Catch specific exceptions. Preserve the original exception when adding context, and avoid silently swallowing failures.
 - Use structured logging with appropriate levels. Never log secrets, access tokens, or sensitive customer data.
@@ -74,6 +74,19 @@ Every change must work on both Linux and Windows. CI runs only on Linux until [B
 - **Time zones:** Windows has no system time-zone database, so code that uses `zoneinfo` must declare the `tzdata` package as a dependency.
 - **Scripts:** new tooling goes in Python. Existing `scripts/*.sh` need a bash (Git Bash or WSL on Windows); a change to them should not add tools Git Bash lacks.
 - **Tests:** use `tmp_path` and `Path`, never `/tmp` or hard-coded separators. When a platform difference cannot run in CI, simulate it in a test (as REVIEW-07 did for Windows rename semantics) and say in the pull request that no Windows host was used.
+
+## Use the type system
+
+Let the type checker prove what it can before any test runs: a mistake that mypy can reject should not need a test, a reviewer or a user to find it. CI runs mypy in strict mode with the settings in `pyproject.toml`, on the three `src/` trees and `scripts/`. The rule covers all code, tests included; typing the code written before this rule is [QUALITY-04](TODO.md#m1--packages-and-tooling).
+
+- **Strict and complete:** every function and method, private ones included, has full parameter and return annotations, and `[tool.mypy]` keeps `strict = true`. Do not loosen a mypy setting, widen a type to `Any`, or add an ignore or a `cast` just to make a change pass: like relaxing an assertion, that weakens a check. When one is unavoidable, the pull request says why.
+- **Precise types, not `Any`:** use `Any` or `object` only for data that is not validated yet, such as parsed JSON or command-line input (pandas objects are `Any` to mypy anyway; annotate them as the pandas bullet says), and turn it into a typed value at that boundary. Every `# type: ignore[<code>]` names its error code (mypy enforces this) and says why; every `cast` says what checked the value. Use only typing features that Python 3.11 has (for example not `typing.override`, which is 3.12), and not `typing_extensions`, which no component depends on at runtime.
+- **Make invalid states unrepresentable:** a closed set of values (a status such as `insufficient_data`, a verdict, a confirmation use, a slice kind, a column type) is a `Literal` alias or an enum, not a bare `str`, and a chain of branches over it ends in `assert_never`, so a new value fails type checking until every branch handles it (where the chain already ends in a `raise` for bad input, keep that `raise` and put `_exhaustive: Never = <value>` on the line before it). Identifiers or units that must not be mixed get their own `NewType`. Records are frozen dataclasses that check their invariants in `__post_init__`; JSON payloads with fixed keys are `TypedDict`s. Prefer a type that cannot hold a wrong value over a runtime check that rejects it later.
+- **Check domain rules before reading data where the structure allows it:** when a rule can be decided from a structure before any data is read, for example the unit or scale of each node of a formula tree, check it over that structure (with mypy where the structure is written in code, with a checker over the tree's node types where it is built at run time) and refuse before reading data.
+- **Runtime checks stay at boundaries:** types do not validate files, configuration, network answers or user input. Check those where they enter ([design by contract](DESIGN_BY_CONTRACT.md#3-enforce-contracts-at-the-right-layer)), and annotate the boundary parameter with what a caller can really pass (`object`, or for parsed JSON a `JSON` alias defined once next to the code that parses it; never `Any`), not with what the check guarantees. For a dataclass field that `__post_init__` checks, keep the field's type and run the check on a local copy annotated `object`, so the field's readers keep the precise type. When mypy calls such a check unreachable, find out why: either the annotation claims more than the input guarantees (widen the annotation and keep the check), or mypy cannot follow the check, as with `isinstance(x, numbers.Integral)` on an `int` or `numbers.Real` together with `bool`; then rewrite the check in a form mypy follows, keeping its runtime behaviour. mypy skips everything after a statement it believes unreachable, so either case left in place leaves that code unchecked.
+- **Fix the class with a type:** when a bug came from a mixed-up value, an unhandled case or an unexpected `None`, prefer a type change that makes mypy reject every sibling of the bug, and keep the regression test.
+- **Test the types that carry a rule:** a type that encodes a rule (a `Literal` set, a `NewType`, a `TypedDict`) gets a type test: a file `tests/type_checks/check_<topic>.py` (never named `test_*.py`, which pytest would import and run) whose misuse sits inside a function that is never called, on a line marked `# type: ignore[<code>]`. Because `warn_unused_ignores` is on, mypy reports `Unused "type: ignore" comment [unused-ignore]` as soon as the misuse stops being an error. The packages ship a `py.typed` marker, so mypy reads their types also when it checks these files on their own. The pull request that adds the first such file appends `tests/type_checks` to the mypy line in `.github/workflows/ci.yml`, in [Development checks](#development-checks) and in README.md.
+- **pandas and pyarrow:** neither carries type information in the locked environment (`pandas-stubs` is not installed), so mypy sees every `DataFrame`, `Series` and pyarrow object as `Any`. Annotate them anyway, and check column names and dtypes at the boundary where a frame enters.
 
 ## Testing strategy
 
@@ -105,7 +118,7 @@ Run these from the repository root (CI runs the same commands on Python 3.11 and
 uv sync --frozen
 uv run ruff format --check .
 uv run ruff check .
-uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
 uv run python scripts/check_markdown_links.py
 ```

@@ -35,10 +35,16 @@ ignore = ["RUF001", "RUF002", "RUF003"]
 known-first-party = ["invest_data", "invest_mining", "invest_evaluation"]
 
 [tool.mypy]
+# Strict mode (PYTHON_GUIDELINES.md, "Use the type system"); it includes
+# check_untyped_defs and warn_unused_ignores.
 python_version = "3.11"
+strict = true
+enable_error_code = ["ignore-without-code", "truthy-bool"]
+
+[[tool.mypy.overrides]]
+# pandas and pyarrow ship no type information; pandas-stubs is not installed (QUALITY-04).
+module = ["pandas", "pandas.*", "pyarrow", "pyarrow.*"]
 ignore_missing_imports = true
-check_untyped_defs = true
-warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 addopts = "-q --import-mode=importlib"
