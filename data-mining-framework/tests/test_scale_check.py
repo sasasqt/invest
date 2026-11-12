@@ -104,6 +104,7 @@ REFUSED = [
     ("cs_rank(fund_eps / close - 1)", ["fund_eps / close_as_traded"]),
     ("cs_rank(log(fund_eps / close))", ["fund_eps / close_as_traded"]),
     ("cs_rank(fund_eps * close)", ["fund_eps * close_as_traded"]),
+    ("cs_rank(close / fund_eps)", ["close_as_traded / fund_eps"]),
     ("log(close) + fund_eps", ["log(close_as_traded)", "delta(log(close), 5)"]),
     ("close + 1", ["scale differently"]),
     ("returns + close", ["scale differently"]),
@@ -138,6 +139,7 @@ QUOTED = [
     "fund_eps / close_as_traded",
     "log(fund_eps / close_as_traded)",
     "fund_eps * close_as_traded",
+    "close_as_traded / fund_eps",
     "ts_rank(close, 20)",
     "ts_corr(close, returns, 20)",
 ]

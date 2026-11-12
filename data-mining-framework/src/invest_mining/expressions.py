@@ -430,9 +430,11 @@ def _fundamental_over_price(sub: Node) -> str | None:
     for call in _calls(sub, through_resets=False):
         if call.op in ("mul", "div"):
             left, right = (_scaled_features(a) for a in call.args)
-            for one, other in ((left, right), (right, left)):
+            for in_denominator, (one, other) in enumerate(((left, right), (right, left))):
                 funds = sorted(f for f in one if FUNDAMENTAL_FEATURE.fullmatch(f))
                 if funds and other & _PRICES:
+                    if call.op == "div" and in_denominator:
+                        return f"close_as_traded / {funds[0]}"
                     return f"{funds[0]} {_INFIX[call.op]} close_as_traded"
     return None
 
