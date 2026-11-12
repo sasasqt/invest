@@ -306,6 +306,7 @@ _Scale = tuple[str, Fraction]
 _FREE: _Scale = ("pow", Fraction(0))
 _PRICES = frozenset(f for f, e in SCALE_EXPONENTS.items() if e > 0)
 _CHANGE_OPS = frozenset({"sub", "delta", "ts_std"})
+_RESETS = frozenset({"sign", "ts_rank", "ts_corr"})  # results of scale 0 for any argument
 
 
 def check_scale_free(node: Node) -> None:
@@ -327,12 +328,7 @@ def check_scale_free(node: Node) -> None:
         if OPS[sub.op].kind in ("ts", "ts2"):
             read = set().union(*(features_used(a) for a in sub.args)) & set(AS_TRADED_FEATURES)
             if read:
-                raise ScaleError(
-                    f"{sub} applies {sub.op} to {sorted(read)[0]}: as-traded prices jump at "
-                    "each split or dividend, so a time-series operator reads the corporate "
-                    "action as a price move. Use an adjusted ratio or log difference, such as "
-                    "close / delay(close, 5) - 1 or delta(log(close), 5)"
-                )
+                raise _as_traded_series_error(sub, sorted(read)[0])
     if _scale(node) != _FREE:
         raise _level_error(node, "as the formula's value")
 
@@ -406,26 +402,51 @@ def _product(node: Call, a: _Scale, b: _Scale) -> _Scale:
     raise _log_error(node)
 
 
+def _scaled_features(node: Node) -> set[str]:
+    """Features whose scale can reach this node: a cross-sectional operator, ``sign``,
+    ``ts_rank`` or ``ts_corr`` removes its argument's scale, so features under one do not
+    choose the message."""
+    if isinstance(node, Feature):
+        return {node.name}
+    if isinstance(node, Call) and node.op not in _RESETS and OPS[node.op].kind != "cs":
+        return set().union(*(_scaled_features(a) for a in node.args))
+    return set()
+
+
+def _fundamental_over_price(sub: Node) -> str | None:
+    """The fundamental multiplied by or divided by an adjusted price somewhere in ``sub``."""
+    for call in _calls(sub):
+        if call.op in ("mul", "div"):
+            left, right = (_scaled_features(a) for a in call.args)
+            for one, other in ((left, right), (right, left)):
+                funds = sorted(f for f in one if FUNDAMENTAL_FEATURE.fullmatch(f))
+                if funds and other & _PRICES:
+                    return funds[0]
+    return None
+
+
 def _level_error(sub: Node, where: str) -> ScaleError:
     """The decided safe form for a sub-expression that keeps a scale (case by its inputs)."""
-    used = features_used(sub)
+    used = _scaled_features(sub)
     as_traded = bool(used & set(AS_TRADED_FEATURES))
     prices, volume = bool(used & _PRICES), "volume" in used
-    funds = sorted(f for f in used if FUNDAMENTAL_FEATURE.fullmatch(f))
+    fund = _fundamental_over_price(sub)
     kind = _scale_or_none(sub)
     why = "a later split or dividend rescales it, so earlier values would change"
     if as_traded and (prices or volume):
         return ScaleError(
             f"{sub} {where} keeps the adjustment factor close / close_as_traded, which reveals "
-            "each later split or dividend, so earlier values would change. There is no safe "
-            "form of it: use close_as_traded alone for the as-traded price"
+            "each later split or dividend, so earlier values would change; the factor itself "
+            "has no safe form. Use close_as_traded alone for the as-traded price, "
+            "dollar_volume for the traded value or volume * close / close_as_traded for "
+            "shares traded (not under a time-series operator)"
         )
-    if funds and (prices or volume) and kind != "log":
+    if fund:
         return ScaleError(
             f"{sub} {where} combines a per-share fundamental with an adjusted price: {why}. "
-            f"Use the as-traded price, as in {funds[0]} / close_as_traded (per-share fields "
-            "as reported at the time; not under a time-series operator), or, without that "
-            "column, a ratio field on its own"
+            f"Use the as-traded price, as in {fund} / close_as_traded or "
+            f"log({fund} / close_as_traded) (per-share fields as reported at the time; not "
+            "under a time-series operator), or, without that column, a ratio field on its own"
         )
     if kind == "log":
         return ScaleError(
@@ -471,11 +492,49 @@ def _scale_or_none(node: Node) -> str | None:
 
 def _mixed_error(node: Call) -> ScaleError:
     a, b = node.args
+    fund = _fundamental_over_price(node)
+    if fund:
+        hint = (
+            f"for a per-share fundamental use the as-traded price, as in {fund} / "
+            "close_as_traded (not under a time-series operator)"
+        )
+    elif _scaled_features(node) & _PRICES:
+        hint = (
+            "a ratio such as close / delay(close, 5) - 1 or, for a price threshold, the "
+            "as-traded price, as in sign(close_as_traded - 5) (not under a time-series operator)"
+        )
+    else:
+        hint = "a ratio such as volume / ts_mean(volume, 20)"
     return ScaleError(
         f"{node} adds or subtracts values that scale differently with a later split or "
         f"dividend ({a} and {b}), so earlier values would change. Make each side scale-free "
-        "first, for example close / delay(close, 5) - 1"
+        f"first: {hint}"
     )
+
+
+def _as_traded_series_error(sub: Call, feature: str) -> ScaleError:
+    same_on_adjusted = _replace_feature(sub, feature, "close")
+    try:
+        check_scale_free(same_on_adjusted)
+    except ScaleError:
+        alternative = "Use an adjusted ratio or log difference"
+    else:
+        alternative = (
+            f"Use the adjusted close instead, {same_on_adjusted}, or a ratio or log difference"
+        )
+    return ScaleError(
+        f"{sub} applies {sub.op} to {feature}: as-traded prices jump at each split or "
+        "dividend, so a time-series operator reads the corporate action as a price move. "
+        f"{alternative}, such as close / delay(close, 5) - 1 or delta(log(close), 5)"
+    )
+
+
+def _replace_feature(node: Node, old: str, new: str) -> Node:
+    if isinstance(node, Feature):
+        return Feature(new) if node.name == old else node
+    if isinstance(node, Call):
+        return Call(node.op, tuple(_replace_feature(a, old, new) for a in node.args), node.window)
+    return node
 
 
 def _log_error(node: Node) -> ScaleError:

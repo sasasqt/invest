@@ -86,11 +86,22 @@ REFUSED = [
     ("high - low", CHANGE),
     ("delta(close_as_traded, 5)", AS_TRADED_TS),
     ("ts_mean(close_as_traded, 20)", AS_TRADED_TS),
-    ("ts_rank(close_as_traded, 20)", AS_TRADED_TS),
-    ("ts_corr(close_as_traded, returns, 20)", AS_TRADED_TS),
+    ("ts_corr(close_as_traded, returns, 20)", ["ts_corr(close, returns, 20)"]),
+    ("ts_rank(close_as_traded, 20)", ["ts_rank(close, 20)"]),
     ("delay(open * close_as_traded / close, 1)", AS_TRADED_TS),
     ("close / close_as_traded", FACTOR),
     ("cs_rank(close_as_traded / close)", FACTOR),
+    ("cs_rank(close_as_traded * volume)", ["dollar_volume", "volume * close / close_as_traded"]),
+    # Parts whose scale a cross-sectional operator, ts_rank, ts_corr or sign removed do not
+    # choose the message: the level here is "* close", not the as-traded rank.
+    ("cs_rank(log(close_as_traded)) * close", LEVEL),
+    ("cs_rank(fund_eps) * close", LEVEL),
+    # The price-floor flag and per-share fundamentals keep their idea in the safe form.
+    ("sign(close - 5)", ["sign(close_as_traded - 5)"]),
+    ("cs_rank(close - 5)", ["close_as_traded - 5"]),
+    ("cs_rank(fund_eps / close - 1)", ["fund_eps / close_as_traded"]),
+    ("cs_rank(log(fund_eps / close))", ["fund_eps / close_as_traded"]),
+    ("log(close) + fund_eps", ["log(close_as_traded)", "delta(log(close), 5)"]),
     ("close + 1", ["scale differently"]),
     ("returns + close", ["scale differently"]),
     ("abs(log(close))", ["delta(log(close), 5)"]),
@@ -107,7 +118,28 @@ REFUSED = [
 SAYS_WHY = "split or dividend"
 
 
-@pytest.mark.parametrize("formula", ALLOWED)
+# Every safe form a refusal message quotes as a formula must itself pass the check.
+QUOTED = [
+    "close_as_traded",
+    "open * close_as_traded / close",
+    "close / ts_max(close, 252)",
+    "volume * close / close_as_traded",
+    "log(dollar_volume)",
+    "volume / ts_mean(volume, 20)",
+    "dollar_volume",
+    "delta(close, 5) / close",
+    "delta(log(close), 5)",
+    "log(close_as_traded)",
+    "close / delay(close, 5) - 1",
+    "sign(close_as_traded - 5)",
+    "fund_eps / close_as_traded",
+    "log(fund_eps / close_as_traded)",
+    "ts_rank(close, 20)",
+    "ts_corr(close, returns, 20)",
+]
+
+
+@pytest.mark.parametrize("formula", [*ALLOWED, *QUOTED])
 def test_scale_free_formulas_pass(formula):
     ex.check_scale_free(ex.parse(formula))
 
@@ -230,6 +262,16 @@ def test_every_formula_the_check_passes_ignores_a_later_split():
     assert changed_by_split >= refused // 3, (changed_by_split, refused)
 
 
+def _time_series_over_as_traded(node: ex.Node) -> bool:
+    if not isinstance(node, ex.Call):
+        return False
+    if ex.OPS[node.op].kind in ("ts", "ts2") and ex.features_used(node) & set(
+        ex.AS_TRADED_FEATURES
+    ):
+        return True
+    return any(_time_series_over_as_traded(a) for a in node.args)
+
+
 def test_refused_levels_do_change_with_a_later_split():
     """The split pair can see the defect: each refused level case moves earlier values."""
     a, b, t = _split_pair()
@@ -237,10 +279,14 @@ def test_refused_levels_do_change_with_a_later_split():
     fundamentals = {"fund_eps", "fund_book_to_price"}
     for formula, safe in REFUSED:
         node = ex.parse(formula)
-        if safe in (AS_TRADED_TS, FACTOR) or ex.features_used(node) & fundamentals:
+        if (
+            safe == FACTOR
+            or _time_series_over_as_traded(node)
+            or ex.features_used(node) & fundamentals
+        ):
             continue  # as-traded series and the factor are refused for other reasons
-        if formula == "sign(log(close))":
-            continue  # changes only where a price crosses 1; synthetic prices stay above
+        if formula in ("sign(log(close))", "sign(close - 5)"):
+            continue  # changes only where a price crosses 1 or 5; synthetic prices stay above
         before = [ex.evaluate(node, p).loc[lambda f: f.index < t] for p in panels]
         assert not _same(*before), formula
 
