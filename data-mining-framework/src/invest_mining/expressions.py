@@ -22,6 +22,7 @@ import ast
 import math
 import re
 from collections.abc import Callable, Mapping
+from contextvars import ContextVar
 from dataclasses import dataclass
 from fractions import Fraction
 from typing import TypeAlias
@@ -439,12 +440,43 @@ def _fundamental_over_price(sub: Node) -> str | None:
     return None
 
 
+# True while a suggested form is checked: messages built for it suggest nothing themselves.
+_SUGGESTING: ContextVar[bool] = ContextVar("_SUGGESTING", default=False)
+
+
+def _suggestion_passes(candidate: Node) -> bool:
+    """Whether a form a message would suggest parses as written and passes the check.
+    While it runs, messages built for the candidate skip their own suggestions, so two
+    suggestions that swap ``close`` and ``close_as_traded`` cannot call each other forever."""
+    if _SUGGESTING.get():
+        return False
+    token = _SUGGESTING.set(True)
+    try:
+        check_scale_free(parse(str(candidate)))
+    except ExpressionError:  # includes ScaleError
+        return False
+    finally:
+        _SUGGESTING.reset(token)
+    return True
+
+
+def _with_as_traded_close(node: Node) -> str | None:
+    """``node`` with ``close`` read as traded, when the check passes that form (so no
+    time-series operator reads it), else None."""
+    if "close" not in features_used(node):
+        return None
+    candidate = _replace_feature(node, "close", "close_as_traded")
+    return str(candidate) if _suggestion_passes(candidate) else None
+
+
 def _level_error(sub: Node, where: str) -> ScaleError:
     """The decided safe form for a sub-expression that keeps a scale (case by its inputs)."""
     used = _scaled_features(sub)
     as_traded = bool(used & set(AS_TRADED_FEATURES))
     prices, volume = bool(used & _PRICES), "volume" in used
     fund = _fundamental_over_price(sub)
+    if fund:
+        fund = _with_as_traded_close(sub) or fund
     kind = _scale_or_none(sub)
     why = "a later split or dividend rescales it, so earlier values would change"
     if as_traded and (prices or volume):
@@ -458,8 +490,8 @@ def _level_error(sub: Node, where: str) -> ScaleError:
     if fund:
         return ScaleError(
             f"{sub} {where} combines a per-share fundamental with an adjusted price: {why}. "
-            f"Use the as-traded price, as in {fund} or log({fund}) (per-share fields as "
-            "reported at the time; not "
+            f"Use the as-traded price, as in {fund} (per-share fields as reported at the time; "
+            "not "
             "under a time-series operator), or, without that column, a ratio field on its own"
         )
     if kind == "log":
@@ -509,6 +541,7 @@ def _mixed_error(node: Call) -> ScaleError:
     a, b = node.args
     fund = _fundamental_over_price(node)
     if fund:
+        fund = _with_as_traded_close(node) or fund
         hint = (
             f"for a per-share fundamental use the as-traded price, as in {fund} (not under a "
             "time-series operator)"
@@ -533,11 +566,7 @@ def _as_traded_series_error(sub: Call, feature: str) -> ScaleError:
     # ts_corr(close_as_traded, close) or close_as_traded / close would become constant.
     if not features_used(sub) & set(SCALE_EXPONENTS):
         same_on_adjusted = _replace_feature(sub, feature, "close")
-        try:
-            check_scale_free(same_on_adjusted)
-        except ScaleError:
-            pass
-        else:
+        if _suggestion_passes(same_on_adjusted):
             alternative = (
                 f"Use the adjusted close instead, {same_on_adjusted}, or a ratio or log difference"
             )

@@ -101,10 +101,13 @@ REFUSED = [
     # The price-floor flag and per-share fundamentals keep their idea in the safe form.
     ("sign(close - 5)", ["sign(close_as_traded - 5)"]),
     ("cs_rank(close - 5)", ["close_as_traded - 5"]),
-    ("cs_rank(fund_eps / close - 1)", ["fund_eps / close_as_traded"]),
     ("cs_rank(log(fund_eps / close))", ["fund_eps / close_as_traded"]),
     ("cs_rank(fund_eps * close)", ["fund_eps * close_as_traded"]),
     ("cs_rank(close / fund_eps)", ["close_as_traded / fund_eps"]),
+    # The fundamental's own formula, read with the as-traded close, when the check passes it.
+    ("cs_rank(1 / (fund_eps / close))", ["(1.0 / (fund_eps / close_as_traded))"]),
+    ("cs_rank(-(fund_eps / close))", ["neg((fund_eps / close_as_traded))"]),
+    ("cs_rank(fund_eps / close - 1)", ["((fund_eps / close_as_traded) - 1.0)"]),
     ("log(close) + fund_eps", ["log(close_as_traded)", "delta(log(close), 5)"]),
     ("close + 1", ["scale differently"]),
     ("returns + close", ["scale differently"]),
@@ -191,6 +194,25 @@ def test_as_traded_series_message_suggests_no_constant_formula(formula):
     with pytest.raises(ex.ScaleError) as caught:
         ex.check_scale_free(ex.parse(formula))
     assert "adjusted close instead" not in str(caught.value), str(caught.value)
+
+
+@pytest.mark.parametrize(
+    "formula", ["ts_mean(fund_eps / close, 5)", "cs_rank(ts_rank(fund_eps / close_as_traded, 5))"]
+)
+def test_suggestions_that_swap_close_and_close_as_traded_end(formula):
+    """A fundamental over close suggests close_as_traded; a time-series operator over that
+    suggests close again. The message must still be built once, with a plain suggestion."""
+    with pytest.raises(ex.ScaleError, match=SAYS_WHY):
+        ex.check_scale_free(ex.parse(formula))
+
+
+def test_a_suggested_form_parses_as_written():
+    """A tree built in code can hold a constant inside a time-series operator, which the
+    parser refuses; a message must not suggest that tree with ``close`` swapped in."""
+    node = ex.Call("ts_corr", (ex.Feature("close_as_traded"), ex.Const(0.5)), 5)
+    with pytest.raises(ex.ScaleError) as refused:
+        ex.check_scale_free(node)
+    assert "ts_corr(close, 0.5, 5)" not in str(refused.value)
 
 
 def test_a_long_formula_is_checked_without_recursion_error():
