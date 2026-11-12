@@ -316,7 +316,10 @@ def check_scale_free(node: Node) -> None:
     equal ones; ``sign``, ``ts_rank`` and ``ts_corr`` remove the scale; the other operators
     keep it; cross-sectional operators and the formula's value need exponent 0. ``log`` of a
     level is allowed only where its constant cancels (a difference of logs with the same
-    exponent, ``delta``, ``ts_std``, ``ts_rank``, ``ts_corr``). ``close_as_traded`` does not
+    exponent, ``delta``, ``ts_std``, ``ts_rank``, ``ts_corr``). Log levels are tracked by their
+    exact offset k (the value moves by k * log c): sums add k, ``ts_sum`` multiplies it by the
+    window, a constant factor scales it, and only k == 0 counts as cancelled, so
+    ``log(close) + log(open)`` stays refused. ``close_as_traded`` does not
     scale, but no time-series operator may read it: as-traded prices jump at each split or
     dividend. The message names the offending part and the form to use instead.
     """

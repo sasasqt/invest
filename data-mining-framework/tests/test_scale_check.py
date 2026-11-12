@@ -55,6 +55,10 @@ ALLOWED = [
     "ts_rank(log(close), 10)",
     "cs_rank(log(close) - delay(log(close), 5))",
     "ts_mean(returns, 10) * cs_zscore(ts_mean(returns, 10))",
+    # Log levels follow exact offsets: these cancel only because the multiples add up to 0.
+    "ts_sum(log(close), 3) - 3 * log(close)",
+    "log(close) / 2 - log(open) / 2",
+    "cs_rank(log(close) * 0)",
 ]
 
 # Refused formulas with fragments of the safe form their message must name (the decision's
@@ -93,6 +97,12 @@ REFUSED = [
     ("sign(log(close))", ["delta(log(close), 5)"]),
     ("log(log(close))", ["delta(log(close), 5)"]),
     ("log(close) * returns", ["delta(log(close), 5)"]),
+    # Near misses of the exact offset rule: each keeps a multiple of log c that is not 0.
+    ("log(close) + log(open)", ["delta(log(close), 5)"]),
+    ("2 * log(close) - log(close)", ["delta(log(close), 5)"]),
+    ("ts_sum(log(close), 5) - log(close)", ["delta(log(close), 5)"]),
+    ("log(close) / log(open)", ["delta(log(close), 5)"]),
+    ("delta(delta(log(close), 5) * log(close), 3)", ["delta(log(close), 5)"]),
 ]
 SAYS_WHY = "split or dividend"
 
@@ -366,3 +376,18 @@ def test_as_traded_formula_needs_the_column(tmp_path):
     with pytest.raises(SystemExit, match="no close_as_traded"):
         main([*export, "--out", str(tmp_path / "s")])
     assert not (tmp_path / "s").exists()
+    book = tmp_path / "confirm.jsonl"
+    confirm = ["confirm", "--data", str(tmp_path / "without"), "--factor", str(factor)]
+    with pytest.raises(SystemExit, match="no close_as_traded"):
+        main(
+            [
+                *confirm,
+                "--confirm-start",
+                "2020-03-02",
+                "--ledger",
+                str(book),
+                "--out",
+                str(tmp_path / "c"),
+            ]
+        )
+    assert not book.exists() and not (tmp_path / "c").exists()
