@@ -28,8 +28,17 @@ import sys
 import tomllib
 from collections.abc import Collection
 from pathlib import Path
+from typing import Any, TypedDict
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class Floors(TypedDict):
+    """The ``[tool.invest.coverage]`` table, every value a percent within 0..100."""
+
+    total: float
+    default: float
+    files: dict[str, float]
 
 
 def module_key(path: str, packages: Collection[str] = ()) -> str:
@@ -54,7 +63,7 @@ def module_key(path: str, packages: Collection[str] = ()) -> str:
     return "/".join(parts)
 
 
-def load_floors(pyproject: Path) -> dict:
+def load_floors(pyproject: Path) -> Floors:
     """Read ``[tool.invest.coverage]`` and check its shape."""
     with pyproject.open("rb") as fh:
         table = tomllib.load(fh).get("tool", {}).get("invest", {}).get("coverage")
@@ -62,22 +71,22 @@ def load_floors(pyproject: Path) -> dict:
         raise ValueError(f"{pyproject}: no [tool.invest.coverage] table")
     if not isinstance(table.get("files", {}), dict):
         raise ValueError(f"{pyproject}: coverage floor files must be a table")
-    floors = {
-        "total": table.get("total"),
-        "default": table.get("default"),
-        "files": table.get("files", {}),
-    }
-    numbers = [("total", floors["total"]), ("default", floors["default"])]
-    numbers += [(f"files.{k}", v) for k, v in floors["files"].items()]
-    for name, value in numbers:
+
+    def number(name: str, value: object) -> float:
         if isinstance(value, bool) or not isinstance(value, int | float):
             raise ValueError(f"{pyproject}: coverage floor {name} must be a number")
         if not 0 <= value <= 100:
             raise ValueError(f"{pyproject}: coverage floor {name} must be within 0..100")
-    return floors
+        return value
+
+    return Floors(
+        total=number("total", table.get("total")),
+        default=number("default", table.get("default")),
+        files={k: number(f"files.{k}", v) for k, v in table.get("files", {}).items()},
+    )
 
 
-def percent_covered(summary: dict, where: str) -> float:
+def percent_covered(summary: dict[str, Any], where: str) -> float:
     """Return a report's ``percent_covered``, refusing anything but a number in 0..100."""
     value = summary["percent_covered"]
     if isinstance(value, bool) or not isinstance(value, int | float):
@@ -97,7 +106,7 @@ def shown(percent: float, floor: float) -> str:
     return repr(percent)
 
 
-def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
+def check(report: dict[str, Any], floors: Floors) -> tuple[list[str], list[str]]:
     """Return (failures, floors that could be raised) for a coverage.py JSON report."""
     failures: list[str] = []
     raisable: list[str] = []
