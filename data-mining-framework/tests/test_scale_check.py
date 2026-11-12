@@ -13,7 +13,7 @@ import pandas as pd
 import pytest
 
 from invest_data.cli import main as data_main
-from invest_data.schemas import publish_market_bars, read_signals
+from invest_data.schemas import publish_market_bars, publish_universe, read_signals
 from invest_data.sources import SYNTHETIC_METADATA, SyntheticConfig, synthetic_market
 from invest_mining import expressions as ex
 from invest_mining.artifact import FrozenFactor
@@ -97,6 +97,10 @@ REFUSED = [
     ("delay(open * close_as_traded / close, 1)", AS_TRADED_TS),
     ("close / close_as_traded", FACTOR),
     ("cs_rank(close_as_traded / close)", FACTOR),
+    # The adjustment factor inside a sum gets its own message, not the generic mixed one.
+    ("cs_rank(close / close_as_traded - 1)", FACTOR),
+    # An adjusted price change times the as-traded price still names the price change form.
+    ("cs_rank(close_as_traded * delta(close, 5))", [*FACTOR, "delta(close, 5) / close"]),
     ("cs_rank(close_as_traded * volume)", ["dollar_volume", "volume * close / close_as_traded"]),
     # Parts whose scale a cross-sectional operator, ts_rank, ts_corr or sign removed do not
     # choose the message: the level here is "* close", not the as-traded rank.
@@ -114,6 +118,10 @@ REFUSED = [
     ("cs_rank(1 / (fund_eps / close))", ["(1.0 / (fund_eps / close_as_traded))"]),
     ("cs_rank(-(fund_eps / close))", ["neg((fund_eps / close_as_traded))"]),
     ("cs_rank(fund_eps / close - 1)", ["((fund_eps / close_as_traded) - 1.0)"]),
+    # Price and log levels quote their own formula with the as-traded close when it passes.
+    ("cs_rank(close * 2)", ["(close_as_traded * 2.0)"]),
+    ("cs_rank(returns / close)", ["(returns / close_as_traded)"]),
+    ("cs_rank(log(close) * 2)", ["(log(close_as_traded) * 2.0)"]),
     ("log(close) + fund_eps", ["log(close_as_traded)", "delta(log(close), 5)"]),
     ("close + 1", ["scale differently"]),
     ("returns + close", ["scale differently"]),
@@ -221,12 +229,15 @@ def test_a_suggested_form_parses_as_written():
     assert "ts_corr(close, 0.5, 5)" not in str(refused.value)
 
 
-LONG = 500  # summed terms; the parser takes such sums on Python 3.11 and 3.13
+LONG = ex.MAX_DEPTH  # summed terms; the longest sums the parser takes nest this deep
 LONG_FORMULAS = [
     (" + ".join(["close / open"] * LONG), None),
     (" + ".join(["close"] * LONG), "adjusted price level"),
     ("cs_rank(" + " + ".join(["close"] * LONG) + ")", "adjusted price level"),
-    (" + ".join(["log(close) - log(open)"] * (LONG // 2)) + " + log(close)", "log of an adjusted"),
+    (
+        " + ".join(["log(close) - log(open)"] * (LONG // 2 - 1)) + " + log(close)",
+        "log of an adjusted",
+    ),
     (" + ".join(["fund_eps / close"] * LONG), "per-share fundamental"),
 ]
 
@@ -533,3 +544,139 @@ def test_as_traded_formula_needs_the_column(tmp_path):
             ]
         )
     assert not book.exists() and not (tmp_path / "c").exists()
+
+
+# ---------------------------------------------------------------------------
+# The as-traded close must have values where the formula is scored
+
+
+def _as_traded_until(path, cut_at: int = 100) -> str:
+    """Bars whose as-traded close is known only before session ``cut_at``; its date."""
+    bars = synthetic_market(SyntheticConfig(n_instruments=25, n_days=200, seed=5))
+    cut = pd.Timestamp(sorted(bars["date"].unique())[cut_at])
+    bars.loc[bars["date"] >= cut, "close_as_traded"] = np.nan
+    _publish(bars, path)
+    return str(cut.date())
+
+
+def _frozen_as_traded(tmp_path) -> str:
+    factor = tmp_path / "f.json"
+    args = ["freeze", "--expr", "cs_rank(-close_as_traded)", "--horizon", "1"]
+    assert main([*args, "--out", str(factor)]) == 0
+    return str(factor)
+
+
+def test_confirm_refuses_a_window_without_as_traded_values(tmp_path):
+    """Values before the window do not count: confirming would test nothing and still use
+    the reserved window up, so a later confirmation there would be exploratory."""
+    start = _as_traded_until(tmp_path / "m")
+    book = tmp_path / "ledger.jsonl"
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
+    before = book.read_bytes()
+    args = ["confirm", "--data", str(tmp_path / "m"), "--factor", _frozen_as_traded(tmp_path)]
+    args += ["--confirm-start", start, "--ledger", str(book), "--out", str(tmp_path / "c")]
+    with pytest.raises(SystemExit, match=f"no close_as_traded value .* from {start} on"):
+        main(args)
+    assert book.read_bytes() == before and not (tmp_path / "c").exists()
+
+
+def test_confirm_counts_only_universe_members(tmp_path):
+    """Values of names outside the universe are not scored, so they do not count."""
+    bars = synthetic_market(SyntheticConfig(n_instruments=25, n_days=200, seed=5))
+    names = sorted(bars["instrument"].unique())
+    dates = pd.DatetimeIndex(sorted(bars["date"].unique()))
+    cut = dates[100]
+    late = bars["date"] >= cut
+    bars.loc[late & bars["instrument"].isin(names[:20]), "close_as_traded"] = np.nan
+    _publish(bars, tmp_path / "m")
+    members = pd.DataFrame(
+        {"universe": "u", "instrument": names[:20], "start_date": dates[0].date(), "end_date": None}
+    )
+    publish_universe(members, tmp_path / "uni", dataset_id="u")
+    book = tmp_path / "ledger.jsonl"
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(cut.date())]) == 0
+    before = book.read_bytes()
+    args = ["confirm", "--data", str(tmp_path / "m"), "--factor", _frozen_as_traded(tmp_path)]
+    args += ["--universe", str(tmp_path / "uni"), "--confirm-start", str(cut.date())]
+    with pytest.raises(SystemExit, match="no close_as_traded value"):
+        main([*args, "--ledger", str(book), "--out", str(tmp_path / "c")])
+    assert book.read_bytes() == before and not (tmp_path / "c").exists()
+
+
+def test_export_refuses_a_start_without_as_traded_values(tmp_path):
+    start = _as_traded_until(tmp_path / "m")
+    args = ["export", "--data", str(tmp_path / "m"), "--factor", _frozen_as_traded(tmp_path)]
+    with pytest.raises(SystemExit, match=f"no close_as_traded value .* from {start} on"):
+        main([*args, "--start", start, "--out", str(tmp_path / "late")])
+    assert not (tmp_path / "late").exists()
+    assert main([*args, "--out", str(tmp_path / "all")]) == 0  # earlier dates have values
+
+
+# ---------------------------------------------------------------------------
+# A changed proposal stream is a new experiment
+
+
+def test_a_new_search_version_gets_a_new_experiment_id(tmp_path, market, monkeypatch):
+    """The scale check changed which formulas a seed draws; an experiment id that ignores
+    that would let one search's confirmation output vouch for another's family."""
+    import invest_mining.cli as cli
+
+    args = ["search", "--data", str(market), "--trials", "10", "--seed", "0", "--top-k", "2"]
+    ids = []
+    for version in ("old", "new"):
+        monkeypatch.setattr(cli, "SEARCH_VERSION", version, raising=False)
+        out = tmp_path / version
+        assert main([*args, "--out", str(out)]) == 0
+        experiment = json.loads((out / "config.json").read_text())["experiment"]
+        assert experiment["identity"]["search_version"] == version
+        ids.append(experiment["experiment_id"])
+    assert ids[0] != ids[1]
+
+
+# ---------------------------------------------------------------------------
+# Bad or very long formulas get a message, never a traceback
+
+
+def test_freeze_refuses_an_unknown_feature_with_a_message(tmp_path):
+    with pytest.raises(SystemExit, match="--expr: unknown feature 'foo'"):
+        main(["freeze", "--expr", "foo", "--horizon", "1", "--out", str(tmp_path / "f.json")])
+    assert not (tmp_path / "f.json").exists()
+
+
+@pytest.mark.parametrize("terms", [250, 990])
+def test_freeze_refuses_a_formula_too_long_to_save(tmp_path, terms):
+    """The factor file stores the canonical text, which nests one pair of parentheses per
+    operator; Python parses at most 200 levels, so such a file could not be read again."""
+    text = " + ".join(["close / open"] * terms)
+    out = tmp_path / "f" / "f.json"
+    with pytest.raises(SystemExit, match=r"--expr: .*nested too deeply"):
+        main(["freeze", "--expr", text, "--horizon", "1", "--out", str(out)])
+    assert not out.parent.exists()
+
+
+@pytest.mark.parametrize("terms", [ex.MAX_DEPTH + 1, 2000])
+def test_a_formula_too_deep_to_parse_is_refused(terms):
+    with pytest.raises(ex.ExpressionError, match="nested too deeply"):
+        ex.parse(" + ".join(["close / open"] * terms))
+
+
+def test_the_deepest_formula_the_parser_takes_is_saved_read_and_scored(tmp_path, market):
+    """Every tool takes what the parser takes: the factor file reads again, ``confirm`` and
+    ``export`` get its lookback, and evaluation does not run out of stack (Python 3.11)."""
+    text = " + ".join(["close / open"] * ex.MAX_DEPTH)
+    assert ex._fold(ex.parse(text), ex._nesting) == ex.MAX_DEPTH
+    factor = tmp_path / "f.json"
+    assert main(["freeze", "--expr", text, "--horizon", "1", "--out", str(factor)]) == 0
+    assert FrozenFactor.load(factor).lookback == 0
+    args = ["export", "--data", str(market), "--factor", str(factor)]
+    assert main([*args, "--out", str(tmp_path / "s")]) == 0
+    args = ["evaluate", "--data", str(market), "--expr", text, "--horizon", "1"]
+    assert main([*args, "--out", str(tmp_path / "e")]) == 0
+
+
+def test_evaluate_refuses_a_formula_too_deep_to_parse(tmp_path, market):
+    text = " + ".join(["close / open"] * 2000)
+    args = ["evaluate", "--data", str(market), "--expr", text, "--horizon", "1"]
+    with pytest.raises(SystemExit, match=r"--expr: .*nested too deeply"):
+        main([*args, "--out", str(tmp_path / "e")])
+    assert not (tmp_path / "e").exists()

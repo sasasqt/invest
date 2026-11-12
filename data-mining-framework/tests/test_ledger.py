@@ -701,7 +701,7 @@ def test_cli_confirmation_after_the_universe_ends_is_refused(tmp_path):
     )
     publish_universe(members, tmp_path / "uni", dataset_id="u")
     assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(cut.date())]) == 0
-    factor = _frozen(tmp_path, expr="close_as_traded", horizon="1")
+    factor = _frozen(tmp_path, expr="close / open", horizon="1")  # reads no close_as_traded
     args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
     args += ["--universe", str(tmp_path / "uni"), "--confirm-start", str(cut.date())]
     before = book.read_bytes()

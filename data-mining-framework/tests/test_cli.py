@@ -199,7 +199,7 @@ def test_cli_freeze_fixed_formula_exports_one_trial(tmp_path, capsys):
     assert row["score"] == pytest.approx(expected.loc[row["decision_date"], row["instrument"]])
     with pytest.raises(SystemExit):
         main(["freeze", "--expr", expr, "--horizon", "0", "--out", str(factor)])
-    with pytest.raises(ValueError):
+    with pytest.raises(SystemExit, match="--expr: syntax error"):
         main(["freeze", "--expr", "close + nope(", "--horizon", "1", "--out", str(factor)])
 
 

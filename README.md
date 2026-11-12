@@ -125,7 +125,7 @@ The offline Markdown check validates relative links and heading anchors, includi
 
 ### Confirmation-use ledger
 
-A confirmation period gives confirmatory evidence only once. `invest-mine search --ledger <file>` records each search (experiment id from the dataset and input hashes, operator version, search settings and split) in an append-only JSON Lines ledger, one per market. Before any candidate is scored it classifies the run:
+A confirmation period gives confirmatory evidence only once. `invest-mine search --ledger <file>` records each search (experiment id from the dataset and input hashes, operator version, search version, search settings and split; the search version changes whenever the same seed could propose other formulas) in an append-only JSON Lines ledger, one per market. Before any candidate is scored it classifies the run:
 
 - **confirmatory**: the confirmation window overlaps no earlier search's development or confirmation window and no recorded inspection, and is not a repeat. A search that selected nothing (an empty family) tested nothing on its confirmation window, so only its development window counts as used.
 - **exploratory**: anything else. The run still completes, but `confirmation.csv` reports `status = exploratory` (the raw result stays in `test_outcome`), and `config.json` and the frozen factors record the experiment id, use and reasons. `--require-confirmatory` refuses instead.

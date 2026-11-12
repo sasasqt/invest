@@ -203,6 +203,10 @@ OPS: dict[str, OpSpec] = {
 _INFIX = {"add": "+", "sub": "-", "mul": "*", "div": "/"}
 _BINOPS = {ast.Add: "add", ast.Sub: "sub", ast.Mult: "mul", ast.Div: "div"}
 MAX_WINDOW = 252
+# Operators nested inside one another (a sum of n terms nests n - 1 deep). The canonical text
+# a factor file stores nests one pair of parentheses per operator and Python parses at most
+# 200 levels; evaluation and ``lookback`` recurse once or twice per level (Python 3.11).
+MAX_DEPTH = 150
 
 
 # ---------------------------------------------------------------------------
@@ -211,14 +215,27 @@ MAX_WINDOW = 252
 
 def parse(text: str) -> Node:
     """Parse an expression string. Only whitelisted names and operators are accepted."""
+    too_deep = (
+        f"expression is nested too deeply: at most {MAX_DEPTH} operators inside one another "
+        "(a sum of n terms nests n - 1 deep)"
+    )
     try:
         tree = ast.parse(text.strip(), mode="eval")
+        node = _convert(tree.body)
     except SyntaxError as exc:
         raise ExpressionError(f"syntax error: {exc.msg}") from exc
-    node = _convert(tree.body)
+    except RecursionError as exc:  # thousands of summed terms
+        raise ExpressionError(too_deep) from exc
+    if _fold(node, _nesting) > MAX_DEPTH:
+        raise ExpressionError(too_deep)
     if isinstance(node, Const):
         raise ExpressionError("expression must depend on at least one feature")
     return node
+
+
+def _nesting(node: Node, inner: list[int]) -> int:
+    """Operators on the deepest path from ``node`` down (a fold step, see ``_fold``)."""
+    return 1 + max(inner) if isinstance(node, Call) else 0
 
 
 def _window(node: ast.expr, op: str) -> int:
@@ -514,12 +531,17 @@ def _level_error(sub: Node, where: str) -> ScaleError:
     kind = _scale_or_none(sub)
     why = "a later split or dividend rescales it, so earlier values would change"
     if as_traded and (prices or volume):
+        change = (
+            "; for a price change, divide by the price, as in delta(close, 5) / close"
+            if prices and _holds_price_change(sub)
+            else ""
+        )
         return ScaleError(
             f"{sub} {where} keeps the adjustment factor close / close_as_traded, which reveals "
             "each later split or dividend, so earlier values would change; the factor itself "
             "has no safe form. Use close_as_traded alone for the as-traded price, "
             "dollar_volume for the traded value or volume * close / close_as_traded for "
-            "shares traded (not under a time-series operator)"
+            f"shares traded (not under a time-series operator){change}"
         )
     if fund:
         return ScaleError(
@@ -529,12 +551,14 @@ def _level_error(sub: Node, where: str) -> ScaleError:
             "under a time-series operator), or, without that column, a ratio field on its own"
         )
     if kind == "log":
+        # The formula's own idea with the as-traded close, when the check passes that form.
+        own = _with_as_traded_close(sub)
         return ScaleError(
             f"{sub} {where} is the log of an adjusted level: a later split or dividend shifts "
             "it by a constant per instrument, which is not cancelled here, so earlier values "
-            "would change. Use log(close_as_traded) for the price (not under a time-series "
-            "operator) or log(dollar_volume) for size, or a log difference such as "
-            "delta(log(close), 5)"
+            f"would change. Use {own or 'log(close_as_traded)'} for the price (not under a "
+            "time-series operator) or log(dollar_volume) for size, or a log difference such "
+            "as delta(log(close), 5)"
         )
     falls = (_exponent(sub) or 0) < 0 and bool(used & {"volume", "dollar_volume"})
     if (volume and not prices) or falls:  # shares traded in adjusted units fall with c
@@ -544,23 +568,33 @@ def _level_error(sub: Node, where: str) -> ScaleError:
             "time-series operator), log(dollar_volume), or a ratio such as "
             "volume / ts_mean(volume, 20)"
         )
-    if prices and any(
-        c.op in _CHANGE_OPS and _scale_or_none(c) == "pow-nonzero"
-        for c in _calls(sub, through_resets=False)
-    ):
-        own = Call("div", (sub, Feature("close")))
+    if prices and _holds_price_change(sub):
+        divided = Call("div", (sub, Feature("close")))
         generic = "delta(close, 5) / close"
-        keeps = f"{own}, like " if f"({generic})" != str(own) and _suggestion_passes(own) else ""
+        keeps = (
+            f"{divided}, like "
+            if f"({generic})" != str(divided) and _suggestion_passes(divided)
+            else ""
+        )
         return ScaleError(
             f"{sub} {where} is a price change or spread in adjusted units: {why}. Divide by "
             f"the price, as in {keeps}{generic}, or use a log difference, as in "
             "delta(log(close), 5)"
         )
+    own = _with_as_traded_close(sub)
     return ScaleError(
-        f"{sub} {where} is an adjusted price level: {why}. Use close_as_traded (the as-traded "
-        "open is open * close_as_traded / close, likewise high and low; not under a "
+        f"{sub} {where} is an adjusted price level: {why}. Use {own or 'close_as_traded'} (the "
+        "as-traded open is open * close_as_traded / close, likewise high and low; not under a "
         "time-series operator) or, without that column, a ratio such as "
         "close / ts_max(close, 252)"
+    )
+
+
+def _holds_price_change(sub: Node) -> bool:
+    """Whether a difference, ``delta`` or ``ts_std`` that keeps a scale reaches ``sub``."""
+    return any(
+        c.op in _CHANGE_OPS and _scale_or_none(c) == "pow-nonzero"
+        for c in _calls(sub, through_resets=False)
     )
 
 
@@ -586,6 +620,16 @@ def _scale_or_none(node: Node) -> str | None:
 
 def _mixed_error(node: Call) -> ScaleError:
     a, b = node.args
+    for side in (a, b):
+        # A side that is itself the adjustment factor (close / close_as_traded) has no safe
+        # form, whatever it is added to.
+        used = _scaled_features(side)
+        if (
+            used & set(AS_TRADED_FEATURES)
+            and used & (_PRICES | {"volume"})
+            and _scale_or_none(side) == "pow-nonzero"
+        ):
+            return _level_error(side, f"in {node}")
     fund = _fundamental_over_price(node)
     if fund:
         fund = _with_as_traded_close(node) or fund

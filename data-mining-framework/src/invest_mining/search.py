@@ -43,6 +43,12 @@ from invest_mining.expressions import (
     size,
 )
 
+# The proposal stream: templates, random draws and selection for a seed. Change it whenever
+# the same data, seed and settings could propose or select other formulas, so that two
+# different families never share an experiment id. 2: draws the scale check refuses are
+# drawn again (BH-2026-11-10-1).
+SEARCH_VERSION = "2"
+
 # Fewest confirmation dates with a rank IC for the one-shot test; with fewer it reports
 # insufficient_data, so the CLI refuses such a window before the ledger records it.
 MIN_CONFIRM_DATES = 60
