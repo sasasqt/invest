@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-12",
+  "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+  "scheduled_for": "2026-11-12T02:00:00Z",
+  "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+  "output_parent": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "field": "integration",
+  "stage": "started",
+  "status": "in_progress"
+}
