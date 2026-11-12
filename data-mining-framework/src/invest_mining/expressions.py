@@ -536,7 +536,8 @@ def _level_error(sub: Node, where: str) -> ScaleError:
             "operator) or log(dollar_volume) for size, or a log difference such as "
             "delta(log(close), 5)"
         )
-    if (volume and not prices) or (_exponent(sub) or 0) < 0:
+    falls = (_exponent(sub) or 0) < 0 and bool(used & {"volume", "dollar_volume"})
+    if (volume and not prices) or falls:  # shares traded in adjusted units fall with c
         return ScaleError(
             f"{sub} {where} is an adjusted volume level (volume is adjusted inversely to "
             f"prices): {why}. Use shares traded, volume * close / close_as_traded (not under a "
