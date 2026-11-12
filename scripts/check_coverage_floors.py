@@ -87,13 +87,14 @@ def percent_covered(summary: dict, where: str) -> float:
     return float(value)
 
 
-def shown(percent: float, bound: float) -> str:
-    """Two decimals, or every digit when rounding to two would cross ``bound``.
-
-    So 94.9999 below a floor of 95 is shown as ``94.9999``, never as ``95.00``.
-    """
+def shown(percent: float, floor: float) -> str:
+    """Two decimals, or every digit when rounding to two would cross ``floor`` or a whole
+    percent, so 94.9999 below a floor of 95 is shown as ``94.9999``, never ``95.00``."""
     text = f"{percent:.2f}"
-    return text if (float(text) < bound) == (percent < bound) else repr(percent)
+    rounded = float(text)
+    if (rounded < floor) == (percent < floor) and math.floor(rounded) == math.floor(percent):
+        return text
+    return repr(percent)
 
 
 def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
@@ -104,31 +105,29 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
     seen: dict[str, str] = {}
     for path, entry in sorted(report.get("files", {}).items()):
         key = module_key(path, packages)
+        percent = percent_covered(entry["summary"], path)
         if key in seen:
             failures.append(f"{key}: two report files map to this name ({seen[key]}, {path})")
             continue
-        percent = percent_covered(entry["summary"], path)
         seen[key] = path
         floor = floors["files"].get(key, floors["default"])
-        whole = math.floor(percent)
+        text, whole = shown(percent, floor), math.floor(percent)
         if percent < floor:
-            failures.append(f"{key}: {shown(percent, floor)}% is below its floor {floor}%")
+            failures.append(f"{key}: {text}% is below its floor {floor}%")
         elif key not in floors["files"]:
-            raisable.append(
-                f"{key}: {shown(percent, whole + 1)}%, no floor yet, set it to {whole}%"
-            )
+            # Never suggest a floor below the default the file already has to meet.
+            suggest = max(whole, floors["default"])
+            raisable.append(f"{key}: {text}%, no floor yet, set it to {suggest}%")
         elif whole > floor:
-            raisable.append(
-                f"{key}: {shown(percent, whole + 1)}%, floor {floor}% can rise to {whole}%"
-            )
+            raisable.append(f"{key}: {text}%, floor {floor}% can rise to {whole}%")
     for key in sorted(set(floors["files"]) - set(seen)):
         failures.append(f"{key}: has a floor but is not in the coverage report")
     total = percent_covered(report["totals"], "totals")
-    floor, whole = floors["total"], math.floor(total)
+    floor, text, whole = floors["total"], shown(total, floors["total"]), math.floor(total)
     if total < floor:
-        failures.append(f"total: {shown(total, floor)}% is below its floor {floor}%")
+        failures.append(f"total: {text}% is below its floor {floor}%")
     elif whole > floor:
-        raisable.append(f"total: {shown(total, whole + 1)}%, floor {floor}% can rise to {whole}%")
+        raisable.append(f"total: {text}%, floor {floor}% can rise to {whole}%")
     return failures, raisable
 
 
@@ -146,15 +145,15 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     try:
         report = json.loads(args.report.read_text(encoding="utf-8"))
-        branches = report.get("meta", {}).get("branch_coverage") is True
+        meta = report.get("meta")
+        if not (isinstance(meta, dict) and meta.get("branch_coverage") is True):
+            # The floors are lines and branches combined; a line-only report reads higher.
+            print(f"ERROR  {args.report}: no branch data; run pytest with --cov-branch")
+            return 2
         failures, raisable = check(report, floors)
         total = percent_covered(report["totals"], "totals")
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         print(f"ERROR  {args.report}: not a readable coverage.py JSON report ({exc!r})")
-        return 2
-    if not branches:
-        # The floors are lines and branches combined; a line-only report reads higher.
-        print(f"ERROR  {args.report}: no branch data; run pytest with --cov-branch")
         return 2
     for line in raisable:
         print(f"can raise  {line}")

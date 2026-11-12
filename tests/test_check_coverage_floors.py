@@ -232,7 +232,11 @@ def test_two_colliding_report_paths_are_both_named():
     [
         ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\nfiles = 90\n", "{}", "must be a table"),
         ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", "not json", "coverage.json"),
-        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", "{}", "totals"),
+        (
+            "[tool.invest.coverage]\ntotal = 95\ndefault = 90\n",
+            '{"meta": {"branch_coverage": true}}',
+            "totals",
+        ),
     ],
 )
 def test_main_reports_a_bad_table_or_report_as_an_error_line(
@@ -265,7 +269,7 @@ def test_the_script_runs_under_python_dash_oo(tmp_path):
     assert "0 failure(s)" in result.stdout
 
 
-@pytest.mark.parametrize("meta", [{"branch_coverage": False}, {}, None])
+@pytest.mark.parametrize("meta", [{"branch_coverage": False}, {}, "null", None])
 def test_main_refuses_a_report_without_branch_data(tmp_path, capsys, meta):
     # Round 3 finding: the floors are lines and branches combined, so a line-only report
     # (pytest run without --cov-branch) reads higher and must not pass.
@@ -273,7 +277,7 @@ def test_main_refuses_a_report_without_branch_data(tmp_path, capsys, meta):
     if meta is None:
         del data["meta"]
     else:
-        data["meta"] = meta
+        data["meta"] = None if meta == "null" else meta
     report = tmp_path / "coverage.json"
     report.write_text(json.dumps(data), encoding="utf-8")
     assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 2
@@ -345,3 +349,47 @@ def test_a_percentage_that_rounds_across_a_bound_is_shown_with_all_its_digits(tm
     path.write_text(json.dumps(report), encoding="utf-8")
     assert floors_mod.main([str(path), "--pyproject", str(_table(tmp_path))]) == 1
     assert "total 94.9999%" in capsys.readouterr().out
+
+
+def test_a_line_only_report_is_named_before_its_other_problems(tmp_path, capsys):
+    # Round 4 finding: the --cov-branch hint must not hide behind another error.
+    report = tmp_path / "coverage.json"
+    data = _report({"c/src/invest_x/a.py": "bad"}, 96.0, branch=False)
+    report.write_text(json.dumps(data), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 2
+    assert "--cov-branch" in capsys.readouterr().out
+
+
+def test_a_malformed_percentage_on_a_colliding_path_is_refused():
+    # Round 4 finding: the collision check skipped the second entry's percentage.
+    report = _report({"a/src/invest_x/a.py": 90.0, "b/src/invest_x/a.py": float("inf")}, 96.0)
+    with pytest.raises(ValueError, match="percent_covered"):
+        floors_mod.check(report, {"total": 95, "default": 90, "files": {}})
+
+
+def test_the_summary_total_matches_the_can_raise_line(tmp_path, capsys):
+    # Round 4 finding: 96.999 printed "can rise to 96%" above "total 97.00%".
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({}, 96.999)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 0
+    out = capsys.readouterr().out
+    assert "total: 96.999%, floor 95% can rise to 96%" in out
+    assert "total 96.999%" in out
+
+
+def test_a_file_without_a_floor_is_never_told_to_go_below_the_default():
+    # Round 4 finding: with default 90.5, a file at 90.7% was told "set it to 90%".
+    floors = {"total": 95, "default": 90.5, "files": {}}
+    report = _report({"c/src/invest_x/n.py": 90.7}, 96.0)
+    assert floors_mod.check(report, floors) == (
+        [],
+        [
+            "invest_x/n.py: 90.70%, no floor yet, set it to 90.5%",
+            "total: 96.00%, floor 95% can rise to 96%",
+        ],
+    )
+
+
+def test_a_percentage_rounding_below_a_fractional_floor_is_shown_with_all_its_digits():
+    assert floors_mod.shown(88.505, 88.505) == "88.505"
+    assert floors_mod.shown(88.51, 88.505) == "88.51"
