@@ -9,9 +9,11 @@ A file's coverage is coverage.py's ``percent_covered``: lines and branches combi
 because the suite runs with ``--cov-branch``. The floors live in
 ``[tool.invest.coverage]``: ``total`` for the whole report, ``default`` for a file
 without a floor of its own, and ``files`` mapping ``"<package>/<module path>"`` to a
-percent. The exit status is 1 when the total or any file is below its floor, or when
-a floor names a file the report does not contain (a renamed or deleted module), 2 when
-the floor table or the report cannot be read, and 0 otherwise. Files and a total whose
+percent. The exit status is 1 when the total or any file is below its floor, when two
+report paths map to the same key, or when a floor names a file the report does not
+contain (a renamed or deleted module: rename or remove its floor in the same change);
+2 when the floor table or the report cannot be read, or the report has no branch data
+(pytest ran without ``--cov-branch``); and 0 otherwise. Files and a total whose
 coverage has risen a whole point or more above their floor, and files without a floor
 of their own, are listed under "can raise" so the floor can be raised or added; that
 never fails the check.
@@ -75,6 +77,25 @@ def load_floors(pyproject: Path) -> dict:
     return floors
 
 
+def percent_covered(summary: dict, where: str) -> float:
+    """Return a report's ``percent_covered``, refusing anything but a number in 0..100."""
+    value = summary["percent_covered"]
+    if isinstance(value, bool) or not isinstance(value, int | float):
+        raise ValueError(f"{where}: percent_covered {value!r} is not a number")
+    if not 0 <= value <= 100:  # also refuses NaN and infinity
+        raise ValueError(f"{where}: percent_covered {value!r} is not within 0..100")
+    return float(value)
+
+
+def shown(percent: float, bound: float) -> str:
+    """Two decimals, or every digit when rounding to two would cross ``bound``.
+
+    So 94.9999 below a floor of 95 is shown as ``94.9999``, never as ``95.00``.
+    """
+    text = f"{percent:.2f}"
+    return text if (float(text) < bound) == (percent < bound) else repr(percent)
+
+
 def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
     """Return (failures, floors that could be raised) for a coverage.py JSON report."""
     failures: list[str] = []
@@ -86,28 +107,28 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
         if key in seen:
             failures.append(f"{key}: two report files map to this name ({seen[key]}, {path})")
             continue
-        percent = float(entry["summary"]["percent_covered"])
+        percent = percent_covered(entry["summary"], path)
         seen[key] = path
         floor = floors["files"].get(key, floors["default"])
+        whole = math.floor(percent)
         if percent < floor:
-            failures.append(f"{key}: {percent:.2f}% is below its floor {floor}%")
+            failures.append(f"{key}: {shown(percent, floor)}% is below its floor {floor}%")
         elif key not in floors["files"]:
             raisable.append(
-                f"{key}: {percent:.2f}%, no floor yet, set it to {math.floor(percent)}%"
+                f"{key}: {shown(percent, whole + 1)}%, no floor yet, set it to {whole}%"
             )
-        elif math.floor(percent) > floor:
+        elif whole > floor:
             raisable.append(
-                f"{key}: {percent:.2f}%, floor {floor}% can rise to {math.floor(percent)}%"
+                f"{key}: {shown(percent, whole + 1)}%, floor {floor}% can rise to {whole}%"
             )
     for key in sorted(set(floors["files"]) - set(seen)):
         failures.append(f"{key}: has a floor but is not in the coverage report")
-    total = float(report["totals"]["percent_covered"])
-    if total < floors["total"]:
-        failures.append(f"total: {total:.2f}% is below its floor {floors['total']}%")
-    elif math.floor(total) > floors["total"]:
-        raisable.append(
-            f"total: {total:.2f}%, floor {floors['total']}% can rise to {math.floor(total)}%"
-        )
+    total = percent_covered(report["totals"], "totals")
+    floor, whole = floors["total"], math.floor(total)
+    if total < floor:
+        failures.append(f"total: {shown(total, floor)}% is below its floor {floor}%")
+    elif whole > floor:
+        raisable.append(f"total: {shown(total, whole + 1)}%, floor {floor}% can rise to {whole}%")
     return failures, raisable
 
 
@@ -125,16 +146,21 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     try:
         report = json.loads(args.report.read_text(encoding="utf-8"))
+        branches = report.get("meta", {}).get("branch_coverage") is True
         failures, raisable = check(report, floors)
-        total = float(report["totals"]["percent_covered"])
+        total = percent_covered(report["totals"], "totals")
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         print(f"ERROR  {args.report}: not a readable coverage.py JSON report ({exc!r})")
+        return 2
+    if not branches:
+        # The floors are lines and branches combined; a line-only report reads higher.
+        print(f"ERROR  {args.report}: no branch data; run pytest with --cov-branch")
         return 2
     for line in raisable:
         print(f"can raise  {line}")
     for line in failures:
         print(f"FAIL  {line}")
-    print(f"coverage floors: {len(failures)} failure(s), total {total:.2f}%")
+    print(f"coverage floors: {len(failures)} failure(s), total {shown(total, floors['total'])}%")
     return 1 if failures else 0
 
 

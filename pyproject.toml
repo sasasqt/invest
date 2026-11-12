@@ -55,7 +55,8 @@ filterwarnings = ["error::RuntimeWarning:invest_.*"]
 # Minimum test coverage in percent, lines and branches combined, checked in CI by
 # scripts/check_coverage_floors.py (see PYTHON_GUIDELINES.md, Testing strategy).
 # Set 2026-11-12 to each file's coverage on Python 3.11 and 3.13, rounded down.
-# Floors only go up; a new file without its own floor must reach `default`.
+# Raise floors as coverage rises; lowering one needs a reason in the pull request.
+# A new file without its own floor must reach `default`.
 total = 95
 default = 90
 
