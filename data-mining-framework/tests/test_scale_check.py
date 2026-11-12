@@ -80,7 +80,10 @@ REFUSED = [
     ("cs_rank(log(volume))", ["log(dollar_volume)"]),
     ("fund_eps / close", ["fund_eps / close_as_traded"]),
     ("cs_rank(fund_book_to_price / close)", ["fund_book_to_price / close_as_traded"]),
-    ("cs_rank(-delta(close, 5))", CHANGE),
+    # The price change keeps its own sign; a level that falls with the price is a volume level.
+    ("cs_rank(-delta(close, 5))", [*CHANGE, "(neg(delta(close, 5)) / close)"]),
+    ("cs_rank(dollar_volume / close)", VOLUME),
+    ("cs_rank(volume / close)", VOLUME),
     ("delta(close, 5)", CHANGE),
     ("cs_rank(ts_std(close, 20))", CHANGE),
     ("high - low", CHANGE),
@@ -215,9 +218,50 @@ def test_a_suggested_form_parses_as_written():
     assert "ts_corr(close, 0.5, 5)" not in str(refused.value)
 
 
-def test_a_long_formula_is_checked_without_recursion_error():
-    """500 summed ratios parse and evaluate; the check must not end in a traceback."""
-    ex.check_scale_free(ex.parse(" + ".join(["close / open"] * 500)))
+LONG = 500  # summed terms; the parser takes such sums on Python 3.11 and 3.13
+LONG_FORMULAS = [
+    (" + ".join(["close / open"] * LONG), None),
+    (" + ".join(["close"] * LONG), "adjusted price level"),
+    ("cs_rank(" + " + ".join(["close"] * LONG) + ")", "adjusted price level"),
+    (" + ".join(["log(close) - log(open)"] * (LONG // 2)) + " + log(close)", "log of an adjusted"),
+    (" + ".join(["fund_eps / close"] * LONG), "per-share fundamental"),
+]
+
+
+@pytest.mark.parametrize(
+    "text, refusal", LONG_FORMULAS, ids=["ratios", "closes", "cs", "logs", "fund"]
+)
+def test_a_long_formula_gets_a_clean_answer(text, refusal):
+    """A formula the parser accepts passes or is refused with a message, never a traceback
+    (Python 3.11 spends two frames per level in a comprehension)."""
+    node = ex.parse(text)
+    if refusal is None:
+        ex.check_scale_free(node)
+    else:
+        with pytest.raises(ex.ScaleError, match=refusal):
+            ex.check_scale_free(node)
+    assert ex.features_used(node) <= {"close", "open", "fund_eps"}  # the CLI's column check
+
+
+def _negated(node: ex.Node, times: int) -> ex.Node:
+    for _ in range(times):
+        node = ex.Call("neg", (node,))
+    return node
+
+
+@pytest.mark.parametrize(
+    "inner, refusal",
+    [("close / open", None), ("close", "price level"), ("delta(close, 5)", "price change")],
+)
+def test_a_deep_tree_built_in_code_gets_a_clean_answer(inner, refusal):
+    """No recursion limit applies to the check, its message or the CLI's column check."""
+    node = _negated(ex.parse(inner), 3000)
+    assert ex.features_used(node) == ex.features_used(ex.parse(inner))
+    if refusal is None:
+        ex.check_scale_free(node)
+    else:
+        with pytest.raises(ex.ScaleError, match=refusal):
+            ex.check_scale_free(node)
 
 
 # ---------------------------------------------------------------------------

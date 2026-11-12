@@ -25,7 +25,7 @@ from collections.abc import Callable, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass
 from fractions import Fraction
-from typing import TypeAlias
+from typing import TypeAlias, TypeVar
 
 import numpy as np
 import pandas as pd
@@ -88,15 +88,50 @@ class Call:
     window: int | None = None
 
     def __str__(self) -> str:
-        if self.op in _INFIX:
-            return f"({self.args[0]} {_INFIX[self.op]} {self.args[1]})"
-        parts = [str(a) for a in self.args]
-        if self.window is not None:
-            parts.append(str(self.window))
-        return f"{self.op}({', '.join(parts)})"
+        return _fold(self, _text)
 
 
 Node = Feature | Const | Call
+_T = TypeVar("_T")
+
+
+def _postorder(node: Node) -> list[Node]:
+    """Every node of the tree, each after its arguments, left to right. Iterative, like the
+    folds built on it, so a long formula needs no deep stack (Python 3.11 counts two frames
+    per level of a comprehension)."""
+    found: list[Node] = []
+    stack: list[tuple[Node, bool]] = [(node, False)]
+    while stack:
+        current, expanded = stack.pop()
+        if expanded or not isinstance(current, Call):
+            found.append(current)
+            continue
+        stack.append((current, True))
+        stack.extend((a, False) for a in reversed(current.args))
+    return found
+
+
+def _fold(node: Node, step: Callable[[Node, list[_T]], _T]) -> _T:
+    """``step(n, values of n's arguments)`` for every node, arguments first; returns the
+    root's value. A ``step`` that raises stops the fold where a recursive walk would."""
+    values: list[_T] = []
+    for current in _postorder(node):
+        n = len(current.args) if isinstance(current, Call) else 0
+        args = values[len(values) - n :]
+        del values[len(values) - n :]
+        values.append(step(current, args))
+    return values[0]
+
+
+def _text(node: Node, parts: list[str]) -> str:
+    """The canonical text of ``node`` from its arguments' texts (see ``Call.__str__``)."""
+    if not isinstance(node, Call):
+        return str(node)
+    if node.op in _INFIX:
+        return f"({parts[0]} {_INFIX[node.op]} {parts[1]})"
+    if node.window is not None:
+        parts = [*parts, str(node.window)]
+    return f"{node.op}({', '.join(parts)})"
 
 
 @dataclass(frozen=True)
@@ -281,11 +316,7 @@ def depth(node: Node) -> int:
 
 
 def features_used(node: Node) -> set[str]:
-    if isinstance(node, Feature):
-        return {node.name}
-    if isinstance(node, Call):
-        return set().union(*(features_used(a) for a in node.args))
-    return set()
+    return {n.name for n in _postorder(node) if isinstance(n, Feature)}
 
 
 def canonical(node: Node | str) -> str:
@@ -352,12 +383,16 @@ def _calls(node: Node, *, through_resets: bool = True) -> list[Call]:
 
 
 def _scale(node: Node) -> _Scale:
+    return _fold(node, _scale_step)
+
+
+def _scale_step(node: Node, scales: list[_Scale]) -> _Scale:
+    """The scale of ``node`` from its arguments' scales (raises for a refused part)."""
     if isinstance(node, Feature):
         return ("pow", Fraction(SCALE_EXPONENTS.get(node.name, 0)))
     if isinstance(node, Const):
         return _FREE
     op, args = node.op, node.args
-    scales = [_scale(a) for a in args]
     kind, k = scales[0]
     if op in ("ts_rank", "ts_corr"):
         return _FREE  # ranks and correlations ignore a positive factor and a shift
@@ -420,9 +455,8 @@ def _scaled_features(node: Node) -> set[str]:
     choose the message."""
     if isinstance(node, Feature):
         return {node.name}
-    if isinstance(node, Call) and node.op not in _RESETS and OPS[node.op].kind != "cs":
-        return set().union(*(_scaled_features(a) for a in node.args))
-    return set()
+    calls = _calls(node, through_resets=False)
+    return {a.name for c in calls for a in c.args if isinstance(a, Feature)}
 
 
 def _fundamental_over_price(sub: Node) -> str | None:
@@ -502,7 +536,7 @@ def _level_error(sub: Node, where: str) -> ScaleError:
             "operator) or log(dollar_volume) for size, or a log difference such as "
             "delta(log(close), 5)"
         )
-    if volume and not prices:
+    if (volume and not prices) or (_exponent(sub) or 0) < 0:
         return ScaleError(
             f"{sub} {where} is an adjusted volume level (volume is adjusted inversely to "
             f"prices): {why}. Use shares traded, volume * close / close_as_traded (not under a "
@@ -513,9 +547,12 @@ def _level_error(sub: Node, where: str) -> ScaleError:
         c.op in _CHANGE_OPS and _scale_or_none(c) == "pow-nonzero"
         for c in _calls(sub, through_resets=False)
     ):
+        own = Call("div", (sub, Feature("close")))
+        generic = "delta(close, 5) / close"
+        keeps = f"{own}, like " if f"({generic})" != str(own) and _suggestion_passes(own) else ""
         return ScaleError(
             f"{sub} {where} is a price change or spread in adjusted units: {why}. Divide by "
-            "the price, as in delta(close, 5) / close, or use a log difference, as in "
+            f"the price, as in {keeps}{generic}, or use a log difference, as in "
             "delta(log(close), 5)"
         )
     return ScaleError(
@@ -524,6 +561,15 @@ def _level_error(sub: Node, where: str) -> ScaleError:
         "time-series operator) or, without that column, a ratio such as "
         "close / ts_max(close, 252)"
     )
+
+
+def _exponent(node: Node) -> Fraction | None:
+    """The power of c that ``node`` scales with, or None for a log level or a refused part."""
+    try:
+        kind, k = _scale(node)
+    except ScaleError:
+        return None
+    return k if kind == "pow" else None
 
 
 def _scale_or_none(node: Node) -> str | None:
@@ -578,11 +624,14 @@ def _as_traded_series_error(sub: Call, feature: str) -> ScaleError:
 
 
 def _replace_feature(node: Node, old: str, new: str) -> Node:
-    if isinstance(node, Feature):
-        return Feature(new) if node.name == old else node
-    if isinstance(node, Call):
-        return Call(node.op, tuple(_replace_feature(a, old, new) for a in node.args), node.window)
-    return node
+    def step(current: Node, args: list[Node]) -> Node:
+        if isinstance(current, Feature):
+            return Feature(new) if current.name == old else current
+        if isinstance(current, Call):
+            return Call(current.op, tuple(args), current.window)
+        return current
+
+    return _fold(node, step)
 
 
 def _log_error(node: Node) -> ScaleError:
@@ -687,7 +736,8 @@ def random_expression(rng: np.random.Generator, max_depth: int = 4) -> Node:
 
     A draw that :func:`check_scale_free` refuses is drawn again, so search never proposes a
     formula whose price or volume levels a later split or dividend could change. The check
-    reads no data; rounding residue on constant windows is not covered (REVIEW-47, REVIEW-48).
+    reads no data; rounding residue and the absolute threshold on tiny dispersions are not
+    covered (REVIEW-47, REVIEW-48).
     """
 
     def grow(d: int) -> Node:
