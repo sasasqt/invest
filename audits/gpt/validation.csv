@@ -69,3 +69,9 @@ GA1111-03,trusted synthetic settlement arithmetic oracle twice,9913f94b9b795bd96
 GA1111-04,fresh independent Reviewer 2 static verification,9913f94b9b795bd9633a6a683e9f420301e400b3,fresh helper read only no publication,passed,"{""agreement"":true,""verifier_b"":false}",,2026-11-11-evaluation/reviewer2/independent-verdict.json
 GA1111-05,repository imports builds tests and workflows,9913f94b9b795bd9633a6a683e9f420301e400b3,current worker,blocked,"{""product_runs"":0}",,credential-inaccessible boundary and exact installed locked graph unproven
 GA1111-06,same-SHA GitHub CI observation,9913f94b9b795bd9633a6a683e9f420301e400b3,preserved peer and prior audit evidence,reused_success,"{""checks"":6,""direct_connector_lookup_returned"":0}",,2026-11-11-evaluation/preflight.json
+GA1112-01,canonical index/method SHA-256,bab6ba12399787496ba1108a9a368e00f8643441,trusted connector bytes,passed,13 methods,,2026-11-12-integration/evidence.json
+GA1112-02,bash -n historical and synthetic scripts,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,trusted static syntax,passed,2/2,,2026-11-12-integration/evidence.json
+GA1112-03,uv --no-config --offline lock --check --no-build --no-python-downloads --python explicit,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,"temporary exact metadata, CPython 3.12.14",passed metadata only,35,,2026-11-12-integration/evidence.json
+GA1112-04,static RECORD/provenance trace and fresh independent review,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,trusted source reads,known defects corroborated,2,,2026-11-12-integration/evidence.json
+GA1112-05,existing GitHub audit runtime jobs,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,Linux Docker on #32 merge preview,reused successful scoped evidence,2 audited jobs,,2026-11-12-integration/evidence.json
+GA1112-06,untouched product runs and saved replay,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,current worker,blocked,0,,2026-11-12-integration/evidence.json

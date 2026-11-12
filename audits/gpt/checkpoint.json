@@ -389,12 +389,14 @@
       "source_fingerprint": "workflow:scripts/historical_workflow.sh:tracked-inspection-ledger-invalidates-record-code-cleanliness",
       "priority": "P2",
       "path": "scripts/historical_workflow.sh:37-50,105-129; scripts/save_run.py:142-155; strategy-evaluation/src/invest_evaluation/cli.py:36-63",
-      "status": "independent static review complete; runtime pending",
+      "status": "known/open on main; proposed fix source-verified on unmerged PR40; runtime pending",
       "first_queued_utc": "2026-11-05T02:04:36.812376+00:00",
-      "last_queued_utc": "2026-11-05T02:04:36.812376+00:00",
+      "last_queued_utc": "2026-11-12T02:05:19Z",
       "originating_item": "REVIEW-17/K3",
       "next_check": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history.",
-      "deferral_reason": "current runtime prerequisites missing; do not retry unchanged blocker daily"
+      "deferral_reason": "current runtime prerequisites missing; do not retry unchanged blocker daily",
+      "last_verified_source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "latest_evidence": "2026-11-12-integration/evidence.json"
     },
     {
       "id": "OPEN-DATA-METADATA-IDENTITY-001",
@@ -471,6 +473,20 @@
       "last_queued_utc": "2026-11-11T02:20:00Z",
       "next_check": "Untouched settlement/event/control repetitions twice, membership ending on event date, zero/short cases, and >=20-session information-ratio verdict fixture.",
       "deferral_reason": "credential-inaccessible boundary and exact installed locked graph unproven"
+    },
+    {
+      "id": "BH-2026-10-12-3",
+      "owner_field": "integration",
+      "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "source_fingerprint": "recorder:distinct-clean-revisions-accepted-with-single-readme-revision",
+      "path": "scripts/save_run.py:130-190",
+      "priority": "P2",
+      "first_queued_utc": "2026-11-12T01:59:30.006109Z",
+      "last_queued_utc": "2026-11-12T01:59:30.006109Z",
+      "status": "known counterpart duplicate, independent static corroboration; runtime pending",
+      "originating_item": "main hunt mirror",
+      "next_check": "mixed clean manifest fixture and matching control; then snapshot and subset provenance",
+      "evidence": "2026-11-12-integration/evidence.json"
     }
   ],
   "followup_queue_history": [
@@ -540,11 +556,12 @@
     }
   ],
   "latest_runtime_validation": {
-    "date": "2026-11-11",
-    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "status": "blocked",
-    "reason": "current worker lacks proven credential-inaccessible filesystem boundary and exact installed locked graph",
-    "same_sha_ci": "six successful checks from 2026-11-02 reused from preserved evidence; connector returned no runs for direct commit lookup; no custom product execution"
+    "date": "2026-11-12",
+    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+    "status": "local product blocked",
+    "reason": "credential inaccessibility and installed locked graph unavailable",
+    "remote_reused": 43017671497,
+    "new_product_runs": 0
   },
   "run_history": [
     {
@@ -2080,21 +2097,10 @@
       },
       "integration": {
         "weekday": 3,
-        "last_rotation_visit": "2026-11-05",
-        "last_substantive_advance": "2026-11-05",
+        "last_rotation_visit": "2026-11-12",
+        "last_substantive_advance": "2026-11-12",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
-          {
-            "path": "runs/yahoo-test/2026-10-07/README.md",
-            "unread_ranges": [
-              [
-                1,
-                24
-              ]
-            ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "322d17f9d320942f69666345d914466df0e5093e"
-          },
           {
             "path": "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json",
             "unread_ranges": [
@@ -2103,7 +2109,7 @@
                 220
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "06a08c4400145564465bd3d8956191a59fc0fd7b"
           },
           {
@@ -2114,7 +2120,7 @@
                 1210
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "475a5dfb8b118909008573fd44c6716700e50de1"
           },
           {
@@ -2125,7 +2131,7 @@
                 39
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "f2c8645460bb43d4020ec35763b0d6e6410869a7"
           },
           {
@@ -2136,7 +2142,7 @@
                 49
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "dffbd1c84a8c8dc7fe1bfc4322b56b3b7d4268a7"
           },
           {
@@ -2147,7 +2153,7 @@
                 628
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "41e4f9c1d7f4321ad2241150629f233ab24200bf"
           },
           {
@@ -2158,7 +2164,7 @@
                 93
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "828e480c36bef4f23a6516fd3151e89c142ae200"
           },
           {
@@ -2169,7 +2175,7 @@
                 62
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "370e1007111b15f48711ae441bc42ef21ad560d7"
           },
           {
@@ -2180,7 +2186,7 @@
                 9
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "66254000961b61147dbfa8f86cddf0350fb55d05"
           },
           {
@@ -2191,7 +2197,7 @@
                 85
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "5ea1c8b74be6afc40c086b0b7b37f5382a8139b6"
           },
           {
@@ -2202,7 +2208,7 @@
                 7
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "d0fe3533dd3ba5bb567703dff118927adce26aba"
           },
           {
@@ -2213,7 +2219,7 @@
                 23
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "e2b5065c74e1375168e82f95b6089077e16050d6"
           },
           {
@@ -2224,7 +2230,7 @@
                 3775
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "881fa2a36b240dc085d91da822d20abd844d2027"
           },
           {
@@ -2235,7 +2241,7 @@
                 10
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "be48d864cf9b53cb419fb04b65bde8b2abc1dae2"
           },
           {
@@ -2246,7 +2252,7 @@
                 21
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "f0b69b34df752b90b9c04aa85f00fa607595599f"
           },
           {
@@ -2257,7 +2263,7 @@
                 67
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "4dd1c9efedab6d77815e8cf2690dcaa7615acd06"
           },
           {
@@ -2268,7 +2274,7 @@
                 626
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
             "blob": "0e9548b4f97b5867d47dedbdbd95e7087f0a9b14"
           }
         ],
@@ -2278,15 +2284,15 @@
         ],
         "deferrals": {
           "custom-record-workflow": {
-            "date": "2026-11-05",
-            "reason": "No current proven credential boundary or authorized custom dispatch; PR36 installed-graph fail-stop finding now confirmed in separate review. Prior successful run retained as scoped history.",
-            "consecutive_comparable_visits": 1,
-            "next_check": "genuine isolated checkout and fabricated pre-cutoff new tracked-ledger window plus controls"
+            "date": "2026-11-12",
+            "reason": "no proof of this worker's credential isolation or installed graph",
+            "consecutive_comparable_visits": 2,
+            "next_check": "paired tracked synthetic ledger RECORD test on pinned main and separately pinned fix"
           }
         },
         "reading_allocation": [
-          40,
-          60
+          30,
+          70
         ],
         "field_yield_history": [
           {
@@ -2330,16 +2336,227 @@
             "lens": "publication ownership, compressed recovery, source/ledger state transitions",
             "selection_note": "Deterministic after initial triage; no outcome-based redraw; first integration visit cannot establish four-visit lens absence",
             "research": "not scheduled; zero research reading/papers/experiments, excluded from denominator"
+          },
+          {
+            "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+            "date": "2026-11-12",
+            "field": "integration",
+            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+            "planned_percent": {
+              "exploitation": 40,
+              "exploration": 60
+            },
+            "actual_unique_lines": {
+              "exploitation": 156,
+              "exploration": 221,
+              "mandatory_callers_contracts": 377
+            },
+            "actual_discretionary_percent": {
+              "exploitation": 41.37931034482759,
+              "exploration": 58.62068965517241
+            },
+            "selection": {
+              "seed": "c0fbeb5078d4b7e20262d61a0442100c3c13b6405d3436bb319a3cc96a2baa52",
+              "eligible": [
+                "docs/HISTORICAL_BASELINE.md",
+                "runs/yahoo-test/2026-10-07/README.md",
+                "tests/test_save_run.py"
+              ],
+              "i": 0,
+              "draw": "docs/HISTORICAL_BASELINE.md",
+              "rule": "sorted eligible metadata/recovery areas; SHA-256 of scheduled Berlin date modulo candidate count",
+              "lens": "single-revision provenance across saved README and retained manifests; previous visit emphasized atomic staging and compressed bytes",
+              "peer_exact_ranges": "unavailable"
+            },
+            "new_confirmed_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "eligible_comparable_visits": 2,
+            "pooled_rates_per_1000": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "pooled_line_denominators": {
+              "exploitation": 565,
+              "exploration": 635
+            },
+            "next_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "rule": "Zero/zero tie with positive denominators, exploration +10 points, capped at 70%. No duplicate root credit.",
+            "research": "not scheduled; excluded",
+            "ranges": [
+              {
+                "bucket": "exploitation",
+                "path": "scripts/historical_workflow.sh",
+                "ranges": [
+                  [
+                    33,
+                    129
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86"
+              },
+              {
+                "bucket": "exploitation",
+                "path": "scripts/save_run.py",
+                "ranges": [
+                  [
+                    130,
+                    151
+                  ],
+                  [
+                    154,
+                    190
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+              },
+              {
+                "bucket": "exploration",
+                "path": "tests/test_save_run.py",
+                "ranges": [
+                  [
+                    1,
+                    115
+                  ],
+                  [
+                    224,
+                    276
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "f266a908918ecf4e546185adf269894360f8c092"
+              },
+              {
+                "bucket": "exploration",
+                "path": "docs/HISTORICAL_BASELINE.md",
+                "ranges": [
+                  [
+                    1,
+                    15
+                  ],
+                  [
+                    56,
+                    69
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e"
+              },
+              {
+                "bucket": "exploration",
+                "path": "runs/yahoo-test/2026-10-07/README.md",
+                "ranges": [
+                  [
+                    1,
+                    24
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "322d17f9d320942f69666345d914466df0e5093e"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "docs/ARCHITECTURE.md",
+                "ranges": [
+                  [
+                    65,
+                    130
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "ranges": [
+                  [
+                    36,
+                    63
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "ranges": [
+                  [
+                    192,
+                    220
+                  ],
+                  [
+                    223,
+                    294
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/ledger.py",
+                "ranges": [
+                  [
+                    190,
+                    257
+                  ],
+                  [
+                    260,
+                    314
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "39736206241839563a05402eaedc67abe1f876b3"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "scripts/save_run.py",
+                "ranges": [
+                  [
+                    217,
+                    265
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "README.md",
+                "ranges": [
+                  [
+                    97,
+                    97
+                  ],
+                  [
+                    103,
+                    111
+                  ]
+                ],
+                "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+                "blob": "2835562f6048abed2d6918b9c76ff46dcb836d49"
+              }
+            ]
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-        "last_substantive_run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
-        "validation_freshness": "current static recorder/provenance trace; custom runtime unavailable",
+        "last_source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "last_substantive_run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+        "validation_freshness": "static named scope current; GitHub hosted same-source synthetic evidence reused; custom RECORD and saved replay unavailable",
         "completed_advances": [
-          "Known REVIEW17/K3 traced through mining ledger mutation, whole-checkout provenance and recorder refusal; test modified provenance identified. Ordinary cleanup and exact compressed recovery independently reviewed."
+          "Known REVIEW17/K3 traced through mining ledger mutation, whole-checkout provenance and recorder refusal; test modified provenance identified. Ordinary cleanup and exact compressed recovery independently reviewed.",
+          "K3 current-main status, PR40 validation-first source verification and known mixed-revision record attribution cross-check."
         ],
-        "next_item": "Isolated fabricated RECORD tracked-ledger new-window/control workflow; native Windows failure cleanup; then cross-format recovery gate"
+        "next_item": "paired tracked synthetic ledger RECORD test on pinned main and separately pinned fix",
+        "last_report": "2026-11-12.md"
       },
       "engineering": {
         "weekday": 4,
@@ -2601,11 +2818,11 @@
         "GA-2026-10-31-4"
       ]
     },
-    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 18071,
-    "unread_paths": 64,
+    "unread_lines": 21909,
+    "unread_paths": 81,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -2719,6 +2936,16 @@
         "status": "no final report observed in accessible gpt tree",
         "execution": "unknown/not observed",
         "note": "Pre-activation legacy day; no allowance-exhaustion or interruption inference, no catch-up field added."
+      },
+      {
+        "date": "2026-11-07",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-08",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
       }
     ],
     "queue_age_status": {
@@ -2740,11 +2967,10 @@
         "14day_field_flags": "unvisited baseline dates unknown, no invented ages"
       },
       "integration_visit": {
-        "date": "2026-11-05",
-        "first_comparable_visit": true,
-        "14day_flags": "Unvisited fields have unknown baseline dates; no fabricated ages",
-        "twice_deferred": "No two comparable integration visits yet",
-        "oldest_feasible_advanced": "Recorder/provenance/recovery static chain; runtime and real historical replay remain blocked"
+        "date": "2026-11-12",
+        "oldest_feasible_advanced": "K3 and mixed revision provenance static trace; saved README inspection",
+        "twice_deferred": "custom-record-workflow; reserve oldest feasible slice after prerequisites",
+        "fourteen_day_flag": "no measured integration inactivity; unvisited-field baselines unknown"
       }
     },
     "visit_history": [
@@ -2929,6 +3155,14 @@
           "experiments": 0,
           "status": "not scheduled"
         }
+      },
+      {
+        "date": "2026-11-12",
+        "field": "integration",
+        "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "status": "bounded static scope complete; runtime blocked",
+        "evidence": "2026-11-12-integration/evidence.json"
       }
     ]
   },
@@ -3120,55 +3354,56 @@
     }
   ],
   "current_run": {
-    "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
-    "date": "2026-11-11",
-    "field": "evaluation",
-    "scheduled_for": "2026-11-11T02:00:00Z",
-    "started_utc": "2026-11-11T02:03:57.305582Z",
-    "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-    "source_tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
-    "output_base": "62613a3bcaa0e799006627d0f21f255eb64856b8",
+    "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+    "date": "2026-11-12",
+    "field": "integration",
+    "scheduled_for": "2026-11-12T02:00:00Z",
+    "started_utc": "2026-11-12T01:59:30.006109Z",
+    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+    "source_tree": "unavailable",
+    "output_base": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "runner_sha": "44aa87557404b0ae29561e82d35f6b46396527be",
-    "question": "Does the universe equal-weight benchmark incorporate supplied delisting settlements on the same total-return basis as the portfolio and verdict gate?",
-    "status": "bounded static question complete; GA-2026-10-31-2 confirmed static mismatch; local product runtime blocked",
+    "runner_sha": "28d4d231bec9053d8fb811077fba02eee9fa571c",
+    "question": "Can the recorded workflow preserve ledger state on refusal and attribute artifacts to one clean revision?",
+    "status": "bounded static scope complete; runtime blocked",
     "budget_minutes": {
       "total": 120,
-      "common": 20,
+      "setup": 20,
       "field": 70,
-      "review_report": 30
+      "review_reporting": 30
     },
     "model": "gpt-6.1-sol",
     "effort": "unavailable",
     "scope_counts": {
-      "tracked_files": 111,
-      "reviewed": 49,
-      "partially_reviewed": 15,
-      "checked_automatically": 11,
-      "inventoried": 14,
-      "blocked": 22,
-      "remaining_unread_lines": 16220,
-      "unread_paths": 57
+      "tracked_files": 123,
+      "reviewed": 37,
+      "inventoried": 43,
+      "partially_reviewed": 14,
+      "checked_automatically": 8,
+      "blocked": 21,
+      "remaining_unread_lines": 21909,
+      "unread_paths": 81
     },
     "helper_count": 1,
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
+    "publication_status": "prepared; verify receipt",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
-    "completed_utc": "2026-11-11T02:20:00Z",
-    "usage": "tokens/cost/helper compute unavailable; no invented allowance",
+    "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
+    "measured_preparation_seconds": 348.994,
     "finding_changes": [
-      "GA-2026-10-31-2 promoted from plausible to confirmed static contract mismatch"
+      "REVIEW-17/K3 source revalidated on main",
+      "INV-PR40-001 fix source-verified at current unmerged PR head",
+      "BH-2026-10-12-3 exact duplicate revalidated at recorder scope"
     ],
     "research": {
+      "status": "not scheduled",
       "papers": 0,
       "candidates": 0,
-      "experiments": 0,
-      "status": "not scheduled"
+      "experiments": 0
     },
-    "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
-    "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md"
+    "evidence": "2026-11-12-integration/evidence.json"
   },
   "publication_history": [
     {
@@ -3550,17 +3785,15 @@
     }
   ],
   "publication_current_run": {
-    "status": "published_verified",
-    "report_commit": "0a1331c844404db291f9cbe6c5335b2b7730168e",
-    "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md",
-    "verified_head_at_report": "0a1331c844404db291f9cbe6c5335b2b7730168e",
-    "diff_scope": "17 paths, all under audits/gpt/",
-    "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+    "status": "prepared",
+    "report_path": "audits/gpt/2026-11-12.md",
+    "output_parent": "f8920033085bf8d76efe493dea06e7b9d798f34a",
+    "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8"
   },
   "remaining_work_current_visit": [
-    "Untouched product settlement/event/control repetitions twice after runner qualification",
-    ">=20-session information-ratio and portfolio-verdict fixture",
-    "Membership-ending-on-event-date, zero-settlement and short comparator policy cases"
+    "qualify credential-inaccessible locked runner; no unchanged unsafe route retry",
+    "paired tracked synthetic ledger RECORD test on pinned main and separately pinned fix",
+    "mixed clean manifest fixture and matching control; then snapshot and subset provenance"
   ],
   "runtime_validation_history": [
     {

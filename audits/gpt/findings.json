@@ -649,5 +649,18 @@
       "dropped_candidates": [],
       "independent_review": "completed; no disagreement"
     }
+  ],
+  "carried_cross_checks": [
+    {
+      "date": "2026-11-12",
+      "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+      "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "ids": [
+        "REVIEW-17/K3",
+        "INV-PR40-001",
+        "BH-2026-10-12-3"
+      ],
+      "evidence": "2026-11-12-integration/evidence.json"
+    }
   ]
 }

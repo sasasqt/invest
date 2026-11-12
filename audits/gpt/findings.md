@@ -64,3 +64,7 @@ Required correction: read each optional bundle once and retain manifest/hash wit
 ## 2026-11-11 evaluation update
 
 GA-2026-10-31-2 remains the same root-cause ID and is now **known/open, medium/P2, confirmed static contract mismatch** at 9913f94b9b795bd9633a6a683e9f420301e400b3. Supplied settlements change portfolio holdings, cash and P&L, but the universe equal-weight benchmark ignores them and can feed an optional information-ratio verdict gate. The trusted arithmetic case repeated twice gives settlement-inclusive -37.5% versus current close-only 0%, with no-event/equal-close control 0%. Fresh Reviewer 2 agreed. Same-SHA peer runtime evidence corroborates the wrong event-day benchmark. This run did not execute product code. Acceptance and remaining edge cases are in findings.json and the dated report.
+
+## 2026-11-12 integration
+
+K3 / REVIEW-17 remains open on main `9e7dd61a679cc567d059ce3ded626f9dec10f3e8`. INV-PR40-001 source-verified in unmerged #40 at `e131918c35f6f3fca58dc7800b28c4f088a80efb`. BH-2026-10-12-3 independently corroborated at static scope, exact duplicate. No new ID. [Evidence](2026-11-12-integration/evidence.json).

@@ -82,3 +82,12 @@ Peer head `f73a1d1136502f6faee9134a65301aa5a090c817` reports a same-source rerun
 | Claude / counterpart ID | Verdict | Concrete reason and evidence | Check path | Date | Main SHA |
 |---|---|---|---|---|---|
 | BH-2026-10-21-2 / peer GA-2026-10-31-2 row | agree | Settlement events affect portfolio accounting but not engine.py universe benchmark; same-SHA peer rerun reports the wrong event-day comparator. | 2026-11-11-evaluation/reviewer-comparison.json | 2026-11-11 | 9913f94b9b795bd9633a6a683e9f420301e400b3 |
+
+## 2026-11-12 integration cross-check
+
+Peer head `f73a1d1136502f6faee9134a65301aa5a090c817` remains historical at its reported source. No new direct Claude verdict located for this bounded question. The main hunt mirror records the mixed-revision defect as BH-2026-10-12-3. Independent source verification agrees with the recorded scope. K3 remains open in main. [Evidence](2026-11-12-integration/evidence.json).
+
+| Counterpart | Verdict | Evidence | Source |
+|---|---|---|---|
+| BH-2026-10-12-3 | agree, static scope | [Verification](2026-11-12-integration/evidence.json) | 9e7dd61a679cc567d059ce3ded626f9dec10f3e8 |
+| K3 | agree, static scope | [Verification](2026-11-12-integration/evidence.json) | 9e7dd61a679cc567d059ce3ded626f9dec10f3e8 |

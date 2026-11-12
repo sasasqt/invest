@@ -1,0 +1,409 @@
+{
+  "date": "2026-11-12",
+  "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+  "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+  "source_commit_date": "2026-11-11T11:03:47Z",
+  "source_tree": "not exposed by connector",
+  "runner": {
+    "historical_unsafe": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "observed_head": "28d4d231bec9053d8fb811077fba02eee9fa571c",
+    "observed_checkout": "3cebe7cddfb5633d13b485bba1c10a66afd066c7",
+    "dispatched_by_this_run": false
+  },
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "verified_methods": {
+      "overview": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "00-preflight": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "01-scope": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+      "13-continuity": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+      "action-boundary": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "03-consistency": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+      "04-correctness": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+      "07-independent-checks": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "08-integration": "cbf0689b723a37643af61a5e4f900c0dfc4d453943cad32905bac33c1609d9b1",
+      "02-coverage": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "11-findings-review": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "12-reporting": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "14-crosscheck-publication": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea"
+    }
+  },
+  "output": {
+    "prior": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
+    "started_commit": "f8920033085bf8d76efe493dea06e7b9d798f34a"
+  },
+  "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
+  "pr40_ci": "queued at last observation",
+  "checks": [
+    {
+      "id": "REVIEW-17/K3",
+      "kind": "carried",
+      "initial": "keep P2 on pinned main",
+      "independent": "agree; initial tracked-ledger append leads to dirty checkout read by evaluation",
+      "final": "confirmed static on main; runtime pending; proposed fix source-verified on separate unmerged PR head",
+      "impact": "valid new-window RECORD cannot publish from a shared initially clean checkout when diagnostics mutate the tracked ledger",
+      "expected": "valid workflow can record a previously uninspected permitted window and publish with truthful clean provenance after the inspection is committed",
+      "actual": "main appends during diagnostics, evaluates with dirty provenance and save_run rejects",
+      "control": "covering inspection or external synthetic ledger avoids this dirty transition; paired untouched repeats unavailable",
+      "missing": "twice-repeated isolated tracked synthetic ledger replay with real checkout, including negative and positive controls",
+      "links": [
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/scripts/historical_workflow.sh#L105-L129",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/data-mining-framework/src/invest_mining/cli.py#L192-L209",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/strategy-evaluation/src/invest_evaluation/cli.py#L36-L63",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/scripts/save_run.py#L130-L151"
+      ]
+    },
+    {
+      "id": "INV-PR40-001",
+      "kind": "related PR fix",
+      "initial": "verify updated head source and current reply",
+      "independent": "agree; both cleaned symbol sets must have rows before append",
+      "final": "source-verified at e131918, open PR, no remaining decision on validation-first behavior",
+      "impact": "a spurious inspection can affect later overlap classification",
+      "expected": "missing benchmark, fully rejected benchmark, invalid config and existing bundle fail before append",
+      "actual": "previous PR head defb438 retained the empty benchmark gap; latest head guards empty frames in shared publishable; author reported previous-head failure and regression pass on 3d32bd8",
+      "control": "synthetic four-case RECORD/plain test asserts ledger bytes unchanged; valid two-step control uses external ledger",
+      "missing": "current-head CI was queued and exact tracked-ledger custom fixture unavailable",
+      "links": [
+        "https://github.com/sasasqt/invest/pull/40#issuecomment-6806412330",
+        "https://github.com/sasasqt/invest/blob/e131918c35f6f3fca58dc7800b28c4f088a80efb/scripts/historical_workflow.sh#L125-L170",
+        "https://github.com/sasasqt/invest/blob/e131918c35f6f3fca58dc7800b28c4f088a80efb/tests/test_pipeline.py#L478-L549",
+        "https://github.com/sasasqt/invest/actions/runs/43095324284"
+      ]
+    },
+    {
+      "id": "BH-2026-10-12-3",
+      "kind": "known counterpart duplicate",
+      "initial": "keep provenance concern if standalone recorder presents one run",
+      "independent": "agree and exact duplicate; P2 impact for assembled output; normal fresh workflow not shown to mix sources",
+      "final": "confirmed static on main at standalone-recorder scope; no new GA ID",
+      "impact": "record can label the quantile output with a revision that did not produce it",
+      "expected": "refuse inconsistent revisions or expose distinct revisions in the generated record",
+      "actual": "per-manifest clean/revision gates are independent, both copied, README prints evaluation revision only",
+      "control": "fabricated complete output with eval SHA A and quantiles SHA B (both clean), then matching SHA control. Source predicts pass for both, runtime not executed",
+      "missing": "original hunt reproduction and isolated two-repetition artifact check",
+      "links": [
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/docs/audits/open-bugs.md#L66",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/scripts/save_run.py#L130-L151",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/scripts/save_run.py#L154-L190",
+        "https://github.com/sasasqt/invest/blob/9e7dd61a679cc567d059ce3ded626f9dec10f3e8/tests/test_save_run.py#L245-L265"
+      ]
+    }
+  ],
+  "reviewer2": {
+    "completed": true,
+    "model": "gpt-6.1-sol",
+    "effort": "unavailable",
+    "verifier_b": false,
+    "closing": "Checked shell order, loader empty guard, ledger append, both provenance writers, recorder completeness, README, fixtures and hunt mirror. No other confirmed finding. Priority checks: isolated tracked-ledger base/head fixture; mixed snapshot identity and same-revision mismatched inputs; historical subset replay arguments."
+  },
+  "peer": {
+    "head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+    "report": "2026-11-08",
+    "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "disposition": "historical scope; no new directly matching peer verdict; main hunt mirror accessible"
+  },
+  "validation": {
+    "bash_n": [
+      [
+        "scripts/historical_workflow.sh",
+        0,
+        ""
+      ],
+      [
+        "scripts/synthetic_workflow.sh",
+        0,
+        ""
+      ]
+    ],
+    "lock": {
+      "metadata_only": true,
+      "byte_identities": [
+        [
+          "pyproject.toml",
+          "bb2eb48672234eb7579535c65ee1fa6e79c994ad",
+          "bb2eb48672234eb7579535c65ee1fa6e79c994ad"
+        ],
+        [
+          "data-pipeline/data-preparation/pyproject.toml",
+          "b903570376b0ee54dcf09fa474642a70b4462ac9",
+          "b903570376b0ee54dcf09fa474642a70b4462ac9"
+        ],
+        [
+          "data-mining-framework/pyproject.toml",
+          "c5141b424e6b825ccd7be72e9b337be6750be844",
+          "c5141b424e6b825ccd7be72e9b337be6750be844"
+        ],
+        [
+          "strategy-evaluation/pyproject.toml",
+          "b593c4601b42b7dbc47255e42252e8e35a32742f",
+          "b593c4601b42b7dbc47255e42252e8e35a32742f"
+        ],
+        [
+          "uv.lock",
+          "e9daf12b3804bb615babda39ac3097b30cc17168",
+          "e9daf12b3804bb615babda39ac3097b30cc17168"
+        ]
+      ],
+      "initial_cli_option_order_exit": 2,
+      "result": {
+        "chunk_id": "4ade7a",
+        "wall_time_seconds": 0.000038428,
+        "exit_code": 0,
+        "original_token_count": 35,
+        "output": "Using CPython 3.12.14 interpreter at: /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3\nResolved 35 packages in 5ms\n"
+      },
+      "installed_graph_verified": false
+    },
+    "main_branch_ci": {
+      "workflow_runs_observed": 0,
+      "combined_statuses_observed": 0
+    },
+    "remote": {
+      "workflow": 43017671497,
+      "source_resolver": 130512692067,
+      "isolated_jobs": [
+        130513127314,
+        130513127111
+      ],
+      "scope": "successful existing Linux synthetic audit at this product SHA; checkout identity from logs, no custom RECORD test",
+      "product_jobs_dispatched": 0
+    },
+    "local_product_runs": 0,
+    "boundary": "credential inaccessibility and installed locked graph unavailable"
+  },
+  "allocation": {
+    "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+    "date": "2026-11-12",
+    "field": "integration",
+    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+    "planned_percent": {
+      "exploitation": 40,
+      "exploration": 60
+    },
+    "actual_unique_lines": {
+      "exploitation": 156,
+      "exploration": 221,
+      "mandatory_callers_contracts": 377
+    },
+    "actual_discretionary_percent": {
+      "exploitation": 41.37931034482759,
+      "exploration": 58.62068965517241
+    },
+    "selection": {
+      "seed": "c0fbeb5078d4b7e20262d61a0442100c3c13b6405d3436bb319a3cc96a2baa52",
+      "eligible": [
+        "docs/HISTORICAL_BASELINE.md",
+        "runs/yahoo-test/2026-10-07/README.md",
+        "tests/test_save_run.py"
+      ],
+      "i": 0,
+      "draw": "docs/HISTORICAL_BASELINE.md",
+      "rule": "sorted eligible metadata/recovery areas; SHA-256 of scheduled Berlin date modulo candidate count",
+      "lens": "single-revision provenance across saved README and retained manifests; previous visit emphasized atomic staging and compressed bytes",
+      "peer_exact_ranges": "unavailable"
+    },
+    "new_confirmed_distinct_roots": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "eligible_comparable_visits": 2,
+    "pooled_rates_per_1000": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "pooled_line_denominators": {
+      "exploitation": 565,
+      "exploration": 635
+    },
+    "next_percent": {
+      "exploitation": 30,
+      "exploration": 70
+    },
+    "rule": "Zero/zero tie with positive denominators, exploration +10 points, capped at 70%. No duplicate root credit.",
+    "research": "not scheduled; excluded",
+    "ranges": [
+      {
+        "bucket": "exploitation",
+        "path": "scripts/historical_workflow.sh",
+        "ranges": [
+          [
+            33,
+            129
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86"
+      },
+      {
+        "bucket": "exploitation",
+        "path": "scripts/save_run.py",
+        "ranges": [
+          [
+            130,
+            151
+          ],
+          [
+            154,
+            190
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+      },
+      {
+        "bucket": "exploration",
+        "path": "tests/test_save_run.py",
+        "ranges": [
+          [
+            1,
+            115
+          ],
+          [
+            224,
+            276
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "f266a908918ecf4e546185adf269894360f8c092"
+      },
+      {
+        "bucket": "exploration",
+        "path": "docs/HISTORICAL_BASELINE.md",
+        "ranges": [
+          [
+            1,
+            15
+          ],
+          [
+            56,
+            69
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e"
+      },
+      {
+        "bucket": "exploration",
+        "path": "runs/yahoo-test/2026-10-07/README.md",
+        "ranges": [
+          [
+            1,
+            24
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "322d17f9d320942f69666345d914466df0e5093e"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "docs/ARCHITECTURE.md",
+        "ranges": [
+          [
+            65,
+            130
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "ranges": [
+          [
+            36,
+            63
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "ranges": [
+          [
+            192,
+            220
+          ],
+          [
+            223,
+            294
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/ledger.py",
+        "ranges": [
+          [
+            190,
+            257
+          ],
+          [
+            260,
+            314
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "39736206241839563a05402eaedc67abe1f876b3"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "scripts/save_run.py",
+        "ranges": [
+          [
+            217,
+            265
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "README.md",
+        "ranges": [
+          [
+            97,
+            97
+          ],
+          [
+            103,
+            111
+          ]
+        ],
+        "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "blob": "2835562f6048abed2d6918b9c76ff46dcb836d49"
+      }
+    ]
+  },
+  "inventory": {
+    "changed": 24,
+    "added": 12,
+    "removed": 0,
+    "counts": {
+      "reviewed": 37,
+      "inventoried": 43,
+      "partially_reviewed": 14,
+      "checked_automatically": 8,
+      "blocked": 21
+    },
+    "unread": 21909,
+    "unreadPaths": 81,
+    "newly": 287
+  },
+  "budget_minutes": {
+    "total": 120,
+    "setup": 20,
+    "field": 70,
+    "review_reporting": 30
+  },
+  "observed_preparation_seconds": 348.994,
+  "resource_usage": "token, peak memory and helper effort unavailable"
+}

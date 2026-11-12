@@ -1,28 +1,28 @@
 {
-  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
+  "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
   "planned_percent": {
-    "exploitation": 50,
-    "exploration": 50
+    "exploitation": 40,
+    "exploration": 60
   },
   "actual_primary_unique_lines": {
-    "exploitation": 188,
-    "exploration": 209,
-    "mandatory_callers_contracts": 77
+    "exploitation": 156,
+    "exploration": 221,
+    "mandatory_callers_contracts": 377
   },
   "new_verified_distinct_root_causes": {
-    "exploitation": 1,
+    "exploitation": 0,
     "exploration": 0
   },
-  "evidence_scope": "GA-2026-10-31-2 first promoted from plausible to confirmed static contract mismatch; existing ID, not a new discovery. Local runtime remains blocked.",
+  "evidence_scope": "known roots corroborated at current static scope; no new root count",
   "pooled_rates_per_1000_lines": {
-    "exploitation": 1.400560224089636,
+    "exploitation": 0,
     "exploration": 0
   },
   "runs": 2,
   "completed_full_audits": 0,
   "next_planned_percent": {
-    "exploitation": 60,
-    "exploration": 40
+    "exploitation": 30,
+    "exploration": 70
   },
   "last_four_completed_runs": [
     {
@@ -50,15 +50,21 @@
   ],
   "helper_overlap": "tracked in coverage, not added to primary reading denominators or root counts",
   "selection": {
-    "seed_material": "2026-11-11",
-    "sha256": "4e9c38edd9fe3c0bdf16b4dad77c1241b1d98163621b9ba96a81c39308d39a58",
-    "draw": "strategy-evaluation/src/invest_evaluation/cli.py",
-    "eligible_count": 14,
-    "lens": "settlement basis across portfolio, comparator, metrics and verdict"
+    "seed": "c0fbeb5078d4b7e20262d61a0442100c3c13b6405d3436bb319a3cc96a2baa52",
+    "eligible": [
+      "docs/HISTORICAL_BASELINE.md",
+      "runs/yahoo-test/2026-10-07/README.md",
+      "tests/test_save_run.py"
+    ],
+    "i": 0,
+    "draw": "docs/HISTORICAL_BASELINE.md",
+    "rule": "sorted eligible metadata/recovery areas; SHA-256 of scheduled Berlin date modulo candidate count",
+    "lens": "single-revision provenance across saved README and retained manifests; previous visit emphasized atomic staging and compressed bytes",
+    "peer_exact_ranges": "unavailable"
   },
   "actual_percent": {
-    "exploitation": 47.3551637279597,
-    "exploration": 52.6448362720403
+    "exploitation": 41.37931034482759,
+    "exploration": 58.62068965517241
   },
   "limitations": "No accuracy/recall claim. Static scope; current worker did not execute product code. Same-SHA peer runtime is corroboration, not this run's execution.",
   "rotation_v3_visits": [
@@ -964,8 +970,217 @@
         }
       ],
       "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
+    },
+    {
+      "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+      "date": "2026-11-12",
+      "field": "integration",
+      "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "planned_percent": {
+        "exploitation": 40,
+        "exploration": 60
+      },
+      "actual_unique_lines": {
+        "exploitation": 156,
+        "exploration": 221,
+        "mandatory_callers_contracts": 377
+      },
+      "actual_discretionary_percent": {
+        "exploitation": 41.37931034482759,
+        "exploration": 58.62068965517241
+      },
+      "selection": {
+        "seed": "c0fbeb5078d4b7e20262d61a0442100c3c13b6405d3436bb319a3cc96a2baa52",
+        "eligible": [
+          "docs/HISTORICAL_BASELINE.md",
+          "runs/yahoo-test/2026-10-07/README.md",
+          "tests/test_save_run.py"
+        ],
+        "i": 0,
+        "draw": "docs/HISTORICAL_BASELINE.md",
+        "rule": "sorted eligible metadata/recovery areas; SHA-256 of scheduled Berlin date modulo candidate count",
+        "lens": "single-revision provenance across saved README and retained manifests; previous visit emphasized atomic staging and compressed bytes",
+        "peer_exact_ranges": "unavailable"
+      },
+      "new_confirmed_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "eligible_comparable_visits": 2,
+      "pooled_rates_per_1000": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "pooled_line_denominators": {
+        "exploitation": 565,
+        "exploration": 635
+      },
+      "next_percent": {
+        "exploitation": 30,
+        "exploration": 70
+      },
+      "rule": "Zero/zero tie with positive denominators, exploration +10 points, capped at 70%. No duplicate root credit.",
+      "research": "not scheduled; excluded",
+      "ranges": [
+        {
+          "bucket": "exploitation",
+          "path": "scripts/historical_workflow.sh",
+          "ranges": [
+            [
+              33,
+              129
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "5ea6e7b88bc61c5a883edb8f3952c4f3bfaf4a86"
+        },
+        {
+          "bucket": "exploitation",
+          "path": "scripts/save_run.py",
+          "ranges": [
+            [
+              130,
+              151
+            ],
+            [
+              154,
+              190
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+        },
+        {
+          "bucket": "exploration",
+          "path": "tests/test_save_run.py",
+          "ranges": [
+            [
+              1,
+              115
+            ],
+            [
+              224,
+              276
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "f266a908918ecf4e546185adf269894360f8c092"
+        },
+        {
+          "bucket": "exploration",
+          "path": "docs/HISTORICAL_BASELINE.md",
+          "ranges": [
+            [
+              1,
+              15
+            ],
+            [
+              56,
+              69
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e"
+        },
+        {
+          "bucket": "exploration",
+          "path": "runs/yahoo-test/2026-10-07/README.md",
+          "ranges": [
+            [
+              1,
+              24
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "322d17f9d320942f69666345d914466df0e5093e"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "docs/ARCHITECTURE.md",
+          "ranges": [
+            [
+              65,
+              130
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "9ad847d83b8463422734c0e1116c2c63ea57f9fb"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "ranges": [
+            [
+              36,
+              63
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "9460058caac73dfe33fee137b3b6b2680dd04900"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "ranges": [
+            [
+              192,
+              220
+            ],
+            [
+              223,
+              294
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/ledger.py",
+          "ranges": [
+            [
+              190,
+              257
+            ],
+            [
+              260,
+              314
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "39736206241839563a05402eaedc67abe1f876b3"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "scripts/save_run.py",
+          "ranges": [
+            [
+              217,
+              265
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "dc8b83c43936f64fae76adaa8a3aefb3cec4e4c8"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "README.md",
+          "ranges": [
+            [
+              97,
+              97
+            ],
+            [
+              103,
+              111
+            ]
+          ],
+          "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+          "blob": "2835562f6048abed2d6918b9c76ff46dcb836d49"
+        }
+      ]
     }
   ],
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "note": "Wednesday evaluation visit; research not scheduled."
 }
