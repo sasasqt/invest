@@ -42,7 +42,7 @@ strict = true
 enable_error_code = ["ignore-without-code", "truthy-bool"]
 
 [[tool.mypy.overrides]]
-# pandas and pyarrow ship no type information; pandas-stubs is not installed (QUALITY-04).
+# pandas and pyarrow ship no py.typed marker and pandas-stubs is not installed (QUALITY-04).
 module = ["pandas", "pandas.*", "pyarrow", "pyarrow.*"]
 ignore_missing_imports = true
 

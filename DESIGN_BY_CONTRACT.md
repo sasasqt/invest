@@ -26,7 +26,7 @@ Invariants describe observable states, not necessarily every intermediate instru
 - Version serialized contracts and maintain compatibility fixtures. Do not silently reinterpret an existing version.
 - Keep documentation, schemas, runtime validation, and tests consistent. Select one authoritative specification for each condition rather than duplicating contradictory rules.
 
-Express every part of a contract that mypy can check as a type ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)): mypy then checks it wherever it analyses the code, before any test runs, but not in code it considers unreachable or in values typed `Any`, such as pandas objects. Types do not establish causality, numerical stability, or the validity of external data; check those at runtime. Units and scales are established by types only where a type is built to carry them (for example a formula tree whose nodes carry their scale).
+Express every part of a contract that mypy can check as a type ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)): mypy then checks it wherever it analyses the code, before any test runs, but not in code it considers unreachable or in values typed `Any`, such as pandas objects. Types do not establish causality, numerical stability, or the validity of external data; check those with runtime validation and tests (causality with the future-data perturbation tests). Units and scales are established by types only where a type is built to carry them (for example a formula tree whose nodes carry their scale).
 
 ## 3. Enforce contracts at the right layer
 
