@@ -333,10 +333,21 @@ def check_scale_free(node: Node) -> None:
         raise _level_error(node, "as the formula's value")
 
 
-def _calls(node: Node) -> list[Call]:
-    if not isinstance(node, Call):
-        return []
-    return [node, *(c for a in node.args for c in _calls(a))]
+def _calls(node: Node, *, through_resets: bool = True) -> list[Call]:
+    """Calls in ``node``, outermost first (iterative: long formulas need no deep stack).
+    With ``through_resets=False``, stop at operators whose result has scale 0 for any
+    argument (cross-sectional operators, ``sign``, ``ts_rank``, ``ts_corr``)."""
+    found: list[Call] = []
+    stack: list[Node] = [node]
+    while stack:
+        current = stack.pop()
+        if not isinstance(current, Call):
+            continue
+        if not through_resets and (current.op in _RESETS or OPS[current.op].kind == "cs"):
+            continue
+        found.append(current)
+        stack.extend(reversed(current.args))
+    return found
 
 
 def _scale(node: Node) -> _Scale:
@@ -414,14 +425,15 @@ def _scaled_features(node: Node) -> set[str]:
 
 
 def _fundamental_over_price(sub: Node) -> str | None:
-    """The fundamental multiplied by or divided by an adjusted price somewhere in ``sub``."""
-    for call in _calls(sub):
+    """The as-traded form of a fundamental multiplied by or divided by an adjusted price
+    whose scale reaches ``sub`` (``fund_eps / close_as_traded``), or None."""
+    for call in _calls(sub, through_resets=False):
         if call.op in ("mul", "div"):
             left, right = (_scaled_features(a) for a in call.args)
             for one, other in ((left, right), (right, left)):
                 funds = sorted(f for f in one if FUNDAMENTAL_FEATURE.fullmatch(f))
                 if funds and other & _PRICES:
-                    return funds[0]
+                    return f"{funds[0]} {_INFIX[call.op]} close_as_traded"
     return None
 
 
@@ -444,8 +456,8 @@ def _level_error(sub: Node, where: str) -> ScaleError:
     if fund:
         return ScaleError(
             f"{sub} {where} combines a per-share fundamental with an adjusted price: {why}. "
-            f"Use the as-traded price, as in {fund} / close_as_traded or "
-            f"log({fund} / close_as_traded) (per-share fields as reported at the time; not "
+            f"Use the as-traded price, as in {fund} or log({fund}) (per-share fields as "
+            "reported at the time; not "
             "under a time-series operator), or, without that column, a ratio field on its own"
         )
     if kind == "log":
@@ -464,7 +476,8 @@ def _level_error(sub: Node, where: str) -> ScaleError:
             "volume / ts_mean(volume, 20)"
         )
     if prices and any(
-        c.op in _CHANGE_OPS and _scale_or_none(c) == "pow-nonzero" for c in _calls(sub)
+        c.op in _CHANGE_OPS and _scale_or_none(c) == "pow-nonzero"
+        for c in _calls(sub, through_resets=False)
     ):
         return ScaleError(
             f"{sub} {where} is a price change or spread in adjusted units: {why}. Divide by "
@@ -495,8 +508,8 @@ def _mixed_error(node: Call) -> ScaleError:
     fund = _fundamental_over_price(node)
     if fund:
         hint = (
-            f"for a per-share fundamental use the as-traded price, as in {fund} / "
-            "close_as_traded (not under a time-series operator)"
+            f"for a per-share fundamental use the as-traded price, as in {fund} (not under a "
+            "time-series operator)"
         )
     elif _scaled_features(node) & _PRICES:
         hint = (
@@ -513,15 +526,19 @@ def _mixed_error(node: Call) -> ScaleError:
 
 
 def _as_traded_series_error(sub: Call, feature: str) -> ScaleError:
-    same_on_adjusted = _replace_feature(sub, feature, "close")
-    try:
-        check_scale_free(same_on_adjusted)
-    except ScaleError:
-        alternative = "Use an adjusted ratio or log difference"
-    else:
-        alternative = (
-            f"Use the adjusted close instead, {same_on_adjusted}, or a ratio or log difference"
-        )
+    alternative = "Use an adjusted ratio or log difference"
+    # Swap in the adjusted close only where nothing else reads an adjusted field:
+    # ts_corr(close_as_traded, close) or close_as_traded / close would become constant.
+    if not features_used(sub) & set(SCALE_EXPONENTS):
+        same_on_adjusted = _replace_feature(sub, feature, "close")
+        try:
+            check_scale_free(same_on_adjusted)
+        except ScaleError:
+            pass
+        else:
+            alternative = (
+                f"Use the adjusted close instead, {same_on_adjusted}, or a ratio or log difference"
+            )
     return ScaleError(
         f"{sub} applies {sub.op} to {feature}: as-traded prices jump at each split or "
         "dividend, so a time-series operator reads the corporate action as a price move. "

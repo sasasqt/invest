@@ -96,11 +96,14 @@ REFUSED = [
     # choose the message: the level here is "* close", not the as-traded rank.
     ("cs_rank(log(close_as_traded)) * close", LEVEL),
     ("cs_rank(fund_eps) * close", LEVEL),
+    ("cs_rank(close * sign(delta(close, 5)))", LEVEL),
+    ("cs_rank(close * sign(fund_eps / close))", LEVEL),
     # The price-floor flag and per-share fundamentals keep their idea in the safe form.
     ("sign(close - 5)", ["sign(close_as_traded - 5)"]),
     ("cs_rank(close - 5)", ["close_as_traded - 5"]),
     ("cs_rank(fund_eps / close - 1)", ["fund_eps / close_as_traded"]),
     ("cs_rank(log(fund_eps / close))", ["fund_eps / close_as_traded"]),
+    ("cs_rank(fund_eps * close)", ["fund_eps * close_as_traded"]),
     ("log(close) + fund_eps", ["log(close_as_traded)", "delta(log(close), 5)"]),
     ("close + 1", ["scale differently"]),
     ("returns + close", ["scale differently"]),
@@ -134,6 +137,7 @@ QUOTED = [
     "sign(close_as_traded - 5)",
     "fund_eps / close_as_traded",
     "log(fund_eps / close_as_traded)",
+    "fund_eps * close_as_traded",
     "ts_rank(close, 20)",
     "ts_corr(close, returns, 20)",
 ]
@@ -169,6 +173,27 @@ def test_search_never_draws_a_refused_formula():
             drawn |= ex.features_used(node)
     # The grammar still draws every feature it drew before, levels inside ratios included.
     assert drawn == set(ex.FEATURES)
+
+
+@pytest.mark.parametrize(
+    "formula",
+    [
+        "ts_corr(close_as_traded, close, 20)",
+        "ts_mean(close_as_traded / close, 20)",
+        "ts_rank(close_as_traded / close, 20)",
+    ],
+)
+def test_as_traded_series_message_suggests_no_constant_formula(formula):
+    """Swapping close_as_traded for close is suggested only where nothing else reads an
+    adjusted field: here it would give ts_corr(close, close, 20) or close / close."""
+    with pytest.raises(ex.ScaleError) as caught:
+        ex.check_scale_free(ex.parse(formula))
+    assert "adjusted close instead" not in str(caught.value), str(caught.value)
+
+
+def test_a_long_formula_is_checked_without_recursion_error():
+    """500 summed ratios parse and evaluate; the check must not end in a traceback."""
+    ex.check_scale_free(ex.parse(" + ".join(["close / open"] * 500)))
 
 
 # ---------------------------------------------------------------------------
