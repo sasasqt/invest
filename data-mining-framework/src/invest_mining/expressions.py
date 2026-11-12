@@ -686,7 +686,8 @@ def random_expression(rng: np.random.Generator, max_depth: int = 4) -> Node:
     """Sample a random well-typed, scale-free expression (uniform over a simple grammar).
 
     A draw that :func:`check_scale_free` refuses is drawn again, so search never proposes a
-    formula a later split or dividend could change. The check reads no data.
+    formula whose price or volume levels a later split or dividend could change. The check
+    reads no data; rounding residue on constant windows is not covered (REVIEW-47, REVIEW-48).
     """
 
     def grow(d: int) -> Node:
