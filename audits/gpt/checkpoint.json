@@ -794,6 +794,61 @@
         "field": 70,
         "review_report": 30
       }
+    },
+    {
+      "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+      "date": "2026-11-12",
+      "field": "integration",
+      "scheduled_for": "2026-11-12T02:00:00Z",
+      "started_utc": "2026-11-12T01:59:30.006109Z",
+      "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "source_tree": "unavailable",
+      "output_base": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "runner_sha": "28d4d231bec9053d8fb811077fba02eee9fa571c",
+      "question": "Can the recorded workflow preserve ledger state on refusal and attribute artifacts to one clean revision?",
+      "status": "bounded static scope complete; runtime blocked",
+      "budget_minutes": {
+        "total": 120,
+        "setup": 20,
+        "field": 70,
+        "review_reporting": 30
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable",
+      "scope_counts": {
+        "tracked_files": 123,
+        "reviewed": 37,
+        "inventoried": 43,
+        "partially_reviewed": 14,
+        "checked_automatically": 8,
+        "blocked": 21,
+        "remaining_unread_lines": 21909,
+        "unread_paths": 81
+      },
+      "helper_count": 1,
+      "verifier_b_used": false,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "publication_status": "published_verified",
+      "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+      "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
+      "measured_preparation_seconds": 348.994,
+      "finding_changes": [
+        "REVIEW-17/K3 source revalidated on main",
+        "INV-PR40-001 fix source-verified at current unmerged PR head",
+        "BH-2026-10-12-3 exact duplicate revalidated at recorder scope"
+      ],
+      "research": {
+        "status": "not scheduled",
+        "papers": 0,
+        "candidates": 0,
+        "experiments": 0
+      },
+      "evidence": "2026-11-12-integration/evidence.json",
+      "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+      "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+      "completed_utc": "2026-11-12T02:08:41Z"
     }
   ],
   "latest_current_run_evidence": {
@@ -3388,7 +3443,7 @@
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "prepared; verify receipt",
+    "publication_status": "published_verified",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
     "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
     "measured_preparation_seconds": 348.994,
@@ -3403,7 +3458,10 @@
       "candidates": 0,
       "experiments": 0
     },
-    "evidence": "2026-11-12-integration/evidence.json"
+    "evidence": "2026-11-12-integration/evidence.json",
+    "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+    "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+    "completed_utc": "2026-11-12T02:08:41Z"
   },
   "publication_history": [
     {
@@ -3782,13 +3840,57 @@
       "report_url": "https://github.com/sasasqt/invest/blob/0a1331c844404db291f9cbe6c5335b2b7730168e/audits/gpt/2026-11-11.md",
       "verified_head_at_report": "0a1331c844404db291f9cbe6c5335b2b7730168e",
       "main_rechecked": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+    },
+    {
+      "status": "published_verified",
+      "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+      "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+      "verified_head_at_report": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+      "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "output_parent": "f8920033085bf8d76efe493dea06e7b9d798f34a",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-12-integration/evidence.json",
+        "audits/gpt/2026-11-12.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "force": false,
+      "readback_verified": true,
+      "date": "2026-11-12",
+      "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa"
     }
   ],
   "publication_current_run": {
-    "status": "prepared",
-    "report_path": "audits/gpt/2026-11-12.md",
+    "status": "published_verified",
+    "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+    "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+    "verified_head_at_report": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+    "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
     "output_parent": "f8920033085bf8d76efe493dea06e7b9d798f34a",
-    "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8"
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-12-integration/evidence.json",
+      "audits/gpt/2026-11-12.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "force": false,
+    "readback_verified": true
   },
   "remaining_work_current_visit": [
     "qualify credential-inaccessible locked runner; no unchanged unsafe route retry",

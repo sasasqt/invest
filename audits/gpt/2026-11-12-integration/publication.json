@@ -1,0 +1,27 @@
+{
+  "status": "published_verified",
+  "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+  "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+  "verified_head_at_report": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+  "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+  "output_parent": "f8920033085bf8d76efe493dea06e7b9d798f34a",
+  "verified_changed_paths": [
+    "audits/gpt/2026-11-12-integration/evidence.json",
+    "audits/gpt/2026-11-12.md",
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/coverage-map.json",
+    "audits/gpt/coverage-map.md",
+    "audits/gpt/coverage.csv",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/exploration.json",
+    "audits/gpt/findings.json",
+    "audits/gpt/findings.md",
+    "audits/gpt/state.json",
+    "audits/gpt/validation.csv"
+  ],
+  "force": false,
+  "readback_verified": true,
+  "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+  "date": "2026-11-12",
+  "elapsed_seconds_to_verified_report": 550.994
+}
