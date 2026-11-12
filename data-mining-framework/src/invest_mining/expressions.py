@@ -224,7 +224,9 @@ def parse(text: str) -> Node:
         node = _convert(tree.body)
     except SyntaxError as exc:
         raise ExpressionError(f"syntax error: {exc.msg}") from exc
-    except RecursionError as exc:  # thousands of summed terms
+    except (RecursionError, MemoryError) as exc:
+        # Thousands of summed terms exhaust Python's stack in _convert; thousands of unary
+        # operators or powers overflow CPython's own parser stack, which raises MemoryError.
         raise ExpressionError(too_deep) from exc
     if _fold(node, _nesting) > MAX_DEPTH:
         raise ExpressionError(too_deep)

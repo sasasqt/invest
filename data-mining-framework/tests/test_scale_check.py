@@ -603,6 +603,24 @@ def test_confirm_counts_only_universe_members(tmp_path):
     assert book.read_bytes() == before and not (tmp_path / "c").exists()
 
 
+def test_confirm_refuses_a_window_with_too_few_as_traded_values(tmp_path):
+    """Values on the window's first sessions only: the formula has no value on the rest, so
+    the test would see too few dates and still use the reserved window up."""
+    bars = synthetic_market(SyntheticConfig(n_instruments=25, n_days=300, seed=5))
+    dates = sorted(bars["date"].unique())
+    start = str(pd.Timestamp(dates[150]).date())
+    bars.loc[bars["date"] >= dates[180], "close_as_traded"] = np.nan  # 30 sessions with values
+    _publish(bars, tmp_path / "m")
+    book = tmp_path / "ledger.jsonl"
+    assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
+    before = book.read_bytes()
+    args = ["confirm", "--data", str(tmp_path / "m"), "--factor", _frozen_as_traded(tmp_path)]
+    args += ["--confirm-start", start, "--ledger", str(book), "--out", str(tmp_path / "c")]
+    with pytest.raises(SystemExit, match=r"has \d+ decision date\(s\) with a complete"):
+        main(args)
+    assert book.read_bytes() == before and not (tmp_path / "c").exists()
+
+
 def test_export_refuses_a_start_without_as_traded_values(tmp_path):
     start = _as_traded_until(tmp_path / "m")
     args = ["export", "--data", str(tmp_path / "m"), "--factor", _frozen_as_traded(tmp_path)]
@@ -610,6 +628,25 @@ def test_export_refuses_a_start_without_as_traded_values(tmp_path):
         main([*args, "--start", start, "--out", str(tmp_path / "late")])
     assert not (tmp_path / "late").exists()
     assert main([*args, "--out", str(tmp_path / "all")]) == 0  # earlier dates have values
+
+
+@pytest.mark.parametrize("command", ["evaluate", "search", "confirm", "export"])
+def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, command):
+    """A market bundle passed as --universe ends in a message, not a BundleError traceback,
+    before the ledger or --out is touched."""
+    factor, book, out = tmp_path / "f.json", tmp_path / "ledger.jsonl", tmp_path / "out"
+    assert main(["freeze", "--expr", "close / open", "--horizon", "1", "--out", str(factor)]) == 0
+    args = {
+        "evaluate": ["--expr", "close / open", "--horizon", "1", "--ledger", str(book)],
+        "search": ["--trials", "5", "--ledger", str(book)],
+        "confirm": ["--factor", str(factor), "--confirm-start", "2020-06-01"],
+        "export": ["--factor", str(factor)],
+    }[command]
+    if command == "confirm":
+        args += ["--ledger", str(book)]
+    with pytest.raises(SystemExit, match="dataset_kind"):
+        main([command, "--data", str(market), *args, "--universe", str(market), "--out", str(out)])
+    assert not book.exists() and not out.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -654,10 +691,20 @@ def test_freeze_refuses_a_formula_too_long_to_save(tmp_path, terms):
     assert not out.parent.exists()
 
 
-@pytest.mark.parametrize("terms", [ex.MAX_DEPTH + 1, 2000])
-def test_a_formula_too_deep_to_parse_is_refused(terms):
+@pytest.mark.parametrize(
+    "text",
+    [
+        " + ".join(["close / open"] * (ex.MAX_DEPTH + 1)),
+        " + ".join(["close / open"] * 2000),
+        # CPython's own parser raises MemoryError when its stack overflows.
+        "-" * 20000 + "close",
+        "close" + " ** close" * 5000,
+    ],
+    ids=["151-terms", "2000-terms", "unary-minus", "powers"],
+)
+def test_a_formula_too_deep_to_parse_is_refused(text):
     with pytest.raises(ex.ExpressionError, match="nested too deeply"):
-        ex.parse(" + ".join(["close / open"] * terms))
+        ex.parse(text)
 
 
 def test_the_deepest_formula_the_parser_takes_is_saved_read_and_scored(tmp_path, market):

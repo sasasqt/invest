@@ -68,10 +68,15 @@ from invest_mining.search import (
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
-    return {
-        "universe": read_universe(args.universe)[1] if args.universe else None,
-        "fundamentals": read_fundamentals(args.fundamentals)[1] if args.fundamentals else None,
-    }
+    """The ``--universe`` and ``--fundamentals`` rows; a bundle of another kind, or none at
+    that path, ends in a message before anything is computed or recorded."""
+    try:
+        return {
+            "universe": read_universe(args.universe)[1] if args.universe else None,
+            "fundamentals": read_fundamentals(args.fundamentals)[1] if args.fundamentals else None,
+        }
+    except BundleError as exc:
+        raise SystemExit(f"{args.out}: {exc}") from exc
 
 
 def _input_hashes(args: argparse.Namespace) -> dict[str, str | None]:
@@ -179,7 +184,8 @@ def _require_labels(label: pd.DataFrame, confirmation: Window, horizon: int) -> 
     ``MIN_CROSS_SECTION`` labelled names, and the test needs ``MIN_CONFIRM_DATES`` such
     dates; with fewer it reports ``insufficient_data`` while the ledger would record the
     window as used. Only which labels exist is read, never their values, and no candidate
-    is involved, so a factor with missing values can still fall short.
+    is involved, so a factor with missing values can still fall short; ``confirm`` passes
+    only the cells where an as-traded formula's column has a value.
     """
     n_dates = int((label.notna().sum(axis=1) >= MIN_CROSS_SECTION).sum())
     if n_dates < MIN_CONFIRM_DATES:
@@ -550,9 +556,14 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
-    # A window too short for the test would be recorded as used with nothing tested.
+    # A window too short for the test would be recorded as used with nothing tested. An
+    # as-traded formula has no value where its column has none, so only those cells count;
+    # which cells exist is read, never a value.
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
-    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
+    scored = label
+    for name in sorted(features_used(parse(factor.expression)) & set(AS_TRADED_FEATURES)):
+        scored = scored.where(panel[name].notna())
+    _require_labels(scored.loc[dates[k:]], confirmation, factor.horizon_days)
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
