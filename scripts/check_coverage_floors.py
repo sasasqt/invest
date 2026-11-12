@@ -29,15 +29,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def module_key(path: str) -> str:
-    """Return the part of a report path after its last ``src`` folder, with ``/``.
+    """Return a report path from its ``invest_*`` package folder on, with ``/``.
 
-    ``data-pipeline/data-preparation/src/invest_data/bundle.py`` and the same path with
-    Windows separators both give ``invest_data/bundle.py``.
+    The package starts after the first ``src`` or ``site-packages`` folder that is
+    directly followed by an ``invest_*`` entry, so
+    ``data-pipeline/data-preparation/src/invest_data/bundle.py``, the same path with
+    Windows separators and ``venv/lib/python3.11/site-packages/invest_data/bundle.py``
+    all give ``invest_data/bundle.py``, and a folder named ``src`` inside a package is
+    kept. A path without such a folder is returned whole.
     """
     parts = path.replace("\\", "/").split("/")
-    if "src" in parts:
-        last = len(parts) - 1 - parts[::-1].index("src")
-        parts = parts[last + 1 :]
+    for i in range(len(parts) - 1):
+        if parts[i] in ("src", "site-packages") and parts[i + 1].startswith("invest_"):
+            return "/".join(parts[i + 1 :])
     return "/".join(parts)
 
 
@@ -47,6 +51,8 @@ def load_floors(pyproject: Path) -> dict:
         table = tomllib.load(fh).get("tool", {}).get("invest", {}).get("coverage")
     if not isinstance(table, dict):
         raise ValueError(f"{pyproject}: no [tool.invest.coverage] table")
+    if not isinstance(table.get("files", {}), dict):
+        raise ValueError(f"{pyproject}: coverage floor files must be a table")
     floors = {
         "total": table.get("total"),
         "default": table.get("default"),
@@ -66,14 +72,14 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
     """Return (failures, floors that could be raised) for a coverage.py JSON report."""
     failures: list[str] = []
     raisable: list[str] = []
-    seen: dict[str, float] = {}
+    seen: set[str] = set()
     for path, entry in sorted(report.get("files", {}).items()):
         key = module_key(path)
         if key in seen:
             failures.append(f"{key}: two report files map to this name")
             continue
         percent = float(entry["summary"]["percent_covered"])
-        seen[key] = percent
+        seen.add(key)
         floor = floors["files"].get(key, floors["default"])
         if percent < floor:
             failures.append(f"{key}: {percent:.2f}% is below its floor {floor}%")
@@ -85,7 +91,7 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
             raisable.append(
                 f"{key}: {percent:.2f}%, floor {floor}% can rise to {math.floor(percent)}%"
             )
-    for key in sorted(set(floors["files"]) - set(seen)):
+    for key in sorted(set(floors["files"]) - seen):
         failures.append(f"{key}: has a floor but is not in the coverage report")
     total = float(report["totals"]["percent_covered"])
     if total < floors["total"]:
@@ -98,7 +104,9 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description="Check test coverage against the floors in pyproject.toml."
+    )
     parser.add_argument("report", type=Path, help="coverage.py JSON report")
     parser.add_argument("--pyproject", type=Path, default=ROOT / "pyproject.toml")
     args = parser.parse_args(argv)

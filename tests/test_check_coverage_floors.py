@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -126,7 +127,7 @@ def test_a_whole_point_above_the_floor_is_listed_as_raisable_without_failing():
 def test_malformed_floor_tables_are_refused(tmp_path, table, message):
     pyproject = tmp_path / "pyproject.toml"
     pyproject.write_text(table, encoding="utf-8")
-    with pytest.raises(ValueError, match=message.replace(".", r"\.").replace("[", r"\[")):
+    with pytest.raises(ValueError, match=re.escape(message)):
         floors_mod.load_floors(pyproject)
 
 
@@ -158,3 +159,44 @@ def test_floors_at_the_ends_of_the_range_are_accepted(tmp_path):
     pyproject = tmp_path / "pyproject.toml"
     pyproject.write_text("[tool.invest.coverage]\ntotal = 0\ndefault = 100\n", encoding="utf-8")
     assert floors_mod.load_floors(pyproject) == {"total": 0, "default": 100, "files": {}}
+
+
+def test_module_key_keeps_a_src_folder_inside_a_package():
+    # Round 1 finding: a subpackage named src must not cut the key short.
+    assert floors_mod.module_key("data-mining-framework/src/invest_mining/src/helpers.py") == (
+        "invest_mining/src/helpers.py"
+    )
+
+
+def test_module_key_starts_at_the_outermost_package_and_keeps_top_level_modules():
+    assert floors_mod.module_key("c/src/invest_a/src/invest_b/m.py") == "invest_a/src/invest_b/m.py"
+    assert floors_mod.module_key("c/src/invest_tool.py") == "invest_tool.py"
+
+
+def test_module_key_maps_installed_wheel_paths():
+    # Round 1 finding: a report taken against installed wheels uses site-packages paths.
+    assert floors_mod.module_key("venv/lib/python3.11/site-packages/invest_data/bundle.py") == (
+        "invest_data/bundle.py"
+    )
+    assert floors_mod.module_key("C:\\venv\\Lib\\site-packages\\invest_data\\bundle.py") == (
+        "invest_data/bundle.py"
+    )
+
+
+def test_a_files_entry_that_is_not_a_table_is_refused(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "[tool.invest.coverage]\ntotal = 95\ndefault = 90\nfiles = 90\n", encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match=re.escape("coverage floor files must be a table")):
+        floors_mod.load_floors(pyproject)
+
+
+def test_main_works_without_a_module_docstring(tmp_path, monkeypatch):
+    # Round 1 finding: python -OO strips docstrings.
+    monkeypatch.setattr(floors_mod, "__doc__", None)
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 91.0}, 95.5)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 0
