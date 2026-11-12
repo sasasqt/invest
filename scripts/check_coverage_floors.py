@@ -10,10 +10,11 @@ because the suite runs with ``--cov-branch``. The floors live in
 ``[tool.invest.coverage]``: ``total`` for the whole report, ``default`` for a file
 without a floor of its own, and ``files`` mapping ``"<package>/<module path>"`` to a
 percent. The exit status is 1 when the total or any file is below its floor, or when
-a floor names a file the report does not contain (a renamed or deleted module), and
-0 otherwise. Files and a total whose coverage has risen a whole point or more above
-their floor, and files without a floor of their own, are listed under "can raise" so
-the floor can be raised or added; that never fails the check.
+a floor names a file the report does not contain (a renamed or deleted module), 2 when
+the floor table or the report cannot be read, and 0 otherwise. Files and a total whose
+coverage has risen a whole point or more above their floor, and files without a floor
+of their own, are listed under "can raise" so the floor can be raised or added; that
+never fails the check.
 """
 
 from __future__ import annotations
@@ -23,24 +24,30 @@ import json
 import math
 import sys
 import tomllib
+from collections.abc import Collection
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def module_key(path: str) -> str:
-    """Return a report path from its ``invest_*`` package folder on, with ``/``.
+def module_key(path: str, packages: Collection[str] = ()) -> str:
+    """Return a report path from its package folder on, with ``/``.
 
-    The package starts after the first ``src`` or ``site-packages`` folder that is
-    directly followed by an ``invest_*`` entry, so
-    ``data-pipeline/data-preparation/src/invest_data/bundle.py``, the same path with
-    Windows separators and ``venv/lib/python3.11/site-packages/invest_data/bundle.py``
-    all give ``invest_data/bundle.py``, and a folder named ``src`` inside a package is
-    kept. A path without such a folder is returned whole.
+    With ``packages`` (the top-level package names the floors use), the key starts at
+    the innermost folder that is one of them, so an outer folder never takes over:
+    ``/home/u/src/invest_venv/lib/python3.11/site-packages/invest_data/bundle.py``
+    gives ``invest_data/bundle.py``, and a folder named ``src`` inside a package is
+    kept. Otherwise the key starts after the last ``src`` or ``site-packages`` folder
+    (in any letter case), so ``data-pipeline/data-preparation/src/invest_data/bundle.py``,
+    its Windows form and ``venv/Lib/site-packages/invest_data/bundle.py`` all give
+    ``invest_data/bundle.py``. A path with neither is returned whole.
     """
     parts = path.replace("\\", "/").split("/")
-    for i in range(len(parts) - 1):
-        if parts[i] in ("src", "site-packages") and parts[i + 1].startswith("invest_"):
+    for i in range(len(parts) - 2, -1, -1):
+        if parts[i] in packages:
+            return "/".join(parts[i:])
+    for i in range(len(parts) - 2, -1, -1):
+        if parts[i].lower() in ("src", "site-packages"):
             return "/".join(parts[i + 1 :])
     return "/".join(parts)
 
@@ -72,14 +79,15 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
     """Return (failures, floors that could be raised) for a coverage.py JSON report."""
     failures: list[str] = []
     raisable: list[str] = []
-    seen: set[str] = set()
+    packages = {key.split("/", 1)[0] for key in floors["files"]}
+    seen: dict[str, str] = {}
     for path, entry in sorted(report.get("files", {}).items()):
-        key = module_key(path)
+        key = module_key(path, packages)
         if key in seen:
-            failures.append(f"{key}: two report files map to this name")
+            failures.append(f"{key}: two report files map to this name ({seen[key]}, {path})")
             continue
         percent = float(entry["summary"]["percent_covered"])
-        seen.add(key)
+        seen[key] = path
         floor = floors["files"].get(key, floors["default"])
         if percent < floor:
             failures.append(f"{key}: {percent:.2f}% is below its floor {floor}%")
@@ -91,7 +99,7 @@ def check(report: dict, floors: dict) -> tuple[list[str], list[str]]:
             raisable.append(
                 f"{key}: {percent:.2f}%, floor {floor}% can rise to {math.floor(percent)}%"
             )
-    for key in sorted(set(floors["files"]) - seen):
+    for key in sorted(set(floors["files"]) - set(seen)):
         failures.append(f"{key}: has a floor but is not in the coverage report")
     total = float(report["totals"]["percent_covered"])
     if total < floors["total"]:
@@ -110,14 +118,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("report", type=Path, help="coverage.py JSON report")
     parser.add_argument("--pyproject", type=Path, default=ROOT / "pyproject.toml")
     args = parser.parse_args(argv)
-    floors = load_floors(args.pyproject)
-    report = json.loads(args.report.read_text(encoding="utf-8"))
-    failures, raisable = check(report, floors)
+    try:
+        floors = load_floors(args.pyproject)
+    except (OSError, ValueError) as exc:  # tomllib.TOMLDecodeError is a ValueError
+        print(f"ERROR  {exc}")
+        return 2
+    try:
+        report = json.loads(args.report.read_text(encoding="utf-8"))
+        failures, raisable = check(report, floors)
+        total = float(report["totals"]["percent_covered"])
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        print(f"ERROR  {args.report}: not a readable coverage.py JSON report ({exc!r})")
+        return 2
     for line in raisable:
         print(f"can raise  {line}")
     for line in failures:
         print(f"FAIL  {line}")
-    total = float(report["totals"]["percent_covered"])
     print(f"coverage floors: {len(failures)} failure(s), total {total:.2f}%")
     return 1 if failures else 0
 

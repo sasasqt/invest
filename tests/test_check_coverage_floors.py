@@ -3,6 +3,8 @@
 import importlib.util
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -91,15 +93,6 @@ def test_total_below_its_floor_fails():
     assert failures == ["total: 94.99% is below its floor 95%"]
 
 
-def test_two_report_paths_with_the_same_module_name_fail():
-    report = _report(
-        {"a/src/invest_x/a.py": 90.0, "b/src/invest_x/a.py": 90.0, "c/src/invest_x/b.py": 100.0},
-        96.0,
-    )
-    failures, _ = floors_mod.check(report, FLOORS)
-    assert failures == ["invest_x/a.py: two report files map to this name"]
-
-
 def test_a_whole_point_above_the_floor_is_listed_as_raisable_without_failing():
     report = _report({"comp/src/invest_x/a.py": 89.0, "comp/src/invest_x/b.py": 100.0}, 95.5)
     failures, raisable = floors_mod.check(report, FLOORS)
@@ -163,14 +156,25 @@ def test_floors_at_the_ends_of_the_range_are_accepted(tmp_path):
 
 def test_module_key_keeps_a_src_folder_inside_a_package():
     # Round 1 finding: a subpackage named src must not cut the key short.
-    assert floors_mod.module_key("data-mining-framework/src/invest_mining/src/helpers.py") == (
-        "invest_mining/src/helpers.py"
+    assert floors_mod.module_key(
+        "data-mining-framework/src/invest_mining/src/helpers.py", {"invest_mining"}
+    ) == ("invest_mining/src/helpers.py")
+
+
+def test_module_key_anchors_on_the_innermost_known_package_folder():
+    # Round 2 finding: an outer folder such as src/invest_venv must not take over the key.
+    packages = {"invest_data", "invest_tool"}
+    path = "/home/u/src/invest_venv/lib/python3.11/site-packages/invest_data/bundle.py"
+    assert floors_mod.module_key(path, packages) == "invest_data/bundle.py"
+    assert floors_mod.module_key("c/src/invest_tool/x.py", packages) == "invest_tool/x.py"
+
+
+def test_module_key_falls_back_to_the_last_src_or_site_packages_folder_in_any_case():
+    # Round 2 findings: packages not named invest_* and Windows folder casing.
+    assert floors_mod.module_key("pkg/src/backtest_core/x.py") == "backtest_core/x.py"
+    assert floors_mod.module_key("C:/venv/Lib/Site-Packages/invest_data/bundle.py") == (
+        "invest_data/bundle.py"
     )
-
-
-def test_module_key_starts_at_the_outermost_package_and_keeps_top_level_modules():
-    assert floors_mod.module_key("c/src/invest_a/src/invest_b/m.py") == "invest_a/src/invest_b/m.py"
-    assert floors_mod.module_key("c/src/invest_tool.py") == "invest_tool.py"
 
 
 def test_module_key_maps_installed_wheel_paths():
@@ -200,3 +204,53 @@ def test_main_works_without_a_module_docstring(tmp_path, monkeypatch):
     report = tmp_path / "coverage.json"
     report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 91.0}, 95.5)), encoding="utf-8")
     assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 0
+
+
+def test_two_colliding_report_paths_are_both_named():
+    report = _report(
+        {"a/src/invest_x/a.py": 90.0, "b/src/invest_x/a.py": 90.0, "c/src/invest_x/b.py": 100.0},
+        96.0,
+    )
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == [
+        "invest_x/a.py: two report files map to this name"
+        " (a/src/invest_x/a.py, b/src/invest_x/a.py)"
+    ]
+
+
+@pytest.mark.parametrize(
+    "table, report_text, message",
+    [
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\nfiles = 90\n", "{}", "must be a table"),
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", "not json", "coverage.json"),
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", "{}", "totals"),
+    ],
+)
+def test_main_reports_a_bad_table_or_report_as_an_error_line(
+    tmp_path, capsys, table, report_text, message
+):
+    # Round 2 finding: a refused table or a broken report gives one ERROR line, exit 2.
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(table, encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(report_text, encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 2
+    out = capsys.readouterr().out
+    assert out.startswith("ERROR  ") and message in out
+
+
+def test_the_script_runs_under_python_dash_oo(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 91.0}, 95.5)), encoding="utf-8")
+    script = ROOT / "scripts/check_coverage_floors.py"
+    result = subprocess.run(
+        [sys.executable, "-OO", str(script), str(report), "--pyproject", str(pyproject)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "0 failure(s)" in result.stdout
