@@ -94,7 +94,7 @@ def test_fixed_formula_takes_evidence_from_its_confirm_run(tmp_path, data):
 
     # Evidence for a different factor is refused.
     other = tmp_path / "g.json"
-    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(other)]) == 0
+    assert main(["freeze", "--expr", "close_as_traded", "--horizon", "1", "--out", str(other)]) == 0
     with pytest.raises(SystemExit, match="was not confirmed in this output"):
         _export(data, tmp_path / "x", "--factor", str(other), "--confirmation", str(tmp_path / "c"))
 

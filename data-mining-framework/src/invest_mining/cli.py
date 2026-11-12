@@ -41,11 +41,16 @@ from invest_mining.diagnostics import (
     tail_returns,
 )
 from invest_mining.expressions import (
+    AS_TRADED_FEATURES,
     OPERATOR_VERSION,
     ExpressionError,
+    Node,
+    ScaleError,
     build_panel,
     canonical,
+    check_scale_free,
     evaluate,
+    features_used,
     parse,
     restrict,
 )
@@ -209,6 +214,26 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
         )
 
 
+def _require_scale_free(expression: Node | str, source: str) -> None:
+    """Refuse a formula a later split or dividend could change (BH-2026-11-10-1)."""
+    try:
+        check_scale_free(parse(expression) if isinstance(expression, str) else expression)
+    except ScaleError as exc:
+        raise SystemExit(f"{source}: {exc}") from exc
+
+
+def _require_as_traded(expression: Node | str, bars: pd.DataFrame, source: str) -> None:
+    """Refuse a formula that reads an as-traded column the market bundle does not hold."""
+    node = parse(expression) if isinstance(expression, str) else expression
+    for name in sorted(features_used(node) & set(AS_TRADED_FEATURES)):
+        if name not in bars.columns or not bars[name].notna().any():
+            raise SystemExit(
+                f"{source}: {node} reads {name}, but the market bundle has no {name} values "
+                "(the column is missing or empty; Yahoo bundles never have it). Use bars with "
+                "an as-traded close, or an adjusted ratio such as close / ts_max(close, 252)"
+            )
+
+
 def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     """Market bars whose closes give returns: every command scores or labels with them."""
     try:
@@ -234,7 +259,9 @@ def _evaluate(args: argparse.Namespace) -> int:
         expression = parse(args.expr)
     except ExpressionError as exc:
         raise SystemExit(f"--expr: {exc}") from exc
+    _require_scale_free(expression, "--expr")
     manifest, bars = _market_bars(args.data)
+    _require_as_traded(expression, bars, "--expr")
     window = _span(pd.DatetimeIndex(sorted(bars["date"].unique())), "data")
     if args.ledger is not None:
         # Refuse reserved data before computing anything from it.
@@ -456,7 +483,9 @@ def _confirm(args: argparse.Namespace) -> int:
             f"{args.factor}: only fixed formulas from `invest-mine freeze` can be confirmed "
             "alone; confirm search-selected factors with their family (`search --confirm-start`)"
         )
+    _require_scale_free(factor.expression, str(args.factor))
     manifest, bars = _market_bars(args.data)
+    _require_as_traded(factor.expression, bars, str(args.factor))
     panel = build_panel(bars, **_optional_inputs(args))
     dates = pd.DatetimeIndex(panel["close"].index)
     start = pd.Timestamp(args.confirm_start)
@@ -717,6 +746,7 @@ def _freeze(args: argparse.Namespace) -> int:
     """Freeze one formula chosen before looking at the data: no fitting, one trial."""
     if args.horizon < 1:
         raise SystemExit("--horizon must be at least 1")
+    _require_scale_free(args.expr, "--expr")
     factor = FrozenFactor(
         expression=args.expr,
         orientation=args.orientation,
@@ -751,10 +781,12 @@ def _export(args: argparse.Namespace) -> int:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor = _from_search(args.from_search, args.rank)
+        _require_scale_free(factor.expression, str(args.from_search))
         hashes, input_rows = _evidence_inputs(args)
         evidence = _confirmation_evidence(args.from_search, factor, hashes)
     else:
         factor = FrozenFactor.load(args.factor)
+        _require_scale_free(factor.expression, str(args.factor))
         if args.confirmation is not None:
             hashes, input_rows = _evidence_inputs(args)
             evidence = _confirmation_evidence(args.confirmation, factor, hashes)
@@ -762,6 +794,7 @@ def _export(args: argparse.Namespace) -> int:
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
     manifest, bars = _market_bars(args.data)
+    _require_as_traded(factor.expression, bars, str(args.from_search or args.factor))
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",

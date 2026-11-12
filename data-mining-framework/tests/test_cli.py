@@ -52,7 +52,7 @@ def test_cli_evaluate_search_export(tmp_path, capsys):
                 "--data",
                 str(data),
                 "--expr",
-                "-delta(close, 5)",
+                "-delta(close, 5) / close",
                 "--out",
                 str(tmp_path / "ev"),
             ]
@@ -207,7 +207,7 @@ def test_evaluate_skips_small_dates_with_the_portfolios_minimum_cross_section(tm
     data = tmp_path / "data"
     data_main(["synthetic", "--out", str(data), "--instruments", "12", "--days", "80"])
     # One name per decile: --min-tail-names 1 keeps the decile means defined.
-    args = ["evaluate", "--data", str(data), "--expr", "close", "--horizon", "1"]
+    args = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--horizon", "1"]
     args += ["--min-tail-names", "1"]
     for minimum, expected in (("1", 10), ("11", 11), ("13", 13)):
         out = tmp_path / minimum
@@ -293,7 +293,7 @@ def test_evaluate_records_the_inspection_only_once_diagnostics_exist(tmp_path, m
     import invest_mining.cli as cli
 
     data, book = _small_market(tmp_path), tmp_path / "ledger.jsonl"
-    args = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    args = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--ledger", str(book)]
 
     def failing(*_args, **_kwargs):
         raise RuntimeError("diagnostics failed")
@@ -319,7 +319,7 @@ def test_evaluate_writes_an_undefined_rank_autocorrelation_as_null(tmp_path):
     """BH-2026-10-14-3: fewer than five names leave the autocorrelation undefined."""
     data, book = _small_market(tmp_path, instruments=4, days=60), tmp_path / "ledger.jsonl"
     out = tmp_path / "out"
-    args = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    args = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--ledger", str(book)]
     assert main([*args, "--min-cross-section", "4", "--out", str(out)]) == 0
     assert json.loads((out / "metrics.json").read_text())["rank_autocorrelation_1d"] is None
     assert len(book.read_text().splitlines()) == 1

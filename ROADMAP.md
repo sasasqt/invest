@@ -42,7 +42,7 @@ Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile 
 
 ## M4 — Add reproducible mining, training, and frozen inference
 
-**Status:** in progress. A typed causal AST, a random-search baseline and frozen expression-factor inference exist. Remaining: artifact compatibility fixtures, learned preprocessing and models, fitted-artifact inference parity, and matched-budget comparisons. **Depends on:** M3; a fixed formula already works in M2.
+**Status:** in progress. A typed causal AST (formulas a later split or dividend could change are refused), a random-search baseline and frozen expression-factor inference exist. Remaining: artifact compatibility fixtures, learned preprocessing and models, fitted-artifact inference parity, and matched-budget comparisons. **Depends on:** M3; a fixed formula already works in M2.
 
 Implement typed causal AST operators and a simple search baseline, then learned preprocessing and model fitting inside development splits. Export reloadable fitted artifacts with versioned operator semantics and provenance. Compare subsequent search methods using identical data, objectives, budgets, and evaluation protocols.
 
