@@ -1,0 +1,167 @@
+name: Isolated audit runtime
+
+on:
+  workflow_dispatch:
+    inputs:
+      audited_sha:
+        description: Optional source commit, branch or tag, resolved once to a commit for the whole matrix (otherwise current main)
+        required: false
+      control_sha:
+        description: Optional exact historical control commit (failures remain failures)
+        required: false
+  pull_request:
+    paths:
+      - .github/workflows/audit-runtime.yml
+      - audits/gpt/runner/**
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.identity.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ inputs.audited_sha || github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Pin one source revision for the complete matrix
+        id: identity
+        env:
+          CONTROL_SHA: ${{ inputs.control_sha }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          source = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+          control = os.environ.get("CONTROL_SHA", "")
+          if not re.fullmatch(r"[0-9a-f]{40}", source) or (
+              control and not re.fullmatch(r"[0-9a-f]{40}", control)
+          ):
+              raise SystemExit("Source/control must resolve to full commit identities")
+          cases = [{"python": version, "kind": "audited", "sha": source}
+                   for version in ("3.11", "3.13")]
+          if control:
+              cases.append({"python": "3.11", "kind": "control", "sha": control})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("matrix=" + json.dumps({"include": cases}) + "\n")
+          print("AUDIT_SOURCE " + source)
+          PY
+
+  collection-boundary:
+    name: collection-boundary (Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          version: 0.13.6
+      - name: Host runner tests with contract checks
+        working-directory: audits/gpt/runner
+        env:
+          CONTRACT_CHECKS: '1'
+        run: uv run --no-project --no-config --with packaging==26.3 --python "${{ matrix.python }}" python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety
+      - name: Hostile Docker output and ordinary collection controls
+        env:
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+          # Check Q1, Q2 and I2 on trees a real container wrote (no output changes).
+          CONTRACT_CHECKS: '1'
+        run: |
+          uv run --no-project --no-config --python "$AUDIT_PYTHON_VERSION" python \
+            audits/gpt/runner/collection_checks.py \
+            --python-version "$AUDIT_PYTHON_VERSION" \
+            --output "$RUNNER_TEMP/collection-$AUDIT_PYTHON_VERSION"
+      - name: Preserve only host-validated collection evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: collection-${{ matrix.python }}
+          # Not a collection's unfinished snapshot (.collect-*), which a host process
+          # killed mid-collection (job cancelled or timed out) leaves behind.
+          path: |
+            ${{ runner.temp }}/collection-${{ matrix.python }}/results
+            !${{ runner.temp }}/collection-${{ matrix.python }}/results/*/.collect-*
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 30
+
+  host-tests-windows:
+    name: host-tests-windows (Python ${{ matrix.python }})
+    runs-on: windows-2025
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          version: 0.13.6
+      - name: Host runner tests on Windows (no Docker; GitHub's Windows runners lack Linux containers)
+        working-directory: audits/gpt/runner
+        env:
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+          CONTRACT_CHECKS: '1'
+        run: uv run --no-project --no-config --with packaging==26.3 --python "$env:AUDIT_PYTHON_VERSION" python -m unittest -v test_guards test_output_collection test_execution_logs test_host_safety
+
+  isolated-audit:
+    name: isolated-audit (${{ matrix.kind }}, Python ${{ matrix.python }})
+    needs: [resolve-source, collection-boundary]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.resolve-source.outputs.matrix) }}
+    steps:
+      - name: Read runner implementation
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+          path: runner-code
+      - name: Read pinned audited source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ matrix.sha }}
+          persist-credentials: false
+          path: audited-source
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          version: 0.13.6
+          python-version: ${{ matrix.python }}
+      - name: Execute offline container workload
+        env:
+          AUDITED_SHA: ${{ matrix.sha }}
+          AUDIT_PYTHON_VERSION: ${{ matrix.python }}
+          AUDIT_KIND: ${{ matrix.kind }}
+        run: |
+          python runner-code/audits/gpt/runner/isolated_runner.py \
+            --source "$GITHUB_WORKSPACE/audited-source" \
+            --expected-sha "$AUDITED_SHA" \
+            --python-version "$AUDIT_PYTHON_VERSION" \
+            --output "$RUNNER_TEMP/audit-$AUDIT_KIND-$AUDIT_PYTHON_VERSION"
+      - name: Preserve audit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: audit-${{ matrix.kind }}-${{ matrix.python }}
+          # Not a collection's unfinished snapshot (.collect-*), which a host process
+          # killed mid-collection (job cancelled or timed out) leaves behind.
+          path: |
+            ${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results
+            !${{ runner.temp }}/audit-${{ matrix.kind }}-${{ matrix.python }}/results/.collect-*
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 30

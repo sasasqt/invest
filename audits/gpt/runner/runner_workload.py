@@ -1,0 +1,627 @@
+"""Offline workload, invoked only by isolated_runner.py inside its container."""
+
+import argparse
+import gzip
+import hashlib
+import json
+import os
+import platform
+import shutil
+import signal
+import socket
+import stat
+import statistics
+import subprocess
+import sys
+import time
+import zlib
+from pathlib import Path
+
+VOLATILE_KEYS = {"created_at", "recorded_at", "retrieved_at", "created_utc"}
+SEMANTIC_GATE_VERSION = 2
+# Set by main when it runs as the container's first process (PID 1, no --init).
+CONTAINER_INIT = False
+# The container's fixed paths; the host tests point them at a temporary folder.
+WORK = Path("/work")
+INPUT = Path("/input")
+AUDIT = Path("/audit")
+BUILD_PYTHON = "/buildenv/bin/python"
+REQUIREMENTS = "/requirements.txt"
+BUILD_REQUIREMENTS = "/build-requirements.txt"
+
+
+def output_files(directory):
+    """Every regular file of the workflow output, sorted. A symbolic link, a special
+    file or a folder that cannot be listed fails the gate (CONTRACT.md W5), so no
+    entry drops out of the comparison. The walk keeps its own stack: os.walk and
+    rglob recurse on Python 3.11, and a deep output raised RecursionError there."""
+    directory = Path(directory)
+    files, pending = [], [directory]
+    while pending:
+        folder = pending.pop()
+        try:
+            with os.scandir(folder) as listing:
+                entries = list(listing)
+        except OSError as exc:
+            # The cause goes into the reason: a root the workflow never created is not
+            # a permission problem, and the output folder itself is not collected.
+            name = folder.relative_to(directory)
+            cause = exc.strerror or type(exc).__name__
+            raise ValueError(f"Workflow output folder cannot be listed ({cause}): {name}") from exc
+        for entry in entries:
+            path = Path(entry.path)
+            mode = entry.stat(follow_symlinks=False).st_mode
+            if stat.S_ISDIR(mode):
+                pending.append(path)
+            elif stat.S_ISREG(mode):
+                files.append(path)
+            else:
+                raise ValueError(
+                    "Workflow output entry is not a plain file or folder: "
+                    f"{path.relative_to(directory)}"
+                )
+    return sorted(files)
+
+
+def semantic_manifest(directory):
+    directory = Path(directory)
+
+    def clean(value):
+        if isinstance(value, dict):
+            return {key: clean(item) for key, item in value.items() if key not in VOLATILE_KEYS}
+        if isinstance(value, list):
+            return [clean(item) for item in value]
+        if isinstance(value, str):
+            return value.replace(str(directory), "$RUN")
+        return value
+
+    def normalized(path, load):
+        """JSON of the cleaned value; one nested too deeply to parse fails the gate."""
+        try:
+            return json.dumps(load(), sort_keys=True).encode()
+        except RecursionError:
+            raise ValueError(f"JSON nested too deeply: {path.relative_to(directory)}") from None
+
+    files = output_files(directory)
+    records = []
+    figures = []
+    for path in files:
+        if path.suffix == ".json":
+            payload = normalized(
+                path, lambda path=path: clean(json.loads(path.read_text(encoding="utf-8")))
+            )
+            comparison = "json; declared volatile keys and output root normalized"
+        elif path.suffix == ".jsonl":
+            payload = normalized(
+                path,
+                lambda path=path: [
+                    clean(json.loads(line))
+                    # Only a line feed ends a JSONL row: splitlines would also split
+                    # at U+2028, U+2029 and U+0085, which a JSON string may hold raw.
+                    # read_text would also turn a lone CR into a line feed.
+                    for line in path.read_bytes().decode("utf-8").split("\n")
+                    if line.strip()
+                ],
+            )
+            comparison = "jsonl; record order retained; declared volatile keys normalized"
+        elif path.name.endswith(".csv.gz"):
+            try:
+                with gzip.open(path, "rb") as stream:
+                    payload = stream.read()
+            except (OSError, EOFError, zlib.error) as exc:
+                raise ValueError(f"Invalid compressed CSV: {path.relative_to(directory)}") from exc
+            comparison = "decompressed CSV bytes; gzip header metadata excluded"
+        elif path.suffix == ".csv":
+            payload = path.read_bytes()
+            comparison = "CSV bytes"
+        elif path.suffix in (".md", ".txt", ".html", ".yaml", ".yml"):
+            payload = path.read_text(encoding="utf-8").replace(str(directory), "$RUN").encode()
+            comparison = "UTF-8 text; output root normalized"
+        elif path.suffix == ".png":
+            if not path.stat().st_size:
+                raise ValueError("Empty figure")
+            figures.append(str(path.relative_to(directory)))
+            continue
+        else:
+            payload = path.read_bytes()
+            comparison = "raw bytes; no undeclared exclusion"
+        records.append(
+            {
+                "path": str(path.relative_to(directory)),
+                "comparison": comparison,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            }
+        )
+    if not records or not figures:
+        raise ValueError("Workflow produced no semantic records or figures")
+    return {
+        "version": SEMANTIC_GATE_VERSION,
+        "volatile_json_keys": sorted(VOLATILE_KEYS),
+        "records": records,
+        "figures_present_nonempty": figures,
+        "figure_byte_comparison": "excluded; source tables participate in the gate",
+    }
+
+
+def semantic_hash(directory):
+    return hashlib.sha256(
+        json.dumps(semantic_manifest(directory), sort_keys=True).encode()
+    ).hexdigest()
+
+
+def capabilities_dropped(status):
+    """True when /proc/self/status shows the permitted, effective, bounding and (where
+    listed) ambient sets empty; no-new-privileges, probed separately, covers exec.
+
+    A non-root process has no effective capabilities whatever Docker granted it, so
+    --cap-drop=ALL shows only in the bounding set: every set must be empty.
+    """
+    sets = {
+        line.split(":", 1)[0]: int(line.split()[1], 16)
+        for line in status.splitlines()
+        if line.startswith(("CapPrm:", "CapEff:", "CapBnd:", "CapAmb:"))
+    }
+    return {"CapPrm", "CapEff", "CapBnd"} <= sets.keys() and not any(sets.values())
+
+
+def prove_boundary(sentinel, host_pid, results):
+    status = Path("/proc/self/status").read_text()
+    # Linux before 4.10 lists no NoNewPrivs line: the bit is then not proved, so the
+    # probe fails with its record written (StopIteration ended the workload before).
+    no_new_privs = next(
+        (line.split()[1] for line in status.splitlines() if line.startswith("NoNewPrivs:")),
+        None,
+    )
+    checks = {
+        "unprivileged_uid": os.getuid() != 0,
+        "no_new_privileges": no_new_privs == "1",
+        "no_capabilities": capabilities_dropped(status),
+    }
+    # A Windows host passes neither probe: its paths and process IDs name nothing
+    # inside the Linux container, so the checks would pass vacuously.
+    if sentinel is not None:
+        checks["outside_fixture_absent"] = not Path(sentinel).exists()
+    if host_pid is not None:
+        checks["host_process_not_visible"] = not Path(f"/proc/{host_pid}/environ").exists()
+    checks |= {
+        "host_canary_env_absent": "AUDIT_HOST_CANARY" not in os.environ,
+        "container_socket_absent": not Path("/var/run/docker.sock").exists(),
+        "source_readable": (INPUT / "pyproject.toml").is_file(),
+    }
+    try:
+        (INPUT / ".audit-write-probe").write_text("harmless")
+        checks["source_write_denied"] = False
+    except OSError:
+        checks["source_write_denied"] = True
+    try:
+        with socket.create_connection(("1.1.1.1", 443), timeout=1):
+            checks["network_connection_denied"] = False
+    except OSError:
+        checks["network_connection_denied"] = True
+    child = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-c",
+            "import os,pathlib,sys; print(int(not any(pathlib.Path(p).exists() for p in "
+            "sys.argv[1:]) and 'AUDIT_HOST_CANARY' not in os.environ))",
+            *([] if sentinel is None else [sentinel]),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    # Without a sentinel (Windows host) the child checks only the environment.
+    child_key = "child_inherits_" + ("env" if sentinel is None else "outside_file_and_env")
+    checks[child_key + "_denial"] = child.returncode == 0 and child.stdout.strip() == "1"
+    fixture = results / "write-positive-control"
+    fixture.write_text("allowed")
+    checks["output_writable"] = fixture.read_text() == "allowed"
+    fixture.unlink()
+    (results / "boundary.json").write_text(json.dumps(checks, indent=2))
+    if not all(checks.values()):
+        raise RuntimeError("Execution boundary probe failed; no project code imported")
+
+
+def stop_session(session):
+    """SIGKILL every process left in the step's session (W2). A process that made its
+    own process group (GNU timeout, a shell with job control, setpgid) is still in the
+    session; only setsid leaves it. Linux keeps a session's ID unused while any of its
+    processes lives, so the ID names only this step's processes."""
+    for _ in range(100):
+        found = False
+        for entry in os.listdir("/proc"):
+            if not entry.isdigit():
+                continue
+            try:
+                with open(f"/proc/{entry}/stat", encoding="ascii", errors="replace") as stream:
+                    fields = stream.read().rsplit(")", 1)[1].split()
+            except (OSError, IndexError):
+                continue
+            # A leader whose main thread exited reads "Z" while its other threads
+            # (num_threads) still run; a signal to its ID still reaches them.
+            live = fields[0] not in ("Z", "X") or int(fields[17]) > 1
+            if int(fields[3]) == session and live:
+                found = True
+                try:
+                    os.kill(int(entry), signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+        if not found:
+            return
+
+
+def execute(name, argv, cwd, results, timeout=1200, env=None):
+    import resource  # POSIX only: imported here so host tests can load this module on Windows
+
+    started = time.monotonic()
+    before = resource.getrusage(resource.RUSAGE_CHILDREN)
+    log = results / f"{name}.log"
+    with log.open("w") as stream:
+        process = subprocess.Popen(
+            argv, cwd=cwd, env=env, stdout=stream, stderr=subprocess.STDOUT, start_new_session=True
+        )
+        timed_out = False
+        try:
+            status = process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            status = 124
+        # Processes the step left in its group would run on into later steps and
+        # their timings (and could still write the results folder); stop them.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stop_session(process.pid)
+        if CONTAINER_INIT:
+            # The container's first process: every other process in the container
+            # came from a step, also one that left the step's session (setsid), and
+            # orphans are reparented here. Stop them all and reap them, so no zombie
+            # holds a slot of --pids-limit and their CPU time is counted.
+            try:
+                os.kill(-1, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            while True:
+                try:
+                    os.waitpid(-1, 0)
+                except ChildProcessError:
+                    break
+    after = resource.getrusage(resource.RUSAGE_CHILDREN)
+    result = {
+        "name": name,
+        "argv": argv,
+        "exit": status,
+        "timeout": timed_out,
+        "wall_seconds": time.monotonic() - started,
+        "child_cpu_seconds": after.ru_utime + after.ru_stime - before.ru_utime - before.ru_stime,
+    }
+    print(json.dumps(result), flush=True)
+    with (results / "validation.jsonl").open("a") as stream:
+        stream.write(json.dumps(result) + "\n")
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    # Both are left out on a Windows host (isolated_runner.boundary_arguments).
+    parser.add_argument("--sentinel")
+    parser.add_argument("--host-pid", type=int)
+    args = parser.parse_args()
+    global CONTAINER_INIT
+    CONTAINER_INIT = os.getpid() == 1
+    work = WORK
+    results = work / "results"
+    results.mkdir()
+    (work / "home").mkdir()
+    (work / "tmp").mkdir()
+    prove_boundary(args.sentinel, args.host_pid, results)
+    if execute(
+        "audit-guard-tests",
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "-v",
+            "test_guards",
+            "test_output_collection",
+            "test_execution_logs",
+        ],
+        AUDIT,
+        results,
+        timeout=60,
+    )["exit"]:
+        return 1
+    cpu_model = next(
+        (
+            line.split(":", 1)[1].strip()
+            for line in Path("/proc/cpuinfo").read_text().splitlines()
+            if line.startswith("model name")
+        ),
+        "unavailable",
+    )
+    limits = {}
+    for key in ("memory.max", "cpu.max", "pids.max"):
+        path = Path("/sys/fs/cgroup") / key
+        limits[key] = path.read_text().strip() if path.is_file() else "unavailable"
+    (results / "environment.json").write_text(
+        json.dumps(
+            {
+                "platform": platform.platform(),
+                "python": sys.version,
+                "cpu_model": cpu_model,
+                "limits": limits,
+                "hash_seed": os.environ.get("PYTHONHASHSEED"),
+                "lock_sha256": hashlib.sha256((INPUT / "uv.lock").read_bytes()).hexdigest(),
+                "parallel_benchmarks": False,
+            },
+            indent=2,
+        )
+    )
+    source = work / "source"
+    shutil.copytree(INPUT, source)
+    components = ["data-pipeline/data-preparation", "data-mining-framework", "strategy-evaluation"]
+    # The build environment makes the workspace wheels, so its locked versions are
+    # proved before any wheel is built; the runtime environment's are proved right
+    # after the wheels are installed. A failed check stops the workload before any
+    # product command runs (W6): a red final verdict alone would still have run the
+    # product's tests and workflows in an environment the check had rejected.
+    verifier = str(AUDIT / "verify_installed.py")
+    if execute(
+        "build-environment",
+        [BUILD_PYTHON, verifier, "--requirements", BUILD_REQUIREMENTS],
+        source,
+        results,
+    )["exit"]:
+        return 1
+    built = work / "built"
+    built.mkdir()
+    stage = execute(
+        "build-workspace",
+        [
+            BUILD_PYTHON,
+            "-m",
+            "pip",
+            "wheel",
+            "--no-index",
+            "--no-deps",
+            "--no-build-isolation",
+            "--wheel-dir",
+            str(built),
+            *[str(source / part) for part in components],
+        ],
+        source,
+        results,
+    )
+    if stage["exit"]:
+        return 1
+    if execute(
+        "create-environment",
+        [sys.executable, "-m", "venv", "--system-site-packages", str(work / "env")],
+        source,
+        results,
+    )["exit"]:
+        return 1
+    python = str(work / "env/bin/python")
+    if execute(
+        "install-workspace",
+        [
+            python,
+            "-m",
+            "pip",
+            "install",
+            "--no-index",
+            "--no-deps",
+            *[str(path) for path in sorted(built.glob("*.whl"))],
+        ],
+        source,
+        results,
+    )["exit"]:
+        return 1
+    env = dict(
+        os.environ,
+        PATH=f"{work / 'env/bin'}:/usr/local/bin:/usr/bin:/bin",
+        COVERAGE_FILE=str(work / "coverage-data"),
+    )
+    checks = [
+        execute(
+            "installed-graph",
+            [
+                python,
+                verifier,
+                "--requirements",
+                REQUIREMENTS,
+                "--workspace-prefix",
+                f"{work / 'env'}/",
+            ],
+            source,
+            results,
+            env=env,
+        )
+    ]
+    if checks[0]["exit"]:
+        return 1
+    commands = [
+        ("format", [python, "-m", "ruff", "format", "--check", "."]),
+        ("lint", [python, "-m", "ruff", "check", "."]),
+        ("types", [python, "-m", "mypy", *[str(source / x / "src") for x in components]]),
+        (
+            "tests",
+            [
+                python,
+                "-m",
+                "pytest",
+                "--cov=invest_data",
+                "--cov=invest_mining",
+                "--cov=invest_evaluation",
+                "--cov-branch",
+                "--cov-report=term-missing",
+                f"--cov-report=json:{results / 'coverage.json'}",
+                "--durations=25",
+            ],
+        ),
+        ("links", [python, "scripts/check_markdown_links.py"]),
+    ]
+    for name, argv in commands:
+        checks.append(execute(name, argv, source, results, env=env))
+    for cli in ("invest-data", "invest-mine", "invest-eval"):
+        checks.append(
+            execute("cli-" + cli, [str(work / "env/bin" / cli), "--help"], work, results, env=env)
+        )
+    if sys.version_info[:2] == (3, 11):
+        repeat_env = dict(env, PYTHONHASHSEED="12345")
+        checks.append(
+            execute("hash-seed-repeat", [python, "-m", "pytest"], source, results, env=repeat_env)
+        )
+        for component in components:
+            name = component.split("/")[-1]
+            isolated = work / ("independent-" + name)
+            setup = execute(
+                name + "-venv", [sys.executable, "-m", "venv", str(isolated)], work, results
+            )
+            checks.append(setup)
+            if setup["exit"]:
+                continue
+            interpreter = str(isolated / "bin/python")
+            package = {
+                components[0]: "invest_data",
+                components[1]: "invest_mining",
+                components[2]: "invest_evaluation",
+            }[component]
+            chosen = sorted(
+                {
+                    *[str(x) for x in built.glob("invest_data-*.whl")],
+                    *[str(x) for x in built.glob(package + "-*.whl")],
+                }
+            )
+            install = execute(
+                name + "-install",
+                [
+                    interpreter,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--no-index",
+                    "--find-links=/wheelhouse",
+                    *chosen,
+                    "pytest",
+                ],
+                work,
+                results,
+            )
+            checks.append(install)
+            if install["exit"]:
+                continue
+            if component == components[2]:
+                checks.append(
+                    execute(
+                        "evaluation-independent-import",
+                        [
+                            interpreter,
+                            "-c",
+                            "import importlib.util as u; "
+                            "assert u.find_spec('invest_mining') is None",
+                        ],
+                        work,
+                        results,
+                    )
+                )
+            checks.append(
+                execute(
+                    name + "-tests",
+                    [
+                        interpreter,
+                        "-m",
+                        "pytest",
+                        "-p",
+                        "no:cacheprovider",
+                        str(source / component / "tests"),
+                    ],
+                    work,
+                    results,
+                )
+            )
+    # Run a small workflow even when unrelated repository tests are red. Its
+    # status stays separate; timing samples require that workflow to succeed.
+    case_env = dict(env, INSTRUMENTS="20", DAYS="300", TRIALS="20")
+    samples = []
+    reference = None
+    for repetition in range(8):
+        destination = work / "workflow-cases" / f"S-{repetition}"
+        sample = execute(
+            f"synth-S-{repetition}",
+            ["bash", str(source / "scripts/synthetic_workflow.sh"), str(destination)],
+            source,
+            results,
+            timeout=60,
+            env=case_env,
+        )
+        sample.update(
+            {
+                "case": "synth-S",
+                "repetition": repetition,
+                "warmup": repetition == 0,
+                "instruments": 20,
+                "sessions": 300,
+                "trials": 20,
+                "semantic_gate_version": SEMANTIC_GATE_VERSION,
+            }
+        )
+        if sample["exit"] == 0:
+            try:
+                manifest = semantic_manifest(destination)
+                observed = hashlib.sha256(json.dumps(manifest, sort_keys=True).encode()).hexdigest()
+                manifest_name = f"synth-S-{repetition}-semantic-manifest.json"
+                (results / manifest_name).write_text(
+                    json.dumps(manifest, indent=2), encoding="utf-8"
+                )
+                reference = reference or observed
+                sample.update(
+                    {
+                        "semantic_hash": observed,
+                        "correctness_gate": observed == reference,
+                        "semantic_manifest": manifest_name,
+                    }
+                )
+                sample["output_bytes"] = sum(
+                    path.stat().st_size for path in output_files(destination)
+                )
+            except (ValueError, OSError) as exc:
+                sample.update({"correctness_gate": False, "reason": str(exc)})
+        else:
+            sample["correctness_gate"] = False
+        samples.append(sample)
+        with (results / "benchmark-raw.jsonl").open("a") as stream:
+            stream.write(json.dumps(sample) + "\n")
+        if not sample["correctness_gate"]:
+            break
+    valid = [x["wall_seconds"] for x in samples if not x["warmup"] and x["correctness_gate"]]
+    (results / "benchmark-summary.json").write_text(
+        json.dumps(
+            {
+                "case": "synth-S",
+                "semantic_gate_version": SEMANTIC_GATE_VERSION,
+                "valid_measured_samples": len(valid),
+                "median_seconds": statistics.median(valid) if len(valid) == 7 else None,
+                "min_seconds": min(valid) if valid else None,
+                "max_seconds": max(valid) if valid else None,
+                "comparison_baseline": None,
+                "regression_claim": "unavailable",
+                "memory_peak": "not measured",
+                "scope": (
+                    "subprocess wall/CPU, startup and leftover-process cleanup included; "
+                    "hashing excluded"
+                ),
+                "test_failures_retained": [x["name"] for x in checks if x["exit"]],
+            },
+            indent=2,
+        )
+    )
+    return int(any(x["exit"] for x in checks) or len(valid) != 7)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
