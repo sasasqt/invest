@@ -1,6 +1,6 @@
 # Claude workflow and routines
 
-Claude wrote this page and keeps it current. It describes how work on invest is organized around Claude's five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). The two ChatGPT routines that work on invest, the daily repository audit and the daily pull-request review, are described with the user's other ChatGPT tasks in [GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end.
+Claude wrote this page and keeps it current. It describes how work on invest is organized around Claude's five scheduled routines that hunt, fix and audit, the ledgers they share, and the path every pull request takes to `main`. It covers the process, not the code; the code's layout is in the [architecture guide](ARCHITECTURE.md). The two ChatGPT routines that work on invest, the daily repository audit and the daily pull-request review, are described with the user's other ChatGPT tasks in [GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md). It was checked on 2026-11-11 against the [sources](#sources) listed at the end, and updated on 2026-11-13 for the routine changes of 2026-11-12.
 
 The routines follow their own instruction files, which live in the **project library**: the shared folder of the Claude project that runs them, outside Git. Below, paths under `review/`, `ideas/`, `.notes/` and `routines/` are in that library, `audits/...` paths are on the branch named with them, and all other paths are in this repository. Where this page and those files differ, the files win, and the weekly docs audit reports the difference (see [Docs audit](#docs-audit-saturdays)).
 
@@ -8,7 +8,7 @@ The routines follow their own instruction files, which live in the **project lib
 
 - **The user** decides what gets built and fixed, answers the questions the routines raise, set up the two ChatGPT routines, and decides every merge.
 - **Claude** works in project threads on the user's requests (for example the staged bug-fix pull requests) and runs the five scheduled routines below.
-- **GPT** (ChatGPT / OpenAI) runs two scheduled tasks: a repository audit on its own branch every day at 03:00 Berlin, and a review of every open pull request in one maintained comment every day at 21:00 Berlin ([GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md)).
+- **GPT** (ChatGPT / OpenAI) runs two scheduled tasks: a repository audit on its own branch every day at 03:00 Berlin, and, every day at 21:00 Berlin, a review of each eligible current revision of an open pull request, drafts included, kept in one maintained comment per pull request ([GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md)).
 
 ## The big picture
 
@@ -39,7 +39,7 @@ The repo audit and the GPT audit also cross-check each other, and the idea scout
 | Routine | Starts (Europe/Berlin) | Writes to the repository | Main outputs | Runs on, normally |
 |---|---|---|---|---|
 | [Bug hunt](#bug-hunt-weekdays) | Monday to Friday, 01:55 | nothing (report only) | `review/bug-hunt/`: nightly report, saved reproductions, the ledger `findings.md`, the generated `open-bugs.md`, `state.json` | Fable 5.1, xhigh |
-| [Bug fix](#bug-fix-daily) | every day, 04:00 | pull requests from its own branches `claude/project-thread-7rf56w-<topic>`, plus small fixes pushed to other open pull requests; never merges | pull requests; `review/bug-fix/`: report, `decisions.md`, `state.json` | Opus 5.5, xhigh writes; Fable 5.1 reviews |
+| [Bug fix](#bug-fix-daily) | every day, 04:00 | pull requests from its own branches `claude/project-thread-7rf56w-<topic>` (fixes, docs, mirrors, one coverage and one typing pull request), plus small fixes pushed to other open pull requests; never merges | pull requests; `review/bug-fix/`: report, `decisions.md`, `state.json` | Opus 5.5, xhigh writes; Fable 5.1 reviews |
 | [Idea scout](#idea-scout-saturdays) | Saturday, 02:30 | nothing (report only) | `ideas/new-ideas.md` (every scouted idea, never deleted); `ideas/scout/`: weekly report, research tests | Fable 5.1, high |
 | [Docs audit](#docs-audit-saturdays) | Saturday, 05:00 | nothing (report only) | `review/docs-audit/`: weekly report, the ledger `findings.md`, `state.json` | Fable 5.1, high |
 | [Repo audit](#whole-repo-audit-sundays-and-the-gpt-audit) | Sunday, 00:37 | only the folder `audits/claude/` on its branch `claude/repo-audits` | that folder; defect rows in the hunt ledger | Fable 5.1, xhigh |
@@ -76,9 +76,9 @@ If the hunt has not finished (and on weekends, when it does not run), the bug fi
 A report-only hunt for real defects on `main`, before the user meets them. It never commits, pushes, opens pull requests or issues, or edits tracked files. Each night it:
 
 1. **Orients** on a fresh worktree of `origin/main`, fetches the audit branches `claude/repo-audits` and `gpt/repo-audits`, reads the README, the contracts and TODO, and gathers what is already known: its ledger, open pull requests, unchecked `REVIEW-xx` items, the repo audit's `RA-` rows and the GPT audit's findings.
-2. **Runs the CI checks**, the synthetic workflow and the Yahoo snapshot replay.
+2. **Runs the CI checks** (and the coverage floors once their check is on `main`), the synthetic workflow and the Yahoo snapshot replay, and counts the type gaps that strict mypy reports (report only).
 3. **Reviews the commits** that landed since the last run (`code-review xhigh`).
-4. **Hunts:** an end-to-end pass every night (guard parity between paths, reports versus numbers, side effects, docs for changed code), a real-data pass on the replay, a deep pass that rotates over four areas (data pipeline, mining, evaluation, then scripts, root tests and docs versus behavior), a statistics cross-check and mutation sampling on Wednesdays, and the GPT audit findings (step 4e, below).
+4. **Hunts:** an end-to-end pass every night (guard parity between paths, reports versus numbers, side effects, docs for changed code), a real-data pass on the replay, a deep pass that rotates over four areas (data pipeline, mining, evaluation, then scripts, root tests and docs versus behavior), a statistics cross-check and mutation sampling on Wednesdays, a type-holes lens whose findings name the type that would have caught them, and the GPT audit findings (step 4e, below).
 5. **Verifies every candidate.** Reviewer 2, a fresh helper, judges every keep, drop and severity blind first, then compares with the run's verdicts; verifier B settles disagreements.
 6. **Writes** the reproductions, the ledger, `open-bugs.md` (generated by `review/bug-hunt/tools/open_bugs.py`, never edited by hand), the report and `state.json`, in that order.
 7. **Tells the user** every night, with a one-line weekly summary on Fridays. When a finding sits in a function an open pull request changes, it also tells the thread that owns that pull request.
@@ -110,8 +110,10 @@ Turns open ledger rows into pull requests: one coherent group per pull request, 
 ```mermaid
 flowchart TD
   S1["Maintain its own open PRs: CI, conflicts with main,<br/>unanswered review comments, the mirrors PR"] --> S1b["Small, confident fixes on other open PRs,<br/>shared with the thread that opened them"]
-  S1b --> CAP{"Five or more of its<br/>own PRs still open?"}
-  CAP -- yes --> S9["Report and state, post, one phone push"]
+  S1b --> CAP{"Five or more of its own PRs open,<br/>not counting the coverage PR,<br/>the typing PR and held drafts?"}
+  CAP -- yes --> C1["Coverage work: tests only,<br/>in the one coverage PR"]
+  C1 --> T1["Typing work: types only,<br/>in the one typing PR"]
+  T1 --> S9["Report and state, post, one phone push"]
   CAP -- no --> S2["Gather open rows, re-verify each on current main"]
   S2 --> S4["Group by relevance, then severity, then location;<br/>drop groups an open PR overlaps; pick one"]
   S4 --> S4b["Fix plan checked by reviewer 2"]
@@ -119,15 +121,16 @@ flowchart TD
   S5 --> S6["CI checks; synthetic workflow and Yahoo replay,<br/>main compared with the branch"]
   S6 --> S7["Review ladder: always two fresh full-diff rounds"]
   S7 --> S7b["Reviewer 2 checks every judgment call"]
-  S7b --> S8["Final overlap check, push, open the PR,<br/>assign the user"]
-  S8 --> S8b["Mirrors: refresh or open the mirrors PR"]
+  S7b --> S8["Final overlap check, push, open the PR<br/>(a held draft when it waits on the user), assign the user"]
+  S8 --> T2["Typing work: types only,<br/>in the one typing PR"]
+  T2 --> S8b["Mirrors: refresh or open the mirrors PR"]
   S8b --> S9
 ```
 
 - **Never merges.** It never merges, pushes to `main`, approves, enables auto-merge, or closes or reopens a pull request, and never force-pushes; it brings `main` into a branch with a merge commit.
-- **Limits.** At most one new fix pull request and one new docs-only pull request per run, and none while five or more of its own pull requests are open (it then only maintains them). It installs nothing and makes no structural change beyond the fix: those go under "Decisions needed" in its report.
-- **Overlap filter.** A group is blocked when any line its bugs cite or its fix would change is in the same file as, and within 10 lines of, a line an open pull request changes, or when an open pull request claims one of its bugs. `README.md`, `ROADMAP.md` and `TODO.md` are exempt, except for a docs finding's own lines.
-- **Unrelated bugs** found while fixing get a `BF-<date>-<n>` row in the hunt ledger, a `REVIEW-xx` item in `TODO.md` and a "Found, not fixed" line in the pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 6).
+- **Limits.** At most one new fix pull request and one new docs-only pull request per run, and none while five or more of its own pull requests are open. Three kinds never count toward the five: the one **coverage** pull request, which only adds tests and gets the run's work once the five are reached; the one **typing** pull request, to which every run adds missing types to code on `main` without changing behavior; and **held drafts**, fixes that wait on the user's decision or whose checks still fail, opened as drafts with the question in the description and marked ready only after the user answers in the routine's thread. The coverage and typing pull requests stop growing at about 400 changed lines until the user merges them. It installs nothing and makes no structural change beyond the fix: those go under "Decisions needed" in its report.
+- **Overlap filter.** A group is blocked when any line its bugs cite or its fix would change is in the same file as, and within 10 lines of, a line an open pull request changes, or when an open pull request claims one of its bugs. `README.md`, `ROADMAP.md` and `TODO.md` are exempt, except for a docs finding's own lines, and the typing pull request blocks no bug group.
+- **Related and unrelated bugs.** A bug the fix or its tests need counts as related and is fixed in the same pull request, in its own commit with its own failing check. Unrelated bugs found while fixing get a `BF-<date>-<n>` row in the hunt ledger, a `REVIEW-xx` item in `TODO.md` and a "Found, not fixed" line in the pull request ([author steps](../GIT_GUIDELINES.md#before-marking-ready), step 6); an unrelated high-severity bug makes the pull request a held draft that asks the user.
 - **Docs findings.** A docs finding rides in the bug pull request when that pull request edits its lines or changes the behavior it describes; the others go into one docs-only pull request. In the docs-audit ledger it changes only the Status and Resolved by cells of the rows it fixed.
 - **Mirrors.** It keeps at most one open docs-only pull request that regenerates the read-only copies under [`docs/audits/`](audits/README.md) ([ledgers](#ledgers-and-mirrors-on-main)); after one merges, the next run opens a new one once a copy differs from `main`.
 
@@ -253,13 +256,13 @@ flowchart TD
 - A full-diff round sees earlier findings only after it has reported its own. Docs-, comment-, rename-, test- or formatting-only fixes never move a pull request up.
 - A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area starts at round 3.
 - The pull request states each round's number, model, effort, scope and finding count, and how each finding was resolved. Green CI alone is not readiness.
-- **In the bug fix:** every fix gets two fresh full-diff rounds (the user's rule of 2026-10-27, stricter than the conditional extra round): rounds 3 and 5 when the area had an escaped bug, and every hunt finding counts as one, otherwise rounds 1 and 3. A docs-only pull request gets one round (round 3); a pull request that carries only mirrors gets none. The fix-commit rounds 4, 6 and 8 always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
+- **In the bug fix:** every fix gets two fresh full-diff rounds (the user's rule of 2026-10-27, stricter than the conditional extra round): rounds 3 and 5 when the area had an escaped bug, and every hunt finding counts as one, otherwise rounds 1 and 3. A docs-only pull request gets one round (round 3), and so does a coverage pull request; a typing pull request gets one, or two when it changes more than about 100 lines of source code; a pull request that carries only mirrors gets none. The fix-commit rounds 4, 6 and 8 always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
 - **Bug-free requests:** when the user asks for a change to be made bug free or hardened, the user's standing rule for such requests applies instead of the ladder's checkpoint after round 8: rounds of up to three independent reviewers go on until a round finds no real bug (when that round ran below max effort, one more round at max must also be clean), or until 10 rounds unless the user sets another cap for that pull request (PR #32 ran 19 rounds after the user lifted the cap at round 10 and later set a stop rule).
 - Before a milestone closes, or earlier when the same kind of defect keeps recurring, a [checkpoint review](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system comes before the next feature.
 
 ### ChatGPT review
 
-A ChatGPT task reviews every open pull request, drafts included, every day at 21:00 Berlin ([GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md)). The review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found", "Review — Changes needed" or "Review — Review incomplete" (evidence is missing, or the revisions moved before validation finished), with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority (P1 to P3); optional ones end in `O<n>`. When a head is clean, a separate short comment says so. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head. A head gets at most five ChatGPT review rounds or comments; a new head resets the count.
+Every day at 21:00 Berlin a ChatGPT task reviews each eligible current revision of an open pull request, drafts included ([GPT / OpenAI routines](GPT_OPENAI_ROUTINES.md)). A head stops being eligible after five ChatGPT review rounds or comments on it, and a new head resets the count; a capped head is still listed and checked, but gets no new review or comment. The detailed review lives in one comment per pull request that it keeps updating, headed "Review — No blocking issues found", "Review — Changes needed" or "Review — Review incomplete" (evidence is missing, or the revisions moved before validation finished), with the reviewed head and target commits and a dated history of earlier rounds. Findings carry IDs such as `INV-PR<number>-<nnn>` with a priority or severity label (P1 to P3 in earlier reviews, words such as Low in later ones); optional ones end in `O<n>`. Each completed clean review also adds a brief separate notice, even when it reuses an earlier review of an unchanged head. The author answers each finding in a pull-request comment and pushes the fix to the same pull request, the default of [author step 5](../GIT_GUIDELINES.md#before-marking-ready) (which also allows closing it and opening a new one); ChatGPT then reviews the new head.
 
 ### Merge gate
 
@@ -270,14 +273,14 @@ A ChatGPT task reviews every open pull request, drafts included, every day at 21
 
 ## Sources
 
-Checked on 2026-11-11. Library paths are in the project library.
+Checked on 2026-11-11 and updated on 2026-11-13. Library paths are in the project library.
 
 - Review ladder, author steps and merge strategy: [`GIT_GUIDELINES.md`](../GIT_GUIDELINES.md); checkpoint reviews: [`RAPID_DEVELOPMENT.md` §11](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones).
-- Bug hunt: `.notes/invest-bug-hunt/SKILL.md` (v4.11) and the routine prompt `.notes/invest-daily-bug-hunt_prompt_v8.txt`.
-- Bug fix: `.notes/invest-bug-fix/SKILL.md` and `.notes/invest-daily-bug-fix_prompt_v7.txt`.
+- Bug hunt: `.notes/invest-bug-hunt/SKILL.md` (v4.14) and the routine prompt `.notes/invest-daily-bug-hunt_prompt_v8.txt`.
+- Bug fix: `.notes/invest-bug-fix/SKILL.md` (v15.1) and `.notes/invest-daily-bug-fix_prompt_v13.txt`.
 - Idea scout: `.notes/invest-idea-scout/SKILL.md` and `.notes/invest-weekly-idea-scout_prompt_v6.txt`.
-- Docs audit: `.notes/invest-docs-audit/SKILL.md` (v3) and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
-- Repo audit: `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` (v3, 2026-11-01) and its scheduled task (Sundays 00:37 Berlin, read live on 2026-11-11).
+- Docs audit: `.notes/invest-docs-audit/SKILL.md` (as of 2026-11-12, after v3) and `.notes/invest-weekly-docs-audit_prompt_v2.txt`.
+- Repo audit: `routines/invest-weekly-repo-audit/INSTRUCTIONS.md` (v4, 2026-11-12) and its scheduled task (Sundays 00:37 Berlin, read live on 2026-11-11).
 - Schedules of the other four routines, their thread models and the merge rules: project memory, as recorded at each routine's last read-back.
-- ChatGPT routines (schedules, the five-round cap): [`docs/GPT_OPENAI_ROUTINES.md`](GPT_OPENAI_ROUTINES.md) (#44, renamed in #45); review format: the review comments on pull request #41.
+- ChatGPT routines (schedules, the five-round cap): [`docs/GPT_OPENAI_ROUTINES.md`](GPT_OPENAI_ROUTINES.md) (#44, renamed in #45); review format and labels: the review comments on pull requests #41 and #43.
 - Audit branches: the commit history and file lists of `claude/repo-audits` and `gpt/repo-audits`.

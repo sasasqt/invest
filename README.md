@@ -26,7 +26,7 @@ Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
 
-Scheduled routines hunt for bugs every weekday night, work on fix pull requests every day (at most one new fix pull request and one new docs-only pull request per run), and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews open pull requests every day, and nothing merges into `main` without the user's word. [Claude workflow and routines](docs/CLAUDE_WORKFLOW.md) describes Claude's routines and their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams; [GPT / OpenAI routines](docs/GPT_OPENAI_ROUTINES.md) describes the ChatGPT routines, the two that work on invest among them. Read-only copies of the routines' open findings, ideas and decisions are in [audit mirrors](docs/audits/README.md).
+Scheduled routines hunt for bugs every weekday night, work on fix pull requests every day (at most one new fix pull request and one new docs-only pull request per run), and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews eligible open pull requests every day, and nothing merges into `main` without the user's word. [Claude workflow and routines](docs/CLAUDE_WORKFLOW.md) describes Claude's routines and their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams; [GPT / OpenAI routines](docs/GPT_OPENAI_ROUTINES.md) describes the ChatGPT routines, the two that work on invest among them. Read-only copies of the routines' open findings, ideas and decisions are in [audit mirrors](docs/audits/README.md).
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
@@ -187,7 +187,8 @@ CI: Docker checks on Linux, host-side tests on Linux and Windows. It checks host
 against one pinned source revision. See the
 [CI audit checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks) for triggers,
 evidence and limitations. It does not access live vendor data or publish results
-to the repository.
+to the repository. The [runner contract](audits/gpt/runner/CONTRACT.md) lists the
+host-side rules its checks enforce.
 
 ## Local files
 
