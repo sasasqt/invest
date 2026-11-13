@@ -393,3 +393,18 @@ def test_a_file_without_a_floor_is_never_told_to_go_below_the_default():
 def test_a_percentage_rounding_below_a_fractional_floor_is_shown_with_all_its_digits():
     assert floors_mod.shown(88.505, 88.505) == "88.505"
     assert floors_mod.shown(88.51, 88.505) == "88.51"
+
+
+@pytest.mark.parametrize(
+    "text", ["[tool]\ninvest = 1\n", "tool = 1\n", "[tool.invest]\ncoverage = 3\n"]
+)
+def test_a_parent_that_is_not_a_table_gives_an_error_line(tmp_path, capsys, text):
+    # Review INV-PR49-O1: `invest = 1` crashed the .get chain with a traceback and exit 1.
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(text, encoding="utf-8")
+    with pytest.raises(ValueError, match=re.escape("no [tool.invest.coverage] table")):
+        floors_mod.load_floors(pyproject)
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({}, 96.0)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 2
+    assert capsys.readouterr().out.startswith("ERROR  ")
