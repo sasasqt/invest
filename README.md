@@ -20,7 +20,7 @@ Three rules apply to every change, in code, data, research results and documenta
 2. **Verify under real conditions, at the scope of the claim.** Evidence counts only when it comes from the actual inputs and covers the same scope as the claim. Convenient inputs and partial checks prove less than they appear to.
 3. **Seek disconfirmation.** When a check disagrees with the work, change the work, not the check, and try to prove a change wrong before handing it off.
 
-Every change must work on both Linux and Windows. CI tests only Linux for now, so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
+Every change must work on both Linux and Windows. The standard CI workflow tests only Linux for now (the audit runner's workflow also runs its host tests on Windows), so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
 
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, review fixes delivered by editing the existing pull request (or closing it and opening a new one), and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
@@ -168,7 +168,7 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 ### Known limitations of the baseline
 
 - The only network adapter is the test-only Yahoo Finance one (`invest-data yahoo`); it has no delisted tickers, point-in-time membership or fundamentals. For research data use `import-csv` with your own bars (universe and fundamentals bundles can be published from DataFrames with `invest_data.schemas`), or add an adapter beside `invest_data.yahoo`.
-- Yahoo snapshot downloads publish by renaming a staging directory onto an empty reserved directory, which works on Linux and macOS but fails on Windows. CI does not test Windows yet, and several readers and writers still use the platform's default text encoding ([BUILD-03](TODO.md#m1--packages-and-tooling)).
+- Yahoo snapshot downloads publish by renaming a staging directory onto an empty reserved directory, which works on Linux and macOS but fails on Windows. The standard CI workflow does not test Windows yet, and several readers and writers still use the platform's default text encoding ([BUILD-03](TODO.md#m1--packages-and-tooling)).
 - Prices are total-return adjusted bars only: evaluation and mining refuse bars declared `unadjusted` or `split_adjusted`, because no consumer applies splits and dividends yet (EVAL-01). Unadjusted closes turn a split into a crash; split-adjusted closes drop each dividend, which flatters shorts in high-yield names. A CSV of raw or split-adjusted prices with a total-return adjusted close column converts on import with `invest-data import-csv --price-adjustment unadjusted --adjusted-close <column>` (raw closes are kept as `close_as_traded`). A minimum price (`execution.min_price > 0`) needs the optional as-traded close `close_as_traded`; adjusted closes depend on later corporate actions. Synthetic and `import-csv` bars can carry it; Yahoo bars cannot, so the historical workflow runs without a price floor.
 - Daily bars only. Fill prices are the open (mid) plus explicit costs; there is no intraday simulation, lot sizes or price limits. Target sizes use equity marked at the fill-date open; when it is not positive, the run stops instead.
 - Missing marks can leave stale valuations until new prices or explicit settlements arrive. Historical claims require reliable settlement events and data-quality review; a final stored bar is not evidence of delisting. The baseline supports one cash settlement per instrument, on a market session, without separate settlement fees or relisting.
@@ -178,6 +178,16 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 ## Documentation maintenance
 
 Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change, and [docs/CLAUDE_WORKFLOW.md](docs/CLAUDE_WORKFLOW.md) when the review ladder or the merge rules change, or when a routine change (made in the project library) makes it wrong. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
+
+## Isolated audit runner
+
+The [conditional audit workflow](.github/workflows/audit-runtime.yml) tests
+[Docker audit tooling](audits/gpt/runner/README.md) separately from normal
+CI: Docker checks on Linux, host-side tests on Linux and Windows. It checks hostile output collection before running the full isolated audit
+against one pinned source revision. See the
+[CI audit checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks) for triggers,
+evidence and limitations. It does not access live vendor data or publish results
+to the repository.
 
 ## Local files
 
