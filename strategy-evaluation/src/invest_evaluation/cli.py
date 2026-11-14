@@ -34,13 +34,14 @@ T = TypeVar("T")
 
 
 def code_revision(source: Path = Path(__file__)) -> tuple[str | None, bool | None]:
-    """Git revision and uncommitted-changes flag of the checkout this code was loaded from.
+    """Git revision of the checkout this code was loaded from, and whether it is dirty.
 
     Looked up from the module's own location, never the caller's working directory, so a run
     started from another repository cannot record that repository's commit. Code that Git
     does not track there (an installed wheel, even inside a checkout's virtualenv) gives
-    ``(None, None)``. The flag covers tracked files of the whole checkout, because the run
-    also uses the other workspace packages.
+    ``(None, None)``. The flag covers the whole checkout, because the run also uses the
+    other workspace packages: uncommitted changes to tracked files, and untracked files Git
+    does not ignore, which can hold code the run imported (K15).
     """
     source = source.resolve()
 
@@ -57,7 +58,7 @@ def code_revision(source: Path = Path(__file__)) -> tuple[str | None, bool | Non
     try:
         git("ls-files", "--error-unmatch", "--", source.name)
         revision = git("rev-parse", "HEAD")
-        dirty = bool(git("status", "--porcelain", "--untracked-files=no"))
+        dirty = bool(git("status", "--porcelain", "--untracked-files=normal"))
     except (OSError, subprocess.SubprocessError):
         return None, None
     return revision, dirty
