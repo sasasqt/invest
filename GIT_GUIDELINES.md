@@ -58,6 +58,7 @@ git commit -m "Describe the change"
 - Run checks appropriate to the change. For Python behavior changes, use the component's formatting, linting, type checking, tests, and packaging checks once those tools exist. Documentation-only changes need link and whitespace validation rather than invented application tests.
 - Distinguish passing, failing, skipped, and unrun checks. Do not claim readiness from a zero-test run.
 - Consider Linux and Windows in every change, following the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows). Until CI runs on Windows, say in the pull request how Windows behavior was checked, or that it was not.
+- Use the type system, following the [type rules](PYTHON_GUIDELINES.md#use-the-type-system): mypy passes in strict mode, and a pull request that adds an `Any`, a `# type: ignore` or a `cast`, or loosens `[tool.mypy]`, says why.
 - Configure protected `main` in repository settings when CI and collaboration are introduced: required checks, review requirements appropriate to the team, and restrictions on force pushes and deletion. These settings are recommendations and are not configured by this document.
 - Choose a consistent merge strategy. Squash merging is a suitable default for focused feature branches; preserve individual commits when their history is useful.
 
@@ -88,7 +89,7 @@ The author applies the README's [three development rules](README.md#development-
 2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
    - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
    - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
-3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a regression test that fails before the fix and passes after it. Never relax an existing assertion just so new code passes.
+3. **Fix the class, not just the instance.** Search for the same pattern elsewhere and add a regression test that fails before the fix and passes after it. When a type can make mypy reject every instance of the class (a `Literal`, `NewType` or `TypedDict`, or an exhaustive `assert_never`), add it too. Never relax an existing assertion just so new code passes.
 4. **Pair it with end-to-end checks.** A diff review cannot see cross-workflow problems such as two components using different conventions. Run the affected workflow on its real inputs and compare outputs across reports, not only unchanged metrics. Rerun the checks and the workflow on the final code, after the last review fix.
 5. **State the result in the pull request:** the round, model, level, scope and finding count of each review pass, how each finding was resolved (fixed, or kept and why), and the checks run.
    - **Once the fixes for a reviewer's findings exist, put them where the reviewer looks.** Either push them to the existing pull request, edit its description (each finding, how it was resolved, the extra review round and checks) and answer the findings in a comment, or close the pull request and open a new one that carries the fixes, the old review record and a link back. Edit the existing pull request by default; close and recreate only when the branch history or scope changed so much that the old description and review no longer describe it. Fixes that live only on a branch or in a thread do not count as delivered.
@@ -96,7 +97,7 @@ The author applies the README's [three development rules](README.md#development-
    - as a new unchecked `REVIEW-xx` item in [TODO.md](TODO.md) with its location, severity and how to reproduce it;
    - in the pull request description under "Found, not fixed", with the TODO id.
 
-   If it is high severity, or it blocks this fix or its tests, stop and ask the person who requested the change before going on.
+   If it is high severity, stop and ask the person who requested the change before going on (a bug that blocks this fix or its tests is needed to make them correct, so it is not unrelated and is fixed here, in its own commit with its own failing check). An unattended routine asks by opening the pull request as a draft with the question in its description, and does not mark it ready for review until that person answers.
 7. **Carry new bug-hunt findings into TODO.** The nightly bug hunt is report-only, so its findings list lives outside the repository. Each new **medium** or **high** finding it reports gets an unchecked `REVIEW-xx` item in [TODO.md](TODO.md) in the next pull request that fixes bugs, or in the next pull request of any kind when none is planned. Give the item the hunt's finding id (for example `BH-2026-10-08-1`), its location, severity and how to reproduce it, and group it with an existing open item of the same area when one exists. Low findings stay in the hunt's list until a fix pull request picks them up.
 
 Green CI proves only what the tests already ask; it is not readiness on its own.
@@ -115,7 +116,7 @@ Why the early stop looks like this: on draft pull request #36, seven consecutive
 
 ### When reviewing
 
-1. **Judge design first, style last:** design, then functionality, complexity and tests; naming, comments and style after ([Google review guide](https://google.github.io/eng-practices/review/reviewer/looking-for.html)).
+1. **Judge design first, style last:** design, then functionality, complexity and tests; naming, comments and style after ([Google review guide](https://google.github.io/eng-practices/review/reviewer/looking-for.html)). Loose types (a new `Any`, a bare `str` for a closed set, a new ignore) are design findings, not style.
 2. **Read the change in context,** checking how it fits the whole system and the workflows that consume it, not just the diff.
 3. **Review the tests as hard as the code:** would they fail if the code were wrong?
 4. **Check that documentation matches behavior,** and that every claim in it ("same", "consistent", "complete") is backed by a check at that scope.
