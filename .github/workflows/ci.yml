@@ -23,7 +23,7 @@ jobs:
       - run: uv sync --frozen
       - run: uv run ruff format --check .
       - run: uv run ruff check .
-      - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src
+      - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
       - run: uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
       - run: uv run coverage json -q -o coverage.json
       - run: uv run python scripts/check_coverage_floors.py coverage.json
