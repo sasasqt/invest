@@ -91,3 +91,7 @@ Peer head `f73a1d1136502f6faee9134a65301aa5a090c817` remains historical at its r
 |---|---|---|---|
 | BH-2026-10-12-3 | agree, static scope | [Verification](2026-11-12-integration/evidence.json) | 9e7dd61a679cc567d059ce3ded626f9dec10f3e8 |
 | K3 | agree, static scope | [Verification](2026-11-12-integration/evidence.json) | 9e7dd61a679cc567d059ce3ded626f9dec10f3e8 |
+
+## 14 November performance visit
+
+No applicable comparator verdict was found in the accessible Claude findings and cross-check at `f73a1d1136502f6faee9134a65301aa5a090c817`. [Independent source trace](2026-11-14-performance/evidence.json)

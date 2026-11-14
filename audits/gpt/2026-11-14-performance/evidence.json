@@ -1,0 +1,323 @@
+{
+  "date": "2026-11-14",
+  "field": "performance",
+  "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "source_tree": "efd6499e1c071c3872b74c26a5a9154069420caf",
+  "runner_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "output_base": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "verified_methods": [
+    "overview",
+    "00-preflight",
+    "01-scope",
+    "13-continuity",
+    "action-boundary",
+    "07-independent-checks",
+    "09-performance",
+    "02-coverage",
+    "11-findings-review",
+    "12-reporting",
+    "14-crosscheck-publication"
+  ],
+  "question": "What does the current synth-S comparator reject, and can equal but malformed or incomplete outputs pass?",
+  "stopping_condition": "Trace present/omitted/malformed outputs from runner comparison through producer, independent consumer expectations and tests; no benchmark execution without isolation and locked graph.",
+  "check_inventory": {
+    "files": 140,
+    "tree_entries": 181,
+    "changed_or_added_bytes_verified": 21,
+    "symlinks_or_submodules": 0,
+    "bytes_other_entries": "Git blob identities only; no product checkout or raw data retrieval.",
+    "changed_lines": {
+      ".github/workflows/audit-runtime.yml": 167,
+      "CI_CD_GUIDELINES.md": 81,
+      "PYTHON_GUIDELINES.md": 133,
+      "README.md": 192,
+      "audits/gpt/runner/CONTRACT.md": 234,
+      "audits/gpt/runner/Dockerfile": 17,
+      "audits/gpt/runner/README.md": 157,
+      "audits/gpt/runner/build-requirements.txt": 6,
+      "audits/gpt/runner/ci_evidence.py": 57,
+      "audits/gpt/runner/collection_checks.py": 182,
+      "audits/gpt/runner/contract.py": 23,
+      "audits/gpt/runner/isolated_runner.py": 920,
+      "audits/gpt/runner/output_collection.py": 740,
+      "audits/gpt/runner/runner_workload.py": 627,
+      "audits/gpt/runner/test_execution_logs.py": 291,
+      "audits/gpt/runner/test_host_safety.py": 1096,
+      "audits/gpt/runner/verify_installed.py": 61,
+      "audits/gpt/runner/verify_snapshot.py": 167,
+      "docs/ARCHITECTURE.md": 147,
+      "audits/gpt/runner/test_guards.py": 4269,
+      "audits/gpt/runner/test_output_collection.py": 2024
+    }
+  },
+  "checks": {
+    "isolation": {
+      "command": "bwrap --unshare-all --ro-bind /usr /usr --ro-bind /lib /lib --ro-bind /lib64 /lib64 --proc /proc -- /usr/bin/true",
+      "result": "loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted"
+    },
+    "dependency": "Pinned lock blob identity e9daf12b3804bb615babda39ac3097b30cc17168 observed. Installed graph unverified.",
+    "same_sha_ci": {
+      "run": 43163653770,
+      "jobs": 6,
+      "conclusion": "all success",
+      "python_311": "756 passed, 1 skipped",
+      "checkout": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6"
+    },
+    "historical": {
+      "run": 43017671497,
+      "jobs": 7,
+      "conclusion": "all success",
+      "runner_checkout": "3cebe7cddfb5633d13b485bba1c10a66afd066c7",
+      "product_source": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "workload_blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+      "job_311": 130513127314,
+      "valid_samples_311": 7,
+      "median_seconds_311": 6.578536203,
+      "scope": "Historical only, no matched baseline or native RSS."
+    },
+    "reserved_data": "No actual market/vendor observations read. No product execution or remote job dispatch.",
+    "synthetic_stdlib_control": {
+      "runs": 2,
+      "actual": [
+        "zero-byte returns empty bytes",
+        "valid empty gzip member returns empty bytes",
+        "valid member returns id\\n7\\n",
+        "non-gzip header raises BadGzipFile"
+      ],
+      "scope": "Standalone auditor-authored standard-library control. Product runner not executed."
+    }
+  },
+  "finding": {
+    "id": "GA-2026-11-14-1",
+    "fingerprint": "audit-tooling:audits/gpt/runner/runner_workload.py:zero-byte-gzip-member",
+    "category": "benchmark semantic gate",
+    "severity": "low",
+    "priority": "P3",
+    "status": "new/open",
+    "confidence": "high for source + stdlib control",
+    "evidence_label": "verified_source_and_independent_standard_library_control",
+    "runtime_label": "untouched runner end-to-end pending",
+    "sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+    "title": "A zero-byte .csv.gz passes the invalid-compressed-output check",
+    "locations": [
+      "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/audits/gpt/runner/runner_workload.py#L107-L113",
+      "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/audits/gpt/runner/README.md#L75-L81",
+      "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/strategy-evaluation/src/invest_evaluation/quantiles.py#L307-L311"
+    ],
+    "observed": "gzip.open().read() returns b'' for a zero-byte file with no gzip member and for a valid empty gzip member. The pinned branch hashes both decoded byte strings identically.",
+    "impact": "Malformed compressed quantile membership artifact can be accepted by repeated runs if the same path has equal decoded bytes. No producer corruption observed.",
+    "acceptance": "Refuse a zero-byte compressed membership fixture with a path-specific reason during warm-up or a measured sample. Retain equal hashes for equivalent valid gzip files with different timestamps and distinguish a valid gzip member from CSV schema validity.",
+    "related": [
+      "AUDIT-RUNNER-CSVGZ-001",
+      "OPEN-EXPECTED-ARTIFACT-GATE-001"
+    ],
+    "review_status": "Independent Reviewer A agrees with evidence scope and severity. No Verifier B triggered.",
+    "evidence": "2026-11-14-performance/evidence.json"
+  },
+  "carried": [
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "status": "keep",
+      "confidence": "high static",
+      "cause": "All outputs observed are hashed, but same missing artifact does not move digest.",
+      "negative": "One sample alone omits a known required path and differs from reference.",
+      "scope": "W5/README declare repeatability. Independent tests/test_pipeline.py 134–174 checks required paths and values on 40x500x40. Stub emits only JSON and a figure. No normal workflow omission observed."
+    },
+    {
+      "id": "OPEN-AUDIT-FORMAT-GATES-001",
+      "status": "keep",
+      "confidence": "high static",
+      "cause": "Unknown formats use raw-byte comparisons, so raw equality alone does not establish cross-format logical equality. Bundle reader computes typed logical identity and existing test provides a small fixture, not a performance test.",
+      "next": "Independently compare verified readbacks with an expected typed fixture, then time writes and reads separately with the same inputs."
+    }
+  ],
+  "verification": {
+    "initial": {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "kind": "carried known coverage boundary",
+      "proposed": "keep open, high static confidence, P2 validation gap; no new product defect and no incorrect result observed",
+      "evidence": [
+        "runner_workload.py:66-143 and 547-623 permit any nonempty record + PNG and compare to warmup",
+        "CONTRACT.md:139-151 requires repeatability, not mandatory outputs",
+        "scripts/synthetic_workflow.sh:19-37 defines intended stage chain"
+      ],
+      "drop_counterfactual": "A consumer or independent contract-level gate rejects the same omitted required artifact in both warm-up and repeat; do not conflate this with W5 listing changes."
+    },
+    "new_candidate_initial": {
+      "id": "GA-2026-11-14-1",
+      "disposition": "keep low source/stdlib contradiction, end-to-end pending",
+      "evidence": "Separately repeated zero-byte/valid empty/nonempty/bad header controls and followed actual quantile producer; no ordinary producer failure inferred."
+    },
+    "independent": {
+      "agent_count": 1,
+      "verdict": "Agreement on runner malformed-input contract gap, both carried validation gaps and no ordinary producer failure observed.",
+      "closing": "Checked inventory/normalization, warm-up and stop, W5, guard fixtures, synth workflow and quantiles outputs/readback, historical recorder and benchmark history. Missing next: isolated malformed gzip and expected-artifact controls, logical cross-format gate, matched fixed-trial workloads with RSS.",
+      "effort": "unavailable"
+    },
+    "verifier_b": "not needed; concrete producer evidence resolved the initial scope question",
+    "drop_counterfactual": "Drop new finding if a valid-member check rejects zero-byte data before the comparison on the pinned path. Carry format and path checks until their acceptance evidence exists."
+  },
+  "allocation": {
+    "planned": [
+      60,
+      40
+    ],
+    "primary_discretionary_lines": [
+      247,
+      126
+    ],
+    "mandatory_lines": 262,
+    "ranges": {
+      "exploitation": {
+        "audits/gpt/runner/runner_workload.py": [
+          [
+            66,
+            149
+          ],
+          [
+            547,
+            623
+          ]
+        ],
+        "audits/gpt/runner/test_guards.py": [
+          [
+            3214,
+            3245
+          ],
+          [
+            3645,
+            3656
+          ],
+          [
+            3859,
+            3900
+          ]
+        ]
+      },
+      "exploration": {
+        "data-pipeline/data-preparation/src/invest_data/bundle.py": [
+          [
+            301,
+            319
+          ],
+          [
+            356,
+            405
+          ],
+          [
+            510,
+            533
+          ]
+        ],
+        "data-pipeline/data-preparation/tests/test_bundle.py": [
+          [
+            43,
+            64
+          ]
+        ],
+        "docs/DATA_CONTRACT.md": [
+          [
+            36,
+            42
+          ],
+          [
+            67,
+            70
+          ]
+        ]
+      },
+      "mandatory": {
+        "audits/gpt/runner/CONTRACT.md": [
+          [
+            139,
+            151
+          ]
+        ],
+        "audits/gpt/runner/README.md": [
+          [
+            63,
+            81
+          ],
+          [
+            97,
+            100
+          ]
+        ],
+        "scripts/synthetic_workflow.sh": [
+          [
+            10,
+            37
+          ]
+        ],
+        "tests/test_pipeline.py": [
+          [
+            134,
+            174
+          ]
+        ],
+        "strategy-evaluation/src/invest_evaluation/cli.py": [
+          [
+            322,
+            352
+          ]
+        ],
+        "strategy-evaluation/src/invest_evaluation/quantiles.py": [
+          [
+            297,
+            346
+          ]
+        ],
+        "scripts/save_run.py": [
+          [
+            54,
+            84
+          ],
+          [
+            97,
+            107
+          ]
+        ],
+        "audits/gpt/runner/runner_workload.py": [
+          [
+            32,
+            65
+          ]
+        ]
+      }
+    },
+    "seed": "SHA256 of Berlin date; sorted candidate set; Python Random choice",
+    "selected": "bundle manifest and readback contract",
+    "eligible": [
+      "bundle manifest and readback contract",
+      "evaluation report and table manifests",
+      "mining report and trial ledger inventory"
+    ],
+    "lenses": "benchmark fault parity and independent logical readback",
+    "new_distinct_roots": [
+      1,
+      0
+    ],
+    "existing_stable_ids_preserved": true,
+    "next": [
+      70,
+      30
+    ],
+    "peer_exact_range_yield": "unknown",
+    "allocation_reason": "First comparable Saturday: exploitation rate exceeds exploration. Reduce next planned exploration by 10 percentage points from 40 to 30, within clamp."
+  },
+  "peer": {
+    "head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+    "verdict": "No relevant comparator verdict in accessible findings or cross-check. Earlier peer coverage not used as current evidence."
+  },
+  "elapsed_to_preparation_seconds": 470,
+  "requested_budget_minutes": {
+    "total": 120,
+    "common": 20,
+    "field": 70,
+    "review_reporting": 30
+  },
+  "model_effort": "unavailable"
+}

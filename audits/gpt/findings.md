@@ -68,3 +68,7 @@ GA-2026-10-31-2 remains the same root-cause ID and is now **known/open, medium/P
 ## 2026-11-12 integration
 
 K3 / REVIEW-17 remains open on main `9e7dd61a679cc567d059ce3ded626f9dec10f3e8`. INV-PR40-001 source-verified in unmerged #40 at `e131918c35f6f3fca58dc7800b28c4f088a80efb`. BH-2026-10-12-3 independently corroborated at static scope, exact duplicate. No new ID. [Evidence](2026-11-12-integration/evidence.json).
+
+## 14 November performance update
+
+**GA-2026-11-14-1 · Low · Open.** A zero-byte .csv.gz passes the invalid-compressed-output check. Verified in source and independent standard-library controls. Untouched runner execution pending. [Finding](2026-11-14.md#finding) · [Evidence](2026-11-14-performance/evidence.json)

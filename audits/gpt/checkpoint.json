@@ -1,9 +1,9 @@
 {
-  "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
-  "start_date": "2026-11-10",
-  "started_utc": "2026-11-10T02:03:53.323965Z",
-  "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "tree": "9d0ef1bced7f43d7fc87981f58031eea46a69265",
+  "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+  "start_date": "2026-11-14",
+  "started_utc": "2026-11-14T01:58:40.914910Z",
+  "audited_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "tree": "efd6499e1c071c3872b74c26a5a9154069420caf",
   "profile": "rotating_daily_data_static_slice",
   "setup_budget_seconds": 900,
   "total_budget_seconds": 7200,
@@ -31,7 +31,7 @@
     "exploration": 40
   },
   "model_effort": {
-    "model": "gpt-6.1-sol",
+    "model": "unavailable",
     "effort": "unavailable"
   },
   "preflight": {
@@ -47,29 +47,30 @@
     "durable_started_checkpoint": "1acf314f305580c1b543c20bfc20ffbd7fb87e3e"
   },
   "steps": {
-    "preflight": "partial: protocol/source/output identities current; runtime boundary and installed graph unverified",
-    "static_analysis": "completed bounded runner fail-stop trace twice on base/head plus controls",
-    "independent_review": "fresh Reviewer2 completed; duplicate-record semantics reconciled, no technical disagreement or Verifier B",
-    "tests": "zero local product runs; trusted static oracle only; six main CI and thirteen runner-head checks observed green",
-    "workflows": "none dispatched; exact-head historical runner workflow success path reused",
-    "benchmarks": "not scheduled; zero samples/comparison",
-    "research": "not scheduled; zero papers/ideas/experiments",
+    "preflight": "metadata verified; execution blocked",
+    "static_analysis": "done",
+    "independent_review": "done; one verifier",
+    "tests": "reused same-SHA CI; local blocked",
+    "workflows": "no dispatch",
+    "benchmarks": "no new sample; historical synth-S referenced",
+    "research": "not scheduled",
     "report": "prepared",
-    "publication": "pending"
+    "publication": "pending guarded update"
   },
-  "status": "bounded static mining question complete; one verified medium source-level defect; product runtime blocked",
-  "last_audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-  "last_audited_date": "2026-11-10",
-  "last_run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+  "status": "bounded static scope complete; product benchmarks blocked",
+  "last_audited_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "last_audited_date": "2026-11-14",
+  "last_run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
   "coverage_counts": {
-    "tracked_files": 111,
-    "reviewed": 47,
-    "partially_reviewed": 15,
-    "checked_automatically": 11,
-    "inventoried": 16,
-    "blocked": 22,
-    "remaining_unread_lines": 16591,
-    "unread_paths": 59
+    "tracked_files": 140,
+    "inventoried": 59,
+    "reviewed": 34,
+    "partially_reviewed": 18,
+    "checked_automatically": 8,
+    "blocked": 21,
+    "unread_lines": 26047,
+    "unread_paths": 85,
+    "new_unique_semantic_lines": 357
   },
   "last_four_completed_runs": [
     {
@@ -284,7 +285,10 @@
       "next_check": "Execute the planned cross-format round trips and validate each format's logical comparison under existing resource/data limits.",
       "first_queued_utc": "2026-10-31T14:14:41.347132+00:00",
       "last_queued_utc": "2026-10-31T14:14:41.347132+00:00",
-      "deferral_reason": "This correction validates synth-S; the wider format benchmark remains existing incomplete-audit work."
+      "deferral_reason": "credential-inaccessible locked execution boundary remains unverified",
+      "last_static_checked_date": "2026-11-14",
+      "latest_checked_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "latest_evidence": "2026-11-14-performance/evidence.json"
     },
     {
       "id": "OPEN-DRAWDOWN-CENSOR-001",
@@ -319,7 +323,10 @@
       "originating_reviewer": "VerifierA",
       "first_queued_utc": "2026-11-02T02:19:56.603239+00:00",
       "last_queued_utc": "2026-11-02T02:19:56.603239+00:00",
-      "deferral_reason": "Execution blocked or next semantic slice; no claim checked beyond exact listed ranges"
+      "deferral_reason": "credential-inaccessible locked execution boundary remains unverified",
+      "last_static_checked_date": "2026-11-14",
+      "latest_checked_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "latest_evidence": "2026-11-14-performance/evidence.json"
     },
     {
       "id": "OPEN-MEMBERSHIP-LABELS-001",
@@ -487,6 +494,17 @@
       "originating_item": "main hunt mirror",
       "next_check": "mixed clean manifest fixture and matching control; then snapshot and subset provenance",
       "evidence": "2026-11-12-integration/evidence.json"
+    },
+    {
+      "id": "GA-2026-11-14-1",
+      "owner_field": "performance",
+      "priority": "P3",
+      "source_fingerprint": "audit-tooling:audits/gpt/runner/runner_workload.py:zero-byte-gzip-member",
+      "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "path": "audits/gpt/runner/runner_workload.py:107-113",
+      "first_queued_utc": "2026-11-14T01:58:40.914910Z",
+      "next_check": "Refuse a zero-byte compressed membership fixture with a path-specific reason during warm-up or a measured sample. Retain equal hashes for equivalent valid gzip files with different timestamps and distinguish a valid gzip member from CSV schema validity.",
+      "evidence": "2026-11-14-performance/evidence.json"
     }
   ],
   "followup_queue_history": [
@@ -556,10 +574,11 @@
     }
   ],
   "latest_runtime_validation": {
-    "date": "2026-11-12",
-    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-    "status": "local product blocked",
-    "reason": "credential inaccessibility and installed locked graph unavailable",
+    "date": "2026-11-14",
+    "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+    "status": "local runtime blocked; same-SHA standard CI passed",
+    "reason": "loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted",
+    "ci_run": 43163653770,
     "remote_reused": 43017671497,
     "new_product_runs": 0
   },
@@ -849,6 +868,14 @@
       "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
       "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
       "completed_utc": "2026-11-12T02:08:41Z"
+    },
+    {
+      "date": "2026-11-14",
+      "field": "performance",
+      "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+      "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "status": "bounded static scope complete; product benchmarks blocked",
+      "evidence": "2026-11-14-performance/evidence.json"
     }
   ],
   "latest_current_run_evidence": {
@@ -2802,22 +2829,55 @@
       },
       "performance": {
         "weekday": 5,
-        "last_rotation_visit": null,
-        "last_substantive_advance": null,
+        "last_rotation_visit": "2026-11-14",
+        "last_substantive_advance": "2026-11-14",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [],
         "queue_refs": [
           "AUDIT-RUNNER-CSVGZ-001",
           "OPEN-AUDIT-FORMAT-GATES-001",
-          "remaining-work:M-L-XL-formats-memory-matched-baseline"
+          "remaining-work:M-L-XL-formats-memory-matched-baseline",
+          "OPEN-EXPECTED-ARTIFACT-GATE-001",
+          "GA-2026-11-14-1"
         ],
         "deferrals": {},
         "reading_allocation": [
-          50,
-          50
+          70,
+          30
         ],
-        "field_yield_history": [],
-        "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented."
+        "field_yield_history": [
+          {
+            "date": "2026-11-14",
+            "field": "performance",
+            "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+            "planned_percent": [
+              60,
+              40
+            ],
+            "primary_discretionary_lines": [
+              247,
+              126
+            ],
+            "mandatory_lines": 262,
+            "new_verified_distinct_root_causes": [
+              1,
+              0
+            ],
+            "pooled_rates_per_1000_lines": [
+              4.048582995951417,
+              0
+            ],
+            "comparable_visits": 1,
+            "next_planned_percent": [
+              70,
+              30
+            ],
+            "evidence": "2026-11-14-performance/evidence.json"
+          }
+        ],
+        "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
+        "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+        "next_check": "isolated zero-byte gzip and expected-output controls, followed by logical format and matched scale runs"
       },
       "research": {
         "weekday": 6,
@@ -2873,11 +2933,11 @@
         "GA-2026-10-31-4"
       ]
     },
-    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+    "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 21909,
-    "unread_paths": 81,
+    "unread_lines": 26047,
+    "unread_paths": 85,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -3001,6 +3061,11 @@
         "date": "2026-11-08",
         "status": "no final report observed",
         "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-13",
+        "status": "no final report or started record observed in the audit branch",
+        "execution": "unknown/not observed"
       }
     ],
     "queue_age_status": {
@@ -3026,6 +3091,13 @@
         "oldest_feasible_advanced": "K3 and mixed revision provenance static trace; saved README inspection",
         "twice_deferred": "custom-record-workflow; reserve oldest feasible slice after prerequisites",
         "fourteen_day_flag": "no measured integration inactivity; unvisited-field baselines unknown"
+      },
+      "performance_visit": {
+        "date": "2026-11-14",
+        "comparable_visits": 1,
+        "unknown_prior_age": true,
+        "oldest_feasible_advanced": "OPEN-AUDIT-FORMAT-GATES-001 and OPEN-EXPECTED-ARTIFACT-GATE-001 static checks",
+        "twice_deferred": "no two comparable visits yet"
       }
     },
     "visit_history": [
@@ -3218,6 +3290,14 @@
         "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
         "status": "bounded static scope complete; runtime blocked",
         "evidence": "2026-11-12-integration/evidence.json"
+      },
+      {
+        "date": "2026-11-14",
+        "field": "performance",
+        "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+        "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+        "status": "bounded static scope complete; product benchmarks blocked",
+        "evidence": "2026-11-14-performance/evidence.json"
       }
     ]
   },
@@ -3406,62 +3486,104 @@
         "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
       },
       "snapshot_date": "2026-11-06"
+    },
+    {
+      "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
+      "date": "2026-11-12",
+      "field": "integration",
+      "scheduled_for": "2026-11-12T02:00:00Z",
+      "started_utc": "2026-11-12T01:59:30.006109Z",
+      "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+      "source_tree": "unavailable",
+      "output_base": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
+      "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "runner_sha": "28d4d231bec9053d8fb811077fba02eee9fa571c",
+      "question": "Can the recorded workflow preserve ledger state on refusal and attribute artifacts to one clean revision?",
+      "status": "bounded static scope complete; runtime blocked",
+      "budget_minutes": {
+        "total": 120,
+        "setup": 20,
+        "field": 70,
+        "review_reporting": 30
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "unavailable",
+      "scope_counts": {
+        "tracked_files": 123,
+        "reviewed": 37,
+        "inventoried": 43,
+        "partially_reviewed": 14,
+        "checked_automatically": 8,
+        "blocked": 21,
+        "remaining_unread_lines": 21909,
+        "unread_paths": 81
+      },
+      "helper_count": 1,
+      "verifier_b_used": false,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "publication_status": "published_verified",
+      "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
+      "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
+      "measured_preparation_seconds": 348.994,
+      "finding_changes": [
+        "REVIEW-17/K3 source revalidated on main",
+        "INV-PR40-001 fix source-verified at current unmerged PR head",
+        "BH-2026-10-12-3 exact duplicate revalidated at recorder scope"
+      ],
+      "research": {
+        "status": "not scheduled",
+        "papers": 0,
+        "candidates": 0,
+        "experiments": 0
+      },
+      "evidence": "2026-11-12-integration/evidence.json",
+      "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
+      "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
+      "completed_utc": "2026-11-12T02:08:41Z"
     }
   ],
   "current_run": {
-    "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
-    "date": "2026-11-12",
-    "field": "integration",
-    "scheduled_for": "2026-11-12T02:00:00Z",
-    "started_utc": "2026-11-12T01:59:30.006109Z",
-    "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-    "source_tree": "unavailable",
-    "output_base": "0c9863e95ab38b93fa22093e6cfdc2149b77bacc",
+    "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+    "date": "2026-11-14",
+    "field": "performance",
+    "scheduled_for": "2026-11-14T02:00:00Z",
+    "started_utc": "2026-11-14T01:58:40.914910Z",
+    "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+    "source_tree": "efd6499e1c071c3872b74c26a5a9154069420caf",
+    "runner_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+    "output_base": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
     "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "runner_sha": "28d4d231bec9053d8fb811077fba02eee9fa571c",
-    "question": "Can the recorded workflow preserve ledger state on refusal and attribute artifacts to one clean revision?",
-    "status": "bounded static scope complete; runtime blocked",
-    "budget_minutes": {
-      "total": 120,
-      "setup": 20,
-      "field": 70,
-      "review_reporting": 30
-    },
-    "model": "gpt-6.1-sol",
-    "effort": "unavailable",
+    "question": "What does the current synth-S comparator reject, and can equal but malformed or incomplete outputs pass?",
+    "status": "bounded static scope complete; product benchmarks blocked",
     "scope_counts": {
-      "tracked_files": 123,
-      "reviewed": 37,
-      "inventoried": 43,
-      "partially_reviewed": 14,
+      "tracked_files": 140,
+      "inventoried": 59,
+      "reviewed": 34,
+      "partially_reviewed": 18,
       "checked_automatically": 8,
       "blocked": 21,
-      "remaining_unread_lines": 21909,
-      "unread_paths": 81
+      "unread_lines": 26047,
+      "unread_paths": 85,
+      "new_unique_semantic_lines": 357
     },
+    "model": "unavailable",
+    "effort": "unavailable",
     "helper_count": 1,
     "verifier_b_used": false,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
     "peer_head": "f73a1d1136502f6faee9134a65301aa5a090c817",
-    "pr40_head": "e131918c35f6f3fca58dc7800b28c4f088a80efb",
-    "measured_preparation_seconds": 348.994,
-    "finding_changes": [
-      "REVIEW-17/K3 source revalidated on main",
-      "INV-PR40-001 fix source-verified at current unmerged PR head",
-      "BH-2026-10-12-3 exact duplicate revalidated at recorder scope"
+    "measured_preparation_seconds": 470,
+    "new_findings": [
+      "GA-2026-11-14-1"
     ],
     "research": {
-      "status": "not scheduled",
-      "papers": 0,
-      "candidates": 0,
-      "experiments": 0
+      "status": "not scheduled"
     },
-    "evidence": "2026-11-12-integration/evidence.json",
-    "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
-    "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
-    "completed_utc": "2026-11-12T02:08:41Z"
+    "evidence": "2026-11-14-performance/evidence.json",
+    "report": "2026-11-14.md",
+    "publication_status": "prepared; verify ref and parent diff before claiming published"
   },
   "publication_history": [
     {
@@ -3869,33 +3991,16 @@
     }
   ],
   "publication_current_run": {
-    "status": "published_verified",
-    "report_commit": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
-    "report_url": "https://github.com/sasasqt/invest/blob/2dcb1e0c0315e3a8678674eac086e95d3f9f3787/audits/gpt/2026-11-12.md",
-    "verified_head_at_report": "2dcb1e0c0315e3a8678674eac086e95d3f9f3787",
-    "main_rechecked": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-    "output_parent": "f8920033085bf8d76efe493dea06e7b9d798f34a",
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-12-integration/evidence.json",
-      "audits/gpt/2026-11-12.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/findings.md",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv"
-    ],
+    "status": "prepared",
+    "report": "2026-11-14.md",
+    "output_parent": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
     "force": false,
-    "readback_verified": true
+    "readback_verified": false
   },
   "remaining_work_current_visit": [
-    "qualify credential-inaccessible locked runner; no unchanged unsafe route retry",
-    "paired tracked synthetic ledger RECORD test on pinned main and separately pinned fix",
-    "mixed clean manifest fixture and matching control; then snapshot and subset provenance"
+    "untouched malformed gzip/required-artifact controls",
+    "logical CSV/SQLite/Parquet benchmark",
+    "matched larger samples and process-tree RSS"
   ],
   "runtime_validation_history": [
     {

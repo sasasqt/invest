@@ -464,6 +464,33 @@
       "missing_evidence": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
       "change_condition": "Drop only if the supported contract explicitly forbids and enforces stable path resolution for the full command, or an untouched valid AâB reproduction demonstrates same-snapshot rows and identity.",
       "discovery_bucket": "exploitation"
+    },
+    {
+      "id": "GA-2026-11-14-1",
+      "fingerprint": "audit-tooling:audits/gpt/runner/runner_workload.py:zero-byte-gzip-member",
+      "category": "benchmark semantic gate",
+      "severity": "low",
+      "priority": "P3",
+      "status": "new/open",
+      "confidence": "high for source + stdlib control",
+      "evidence_label": "verified_source_and_independent_standard_library_control",
+      "runtime_label": "untouched runner end-to-end pending",
+      "sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "title": "A zero-byte .csv.gz passes the invalid-compressed-output check",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/audits/gpt/runner/runner_workload.py#L107-L113",
+        "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/audits/gpt/runner/README.md#L75-L81",
+        "https://github.com/sasasqt/invest/blob/d52e12297e5ac89c7a25dd99a0b2110ccf32aee6/strategy-evaluation/src/invest_evaluation/quantiles.py#L307-L311"
+      ],
+      "observed": "gzip.open().read() returns b'' for a zero-byte file with no gzip member and for a valid empty gzip member. The pinned branch hashes both decoded byte strings identically.",
+      "impact": "Malformed compressed quantile membership artifact can be accepted by repeated runs if the same path has equal decoded bytes. No producer corruption observed.",
+      "acceptance": "Refuse a zero-byte compressed membership fixture with a path-specific reason during warm-up or a measured sample. Retain equal hashes for equivalent valid gzip files with different timestamps and distinguish a valid gzip member from CSV schema validity.",
+      "related": [
+        "AUDIT-RUNNER-CSVGZ-001",
+        "OPEN-EXPECTED-ARTIFACT-GATE-001"
+      ],
+      "review_status": "Independent Reviewer A agrees with evidence scope and severity. No Verifier B triggered.",
+      "evidence": "2026-11-14-performance/evidence.json"
     }
   ],
   "known_external": [
@@ -648,6 +675,15 @@
       ],
       "dropped_candidates": [],
       "independent_review": "completed; no disagreement"
+    },
+    {
+      "date": "2026-11-14",
+      "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+      "new_findings": [
+        "GA-2026-11-14-1"
+      ],
+      "evidence": "2026-11-14-performance/evidence.json"
     }
   ],
   "carried_cross_checks": [

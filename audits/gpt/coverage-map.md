@@ -1,16 +1,26 @@
-# Cumulative coverage — 12 November 2026
+# Repository audit coverage
 
-Source `9e7dd61a679cc567d059ce3ded626f9dec10f3e8`. 123 tracked files. 37 reviewed, 43 inventoried, 14 partially reviewed, 8 checked automatically, 21 blocked. 287 newly credited lines on current blobs and 21909 known unread lines across 81 paths. Changed-blob history is preserved in [coverage-map.json](coverage-map.json). Peer union and unsupported denominators are unavailable. This visit's exact ranges are in the [evidence](2026-11-12-integration/evidence.json).
+Source `d52e12297e5ac89c7a25dd99a0b2110ccf32aee6` · 2026-11-14. 140 tracked files. 26047 known unread lines across 85 paths. 357 new unique semantic lines. Five binary assets have no applicable line count. Existing semantic credit was carried for identical blobs. Behavioral evidence remains separately scoped. Peer exact-range coverage is unavailable.
 
-## Ten largest known unread ranges by file
+| Status | Files |
+|---|---:|
+| inventoried | 59 |
+| reviewed | 34 |
+| partially_reviewed | 18 |
+| checked_automatically | 8 |
+| blocked | 21 |
 
-- `runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv` (3775 lines)
-- `uv.lock` (1517 lines)
-- `strategy-evaluation/tests/test_engine.py` (1292 lines)
-- `runs/yahoo-test/2026-10-07/data/market/manifest.json` (1210 lines)
-- `data-mining-framework/tests/test_ledger.py` (1154 lines)
-- `data-mining-framework/src/invest_mining/cli.py` (878 lines)
-- `strategy-evaluation/tests/test_stats_and_cli.py` (778 lines)
-- `strategy-evaluation/src/invest_evaluation/engine.py` (646 lines)
-- `data-pipeline/data-preparation/tests/test_cleaning_and_sources.py` (628 lines)
-- `runs/yahoo-test/2026-10-07/eval/metrics.json` (628 lines)
+| Largest unread ranges | Lines |
+|---|---:|
+| `audits/gpt/runner/test_guards.py` | 4183 |
+| `runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv` | 3775 |
+| `audits/gpt/runner/test_output_collection.py` | 2024 |
+| `uv.lock` | 1517 |
+| `strategy-evaluation/tests/test_engine.py` | 1292 |
+| `runs/yahoo-test/2026-10-07/data/market/manifest.json` | 1210 |
+| `data-mining-framework/tests/test_ledger.py` | 1154 |
+| `audits/gpt/runner/test_host_safety.py` | 1096 |
+| `audits/gpt/runner/isolated_runner.py` | 920 |
+| `data-mining-framework/src/invest_mining/cli.py` | 878 |
+
+[Exact scopes](coverage-map.json) · [Today's primary reading](2026-11-14-performance/evidence.json)

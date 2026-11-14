@@ -75,3 +75,8 @@ GA1112-03,uv --no-config --offline lock --check --no-build --no-python-downloads
 GA1112-04,static RECORD/provenance trace and fresh independent review,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,trusted source reads,known defects corroborated,2,,2026-11-12-integration/evidence.json
 GA1112-05,existing GitHub audit runtime jobs,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,Linux Docker on #32 merge preview,reused successful scoped evidence,2 audited jobs,,2026-11-12-integration/evidence.json
 GA1112-06,untouched product runs and saved replay,9e7dd61a679cc567d059ce3ded626f9dec10f3e8,current worker,blocked,0,,2026-11-12-integration/evidence.json
+"V-20261114-methods","index, 11 methods and baseline SHA-256","d52e12297e5ac89c7a25dd99a0b2110ccf32aee6","see evidence","passed","","","2026-11-14-performance/evidence.json"
+"V-20261114-inventory","recursive Git tree; git hash-object for 21 changed blobs","d52e12297e5ac89c7a25dd99a0b2110ccf32aee6","see evidence","passed","","","2026-11-14-performance/evidence.json"
+"V-20261114-isolation","bwrap --unshare-all; NETLINK_ROUTE denied","d52e12297e5ac89c7a25dd99a0b2110ccf32aee6","see evidence","blocked","","","2026-11-14-performance/evidence.json"
+"V-20261114-gzip","auditor-owned standard-library two-repeat control","d52e12297e5ac89c7a25dd99a0b2110ccf32aee6","see evidence","edge confirmed","","","2026-11-14-performance/evidence.json"
+"V-20261114-CI","GitHub Actions 43163653770: six jobs; 756 passed, 1 skipped","d52e12297e5ac89c7a25dd99a0b2110ccf32aee6","see evidence","reused current SHA","","","2026-11-14-performance/evidence.json"

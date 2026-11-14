@@ -1179,6 +1179,34 @@
           "blob": "2835562f6048abed2d6918b9c76ff46dcb836d49"
         }
       ]
+    },
+    {
+      "date": "2026-11-14",
+      "field": "performance",
+      "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+      "planned_percent": [
+        60,
+        40
+      ],
+      "primary_discretionary_lines": [
+        247,
+        126
+      ],
+      "mandatory_lines": 262,
+      "new_verified_distinct_root_causes": [
+        1,
+        0
+      ],
+      "pooled_rates_per_1000_lines": [
+        4.048582995951417,
+        0
+      ],
+      "comparable_visits": 1,
+      "next_planned_percent": [
+        70,
+        30
+      ],
+      "evidence": "2026-11-14-performance/evidence.json"
     }
   ],
   "date": "2026-11-12",

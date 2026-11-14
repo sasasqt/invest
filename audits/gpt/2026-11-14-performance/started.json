@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-14",
+  "scheduled_for": "2026-11-14T02:00:00Z",
+  "source_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "output_base": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
+  "field": "performance",
+  "status": "started",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "jobs": [],
+  "previous_final": "2026-11-12",
+  "missing_report": [
+    "2026-11-13"
+  ],
+  "runtime": "blocked pending isolation and locked installed graph",
+  "scope": "carry format-gate and benchmark comparator evidence",
+  "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+  "started_utc": "2026-11-14T01:58:40.914910Z"
+}
