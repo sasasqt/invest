@@ -348,7 +348,7 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
                 f"column {col.name!r}: {ts.year:04d}-{ts.month:02d}-{ts.day:02d} is outside "
                 f"the dates a reader can return ({_MIN_DATE} to {_MAX_DATE})"
             )
-        return day.isoformat()
+        return str(day.isoformat())
     if col.type == "timestamp":
         ts = _as_timestamp(col, value)
         if ts.tzinfo is None:
