@@ -182,7 +182,9 @@ def _fmt(m: dict[str, Any]) -> str:
     if (m.get("extra") or {}).get("censored"):
         # METRICS.md section 6: an unrecovered episode's duration is right-censored.
         # `drawdown_metrics` sets the flag only when the longest episode is the open last
-        # one (BH-2026-10-14-8), so the value is then a lower bound.
+        # one (BH-2026-10-14-8), so the value is then a lower bound. A `metrics.json`
+        # written before that flags any open last episode; the renderer prints what was
+        # saved and does not recompute (docs/REPORTING.md).
         text += " (right-censored: last drawdown not recovered)"
     return text
 

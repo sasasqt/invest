@@ -36,6 +36,16 @@ def test_bootstrap_ci_covers_point_estimate():
     assert bootstrap_ci(r[:20], 252)["status"] == "insufficient_data"
 
 
+def test_bootstrap_and_psr_need_their_documented_minimum_returns() -> None:
+    """strategy-evaluation/README.md: the bootstrap needs 60 returns and PSR/DSR 30, the
+    numbers `report.md` names (`MIN_BOOTSTRAP_RETURNS`, `MIN_PSR_RETURNS`)."""
+    r = pd.Series(np.random.default_rng(5).normal(0.001, 0.01, 60))
+    assert bootstrap_ci(r.iloc[:59], 252, n_boot=50)["status"] == "insufficient_data"
+    assert bootstrap_ci(r, 252, n_boot=50)["status"] == "ok"
+    assert probabilistic_sharpe(r.iloc[:29])["status"] == "insufficient_data"
+    assert probabilistic_sharpe(r.iloc[:30])["status"] == "ok"
+
+
 def test_probabilistic_and_deflated_sharpe():
     r = pd.Series(np.random.default_rng(3).normal(0.0008, 0.01, 750))
     psr = probabilistic_sharpe(r)
@@ -957,8 +967,8 @@ def _insolvent_run_inputs(tmp_path):
     publish_signals(
         signals, tmp_path / "s", dataset_id="s", metadata={"factor_id": "fixed", "horizon_days": 1}
     )
-    (tmp_path / "cfg.json").write_text(json.dumps(cfg))
-    (tmp_path / "events.json").write_text(json.dumps(events))
+    (tmp_path / "cfg.json").write_text(json.dumps(cfg), encoding="utf-8")
+    (tmp_path / "events.json").write_text(json.dumps(events), encoding="utf-8")
     return [
         "--data",
         str(tmp_path / "m"),
@@ -978,10 +988,9 @@ def test_cli_insolvent_run_reports_no_sharpe_interval_or_dsr(tmp_path, capsys):
     out = tmp_path / "run"
     assert main(["run", *_insolvent_run_inputs(tmp_path), "--no-scenarios", "--out", str(out)]) == 0
     capsys.readouterr()
-    assert json.loads((out / "metrics.json").read_text())["performance"]["sharpe"]["reason"] == (
-        "insolvent_wealth_path"
-    )
-    stats = json.loads((out / "statistics.json").read_text())
+    metrics = json.loads((out / "metrics.json").read_text(encoding="utf-8"))
+    assert metrics["performance"]["sharpe"]["reason"] == "insolvent_wealth_path"
+    stats = json.loads((out / "statistics.json").read_text(encoding="utf-8"))
     assert stats["bootstrap"]["status"] == "invalid_input"
     assert stats["deflated_sharpe"]["status"] == "invalid_input"
     lines = (out / "report.md").read_text().splitlines()
@@ -991,7 +1000,7 @@ def test_cli_insolvent_run_reports_no_sharpe_interval_or_dsr(tmp_path, capsys):
     assert dsr == ["Deflated Sharpe ratio (n_trials=1): n/a (insolvent_wealth_path)"]
     duration = next(line for line in lines if line.startswith("| max_drawdown_duration |"))
     assert "right-censored" in duration
-    portfolio = json.loads((out / "verdict.json").read_text())["portfolio"]
+    portfolio = json.loads((out / "verdict.json").read_text(encoding="utf-8"))["portfolio"]
     assert portfolio["status"] == "rejected"
     checks = {c["name"]: c for c in portfolio["checks"]}
     assert checks["net_sharpe_ci"]["status"] == "undefined"
@@ -1010,14 +1019,14 @@ def test_cli_quantiles_give_an_insolvent_bucket_no_sharpe_interval(tmp_path, cap
     table = pd.read_csv(out / "tables" / "portfolios.csv").set_index("portfolio")
     assert table.loc["q2", "reason"] == "insolvent_wealth_path"
     assert table.loc["q2", ["net_sharpe_ci_low", "net_sharpe_ci_high"]].isna().all()
-    rows = json.loads((out / "quantiles.json").read_text())["portfolios"]
+    rows = json.loads((out / "quantiles.json").read_text(encoding="utf-8"))["portfolios"]
     q2 = next(r for r in rows if r["portfolio"] == "q2")
     assert q2["net_sharpe_ci_low"] is None and q2["net_sharpe_ci_high"] is None
     line = next(x for x in (out / "report.md").read_text().splitlines() if x.startswith("| q2 |"))
     assert line.split(" | ")[6] == "–"  # the Sharpe 95% CI column
 
 
-def test_report_names_every_unavailable_statistic_and_keeps_a_recovered_duration_bare(tmp_path):
+def test_report_names_every_unavailable_statistic_and_keeps_an_undrawn_duration_bare(tmp_path):
     """BH-2026-10-09-6: with too few returns the bootstrap and DSR lines say why they are
     missing (the REVIEW-21 note: print every status with its reason); a flat book never
     drew down, so its drawdown duration is not censored and stays a bare number."""
@@ -1061,13 +1070,15 @@ def test_report_names_every_unavailable_statistic_and_keeps_a_recovered_duration
 
 
 @pytest.mark.parametrize(
-    ("closes", "censored"),
+    ("closes", "sessions", "censored"),
     [
-        ([10.0] * 5 + [12.0, 11.0, 10.5, 11.0, 11.5], True),  # still below 12 at the end
-        ([10.0] * 5 + [12.0, 11.0, 10.5, 12.5, 13.0], False),  # back above 12
+        # Under the 12 peak for its last 4 sessions (11, 10.5, 11, 11.5): open, the longest.
+        ([10.0] * 5 + [12.0, 11.0, 10.5, 11.0, 11.5], 4, True),
+        # 11, 10.5 and back above 12 at 12.5: 3 sessions, recovered.
+        ([10.0] * 5 + [12.0, 11.0, 10.5, 12.5, 13.0], 3, False),
     ],
 )
-def test_report_marks_a_right_censored_drawdown_duration(tmp_path, closes, censored):
+def test_report_marks_a_right_censored_drawdown_duration(tmp_path, closes, sessions, censored):
     """RA-2026-11-01-4: METRICS.md section 6 calls an unrecovered drawdown's duration
     right-censored; report.md says so next to the count, and a recovered one stays bare."""
     from invest_evaluation.config import (
@@ -1106,7 +1117,7 @@ def test_report_marks_a_right_censored_drawdown_duration(tmp_path, closes, censo
     result = run_backtest(bars, signals, cfg, Hold())
     metrics = compute_metrics(result)
     duration = metrics["performance"]["max_drawdown_duration"]
-    assert duration["value"] > 0
+    assert duration["value"] == sessions
     assert bool(duration.get("extra", {}).get("censored")) is censored
     save_run(tmp_path / "run", result, metrics, strategy_statistics(result.returns, 252), None, {})
     row = next(

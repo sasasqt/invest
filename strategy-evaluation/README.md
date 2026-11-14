@@ -33,7 +33,7 @@ The baseline `QuantileStrategy` picks its legs with the bucket portfolios' tail 
 
 ## Factor and portfolio verdicts
 
-Each run writes `verdict.json` (`verdict_version = 2`) with two separate sections, also shown as two sections at the top of `report.md`. Version 2 adds mandatory solvency and base-Sharpe validity checks. Previously saved v1 reports remain renderable; rerun their evaluation to obtain the corrected verdict.
+Each run writes `verdict.json` (`verdict_version = 2`) with two separate sections, also shown as two sections at the top of `report.md`. Version 2 adds mandatory solvency and base-Sharpe validity checks. Previously saved v1 reports remain renderable; rerun their evaluation to obtain the corrected verdict. The same holds for runs saved before the censored-duration and insolvent-statistics fixes (BH-2026-10-14-8, BH-2026-10-15-2): rendering prints their saved flag and intervals as they are.
 
 - `factor`: the signals bundle's v2 `factor_evidence` metadata copied unchanged (experiment id, tested horizon, confirmation use, test outcome, status, window and statistics), or `status = not_confirmed` when the signals carry none. Evaluation never recomputes or changes it. V1 evidence has no tested horizon and must be re-exported from the original confirmation output; see the [data contract](../docs/DATA_CONTRACT.md#signal-confirmation-evidence).
 - `portfolio`: `supported`, `rejected`, `inconclusive` or `insufficient_data`, from the config's `validation` rules, with one saved check (`pass`, `fail`, `undefined` or `not_run`) per rule and the evaluated window.

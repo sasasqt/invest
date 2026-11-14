@@ -30,7 +30,8 @@ MIN_PSR_RETURNS = 30
 def _insolvent(x: np.ndarray) -> bool:
     """Whether a wealth path built from simple returns ``x`` reaches zero or below.
 
-    The rule of ``metrics.return_metrics``: a Sharpe-type statistic of such a path is
+    The rule of ``metrics.return_metrics`` (the two copies differ only on inputs no run
+    produces; REVIEW-39 asks for one helper): a Sharpe-type statistic of such a path is
     ``invalid_input`` (``insolvent_wealth_path``), never a plausible number (METRICS.md
     section 6).
     """
