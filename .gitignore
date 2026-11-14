@@ -22,6 +22,7 @@ dist/
 .coverage.*
 htmlcov/
 coverage.xml
+coverage.json
 
 # Local configuration and credentials
 .env
