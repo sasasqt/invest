@@ -342,13 +342,13 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
                 "of day or time zone"
             )
         # ts.date() raises NotImplementedError beyond year 9999, so the year is checked first.
-        day = ts.date() if _MIN_DATE.year <= ts.year <= _MAX_DATE.year else None
+        day: date | None = ts.date() if _MIN_DATE.year <= ts.year <= _MAX_DATE.year else None
         if day is None or not _MIN_DATE <= day <= _MAX_DATE:
             raise BundleError(
                 f"column {col.name!r}: {ts.year:04d}-{ts.month:02d}-{ts.day:02d} is outside "
                 f"the dates a reader can return ({_MIN_DATE} to {_MAX_DATE})"
             )
-        return str(day.isoformat())
+        return day.isoformat()
     if col.type == "timestamp":
         ts = _as_timestamp(col, value)
         if ts.tzinfo is None:
