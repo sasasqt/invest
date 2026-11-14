@@ -876,6 +876,7 @@ def test_statistics_of_an_insolvent_wealth_path_are_invalid():
     for key in ("bootstrap", "probabilistic_sharpe_vs_zero", "deflated_sharpe"):
         assert stats[key]["status"] == "invalid_input", key
         assert stats[key]["reason"] == "insolvent_wealth_path", key
+        assert stats[key]["n"] == 100, key  # saved in statistics.json: every return counts
     assert stats["bootstrap"].get("sharpe_ci") is None
     assert "dsr" not in stats["deflated_sharpe"]
     assert stats["deflated_sharpe"]["n_trials"] == 3
