@@ -407,4 +407,5 @@ def test_a_parent_that_is_not_a_table_gives_an_error_line(tmp_path, capsys, text
     report = tmp_path / "coverage.json"
     report.write_text(json.dumps(_report({}, 96.0)), encoding="utf-8")
     assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 2
-    assert capsys.readouterr().out.startswith("ERROR  ")
+    expected = f"ERROR  {pyproject}: no [tool.invest.coverage] table\n"
+    assert capsys.readouterr().out == expected
