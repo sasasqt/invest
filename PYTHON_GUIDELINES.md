@@ -88,6 +88,7 @@ Use pytest. Test observable behavior and business requirements rather than priva
 - Make tests deterministic: control time and randomness, and keep ordinary tests independent of live network access and credentials.
 - Register markers such as `integration` in pytest configuration. Ensure CI runs each required category explicitly; skipping integration tests must not be reported as full validation.
 - For each bug fix, add a regression test that fails before the fix and passes afterward.
+- Settle each expected value before the code that produces it exists, or without reading that code: take it from the requirement, a specification such as [METRICS.md](strategy-evaluation/METRICS.md), a hand calculation, a trusted reference library or the previous version, never from running the code under test. When the source is not obvious from the test, name it in a comment. A test derived from the implementation tends to repeat the implementation's mistake, most of all when one person or model writes both.
 - Use branch coverage to find missing behavior, especially in critical business logic. A percentage target does not replace meaningful assertions.
 
 ## Development checks
