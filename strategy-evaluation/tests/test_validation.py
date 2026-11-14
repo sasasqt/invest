@@ -97,9 +97,10 @@ def test_insolvency_overrides_positive_statistics_without_stress_rules(loss):
     returns.iloc[-1] = loss
     performance = return_metrics(returns, v0=1000.0, annualization=252)
     metrics = {"performance": {key: value.to_dict() for key, value in performance.items()}}
-    stats = strategy_statistics(returns, 252)
-    assert stats["bootstrap"]["sharpe_ci"][0] > 0
-    assert stats["deflated_sharpe"]["dsr"] >= 0.95
+    # The statistics layer no longer gives an insolvent path an interval or DSR
+    # (REVIEW-21); positive ones supplied by a caller still cannot support it.
+    assert strategy_statistics(returns, 252)["bootstrap"]["status"] == "invalid_input"
+    stats = _stats()
     assert metrics["performance"]["sharpe"]["status"] == "invalid_input"
     verdict = portfolio_verdict(
         ValidationConfig(stress_scenarios=[]), returns, metrics, stats, None
@@ -240,7 +241,7 @@ def test_cli_reports_factor_and_portfolio_verdicts_separately(
     assert not (tmp_path / "x").exists()
 
 
-def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, capsys):
+def test_cli_rejects_insolvent_portfolio_without_sharpe_statistics(tmp_path, capsys):
     dates = pd.bdate_range("2020-01-01", periods=400)
     closes = 10 * np.cumprod(np.full(len(dates), 1.04))
     opens = np.r_[10.0, closes[:-1]]
@@ -310,8 +311,8 @@ def test_cli_rejects_insolvent_portfolio_with_positive_statistics(tmp_path, caps
     )
     assert json.loads(capsys.readouterr().out)["portfolio_status"] == "rejected"
     stats = json.loads((out / "statistics.json").read_text())
-    assert stats["bootstrap"]["sharpe_ci"][0] > 0
-    assert stats["deflated_sharpe"]["dsr"] >= 0.95
+    assert stats["bootstrap"]["status"] == "invalid_input"
+    assert stats["deflated_sharpe"]["reason"] == "insolvent_wealth_path"
     perf = json.loads((out / "metrics.json").read_text())["performance"]
     assert perf["sharpe"]["reason"] == "insolvent_wealth_path"
     verdict = json.loads((out / "verdict.json").read_text())["portfolio"]

@@ -107,7 +107,7 @@ Compute running peak `P_t = max(V_0, ..., V_t)` and signed drawdown `D_t = V_t/P
 |---|---|---|
 | Maximum drawdown / `max_drawdown` | Largest peak-to-trough percentage loss | Record peak, trough, and recovery dates |
 | Current drawdown | Latest loss magnitude from the running peak | Unrecovered drawdowns remain open |
-| Drawdown duration | Time from peak until recovery to that peak | Report trading/calendar durations; unrecovered episodes are right-censored |
+| Drawdown duration | Time from peak until recovery to that peak | Report trading/calendar durations; unrecovered episodes are right-censored, so the maximum is flagged `censored` when its longest episode is the unrecovered one (ties included) |
 | Recovery duration | Trough-to-recovery time | Do not assign zero to an unrecovered episode |
 | Time under water | Share of valuation periods below prior peak | Include sampling convention and current episode |
 | Average drawdown | Mean drawdown loss across valuation periods | Distinguish from mean severity across drawdown episodes |
