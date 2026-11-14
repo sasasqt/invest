@@ -8,11 +8,13 @@ Every pull request and every push to `main` runs:
 
 | Job | Checks |
 |---|---|
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` on all three `src/` trees, `pytest` with branch coverage, and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
 
 A PR is mergeable only when all jobs are green on its latest commit.
+
+mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
 
 ## Conditional isolated audit checks
 
@@ -43,7 +45,7 @@ for local commands and the runner README for limits.
 - **Least privilege.** Workflows default to `permissions: contents: read`. A job that needs more (publishing a release, writing comments) declares it in that job only.
 - **Pinned actions.** Reference third-party actions by full commit SHA with the version in a comment (`uses: actions/checkout@<sha> # v4.4.0`). Update pins deliberately, ideally through Dependabot or Renovate PRs, and read the changelog.
 - **No secrets in pull-request jobs.** Jobs triggered by `pull_request` must not need credentials. Never use `pull_request_target` to run code from a PR branch. Store data-vendor keys as environment secrets available only to protected-branch or manual workflows.
-- **Never weaken a check to get green.** Don't skip, mark `xfail`, or delete a failing test, loosen a tolerance, or add a `# type: ignore` without a root cause recorded in the commit message. A failing test is a bug until proven otherwise; re-run once only for infrastructure failures (checkout, install, runner loss).
+- **Never weaken a check to get green.** Don't skip, mark `xfail`, or delete a failing test, loosen a tolerance, or add a `# type: ignore` without its error code and a reason on the line and in the pull request ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). A failing test is a bug until proven otherwise; re-run once only for infrastructure failures (checkout, install, runner loss).
 - **Fail on warnings that signal bugs.** `RuntimeWarning` from project code is an error in pytest (see `filterwarnings` in `pyproject.toml`). It usually means a division by zero or NaN propagation.
 - **Required checks on `main`.** Protect `main`: require the CI jobs above, at least one review, and an up-to-date branch before merge. Prefer squash or merge commits per the [Git guidelines](GIT_GUIDELINES.md); never force-push `main`.
 
@@ -67,7 +69,7 @@ This is a library and research toolkit, so "delivery" means versioned packages a
 
 Treat a published research result like a release:
 
-- Run it from a clean, committed revision. The evaluation manifest records `code_revision` and `code_dirty` for the checkout the evaluator was loaded from (both `null` for code Git does not track, such as an installed wheel); a run from a dirty tree is exploratory only, and `scripts/save_run.py` refuses to record it.
+- Run it from a clean, committed revision. The evaluation manifest records `code_revision` and `code_dirty` for the checkout the evaluator was loaded from (`code_dirty` counts uncommitted changes to tracked files and untracked files Git does not ignore; both are `null` for code Git does not track, such as an installed wheel); a run from a dirty tree is exploratory only, and `scripts/save_run.py` refuses to record it.
 - Use the frozen lockfile, fixed seeds, and dataset bundles identified by `content_sha256`.
 - Keep generated outputs under `artifacts/` (ignored by Git), including raw vendor snapshots. A result built from a downloaded source cites the snapshot's `snapshot.json` hashes; republishing the same snapshot must give the same `content_sha256`. Archive results that matter in an artifact store with their manifest. Commit a small record of each historical run whose results are reported, under `runs/<source>/<date>/` (`RECORD=<dir>` in `scripts/historical_workflow.sh` writes it with `scripts/save_run.py`): reports, metrics, verdicts, resolved configs, figures and bundle/snapshot manifests, with a README giving its provenance. Keep raw vendor responses, published bundles and large ledgers out of Git; they are vendor data or are rebuilt exactly from the snapshot.
 - Confirmation-use ledgers are the exception: commit each market's ledger under `ledgers/` (for example `ledgers/yahoo-test.jsonl`) so every contributor sees which periods were already inspected or used for confirmation. Append entries only through `invest-mine`; never edit or delete earlier lines. Tests and CI must point `LEDGER` or `--ledger` at a temporary copy.

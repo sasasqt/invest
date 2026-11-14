@@ -472,6 +472,17 @@ def test_code_revision_comes_from_the_code_checkout_not_the_working_directory(
     assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), False)
     (code / "module.py").write_text("x = 2\n")
     assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), True)
+    (code / "module.py").write_text("x = 1\n")
+    assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), False)
+    # Untracked files count too, whatever status.showUntrackedFiles says: they can hold
+    # code the run imported (K15). Files Git ignores do not.
+    _git(code, "config", "status.showUntrackedFiles", "no")
+    (code / "helper.py").write_text("y = 1\n")
+    assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), True)
+    (code / ".gitignore").write_text("helper.py\n")
+    _git(code, "add", ".gitignore")
+    _git(code, "commit", "-q", "-m", "ignore the helper")
+    assert code_revision(code / "module.py") == (_git(code, "rev-parse", "HEAD"), False)
     # Code Git does not track there (an installed wheel) or outside any checkout: unknown.
     (code / "installed.py").write_text("")
     assert code_revision(code / "installed.py") == (None, None)
