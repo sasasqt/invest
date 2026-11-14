@@ -1,0 +1,395 @@
+"""The coverage floor check used by CI fails below a floor and on stale floors."""
+
+import importlib.util
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+_spec = importlib.util.spec_from_file_location("floors", ROOT / "scripts/check_coverage_floors.py")
+assert _spec and _spec.loader
+floors_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(floors_mod)
+
+
+def _report(files: dict[str, object], total: object, branch: object = True) -> dict:
+    return {
+        "meta": {"branch_coverage": branch},
+        "files": {p: {"summary": {"percent_covered": v}} for p, v in files.items()},
+        "totals": {"percent_covered": total},
+    }
+
+
+def _table(tmp_path: Path, text: str = "") -> Path:
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "[tool.invest.coverage]\ntotal = 95\ndefault = 90\n" + text, encoding="utf-8"
+    )
+    return pyproject
+
+
+FLOORS = {"total": 95, "default": 90, "files": {"invest_x/a.py": 88, "invest_x/b.py": 100}}
+
+
+def test_module_key_strips_up_to_the_last_src_folder_on_both_separators():
+    assert floors_mod.module_key("data-pipeline/data-preparation/src/invest_data/bundle.py") == (
+        "invest_data/bundle.py"
+    )
+    assert floors_mod.module_key("strategy-evaluation\\src\\invest_evaluation\\engine.py") == (
+        "invest_evaluation/engine.py"
+    )
+    assert floors_mod.module_key("src/pkg/src/invest_y/sub/c.py") == "invest_y/sub/c.py"
+    assert floors_mod.module_key("invest_y/c.py") == "invest_y/c.py"
+
+
+def test_files_at_or_above_their_floors_pass():
+    report = _report({"comp/src/invest_x/a.py": 88.0, "comp/src/invest_x/b.py": 100.0}, 95.0)
+    assert floors_mod.check(report, FLOORS) == ([], [])
+
+
+def test_a_file_below_its_floor_fails():
+    report = _report({"comp/src/invest_x/a.py": 87.99, "comp/src/invest_x/b.py": 100.0}, 96.0)
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == ["invest_x/a.py: 87.99% is below its floor 88%"]
+
+
+def test_a_file_without_a_floor_at_or_above_the_default_is_listed_for_a_floor():
+    report = _report(
+        {
+            "comp/src/invest_x/a.py": 88.0,
+            "comp/src/invest_x/b.py": 100.0,
+            "c/src/invest_x/n.py": 93.4,
+        },
+        95.0,
+    )
+    assert floors_mod.check(report, FLOORS) == (
+        [],
+        ["invest_x/n.py: 93.40%, no floor yet, set it to 93%"],
+    )
+
+
+def test_a_total_a_whole_point_above_its_floor_is_listed_as_raisable():
+    report = _report({"comp/src/invest_x/a.py": 88.0, "comp/src/invest_x/b.py": 100.0}, 96.0)
+    assert floors_mod.check(report, FLOORS) == ([], ["total: 96.00%, floor 95% can rise to 96%"])
+
+
+def test_a_file_without_a_floor_uses_the_default():
+    report = _report(
+        {
+            "comp/src/invest_x/a.py": 90.0,
+            "comp/src/invest_x/b.py": 100.0,
+            "c/src/invest_x/new.py": 89.5,
+        },
+        96.0,
+    )
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == ["invest_x/new.py: 89.50% is below its floor 90%"]
+
+
+def test_a_floor_for_a_file_missing_from_the_report_fails():
+    report = _report({"comp/src/invest_x/a.py": 90.0}, 96.0)
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == ["invest_x/b.py: has a floor but is not in the coverage report"]
+
+
+def test_total_below_its_floor_fails():
+    report = _report({"comp/src/invest_x/a.py": 90.0, "comp/src/invest_x/b.py": 100.0}, 94.99)
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == ["total: 94.99% is below its floor 95%"]
+
+
+def test_a_whole_point_above_the_floor_is_listed_as_raisable_without_failing():
+    report = _report({"comp/src/invest_x/a.py": 89.0, "comp/src/invest_x/b.py": 100.0}, 95.5)
+    failures, raisable = floors_mod.check(report, FLOORS)
+    assert failures == []
+    assert raisable == ["invest_x/a.py: 89.00%, floor 88% can rise to 89%"]
+    report = _report({"comp/src/invest_x/a.py": 88.99, "comp/src/invest_x/b.py": 100.0}, 95.5)
+    assert floors_mod.check(report, FLOORS) == ([], [])
+
+
+@pytest.mark.parametrize(
+    "table, message",
+    [
+        ("", "no [tool.invest.coverage] table"),
+        ("[tool.invest.coverage]\ntotal = 95\n", "default must be a number"),
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 101\n", "default must be within 0..100"),
+        ('[tool.invest.coverage]\ntotal = "95"\ndefault = 90\n', "total must be a number"),
+        ("[tool.invest.coverage]\ntotal = true\ndefault = 90\n", "total must be a number"),
+        (
+            "[tool.invest.coverage]\ntotal = 95\ndefault = 90\n"
+            '[tool.invest.coverage.files]\n"x.py" = -1\n',
+            "files.x.py must be within 0..100",
+        ),
+    ],
+)
+def test_malformed_floor_tables_are_refused(tmp_path, table, message):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(table, encoding="utf-8")
+    with pytest.raises(ValueError, match=re.escape(message)):
+        floors_mod.load_floors(pyproject)
+
+
+def test_main_exit_status_and_output(tmp_path, capsys):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "[tool.invest.coverage]\ntotal = 95\ndefault = 90\n"
+        '[tool.invest.coverage.files]\n"invest_x/a.py" = 88\n',
+        encoding="utf-8",
+    )
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 88.5}, 95.5)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 0
+    assert "0 failure(s), total 95.50%" in capsys.readouterr().out
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 80.0}, 95.5)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 1
+    assert "FAIL  invest_x/a.py: 80.00% is below its floor 88%" in capsys.readouterr().out
+
+
+def test_the_repository_floor_table_is_well_formed():
+    floors = floors_mod.load_floors(ROOT / "pyproject.toml")
+    assert floors["files"], "the repository lists per-file floors"
+    for key in floors["files"]:
+        assert key.startswith("invest_") and key.endswith(".py"), key
+        assert key.partition("/")[2], key
+
+
+def test_floors_at_the_ends_of_the_range_are_accepted(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[tool.invest.coverage]\ntotal = 0\ndefault = 100\n", encoding="utf-8")
+    assert floors_mod.load_floors(pyproject) == {"total": 0, "default": 100, "files": {}}
+
+
+def test_module_key_keeps_a_src_folder_inside_a_package():
+    # Round 1 finding: a subpackage named src must not cut the key short.
+    assert floors_mod.module_key(
+        "data-mining-framework/src/invest_mining/src/helpers.py", {"invest_mining"}
+    ) == ("invest_mining/src/helpers.py")
+
+
+def test_module_key_anchors_on_the_innermost_known_package_folder():
+    # Round 2 finding: an outer folder such as src/invest_venv must not take over the key.
+    packages = {"invest_data", "invest_tool"}
+    path = "/home/u/src/invest_venv/lib/python3.11/site-packages/invest_data/bundle.py"
+    assert floors_mod.module_key(path, packages) == "invest_data/bundle.py"
+    assert floors_mod.module_key("c/src/invest_tool/x.py", packages) == "invest_tool/x.py"
+
+
+def test_module_key_falls_back_to_the_last_src_or_site_packages_folder_in_any_case():
+    # Round 2 findings: packages not named invest_* and Windows folder casing.
+    assert floors_mod.module_key("pkg/src/backtest_core/x.py") == "backtest_core/x.py"
+    assert floors_mod.module_key("C:/venv/Lib/Site-Packages/invest_data/bundle.py") == (
+        "invest_data/bundle.py"
+    )
+
+
+def test_module_key_maps_installed_wheel_paths():
+    # Round 1 finding: a report taken against installed wheels uses site-packages paths.
+    assert floors_mod.module_key("venv/lib/python3.11/site-packages/invest_data/bundle.py") == (
+        "invest_data/bundle.py"
+    )
+    assert floors_mod.module_key("C:\\venv\\Lib\\site-packages\\invest_data\\bundle.py") == (
+        "invest_data/bundle.py"
+    )
+
+
+def test_a_files_entry_that_is_not_a_table_is_refused(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(
+        "[tool.invest.coverage]\ntotal = 95\ndefault = 90\nfiles = 90\n", encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match=re.escape("coverage floor files must be a table")):
+        floors_mod.load_floors(pyproject)
+
+
+def test_main_works_without_a_module_docstring(tmp_path, monkeypatch):
+    # Round 1 finding: python -OO strips docstrings.
+    monkeypatch.setattr(floors_mod, "__doc__", None)
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 91.0}, 95.5)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 0
+
+
+def test_two_colliding_report_paths_are_both_named():
+    report = _report(
+        {"a/src/invest_x/a.py": 90.0, "b/src/invest_x/a.py": 90.0, "c/src/invest_x/b.py": 100.0},
+        96.0,
+    )
+    failures, _ = floors_mod.check(report, FLOORS)
+    assert failures == [
+        "invest_x/a.py: two report files map to this name"
+        " (a/src/invest_x/a.py, b/src/invest_x/a.py)"
+    ]
+
+
+@pytest.mark.parametrize(
+    "table, report_text, message",
+    [
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\nfiles = 90\n", "{}", "must be a table"),
+        ("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", "not json", "coverage.json"),
+        (
+            "[tool.invest.coverage]\ntotal = 95\ndefault = 90\n",
+            '{"meta": {"branch_coverage": true}}',
+            "totals",
+        ),
+    ],
+)
+def test_main_reports_a_bad_table_or_report_as_an_error_line(
+    tmp_path, capsys, table, report_text, message
+):
+    # Round 2 finding: a refused table or a broken report gives one ERROR line, exit 2.
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text(table, encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(report_text, encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(pyproject)]) == 2
+    out = capsys.readouterr().out
+    assert out.startswith("ERROR  ") and message in out
+
+
+def test_the_script_runs_under_python_dash_oo(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[tool.invest.coverage]\ntotal = 95\ndefault = 90\n", encoding="utf-8")
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({"c/src/invest_x/a.py": 91.0}, 95.5)), encoding="utf-8")
+    script = ROOT / "scripts/check_coverage_floors.py"
+    result = subprocess.run(
+        [sys.executable, "-OO", str(script), str(report), "--pyproject", str(pyproject)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "0 failure(s)" in result.stdout
+
+
+@pytest.mark.parametrize("meta", [{"branch_coverage": False}, {}, "null", None])
+def test_main_refuses_a_report_without_branch_data(tmp_path, capsys, meta):
+    # Round 3 finding: the floors are lines and branches combined, so a line-only report
+    # (pytest run without --cov-branch) reads higher and must not pass.
+    data = _report({"c/src/invest_x/a.py": 96.0}, 96.0)
+    if meta is None:
+        del data["meta"]
+    else:
+        data["meta"] = None if meta == "null" else meta
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(data), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 2
+    out = capsys.readouterr().out
+    assert out.startswith("ERROR  ") and "--cov-branch" in out
+
+
+def test_module_key_takes_the_innermost_of_two_known_package_folders():
+    # Round 3 finding: no test had two folders with a known package name in one path.
+    path = "x/invest_data/y/src/invest_data/a.py"
+    assert floors_mod.module_key(path, {"invest_data"}) == "invest_data/a.py"
+
+
+def test_check_keys_a_src_folder_inside_a_package_by_the_floor_table():
+    # Round 3 finding: check() must pass the floor table's packages to module_key.
+    floors = {"total": 95, "default": 90, "files": {"invest_x/src/h.py": 90}}
+    report = _report({"c/src/invest_x/src/h.py": 90.0}, 95.0)
+    assert floors_mod.check(report, floors) == ([], [])
+
+
+def test_main_reports_a_missing_report_or_table_as_an_error_line(tmp_path, capsys):
+    # Round 3 finding: a missing file gives one ERROR line and exit 2, not a traceback.
+    pyproject = _table(tmp_path)
+    missing = tmp_path / "missing.json"
+    assert floors_mod.main([str(missing), "--pyproject", str(pyproject)]) == 2
+    assert capsys.readouterr().out.startswith("ERROR  ")
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({}, 96.0)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(tmp_path / "none.toml")]) == 2
+    assert capsys.readouterr().out.startswith("ERROR  ")
+
+
+@pytest.mark.parametrize("bad", [float("inf"), float("nan"), 100.5, -0.5, "97", True, None])
+@pytest.mark.parametrize("where", ["file", "total"])
+def test_a_percentage_that_is_not_a_number_within_0_to_100_is_refused(tmp_path, capsys, bad, where):
+    # Round 3 finding: Infinity crashed math.floor, and 150 or "97" passed a floor.
+    files = {"c/src/invest_x/a.py": bad if where == "file" else 96.0}
+    data = _report(files, bad if where == "total" else 96.0)
+    with pytest.raises(ValueError, match="percent_covered"):
+        floors_mod.check(data, {"total": 95, "default": 90, "files": {}})
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(data), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 2
+    assert capsys.readouterr().out.startswith("ERROR  ")
+
+
+def test_a_percentage_that_rounds_across_a_bound_is_shown_with_all_its_digits(tmp_path, capsys):
+    # Round 3 finding: 94.9999% printed as "95.00% is below its floor 95%".
+    floors = {"total": 95, "default": 90, "files": {"invest_x/a.py": 88, "invest_x/b.py": 88}}
+    report = _report(
+        {
+            "c/src/invest_x/a.py": 87.9999,
+            "c/src/invest_x/b.py": 89.9999,
+            "c/src/invest_x/n.py": 93.999,
+        },
+        94.9999,
+    )
+    assert floors_mod.check(report, floors) == (
+        [
+            "invest_x/a.py: 87.9999% is below its floor 88%",
+            "total: 94.9999% is below its floor 95%",
+        ],
+        [
+            "invest_x/b.py: 89.9999%, floor 88% can rise to 89%",
+            "invest_x/n.py: 93.999%, no floor yet, set it to 93%",
+        ],
+    )
+    path = tmp_path / "coverage.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    assert floors_mod.main([str(path), "--pyproject", str(_table(tmp_path))]) == 1
+    assert "total 94.9999%" in capsys.readouterr().out
+
+
+def test_a_line_only_report_is_named_before_its_other_problems(tmp_path, capsys):
+    # Round 4 finding: the --cov-branch hint must not hide behind another error.
+    report = tmp_path / "coverage.json"
+    data = _report({"c/src/invest_x/a.py": "bad"}, 96.0, branch=False)
+    report.write_text(json.dumps(data), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 2
+    assert "--cov-branch" in capsys.readouterr().out
+
+
+def test_a_malformed_percentage_on_a_colliding_path_is_refused():
+    # Round 4 finding: the collision check skipped the second entry's percentage.
+    report = _report({"a/src/invest_x/a.py": 90.0, "b/src/invest_x/a.py": float("inf")}, 96.0)
+    with pytest.raises(ValueError, match="percent_covered"):
+        floors_mod.check(report, {"total": 95, "default": 90, "files": {}})
+
+
+def test_the_summary_total_matches_the_can_raise_line(tmp_path, capsys):
+    # Round 4 finding: 96.999 printed "can rise to 96%" above "total 97.00%".
+    report = tmp_path / "coverage.json"
+    report.write_text(json.dumps(_report({}, 96.999)), encoding="utf-8")
+    assert floors_mod.main([str(report), "--pyproject", str(_table(tmp_path))]) == 0
+    out = capsys.readouterr().out
+    assert "total: 96.999%, floor 95% can rise to 96%" in out
+    assert "total 96.999%" in out
+
+
+def test_a_file_without_a_floor_is_never_told_to_go_below_the_default():
+    # Round 4 finding: with default 90.5, a file at 90.7% was told "set it to 90%".
+    floors = {"total": 95, "default": 90.5, "files": {}}
+    report = _report({"c/src/invest_x/n.py": 90.7}, 96.0)
+    assert floors_mod.check(report, floors) == (
+        [],
+        [
+            "invest_x/n.py: 90.70%, no floor yet, set it to 90.5%",
+            "total: 96.00%, floor 95% can rise to 96%",
+        ],
+    )
+
+
+def test_a_percentage_rounding_below_a_fractional_floor_is_shown_with_all_its_digits():
+    assert floors_mod.shown(88.505, 88.505) == "88.505"
+    assert floors_mod.shown(88.51, 88.505) == "88.51"
