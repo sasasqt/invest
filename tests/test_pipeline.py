@@ -2,6 +2,7 @@
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -186,11 +187,18 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
     ledger = tmp_path / "ledger.jsonl"
     ledger.write_text((ROOT / "ledgers/yahoo-test.jsonl").read_text())
+    # A minimum cross-section that differs from the bucket count. With the example config's
+    # 10, the diagnostics report 10 with or without the workflow's --min-cross-section, and
+    # the comparison of the two reports below could not fail (BH-2026-10-08-1).
+    config = json.loads(CONFIG.read_text())
+    config["strategy"]["min_names"] = 12
+    (tmp_path / "config.json").write_text(json.dumps(config))
     env = {
         **os.environ,
         "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
         "SNAPSHOT": str(snapshot),
         "LEDGER": str(ledger),
+        "CONFIG": str(tmp_path / "config.json"),
         "SYMBOLS_FILE": "/nonexistent",  # never read: the snapshot exists
         "START": "2020-03-01" if subset else "",
         "END": "2020-11-30" if subset else "",
@@ -207,16 +215,15 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     assert done.returncode == 0, done.stderr
     assert "no download" in done.stderr
     # Yahoo bars have no as-traded close, so the price floor is off in both evaluations,
-    # while the rest of the configuration is the example's.
+    # while the rest of the configuration is the given one's.
     assert "execution.min_price 1.0 -> 0" in done.stderr
-    example = json.loads(CONFIG.read_text())
     for used in (
         json.loads((out / "eval" / "config.json").read_text()),
         json.loads((out / "quantiles" / "config.json").read_text())["backtest"],
     ):
         assert used["execution"]["min_price"] == 0.0
-        assert used["strategy"] == {**used["strategy"], **example["strategy"]}
-        assert used["execution"] == {**used["execution"], **example["execution"], "min_price": 0.0}
+        assert used["strategy"] == {**used["strategy"], **config["strategy"]}
+        assert used["execution"] == {**used["execution"], **config["execution"], "min_price": 0.0}
     manifest = json.loads((out / "eval" / "manifest.json").read_text())
     assert manifest["n_trials"] == 1
     assert manifest["external_benchmark"]["instrument"] == "SPY"
@@ -258,8 +265,8 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     diagnostic_config = json.loads((out / "mining/diagnostics/config.json").read_text())
     factor = json.loads((out / "mining/factor.json").read_text())
     assert diagnostic_config["orientation"] == factor["orientation"] == -1
-    # Both reports apply the same minimum cross-section threshold.
-    assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 10
+    # Both reports apply the same minimum cross-section threshold, the config's min_names.
+    assert diagnostic_config["min_cross_section"] == quantiles["min_cross_section"] == 12
     assert diagnostic_config["tail_rule"] == TAIL_RULE
     assert diagnostic_config["bucket_rule"] == BUCKET_RULE
     values = evaluate(factor["expression"], build_panel(published)) * factor["orientation"]
@@ -322,6 +329,259 @@ def _save_run_module():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def _git(repo, *args):
+    done = subprocess.run(
+        ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return done.stdout.strip()
+
+
+def _clean_checkout_of_the_workflow(path):
+    """A committed copy of the workflow script and save_run.py. RECORD needs a clean
+    checkout and the one running the tests may not be clean; the script resolves its own
+    folder, so everything else it needs comes from this checkout through the environment."""
+    (path / "scripts").mkdir(parents=True)
+    for name in ("historical_workflow.sh", "save_run.py"):
+        shutil.copy(ROOT / "scripts" / name, path / "scripts")
+    _git(path, "init", "-q")
+    _git(path, "add", "scripts")
+    _git(path, "commit", "-q", "-m", "workflow")
+    return path / "scripts/historical_workflow.sh"
+
+
+def _run_workflow(script, out, env):
+    return subprocess.run(
+        ["bash", str(script), str(out)],
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=script.parents[1],
+        env={
+            **os.environ,
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+            **env,
+        },
+    )
+
+
+def _no_global_git_config(monkeypatch, tmp_path):
+    """Git reads no global configuration for the rest of the test.
+
+    The developer's excludes file would otherwise decide what the workflow's own Git calls
+    and the temporary repository see: one that ignores ``out/``, as JetBrains' template
+    does, passes the output-location check for ``<checkout>/out``, and ``commit.gpgsign``
+    would stop the checkout's commits. The evaluator's ``code_dirty`` and the test's own
+    ``code_revision()`` then read the same configuration. Git before 2.32 does not know
+    ``GIT_CONFIG_GLOBAL`` and would read the developer's configuration as before, so the
+    test first checks that Git reads the file the variable names, and is skipped when it
+    does not. The system configuration is left out for the same reason."""
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    # The deprecated GIT_CONFIG variable names a config file for `git config` alone, which
+    # then refuses --global ("only one config file at a time"), and the check below would
+    # blame the Git version.
+    monkeypatch.delenv("GIT_CONFIG", raising=False)
+    marker = tmp_path / "gitconfig-marker"
+    marker.write_text(f"[invest]\n\tisolated = {tmp_path.name}\n", encoding="utf-8")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(marker))
+    read = subprocess.run(
+        ["git", "config", "--global", "invest.isolated"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if read.stdout.strip() != tmp_path.name:
+        version = subprocess.run(["git", "--version"], capture_output=True, text=True, check=False)
+        pytest.skip(
+            "isolating the global Git configuration needs GIT_CONFIG_GLOBAL (Git 2.32 and "
+            f"later); {version.stdout.strip() or 'git'} ignores it"
+        )
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(tmp_path / "no-global-gitconfig"))
+
+
+def test_historical_workflow_record_run_records_an_uninspected_window_first(tmp_path, monkeypatch):
+    """K3: the diagnostics append the market bundle's dates to the ledger unless an
+    inspection already covers them, which modified the tracked ledger before the evaluation
+    recorded ``code_dirty``, so ``save_run.py`` refused every record of a new window. A
+    RECORD run now records the inspection first and stops before publishing; the rerun
+    finds the window recorded and leaves the ledger as it is."""
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    _no_global_git_config(monkeypatch, tmp_path)
+    bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
+    bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    snapshot = tmp_path / "snapshot"
+    write_fake_snapshot(bars, snapshot, adj_factors={"SYN001": 0.9})
+    script = _clean_checkout_of_the_workflow(tmp_path / "checkout")
+    # Only the reservation: nothing records the fabricated snapshot's dates as inspected.
+    committed = [
+        json.loads(line)
+        for line in (ROOT / "ledgers/yahoo-test.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    ledger = tmp_path / "ledger.jsonl"
+    ledger.write_text(
+        "".join(json.dumps(e) + "\n" for e in committed if e["kind"] == "reservation")
+    )
+    env = {
+        "SNAPSHOT": str(snapshot),
+        "LEDGER": str(ledger),
+        "CONFIG": str(CONFIG),
+        "SYMBOLS_FILE": "/nonexistent",
+        "RECORD": str(tmp_path / "record"),
+        "START": "",
+        "END": "",
+    }
+    out = tmp_path / "wf"
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "commit it, then rerun" in done.stderr, done.stderr
+    assert not out.exists() and not (tmp_path / "record").exists()
+    entries = [json.loads(line) for line in ledger.read_text().splitlines()]
+    assert [e["kind"] for e in entries] == ["reservation", "inspection"]
+    # The rerun, again with RECORD, finds the window recorded, appends nothing and goes on
+    # to the run. Its last step, save_run.py, needs committed code, and the evaluator
+    # records the state of the checkout running the tests (dirty, or an installed wheel):
+    # only that refusal is accepted as a failure, once every workflow output exists, and
+    # only when that state, read before the rerun, already warranted it, so a run that
+    # dirties the checkout itself cannot hide behind it.
+    from invest_evaluation.cli import code_revision
+
+    revision, dirty = code_revision()
+    recorded = ledger.read_text()
+    done = _run_workflow(script, out, env)
+    assert "commit it, then rerun" not in done.stderr, done.stderr
+    if revision and dirty is False:
+        assert done.returncode == 0, done.stderr
+    elif done.returncode != 0:
+        refusal = "rerun from a clean checkout" if revision else "no code revision"
+        assert refusal in done.stderr, done.stderr
+    assert (tmp_path / "record").is_dir() == (done.returncode == 0)
+    assert ledger.read_text() == recorded
+    market = json.loads((out / "data/market/manifest.json").read_text())
+    # The pre-check records the cleaned bundle's dates, as the diagnostics do; they equal
+    # the snapshot's observed range here because cleaning rejects nothing.
+    selection = market["provenance"]["selection"]
+    assert entries[-1]["window"] == {
+        "start": selection["observed_start"],
+        "end": selection["observed_end"],
+    }
+    assert entries[-1]["dataset_id"] == market["dataset_id"]
+    assert (out / "quantiles/manifest.json").is_file()
+
+
+@pytest.mark.parametrize("invalid", ["benchmark", "benchmark_rejected", "config", "stale_output"])
+def test_historical_workflow_record_run_leaves_the_ledger_on_an_invalid_invocation(
+    tmp_path, monkeypatch, invalid
+):
+    """INV-PR40-001: without RECORD, a benchmark missing from the snapshot, a benchmark whose
+    every bar cleaning rejects, an invalid CONFIG or a market bundle left in OUT_DIR by an
+    earlier run that stopped stops the workflow at publication or at the CONFIG step, before
+    the diagnostics record the window. The RECORD pre-check, which runs before both, must
+    refuse the same invocation and leave the ledger as it was, instead of recording an
+    inspection that the retry cannot use."""
+    from invest_data.sources import SyntheticConfig, synthetic_market
+    from invest_data.testing import write_fake_snapshot
+
+    _no_global_git_config(monkeypatch, tmp_path)
+    bars = synthetic_market(SyntheticConfig(n_instruments=31, n_days=300, seed=11))
+    bars["instrument"] = bars["instrument"].replace({"SYN000": "SPY"})
+    if invalid == "benchmark_rejected":  # each SPY bar's high is below its open and close
+        spy = bars["instrument"] == "SPY"
+        bars.loc[spy, ["high", "low"]] = bars.loc[spy, ["open", "close"]].min(axis=1) * 0.9
+    snapshot = tmp_path / "snapshot"
+    write_fake_snapshot(bars, snapshot)
+    script = _clean_checkout_of_the_workflow(tmp_path / "checkout")
+    committed = [
+        json.loads(line)
+        for line in (ROOT / "ledgers/yahoo-test.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    ledger = tmp_path / "ledger.jsonl"
+    ledger.write_text(
+        "".join(json.dumps(e) + "\n" for e in committed if e["kind"] == "reservation")
+    )
+    before = ledger.read_bytes()
+    config = json.loads(CONFIG.read_text())
+    if invalid == "config":
+        config["strategy"]["min_names"] = 0  # BacktestConfig refuses it
+    (tmp_path / "config.json").write_text(json.dumps(config))
+    env = {
+        "SNAPSHOT": str(snapshot),
+        "LEDGER": str(ledger),
+        "CONFIG": str(tmp_path / "config.json"),
+        "SYMBOLS_FILE": "/nonexistent",
+        "RECORD": str(tmp_path / "record"),
+        "START": "",
+        "END": "",
+        "BENCHMARK": "QQQ" if invalid == "benchmark" else "SPY",
+    }
+    out = tmp_path / "wf"
+    if invalid == "stale_output":
+        (out / "data/market").mkdir(parents=True)
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "commit it, then rerun" not in done.stderr, done.stderr
+    expected = {
+        "benchmark": "QQQ",
+        "benchmark_rejected": "yahoo-test-SPY-",
+        "config": "min_names",
+        "stale_output": "already exists",
+    }
+    assert expected[invalid] in done.stderr, done.stderr
+    if invalid == "benchmark_rejected":
+        assert "every row was rejected" in done.stderr, done.stderr
+    assert ledger.read_bytes() == before
+    assert out.exists() == (invalid == "stale_output")
+    assert not (tmp_path / "record").exists()
+    # Without RECORD the same invocation stops as well, and the ledger stays as it was.
+    plain = tmp_path / "wf-plain"
+    if invalid == "stale_output":
+        (plain / "data/market").mkdir(parents=True)
+    done = _run_workflow(script, plain, {**env, "RECORD": ""})
+    assert done.returncode != 0
+    assert expected[invalid] in done.stderr, done.stderr
+    assert ledger.read_bytes() == before
+
+
+def test_historical_workflow_record_run_refuses_an_unclean_checkout_before_work(
+    tmp_path, monkeypatch
+):
+    """K15: ``code_dirty`` counts untracked files Git does not ignore, so the workflow's
+    own check does too, before any work, and outputs inside the checkout that Git would
+    not ignore are refused for the same reason."""
+    _no_global_git_config(monkeypatch, tmp_path)
+    checkout = tmp_path / "checkout"
+    script = _clean_checkout_of_the_workflow(checkout)
+    env = {"SNAPSHOT": str(tmp_path / "missing-snapshot"), "RECORD": str(tmp_path / "record")}
+    out = tmp_path / "wf"
+    (checkout / "notes.txt").write_text("")
+    done = _run_workflow(script, out, env)
+    assert done.returncode != 0
+    assert "remove or ignore untracked files" in done.stderr, done.stderr
+    assert not out.exists()
+    (checkout / "notes.txt").unlink()
+    for inside in (checkout / "out", checkout / "runs" / "wf"):
+        done = _run_workflow(script, inside, env)
+        assert done.returncode != 0
+        assert "under a folder Git ignores" in done.stderr, done.stderr
+        assert not inside.exists()
+    # Ignored outputs (the ignored folder itself included, before it exists) and outputs
+    # outside the checkout pass both checks; the run then fails at the download, which has
+    # no symbols file here.
+    (checkout / ".gitignore").write_text("/artifacts/\n")
+    _git(checkout, "add", ".gitignore")
+    _git(checkout, "commit", "-q", "-m", "ignore artifacts")
+    for allowed in (checkout / "artifacts", checkout / "artifacts" / "wf", out):
+        done = _run_workflow(script, allowed, {**env, "SYMBOLS_FILE": "/nonexistent"})
+        assert done.returncode != 0
+        assert "RECORD needs" not in done.stderr, done.stderr
+        assert not allowed.exists()
 
 
 def test_historical_workflow_refuses_an_existing_record_before_work(tmp_path):

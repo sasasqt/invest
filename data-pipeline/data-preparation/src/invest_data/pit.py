@@ -24,6 +24,8 @@ def membership_panel(
         if len(names) > 1:
             raise ValueError(f"several universes {sorted(names)}; pass name=")
     else:
+        if name not in names:
+            raise ValueError(f"unknown universe {name!r}; the table holds {sorted(names)}")
         universe = universe[universe["universe"] == name]
     out = pd.DataFrame(False, index=dates, columns=instruments)
     for row in universe.itertuples(index=False):
@@ -49,6 +51,9 @@ def fundamentals_asof(
     revision of an older period therefore never replaces a newer period's value.
     """
     rows = fundamentals[fundamentals["field"] == field]
+    if rows.empty:
+        known = sorted(fundamentals["field"].unique())
+        raise ValueError(f"unknown fundamentals field {field!r}; the table holds {known}")
     out = pd.DataFrame(float("nan"), index=dates, columns=instruments)
     for instrument, grp in rows.groupby("instrument"):
         if instrument not in out.columns:

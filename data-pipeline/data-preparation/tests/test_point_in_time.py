@@ -113,3 +113,42 @@ def test_synthetic_universe_and_fundamentals_are_valid(tmp_path):
     assert not (m & ~listed).to_numpy().any()  # never a member without a bar
     assert (fund["available_date"] > fund["period_end"]).all()
     assert fund.duplicated(["instrument", "field", "period_end"]).any()  # has revisions
+
+
+def test_fundamentals_asof_refuses_an_unknown_field():
+    """A misspelled field returned an all-NaN panel, which reads as missing data
+    (BH-2026-10-19-7)."""
+    fund = pd.DataFrame(
+        {
+            "instrument": ["A"],
+            "field": ["book_to_price"],
+            "period_end": [D("2020-03-31")],
+            "available_date": [D("2020-04-15")],
+            "value": [0.5],
+        }
+    )
+    dates, names = pd.DatetimeIndex([D("2020-05-01")]), pd.Index(["A"])
+    assert fundamentals_asof(fund, "book_to_price", dates, names).iloc[0, 0] == 0.5
+    with pytest.raises(ValueError, match="unknown fundamentals field 'book_to_prcie'"):
+        fundamentals_asof(fund, "book_to_prcie", dates, names)
+    with pytest.raises(ValueError, match="unknown fundamentals field"):
+        fundamentals_asof(fund.iloc[:0], "book_to_price", dates, names)
+
+
+def test_membership_panel_refuses_an_unknown_universe():
+    """A misspelled universe name returned an all-False panel (BH-2026-10-13-7)."""
+    universe = pd.DataFrame(
+        {
+            "universe": ["sp", "nd"],
+            "instrument": ["A", "B"],
+            "start_date": [D("2020-01-01"), D("2020-01-01")],
+            "end_date": [pd.NaT, pd.NaT],
+        }
+    )
+    dates, names = pd.DatetimeIndex([D("2020-05-01")]), pd.Index(["A", "B"])
+    assert membership_panel(universe, dates, names, name="sp").loc[D("2020-05-01")].tolist() == [
+        True,
+        False,
+    ]
+    with pytest.raises(ValueError, match="unknown universe 'spx'"):
+        membership_panel(universe, dates, names, name="spx")
