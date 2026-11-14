@@ -652,6 +652,28 @@ def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, comman
     assert not book.exists() and not out.exists()
 
 
+@pytest.mark.parametrize("command", ["evaluate", "search", "confirm", "export"])
+def test_a_broken_market_bundle_is_named_by_flag_and_path(tmp_path, market, command):
+    """The --data bundle is named by its flag and path too: next to --universe and
+    --fundamentals, "missing data file ..." alone does not say which bundle is broken."""
+    broken, book, out = tmp_path / "broken", tmp_path / "ledger.jsonl", tmp_path / "out"
+    broken.mkdir()
+    (broken / "manifest.json").write_bytes((market / "manifest.json").read_bytes())
+    factor = tmp_path / "f.json"
+    assert main(["freeze", "--expr", "close / open", "--horizon", "1", "--out", str(factor)]) == 0
+    args = {
+        "evaluate": ["--expr", "close / open", "--horizon", "1", "--ledger", str(book)],
+        "search": ["--trials", "5", "--ledger", str(book)],
+        "confirm": ["--factor", str(factor), "--confirm-start", "2020-06-01"],
+        "export": ["--factor", str(factor)],
+    }[command]
+    if command == "confirm":
+        args += ["--ledger", str(book)]
+    with pytest.raises(SystemExit, match=re.escape(f"--data {broken}: ") + ".*missing data file"):
+        main([command, "--data", str(broken), *args, "--out", str(out)])
+    assert not book.exists() and not out.exists()
+
+
 @pytest.mark.parametrize("flag", ["--universe", "--fundamentals"])
 @pytest.mark.parametrize("evidence", ["--confirmation", "--from-search"])
 def test_export_with_evidence_names_a_wrong_input_bundle(tmp_path, market, evidence, flag):
@@ -692,14 +714,16 @@ def _reserved_pair(tmp_path, cut_at: int = 100) -> str:
     return str(cut.date())
 
 
-@pytest.mark.parametrize("command", ["evaluate", "confirm"])
+@pytest.mark.parametrize("command", ["evaluate", "confirm", "confirm --require-confirmatory"])
 def test_a_refused_plan_tells_nothing_about_reserved_as_traded_values(tmp_path, command):
     """Whether reserved rows hold an as-traded close is reserved data too. A plan the ledger
     refuses gets the ledger's refusal, the same for both bundles, so the answer cannot tell
-    them apart; a plan it allows still gets the missing-value message (INV-PR51-001)."""
+    them apart; a plan it allows still gets the missing-value message (INV-PR51-001). The
+    third case is a window already inspected, which `--require-confirmatory` refuses."""
     start = _reserved_pair(tmp_path)
     reserved = tmp_path / "reserved.jsonl"
-    assert main(["ledger", "reserve", "--ledger", str(reserved), "--start", start]) == 0
+    action = "inspect" if command.endswith("--require-confirmatory") else "reserve"
+    assert main(["ledger", action, "--ledger", str(reserved), "--start", start]) == 0
     if command == "evaluate":
         # Every session is read, the reserved ones too.
         refused = ["evaluate", "--expr", "cs_rank(-close_as_traded)", "--horizon", "1"]
@@ -710,6 +734,9 @@ def test_a_refused_plan_tells_nothing_about_reserved_as_traded_values(tmp_path, 
         refused = ["confirm", "--factor", factor, "--confirm-start", early]
         allowed = ["confirm", "--factor", factor, "--confirm-start", start]
         book, says = tmp_path / "allowed.jsonl", "starts before the reserved window"
+        if action == "inspect":
+            refused = [*allowed, "--require-confirmatory"]
+            says = "confirmation data was already used"
         assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
     before = reserved.read_bytes()
     answers = []

@@ -270,7 +270,7 @@ def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     try:
         manifest, bars = read_adjusted_market_bars(path)
     except BundleError as exc:
-        raise SystemExit(str(exc)) from exc
+        raise SystemExit(f"--data {path}: {exc}") from exc
     if bars.empty:
         raise SystemExit(f"market bundle {path} holds no bars")
     return manifest, bars
