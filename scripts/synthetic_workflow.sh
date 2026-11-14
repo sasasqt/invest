@@ -4,7 +4,9 @@
 #
 # Usage: uv run scripts/synthetic_workflow.sh [OUT_DIR]
 # Every step reads only artifacts published by the previous one; no ids or dates are
-# copied by hand. Sizes can be reduced for quick runs with INSTRUMENTS, DAYS, TRIALS.
+# copied by hand. Sizes can be reduced for quick runs with INSTRUMENTS, DAYS, TRIALS;
+# DAYS needs at least 153, because the search's ledger refuses a confirmation window
+# with fewer than 60 labelled decision dates.
 set -euo pipefail
 
 out="${1:-artifacts/synthetic-workflow}"

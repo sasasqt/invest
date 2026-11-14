@@ -322,6 +322,65 @@ def test_cli_rejects_insolvent_portfolio_without_sharpe_statistics(tmp_path, cap
     assert "Status: **rejected**" in report and "| solvency | fail |" in report
 
 
+def test_cli_rejects_a_book_that_opens_insolvent_and_recovers_by_the_close(tmp_path, capsys):
+    """BH-2026-11-02-2 through the CLI and the default QuantileStrategy: long A (score 2) and
+    short B (score 1) at half of 1000 each, 50 and 25 shares. B opens at 80 on session 30,
+    so equity at that open is 1000 + 50 * 10 - 25 * 80 = -500, and closes at 320. Orders
+    sized on -500 would invert both legs, and that book closes at +250, so the close check
+    saw nothing and verdict.json reported solvency `pass`."""
+    dates = pd.bdate_range("2024-01-01", periods=40)
+    event = 30
+    rows = []
+    for k, d in enumerate(dates):
+        rows.append([d, "A", 10.0, 10.0, 10.0, 10.0, 1e9])
+        b_open = 20.0 if k < event else 80.0 if k == event else 320.0
+        b_close = 20.0 if k < event else 320.0
+        rows.append([d, "B", b_open, max(b_open, b_close), min(b_open, b_close), b_close, 1e9])
+    market = pd.DataFrame(
+        rows, columns=["date", "instrument", "open", "high", "low", "close", "volume"]
+    )
+    signals = pd.DataFrame(
+        [[d, name, score] for d in dates for name, score in (("A", 2.0), ("B", 1.0))],
+        columns=["decision_date", "instrument", "score"],
+    )
+    publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)
+    publish_signals(
+        signals, tmp_path / "s", dataset_id="s", metadata={"factor_id": "fixed", "horizon_days": 1}
+    )
+    cfg = {
+        "initial_capital": 1000.0,
+        "strategy": {
+            "long_fraction": 0.5,
+            "short_fraction": 0.5,
+            "gross_leverage": 1.0,
+            "rebalance_every": 1,
+            "min_names": 2,
+        },
+        "execution": {"max_participation": 1.0, "min_price": 0.0},
+        "costs": {
+            "commission_bps": 0,
+            "half_spread_bps": 0,
+            "impact_coef": 0,
+            "borrow_bps_annual": 0,
+            "adv_window": 1,
+            "vol_window": 2,
+        },
+        "validation": {"stress_scenarios": []},
+    }
+    (tmp_path / "cfg.json").write_text(json.dumps(cfg), encoding="utf-8")
+    out = tmp_path / "run"
+    args = ["run", "--data", str(tmp_path / "m"), "--signals", str(tmp_path / "s")]
+    args += ["--config", str(tmp_path / "cfg.json"), "--no-scenarios", "--out", str(out)]
+    assert main(args) == 0
+    capsys.readouterr()
+    verdict = json.loads((out / "verdict.json").read_text(encoding="utf-8"))["portfolio"]
+    solvency = next(check for check in verdict["checks"] if check["name"] == "solvency")
+    assert solvency["status"] == "fail", solvency
+    assert verdict["status"] == "rejected"
+    perf = json.loads((out / "metrics.json").read_text(encoding="utf-8"))["performance"]
+    assert perf["insolvency"]["value"] == str(dates[event].date())
+
+
 def test_cli_refuses_fewer_trials_than_the_search_family(tmp_path, market, reversal_signals):
     """`--n-trials` cannot undercut the candidates a search tried (K8)."""
     publish_market_bars(market, tmp_path / "m", dataset_id="m", metadata=SYNTHETIC_METADATA)

@@ -2,12 +2,14 @@
 
 Event order within each session ``t``:
 
-1. **Open.** Positions are marked from the previous mark to the open. Orders whose fill
-   date is ``t`` execute at the open price; transaction costs are paid in cash.
+1. **Open.** Positions are marked from the previous mark to the open. If equity is then
+   not positive, the run stops before any order is sized on it. Otherwise orders whose
+   fill date is ``t`` execute at the open price; transaction costs are paid in cash, and
+   the run stops if they leave equity not positive.
 2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
-   shorts and interest on cash accrue.
+   shorts and interest on cash accrue. If equity is then not positive, the run stops.
 3. **Decision.** On rebalance dates, scores dated ``t`` (available after the close of
    ``t``) are turned into target weights. They fill at the open of ``t + 1 + delay``.
 
@@ -310,6 +312,31 @@ def run_backtest(
     def open_episode(j: int, i: int, side: float, pnl_at_start: float) -> None:
         ep_start[j], ep_side[j], ep_pnl0[j] = i, side, pnl_at_start
 
+    def session_row(
+        date: pd.Timestamp,
+        mv: np.ndarray,
+        traded: float,
+        day_costs: dict[str, float],
+        financing: float,
+        n_rejected: int,
+        n_clipped: int,
+    ) -> dict[str, Any]:
+        return {
+            "date": date,
+            "equity": cash + float(mv.sum()),
+            "cash": cash,
+            "long_value": float(mv[mv > 0].sum()),
+            "short_value": float(-mv[mv < 0].sum()),
+            "n_long": int((shares > 0).sum()),
+            "n_short": int((shares < 0).sum()),
+            "traded_notional": traded,
+            **{f"{k}_cost": v for k, v in day_costs.items()},
+            "financing": financing,
+            "n_rejected": n_rejected,
+            "n_clipped": n_clipped,
+            "cum_costs": sum(cum_costs.values()),
+        }
+
     for i in sessions.tolist():
         date = calendar[i]
         day_costs = {k: 0.0 for k in (*COST_KINDS, "borrow")}
@@ -321,9 +348,19 @@ def run_backtest(
         held_open = has_open & (shares != 0)
         pnl[held_open] += shares[held_open] * (px_open[i][held_open] - mark[held_open])
         mark[has_open] = px_open[i][has_open]
+        # Equity at the open, on the open marks (the last known mark for a name without a
+        # bar). A non-positive one is insolvency, as at the close, and the run stops before
+        # any order is sized on it: every target times a negative equity has the wrong side
+        # (BH-2026-11-02-2). The session's row is valued at the open; it never reaches the
+        # close, so it has no trades, costs, borrow or cash interest.
+        mv_open = shares * np.where(np.isnan(mark), 0.0, mark)
+        equity_open = cash + float(mv_open.sum())
+        if equity_open <= 0:
+            warnings.append(f"insolvent at the open on {date.date()}: equity {equity_open:.2f}")
+            rows.append(session_row(date, mv_open, 0.0, day_costs, 0.0, 0, 0))
+            break
         if i in pending:
             dec_i, weights = pending.pop(i)
-            equity_open = cash + np.nansum(shares * mark)
             target = np.zeros(n)
             if len(weights):
                 idx = instruments.get_indexer(weights.index)
@@ -412,6 +449,23 @@ def run_backtest(
                     }
                 )
 
+        if traded:
+            # Fills trade at the open marks, so they move equity only by their costs, which
+            # can still take a small positive equity below zero; a recovery by the close
+            # would hide it.
+            mv_filled = shares * np.where(np.isnan(mark), 0.0, mark)
+            equity_filled = cash + float(mv_filled.sum())
+            if equity_filled <= 0:
+                for k, v in day_costs.items():
+                    cum_costs[k] += v
+                warnings.append(
+                    f"insolvent after the open's fills on {date.date()}: equity {equity_filled:.2f}"
+                )
+                rows.append(
+                    session_row(date, mv_filled, traded, day_costs, 0.0, n_rejected, n_clipped)
+                )
+                break
+
         # 2. Close: mark, delistings, borrow and cash interest.
         has_close = ~np.isnan(px_close[i])
         stale = ~has_close & (shares != 0) & ~missing_mark_warned
@@ -465,23 +519,7 @@ def run_backtest(
         equity = cash + float(mv.sum())
         if equity <= 0:
             warnings.append(f"insolvent on {date.date()}: equity {equity:.2f}")
-        rows.append(
-            {
-                "date": date,
-                "equity": equity,
-                "cash": cash,
-                "long_value": float(mv[mv > 0].sum()),
-                "short_value": float(-mv[mv < 0].sum()),
-                "n_long": int((shares > 0).sum()),
-                "n_short": int((shares < 0).sum()),
-                "traded_notional": traded,
-                **{f"{k}_cost": v for k, v in day_costs.items()},
-                "financing": financing,
-                "n_rejected": n_rejected,
-                "n_clipped": n_clipped,
-                "cum_costs": sum(cum_costs.values()),
-            }
-        )
+        rows.append(session_row(date, mv, traded, day_costs, financing, n_rejected, n_clipped))
         if equity <= 0:
             break
 
