@@ -173,12 +173,12 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
             raise BundleError(f"column {col.name!r}: expected boolean, got {value!r}")
         return "true" if bool(value) else "false"
     if col.type == "date":
-        return pd.Timestamp(value).date().isoformat()
+        return str(pd.Timestamp(value).date().isoformat())
     if col.type == "timestamp":
         ts = pd.Timestamp(value)
         if ts.tzinfo is None:
             raise BundleError(f"column {col.name!r}: timestamps must be timezone-aware")
-        return ts.tz_convert("UTC").strftime("%Y-%m-%dT%H:%M:%S.%fZ").replace(".000000Z", "Z")
+        return str(ts.tz_convert("UTC").strftime("%Y-%m-%dT%H:%M:%S.%fZ")).replace(".000000Z", "Z")
     if col.type == "decimal":
         dec = value if isinstance(value, Decimal) else Decimal(str(value))
         if not dec.is_finite():
