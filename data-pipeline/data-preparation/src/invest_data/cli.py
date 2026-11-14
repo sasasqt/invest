@@ -8,6 +8,7 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -110,8 +111,8 @@ def _publish(
     raw: pd.DataFrame,
     out: Path,
     dataset_id: str,
-    metadata: dict,
-    provenance: dict,
+    metadata: dict[str, Any],
+    provenance: dict[str, Any],
     fmt: str,
     adjusted_close: str | None = None,
 ) -> int:
