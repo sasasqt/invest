@@ -1123,15 +1123,23 @@ def test_report_marks_a_right_censored_drawdown_duration(tmp_path, closes, censo
         assert row == f"| max_drawdown_duration | {duration['value']} |"
 
 
-def test_censored_marker_does_not_claim_the_longest_drawdown_is_open():
-    """RA-2026-11-01-4: `censored` means the last drawdown is still open, which need not be
-    the longest one; the marker says exactly that (the longest value is then a lower bound)."""
+def test_censored_marker_appears_only_when_the_longest_drawdown_is_open() -> None:
+    """RA-2026-11-01-4 with BH-2026-10-14-8: the marker sits next to the longest duration, so
+    it appears only when that longest episode is the open one; a shorter open episode after a
+    longer recovered one leaves the exact maximum bare."""
     from invest_evaluation.metrics import drawdown_metrics
     from invest_evaluation.reporting import _fmt
 
-    # From 100: down to 100 after a 110 peak, recovered at 120 (2 sessions), then 119 open.
-    wealth = pd.Series([110.0, 100.0, 120.0, 119.0], index=pd.bdate_range("2024-01-01", periods=4))
+    index = pd.bdate_range("2024-01-01", periods=5)
+    # From 100: a 110 peak, down to 100, recovered at 120 (2 sessions), then 119 open (1).
+    wealth = pd.Series([110.0, 100.0, 120.0, 119.0], index=index[:4])
     duration = drawdown_metrics(wealth, 100.0)["max_drawdown_duration"].to_dict()
+    assert duration["value"] == 2 and duration["extra"]["censored"] is False
+    assert _fmt(duration) == "2"
+    # One more session below 120: the open episode is now 2 sessions too (a tie), so the
+    # maximum is a lower bound.
+    longer = pd.Series([110.0, 100.0, 120.0, 119.0, 118.0], index=index)
+    duration = drawdown_metrics(longer, 100.0)["max_drawdown_duration"].to_dict()
     assert duration["value"] == 2 and duration["extra"]["censored"] is True
     assert _fmt(duration) == "2 (right-censored: last drawdown not recovered)"
     recovered = drawdown_metrics(wealth.iloc[:3], 100.0)["max_drawdown_duration"].to_dict()
