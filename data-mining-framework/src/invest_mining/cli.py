@@ -69,14 +69,16 @@ from invest_mining.search import (
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
     """The ``--universe`` and ``--fundamentals`` rows; a bundle of another kind, or none at
-    that path, ends in a message before anything is computed or recorded."""
-    try:
-        return {
-            "universe": read_universe(args.universe)[1] if args.universe else None,
-            "fundamentals": read_fundamentals(args.fundamentals)[1] if args.fundamentals else None,
-        }
-    except BundleError as exc:
-        raise SystemExit(f"{args.out}: {exc}") from exc
+    that path, ends in a message that names the flag and path before anything is computed
+    or recorded."""
+    rows: dict[str, pd.DataFrame | None] = {}
+    for name, read in (("universe", read_universe), ("fundamentals", read_fundamentals)):
+        path = getattr(args, name)
+        try:
+            rows[name] = read(path)[1] if path else None
+        except BundleError as exc:
+            raise SystemExit(f"--{name} {path}: {exc}") from exc
+    return rows
 
 
 def _input_hashes(args: argparse.Namespace) -> dict[str, str | None]:
@@ -291,7 +293,6 @@ def _evaluate(args: argparse.Namespace) -> int:
     _require_scale_free(expression, "--expr")
     manifest, bars = _market_bars(args.data)
     inputs = _optional_inputs(args)
-    _require_as_traded(expression, bars, "--expr", universe=inputs["universe"])
     window = _span(pd.DatetimeIndex(sorted(bars["date"].unique())), "data")
     if args.ledger is not None:
         # Refuse reserved data before computing anything from it.
@@ -299,6 +300,8 @@ def _evaluate(args: argparse.Namespace) -> int:
             ledger.check_inspection(ledger.load(args.ledger), window)
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
+    # Only now: whether reserved rows hold an as-traded value is reserved data too.
+    _require_as_traded(expression, bars, "--expr", universe=inputs["universe"])
     # An unwritable --out must fail here, not after the inspection is recorded.
     _prepare_out(
         args.out,
@@ -525,10 +528,6 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"--confirm-start {args.confirm_start} leaves no history or confirmation data"
         )
-    # Values before the window do not count: without any in it the test would test nothing.
-    _require_as_traded(
-        factor.expression, bars, str(args.factor), universe=inputs["universe"], since=dates[k]
-    )
     # Sessions before confirmation are read only as formula inputs, never as outcomes.
     context = _span(dates[max(k - factor.lookback, 0) : k], "history") if factor.lookback else None
     confirmation = _span(dates[k:], "confirmation")
@@ -556,6 +555,12 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
+    # Only once the ledger allows the plan, because whether the window holds an as-traded
+    # value is reserved data too. Values before the window do not count: without any in it
+    # the test would test nothing.
+    _require_as_traded(
+        factor.expression, bars, str(args.factor), universe=inputs["universe"], since=dates[k]
+    )
     # A window too short for the test would be recorded as used with nothing tested. An
     # as-traded formula has no value where its column has none, so only those cells count;
     # which cells exist is read, never a value.

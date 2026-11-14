@@ -7,6 +7,7 @@ cancels; a level such as ``cs_rank(-close)`` ranks names by splits they have not
 """
 
 import json
+import re
 
 import numpy as np
 import pandas as pd
@@ -630,10 +631,12 @@ def test_export_refuses_a_start_without_as_traded_values(tmp_path):
     assert main([*args, "--out", str(tmp_path / "all")]) == 0  # earlier dates have values
 
 
+@pytest.mark.parametrize("flag", ["--universe", "--fundamentals"])
 @pytest.mark.parametrize("command", ["evaluate", "search", "confirm", "export"])
-def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, command):
-    """A market bundle passed as --universe ends in a message, not a BundleError traceback,
-    before the ledger or --out is touched."""
+def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, command, flag):
+    """A market bundle passed as --universe or --fundamentals ends in a message that names
+    that flag and path, not a BundleError traceback or the output folder, before the ledger
+    or --out is touched."""
     factor, book, out = tmp_path / "f.json", tmp_path / "ledger.jsonl", tmp_path / "out"
     assert main(["freeze", "--expr", "close / open", "--horizon", "1", "--out", str(factor)]) == 0
     args = {
@@ -644,9 +647,86 @@ def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, comman
     }[command]
     if command == "confirm":
         args += ["--ledger", str(book)]
-    with pytest.raises(SystemExit, match="dataset_kind"):
-        main([command, "--data", str(market), *args, "--universe", str(market), "--out", str(out)])
+    with pytest.raises(SystemExit, match=re.escape(f"{flag} {market}: ") + ".*dataset_kind"):
+        main([command, "--data", str(market), *args, flag, str(market), "--out", str(out)])
     assert not book.exists() and not out.exists()
+
+
+# ---------------------------------------------------------------------------
+# Reserved data stays unread until the ledger allows the plan
+
+
+def _reserved_pair(tmp_path, cut_at: int = 100) -> str:
+    """Two bundles with the same dates and names: no as-traded close at all in "absent",
+    and one only from session ``cut_at`` on in "reserved"; that session's date."""
+    bars = synthetic_market(SyntheticConfig(n_instruments=25, n_days=200, seed=5))
+    cut = pd.Timestamp(sorted(bars["date"].unique())[cut_at])
+    _publish(bars.assign(close_as_traded=np.nan), tmp_path / "absent")
+    bars.loc[bars["date"] < cut, "close_as_traded"] = np.nan
+    _publish(bars, tmp_path / "reserved")
+    return str(cut.date())
+
+
+@pytest.mark.parametrize("command", ["evaluate", "confirm"])
+def test_a_refused_plan_tells_nothing_about_reserved_as_traded_values(tmp_path, command):
+    """Whether reserved rows hold an as-traded close is reserved data too. A plan the ledger
+    refuses gets the ledger's refusal, the same for both bundles, so the answer cannot tell
+    them apart; a plan it allows still gets the missing-value message (INV-PR51-001)."""
+    start = _reserved_pair(tmp_path)
+    reserved = tmp_path / "reserved.jsonl"
+    assert main(["ledger", "reserve", "--ledger", str(reserved), "--start", start]) == 0
+    if command == "evaluate":
+        # Every session is read, the reserved ones too.
+        refused = ["evaluate", "--expr", "cs_rank(-close_as_traded)", "--horizon", "1"]
+        allowed, book, says = refused, tmp_path / "empty.jsonl", "overlaps the reserved"
+    else:
+        factor = _frozen_as_traded(tmp_path)
+        early = str((pd.Timestamp(start) - pd.Timedelta(days=30)).date())
+        refused = ["confirm", "--factor", factor, "--confirm-start", early]
+        allowed = ["confirm", "--factor", factor, "--confirm-start", start]
+        book, says = tmp_path / "allowed.jsonl", "starts before the reserved window"
+        assert main(["ledger", "reserve", "--ledger", str(book), "--start", start]) == 0
+    before = reserved.read_bytes()
+    answers = []
+    for side in ("absent", "reserved"):
+        out = tmp_path / f"refused-{side}"
+        with pytest.raises(SystemExit) as stop:
+            main(
+                [
+                    *refused,
+                    "--data",
+                    str(tmp_path / side),
+                    "--ledger",
+                    str(reserved),
+                    "--out",
+                    str(out),
+                ]
+            )
+        answers.append(str(stop.value.code))
+        assert reserved.read_bytes() == before and not out.exists()
+    assert answers[0] == answers[1] and says in answers[0]
+    allowed_before = book.read_bytes() if book.exists() else None
+    out = tmp_path / "allowed-absent"
+    with pytest.raises(SystemExit, match="no close_as_traded value"):
+        main(
+            [*allowed, "--data", str(tmp_path / "absent"), "--ledger", str(book), "--out", str(out)]
+        )
+    assert (book.read_bytes() if book.exists() else None) == allowed_before and not out.exists()
+    out = tmp_path / "allowed-reserved"
+    assert (
+        main(
+            [
+                *allowed,
+                "--data",
+                str(tmp_path / "reserved"),
+                "--ledger",
+                str(book),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
 
 
 # ---------------------------------------------------------------------------
