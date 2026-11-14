@@ -8,7 +8,7 @@ Every pull request and every push to `main` runs:
 
 | Job | Checks |
 |---|---|
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` on all three `src/` trees, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
 
