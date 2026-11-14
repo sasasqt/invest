@@ -94,7 +94,7 @@ def test_fixed_formula_takes_evidence_from_its_confirm_run(tmp_path, data):
 
     # Evidence for a different factor is refused.
     other = tmp_path / "g.json"
-    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(other)]) == 0
+    assert main(["freeze", "--expr", "close_as_traded", "--horizon", "1", "--out", str(other)]) == 0
     with pytest.raises(SystemExit, match="was not confirmed in this output"):
         _export(data, tmp_path / "x", "--factor", str(other), "--confirmation", str(tmp_path / "c"))
 
@@ -419,8 +419,9 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
     universe = ("--universe", str(inputs / "universe"))
     assert _search_on(inputs, tmp_path / "s", *universe) == 0
     source = ("--from-search", str(tmp_path / "s"))
-    # Another kind of bundle is refused with a message, not a traceback.
-    with pytest.raises(SystemExit, match="dataset_kind"):
+    # Another kind of bundle is refused with a message that names the flag, not a traceback.
+    wrong = re.escape(f"--universe {inputs / 'fundamentals'}: ") + ".*dataset_kind"
+    with pytest.raises(SystemExit, match=wrong):
         _export(
             inputs / "market", tmp_path / "x", *source, "--universe", str(inputs / "fundamentals")
         )
