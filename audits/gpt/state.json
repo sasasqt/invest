@@ -55,7 +55,7 @@
     "benchmarks": "no new sample; historical synth-S referenced",
     "research": "not scheduled",
     "report": "prepared",
-    "publication": "pending guarded update"
+    "publication": "done and read back"
   },
   "status": "bounded static scope complete; product benchmarks blocked",
   "last_audited_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
@@ -221,8 +221,8 @@
   },
   "safe_resume": "Pin current main and output heads; preserve 90b5ca038155b97833b120baa57dfecd05d6f641 scope; revalidate all bytes/isolation before imports; reuse exact saved ranges only for same blobs. Reconcile publication run_id before retry. No reserved data. Prior runtime evidence must retain original provenance.",
   "research_state": "research/state.json",
-  "completed_utc": "2026-11-10T02:12:23.250Z",
-  "total_elapsed_seconds_to_publication_verified": 1426.203018,
+  "completed_utc": "2026-11-14T02:11:34Z",
+  "total_elapsed_seconds_to_publication_verified": 773,
   "execution_recovery": {
     "date": "2026-10-31",
     "report": "audits/gpt/2026-10-31-runtime-validation.md",
@@ -3583,7 +3583,10 @@
     },
     "evidence": "2026-11-14-performance/evidence.json",
     "report": "2026-11-14.md",
-    "publication_status": "prepared; verify ref and parent diff before claiming published"
+    "publication_status": "published_verified",
+    "completed_utc": "2026-11-14T02:11:34Z",
+    "report_commit": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+    "report_url": "https://github.com/sasasqt/invest/blob/c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8/audits/gpt/2026-11-14.md"
   },
   "publication_history": [
     {
@@ -3988,14 +3991,63 @@
       "readback_verified": true,
       "date": "2026-11-12",
       "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa"
+    },
+    {
+      "date": "2026-11-14",
+      "run_id": "f4498e9d-b094-832a-95c2-149f5923b12a",
+      "status": "published_verified",
+      "report_commit": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+      "report_url": "https://github.com/sasasqt/invest/blob/c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8/audits/gpt/2026-11-14.md",
+      "verified_head_at_report": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+      "main_rechecked": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "output_parent": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-14-performance/evidence.json",
+        "audits/gpt/2026-11-14-performance/gzip_control.py",
+        "audits/gpt/2026-11-14-performance/started.json",
+        "audits/gpt/2026-11-14.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "force": false,
+      "readback_verified": true,
+      "verified_utc": "2026-11-14T02:11:34Z"
     }
   ],
   "publication_current_run": {
-    "status": "prepared",
-    "report": "2026-11-14.md",
+    "status": "published_verified",
+    "report_commit": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+    "report_url": "https://github.com/sasasqt/invest/blob/c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8/audits/gpt/2026-11-14.md",
+    "verified_head_at_report": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+    "main_rechecked": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
     "output_parent": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-14-performance/evidence.json",
+      "audits/gpt/2026-11-14-performance/gzip_control.py",
+      "audits/gpt/2026-11-14-performance/started.json",
+      "audits/gpt/2026-11-14.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
     "force": false,
-    "readback_verified": false
+    "readback_verified": true,
+    "verified_utc": "2026-11-14T02:11:34Z"
   },
   "remaining_work_current_visit": [
     "untouched malformed gzip/required-artifact controls",

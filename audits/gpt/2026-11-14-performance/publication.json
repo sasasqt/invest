@@ -1,0 +1,27 @@
+{
+  "status": "published_verified",
+  "report_commit": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+  "report_url": "https://github.com/sasasqt/invest/blob/c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8/audits/gpt/2026-11-14.md",
+  "verified_head_at_report": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
+  "main_rechecked": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+  "output_parent": "af7ce70baf7df1cc132919e6b5f1a48b4f06454f",
+  "verified_changed_paths": [
+    "audits/gpt/2026-11-14-performance/evidence.json",
+    "audits/gpt/2026-11-14-performance/gzip_control.py",
+    "audits/gpt/2026-11-14-performance/started.json",
+    "audits/gpt/2026-11-14.md",
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/coverage-map.json",
+    "audits/gpt/coverage-map.md",
+    "audits/gpt/coverage.csv",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/exploration.json",
+    "audits/gpt/findings.json",
+    "audits/gpt/findings.md",
+    "audits/gpt/state.json",
+    "audits/gpt/validation.csv"
+  ],
+  "force": false,
+  "readback_verified": true,
+  "verified_utc": "2026-11-14T02:11:34Z"
+}
