@@ -19,11 +19,14 @@ Keep prototypes separate from supported APIs. Reuse them only after addressing c
 ## 3. Use a short implementation loop
 
 1. Read the affected code, contracts, and tests; check the working tree and identify existing behavior to preserve.
-2. Implement the smallest useful behavior using simple functions and explicit dependencies. Add an abstraction when a concrete second implementation or variation needs it.
-3. Add meaningful checks for the changed behavior. For a bug, first reproduce it and add a regression test when appropriate.
-4. Run the fastest relevant checks while editing; use failures to refine the change.
-5. Run all required checks for the affected scope before integrating. Review the diff and update public documentation and task status.
-6. Commit a coherent, working increment; push or integrate under the agreed repository workflow. Follow [Git guidelines](GIT_GUIDELINES.md) and the user's branch instructions.
+2. Sketch only the interfaces this increment adds or changes: typed signatures, records, closed sets of values, and docstring contracts ([Use the type system](PYTHON_GUIDELINES.md#use-the-type-system)). A new function is a stub whose body is `raise NotImplementedError`; an existing function changes its signature in place. Do not design layers the increment does not use (§1).
+3. Write checks for the acceptance criteria from §1 (expected outputs, failure behavior, and the representative example) against those stubs, with expected values taken as the [testing strategy](PYTHON_GUIDELINES.md#testing-strategy) says, and run them: a check of a stub fails with its `NotImplementedError`, a check of changed behavior fails on the old behavior (a wrong value or a missing exception), none fails with an import or collection error, and a check of a record sketched in step 2 may already pass.
+4. Implement the smallest useful behavior using simple functions and explicit dependencies. Add an abstraction when a concrete second implementation or variation needs it. Add checks for the boundaries, invalid inputs, and failure paths that the implementation or branch coverage reveals (§5), with expected values taken the same way.
+5. Run the fastest relevant checks while editing; use failures to refine the change.
+6. Run all required checks for the affected scope before integrating. Review the diff and update public documentation and task status.
+7. Commit a coherent, working increment; push or integrate under the agreed repository workflow. Follow [Git guidelines](GIT_GUIDELINES.md) and the user's branch instructions.
+
+For a bug, the check of step 3 fails on the current code for the bug's reason, and it stays as the regression test. A refactor, a documentation-only change (§4), or another change that adds no behavior skips the new checks of step 3: its existing checks, updated for any changed signature, must keep passing (a check that pins kept behavior from the previous version may be added first), and §5 and §11 say what else to validate. For a function that returns a value, a stub body of `...` or `pass` fails mypy's `empty-body` check, hence `raise NotImplementedError`; a `Protocol` or abstract method keeps `...`.
 
 A small increment must remain correct for its declared scope. Explicitly unsupported behavior is preferable to silently producing misleading results.
 
@@ -71,7 +74,7 @@ Observe development friction through failed checks, time to a verified change, f
 
 ## 8. Use assistants and generators with verification
 
-Give tools a bounded task, relevant interfaces, and observable acceptance criteria. Review generated diffs, dependencies, and commands. Verify behavior with independent expectations rather than relying on generated tests that reproduce the same mistake. Inspect for accidental credentials, unsupported APIs, and unnecessary code before committing.
+Give tools a bounded task, relevant interfaces, and observable acceptance criteria. Review generated diffs, dependencies, and commands. Verify behavior with independent expectations rather than relying on generated tests that reproduce the same mistake: take expected values from a source independent of the implementation ([testing strategy](PYTHON_GUIDELINES.md#testing-strategy)). Inspect for accidental credentials, unsupported APIs, and unnecessary code before committing.
 
 The contributor integrating the change remains responsible for its correctness and documentation. Do not treat generated explanations or passing narrow tests as evidence that a financial claim is valid. Generated changes get the same [author steps before review](GIT_GUIDELINES.md#before-marking-ready): an adversarial review of the diff plus an end-to-end run on real inputs, because a diff review cannot see cross-workflow mistakes.
 
