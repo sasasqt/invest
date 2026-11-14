@@ -8,6 +8,8 @@ cancels; a level such as ``cs_rank(-close)`` ranks names by splits they have not
 
 import json
 import re
+import shutil
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -649,6 +651,45 @@ def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, comman
         args += ["--ledger", str(book)]
     with pytest.raises(SystemExit, match=re.escape(f"{flag} {market}: ") + ".*dataset_kind"):
         main([command, "--data", str(market), *args, flag, str(market), "--out", str(out)])
+    assert not book.exists() and not out.exists()
+
+
+@pytest.mark.parametrize("flag", ["--data", "--universe", "--fundamentals"])
+def test_a_bundle_that_is_not_utf8_is_refused_with_a_message(tmp_path: Path, flag: str) -> None:
+    """A bundle whose data.csv holds bytes that are not UTF-8 ends in a message naming the
+    flag and path (the reader raises BundleError), not a UnicodeDecodeError traceback, before
+    the ledger or --out is touched (bug-hunt ledger BF-2026-11-14-5)."""
+    bundles = {
+        "--data": tmp_path / "data",
+        "--universe": tmp_path / "uni",
+        "--fundamentals": tmp_path / "fund",
+    }
+    data_main(
+        [
+            "synthetic",
+            "--out",
+            str(bundles["--data"]),
+            "--instruments",
+            "15",
+            "--days",
+            "200",
+            "--universe-out",
+            str(bundles["--universe"]),
+            "--fundamentals-out",
+            str(bundles["--fundamentals"]),
+        ]
+    )
+    bad = tmp_path / "bad"
+    shutil.copytree(bundles[flag], bad)
+    raw = (bad / "data.csv").read_bytes()
+    (bad / "data.csv").write_bytes(raw[:200] + b"\xff\xfe" + raw[200:])
+    bundles[flag] = bad
+    book, out = tmp_path / "ledger.jsonl", tmp_path / "out"
+    args = ["evaluate", "--expr", "close / open", "--horizon", "1", "--ledger", str(book)]
+    for name, path in bundles.items():
+        args += [name, str(path)]
+    with pytest.raises(SystemExit, match=re.escape(f"{flag} {bad}: ") + ".*not UTF-8"):
+        main([*args, "--out", str(out)])
     assert not book.exists() and not out.exists()
 
 
