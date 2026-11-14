@@ -115,6 +115,7 @@ def test_cli_run_writes_complete_report(tmp_path, market, reversal_signals, caps
     assert metrics["performance"]["sharpe"]["status"] == "ok"
     assert json.loads((run / "config.json").read_text())["costs"]["impact_coef"] == 0.3
     assert "Deflated Sharpe" in (run / "report.md").read_text()
+    assert "Sharpe 95% stationary-bootstrap CI: [" in (run / "report.md").read_text()
     assert json.loads((run / "manifest.json").read_text())["n_trials"] == 20
     assert json.loads((run / "statistics.json").read_text())["deflated_sharpe"]["n_trials"] == 20
     with pytest.raises(SystemExit, match="not an empty directory"):
@@ -192,7 +193,10 @@ def test_cli_saves_flat_portfolio_and_undefined_statistics(tmp_path):
     )
     stats = json.loads((tmp_path / "run" / "statistics.json").read_text())
     assert stats["bootstrap"]["status"] == "undefined"
-    assert "n/a (zero_excess_return_dispersion)" in (tmp_path / "run" / "report.md").read_text()
+    lines = (tmp_path / "run" / "report.md").read_text().splitlines()
+    # README: report.md prints both lines for every status, with the reason.
+    assert "Sharpe stationary-bootstrap CI: n/a (zero_excess_return_dispersion)" in lines
+    assert "Deflated Sharpe ratio (n_trials=1): n/a (zero_dispersion)" in lines
     verdict = json.loads((tmp_path / "run" / "verdict.json").read_text())
     assert verdict["portfolio"]["status"] == "insufficient_data"
     assert verdict["factor"]["status"] == "not_confirmed"
