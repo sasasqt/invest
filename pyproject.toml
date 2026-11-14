@@ -56,3 +56,43 @@ testpaths = [
 ]
 markers = ["integration: crosses component boundaries through published artifacts"]
 filterwarnings = ["error::RuntimeWarning:invest_.*"]
+
+[tool.invest.coverage]
+# Minimum test coverage in percent, lines and branches combined, checked in CI by
+# scripts/check_coverage_floors.py (see PYTHON_GUIDELINES.md, Testing strategy).
+# Set 2026-11-12 to each file's coverage on Python 3.11 and 3.13, rounded down.
+# Raise floors as coverage rises; lowering one needs a reason in the pull request.
+# A new file without its own floor must reach `default`.
+total = 95
+default = 90
+
+[tool.invest.coverage.files]
+"invest_data/__init__.py" = 100
+"invest_data/bundle.py" = 88
+"invest_data/cleaning.py" = 97
+"invest_data/cli.py" = 94
+"invest_data/pit.py" = 96
+"invest_data/schemas.py" = 93
+"invest_data/sources.py" = 97
+"invest_data/testing.py" = 100
+"invest_data/yahoo.py" = 91
+"invest_evaluation/__init__.py" = 100
+"invest_evaluation/cli.py" = 95
+"invest_evaluation/config.py" = 96
+"invest_evaluation/engine.py" = 94
+"invest_evaluation/metrics.py" = 98
+"invest_evaluation/quantiles.py" = 97
+"invest_evaluation/reporting.py" = 97
+"invest_evaluation/robustness.py" = 94
+"invest_evaluation/stats.py" = 92
+"invest_evaluation/strategies.py" = 94
+"invest_evaluation/validation.py" = 100
+"invest_mining/__init__.py" = 100
+"invest_mining/artifact.py" = 93
+"invest_mining/cli.py" = 97
+"invest_mining/diagnostics.py" = 98
+"invest_mining/expressions.py" = 93
+"invest_mining/inference.py" = 100
+"invest_mining/ledger.py" = 99
+"invest_mining/reporting.py" = 100
+"invest_mining/search.py" = 96

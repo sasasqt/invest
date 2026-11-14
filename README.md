@@ -118,6 +118,8 @@ Checks (the same as CI):
 uv run ruff format --check . && uv run ruff check .
 uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
+uv run coverage json -q -o coverage.json
+uv run python scripts/check_coverage_floors.py coverage.json
 uv run python scripts/check_markdown_links.py
 ```
 

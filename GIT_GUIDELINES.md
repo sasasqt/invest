@@ -97,7 +97,7 @@ The author applies the README's [three development rules](README.md#development-
    - as a new unchecked `REVIEW-xx` item in [TODO.md](TODO.md) with its location, severity and how to reproduce it;
    - in the pull request description under "Found, not fixed", with the TODO id.
 
-   If it is high severity, or it blocks this fix or its tests, stop and ask the person who requested the change before going on.
+   If it is high severity, stop and ask the person who requested the change before going on (a bug that blocks this fix or its tests is needed to make them correct, so it is not unrelated and is fixed here, in its own commit with its own failing check). An unattended routine asks by opening the pull request as a draft with the question in its description, and does not mark it ready for review until that person answers.
 7. **Carry new bug-hunt findings into TODO.** The nightly bug hunt is report-only, so its findings list lives outside the repository. Each new **medium** or **high** finding it reports gets an unchecked `REVIEW-xx` item in [TODO.md](TODO.md) in the next pull request that fixes bugs, or in the next pull request of any kind when none is planned. Give the item the hunt's finding id (for example `BH-2026-10-08-1`), its location, severity and how to reproduce it, and group it with an existing open item of the same area when one exists. Low findings stay in the hunt's list until a fix pull request picks them up.
 
 Green CI proves only what the tests already ask; it is not readiness on its own.

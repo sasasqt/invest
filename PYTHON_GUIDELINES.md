@@ -102,6 +102,7 @@ Use pytest. Test observable behavior and business requirements rather than priva
 - Register markers such as `integration` in pytest configuration. Ensure CI runs each required category explicitly; skipping integration tests must not be reported as full validation.
 - For each bug fix, add a regression test that fails before the fix and passes afterward.
 - Use branch coverage to find missing behavior, especially in critical business logic. A percentage target does not replace meaningful assertions.
+- Coverage floors: CI fails when the total or any file falls below its floor in `[tool.invest.coverage]` of `pyproject.toml` (lines and branches combined, as `--cov-branch` reports them; `scripts/check_coverage_floors.py`). A new file without its own floor must reach the `default` floor, and renaming or deleting a module that has its own floor fails the check until that floor is renamed or removed in the same pull request. Floors are raised as coverage rises: a pull request may raise the floors of the files it improved, to the new whole percent (the check lists them); a pull request that only adds tests should. Lowering a floor weakens a check, so it needs the reason in the pull request, as for any other check. The floors guard against silent drops; they are minimums, not goals.
 
 ## Development checks
 
@@ -120,6 +121,8 @@ uv run ruff format --check .
 uv run ruff check .
 uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
+uv run coverage json -q -o coverage.json
+uv run python scripts/check_coverage_floors.py coverage.json
 uv run python scripts/check_markdown_links.py
 ```
 
