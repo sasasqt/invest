@@ -6,7 +6,7 @@ A modular Python investment research framework made of three independently insta
 
 ## Components
 
-- [Data preparation](data-pipeline/data-preparation/README.md): download, clean, preprocess, and publish CSV, SQLite or Parquet datasets.
+- [Data preparation](data-pipeline/data-preparation/README.md) (inside the [data pipeline folder](data-pipeline/README.md)): download, clean, preprocess, and publish CSV, SQLite or Parquet datasets.
 - [Strategy evaluation](strategy-evaluation/README.md): apply trading rules to supplied data/signals and evaluate portfolio performance after costs.
 - [Data mining framework](data-mining-framework/README.md): consume published datasets for factor discovery, model training, inference, and signal diagnostics.
 
@@ -27,6 +27,8 @@ Every change must work on both Linux and Windows. The standard CI workflow tests
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, review fixes delivered by editing the existing pull request (or closing it and opening a new one), and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
+
+Scheduled routines hunt for bugs every weekday night, work on fix pull requests every day (at most one new fix pull request and one new docs-only pull request per run), and scout ideas, audit the docs and audit the whole repository every week; GPT audits the repository on its own branch and reviews eligible open pull requests every day, and nothing merges into `main` without the user's word. [Claude workflow and routines](docs/CLAUDE_WORKFLOW.md) describes Claude's routines and their schedules, the ledgers they share, the review ladder, the ChatGPT review and the merge gate, with diagrams; [GPT / OpenAI routines](docs/GPT_OPENAI_ROUTINES.md) describes the ChatGPT routines, the two that work on invest among them. Read-only copies of the routines' open findings, ideas and decisions are in [audit mirrors](docs/audits/README.md).
 
 Read [Python Development Guidelines](PYTHON_GUIDELINES.md) for the recommended project structure, extensibility practices, dependency management, coding standards, and testing workflow.
 
@@ -179,7 +181,7 @@ Tail identifiers preserve the full float value, so close fractions retain separa
 
 ## Documentation maintenance
 
-Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
+Update this README with changes to project status, supported capabilities, layout, prerequisites, and actual installation/execution/check commands. Keep detailed task progress in [TODO.md](TODO.md) and milestone acceptance in [ROADMAP.md](ROADMAP.md); update affected component READMEs in the same change, and [docs/CLAUDE_WORKFLOW.md](docs/CLAUDE_WORKFLOW.md) when the review ladder or the merge rules change, or when a routine change (made in the project library) makes it wrong. Mark work complete only with implementation and validation evidence. See the [maintenance checklist](TODO.md#updating-the-backlog-and-readme).
 
 ## Isolated audit runner
 
@@ -189,7 +191,8 @@ CI: Docker checks on Linux, host-side tests on Linux and Windows. It checks host
 against one pinned source revision. See the
 [CI audit checks](CI_CD_GUIDELINES.md#conditional-isolated-audit-checks) for triggers,
 evidence and limitations. It does not access live vendor data or publish results
-to the repository.
+to the repository. The [runner contract](audits/gpt/runner/CONTRACT.md) lists the
+host-side rules its checks enforce.
 
 ## Local files
 
