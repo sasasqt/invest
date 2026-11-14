@@ -419,8 +419,9 @@ def test_inputs_that_cannot_be_matched_get_no_evidence(tmp_path, inputs):
     universe = ("--universe", str(inputs / "universe"))
     assert _search_on(inputs, tmp_path / "s", *universe) == 0
     source = ("--from-search", str(tmp_path / "s"))
-    # Another kind of bundle is refused with a message, not a traceback.
-    with pytest.raises(SystemExit, match="dataset_kind"):
+    # Another kind of bundle is refused with a message that names the flag, not a traceback.
+    wrong = re.escape(f"--universe {inputs / 'fundamentals'}: ") + ".*dataset_kind"
+    with pytest.raises(SystemExit, match=wrong):
         _export(
             inputs / "market", tmp_path / "x", *source, "--universe", str(inputs / "fundamentals")
         )

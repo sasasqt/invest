@@ -652,6 +652,31 @@ def test_a_wrong_input_bundle_is_refused_with_a_message(tmp_path, market, comman
     assert not book.exists() and not out.exists()
 
 
+@pytest.mark.parametrize("flag", ["--universe", "--fundamentals"])
+@pytest.mark.parametrize("evidence", ["--confirmation", "--from-search"])
+def test_export_with_evidence_names_a_wrong_input_bundle(tmp_path, market, evidence, flag):
+    """INV-PR51-O1 on the evidence path: an export with evidence reads --universe and
+    --fundamentals once for the evidence and the scores, and a bundle of another kind is
+    named there by its flag and path too, not by the output folder."""
+    factor, out = tmp_path / "f.json", tmp_path / "out"
+    assert main(["freeze", "--expr", "close / open", "--horizon", "1", "--out", str(factor)]) == 0
+    if evidence == "--confirmation":
+        # The bundles are read before the confirmation folder, so none is needed here.
+        args = ["--factor", str(factor), "--confirmation", str(tmp_path / "conf")]
+    else:
+        loaded = FrozenFactor.load(factor)
+        root = tmp_path / "search"
+        loaded.save(root / "factors" / f"{loaded.factor_id}.json")
+        pd.DataFrame({"factor_id": [loaded.factor_id]}).to_csv(
+            root / "confirmation.csv", index=False
+        )
+        (root / "config.json").write_text(json.dumps({}), encoding="utf-8")
+        args = ["--from-search", str(root)]
+    with pytest.raises(SystemExit, match=re.escape(f"{flag} {market}: ") + ".*dataset_kind"):
+        main(["export", "--data", str(market), *args, flag, str(market), "--out", str(out)])
+    assert not out.exists()
+
+
 # ---------------------------------------------------------------------------
 # Reserved data stays unread until the ledger allows the plan
 

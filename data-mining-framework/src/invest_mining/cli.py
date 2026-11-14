@@ -674,7 +674,7 @@ def _evidence_inputs(
             reader = read_universe if option == "--universe" else read_fundamentals
             manifest, rows[option[2:]] = reader(path)
         except BundleError as exc:
-            raise SystemExit(f"{args.out}: {exc}") from exc
+            raise SystemExit(f"{option} {path}: {exc}") from exc
         if manifest.content_sha256 is None:
             raise SystemExit(
                 f"{path}: the {option} bundle has no content_sha256, so it cannot be matched "
