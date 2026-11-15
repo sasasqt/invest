@@ -10,8 +10,11 @@ Event order within each session ``t``:
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
    shorts and interest on cash accrue. If equity is then not positive, the run stops.
-3. **Decision.** On rebalance dates, scores dated ``t`` (available after the close of
-   ``t``) are turned into target weights. They fill at the open of ``t + 1 + delay``.
+3. **Decision.** A decision is due every ``rebalance_every`` sessions. On a due session
+   with scores, the scores dated ``t`` (available after the close of ``t``) are turned
+   into target weights, which fill at the open of ``t + 1 + delay``. A due session
+   without any score makes no decision and keeps the holdings; the decision is made on
+   the next session with a score, and the schedule counts from there.
 
 So a decision can never use a price it trades at, and no signal is acted on before the
 session after its decision date. Per-instrument P&L attribution (including costs) is kept

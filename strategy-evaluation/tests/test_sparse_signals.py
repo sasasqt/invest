@@ -142,8 +142,8 @@ def test_a_last_session_without_scores_is_not_counted_as_a_wait() -> None:
 def test_a_scored_decision_that_selects_nothing_still_sells_and_is_counted() -> None:
     """A session with a score is a decision even when the strategy selects nothing: with
     ``min_names`` 2, session 8 scores only A, so the decision holds nothing and A is sold
-    at the open of 9 (the documented rule, REVIEW-32). Session 13 is then due without a
-    score. The run counts the decision that held nothing (REVIEW-20)."""
+    at the open of 9 (the rule strategy-evaluation/README.md documents). Session 13 is
+    then due without a score. The run counts the decision that held nothing (REVIEW-20)."""
     res = run_backtest(
         flat_market(), scores_on({3: A_TOP, 8: {"A": 1.0}}), top_name_config(min_names=2)
     )
