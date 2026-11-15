@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15",
+  "run_id": "GA-2026-11-15-1",
+  "status": "published_verified",
+  "report_commit": "4728f96b54bff4ecee50a96710411469ecc11207",
+  "report_url": "https://github.com/sasasqt/invest/blob/4728f96b54bff4ecee50a96710411469ecc11207/audits/gpt/2026-11-15.md",
+  "weekly_url": "https://github.com/sasasqt/invest/blob/4728f96b54bff4ecee50a96710411469ecc11207/audits/gpt/weekly-2026-W46.md",
+  "verified_head_at_report": "4728f96b54bff4ecee50a96710411469ecc11207",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_parent": "b3e95b2ba6964a1ceecdf5ac1c45d3f90a2975ef",
+  "verified_changed_paths": [
+    "audits/gpt/2026-11-15-research/evidence.json",
+    "audits/gpt/2026-11-15-research/started.json",
+    "audits/gpt/2026-11-15.md",
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/research/backlog.md",
+    "audits/gpt/research/experiments.jsonl",
+    "audits/gpt/research/ideas.md",
+    "audits/gpt/research/papers.jsonl",
+    "audits/gpt/research/queries.jsonl",
+    "audits/gpt/research/scouting-2026-11-15.md",
+    "audits/gpt/research/state.json",
+    "audits/gpt/state.json",
+    "audits/gpt/weekly-2026-W46.md"
+  ],
+  "force": false,
+  "readback_verified": true,
+  "verified_utc": "2026-11-15T02:07:57.000Z"
+}
