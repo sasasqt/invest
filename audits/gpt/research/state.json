@@ -1,20 +1,20 @@
 {
   "schema_version": 1,
-  "run_id": "GA-2026-11-02",
-  "search_cutoff": "2026-11-02",
-  "search_range": "since2026-10-31 bounded primary search plus older cost/capacity and negative work; nonexhaustive",
-  "papers_screened": 3,
-  "primary_bibliographies_verified": 3,
-  "qualified_new_explicit_queue_candidates": 0,
+  "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+  "search_cutoff": "2026-11-15",
+  "search_range": "2026-11-02 through 2026-11-15 targeted sweep plus older foundational/counterevidence reads",
+  "papers_screened": 5,
+  "primary_bibliographies_verified": 5,
+  "qualified_new_explicit_queue_candidates": 1,
   "experiments_run": 0,
-  "planned_minutes": 30,
+  "planned_minutes": 70,
   "actual_exclusive_minutes": null,
   "actual_timing_limitation": "Research and source inspection interleaved; no reliable per-bucket exclusive research time. Tool-return durations are not research-hour denominators.",
   "planned_split": {
     "exploitation": 60,
     "exploration": 40
   },
-  "actual_split": "not reliably measured by exclusive time",
+  "actual_split": "unavailable",
   "advances": [
     {
       "id": "ADV-2026-10-31-1",
@@ -31,6 +31,15 @@
       "question": "Can exact monthly overlay be run through current fixed-stride strategy interface?",
       "resolution": "No; keep blocked rather than emulate with daily rebalance",
       "evidence": "../2026-10-31-repro/research-verifier.md"
+    },
+    {
+      "id": "ADV-2026-11-15-1",
+      "candidate": "GA-2026-11-15-1",
+      "date": "2026-11-15",
+      "bucket": "exploitation",
+      "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
+      "resolution": "Primary method recovered and discriminating warmed synthetic fixture specified. The score-only callback prevents direct implementation based on realized holdings.",
+      "evidence": "../2026-11-15-research/evidence.json"
     }
   ],
   "rates_advances_per_hour": {
@@ -41,29 +50,55 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "reason": "insufficient reliable measured category time; source screens are not automatically evidence advances",
-  "last_four_completed_runs": [],
+  "reason": "exclusive bucket minutes unavailable; preserve 60/40",
+  "last_four_completed_runs": [
+    {
+      "date": "2026-11-15",
+      "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+      "advances": [
+        "ADV-2026-11-15-1"
+      ],
+      "exclusive_minutes": null,
+      "scouting": "complete for bounded question"
+    }
+  ],
   "queued_ids": [
     "GA-2026-10-31-3",
-    "GA-2026-10-31-4"
+    "GA-2026-10-31-4",
+    "GA-2026-11-15-1"
   ],
   "query_history": "queries.jsonl",
   "source_history": "papers.jsonl",
-  "seed_draw": "portfolio_volatility_management",
+  "seed_draw": "small-sample statistical calibration",
   "preexisting_unpublished_leads": [
     "cohort accounting",
     "lineage balancing",
     "VIX-gated reversal"
   ],
-  "experiments_status": "no attempts; existing candidates blocked; no confirmation data consumed",
+  "experiments_status": "one new specified, zero attempts; runtime and API gap",
   "history": [
     {
       "run_id": "GA-2026-10-31T001744Z",
       "search_cutoff": "2026-10-31",
       "state_evidence": "606eae209af0d426aaf83280585e1afaca3b4084"
+    },
+    {
+      "run_id": "GA-2026-11-02",
+      "search_cutoff": "2026-11-02",
+      "summary": "no attempts; existing candidates blocked; no confirmation data consumed"
     }
   ],
-  "new_advances": [],
-  "topic_draw": "cost_capacity; oldest backlog topic; no new random draw credited",
-  "peer_research": "peer current tree has no dedicated research ledgers; unavailable, not assumed empty research history"
+  "new_advances": [
+    {
+      "id": "ADV-2026-11-15-1",
+      "candidate": "GA-2026-11-15-1",
+      "date": "2026-11-15",
+      "bucket": "exploitation",
+      "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
+      "resolution": "Primary method recovered and discriminating warmed synthetic fixture specified. The score-only callback prevents direct implementation based on realized holdings.",
+      "evidence": "../2026-11-15-research/evidence.json"
+    }
+  ],
+  "topic_draw": "small-sample statistical calibration; carry queued",
+  "peer_research": "public ideas mirror available; dedicated/private peer research unavailable"
 }

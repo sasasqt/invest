@@ -95,3 +95,8 @@ Peer head `f73a1d1136502f6faee9134a65301aa5a090c817` remains historical at its r
 ## 14 November performance visit
 
 No applicable comparator verdict was found in the accessible Claude findings and cross-check at `f73a1d1136502f6faee9134a65301aa5a090c817`. [Independent source trace](2026-11-14-performance/evidence.json)
+
+## 15 November research visit
+
+- **IS-2026-10-24-1** · Agree on overlapping scope. Fixed-b is a calibration variant, and §4.2 requires matched reference values. No peer performance claim verified. [Public ideas mirror](https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/docs/audits/ideas.md#L9) · [Research trace](2026-11-15-research/evidence.json)
+- **Execution-aware rank buffer** · No direct counterpart verdict in accessible peer findings at `cc4cf4e62b445c066be0e8cccedeeee6dee50836`. Dedicated peer research sources unavailable.

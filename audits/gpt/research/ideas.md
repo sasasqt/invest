@@ -14,3 +14,8 @@ Prior unpublished28October scratch ideas are preserved as leads, not fabricated 
 P7 supports examining separate entry and hold thresholds; P8 supplies contrary out-of-sample/post-publication cost evidence. P6 cautions that costs depend on trade and stock context. No exact rule, replicated benefit or new GA strategy ID promoted. Current Strategy.target_weights sees eligible scores, not realized holdings/fills; a stateful buy/hold rule must distinguish desired from actual holdings after caps/rejections. Missing full P7 method/newer revision and executed-holdings protocol are concrete qualification gaps. Cheapest alternative: retain current strategy and cost/delay stress scenarios.
 
 Zero experiments declared or attempted today; no real data accessed. Existing GA3 oracle and GA4 monthly-overlay tiers unchanged.
+
+## 15 November 2026
+
+- **GA-2026-11-15-1** · Fingerprint `research:strategy:executed-holdings-entry-retention-buffer` · Exploitation · Literature-only, specified with execution gap. The 10/20 synthetic rule distinguishes a rejected order from a partial fill under the same next ranks. [Specification](scouting-2026-11-15.md)
+- Fixed-b rank-IC calibration remains attached to **IS-2026-10-24-1**. Standalone ID dropped as overlapping scope. Keep the method lead with matching kernel and critical values, and the size/power and missing-session checks. [Source trace](scouting-2026-11-15.md#deterministic-exploration-draw)

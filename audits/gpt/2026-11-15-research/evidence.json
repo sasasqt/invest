@@ -1,0 +1,200 @@
+{
+  "date": "2026-11-15",
+  "week": "2026-W46",
+  "field": "research",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_base": "b3e95b2ba6964a1ceecdf5ac1c45d3f90a2975ef",
+  "status": "started",
+  "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+  "scheduled_for": "2026-11-15T02:00:00Z",
+  "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
+  "exploration_draw": "small-sample statistical calibration",
+  "finish": "Primary friction evidence, repo feasibility and one discriminating synthetic oracle design, then stop; no experiment.",
+  "runner_revision": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index": "3b4c33551bc0e0c32fab3c3bba613bdc353f1f3b",
+    "index_digest": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline_digest": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "verified_methods": [
+      "overview",
+      "00-preflight",
+      "01-scope",
+      "13-continuity",
+      "action-boundary",
+      "15-research",
+      "07-independent-checks",
+      "10-improvements",
+      "11-findings-review",
+      "12-reporting",
+      "14-crosscheck-publication"
+    ]
+  },
+  "inventory": {
+    "files": 148,
+    "entries": 189,
+    "old_inventory_source": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+    "delta": {
+      "added": [
+        "data-mining-framework/src/invest_mining/py.typed",
+        "data-pipeline/data-preparation/src/invest_data/py.typed",
+        "data-pipeline/data-preparation/tests/test_dataset_keys.py",
+        "data-pipeline/data-preparation/tests/test_yahoo_symbols.py",
+        "docs/CLAUDE_WORKFLOW.md",
+        "scripts/check_coverage_floors.py",
+        "strategy-evaluation/src/invest_evaluation/py.typed",
+        "tests/test_check_coverage_floors.py"
+      ],
+      "changed": [
+        ".github/workflows/ci.yml",
+        ".gitignore",
+        "CI_CD_GUIDELINES.md",
+        "DESIGN_BY_CONTRACT.md",
+        "GIT_GUIDELINES.md",
+        "PYTHON_GUIDELINES.md",
+        "README.md",
+        "TODO.md",
+        "data-pipeline/data-preparation/README.md",
+        "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+        "data-pipeline/data-preparation/src/invest_data/cli.py",
+        "data-pipeline/data-preparation/src/invest_data/pit.py",
+        "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+        "data-pipeline/data-preparation/tests/test_bundle.py",
+        "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+        "data-pipeline/data-preparation/tests/test_point_in_time.py",
+        "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+        "docs/DATA_CONTRACT.md",
+        "docs/audits/README.md",
+        "docs/audits/bug-fix-decisions.md",
+        "docs/audits/bug-fix.md",
+        "docs/audits/docs-audit.md",
+        "docs/audits/ideas.md",
+        "docs/audits/open-bugs.md",
+        "pyproject.toml",
+        "scripts/historical_workflow.sh",
+        "scripts/save_run.py",
+        "strategy-evaluation/README.md",
+        "strategy-evaluation/src/invest_evaluation/cli.py",
+        "strategy-evaluation/tests/test_stats_and_cli.py",
+        "tests/test_pipeline.py"
+      ],
+      "removed": []
+    },
+    "symlinks_or_submodules": 0,
+    "scope": "Git tree identities only; source blobs retrieved selectively; no product checkout/data reads."
+  },
+  "common": {
+    "main_ci": {
+      "run": 43614128092,
+      "python_jobs": [
+        132505350169,
+        132505350228
+      ],
+      "success": 6,
+      "pytest": "1015 passed, 1 skipped on both",
+      "coverage_total": 95.62,
+      "coverage_failures": 0,
+      "strict_includes_scripts": true
+    },
+    "isolated_ci": {
+      "exact_source": "none exposed in exact-head Actions listing or recorded pending jobs",
+      "workflow": "/.github/workflows/audit-runtime.yml",
+      "scope": "source review: mypy omits scripts and no floor check; historical jobs cannot qualify current execution",
+      "historical_reuse": "none as current"
+    },
+    "local_probe": "bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted",
+    "dependency_graph": "unverified",
+    "runtime_dispatches": 0,
+    "native_windows": "REVIEW-40/41 remain open, handoff engineering/integration; prior host-only CI insufficient",
+    "pr51": {
+      "head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+      "merged": false,
+      "ci": {
+        "sha": "e9785dba8273a4ade64add28c669e7277179c77d",
+        "parents": [
+          "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "dfdbdafe29b6488bb6bd1d634e1500619425dd5c"
+        ],
+        "summary": [
+          "2026-11-14T20:26:32.9935793Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+          "2026-11-14T20:34:43.9810602Z 1191 passed, 1 skipped in 486.68s (0:08:06)",
+          "2026-11-14T20:34:44.6378938Z coverage floors: 0 failure(s), total 95.90%"
+        ]
+      },
+      "author_reply": 6883853388,
+      "fixture": "data-mining-framework/tests/test_scale_check.py:655–690",
+      "status": "matching PR-preview aggregate suite supports proposed combined fix; current main readers are baseline, post-merge main verification remains pending"
+    }
+  },
+  "research": {
+    "queries": [
+      {
+        "id": "RQ-2026-11-15-1",
+        "bucket": "exploitation",
+        "query": "Novy-Marx Velikov buy/hold spread author PDF and 2026 revision; Chen Velikov modern/post-publication net anomaly returns and Appendix A.4",
+        "scope": "since 2026-11-02 plus older foundational and negative work",
+        "result": "P7 method retrieved; P8 in-sample tradeoff and P9 publisher version; SSRN 2026 revision metadata only"
+      },
+      {
+        "id": "RQ-2026-11-15-2",
+        "bucket": "exploration",
+        "query": "Kiefer Vogelsang fixed-b HAC bandwidth/kernel inference; Sun Phillips Jin power tradeoff",
+        "scope": "SHA256 Berlin date draw over sorted carry, cross-sectional liquidity reversal, small-sample statistical calibration",
+        "result": "P10 primary full method sections; P11 publisher abstract only. No separate idea ID: prior IS-2026-10-24-1 covers rank-IC finite-sample calibration."
+      }
+    ],
+    "declared_experiments": 1,
+    "run": 0,
+    "variant_attempts": 0,
+    "models": "unavailable",
+    "planned_split": [
+      60,
+      40
+    ],
+    "actual_exclusive_minutes": null,
+    "rates": null,
+    "next_split": [
+      60,
+      40
+    ],
+    "advances": [
+      "ADV-2026-11-15-1"
+    ],
+    "exploration_resolution": "source-screened duplicate; no evidence advance credited",
+    "reserved_data_access": false
+  },
+  "verification": {
+    "main_initial": {
+      "candidate": "carried cost buffer lead / prospective GA-2026-11-15-1",
+      "proposed": "keep as literature-only research specification, blocked product experiment; distinguish absence of strategy feedback from ability to supply precomputed explicit weights",
+      "mechanics": "entry top decile, retain actual positive holdings through top quintile; baseline top decile exit; synthetic rejection vs partial fills with identical prior target and subsequent ranks; empty/no-trade, e.g. rejected B rank 1 and partially held C rank 1 in alternate branches; subsequent rank 2 of 10 requires C eligible for retain, never B based on desired position",
+      "calibration": "drop separate GA ID as duplicate of IS-2026-10-24-1; fixed b needs matching critical values, report power tradeoff",
+      "noExecution": true
+    },
+    "fresh_reviewer": 1,
+    "decider": 0,
+    "agreed": "Elevate carried trade-cost lead to a falsifiable mechanics specification only. Preserve HAC idea as duplicate lead, with matching null calibration, power and gaps controls.",
+    "counterfactual": "An existing supported callback that receives executed positions would remove the API blocker; a materially different method or new IC calibration evidence would reopen the fixed-b standalone candidate.",
+    "closing": "Checked paper section 5.1 and Appendix A.4, actual fill/decision call path, exploratory HAC comparator and peer idea. Next: isolated warmed synthetic fixture, matched gross-risk and cost/data prerequisites, then predeclared stationary and missing-session calibration if the owning field takes it."
+  },
+  "peer": {
+    "head": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "matching_verdict": "none in accessible findings; dedicated research ledgers unavailable; current main mirror accessible"
+  },
+  "timing": {
+    "scheduled_run_started": "2026-11-15T01:57:57.101136Z",
+    "prepared_utc": "2026-11-15T02:03:31Z",
+    "elapsed_to_preparation_seconds": 334,
+    "plan_minutes": [
+      20,
+      70,
+      30
+    ],
+    "helper_budget_minutes": 3,
+    "actual_helper_compute": null,
+    "usage": null
+  }
+}
