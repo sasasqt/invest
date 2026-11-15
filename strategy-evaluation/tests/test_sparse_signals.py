@@ -41,6 +41,7 @@ def top_name_config(
     min_names: int = 1,
     start: str | None = None,
     end: str | None = None,
+    delay: int = 0,
 ) -> BacktestConfig:
     """Long the single highest score (1/3 of three names), no costs, 1000 of capital."""
     return BacktestConfig(
@@ -50,7 +51,7 @@ def top_name_config(
             rebalance_every=rebalance_every,
             min_names=min_names,
         ),
-        execution=ExecutionConfig(max_participation=1.0, min_price=0.0),
+        execution=ExecutionConfig(max_participation=1.0, min_price=0.0, delay=delay),
         costs=CostModel(
             commission_bps=0,
             half_spread_bps=0,
@@ -152,7 +153,8 @@ def test_a_scored_decision_that_selects_nothing_still_sells_and_is_counted() -> 
     assert (res.daily.loc[DATES[9] :, "n_long"] == 0).all()
     assert (
         "1 of 2 decisions held nothing: no eligible name had a score, or the strategy "
-        "selected no name (fewer eligible names than it needs, or an empty leg)"
+        "selected no name (fewer eligible names than it needs, an empty leg, or a leg "
+        "below its minimum number of names)"
     ) in res.warnings
     assert any(w.startswith("1 scheduled decisions fell on sessions") for w in res.warnings)
 
@@ -168,6 +170,33 @@ def test_an_evaluation_window_without_a_signal_is_refused(start: str, end: str |
     window without signals."""
     with pytest.raises(InputError, match="no signal falls in the evaluation window"):
         run_backtest(flat_market(), scores_on({3: A_TOP}), top_name_config(start=start, end=end))
+
+
+@pytest.mark.parametrize(
+    ("end", "delay", "last"),
+    [("2024-01-04", 0, "its last session"), ("2024-01-05", 1, "one of its last 2 sessions")],
+    ids=["delay-0", "delay-1"],
+)
+def test_a_window_whose_scores_cannot_fill_runs_flat_with_a_warning(
+    end: str, delay: int, last: str
+) -> None:
+    """The only score is on session 3 (2024-01-04). In a window from session 1 its order
+    would fill at the open of session 4 + ``delay``, after the window's last session (3, or
+    4 with a delay of 1), so no decision is made and the run is flat; the run says so
+    instead of passing as a cost-free result (a sibling of BH-2026-10-15-4). It is a
+    warning, not a refusal, because stress scenarios that add a delay rerun a valid base
+    run's window."""
+    res = run_backtest(
+        flat_market(),
+        scores_on({3: A_TOP}),
+        top_name_config(start="2024-01-02", end=end, delay=delay),
+    )
+    assert filled(res.trades).empty
+    assert (res.daily["traded_notional"] == 0).all()
+    assert (
+        "no decision was made: every session with a score in the evaluation window is "
+        f"{last}, so no order could fill inside the window and the run held nothing"
+    ) in res.warnings
 
 
 def test_a_configured_start_before_the_signals_still_runs() -> None:
@@ -197,3 +226,20 @@ def test_bucket_portfolios_decide_only_on_scored_sessions() -> None:
     table = result.table.set_index("portfolio")
     assert (table["decisions"] == 2).all()
     assert sorted(result.memberships["decision_date"].unique()) == [DATES[3], DATES[14]]
+
+
+def test_a_bucket_below_its_minimum_number_of_names_is_counted_as_holding_nothing() -> None:
+    """Three names in two buckets: the bucket rule puts one name in q1 and two in q2. With
+    ``min_names_per_bucket`` 2, q1's leg is not empty but below its minimum, so its only
+    decision holds nothing, and the warning names that reason."""
+    result = run_quantile_portfolios(
+        flat_market(),
+        scores_on({3: C_TOP}),
+        top_name_config(rebalance_every=100),
+        QuantileConfig(n_buckets=2, tail_fractions=(0.5,), min_names_per_bucket=2),
+    )
+    assert (
+        "1 of 1 decisions held nothing: no eligible name had a score, or the strategy "
+        "selected no name (fewer eligible names than it needs, an empty leg, or a leg "
+        "below its minimum number of names)"
+    ) in result.warnings["q1"]

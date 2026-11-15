@@ -604,8 +604,17 @@ def run_backtest(
         # an empty leg); count them so a run's report shows how often (REVIEW-20).
         warnings.append(
             f"{n_held_nothing} of {n_decided} decisions held nothing: no eligible name had a "
-            "score, or the strategy selected no name (fewer eligible names than it needs, or "
-            "an empty leg)"
+            "score, or the strategy selected no name (fewer eligible names than it needs, an "
+            "empty leg, or a leg below its minimum number of names)"
+        )
+    if not n_decided:
+        # Every score in the window falls on its last `delay` + 1 sessions, where no order
+        # can fill inside it: the run is flat and cost-free (a sibling of BH-2026-10-15-4).
+        # A warning, not a refusal: stress scenarios that add a delay rerun a valid window.
+        last = "its last session" if not ex.delay else f"one of its last {ex.delay + 1} sessions"
+        warnings.append(
+            "no decision was made: every session with a score in the evaluation window is "
+            f"{last}, so no order could fill inside the window and the run held nothing"
         )
     if unknown_traded_close:
         warnings.append(
