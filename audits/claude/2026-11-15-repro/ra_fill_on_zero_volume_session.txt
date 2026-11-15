@@ -1,0 +1,14 @@
+trades 22; X rows on zero-volume sessions 12
+FILLED on a session with volume 0:
+      date  k instrument status      shares     notional  participation  session_volume
+2024-03-11 50          X filled 9489.446318 94836.266486       0.018934             0.0
+2024-03-12 51          X filled   -1.550577   -15.496265       0.000003             0.0
+FAIL: 2 fill(s) on zero-volume sessions; largest notional 94836.27, reported participation 0.0189 (of trailing ADV)
+rc=1
+trades 22; X rows on zero-volume sessions 12
+FILLED on a session with volume 0:
+      date  k instrument status      shares     notional  participation  session_volume
+2024-03-11 50          X filled 9489.446318 94836.266486       0.018934             0.0
+2024-03-12 51          X filled   -1.550577   -15.496265       0.000003             0.0
+FAIL: 2 fill(s) on zero-volume sessions; largest notional 94836.27, reported participation 0.0189 (of trailing ADV)
+rc=1

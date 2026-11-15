@@ -44,3 +44,29 @@ date,check,minutes,findings,findings another routine already had,unique findings
 2026-11-08,s6 exploration: random draw yahoo.py (download path),12,2 (RA-2026-11-08-1 Windows publish; RA-2026-11-08-2 truncated response aborts),0,2,none (GPT reviewed yahoo.py 2026-10-31 without these; bug hunt rows BH-2026-10-23-7/BF-2026-11-01-2 are neighbours)
 2026-11-08,s6 re-runs of earlier checks on main (RA-2/3/4; BH-2026-10-21-2; K14),4,0,5 (all still open),0,bug fix routine (PR #39 fixes K14)
 2026-11-08,"s6 reviewer 2 (Fable 5.1 xhigh, blind; 14 min wall) and dispositions",16,"1 (RA-2026-11-08-3 evaluation window, found while settling RA-2026-11-01-5)",1 (C1 already in TODO.md BUILD-03),1,"bug fix routine reviews (Fable high) are per-PR, not per-main"
+2026-11-15,s2 uv lock --check + pyproject consistency + dependency declarations + console scripts,2,0,0,0,none (GPT audit reads pyprojects statically)
+2026-11-15,s2 ci.yml and audit-runtime.yml pins/permissions/triggers + docs commands vs ci.yml,3,0 (audit-runtime.yml never runs on main pushes: observation),0,0,docs audit (README/CI_CD command rows)
+2026-11-15,s2 portability static scan (encoding/newline/rename/POSIX imports) incl. the new audits/gpt/runner,4,0 (runner sites recorded as evidence for RA-2026-11-01-11; product src totals unchanged),1 (BUILD-03 class),0,GPT audit static scan; bug fix routine reviews (REVIEW-17/40/41 class)
+2026-11-15,s3 checks (3.13): ruff format/check + mypy + pytest --cov + links + coverage floors,10,0,0,0,GitHub CI same SHA (green)
+2026-11-15,s3 checks (3.11),11,0,0,0,GitHub CI same SHA (green)
+2026-11-15,s3 wheels job (pandas 3.1.1 unpinned),6,0 (RA-2026-11-01-3 re-seen: 5 tests fail under -W error::Pandas4Warning),1 (RA-2026-11-01-3),0,GitHub CI same SHA (green; warnings not surfaced)
+2026-11-15,s3 independent installs x3,3,0,0,0,GitHub CI same SHA
+2026-11-15,s3 flaky detection (PYTHONHASHSEED repeat; 3.11 vs 3.13 per-test outcomes),6,0,0,0,none
+2026-11-15,s3 GitHub parity (every ci.yml run on main 2026-11-11..14 green on attempt 1),1,0,0,0,none
+2026-11-15,s4 replay at recorded revision c6f2961 + compare_record,2,0,0,0,bug hunt real-data replay (not comparable)
+2026-11-15,s4 replay at main 2edd7ae + drift attribution (2 new rows = #39 signed zero) + doc numbers,4,0 (signed-zero hash change attributed; legacy read verified),0,0,docs audit numbers check (HISTORICAL_BASELINE rows)
+2026-11-15,s4 ledger copies unchanged + worktrees clean,1,0,0,0,none
+2026-11-15,s6 re-runs of earlier checks on main (RA-2/3/4; RA-2026-11-08-1/2/3; BH-2026-10-21-2; K14),5,0 (K14 closed by #39; 7 still fail),8 (all existing rows),0,bug fix routine (PR #53 proposes the RA-4 fix); bug hunt nightly repro re-runs
+2026-11-15,s6 open places from 2026-11-08 (4 checked: engine halt by reading; yahoo trailing adjclose; backslash storage.path; timing v2 + rf/MAR),8,0,0,0,none
+2026-11-15,s6 exploration: seeded draw (docs/audits/open-bugs.md; docs/ARCHITECTURE.md; scripts/check_coverage_floors.py) + next slice tests (test_dataset_keys; test_yahoo_symbols; eval conftest; parts of test_metrics/test_config/test_quantiles/test_signal_metadata),14,0 (bare pytest.raises at 4 sites: recommendation),0,0,GPT audit (static reads); bug hunt type-gaps lens
+2026-11-15,s5 benchmarks (8 cases; formats rerun after a driver path fix),34,0 (machine changed; not compared),0,0,none
+2026-11-15,s5 same-host A/B control 9913f94 vs 2edd7ae (synth-M and synth-S x3) + per-stage pair,9,0 (synth-M +15.7 %: watch line),0,0,none
+2026-11-15,s6 accounting lens (new: cash/cost/turnover/exposure identities on 3 evaluations),2,0,0,0,none (bug hunt statistics check covers metrics only)
+2026-11-15,s6 statistics lens incl. nonzero rf/MAR evaluation (29 metrics x 3 runs),3,0,0,0,bug hunt Wednesday statistics check (synthetic run; rf = 0)
+2026-11-15,s6 reported-outputs lens (report cells vs metrics.json; censored check on synth-M),2,0 (RA-2026-11-01-4 re-seen on a second input),1 (RA-2026-11-01-4),0,none
+2026-11-15,s6 timing lens v2 (close_as_traded/universe/fundamentals/late revision shocked after T; stopper; leaver),6,0 (a lens bug traced and fixed; prefix-invariant),0,0,bug hunt causality tests (not comparable)
+2026-11-15,s6 formats lens (csv/sqlite/parquet on full-pipeline outputs),1,0,0,0,tests/test_pipeline.py::test_prepare_mine_evaluate[fmt] (CI)
+2026-11-15,s6 type-gaps measurement (mypy per test tree: 974 strict errors),2,0 (QUALITY-04 evidence),1 (QUALITY-04),0,bug hunt type-gaps lens (no type-gaps file found this week)
+2026-11-15,s6 GPT cross-check (6 GPT items incl. GA-2026-11-14-1 stdlib check),10,0,6 (existing rows or GPT's own),0,GPT audit 2026-11-09 to 2026-11-14
+2026-11-15,s6 second review (Opus 5.5 xhigh blind: 18 candidates and 10 measured facts settled; 3 places checked beyond the brief),17,1 (RA-2026-11-15-1 zero-volume entry fill),0,1,none (REVIEW-27 and the bug hunt cover only the exit side)
+2026-11-15,s6 verification of A12 (the run's own exit-coded check twice on 2edd7ae),6,0 (verifies RA-2026-11-15-1),0,0,n/a

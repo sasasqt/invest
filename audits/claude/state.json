@@ -1,7 +1,7 @@
 {
- "last_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
- "last_run": "2026-11-08",
- "last_run_id": "repo-audit-2026-11-08",
+ "last_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+ "last_run": "2026-11-15",
+ "last_run_id": "repo-audit-2026-11-15",
  "runs": [
   {
    "run_id": "repo-audit-2026-11-01",
@@ -16,11 +16,18 @@
    "main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
    "model": "Fable 5.1 xhigh",
    "report": "audits/claude/2026-11-08.md"
+  },
+  {
+   "run_id": "repo-audit-2026-11-15",
+   "date": "2026-11-15",
+   "main_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+   "model": "Fable 5.1 xhigh until 00:39Z, then Opus 5.5 xhigh (rule 28 c)",
+   "report": "audits/claude/2026-11-15.md"
   }
  ],
  "split": {
-  "next_exploitation_pct": 60,
-  "next_exploration_pct": 40,
+  "next_exploitation_pct": 70,
+  "next_exploration_pct": 30,
   "history": [
    {
     "run_id": "repo-audit-2026-11-01",
@@ -51,6 +58,21 @@
      "confirmed": 2,
      "rate_per_1000": 1.0
     }
+   },
+   {
+    "run_id": "repo-audit-2026-11-15",
+    "exploitation_pct": 60,
+    "exploration_pct": 40,
+    "exploitation": {
+     "lines_read": 1450,
+     "confirmed": 1,
+     "rate_per_1000": 0.69
+    },
+    "exploration": {
+     "lines_read": 1230,
+     "confirmed": 0,
+     "rate_per_1000": 0.0
+    }
    }
   ],
   "rule": "exploration rate >= exploitation rate -> +10 points exploration, else -10; bounds 30-70"
@@ -59,53 +81,52 @@
   {
    "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-01",
    "place": "data-mining-framework/src/invest_mining/expressions.py: a membership gap (exit then re-entry) once the RA-2026-11-01-2 fix lands: ts history across the gap vs restrict() hiding the gap sessions; forward-return labels at the gap edges",
-   "status": "unchecked (kept 2026-11-08: RA-2026-11-01-2 fix not landed (check still fails on 9913f94))"
+   "status": "unchecked (kept 2026-11-15: RA-2026-11-01-2 fix not landed; check still fails on 2edd7ae)"
   },
   {
-   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
-   "place": "strategy-evaluation/src/invest_evaluation/engine.py liquidity estimates across a trading halt: one instrument with volume = 0 (or missing bars) for more than adv_window/vol_window sessions, then resumption; does eligibility return, and is zero volume data or missing (REVIEW-23 'both estimates known')?",
+   "source": "reviewer 2 (Opus 5.5 xhigh), run repo-audit-2026-11-15",
+   "place": "data-pipeline/data-preparation/src/invest_data/pit.py fundamentals_asof: a late revision of period P-1 and the first value of period P share one available_date; does P-1's revision win, or does row order decide?",
    "status": "unchecked"
   },
   {
-   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
-   "place": "data-pipeline/data-preparation/src/invest_data/yahoo.py parse_chart/total_return_adjust with trailing rows that have close but adjclose null (feed mid-update): does the adjustment factor for earlier rows become NaN and drop history silently? test_parse_chart_uses_exchange_dates_and_keeps_nulls keeps the nulls only",
+   "source": "reviewer 2 (Opus 5.5 xhigh), run repo-audit-2026-11-15",
+   "place": "strategy-evaluation/src/invest_evaluation/engine.py with execution.delay >= 1: a decision on the last traded session before a zero-volume stretch; a full-cap fill inside the stretch, and impact understated after volume resumes because volatility collapses on flat prices",
    "status": "unchecked"
   },
   {
-   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
-   "place": "Windows paths inside bundles: a manifest.json storage.path with a backslash (data\\data.sqlite) read on Linux; does invest_data.bundle normalise or reject it (DATA_CONTRACT.md:68)? input: hand-edited manifest with \"path\": \"data\\\\data.csv\"",
+   "source": "reviewer 2 (Opus 5.5 xhigh), run repo-audit-2026-11-15",
+   "place": "data-mining-framework/src/invest_mining/expressions.py evaluate with invest_data.pit.membership_panel: an instrument that leaves the universe and re-enters it; time-series operators over the gap together with the RA-2026-11-01-2 mask",
    "status": "unchecked"
   },
   {
-   "source": "reviewer 2 on M6/M3, run repo-audit-2026-11-08",
-   "place": "timing lens variant: shock close_as_traded, a universe end_date and a fundamentals available_date after T, and let one instrument stop trading after T; statistics recomputation with a nonzero risk_free_annual / mar_annual config (the zero defaults leave the excess-return paths unexercised)",
-   "status": "unchecked"
+   "source": "reviewer 2 on A15, run repo-audit-2026-11-15",
+   "place": "audit lens work/2026-11-15/checks/lens_timing_v2.py:96 compares config.json['family'], a key no config.json has (None with None); compare the mining/search/factors/ listing, confirmation.csv and the ledger's dev columns instead before the next timing run",
+   "status": "unchecked (lens fix)"
   }
  ],
  "pending_second_review": [],
  "gpt_cross_check": {
-  "gpt_branch_sha": "43c71a0",
-  "gpt_report_date": "2026-11-02 to 2026-11-06",
+  "gpt_branch_sha": "b3e95b2",
+  "gpt_report_date": "2026-11-09 to 2026-11-14",
   "checked": [
-   "GA-2026-11-02-1",
-   "GA-2026-11-02-2",
+   "GA-2026-11-10-1",
+   "GA-2026-11-14-1",
    "GA-2026-11-02-3",
-   "OPEN-RUNNER-GRAPH-FAILSTOP-001 / INV-PR36-001",
-   "GA-2026-10-31-2"
+   "GA-2026-10-31-1",
+   "GA-2026-10-31-2",
+   "GA-2026-11-02-1"
   ],
-  "gpt_verdicts_on_claude": "11 verdicts on RA-2026-11-01-1..11: 9 agree, 2 cannot check (RA-3, RA-8), 0 disagree"
+  "gpt_verdicts_on_claude": "13 verdicts on RA rows (RA-2026-11-01-1..11, RA-2026-11-08-1/-2): 9 agree, 4 cannot check, 0 disagree; no verdict yet on RA-2026-11-08-3"
  },
- "benchmark_fingerprint": "8766a82088ae",
+ "benchmark_fingerprint": "0fa016b96104",
  "hunt_rows_added": [
-  "RA-2026-11-08-1",
-  "RA-2026-11-08-2",
-  "RA-2026-11-08-3"
+  "RA-2026-11-15-1"
  ],
  "verifier_b": {
   "launched": false,
-  "reason": "no fact disagreement between the reviewers; the two structural calls (C1 recorded as a row with the TODO.md BUILD-03 cross-reference; RA-2026-11-01-5 closed into a recommendation with the evaluation window as its own row RA-2026-11-08-3) follow reviewer 2's reading; Fable gauge 94 % at 00:46Z"
+  "reason": "no disagreement after verification: the run changed its C12 reading on reviewer 2's evidence and its own check (exit 1 twice); the only new finding is low"
  },
- "report_written_by": "Opus 5.5 high helper from the run's facts file; checked by the run (Fable 5.1 xhigh)",
+ "report_written_by": "the run itself (Opus 5.5 xhigh), because it was no longer on Fable 5.1 (live file MODEL SPLIT)",
  "open_places_closed": [
   {
    "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-01",
@@ -131,6 +152,26 @@
    "source": "verifier B (Fable 5.1 xhigh), run repo-audit-2026-11-01",
    "place": "docs/REPORTING.md and the quantile spec: does any document narrow what report.md must show, excusing or sharpening the METRICS section 9 gap (RA-2026-11-01-5)?",
    "status": "checked 2026-11-08: read REPORTING.md and QUANTILE_ANALYSIS.md: neither narrows report.md; REPORTING.md:39 adds 'time ranges' and METRICS.md:9 'must specify period start/end' -> RA-2026-11-08-3"
+  },
+  {
+   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
+   "place": "strategy-evaluation/src/invest_evaluation/engine.py liquidity estimates across a trading halt: one instrument with volume = 0 (or missing bars) for more than adv_window/vol_window sessions, then resumption; does eligibility return, and is zero volume data or missing (REVIEW-23 'both estimates known')?",
+   "status": "checked 2026-11-15: defect, RA-2026-11-15-1 (entry fills on zero-volume sessions; exits are REVIEW-27); the run first read it as no defect, reviewer 2 found the fill"
+  },
+  {
+   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
+   "place": "data-pipeline/data-preparation/src/invest_data/yahoo.py parse_chart/total_return_adjust with trailing rows that have close but adjclose null (feed mid-update): does the adjustment factor for earlier rows become NaN and drop history silently? test_parse_chart_uses_exchange_dates_and_keeps_nulls keeps the nulls only",
+   "status": "checked 2026-11-15: no defect (per-row factor; trailing rows rejected as invalid_adjusted_close and counted; checks/ra_yahoo_trailing_adjclose_null.py exit 0)"
+  },
+  {
+   "source": "reviewer 2 (Fable 5.1 xhigh), run repo-audit-2026-11-08",
+   "place": "Windows paths inside bundles: a manifest.json storage.path with a backslash (data\\data.sqlite) read on Linux; does invest_data.bundle normalise or reject it (DATA_CONTRACT.md:68)? input: hand-edited manifest with \"path\": \"data\\\\data.csv\"",
+   "status": "checked 2026-11-15: no defect (refused on Linux as a missing data file, nothing writes a backslash path); doc line in RA-2026-11-15-6"
+  },
+  {
+   "source": "reviewer 2 on M6/M3, run repo-audit-2026-11-08",
+   "place": "timing lens variant: shock close_as_traded, a universe end_date and a fundamentals available_date after T, and let one instrument stop trading after T; statistics recomputation with a nonzero risk_free_annual / mar_annual config (the zero defaults leave the excess-return paths unexercised)",
+   "status": "checked 2026-11-15: no defect (prefix-invariant; rf/MAR 29/29); the lens's family sub-check is vacuous, see the new open place"
   }
  ],
  "benchmark_fingerprint_history": [
@@ -142,6 +183,11 @@
    "run_id": "repo-audit-2026-11-08",
    "fingerprint": "8766a82088ae",
    "note": "kernel 6.18.44-fc-v185 -> v310; not compared"
+  },
+  {
+   "run_id": "repo-audit-2026-11-15",
+   "fingerprint": "0fa016b96104",
+   "note": "machine changed from 8766a82088ae (kernel 6.18.44-fc-v310 -> v470; uv.lock 4e14019 -> 8f2d3f1); not compared; same-host A/B control synth-M +15.7 % (9913f94 -> 2edd7ae)"
   }
  ],
  "hunt_rows_added_history": {
@@ -153,12 +199,15 @@
    "RA-2026-11-08-1",
    "RA-2026-11-08-2",
    "RA-2026-11-08-3"
+  ],
+  "repo-audit-2026-11-15": [
+   "RA-2026-11-15-1"
   ]
  },
  "ra_2026_11_01_5": "closed 2026-11-08 as not a defect (reviewer 2); substance in recommendation RA-2026-11-08-7; window gap became RA-2026-11-08-3",
  "mirror": {
-  "generated": "2026-11-08",
-  "from_run": "repo-audit-2026-11-08",
-  "copy_on_main": "none yet (PR #35 docs mirrors can carry audits/claude/mirror as docs/audits/claude/)"
+  "generated": "2026-11-15",
+  "from_run": "repo-audit-2026-11-15",
+  "copy_on_main": "docs/audits/ on main 2edd7ae equals the 2026-11-08 mirror (PR #48); the 2026-11-15 mirror waits for the daily bug fix's docs-only PR"
  }
 }
