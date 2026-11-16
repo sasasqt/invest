@@ -311,7 +311,7 @@
       "id": "GA-2026-11-02-3",
       "fingerprint": "contract:data-pipeline/data-preparation/src/invest_data/schemas.py:fundamentals-reader-required-revision-key",
       "title": "Fundamentals reader does not bind required revision keys",
-      "status": "known/open",
+      "status": "resolved for typed bundle ingress on current main",
       "category": "data integrity / reader contract",
       "severity": "medium potential consequence",
       "priority": "P2",
@@ -358,8 +358,24 @@
           "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "known/open",
           "scope": "runtime control still blocked; open PR #39 head c35059221022487a16c6030c7af15407b1491c59 proposes key validation but is unmerged"
+        },
+        {
+          "date": "2026-11-16",
+          "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "status": "resolved for typed bundle ingress on current main",
+          "evidence": "2026-11-16-data/evidence.json",
+          "scope": "typed ingress, all four kinds and three shared reader paths in source; regressions CSV and positive SQLite in exact main standard CI"
         }
-      ]
+      ],
+      "current_verification": {
+        "date": "2026-11-16",
+        "sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "evidence": "2026-11-16-data/evidence.json",
+        "scope": "typed ingress, all four kinds and three shared reader paths in source; regressions CSV and positive SQLite in exact main standard CI",
+        "runtime_limit": "no fresh product execution or per-node log; expended zero repeats",
+        "separate_known": "BH-2026-10-23-6"
+      }
     },
     {
       "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",

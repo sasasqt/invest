@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-16",
+  "field": "data",
+  "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+  "scheduled_for": "2026-11-16T02:00:00Z",
+  "started_at": "2026-11-16T01:56:54.101715Z",
+  "status": "started",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_base": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+  "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441"
+}

@@ -100,3 +100,5 @@ No applicable comparator verdict was found in the accessible Claude findings and
 
 - **IS-2026-10-24-1** · Agree on overlapping scope. Fixed-b is a calibration variant, and §4.2 requires matched reference values. No peer performance claim verified. [Public ideas mirror](https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/docs/audits/ideas.md#L9) · [Research trace](2026-11-15-research/evidence.json)
 - **Execution-aware rank buffer** · No direct counterpart verdict in accessible peer findings at `cc4cf4e62b445c066be0e8cccedeeee6dee50836`. Dedicated peer research sources unavailable.
+
+| K14 / GA-2026-11-02-3 | Agree historically, resolved at current typed ingress | #39 is merged. All four typed readers now require exact declared keys, and the common read path validates their unique non-null tuples. Independent current-source trace and existing exact-main CI. | [Expected/actual and controls](2026-11-16-data/evidence.json) | 2026-11-16 | `2edd7ae1168eda1192ff73698ba5d42a7c034a41` |

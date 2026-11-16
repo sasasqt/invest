@@ -59,18 +59,19 @@
   },
   "status": "bounded literature/static scope complete; synthetic experiment blocked",
   "last_audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-  "last_audited_date": "2026-11-15",
-  "last_run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+  "last_audited_date": "2026-11-16",
+  "last_run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
   "coverage_counts": {
-    "tracked_files": 140,
-    "inventoried": 59,
-    "reviewed": 34,
-    "partially_reviewed": 18,
-    "checked_automatically": 8,
+    "tracked_files": 148,
+    "inventoried": 75,
+    "partially_reviewed": 21,
+    "reviewed": 24,
+    "checked_automatically": 7,
     "blocked": 21,
-    "unread_lines": 26047,
-    "unread_paths": 85,
-    "new_unique_semantic_lines": 357
+    "unread_lines": 38669,
+    "unread_paths": 116,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 499
   },
   "last_four_completed_runs": [
     {
@@ -375,21 +376,6 @@
       "status": "runtime pending; static chain reviewed"
     },
     {
-      "id": "OPEN-FUNDAMENTALS-KEYS-001",
-      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py:538-544",
-      "source_fingerprint": "contract:data-pipeline/data-preparation/src/invest_data/schemas.py:fundamentals-reader-required-revision-key",
-      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "priority": "P2",
-      "originating_item": "GA-2026-11-02-3",
-      "originating_reviewer": "Reviewer1 + Reviewer2",
-      "risk": "Ambiguous external revision keys",
-      "next_check": "After proving isolation and installed lock graph, run malformed/read and valid-key controls twice across CSV/SQLite/Parquet. Required row-key/non-null validation must work independent of key ordering or compatible redundant manifest keys. No product fix in this audit.",
-      "first_queued_utc": "2026-11-02T09:34:01.210069+00:00",
-      "last_queued_utc": "2026-11-02T09:34:01.210069+00:00",
-      "status": "blocked runtime; independent static review completed",
-      "deferral_reason": "Proven isolation/installed graph unavailable; do not dispatch known unsafe runner"
-    },
-    {
       "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
       "kind": "audit-tooling/static lead",
       "owner_field": "engineering",
@@ -529,6 +515,21 @@
       "first_queued_utc": "2026-11-14T01:58:40.914910Z",
       "next_check": "Refuse a zero-byte compressed membership fixture with a path-specific reason during warm-up or a measured sample. Retain equal hashes for equivalent valid gzip files with different timestamps and distinguish a valid gzip member from CSV schema validity.",
       "evidence": "2026-11-14-performance/evidence.json"
+    },
+    {
+      "id": "OPEN-FUNDAMENTALS-CROSS-FORMAT-CONTROLS-001",
+      "path": "data-pipeline/data-preparation/tests/test_dataset_keys.py:92-115",
+      "source_fingerprint": "contract:data-pipeline/data-preparation/src/invest_data/schemas.py:fundamentals-reader-required-revision-key",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "priority": "P2",
+      "originating_item": "GA-2026-11-02-3 / K14 residual verification",
+      "originating_reviewer": "Reviewer1 + Reviewer2",
+      "risk": "Malformed external SQLite/Parquet and canonical null/duplicate controls have shared source enforcement but a targeted matrix was not observed.",
+      "next_check": "Use untouched main, a qualified installed lock, and synthetic malformed/valid controls for CSV/SQLite/Parquet. Include namespace/path safety evidence.",
+      "first_queued_utc": "2026-11-16T02:04:32.000Z",
+      "last_queued_utc": "2026-11-16T02:04:32.000Z",
+      "status": "blocked runtime; committed CSV regression and SQLite valid control available",
+      "deferral_reason": "Proven isolation/installed graph unavailable; do not dispatch known unsafe runner"
     }
   ],
   "followup_queue_history": [
@@ -595,6 +596,24 @@
       "run_id": "GA-2026-11-09-data-0300-CET",
       "resolution": "Current contract and consumers derive timing from rows; optional P3 metadata hardening only.",
       "evidence": "2026-11-09-data/reviewer-comparison.json"
+    },
+    {
+      "id": "OPEN-FUNDAMENTALS-KEYS-001",
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py:538-544",
+      "source_fingerprint": "contract:data-pipeline/data-preparation/src/invest_data/schemas.py:fundamentals-reader-required-revision-key",
+      "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "priority": "P2",
+      "originating_item": "GA-2026-11-02-3",
+      "originating_reviewer": "Reviewer1 + Reviewer2",
+      "risk": "Ambiguous external revision keys",
+      "next_check": "After proving isolation and installed lock graph, run malformed/read and valid-key controls twice across CSV/SQLite/Parquet. Required row-key/non-null validation must work independent of key ordering or compatible redundant manifest keys. No product fix in this audit.",
+      "first_queued_utc": "2026-11-02T09:34:01.210069+00:00",
+      "last_queued_utc": "2026-11-02T09:34:01.210069+00:00",
+      "status": "resolved typed ingress; extended verification queued",
+      "deferral_reason": "Proven isolation/installed graph unavailable; do not dispatch known unsafe runner",
+      "resolution_date": "2026-11-16",
+      "current_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "evidence": "2026-11-16-data/evidence.json"
     }
   ],
   "latest_runtime_validation": {
@@ -907,6 +926,14 @@
       "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "bounded literature/static scope complete; synthetic experiment blocked",
       "evidence": "2026-11-15-research/evidence.json"
+    },
+    {
+      "date": "2026-11-16",
+      "field": "data",
+      "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
+      "evidence": "2026-11-16-data/evidence.json"
     }
   ],
   "latest_current_run_evidence": {
@@ -937,61 +964,206 @@
     "fields": {
       "data": {
         "weekday": 0,
-        "last_rotation_visit": "2026-11-09",
-        "last_substantive_advance": "2026-11-09",
+        "last_rotation_visit": "2026-11-16",
+        "last_substantive_advance": "2026-11-16",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
-            "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+            "path": "data-pipeline/data-preparation/README.md",
             "unread_ranges": [
               [
                 1,
-                3
+                43
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "5728bfe50ed082fa5551ca93f3d77b43dc54259f"
+          },
+          {
+            "path": "data-pipeline/data-preparation/pyproject.toml",
+            "unread_ranges": [
+              [
+                1,
+                13
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "b903570376b0ee54dcf09fa474642a70b4462ac9"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+            "unread_ranges": [
+              [
+                1,
+                495
+              ],
+              [
+                518,
+                757
+              ],
+              [
+                786,
+                937
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "211de651b6ca45fb4a7784b61f652b596ffce031"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+            "unread_ranges": [
+              [
+                1,
+                182
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "eaee0678c88d084d29a7a5d55076530b806e0618"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+            "unread_ranges": [
+              [
+                1,
+                295
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+            "unread_ranges": [
+              [
+                1,
+                40
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "420c54dc3d9da263b282352c9d4842f6be32e5f8"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+            "unread_ranges": [
+              [
+                1,
+                117
+              ],
+              [
+                138,
+                184
+              ],
+              [
+                203,
+                425
+              ],
+              [
+                434,
+                463
+              ],
+              [
+                475,
+                512
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "ac5b41665bd62621a188d7e0d671a01bde129252"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+            "unread_ranges": [
+              [
+                1,
+                243
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567"
+          },
+          {
+            "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+            "unread_ranges": [
+              [
+                1,
+                441
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "0b0171ee59e2a2241a4378767702171a79481d24"
+          },
+          {
+            "path": "data-pipeline/data-preparation/tests/test_bundle.py",
+            "unread_ranges": [
+              [
+                1,
+                861
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "3bf79318499fd9157d332e0d6de3ae24a8757667"
           },
           {
             "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
             "unread_ranges": [
               [
                 1,
-                89
-              ],
-              [
-                131,
-                383
+                694
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "5ec7d14c286b10e652a706a605efa14d7a7282bc"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121"
+          },
+          {
+            "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+            "unread_ranges": [
+              [
+                1,
+                64
+              ],
+              [
+                102,
+                154
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "85418cc40a41523aeccea7bf4ade28e70be8a06e"
+          },
+          {
+            "path": "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+            "unread_ranges": [
+              [
+                1,
+                330
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "821f4e4667e8fc33b4d3c2b3fb1dcdcc7c8e104e"
           },
           {
             "path": "data-pipeline/data-preparation/tests/test_yahoo.py",
             "unread_ranges": [
               [
                 1,
-                407
+                464
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "28ccfb5e9b24b28a51a8e6e8557d9ff1f44f3553"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "e70a13c1fb223ce3a80a52482ffc94f3e5b811a3"
           },
           {
-            "path": "scripts/sp100_members.txt",
+            "path": "data-pipeline/data-preparation/tests/test_yahoo_symbols.py",
             "unread_ranges": [
               [
                 1,
-                104
+                62
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "65a13e475da1da872420679b794943fb91c64e4c"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "4372a9d28cb4796d7783d7eb25ccccfae7d17538"
           }
         ],
         "queue_refs": [
-          "OPEN-FUNDAMENTALS-KEYS-001",
+          "OPEN-FUNDAMENTALS-CROSS-FORMAT-CONTROLS-001",
           "OPEN-DATA-METADATA-IDENTITY-001",
           "OPEN-PEER-RA-2026-11-08-1",
           "OPEN-PEER-RA-2026-11-08-2"
@@ -1001,12 +1173,15 @@
             "date": "2026-11-09",
             "reason": "current credential isolation and exact installed locked graph unavailable; active runner remains unqualified",
             "consecutive_comparable_visits": 2,
-            "next_check": "Run malformed/read and valid-key controls twice across CSV/SQLite/Parquet only after a qualified runner exists."
+            "next_check": "Run malformed/read and valid-key controls twice across CSV/SQLite/Parquet only after a qualified runner exists.",
+            "status": "superseded by scoped root resolution with residual matrix queued",
+            "last_reconciled": "2026-11-16",
+            "current_evidence": "2026-11-16-data/evidence.json"
           }
         },
         "reading_allocation": [
-          40,
-          60
+          30,
+          70
         ],
         "field_yield_history": [
           {
@@ -1135,17 +1310,263 @@
             ],
             "helper_overlap_excluded": true,
             "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
+          },
+          {
+            "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+            "date": "2026-11-16",
+            "field": "data",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "planned_percent": {
+              "exploitation": 40,
+              "exploration": 60
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 221,
+              "exploration": 107,
+              "mandatory": 197
+            },
+            "actual_percent": {
+              "exploitation": 67.3780487804878,
+              "exploration": 32.6219512195122
+            },
+            "new_cumulative_lines_all_reviewers": 499,
+            "new_verified_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "pooled_eligible_visits": 3,
+            "pooled_lines": {
+              "exploitation": 1408,
+              "exploration": 1082
+            },
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 0,
+              "exploration": 0.9242144177449169
+            },
+            "next_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "reason": "Prior adaptive plan inherited. Exact changed-reader and regression-file tracing used extra exploitation. Mandatory caller/contract ranges are separate. Pooled exploration rate retains the first local K14 corroboration, and the present fix verification adds no root.",
+            "ranges": [
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    118,
+                    137
+                  ],
+                  [
+                    185,
+                    202
+                  ],
+                  [
+                    426,
+                    433
+                  ],
+                  [
+                    464,
+                    474
+                  ],
+                  [
+                    513,
+                    561
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "count": 561
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    496,
+                    517
+                  ],
+                  [
+                    758,
+                    785
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+                "count": 937
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    41,
+                    72
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "420c54dc3d9da263b282352c9d4842f6be32e5f8",
+                "count": 72
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_dataset_keys.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    1,
+                    115
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "2e3af1580707392badabe4bf32578dc79ccd7c0e",
+                "count": 115
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    65,
+                    101
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "85418cc40a41523aeccea7bf4ade28e70be8a06e",
+                "count": 154
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/expressions.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    286,
+                    309
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "10ced2bad043d0e0337a369a453a58168bb52f42",
+                "count": 386
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    64,
+                    77
+                  ],
+                  [
+                    597,
+                    606
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7",
+                "count": 979
+              },
+              {
+                "path": "docs/DATA_CONTRACT.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    41,
+                    47
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+                "count": 85
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    3
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f",
+                "count": 3
+              },
+              {
+                "path": "scripts/sp100_members.txt",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    104
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "65a13e475da1da872420679b794943fb91c64e4c",
+                "count": 104
+              },
+              {
+                "path": "scripts/historical_workflow.sh",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    37,
+                    48
+                  ],
+                  [
+                    175,
+                    182
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+                "count": 233
+              },
+              {
+                "path": "docs/HISTORICAL_BASELINE.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    3,
+                    3
+                  ],
+                  [
+                    20,
+                    20
+                  ],
+                  [
+                    60,
+                    60
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e",
+                "count": 74
+              }
+            ],
+            "selection": {
+              "cand": [
+                "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+                "data-pipeline/data-preparation/tests/test_yahoo.py",
+                "scripts/sp100_members.txt"
+              ],
+              "digest": "af40659fc9f7a95a6d28bf85dff7f9e3865db1fa6117e171a314718eb4593b4d",
+              "selected": "scripts/sp100_members.txt",
+              "oldest_small_unread": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+              "lens": "non-point-in-time membership provenance and workflow warning",
+              "peer_exact_ranges": "unavailable"
+            },
+            "research": "not scheduled; no papers, ideas or experiments"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "last_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
         "completed_advances": [
           "Independent static trace of known K14 / REVIEW-16 through generic reader, financial reader and feature consumer; C1 dropped with separately derived reference controls.",
-          "Resolved OPEN-FUNDAMENTALS-AVAILABLE-AT-001 as not a repository defect after full current-consumer trace and fresh independent review; closed four unread data ranges (759 cumulative lines)."
+          "Resolved OPEN-FUNDAMENTALS-AVAILABLE-AT-001 as not a repository defect after full current-consumer trace and fresh independent review; closed four unread data ranges (759 cumulative lines).",
+          "Verified merged #39 resolves K14 typed ingress in source and existing exact-main CI scope; malformed SQLite/Parquet matrix retained."
         ],
-        "validation_freshness": "current static scope at 9913f94b9b795bd9633a6a683e9f420301e400b3; same-SHA GitHub CI reused; custom runtime unavailable",
-        "next_item": "Known K14/GA-2026-11-02-3 runtime controls after a qualified runner; otherwise oldest remaining unread data range and queued peer Yahoo leads.",
-        "last_substantive_run_id": "GA-2026-11-09-data-0300-CET"
+        "validation_freshness": "current exact-source static and standard CI; extended runtime unavailable",
+        "next_item": "Earliest feasible unread data slice and remaining canonical null/non-key validation. Run extended K14 synthetic matrix only when the authorized locked runner is qualified. BF-2026-11-14-5 remains queued until #51 merges.",
+        "last_substantive_run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb"
       },
       "mining": {
         "weekday": 1,
@@ -3356,6 +3777,14 @@
         "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
         "status": "bounded literature/static scope complete; synthetic experiment blocked",
         "evidence": "2026-11-15-research/evidence.json"
+      },
+      {
+        "date": "2026-11-16",
+        "field": "data",
+        "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
+        "evidence": "2026-11-16-data/evidence.json"
       }
     ]
   },
@@ -3644,36 +4073,59 @@
       "completed_utc": "2026-11-14T02:11:34Z",
       "report_commit": "c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8",
       "report_url": "https://github.com/sasasqt/invest/blob/c25fd33f29609e6dd9bb4f1a380671f35cbe0ed8/audits/gpt/2026-11-14.md"
+    },
+    {
+      "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+      "date": "2026-11-15",
+      "field": "research",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+      "runner_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "output_base": "b3e95b2ba6964a1ceecdf5ac1c45d3f90a2975ef",
+      "scheduled_for": "2026-11-15T02:00:00Z",
+      "started_utc": "2026-11-15T01:57:57.101136Z",
+      "status": "bounded literature/static scope complete; synthetic experiment blocked",
+      "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
+      "model": "unavailable",
+      "effort": "unavailable",
+      "evidence": "2026-11-15-research/evidence.json",
+      "report": "2026-11-15.md",
+      "helper_count": 1,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "elapsed_to_preparation_seconds": 334,
+      "publication_status": "published_verified",
+      "research": {
+        "papers_screened": 5,
+        "experiments_run": 0,
+        "candidate": "GA-2026-11-15-1"
+      },
+      "verified_report_commit": "4728f96b54bff4ecee50a96710411469ecc11207",
+      "elapsed_to_verified_publication_seconds": 600
     }
   ],
   "current_run": {
-    "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
-    "date": "2026-11-15",
-    "field": "research",
+    "date": "2026-11-16",
+    "field": "data",
+    "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+    "scheduled_for": "2026-11-16T02:00:00Z",
+    "started_at": "2026-11-16T01:56:54.101715Z",
+    "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
     "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
-    "runner_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "output_base": "b3e95b2ba6964a1ceecdf5ac1c45d3f90a2975ef",
-    "scheduled_for": "2026-11-15T02:00:00Z",
-    "started_utc": "2026-11-15T01:57:57.101136Z",
-    "status": "bounded literature/static scope complete; synthetic experiment blocked",
-    "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
+    "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "output_base": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+    "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "question": "Does the current typed fundamentals reader enforce the revision key before point-in-time features consume rows, including a malformed external declaration?",
+    "elapsed_to_preparation_seconds": 458,
     "model": "unavailable",
     "effort": "unavailable",
-    "evidence": "2026-11-15-research/evidence.json",
-    "report": "2026-11-15.md",
+    "evidence": "2026-11-16-data/evidence.json",
+    "report": "2026-11-16.md",
     "helper_count": 1,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "elapsed_to_preparation_seconds": 334,
-    "publication_status": "published_verified",
-    "research": {
-      "papers_screened": 5,
-      "experiments_run": 0,
-      "candidate": "GA-2026-11-15-1"
-    },
-    "verified_report_commit": "4728f96b54bff4ecee50a96710411469ecc11207",
-    "elapsed_to_verified_publication_seconds": 600
+    "publication_status": "prepared"
   },
   "publication_history": [
     {
@@ -4141,41 +4593,12 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-15",
-    "run_id": "GA-2026-11-15-1",
-    "status": "published_verified",
-    "report_commit": "4728f96b54bff4ecee50a96710411469ecc11207",
-    "report_url": "https://github.com/sasasqt/invest/blob/4728f96b54bff4ecee50a96710411469ecc11207/audits/gpt/2026-11-15.md",
-    "weekly_url": "https://github.com/sasasqt/invest/blob/4728f96b54bff4ecee50a96710411469ecc11207/audits/gpt/weekly-2026-W46.md",
-    "verified_head_at_report": "4728f96b54bff4ecee50a96710411469ecc11207",
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "output_parent": "b3e95b2ba6964a1ceecdf5ac1c45d3f90a2975ef",
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-15-research/evidence.json",
-      "audits/gpt/2026-11-15-research/started.json",
-      "audits/gpt/2026-11-15.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/research/backlog.md",
-      "audits/gpt/research/experiments.jsonl",
-      "audits/gpt/research/ideas.md",
-      "audits/gpt/research/papers.jsonl",
-      "audits/gpt/research/queries.jsonl",
-      "audits/gpt/research/scouting-2026-11-15.md",
-      "audits/gpt/research/state.json",
-      "audits/gpt/state.json",
-      "audits/gpt/weekly-2026-W46.md"
-    ],
-    "force": false,
-    "readback_verified": true,
-    "verified_utc": "2026-11-15T02:07:57.000Z"
+    "status": "prepared",
+    "report": "2026-11-16.md",
+    "output_parent": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+    "readback_verified": false
   },
-  "remaining_work_current_visit": [
-    "isolated 10/20 fixture",
-    "authorized input and exposure comparability check",
-    "fixed-b method lead under IS-2026-10-24-1"
-  ],
+  "remaining_work_current_visit": "Earliest feasible unread data slice and remaining canonical null/non-key validation. Run extended K14 synthetic matrix only when the authorized locked runner is qualified. BF-2026-11-14-5 remains queued until #51 merges.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",

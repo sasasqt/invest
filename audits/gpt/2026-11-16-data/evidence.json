@@ -1,0 +1,571 @@
+{
+  "date": "2026-11-16",
+  "field": "data",
+  "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+  "scheduled_for": "2026-11-16T02:00:00Z",
+  "started_at": "2026-11-16T01:56:54.101715Z",
+  "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_base": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+  "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "prepared_utc": "2026-11-16T02:04:32.000Z",
+  "elapsed_to_preparation_seconds": 458,
+  "budget_minutes": {
+    "common": 20,
+    "field": 70,
+    "verification_reporting": 30,
+    "total": 120
+  },
+  "actual_runtime_limit": "not exposed",
+  "model": "unavailable",
+  "reasoning_effort": "unavailable",
+  "usage": "not exposed",
+  "runner": {
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "qualified_for_this_audit": false,
+    "historical_blocked": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "local": "credential boundary and installed lock graph unavailable",
+    "remote": "no matching workflow evidence in accessible listings; workflow-specific query rejected by connector, and no authorized dispatch operation was exposed",
+    "remote_dispatched": 0
+  },
+  "protocol": {
+    "sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "verified": [
+      "overview",
+      "00-preflight",
+      "01-scope",
+      "13-continuity",
+      "action-boundary",
+      "03-consistency",
+      "04-correctness",
+      "05-financial-validity",
+      "07-independent-checks",
+      "02-coverage",
+      "11-findings-review",
+      "12-reporting",
+      "14-crosscheck-publication",
+      "index"
+    ]
+  },
+  "continuity": {
+    "previous_output": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+    "prior_run_published_verified": "4728f96b54bff4ecee50a96710411469ecc11207",
+    "missing_reports": [
+      {
+        "date": "2026-11-01",
+        "status": "no final report observed in accessible gpt tree",
+        "execution": "unknown/not observed",
+        "note": "Pre-activation legacy day; no allowance-exhaustion or interruption inference, no catch-up field added."
+      },
+      {
+        "date": "2026-11-07",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-08",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-13",
+        "status": "no final report or started record observed in the audit branch",
+        "execution": "unknown/not observed"
+      }
+    ],
+    "pending_jobs": [],
+    "pending_second_review": []
+  },
+  "scope": {
+    "question": "Does the current typed fundamentals reader enforce the revision key before point-in-time features consume rows, including a malformed external declaration?",
+    "stop": "Reconcile the pinned old/new reader chain and siblings, the CSV rejection and reversed-key controls, same-SHA gates, and one independently reviewed disposition. Preserve the malformed cross-format matrix when fresh execution is unavailable.",
+    "owners": [
+      "source data -> bundle: data",
+      "bundle -> point-in-time features: data",
+      "end-to-end chain: integration"
+    ]
+  },
+  "proof": {
+    "initial": {
+      "id": "GA-2026-11-02-3",
+      "first": "Known K14 against old source; current static closure proposed because financial reader checks exact required key set before returning and generic validates null/duplicate keys. Need scope of committed synthetic tests and same-SHA CI.",
+      "decision": "resolve specific missing/weak manifest key path if CI tests explicitly exercise it; retain distinct nullable nonkey/blank identifiers and accepted malformed case out of scope",
+      "confidence": "high for source control path",
+      "next": "explicit malformed/valid CSV, SQLite, Parquet matrix if exact tests give limited evidence"
+    },
+    "finding_id": "GA-2026-11-02-3",
+    "known_also": "K14 / REVIEW-16",
+    "decision": "resolved for typed bundle ingress on current main",
+    "baseline": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+    "expected": [
+      {
+        "label": "duplicate revisions and omitted declaration",
+        "declared": [],
+        "rows": [
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 1
+          },
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 9
+          }
+        ],
+        "expected": "reject:wrong declaration"
+      },
+      {
+        "label": "duplicate revisions and wider declaration",
+        "declared": [
+          "instrument",
+          "field",
+          "period_end",
+          "available_date",
+          "value"
+        ],
+        "rows": [
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 1
+          },
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 9
+          }
+        ],
+        "expected": "reject:wrong declaration"
+      },
+      {
+        "label": "valid revision control with reversed key",
+        "declared": [
+          "available_date",
+          "period_end",
+          "field",
+          "instrument"
+        ],
+        "rows": [
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 1
+          },
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-15",
+            "value": 9
+          }
+        ],
+        "expected": "accept; before 2024-02-01 missing, through 2024-02-14 value 1, from 2024-02-15 value 9"
+      },
+      {
+        "label": "canonical declaration and duplicate rows",
+        "declared": [
+          "instrument",
+          "field",
+          "period_end",
+          "available_date"
+        ],
+        "rows": [
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 1
+          },
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": "2024-02-01",
+            "value": 9
+          }
+        ],
+        "expected": "reject:duplicate key"
+      },
+      {
+        "label": "canonical declaration and null key cell",
+        "declared": [
+          "instrument",
+          "field",
+          "period_end",
+          "available_date"
+        ],
+        "rows": [
+          {
+            "instrument": "SYN_A",
+            "field": "bp",
+            "period_end": "2023-12-31",
+            "available_date": null,
+            "value": 1
+          }
+        ],
+        "expected": "reject:null key"
+      }
+    ],
+    "evidence_label": "exact-source static verification and existing standard CI for committed regression scope",
+    "repeat_runs": 0,
+    "control_runs": 0,
+    "helper": {
+      "fresh": true,
+      "decision": "agree",
+      "confidence": "high",
+      "primary_trace": [
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/src/invest_data/schemas.py#L554-L561",
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/src/invest_data/bundle.py#L496-L517",
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/tests/test_dataset_keys.py#L92-L115",
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/tests/test_point_in_time.py#L65-L101"
+      ],
+      "closing_answer": "Checked both key guards, all four typed siblings, adjusted bars delegation, CLI optional and evidence reads, feature construction, and PIT prefix/SQLite test. No further issue in those paths.",
+      "unchecked": [
+        "malformed externally authored SQLite/Parquet",
+        "canonical key null/duplicate tampering across all formats",
+        "BH-2026-10-23-6 blank identifiers and nullable non-key values"
+      ]
+    },
+    "verifier_b": "no substantive disagreement",
+    "old_expected_actual": "Old typed reader returned without exact declaration; missing keys bypassed generic uniqueness.",
+    "current_actual_static": "Shared reading validates declared tuples before returning rows; typed guard refuses wrong declarations before handing rows to mining.",
+    "new_verified_defects": 0
+  },
+  "standard_ci": {
+    "source": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "run": 43614128092,
+    "jobs": [
+      132505350169,
+      132505350228
+    ],
+    "platform": "Linux",
+    "python": [
+      "3.11",
+      "3.13"
+    ],
+    "passed_each": 1015,
+    "skipped_each": 1,
+    "mypy": "strict, all 3 src trees plus scripts, 32 files",
+    "coverage_floor_failures_each": 0,
+    "total_coverage": 95.62,
+    "thresholds": {
+      "total": 95,
+      "default": 90
+    },
+    "checks_verified": "read both exact checkout logs; aggregate pytest covers configured data-preparation tests, but no individual node outcomes emitted",
+    "url": "https://github.com/sasasqt/invest/actions/runs/43614128092"
+  },
+  "followups": {
+    "utf8": {
+      "id": "BF-2026-11-14-5",
+      "pr39": "merged",
+      "pr51": "open",
+      "head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+      "evidence": [
+        "https://github.com/sasasqt/invest/pull/51#issuecomment-6883853388",
+        "https://github.com/sasasqt/invest/actions/runs/43637487255"
+      ],
+      "status": "proposed fix and preview CI available; main three-flag verification waits for merge"
+    },
+    "windows": {
+      "ids": [
+        "REVIEW-40",
+        "REVIEW-41"
+      ],
+      "status": "open; no matching native product replay; historical RECORD #40 merged",
+      "evidence": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/TODO.md#L69-L70"
+    }
+  },
+  "allocation": {
+    "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+    "date": "2026-11-16",
+    "field": "data",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "planned_percent": {
+      "exploitation": 40,
+      "exploration": 60
+    },
+    "actual_discretionary_unique_lines": {
+      "exploitation": 221,
+      "exploration": 107,
+      "mandatory": 197
+    },
+    "actual_percent": {
+      "exploitation": 67.3780487804878,
+      "exploration": 32.6219512195122
+    },
+    "new_cumulative_lines_all_reviewers": 499,
+    "new_verified_distinct_roots": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "pooled_eligible_visits": 3,
+    "pooled_lines": {
+      "exploitation": 1408,
+      "exploration": 1082
+    },
+    "pooled_rates_per_1000_lines": {
+      "exploitation": 0,
+      "exploration": 0.9242144177449169
+    },
+    "next_percent": {
+      "exploitation": 30,
+      "exploration": 70
+    },
+    "reason": "Prior adaptive plan inherited. Exact changed-reader and regression-file tracing used extra exploitation. Mandatory caller/contract ranges are separate. Pooled exploration rate retains the first local K14 corroboration, and the present fix verification adds no root.",
+    "ranges": [
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            118,
+            137
+          ],
+          [
+            185,
+            202
+          ],
+          [
+            426,
+            433
+          ],
+          [
+            464,
+            474
+          ],
+          [
+            513,
+            561
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+        "count": 561
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            496,
+            517
+          ],
+          [
+            758,
+            785
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+        "count": 937
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            41,
+            72
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "420c54dc3d9da263b282352c9d4842f6be32e5f8",
+        "count": 72
+      },
+      {
+        "path": "data-pipeline/data-preparation/tests/test_dataset_keys.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            1,
+            115
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "2e3af1580707392badabe4bf32578dc79ccd7c0e",
+        "count": 115
+      },
+      {
+        "path": "data-pipeline/data-preparation/tests/test_point_in_time.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            65,
+            101
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "85418cc40a41523aeccea7bf4ade28e70be8a06e",
+        "count": 154
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/expressions.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            286,
+            309
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "10ced2bad043d0e0337a369a453a58168bb52f42",
+        "count": 386
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            64,
+            77
+          ],
+          [
+            597,
+            606
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7",
+        "count": 979
+      },
+      {
+        "path": "docs/DATA_CONTRACT.md",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            41,
+            47
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+        "count": 85
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            1,
+            3
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f",
+        "count": 3
+      },
+      {
+        "path": "scripts/sp100_members.txt",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            1,
+            104
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "65a13e475da1da872420679b794943fb91c64e4c",
+        "count": 104
+      },
+      {
+        "path": "scripts/historical_workflow.sh",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            37,
+            48
+          ],
+          [
+            175,
+            182
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+        "count": 233
+      },
+      {
+        "path": "docs/HISTORICAL_BASELINE.md",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            3,
+            3
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            60,
+            60
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e",
+        "count": 74
+      }
+    ],
+    "selection": {
+      "cand": [
+        "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+        "data-pipeline/data-preparation/tests/test_yahoo.py",
+        "scripts/sp100_members.txt"
+      ],
+      "digest": "af40659fc9f7a95a6d28bf85dff7f9e3865db1fa6117e171a314718eb4593b4d",
+      "selected": "scripts/sp100_members.txt",
+      "oldest_small_unread": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+      "lens": "non-point-in-time membership provenance and workflow warning",
+      "peer_exact_ranges": "unavailable"
+    },
+    "research": "not scheduled; no papers, ideas or experiments"
+  },
+  "exploration": {
+    "observation": "Static 101-symbol dated list has an explicit testing/survivorship warning, propagated under historical workflow universe-note. No provider observations read; current membership accuracy not examined.",
+    "evidence": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/scripts/historical_workflow.sh#L175-L182"
+  },
+  "inventory": {
+    "tracked_files": 148,
+    "inventoried": 75,
+    "partially_reviewed": 21,
+    "reviewed": 24,
+    "checked_automatically": 7,
+    "blocked": 21,
+    "unread_lines": 38669,
+    "unread_paths": 116,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 499
+  },
+  "links": {
+    "pr39": "https://github.com/sasasqt/invest/pull/39",
+    "pr51": "https://github.com/sasasqt/invest/pull/51",
+    "pr51reply": "https://github.com/sasasqt/invest/pull/51#issuecomment-6883853388",
+    "pr51ci": "https://github.com/sasasqt/invest/actions/runs/43637487255",
+    "ci": "https://github.com/sasasqt/invest/actions/runs/43614128092",
+    "workflow": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/.github/workflows/audit-runtime.yml",
+    "win": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/TODO.md#L69-L70",
+    "typed": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/src/invest_data/schemas.py#L554-L561",
+    "generic": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/src/invest_data/bundle.py#L496-L517",
+    "csv": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/tests/test_dataset_keys.py#L92-L115",
+    "pit": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-pipeline/data-preparation/tests/test_point_in_time.py#L65-L101",
+    "survivor": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/scripts/historical_workflow.sh#L175-L182",
+    "contract": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/docs/DATA_CONTRACT.md#L41-L47",
+    "old": "https://github.com/sasasqt/invest/blob/9913f94b9b795bd9633a6a683e9f420301e400b3/data-pipeline/data-preparation/src/invest_data/schemas.py#L538-L544"
+  }
+}
