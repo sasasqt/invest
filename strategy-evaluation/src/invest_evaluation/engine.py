@@ -53,7 +53,7 @@ class BacktestResult:
     daily: pd.DataFrame  # one row per session
     trades: pd.DataFrame  # one row per fill (or rejected order)
     episodes: pd.DataFrame  # closed and open position episodes
-    benchmark: pd.Series  # equal-weight universe daily return (gross, no costs, settlements)
+    benchmark: pd.Series  # equal-weight universe daily return (gross, no costs, delistings settled)
     config: BacktestConfig
     warnings: list[str]
     # With ``record_decisions``: one row per eligible instrument per decision:

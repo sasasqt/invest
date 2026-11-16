@@ -98,8 +98,9 @@ def test_a_settled_member_the_strategy_does_not_hold_counts_the_same() -> None:
 
 
 def test_a_settlement_after_the_last_bar_spans_the_missing_bars_like_the_holdings() -> None:
-    # A's last bar is session 3 (close 10); the settlement at 8 is known at session 6's close.
-    res = run(market({k: 10.0 for k in range(4)}), settle(("A", 6, 8.0)))
+    # A's last bar is session 3 (close 10, after 9, 9.5 and 9); the settlement at 8 is known
+    # at session 6's close. Its return is 8 / 10 - 1, from the last close, not an earlier one.
+    res = run(market({0: 9.0, 1: 9.5, 2: 9.0, 3: 10.0}), settle(("A", 6, 8.0)))
     for k in (4, 5):  # no bar for A: the mean of B and C, as before
         assert res.benchmark.loc[DATES[k]] == pytest.approx((B_UP + 0.0) / 2)
     assert res.benchmark.loc[DATES[6]] == pytest.approx((8.0 / 10.0 - 1.0 + B_UP + 0.0) / 3)
