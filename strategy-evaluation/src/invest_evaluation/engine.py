@@ -27,6 +27,7 @@ from numbers import Real
 from typing import Any, NoReturn
 
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 
 from invest_data.bundle import BundleError
@@ -52,7 +53,7 @@ class BacktestResult:
     daily: pd.DataFrame  # one row per session
     trades: pd.DataFrame  # one row per fill (or rejected order)
     episodes: pd.DataFrame  # closed and open position episodes
-    benchmark: pd.Series  # equal-weight universe daily return (gross, no costs)
+    benchmark: pd.Series  # equal-weight universe daily return (gross, no costs, settlements)
     config: BacktestConfig
     warnings: list[str]
     # With ``record_decisions``: one row per eligible instrument per decision:
@@ -147,6 +148,39 @@ def _delisting_events(
             (int(instruments.get_loc(row.instrument)), float(price))
         )
     return out
+
+
+def _settled_benchmark_returns(
+    rets: pd.DataFrame,
+    held_from: npt.NDArray[np.bool_],
+    member: npt.NDArray[np.bool_],
+    close: pd.DataFrame,
+    events: dict[int, list[tuple[int, float]]],
+) -> tuple[pd.DataFrame, npt.NDArray[np.bool_]]:
+    """Apply delisting settlements to the universe benchmark (BH-2026-10-21-2).
+
+    A settled member returns its settlement price over its last close before the event's
+    session, minus 1: the move the holdings book from their last known mark (a close on the
+    event session itself is passed through on the way). The return can span sessions
+    without a bar, which the benchmark otherwise never counts. On the event session the
+    member counts when it was a member at that last close, since the benchmark could not
+    have sold it at a price in between; it has no return after the event. Without an
+    earlier close its return stays missing. Returns new arrays; the inputs can be
+    read-only."""
+    r = rets.to_numpy(dtype=float, copy=True)
+    held = held_from.copy()
+    px = close.to_numpy(dtype=float)
+    for i, entries in events.items():
+        for j, price in entries:
+            r[i + 1 :, j] = np.nan
+            earlier = np.flatnonzero(np.isfinite(px[:i, j]))
+            if not len(earlier):
+                r[i, j] = np.nan
+                continue
+            k = int(earlier[-1])
+            r[i, j] = price / px[k, j] - 1
+            held[i, j] = member[k, j]
+    return pd.DataFrame(r, index=rets.index, columns=rets.columns), held
 
 
 def _validated_weights(weights: pd.Series, eligible: pd.Index, gross_limit: float) -> pd.Series:
@@ -605,6 +639,10 @@ def run_backtest(
 
     rets = close_w / close_w.shift(1) - 1
     held_from = np.vstack([member[:1], member[:-1]])  # members at the previous close
+    if settlement_events:  # the benchmark settles members as the holdings are settled
+        rets, held_from = _settled_benchmark_returns(
+            rets, held_from, member, close_w, settlement_events
+        )
     # NaN on a session with no member return; benchmark metrics drop it rather than count 0%.
     bench = rets.where(held_from).mean(axis=1).reindex(daily.index).rename("benchmark")
     trade_cols = [
