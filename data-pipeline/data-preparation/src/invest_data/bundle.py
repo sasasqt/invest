@@ -79,7 +79,7 @@ class Column:
         return out
 
     @staticmethod
-    def from_json(raw: Mapping[str, Any]) -> Column:
+    def from_json(raw: object) -> Column:
         if not isinstance(raw, Mapping):
             raise BundleError(f"column definition must be a JSON object, not {raw!r}")
         for key in ("name", "type"):
@@ -529,7 +529,7 @@ def write_bundle(
     dataset_kind: str | None = None,
     metadata: Mapping[str, Any] | None = None,
     table: str = "observations",
-    created_at: datetime | None = None,
+    created_at: object = None,  # a timezone-aware datetime; checked below
 ) -> Manifest:
     """Validate ``frame`` and publish it atomically as a new bundle directory at ``path``.
 
@@ -553,9 +553,7 @@ def write_bundle(
         [format_value(col, v) for col, v in zip(cols, rec, strict=True)]
         for rec in frame.itertuples(index=False, name=None)
     ]
-    # A caller can still pass a value that is not a datetime (a date, text) at run time, so the
-    # check runs on a copy annotated object.
-    when: object = datetime.now(UTC) if created_at is None else created_at
+    when = datetime.now(UTC) if created_at is None else created_at
     try:  # pd.NaT raises here; a time near year 1 or 9999 can leave the range in UTC
         aware = isinstance(when, datetime) and when.utcoffset() is not None
         utc = when.astimezone(UTC) if isinstance(when, datetime) and aware else None

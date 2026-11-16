@@ -49,8 +49,9 @@ enable_error_code = [
 ]
 
 [[tool.mypy.overrides]]
-# One redundant-expr hit is left in stats.py (a runtime check of caller input); a later
-# typing pull request fixes it and removes this entry (QUALITY-04).
+# One redundant-expr hit is left in stats.py (a runtime check of caller input), next to
+# lines that open pull request #53 changes; once #53 merges, a typing pull request fixes
+# it and removes this entry (QUALITY-04).
 module = ["invest_evaluation.stats"]
 disable_error_code = ["redundant-expr"]
 

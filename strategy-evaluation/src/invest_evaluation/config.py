@@ -198,7 +198,7 @@ class BacktestConfig:
         return asdict(self)
 
     @staticmethod
-    def from_dict(raw: dict[str, Any]) -> BacktestConfig:
+    def from_dict(raw: object) -> BacktestConfig:
         if not isinstance(raw, dict):
             raise ValueError("config must be a JSON object")
         known = {f.name for f in fields(BacktestConfig)}
