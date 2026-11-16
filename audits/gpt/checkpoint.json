@@ -4125,7 +4125,9 @@
     "helper_count": 1,
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "publication_status": "prepared"
+    "publication_status": "published_verified",
+    "verified_report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+    "elapsed_to_verified_publication_seconds": 513
   },
   "publication_history": [
     {
@@ -4590,13 +4592,65 @@
       "force": false,
       "readback_verified": true,
       "verified_utc": "2026-11-15T02:07:57.000Z"
+    },
+    {
+      "date": "2026-11-16",
+      "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+      "status": "published_verified",
+      "report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+      "report_url": "https://github.com/sasasqt/invest/blob/6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78/audits/gpt/2026-11-16.md",
+      "verified_head_at_report": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "output_parent": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-16-data/evidence.json",
+        "audits/gpt/2026-11-16-data/started.json",
+        "audits/gpt/2026-11-16.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "force": false,
+      "readback_verified": true,
+      "verified_utc": "2026-11-16T02:05:27.000Z"
     }
   ],
   "publication_current_run": {
-    "status": "prepared",
-    "report": "2026-11-16.md",
+    "date": "2026-11-16",
+    "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+    "status": "published_verified",
+    "report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+    "report_url": "https://github.com/sasasqt/invest/blob/6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78/audits/gpt/2026-11-16.md",
+    "verified_head_at_report": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
     "output_parent": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
-    "readback_verified": false
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-16-data/evidence.json",
+      "audits/gpt/2026-11-16-data/started.json",
+      "audits/gpt/2026-11-16.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "force": false,
+    "readback_verified": true,
+    "verified_utc": "2026-11-16T02:05:27.000Z"
   },
   "remaining_work_current_visit": "Earliest feasible unread data slice and remaining canonical null/non-key validation. Run extended K14 synthetic matrix only when the authorized locked runner is qualified. BF-2026-11-14-5 remains queued until #51 merges.",
   "runtime_validation_history": [
