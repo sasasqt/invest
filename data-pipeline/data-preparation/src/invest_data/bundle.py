@@ -553,7 +553,8 @@ def write_bundle(
         [format_value(col, v) for col, v in zip(cols, rec, strict=True)]
         for rec in frame.itertuples(index=False, name=None)
     ]
-    # A caller can pass any value here (a naive time, pd.NaT), so it is checked as an object.
+    # A caller can still pass a value that is not a datetime (a date, text) at run time, so the
+    # check runs on a copy annotated object.
     when: object = datetime.now(UTC) if created_at is None else created_at
     try:  # pd.NaT raises here; a time near year 1 or 9999 can leave the range in UTC
         aware = isinstance(when, datetime) and when.utcoffset() is not None
