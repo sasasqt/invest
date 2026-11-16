@@ -77,11 +77,16 @@ class QuantileConfig:
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, Integral) or value < minimum:
                 raise ValueError(f"{name} must be an integer >= {minimum}")
-        fractions = self.tail_fractions
+        fractions: object = self.tail_fractions  # a caller can pass any value
         if isinstance(fractions, str) or not isinstance(fractions, list | tuple):
             raise ValueError("tail_fractions must be a list of fractions")
         for f in fractions:
-            if isinstance(f, bool) or not isinstance(f, Real) or not math.isfinite(f):
+            checked: object = f
+            if (
+                isinstance(checked, bool)
+                or not isinstance(checked, Real)
+                or not math.isfinite(checked)
+            ):
                 raise ValueError("tail fractions must be finite numbers")
             if not 0 < f <= 0.5:
                 raise ValueError("tail fractions must be in (0, 0.5]")

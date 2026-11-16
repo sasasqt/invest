@@ -137,15 +137,13 @@ class Slice:
     def __post_init__(self) -> None:
         if self.kind not in SLICE_KINDS:
             raise ValueError(f"slice kind must be one of {SLICE_KINDS}")
-        if (
-            isinstance(self.n_buckets, bool)
-            or not isinstance(self.n_buckets, Integral)
-            or self.n_buckets < 2
-        ):
+        n: object = self.n_buckets  # a caller can pass any value
+        if isinstance(n, bool) or not isinstance(n, Integral) or n < 2:
             raise ValueError("n_buckets must be an integer >= 2")
-        v = self.value
-        if isinstance(v, bool) or not isinstance(v, Real) or not math.isfinite(v):
+        checked: object = self.value  # a caller can pass any value
+        if isinstance(checked, bool) or not isinstance(checked, Real) or not math.isfinite(checked):
             raise ValueError("slice value must be a finite number")
+        v = self.value
         if self.kind == "bucket":
             if v != int(v) or not 1 <= v <= self.n_buckets:
                 raise ValueError("bucket must be an integer in 1..n_buckets")

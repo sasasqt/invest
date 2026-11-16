@@ -145,7 +145,7 @@ class ValidationConfig:
         _number("min_deflated_sharpe", self.min_deflated_sharpe, minimum=0)
         if self.min_deflated_sharpe > 1:
             raise ValueError("min_deflated_sharpe must be <= 1")
-        names = self.stress_scenarios
+        names: object = self.stress_scenarios  # a caller can pass any value
         if isinstance(names, str) or not isinstance(names, list | tuple):
             raise ValueError("stress_scenarios must be a list of scenario names")
         if not all(isinstance(n, str) and n for n in names) or len(set(names)) != len(names):

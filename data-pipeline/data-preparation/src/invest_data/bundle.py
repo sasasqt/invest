@@ -553,10 +553,11 @@ def write_bundle(
         [format_value(col, v) for col, v in zip(cols, rec, strict=True)]
         for rec in frame.itertuples(index=False, name=None)
     ]
-    when = datetime.now(UTC) if created_at is None else created_at
+    # A caller can pass any value here (a naive time, pd.NaT), so it is checked as an object.
+    when: object = datetime.now(UTC) if created_at is None else created_at
     try:  # pd.NaT raises here; a time near year 1 or 9999 can leave the range in UTC
         aware = isinstance(when, datetime) and when.utcoffset() is not None
-        utc = when.astimezone(UTC) if aware else None
+        utc = when.astimezone(UTC) if isinstance(when, datetime) and aware else None
     except (ValueError, OverflowError):
         utc = None
     if utc is None or not 1 <= utc.year <= 9999:  # a pandas Timestamp can lie beyond them

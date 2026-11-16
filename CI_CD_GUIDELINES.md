@@ -14,7 +14,7 @@ Every pull request and every push to `main` runs:
 
 A PR is mergeable only when all jobs are green on its latest commit.
 
-mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
+mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)), which add `warn_unreachable` and the error codes `ignore-without-code`, `truthy-bool`, `redundant-expr` and `possibly-undefined`. It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
 
 ## Conditional isolated audit checks
 

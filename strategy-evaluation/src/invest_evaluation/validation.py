@@ -83,8 +83,8 @@ def portfolio_verdict(
     sharpe_value = sharpe.get("value")
     valid_sharpe = (
         sharpe.get("status") == "ok"
-        and isinstance(sharpe_value, Real)
         and not isinstance(sharpe_value, bool)
+        and isinstance(sharpe_value, Real)
         and math.isfinite(sharpe_value)
     )
     checks = [
