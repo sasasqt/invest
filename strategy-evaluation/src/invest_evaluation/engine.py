@@ -307,7 +307,7 @@ def run_backtest(
     decisions: list[pd.DataFrame] = []
     next_decision: int | None = None  # session from which the next decision is due
     waiting = False  # a due decision is waiting for a session with a score
-    n_waited = n_decided = n_held_nothing = 0
+    n_waited = n_decided = n_zero_target = 0
     first_waited: pd.Timestamp | None = None
     borrow_daily = cm.borrow_bps_annual / 1e4 / cfg.annualization
     cash_daily = cm.cash_rate_annual / cfg.annualization
@@ -582,7 +582,7 @@ def run_backtest(
                 pending[fill_i] = (i, targets)
                 n_decided += 1
                 if not (targets.to_numpy() != 0).any():
-                    n_held_nothing += 1
+                    n_zero_target += 1
                 if record_decisions:
                     decisions.append(
                         pd.DataFrame(
@@ -602,13 +602,14 @@ def run_backtest(
             "were kept and each decision was made on the next session with a score, if any "
             f"(first on {first_waited.date()})"
         )
-    if n_held_nothing:
-        # Decisions that hold nothing sell every holding by rule (too few eligible names, or
-        # an empty leg); count them so a run's report shows how often (REVIEW-20).
+    if n_zero_target:
+        # Decisions that target zero exposure (too few eligible names, or an empty leg) order
+        # the sale of every holding; a sale can still be rejected or partial at the fill
+        # (REVIEW-27). Count them so a run's report shows how often (REVIEW-20).
         warnings.append(
-            f"{n_held_nothing} of {n_decided} decisions held nothing: no eligible name had a "
-            "score, or the strategy selected no name (fewer eligible names than it needs, an "
-            "empty leg, or a leg below its minimum number of names)"
+            f"{n_zero_target} of {n_decided} decisions targeted zero exposure: no eligible name "
+            "had a score, or the strategy selected no name (fewer eligible names than it needs, "
+            "an empty leg, or a leg below its minimum number of names)"
         )
     if not n_decided:
         # Every score in the window falls on its last `delay` + 1 sessions, where no order

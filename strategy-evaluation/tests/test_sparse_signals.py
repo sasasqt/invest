@@ -141,9 +141,10 @@ def test_a_last_session_without_scores_is_not_counted_as_a_wait() -> None:
 
 def test_a_scored_decision_that_selects_nothing_still_sells_and_is_counted() -> None:
     """A session with a score is a decision even when the strategy selects nothing: with
-    ``min_names`` 2, session 8 scores only A, so the decision holds nothing and A is sold
-    at the open of 9 (the rule strategy-evaluation/README.md documents). Session 13 is
-    then due without a score. The run counts the decision that held nothing (REVIEW-20)."""
+    ``min_names`` 2, session 8 scores only A, so the decision targets zero exposure and A
+    is sold at the open of 9 (the rule strategy-evaluation/README.md documents). Session
+    13 is then due without a score. The run counts the decision that targeted zero
+    exposure (REVIEW-20)."""
     res = run_backtest(
         flat_market(), scores_on({3: A_TOP, 8: {"A": 1.0}}), top_name_config(min_names=2)
     )
@@ -152,11 +153,31 @@ def test_a_scored_decision_that_selects_nothing_still_sells_and_is_counted() -> 
     assert fills["shares"].tolist() == pytest.approx([100.0, -100.0])
     assert (res.daily.loc[DATES[9] :, "n_long"] == 0).all()
     assert (
-        "1 of 2 decisions held nothing: no eligible name had a score, or the strategy "
-        "selected no name (fewer eligible names than it needs, an empty leg, or a leg "
-        "below its minimum number of names)"
+        "1 of 2 decisions targeted zero exposure: no eligible name had a score, or the "
+        "strategy selected no name (fewer eligible names than it needs, an empty leg, or a "
+        "leg below its minimum number of names)"
     ) in res.warnings
     assert any(w.startswith("1 scheduled decisions fell on sessions") for w in res.warnings)
+
+
+def test_a_zero_target_whose_sale_is_rejected_still_holds_the_name() -> None:
+    """The warning counts what a decision targeted, not what the run then held: as above,
+    session 8's decision targets zero exposure, but A has no bar on session 9, so its sale
+    is rejected at that open (no_bar_on_fill_date, REVIEW-27) and A is still held on
+    sessions 9 to 13. The warning says the decision targeted zero exposure, which stays
+    true (ChatGPT review INV-PR56-O1)."""
+    bars = flat_market()
+    bars = bars[~((bars["date"] == DATES[9]) & (bars["instrument"] == "A"))]
+    res = run_backtest(bars, scores_on({3: A_TOP, 8: {"A": 1.0}}), top_name_config(min_names=2))
+    sale = res.trades[res.trades["date"] == DATES[9]]
+    assert sale["status"].tolist() == ["rejected"]
+    assert sale["reason"].tolist() == ["no_bar_on_fill_date"]
+    assert (res.daily.loc[DATES[9] : DATES[13], "n_long"] == 1).all()
+    assert (
+        "1 of 2 decisions targeted zero exposure: no eligible name had a score, or the "
+        "strategy selected no name (fewer eligible names than it needs, an empty leg, or a "
+        "leg below its minimum number of names)"
+    ) in res.warnings
 
 
 @pytest.mark.parametrize(
@@ -228,10 +249,10 @@ def test_bucket_portfolios_decide_only_on_scored_sessions() -> None:
     assert sorted(result.memberships["decision_date"].unique()) == [DATES[3], DATES[14]]
 
 
-def test_a_bucket_below_its_minimum_number_of_names_is_counted_as_holding_nothing() -> None:
+def test_a_bucket_below_its_minimum_number_of_names_is_counted_as_a_zero_target() -> None:
     """Three names in two buckets: the bucket rule puts one name in q1 and two in q2. With
     ``min_names_per_bucket`` 2, q1's leg is not empty but below its minimum, so its only
-    decision holds nothing, and the warning names that reason."""
+    decision targets zero exposure, and the warning names that reason."""
     result = run_quantile_portfolios(
         flat_market(),
         scores_on({3: C_TOP}),
@@ -239,7 +260,7 @@ def test_a_bucket_below_its_minimum_number_of_names_is_counted_as_holding_nothin
         QuantileConfig(n_buckets=2, tail_fractions=(0.5,), min_names_per_bucket=2),
     )
     assert (
-        "1 of 1 decisions held nothing: no eligible name had a score, or the strategy "
-        "selected no name (fewer eligible names than it needs, an empty leg, or a leg "
-        "below its minimum number of names)"
+        "1 of 1 decisions targeted zero exposure: no eligible name had a score, or the "
+        "strategy selected no name (fewer eligible names than it needs, an empty leg, or a "
+        "leg below its minimum number of names)"
     ) in result.warnings["q1"]
