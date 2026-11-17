@@ -23,7 +23,7 @@ import os
 from dataclasses import asdict, dataclass
 from numbers import Integral, Real
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import matplotlib
 
@@ -101,10 +101,14 @@ class QuantileConfig:
         return out
 
 
+PortfolioKind = Literal["bucket", "top", "bottom", "long_short"]
+"""``bucket``, ``top`` and ``bottom`` are long-only; ``long_short`` is top minus bottom."""
+
+
 @dataclass(frozen=True)
 class BucketPortfolio:
     name: str
-    kind: str  # "bucket", "top", "bottom" (long-only) or "long_short"
+    kind: PortfolioKind
     long: Slice
     short: Slice | None = None
 

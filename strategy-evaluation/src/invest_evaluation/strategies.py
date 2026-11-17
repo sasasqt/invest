@@ -10,14 +10,15 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from numbers import Integral, Real
-from typing import Protocol
+from typing import Literal, Protocol
 
 import numpy as np
 import pandas as pd
 
 from invest_evaluation.config import StrategyConfig
 
-SLICE_KINDS = ("bucket", "top", "bottom")
+SliceKind = Literal["bucket", "top", "bottom"]
+SLICE_KINDS: tuple[SliceKind, ...] = ("bucket", "top", "bottom")
 
 
 class Strategy(Protocol):
@@ -130,12 +131,13 @@ class Slice:
     unequal or empty, and are reported instead of being rebalanced by instrument id.
     """
 
-    kind: str
+    kind: SliceKind
     value: float
     n_buckets: int = 10
 
     def __post_init__(self) -> None:
-        if self.kind not in SLICE_KINDS:
+        kind: object = self.kind  # a caller can pass any value
+        if kind not in SLICE_KINDS:
             raise ValueError(f"slice kind must be one of {SLICE_KINDS}")
         n: object = self.n_buckets  # a caller can pass any value
         if isinstance(n, bool) or not isinstance(n, Integral) or n < 2:
