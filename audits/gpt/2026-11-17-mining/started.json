@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-17",
+  "field": "mining",
+  "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+  "scheduled_for": "2026-11-17T02:00:00Z",
+  "started_utc": "2026-11-17T01:58:35.266206Z",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_base": "6cadb90a214d909083104bb1fd53d969a9b3e083",
+  "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "status": "started",
+  "pending_jobs": []
+}
