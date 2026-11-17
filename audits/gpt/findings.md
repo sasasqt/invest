@@ -74,3 +74,5 @@ K3 / REVIEW-17 remains open on main `9e7dd61a679cc567d059ce3ded626f9dec10f3e8`. 
 **GA-2026-11-14-1 · Low · Open.** A zero-byte .csv.gz passes the invalid-compressed-output check. Verified in source and independent standard-library controls. Untouched runner execution pending. [Finding](2026-11-14.md#finding) · [Evidence](2026-11-14-performance/evidence.json)
 
 GA-2026-11-02-3 / K14, 2026-11-16: **resolved for typed bundle ingress on current main** at `2edd7ae1168eda1192ff73698ba5d42a7c034a41`. Independent static review confirmed the reader guard. Exact-source standard CI passed for the committed CSV regression scope. Extended malformed SQLite/Parquet controls remain queued. [Verification](2026-11-16-data/evidence.json)
+
+GA-2026-11-10-1 / REVIEW-45, 2026-11-17: **known/open on current main; independently corroborated source trace** at `2edd7ae1168eda1192ff73698ba5d42a7c034a41`. The still-open #51 retains the split read. Merged #41 protects only export-side pairing. [Verification and next checks](2026-11-17-mining/evidence.json)

@@ -59,19 +59,19 @@
   },
   "status": "bounded literature/static scope complete; synthetic experiment blocked",
   "last_audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-  "last_audited_date": "2026-11-16",
-  "last_run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+  "last_audited_date": "2026-11-17",
+  "last_run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
   "coverage_counts": {
     "tracked_files": 148,
-    "inventoried": 75,
-    "partially_reviewed": 21,
-    "reviewed": 24,
-    "checked_automatically": 7,
+    "inventoried": 72,
+    "partially_reviewed": 24,
+    "reviewed": 25,
+    "checked_automatically": 6,
     "blocked": 21,
-    "unread_lines": 38669,
-    "unread_paths": 116,
+    "unread_lines": 38104,
+    "unread_paths": 115,
     "no_applicable_or_unknown_line_count": 5,
-    "new_unique_semantic_lines": 499
+    "new_unique_semantic_lines": 565
   },
   "last_four_completed_runs": [
     {
@@ -471,9 +471,16 @@
       "originating_reviewer": "Reviewer 1 + fresh Reviewer 2",
       "next_check": "On untouched supported runtime after prerequisite qualification, run AâB twice for search/confirm Ã universe/fundamentals; assert scores derive from A and identity records A. Stable A and stable B controls pass. An export cannot attach A evidence to B.",
       "first_queued_utc": "2026-11-10T02:12:23.250Z",
-      "last_queued_utc": "2026-11-10T02:12:23.250Z",
+      "last_queued_utc": "2026-11-17T02:05:48.000Z",
       "status": "runtime acceptance pending; source-level defect independently verified",
-      "deferral_reason": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment."
+      "deferral_reason": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
+      "current_check": {
+        "date": "2026-11-17",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "pr51_head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+        "status": "known/open on current main; independently corroborated source trace",
+        "evidence": "2026-11-17-mining/evidence.json"
+      }
     },
     {
       "id": "OPEN-SETTLEMENT-BENCHMARK-RUNTIME-001",
@@ -934,6 +941,14 @@
       "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
       "evidence": "2026-11-16-data/evidence.json"
+    },
+    {
+      "date": "2026-11-17",
+      "field": "mining",
+      "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "bounded static review complete; runtime controls pending",
+      "evidence": "2026-11-17-mining/evidence.json"
     }
   ],
   "latest_current_run_evidence": {
@@ -1570,8 +1585,8 @@
       },
       "mining": {
         "weekday": 1,
-        "last_rotation_visit": "2026-11-10",
-        "last_substantive_advance": "2026-11-10",
+        "last_rotation_visit": "2026-11-17",
+        "last_substantive_advance": "2026-11-17",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -1582,38 +1597,92 @@
                 155
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "b02bf5478505329027db917222e9b45b1c8221f5"
           },
           {
-            "path": "data-mining-framework/src/invest_mining/__init__.py",
+            "path": "data-mining-framework/LITERATURE_REVIEW.md",
             "unread_ranges": [
               [
                 1,
-                3
+                282
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "baccd52dc4d6b4181c6da24771ade8be626e9a8b"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "b8558ebf9d5567526166a27e86a5baa63fdaea02"
+          },
+          {
+            "path": "data-mining-framework/PRIMARY_SOURCE_CATALOG.md",
+            "unread_ranges": [
+              [
+                1,
+                358
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "4d3f1fce77a41493501069a9505e902c45f2bf3a"
+          },
+          {
+            "path": "data-mining-framework/README.md",
+            "unread_ranges": [
+              [
+                1,
+                83
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "2aa711d2c12fa791fd838d285351f4f2105bb842"
           },
           {
             "path": "data-mining-framework/src/invest_mining/cli.py",
             "unread_ranges": [
               [
                 1,
-                54
+                63
               ],
               [
-                71,
-                75
+                80,
+                191
               ],
               [
-                176,
-                760
+                221,
+                222
+              ],
+              [
+                295,
+                321
+              ],
+              [
+                376,
+                382
+              ],
+              [
+                427,
+                452
+              ],
+              [
+                501,
+                502
+              ],
+              [
+                531,
+                580
+              ],
+              [
+                612,
+                665
+              ],
+              [
+                688,
+                747
+              ],
+              [
+                782,
+                979
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "abb44a04793f657188da5b0feab9fc7a2b360494"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7"
           },
           {
             "path": "data-mining-framework/src/invest_mining/diagnostics.py",
@@ -1623,8 +1692,27 @@
                 363
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+          },
+          {
+            "path": "data-mining-framework/src/invest_mining/ledger.py",
+            "unread_ranges": [
+              [
+                1,
+                189
+              ],
+              [
+                258,
+                259
+              ],
+              [
+                315,
+                323
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "39736206241839563a05402eaedc67abe1f876b3"
           },
           {
             "path": "data-mining-framework/src/invest_mining/reporting.py",
@@ -1634,8 +1722,35 @@
                 114
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "eab461c558af00fa982c387726f6a49a485e029b"
+          },
+          {
+            "path": "data-mining-framework/src/invest_mining/search.py",
+            "unread_ranges": [
+              [
+                1,
+                136
+              ],
+              [
+                161,
+                180
+              ],
+              [
+                196,
+                237
+              ],
+              [
+                247,
+                286
+              ],
+              [
+                311,
+                365
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "091be2c8752443a1e9bbdaf65f17af94ad2681dd"
           },
           {
             "path": "data-mining-framework/tests/conftest.py",
@@ -1645,7 +1760,7 @@
                 33
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "f22892a57326b46fd568301feb5d3adf80ad92c3"
           },
           {
@@ -1656,38 +1771,52 @@
                 338
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "175917942a72a58063167a3ac04b057e527bca02"
           },
           {
             "path": "data-mining-framework/tests/test_diagnostics.py",
             "unread_ranges": [
               [
-                1,
+                182,
                 295
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
             "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039"
+          },
+          {
+            "path": "data-mining-framework/tests/test_evidence.py",
+            "unread_ranges": [
+              [
+                1,
+                492
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "9528c149630388a49d5fee2a550a433ae87ddb64"
           },
           {
             "path": "data-mining-framework/tests/test_ledger.py",
             "unread_ranges": [
               [
                 1,
-                174
-              ],
-              [
-                201,
-                329
-              ],
-              [
-                356,
-                471
+                1154
               ]
             ],
-            "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-            "blob": "181df2f5347892c72ebd3699494b3ed9598b24ff"
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "4e13feafaff4262588e9e4fca5225cf3d7ecceeb"
+          },
+          {
+            "path": "data-mining-framework/tests/test_reporting.py",
+            "unread_ranges": [
+              [
+                1,
+                58
+              ]
+            ],
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "blob": "9b801218cd234efcf1b8003739ae772ca9992487"
           }
         ],
         "queue_refs": [
@@ -1699,18 +1828,21 @@
             "date": "2026-11-03",
             "reason": "current isolation and installed locked graph unavailable",
             "consecutive_comparable_visits": 2,
-            "next_check": "Untouched source twice with no-universe/all-member/cross-section and label endpoint controls"
+            "next_check": "Untouched source twice with no-universe/all-member/cross-section and label endpoint controls",
+            "still_blocked_as_of": "2026-11-17",
+            "note": "Oldest blocked runtime item reconsidered; unchanged prerequisites; exploration used feasible unread ranges instead."
           },
           "identity-same-read-runtime-controls": {
-            "date": "2026-11-10",
-            "reason": "current credential isolation and exact installed locked graph unavailable",
-            "consecutive_comparable_visits": 1,
-            "next_check": "Untouched AâB search/confirm Ã universe/fundamentals twice plus stable A/B controls after runner qualification."
+            "date": "2026-11-17",
+            "reason": "Qualified runtime and dispatch unavailable; exact-source static trace refreshed",
+            "consecutive_comparable_visits": 2,
+            "next_check": "Untouched AâB search/confirm Ã universe/fundamentals twice plus stable A/B controls after runner qualification.",
+            "evidence": "2026-11-17-mining/evidence.json"
           }
         },
         "reading_allocation": [
-          60,
-          40
+          70,
+          30
         ],
         "field_yield_history": [
           {
@@ -2084,18 +2216,176 @@
               }
             ],
             "research": "not scheduled; zero papers, ideas or experiments; excluded from repository reading denominator"
+          },
+          {
+            "date": "2026-11-17",
+            "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "field": "mining",
+            "planned_percent": {
+              "exploitation": 60,
+              "exploration": 40
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 277,
+              "exploration": 184,
+              "mandatory": 128
+            },
+            "actual_percent": {
+              "exploitation": 60.08676789587852,
+              "exploration": 39.91323210412148
+            },
+            "new_verified_distinct_root_causes": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "pooled_eligible_visits": 3,
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 1.5313935681470139,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 70,
+              "exploration": 30
+            },
+            "selection": {
+              "seed": "749763b3c8999e0bdc5ab8b8bb1b770bc93742e8335207548ea5c7b5e9ac219e",
+              "candidates": [
+                "data-mining-framework/ALPHA_VALIDATION.md",
+                "data-mining-framework/src/invest_mining/cli.py",
+                "data-mining-framework/src/invest_mining/diagnostics.py",
+                "data-mining-framework/src/invest_mining/reporting.py",
+                "data-mining-framework/tests/conftest.py",
+                "data-mining-framework/tests/test_cli.py",
+                "data-mining-framework/tests/test_diagnostics.py",
+                "data-mining-framework/tests/test_ledger.py"
+              ],
+              "draw": "data-mining-framework/tests/test_diagnostics.py",
+              "oldest_small_unread": "data-mining-framework/src/invest_mining/__init__.py",
+              "lens": "test robustness to future label availability and tied scores",
+              "peer_exact_ranges": "unavailable"
+            },
+            "ranges": [
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    64,
+                    79
+                  ],
+                  [
+                    322,
+                    375
+                  ],
+                  [
+                    383,
+                    426
+                  ],
+                  [
+                    453,
+                    500
+                  ],
+                  [
+                    503,
+                    530
+                  ],
+                  [
+                    581,
+                    611
+                  ],
+                  [
+                    666,
+                    687
+                  ],
+                  [
+                    748,
+                    781
+                  ]
+                ],
+                "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7",
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "count": 979
+              },
+              {
+                "path": "data-mining-framework/tests/test_evidence.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    493,
+                    548
+                  ]
+                ],
+                "blob": "9528c149630388a49d5fee2a550a433ae87ddb64",
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "count": 548
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/search.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    137,
+                    160
+                  ],
+                  [
+                    181,
+                    195
+                  ],
+                  [
+                    238,
+                    246
+                  ],
+                  [
+                    287,
+                    310
+                  ]
+                ],
+                "blob": "091be2c8752443a1e9bbdaf65f17af94ad2681dd",
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "count": 365
+              },
+              {
+                "path": "data-mining-framework/tests/test_diagnostics.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    181
+                  ]
+                ],
+                "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "count": 295
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/__init__.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    3
+                  ]
+                ],
+                "blob": "baccd52dc4d6b4181c6da24771ade8be626e9a8b",
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "count": 3
+              }
+            ],
+            "rule": "Retain one historical first-confirmed exploitation root. Current recheck adds no root. Both denominators positive, so reduce exploration from 40 to 30 per pinned policy. Mandatory, helper and research work are excluded from rates."
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+        "last_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
         "last_report": "2026-11-10.md",
         "last_advance": "Confirmed GA-2026-11-10-1 source-level identity split-read defect with independent review and trusted synthetic control; untouched runtime acceptance remains blocked.",
-        "last_substantive_run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
+        "last_substantive_run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
         "completed_advances": [
-          "Confirmed GA-2026-11-10-1: search/confirm optional-input rows and recorded hashes can come from different reads; fresh independent source-level review and two-repeat trusted synthetic oracle."
+          "Confirmed GA-2026-11-10-1: search/confirm optional-input rows and recorded hashes can come from different reads; fresh independent source-level review and two-repeat trusted synthetic oracle.",
+          "Corroborated GA-2026-11-10-1 on current main and #51, including why exporter-side paired reads cannot repair the recorded identity. Kept BF-2026-11-14-5 on its post-merge queue."
         ],
-        "validation_freshness": "current source-level trace at 9913f94b9b795bd9633a6a683e9f420301e400b3; same-SHA GitHub CI reused; custom product runtime unavailable",
-        "next_item": "Run untouched AâB search/confirm controls only after a qualified runner exists; otherwise oldest feasible remaining mining range, with PR #38/#41 integration recheck."
+        "validation_freshness": "current for the documented source invariant and existing CI; runtime replay unavailable",
+        "next_item": "Resume synthetic A→B controls with verified runner and installed lock; if #51 merges, run all three UTF-8 refusal cases on main. Otherwise pick oldest feasible unread range."
       },
       "evaluation": {
         "weekday": 2,
@@ -3785,6 +4075,14 @@
         "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
         "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
         "evidence": "2026-11-16-data/evidence.json"
+      },
+      {
+        "date": "2026-11-17",
+        "field": "mining",
+        "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "status": "bounded static review complete; runtime controls pending",
+        "evidence": "2026-11-17-mining/evidence.json"
       }
     ]
   },
@@ -4102,32 +4400,54 @@
       },
       "verified_report_commit": "4728f96b54bff4ecee50a96710411469ecc11207",
       "elapsed_to_verified_publication_seconds": 600
+    },
+    {
+      "date": "2026-11-16",
+      "field": "data",
+      "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
+      "scheduled_for": "2026-11-16T02:00:00Z",
+      "started_at": "2026-11-16T01:56:54.101715Z",
+      "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "output_base": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+      "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+      "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "question": "Does the current typed fundamentals reader enforce the revision key before point-in-time features consume rows, including a malformed external declaration?",
+      "elapsed_to_preparation_seconds": 458,
+      "model": "unavailable",
+      "effort": "unavailable",
+      "evidence": "2026-11-16-data/evidence.json",
+      "report": "2026-11-16.md",
+      "helper_count": 1,
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "publication_status": "published_verified",
+      "verified_report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+      "elapsed_to_verified_publication_seconds": 513
     }
   ],
   "current_run": {
-    "date": "2026-11-16",
-    "field": "data",
-    "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
-    "scheduled_for": "2026-11-16T02:00:00Z",
-    "started_at": "2026-11-16T01:56:54.101715Z",
-    "status": "bounded static and existing CI scope complete; fresh targeted execution unavailable",
+    "date": "2026-11-17",
+    "field": "mining",
+    "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+    "scheduled_for": "2026-11-17T02:00:00Z",
+    "started_utc": "2026-11-17T01:58:35.266206Z",
     "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
     "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "output_base": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
+    "output_base": "6cadb90a214d909083104bb1fd53d969a9b3e083",
     "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "question": "Does the current typed fundamentals reader enforce the revision key before point-in-time features consume rows, including a malformed external declaration?",
-    "elapsed_to_preparation_seconds": 458,
+    "status": "bounded static review complete; runtime controls pending",
+    "pending_jobs": [],
+    "evidence": "2026-11-17-mining/evidence.json",
+    "report": "2026-11-17.md",
+    "elapsed_to_preparation_seconds": 433,
     "model": "unavailable",
     "effort": "unavailable",
-    "evidence": "2026-11-16-data/evidence.json",
-    "report": "2026-11-16.md",
     "helper_count": 1,
     "new_product_runs": 0,
-    "remote_compute_dispatched": 0,
-    "publication_status": "published_verified",
-    "verified_report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
-    "elapsed_to_verified_publication_seconds": 513
+    "publication_status": "prepared"
   },
   "publication_history": [
     {
@@ -4624,35 +4944,12 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-16",
-    "run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb",
-    "status": "published_verified",
-    "report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
-    "report_url": "https://github.com/sasasqt/invest/blob/6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78/audits/gpt/2026-11-16.md",
-    "verified_head_at_report": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "output_parent": "9fdd8b4edadc07ad276764d94630d8d3aa53f52b",
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-16-data/evidence.json",
-      "audits/gpt/2026-11-16-data/started.json",
-      "audits/gpt/2026-11-16.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/findings.md",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv"
-    ],
-    "force": false,
-    "readback_verified": true,
-    "verified_utc": "2026-11-16T02:05:27.000Z"
+    "status": "prepared",
+    "report": "2026-11-17.md",
+    "output_parent": "13cd286d46d7a83f7d386a3f2441054439fb9a53",
+    "readback_verified": false
   },
-  "remaining_work_current_visit": "Earliest feasible unread data slice and remaining canonical null/non-key validation. Run extended K14 synthetic matrix only when the authorized locked runner is qualified. BF-2026-11-14-5 remains queued until #51 merges.",
+  "remaining_work_current_visit": "Resume synthetic A→B controls with verified runner and installed lock; if #51 merges, run all three UTF-8 refusal cases on main. Otherwise pick oldest feasible unread range.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",

@@ -1452,6 +1452,163 @@
         "peer_exact_ranges": "unavailable"
       },
       "research": "not scheduled; no papers, ideas or experiments"
+    },
+    {
+      "date": "2026-11-17",
+      "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "field": "mining",
+      "planned_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 277,
+        "exploration": 184,
+        "mandatory": 128
+      },
+      "actual_percent": {
+        "exploitation": 60.08676789587852,
+        "exploration": 39.91323210412148
+      },
+      "new_verified_distinct_root_causes": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "pooled_eligible_visits": 3,
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 1.5313935681470139,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 70,
+        "exploration": 30
+      },
+      "selection": {
+        "seed": "749763b3c8999e0bdc5ab8b8bb1b770bc93742e8335207548ea5c7b5e9ac219e",
+        "candidates": [
+          "data-mining-framework/ALPHA_VALIDATION.md",
+          "data-mining-framework/src/invest_mining/cli.py",
+          "data-mining-framework/src/invest_mining/diagnostics.py",
+          "data-mining-framework/src/invest_mining/reporting.py",
+          "data-mining-framework/tests/conftest.py",
+          "data-mining-framework/tests/test_cli.py",
+          "data-mining-framework/tests/test_diagnostics.py",
+          "data-mining-framework/tests/test_ledger.py"
+        ],
+        "draw": "data-mining-framework/tests/test_diagnostics.py",
+        "oldest_small_unread": "data-mining-framework/src/invest_mining/__init__.py",
+        "lens": "test robustness to future label availability and tied scores",
+        "peer_exact_ranges": "unavailable"
+      },
+      "ranges": [
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              64,
+              79
+            ],
+            [
+              322,
+              375
+            ],
+            [
+              383,
+              426
+            ],
+            [
+              453,
+              500
+            ],
+            [
+              503,
+              530
+            ],
+            [
+              581,
+              611
+            ],
+            [
+              666,
+              687
+            ],
+            [
+              748,
+              781
+            ]
+          ],
+          "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "count": 979
+        },
+        {
+          "path": "data-mining-framework/tests/test_evidence.py",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              493,
+              548
+            ]
+          ],
+          "blob": "9528c149630388a49d5fee2a550a433ae87ddb64",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "count": 548
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              137,
+              160
+            ],
+            [
+              181,
+              195
+            ],
+            [
+              238,
+              246
+            ],
+            [
+              287,
+              310
+            ]
+          ],
+          "blob": "091be2c8752443a1e9bbdaf65f17af94ad2681dd",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "count": 365
+        },
+        {
+          "path": "data-mining-framework/tests/test_diagnostics.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              181
+            ]
+          ],
+          "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "count": 295
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/__init__.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              3
+            ]
+          ],
+          "blob": "baccd52dc4d6b4181c6da24771ade8be626e9a8b",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "count": 3
+        }
+      ],
+      "rule": "Retain one historical first-confirmed exploitation root. Current recheck adds no root. Both denominators positive, so reduce exploration from 40 to 30 per pinned policy. Mandatory, helper and research work are excluded from rates."
     }
   ],
   "date": "2026-11-12",

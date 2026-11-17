@@ -1,0 +1,404 @@
+{
+  "date": "2026-11-17",
+  "field": "mining",
+  "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+  "scheduled_for": "2026-11-17T02:00:00Z",
+  "started_utc": "2026-11-17T01:58:35.266206Z",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "source_tree": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "output_base": "6cadb90a214d909083104bb1fd53d969a9b3e083",
+  "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "status": "bounded static review complete; runtime controls pending",
+  "pending_jobs": [],
+  "started_checkpoint": "13cd286d46d7a83f7d386a3f2441054439fb9a53",
+  "prepared_utc": "2026-11-17T02:05:48.000Z",
+  "elapsed_to_preparation_seconds": 433,
+  "provisional_budget_minutes": [
+    20,
+    70,
+    30
+  ],
+  "actual_runtime_limit": "not exposed",
+  "model": "unavailable",
+  "effort": "unavailable",
+  "usage": "not exposed",
+  "protocol": {
+    "verified": [
+      "overview",
+      "00-preflight",
+      "01-scope",
+      "13-continuity",
+      "action-boundary",
+      "03-consistency",
+      "04-correctness",
+      "05-financial-validity",
+      "07-independent-checks",
+      "02-coverage",
+      "11-findings-review",
+      "12-reporting",
+      "14-crosscheck-publication",
+      "index",
+      "baseline"
+    ],
+    "sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa"
+  },
+  "scope": {
+    "question": "Can search and confirm score one optional bundle but record another hash on current main, and does #51 alter that boundary?",
+    "expected": "The ledger, config and evidence must identify the exact rows used",
+    "stopping_condition": "Trace search, confirm and export on current source; compare #51’s distinct fix; independent synthetic expectations; retain blocked runtime.",
+    "interface_owners": [
+      "features to diagnostics: mining",
+      "frozen expressions to signals: mining",
+      "confirmation evidence to portfolio verdict: mining and evaluation; integration chain owner"
+    ],
+    "older_place": "OPEN-MEMBERSHIP-LABELS-001 retained; prior static scope complete; untouched entry/reentry controls remain blocked and were not retried."
+  },
+  "prior": {
+    "audited_main": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "publication": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
+    "missing_reports": [
+      {
+        "date": "2026-11-01",
+        "status": "no final report observed in accessible gpt tree",
+        "execution": "unknown/not observed",
+        "note": "Pre-activation legacy day; no allowance-exhaustion or interruption inference, no catch-up field added."
+      },
+      {
+        "date": "2026-11-07",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-08",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-13",
+        "status": "no final report or started record observed in the audit branch",
+        "execution": "unknown/not observed"
+      }
+    ],
+    "pending_jobs": [],
+    "pending_second_review": []
+  },
+  "finding": {
+    "id": "GA-2026-11-10-1",
+    "severity": "P2/medium research provenance",
+    "status": "known/open on current main; independently corroborated source trace",
+    "related": [
+      "BF-2026-11-09-1",
+      "REVIEW-45",
+      "INV-PR41-001 (merged export-side sibling)",
+      "REVIEW-43 (distinct hashless/omitted ambiguity)"
+    ],
+    "initial": {
+      "id": "GA-2026-11-10-1",
+      "expected": "Scored optional rows and recorded hash derive from one validated snapshot",
+      "current": "retain known P2 source-level defect on main and #51; typed reader checks each bundle correctly but each reopen can resolve a new valid bundle",
+      "sibling": "evidence export uses paired manifest+rows on main; #51 static diagnostic fix covers initial read, not inter-read mutation",
+      "related": "BF-2026-11-14-5 proposed fixed on #51; pending on main. Absent content hash under REVIEW-43 distinct.",
+      "confidence": "high source-level; no fresh product runtime"
+    },
+    "observed": "Search and confirm build the panel from read A. Both reopen for manifest and write hash B into experiment identity/ledger; export matches its coherent B read to recorded B and can carry evidence scored on A.",
+    "source_confidence": "high",
+    "runtime": "no current product execution, no measured impact on a real result",
+    "expected_model": {
+      "scope": "Independent expected-result model of identity, with illustrative hash labels A/B. No repository code or data.",
+      "two_read_trace": [
+        {
+          "selected": "Y",
+          "scored": "A",
+          "recorded": "B",
+          "acceptsEvidenceFor": {
+            "A": false,
+            "B": true
+          }
+        },
+        {
+          "selected": "Y",
+          "scored": "A",
+          "recorded": "B",
+          "acceptsEvidenceFor": {
+            "A": false,
+            "B": true
+          }
+        }
+      ],
+      "stable_controls": [
+        {
+          "selected": "Y",
+          "scored": "A",
+          "recorded": "A",
+          "acceptsEvidenceFor": {
+            "A": true,
+            "B": false
+          }
+        },
+        {
+          "selected": "X",
+          "scored": "B",
+          "recorded": "B",
+          "acceptsEvidenceFor": {
+            "A": false,
+            "B": true
+          }
+        }
+      ],
+      "paired_read_control": {
+        "selected": "Y",
+        "scored": "A",
+        "recorded": "A",
+        "acceptsEvidenceFor": {
+          "A": true,
+          "B": false
+        }
+      },
+      "observed_repo_runtime": false
+    },
+    "independent": {
+      "agents": 1,
+      "decision": "retain",
+      "source_agreement": true,
+      "expected": "Fixed five aligned return ranks with ascending A versus descending B yield +1 versus −1 daily Spearman. A→B model twice records B while the panel implies +1. Stable A→A and B→B agree. Universe analog uses disjoint quintets. Expected-only, no inference claim.",
+      "closing": "Checked all three CLI paths, evidence guard, current bundle reader and #51 tests. Next: qualified A→B CLI controls across both options and both commands; post-merge malformed UTF-8 per flag; distinct REVIEW-43 hashless/omitted cases."
+    },
+    "verifier_b": "not needed; no substantive disagreement",
+    "fresh_product_repeats": 0,
+    "new_root_causes": 0
+  },
+  "validation": {
+    "standard": {
+      "run": 43614128092,
+      "jobs": [
+        132505350169,
+        132505350228
+      ],
+      "platform": "Linux",
+      "python": [
+        "3.11",
+        "3.13"
+      ],
+      "checkout": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "mypy": "strict on three src trees and scripts, 32 source files",
+      "tests": "1015 passed, 1 skipped each",
+      "coverage": "0 failures, 95.62% overall",
+      "is_new_runtime": false
+    },
+    "isolated": {
+      "historical_blocker_runner": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+      "available_exact_match": false,
+      "blocked": "Local credential/locked installed-origin boundary unavailable; accessible workflow_dispatch list empty; workflow-specific listing rejected; no authorized connector dispatch tool exposed",
+      "dispatched": 0,
+      "current_workflow_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "missing_gates": "Runner workload mypy omits scripts, and its coverage JSON does not enforce branch floors"
+    },
+    "pr51": {
+      "head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+      "merge": "e9785dba8273a4ade64add28c669e7277179c77d",
+      "parents": [
+        "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "dfdbdafe29b6488bb6bd1d634e1500619425dd5c"
+      ],
+      "ci": 43637487255,
+      "jobs": [
+        132577383793,
+        132577383782
+      ],
+      "tests": "1191 passed, 1 skipped each",
+      "coverage": "0 floor failures, 95.90%",
+      "scope": "open merge preview only; committed evaluate test supplies malformed bytes for --data, --universe, --fundamentals with absent ledger/output assertions; stable paths. Optional second hash reads remain in search and confirm."
+    },
+    "windows": "REVIEW-40/41 open; no matched native product run; no user decision inferred"
+  },
+  "inventory": {
+    "tracked_files": 148,
+    "inventoried": 72,
+    "partially_reviewed": 24,
+    "reviewed": 25,
+    "checked_automatically": 6,
+    "blocked": 21,
+    "unread_lines": 38104,
+    "unread_paths": 115,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 565
+  },
+  "allocation": {
+    "date": "2026-11-17",
+    "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "field": "mining",
+    "planned_percent": {
+      "exploitation": 60,
+      "exploration": 40
+    },
+    "actual_discretionary_unique_lines": {
+      "exploitation": 277,
+      "exploration": 184,
+      "mandatory": 128
+    },
+    "actual_percent": {
+      "exploitation": 60.08676789587852,
+      "exploration": 39.91323210412148
+    },
+    "new_verified_distinct_root_causes": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "pooled_eligible_visits": 3,
+    "pooled_rates_per_1000_lines": {
+      "exploitation": 1.5313935681470139,
+      "exploration": 0
+    },
+    "next_percent": {
+      "exploitation": 70,
+      "exploration": 30
+    },
+    "selection": {
+      "seed": "749763b3c8999e0bdc5ab8b8bb1b770bc93742e8335207548ea5c7b5e9ac219e",
+      "candidates": [
+        "data-mining-framework/ALPHA_VALIDATION.md",
+        "data-mining-framework/src/invest_mining/cli.py",
+        "data-mining-framework/src/invest_mining/diagnostics.py",
+        "data-mining-framework/src/invest_mining/reporting.py",
+        "data-mining-framework/tests/conftest.py",
+        "data-mining-framework/tests/test_cli.py",
+        "data-mining-framework/tests/test_diagnostics.py",
+        "data-mining-framework/tests/test_ledger.py"
+      ],
+      "draw": "data-mining-framework/tests/test_diagnostics.py",
+      "oldest_small_unread": "data-mining-framework/src/invest_mining/__init__.py",
+      "lens": "test robustness to future label availability and tied scores",
+      "peer_exact_ranges": "unavailable"
+    },
+    "ranges": [
+      {
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            64,
+            79
+          ],
+          [
+            322,
+            375
+          ],
+          [
+            383,
+            426
+          ],
+          [
+            453,
+            500
+          ],
+          [
+            503,
+            530
+          ],
+          [
+            581,
+            611
+          ],
+          [
+            666,
+            687
+          ],
+          [
+            748,
+            781
+          ]
+        ],
+        "blob": "2752f126c3abc0f150dd0a51931d8bdff4ecc0e7",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "count": 979
+      },
+      {
+        "path": "data-mining-framework/tests/test_evidence.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            493,
+            548
+          ]
+        ],
+        "blob": "9528c149630388a49d5fee2a550a433ae87ddb64",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "count": 548
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/search.py",
+        "bucket": "mandatory",
+        "ranges": [
+          [
+            137,
+            160
+          ],
+          [
+            181,
+            195
+          ],
+          [
+            238,
+            246
+          ],
+          [
+            287,
+            310
+          ]
+        ],
+        "blob": "091be2c8752443a1e9bbdaf65f17af94ad2681dd",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "count": 365
+      },
+      {
+        "path": "data-mining-framework/tests/test_diagnostics.py",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            1,
+            181
+          ]
+        ],
+        "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "count": 295
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/__init__.py",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            1,
+            3
+          ]
+        ],
+        "blob": "baccd52dc4d6b4181c6da24771ade8be626e9a8b",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "count": 3
+      }
+    ],
+    "rule": "Retain one historical first-confirmed exploitation root. Current recheck adds no root. Both denominators positive, so reduce exploration from 40 to 30 per pinned policy. Mandatory, helper and research work are excluded from rates."
+  },
+  "links": {
+    "ci": "https://github.com/sasasqt/invest/actions/runs/43614128092",
+    "pr51": "https://github.com/sasasqt/invest/pull/51",
+    "pr39": "https://github.com/sasasqt/invest/pull/39",
+    "pr41": "https://github.com/sasasqt/invest/pull/41",
+    "pr51reply": "https://github.com/sasasqt/invest/pull/51#issuecomment-6883853388",
+    "pr51ci": "https://github.com/sasasqt/invest/actions/runs/43637487255",
+    "win": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/TODO.md#L69-L70",
+    "workflow": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/.github/workflows/audit-runtime.yml",
+    "inputs": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/src/invest_mining/cli.py#L64-L79",
+    "search": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/src/invest_mining/cli.py#L322-L355",
+    "confirm": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/src/invest_mining/cli.py#L453-L487",
+    "export": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/src/invest_mining/cli.py#L581-L611",
+    "match": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/src/invest_mining/cli.py#L666-L687",
+    "open45": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/TODO.md#L72-L74",
+    "pr51split": "https://github.com/sasasqt/invest/blob/dfdbdafe29b6488bb6bd1d634e1500619425dd5c/data-mining-framework/src/invest_mining/cli.py#L70-L92",
+    "pr51test": "https://github.com/sasasqt/invest/blob/dfdbdafe29b6488bb6bd1d634e1500619425dd5c/data-mining-framework/tests/test_scale_check.py#L657-L693",
+    "explore": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/data-mining-framework/tests/test_diagnostics.py#L95-L173"
+  }
+}

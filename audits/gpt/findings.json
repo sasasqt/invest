@@ -424,7 +424,7 @@
       "category": "research provenance / experiment identity",
       "severity": "medium",
       "priority": "P2",
-      "status": "new",
+      "status": "known/open on current main; independently corroborated source trace",
       "confidence": "high source-level confidence; untouched product runtime unavailable",
       "evidence_label": "verified_source_level_defect_with_independent_review",
       "runtime_label": "untouched CLI reproduction blocked locally; external two-repeat claim attributed",
@@ -470,6 +470,14 @@
           "run_id": "b201b958-5290-8326-ad42-fd50bd6ac973",
           "status": "new; independently reviewed",
           "evidence": "source trace + two-repeat standalone oracle + stable control; external product reproduction attributed"
+        },
+        {
+          "date": "2026-11-17",
+          "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "status": "known/open on current main; independently corroborated source trace",
+          "source_scope": "recording-side split persists on main and #51; merged #41's export defense verified",
+          "evidence": "2026-11-17-mining/evidence.json"
         }
       ],
       "checked_siblings": {
@@ -479,7 +487,15 @@
       },
       "missing_evidence": "Untouched main CLI reproduction on a qualified credential-inaccessible, locked environment.",
       "change_condition": "Drop only if the supported contract explicitly forbids and enforces stable path resolution for the full command, or an untouched valid AâB reproduction demonstrates same-snapshot rows and identity.",
-      "discovery_bucket": "exploitation"
+      "discovery_bucket": "exploitation",
+      "current_verification": {
+        "date": "2026-11-17",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "pr51_head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+        "evidence": "2026-11-17-mining/evidence.json",
+        "independent_review": "complete",
+        "runtime": "unavailable"
+      }
     },
     {
       "id": "GA-2026-11-14-1",
