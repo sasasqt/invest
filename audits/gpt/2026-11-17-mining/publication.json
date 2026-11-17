@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-17",
+  "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+  "status": "published_verified",
+  "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "report_commit": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+  "report_url": "https://github.com/sasasqt/invest/blob/40ddb21c3e868ebcc9c985a4621ce70d4554291c/audits/gpt/2026-11-17.md",
+  "output_parent": "13cd286d46d7a83f7d386a3f2441054439fb9a53",
+  "verified_head_at_report": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+  "verified_changed_paths": [
+    "audits/gpt/2026-11-17-mining/evidence.json",
+    "audits/gpt/2026-11-17.md",
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/coverage-map.json",
+    "audits/gpt/coverage-map.md",
+    "audits/gpt/coverage.csv",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/exploration.json",
+    "audits/gpt/findings.json",
+    "audits/gpt/findings.md",
+    "audits/gpt/state.json",
+    "audits/gpt/validation.csv"
+  ],
+  "readback_verified": true,
+  "force": false,
+  "verified_utc": "2026-11-17T02:06:29.000Z"
+}

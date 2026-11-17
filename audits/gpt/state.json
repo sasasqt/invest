@@ -4447,7 +4447,9 @@
     "effort": "unavailable",
     "helper_count": 1,
     "new_product_runs": 0,
-    "publication_status": "prepared"
+    "publication_status": "published_verified",
+    "verified_report_commit": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "elapsed_to_verified_publication_seconds": 474
   },
   "publication_history": [
     {
@@ -4941,13 +4943,63 @@
       "force": false,
       "readback_verified": true,
       "verified_utc": "2026-11-16T02:05:27.000Z"
+    },
+    {
+      "date": "2026-11-17",
+      "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+      "status": "published_verified",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "report_commit": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+      "report_url": "https://github.com/sasasqt/invest/blob/40ddb21c3e868ebcc9c985a4621ce70d4554291c/audits/gpt/2026-11-17.md",
+      "output_parent": "13cd286d46d7a83f7d386a3f2441054439fb9a53",
+      "verified_head_at_report": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-17-mining/evidence.json",
+        "audits/gpt/2026-11-17.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "readback_verified": true,
+      "force": false,
+      "verified_utc": "2026-11-17T02:06:29.000Z"
     }
   ],
   "publication_current_run": {
-    "status": "prepared",
-    "report": "2026-11-17.md",
+    "date": "2026-11-17",
+    "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
+    "status": "published_verified",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "report_commit": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "report_url": "https://github.com/sasasqt/invest/blob/40ddb21c3e868ebcc9c985a4621ce70d4554291c/audits/gpt/2026-11-17.md",
     "output_parent": "13cd286d46d7a83f7d386a3f2441054439fb9a53",
-    "readback_verified": false
+    "verified_head_at_report": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-17-mining/evidence.json",
+      "audits/gpt/2026-11-17.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "readback_verified": true,
+    "force": false,
+    "verified_utc": "2026-11-17T02:06:29.000Z"
   },
   "remaining_work_current_visit": "Resume synthetic A→B controls with verified runner and installed lock; if #51 merges, run all three UTF-8 refusal cases on main. Otherwise pick oldest feasible unread range.",
   "runtime_validation_history": [
