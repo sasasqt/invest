@@ -41,11 +41,16 @@ from invest_mining.diagnostics import (
     tail_returns,
 )
 from invest_mining.expressions import (
+    AS_TRADED_FEATURES,
     OPERATOR_VERSION,
     ExpressionError,
+    Node,
+    ScaleError,
     build_panel,
     canonical,
+    check_scale_free,
     evaluate,
+    features_used,
     parse,
     restrict,
 )
@@ -54,6 +59,7 @@ from invest_mining.ledger import LedgerError, Window
 from invest_mining.reporting import write_factor_report
 from invest_mining.search import (
     MIN_CONFIRM_DATES,
+    SEARCH_VERSION,
     chronological_split,
     confirm,
     mark_confirmation_use,
@@ -62,10 +68,17 @@ from invest_mining.search import (
 
 
 def _optional_inputs(args: argparse.Namespace) -> dict[str, pd.DataFrame | None]:
-    return {
-        "universe": read_universe(args.universe)[1] if args.universe else None,
-        "fundamentals": read_fundamentals(args.fundamentals)[1] if args.fundamentals else None,
-    }
+    """The ``--universe`` and ``--fundamentals`` rows; a bundle of another kind, or none at
+    that path, ends in a message that names the flag and path before anything is computed
+    or recorded."""
+    rows: dict[str, pd.DataFrame | None] = {}
+    for name, read in (("universe", read_universe), ("fundamentals", read_fundamentals)):
+        path = getattr(args, name)
+        try:
+            rows[name] = read(path)[1] if path else None
+        except BundleError as exc:
+            raise SystemExit(f"--{name} {path}: {exc}") from exc
+    return rows
 
 
 def _input_hashes(args: argparse.Namespace) -> dict[str, str | None]:
@@ -173,7 +186,8 @@ def _require_labels(label: pd.DataFrame, confirmation: Window, horizon: int) -> 
     ``MIN_CROSS_SECTION`` labelled names, and the test needs ``MIN_CONFIRM_DATES`` such
     dates; with fewer it reports ``insufficient_data`` while the ledger would record the
     window as used. Only which labels exist is read, never their values, and no candidate
-    is involved, so a factor with missing values can still fall short.
+    is involved, so a factor with missing values can still fall short; ``confirm`` passes
+    only the cells where an as-traded formula's column has a value.
     """
     n_dates = int((label.notna().sum(axis=1) >= MIN_CROSS_SECTION).sum())
     if n_dates < MIN_CONFIRM_DATES:
@@ -209,12 +223,54 @@ def _record_inspection(path: Path, window: Window, manifest: Any, note: str) -> 
         )
 
 
+def _require_scale_free(expression: Node | str, source: str) -> None:
+    """Refuse a formula a later split or dividend could change (BH-2026-11-10-1)."""
+    try:
+        check_scale_free(parse(expression) if isinstance(expression, str) else expression)
+    except ScaleError as exc:
+        raise SystemExit(f"{source}: {exc}") from exc
+
+
+def _require_as_traded(
+    expression: Node | str,
+    bars: pd.DataFrame,
+    source: str,
+    *,
+    universe: pd.DataFrame | None = None,
+    since: pd.Timestamp | None = None,
+) -> None:
+    """Refuse a formula that reads an as-traded column with no value where it is scored.
+
+    Only cells the formula is scored on count: instruments with a bar, members of
+    ``universe`` when given, and dates from ``since`` on when given. A confirmation window
+    without values would test nothing and still be recorded as used; an export would
+    publish no score from its start.
+    """
+    node = parse(expression) if isinstance(expression, str) else expression
+    names = sorted(features_used(node) & set(AS_TRADED_FEATURES))
+    if not names:
+        return
+    panel = build_panel(bars, universe=universe)
+    for name in names:
+        values = restrict(panel[name], panel) if name in panel else None
+        if values is not None and since is not None:
+            values = values.loc[values.index >= since]
+        if values is None or not values.notna().to_numpy().any():
+            scored = "" if since is None else f" from {since.date()} on"
+            raise SystemExit(
+                f"{source}: {node} reads {name}, but the market bundle has no {name} value for "
+                f"any name it scores{scored} (the column is missing or empty there; Yahoo "
+                "bundles never have it). Use bars with an as-traded close, or an adjusted "
+                "ratio such as close / ts_max(close, 252)"
+            )
+
+
 def _market_bars(path: Path) -> tuple[Manifest, pd.DataFrame]:
     """Market bars whose closes give returns: every command scores or labels with them."""
     try:
         manifest, bars = read_adjusted_market_bars(path)
     except BundleError as exc:
-        raise SystemExit(str(exc)) from exc
+        raise SystemExit(f"--data {path}: {exc}") from exc
     if bars.empty:
         raise SystemExit(f"market bundle {path} holds no bars")
     return manifest, bars
@@ -234,7 +290,9 @@ def _evaluate(args: argparse.Namespace) -> int:
         expression = parse(args.expr)
     except ExpressionError as exc:
         raise SystemExit(f"--expr: {exc}") from exc
+    _require_scale_free(expression, "--expr")
     manifest, bars = _market_bars(args.data)
+    inputs = _optional_inputs(args)
     window = _span(pd.DatetimeIndex(sorted(bars["date"].unique())), "data")
     if args.ledger is not None:
         # Refuse reserved data before computing anything from it.
@@ -242,6 +300,8 @@ def _evaluate(args: argparse.Namespace) -> int:
             ledger.check_inspection(ledger.load(args.ledger), window)
         except LedgerError as exc:
             raise SystemExit(f"{args.ledger}: {exc}") from exc
+    # Only now: whether reserved rows hold an as-traded value is reserved data too.
+    _require_as_traded(expression, bars, "--expr", universe=inputs["universe"])
     # An unwritable --out must fail here, not after the inspection is recorded.
     _prepare_out(
         args.out,
@@ -256,7 +316,7 @@ def _evaluate(args: argparse.Namespace) -> int:
             "figures/quantiles.png",
         ),
     )
-    panel = build_panel(bars, **_optional_inputs(args))
+    panel = build_panel(bars, **inputs)
     values = restrict(evaluate(expression, panel) * args.orientation, panel)
     label = restrict(forward_returns(panel["open"], args.horizon), panel)
     ic = daily_ic(values, label, "spearman")
@@ -348,6 +408,7 @@ def _search(args: argparse.Namespace) -> int:
         "dataset_sha256": manifest.content_sha256,
         **_input_hashes(args),
         "operator_version": OPERATOR_VERSION,
+        "search_version": SEARCH_VERSION,
         "params": params,
         "development": development.to_json(),
         "confirmation": confirmation.to_json(),
@@ -456,8 +517,10 @@ def _confirm(args: argparse.Namespace) -> int:
             f"{args.factor}: only fixed formulas from `invest-mine freeze` can be confirmed "
             "alone; confirm search-selected factors with their family (`search --confirm-start`)"
         )
+    _require_scale_free(factor.expression, str(args.factor))
     manifest, bars = _market_bars(args.data)
-    panel = build_panel(bars, **_optional_inputs(args))
+    inputs = _optional_inputs(args)
+    panel = build_panel(bars, **inputs)
     dates = pd.DatetimeIndex(panel["close"].index)
     start = pd.Timestamp(args.confirm_start)
     k = int(dates.searchsorted(start))
@@ -492,9 +555,20 @@ def _confirm(args: argparse.Namespace) -> int:
         raise SystemExit(
             f"{args.ledger}: confirmation data was already used ({'; '.join(reasons)})"
         )
-    # A window too short for the test would be recorded as used with nothing tested.
+    # Only once the ledger allows the plan, because whether the window holds an as-traded
+    # value is reserved data too. Values before the window do not count: without any in it
+    # the test would test nothing.
+    _require_as_traded(
+        factor.expression, bars, str(args.factor), universe=inputs["universe"], since=dates[k]
+    )
+    # A window too short for the test would be recorded as used with nothing tested. An
+    # as-traded formula has no value where its column has none, so only those cells count;
+    # which cells exist is read, never a value.
     label = restrict(forward_returns(panel["open"], factor.horizon_days), panel)
-    _require_labels(label.loc[dates[k:]], confirmation, factor.horizon_days)
+    scored = label
+    for name in sorted(features_used(parse(factor.expression)) & set(AS_TRADED_FEATURES)):
+        scored = scored.where(panel[name].notna())
+    _require_labels(scored.loc[dates[k:]], confirmation, factor.horizon_days)
     table = mark_confirmation_use(
         confirm([factor], panel, label.loc[dates[k:]], factor.horizon_days), use
     )
@@ -600,7 +674,7 @@ def _evidence_inputs(
             reader = read_universe if option == "--universe" else read_fundamentals
             manifest, rows[option[2:]] = reader(path)
         except BundleError as exc:
-            raise SystemExit(f"{args.out}: {exc}") from exc
+            raise SystemExit(f"{option} {path}: {exc}") from exc
         if manifest.content_sha256 is None:
             raise SystemExit(
                 f"{path}: the {option} bundle has no content_sha256, so it cannot be matched "
@@ -717,6 +791,11 @@ def _freeze(args: argparse.Namespace) -> int:
     """Freeze one formula chosen before looking at the data: no fitting, one trial."""
     if args.horizon < 1:
         raise SystemExit("--horizon must be at least 1")
+    try:
+        expression = parse(args.expr)
+    except ExpressionError as exc:
+        raise SystemExit(f"--expr: {exc}") from exc
+    _require_scale_free(expression, "--expr")
     factor = FrozenFactor(
         expression=args.expr,
         orientation=args.orientation,
@@ -751,10 +830,12 @@ def _export(args: argparse.Namespace) -> int:
         if args.confirmation is not None:
             raise SystemExit("--from-search already attaches its own confirmation evidence")
         factor = _from_search(args.from_search, args.rank)
+        _require_scale_free(factor.expression, str(args.from_search))
         hashes, input_rows = _evidence_inputs(args)
         evidence = _confirmation_evidence(args.from_search, factor, hashes)
     else:
         factor = FrozenFactor.load(args.factor)
+        _require_scale_free(factor.expression, str(args.factor))
         if args.confirmation is not None:
             hashes, input_rows = _evidence_inputs(args)
             evidence = _confirmation_evidence(args.confirmation, factor, hashes)
@@ -762,6 +843,14 @@ def _export(args: argparse.Namespace) -> int:
         # Search evidence covers only the confirmation period; earlier dates chose the factor.
         start = _out_of_sample_start(evidence["confirmation_window"]["start"], start)
     manifest, bars = _market_bars(args.data)
+    inputs = _optional_inputs(args) if input_rows is None else input_rows
+    _require_as_traded(
+        factor.expression,
+        bars,
+        str(args.from_search or args.factor),
+        universe=inputs["universe"],
+        since=None if start is None else pd.Timestamp(start),
+    )
     if factor.dataset_sha256 and factor.dataset_sha256 != manifest.content_sha256:
         print(
             "note: exporting on a different dataset than the factor was selected on",
@@ -776,7 +865,7 @@ def _export(args: argparse.Namespace) -> int:
             start=start,
             fmt=args.format,
             evidence=evidence,
-            **(_optional_inputs(args) if input_rows is None else input_rows),
+            **inputs,
         )
     except BundleError as exc:
         raise SystemExit(f"{args.out}: {exc}") from exc

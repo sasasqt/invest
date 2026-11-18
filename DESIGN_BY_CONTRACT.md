@@ -122,7 +122,7 @@ Prefer composition and small `Protocol` interfaces to a broad inheritance hierar
 ## 7. Contract testing
 
 - Test both accepted inputs and violated preconditions, including boundaries and failure guarantees.
-- Verify postconditions independently of the implementation where possible, using reference calculations and golden fixtures.
+- Verify postconditions independently of the implementation, using reference calculations and golden fixtures whose expected values come from a source independent of the code under test ([testing strategy](PYTHON_GUIDELINES.md#testing-strategy)).
 - Run the same contract suite against each interchangeable reader, writer, strategy adapter, or factor evaluator.
 - Use property-based testing when it adds value: round-trip serialization, key alignment, valid AST generation, and accounting identities.
 - Use metamorphic tests for financial semantics: future-data changes cannot affect earlier signals; a deposit alone cannot create profit; exported/reloaded frozen inference agrees with the original predictor.
