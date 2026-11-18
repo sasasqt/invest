@@ -92,6 +92,10 @@ def drawdown_metrics(wealth: pd.Series, v0: float) -> dict[str, Metric]:
 
     max_dd = -worst[0]
     durations = [(r if r is not None else len(values) - 1) - p for p, _, r in episodes]
+    longest = max(durations, default=0)
+    # Only the last episode can be open. The reported maximum is right-censored (a lower
+    # bound) only when that open episode reaches it; a tie counts, as it can still grow.
+    censored = bool(episodes and episodes[-1][2] is None and durations[-1] == longest)
     recovered = [r - t for _, t, r in episodes if r is not None]
     recovery_of_worst = next((r for p, t, r in episodes if p == worst[1] and t == worst[2]), None)
     out = {
@@ -105,11 +109,7 @@ def drawdown_metrics(wealth: pd.Series, v0: float) -> dict[str, Metric]:
             ),
         ),
         "current_drawdown": _ok(float(-dd.iloc[-1]), "fraction"),
-        "max_drawdown_duration": _ok(
-            max(durations, default=0),
-            "sessions",
-            censored=bool(episodes and episodes[-1][2] is None),
-        ),
+        "max_drawdown_duration": _ok(longest, "sessions", censored=censored),
         "max_recovery_duration": (
             _ok(max(recovered), "sessions")
             if recovered
