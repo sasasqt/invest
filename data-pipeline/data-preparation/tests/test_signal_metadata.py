@@ -242,7 +242,6 @@ def test_search_window_check_covers_every_date_representation(tmp_path, early):
     "dates",
     [
         ["2024-01-02", "29 Dec 2023"],  # a later value in another format
-        [20240102, 20240103],  # integers, which the writer stores as 1970 dates
         pd.Categorical(["2024-01-02", "2023-12-29"]),  # unordered categories
         pd.Categorical(["2024-01-02", "2023-12-29"], ["2024-01-02", "2023-12-29"], ordered=True),
     ],
@@ -255,13 +254,28 @@ def test_search_window_check_sees_the_dates_the_writer_stores(tmp_path, dates):
     assert not (tmp_path / "invalid").exists()
 
 
-def test_search_window_check_accepts_what_other_evidence_accepts(tmp_path):
-    """Mixed time zones after the window publish with search evidence as without it."""
-    dates = ["2024-01-03T01:00+09:00", "2024-01-04T00:00-05:00"]
+@pytest.mark.parametrize(
+    ("dates", "message"),
+    [
+        # Integers were stored as 1970 dates (REVIEW-16).
+        ([20240102, 20240103], "expected a date, got the number"),
+        # A time of day or a time zone was dropped, so 01:00 in Tokyo became that date (K4).
+        (["2024-01-03T01:00+09:00", "2024-01-04T00:00-05:00"], "is not a date"),
+        (["2024-01-03 20:00", "2024-01-04"], "is not a date"),
+    ],
+)
+@pytest.mark.parametrize("evidence", [False, True])
+def test_dates_the_writer_refuses_are_refused_with_or_without_evidence(
+    tmp_path, dates, message, evidence
+):
+    """The search-window check never accepts or refuses a date the writer would not."""
     frame = pd.DataFrame({"decision_date": dates, "instrument": ["A", "B"], "score": [1.0, 2.0]})
-    metadata = {"factor_id": "f", "horizon_days": 1, "n_trials": 3, "factor_evidence": _evidence()}
-    publish_signals(frame, tmp_path / "s", dataset_id="s", metadata=metadata)
-    assert read_signals(tmp_path / "s")[1]["decision_date"].min() == pd.Timestamp("2024-01-03")
+    metadata: dict[str, object] = {"factor_id": "f", "horizon_days": 1, "n_trials": 3}
+    if evidence:
+        metadata["factor_evidence"] = _evidence()
+    with pytest.raises(BundleError, match=message):
+        publish_signals(frame, tmp_path / "s", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "s").exists()
 
 
 def test_search_window_check_leaves_null_dates_to_the_column_checks(tmp_path):
@@ -286,3 +300,31 @@ def test_search_window_check_handles_arrow_dates(tmp_path):
     )
     with pytest.raises(BundleError, match="precede the search evidence's confirmation window"):
         publish_signals(early, tmp_path / "invalid", dataset_id="s", metadata=metadata)
+
+
+@pytest.mark.parametrize(
+    ("changes", "message"),
+    [
+        ({"horizon_days": "1"}, "horizon_days must be a positive integer"),
+        ({"horizon_days": True}, "horizon_days must be a positive integer"),
+        ({"horizon_days": 0}, "horizon_days must be a positive integer"),
+        ({"horizon_days": 1.0}, "horizon_days must be a positive integer"),
+        ({"factor_id": 5}, "factor_id must be a non-empty string"),
+        ({"factor_id": ""}, "factor_id must be a non-empty string"),
+    ],
+)
+def test_signal_metadata_types_are_checked_without_evidence(tmp_path, changes, message):
+    """Without factor_evidence, `horizon_days: "1"` and a numeric `factor_id` passed (S3-3)."""
+    metadata = {"factor_id": "f", "horizon_days": 1, **changes}
+    with pytest.raises(BundleError, match=message):
+        publish_signals(_scores(), tmp_path / "invalid", dataset_id="s", metadata=metadata)
+    assert not (tmp_path / "invalid").exists()
+    publish_signals(
+        _scores(), tmp_path / "s", dataset_id="s", metadata={"factor_id": "f", "horizon_days": 1}
+    )
+    path = tmp_path / "s" / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["metadata"].update(changes)
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(BundleError, match=message):
+        read_signals(tmp_path / "s")
