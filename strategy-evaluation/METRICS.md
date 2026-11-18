@@ -107,7 +107,7 @@ Compute running peak `P_t = max(V_0, ..., V_t)` and signed drawdown `D_t = V_t/P
 |---|---|---|
 | Maximum drawdown / `max_drawdown` | Largest peak-to-trough percentage loss | Record peak, trough, and recovery dates |
 | Current drawdown | Latest loss magnitude from the running peak | Unrecovered drawdowns remain open |
-| Drawdown duration | Time from peak until recovery to that peak | Report trading/calendar durations; unrecovered episodes are right-censored |
+| Drawdown duration | Time from peak until recovery to that peak | Report trading/calendar durations; unrecovered episodes are right-censored, so the maximum is flagged `censored` when its longest episode is the unrecovered one (ties included) |
 | Recovery duration | Trough-to-recovery time | Do not assign zero to an unrecovered episode |
 | Time under water | Share of valuation periods below prior peak | Include sampling convention and current episode |
 | Average drawdown | Mean drawdown loss across valuation periods | Distinguish from mean severity across drawdown episodes |
@@ -121,6 +121,8 @@ If NAV reaches zero or becomes negative, flag insolvency and the limits of perce
 ## 7. Benchmark-relative performance and exposure
 
 The external daily benchmark boundary requires matching currency, frequency (`1d`), price adjustment, calendar and timezone metadata; timezone may be unknown in both bundles. Unsupported conversions fail before report publication. Compute returns after aligning benchmark closes to the full market calendar, including pre-evaluation history. A missing close invalidates both adjacent return intervals. Relative metrics use only complete aligned daily intervals. Structured metrics and the readable report identify the benchmark and record aligned and evaluation session counts, including when the 20-observation minimum is not met. An insufficient sample produces an explicit reason rather than an empty report section. Compounded benchmark return describes that aligned sample; it is not a full-period buy-and-hold return when intervals are missing. Growth figures omit unavailable leading history and stop at an internal gap.
+
+The universe equal-weight benchmark (the mean return of the names that were universe members at the previous close) applies delisting settlements as the holdings do. On the event's session a settled member returns its settlement price over its last close before that session, minus 1, and counts when it was a member at that last close; without an earlier close it has no return on that session. That return can span sessions without a bar, the one multi-session return the benchmark counts, because a delisted name's last move would otherwise drop out and bias the benchmark towards survivors. That last close can lie long before the event, also before the evaluation window; the whole move then lands on the event session. After the event the member has no return, even when the data still has bars for it.
 
 | Metric | Definition / purpose | Notes |
 |---|---|---|

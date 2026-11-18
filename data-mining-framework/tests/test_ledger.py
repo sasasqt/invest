@@ -270,7 +270,7 @@ def test_cli_reserved_window_is_only_usable_for_confirmation(tmp_path):
     assert main([*ledger_cmd, "check", "--start", "2019-01-01", "--end", "2020-08-31"]) == 0
 
     # Full-sample diagnostics and default splits would look at reserved data.
-    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--ledger", str(book)]
     with pytest.raises(SystemExit, match="reserved confirmation window"):
         main([*evaluate, "--out", str(tmp_path / "ev")])
     with pytest.raises(SystemExit, match="development window"):
@@ -358,7 +358,7 @@ def test_cli_confirm_refuses_search_selected_factors_and_bad_dates(tmp_path):
     with pytest.raises(SystemExit, match="only fixed formulas"):
         main([*args, "--factor", str(member), "--confirm-start", "2020-09-01"])
     fixed = tmp_path / "f.json"
-    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(fixed)]) == 0
+    assert main(["freeze", "--expr", "close_as_traded", "--horizon", "1", "--out", str(fixed)]) == 0
     for start in ("2019-01-01", "2030-01-01"):
         with pytest.raises(SystemExit, match="no history or confirmation"):
             main([*args, "--factor", str(fixed), "--confirm-start", start])
@@ -370,7 +370,9 @@ def test_cli_zero_lookback_confirmation_needs_no_history(tmp_path, start_offset)
     data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
-    assert main(["freeze", "--expr", "close", "--horizon", "1", "--out", str(factor)]) == 0
+    assert (
+        main(["freeze", "--expr", "close_as_traded", "--horizon", "1", "--out", str(factor)]) == 0
+    )
     # The reservation starts where the confirmation does: confirming from a later session
     # would use up reserved sessions untested (BH-2026-10-20-1), and is refused.
     reserve_start = str(dates[start_offset].date())
@@ -421,7 +423,10 @@ def test_cli_lookback_formula_still_requires_history(tmp_path):
     data, book, factor = tmp_path / "data", tmp_path / "ledger.jsonl", tmp_path / "f.json"
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     assert (
-        main(["freeze", "--expr", "delay(close, 1)", "--horizon", "1", "--out", str(factor)]) == 0
+        main(
+            ["freeze", "--expr", "delay(close, 1) / close", "--horizon", "1", "--out", str(factor)]
+        )
+        == 0
     )
     with pytest.raises(SystemExit, match="no history"):
         main(
@@ -509,7 +514,7 @@ def test_cli_confirmation_starting_inside_a_reservation_is_refused(tmp_path, com
     # the development-window refusal does not catch it.
     data, book = _reserved_market(tmp_path)
     if command == "confirm":
-        factor = _frozen(tmp_path, expr="close")
+        factor = _frozen(tmp_path, expr="close_as_traded")
         args = ["confirm", "--data", str(data), "--factor", str(factor)]
         late = "2020-10-06"
     else:
@@ -582,7 +587,7 @@ def test_cli_search_with_an_empty_family_leaves_the_reservation_unused(tmp_path,
                 "2020-03-31",
             ]
         )
-    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--ledger", str(book)]
     with pytest.raises(SystemExit, match="reserved confirmation window"):
         main([*evaluate, "--out", str(tmp_path / "ev")])
     # A later search on the reservation is still confirmatory.
@@ -633,7 +638,7 @@ def test_cli_read_only_out_is_refused_before_the_ledger_records_anything(tmp_pat
             "--data",
             str(data),
             "--expr",
-            "close",
+            "close_as_traded",
             "--ledger",
             str(tmp_path / "e"),
         ]
@@ -653,7 +658,7 @@ def test_cli_confirmation_without_a_labelled_date_is_refused(tmp_path, command):
     data_main(["synthetic", "--out", str(data), "--instruments", "25", "--days", "120"])
     dates = pd.DatetimeIndex(sorted(read_market_bars(data)[1]["date"].unique()))
     if command == "confirm":
-        factor = _frozen(tmp_path, expr="close", horizon="1")
+        factor = _frozen(tmp_path, expr="close_as_traded", horizon="1")
         base = ["confirm", "--data", str(data), "--factor", str(factor)]
     else:
         base = ["search", "--data", str(data), "--trials", "5", "--horizon", "1"]
@@ -696,7 +701,7 @@ def test_cli_confirmation_after_the_universe_ends_is_refused(tmp_path):
     )
     publish_universe(members, tmp_path / "uni", dataset_id="u")
     assert main(["ledger", "reserve", "--ledger", str(book), "--start", str(cut.date())]) == 0
-    factor = _frozen(tmp_path, expr="close", horizon="1")
+    factor = _frozen(tmp_path, expr="close / open", horizon="1")  # reads no close_as_traded
     args = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
     args += ["--universe", str(tmp_path / "uni"), "--confirm-start", str(cut.date())]
     before = book.read_bytes()
@@ -771,7 +776,7 @@ def test_cli_out_that_takes_no_file_is_refused_before_recording(tmp_path, monkey
         return original(*args, **kwargs)
 
     monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
-    factor = _frozen(tmp_path, expr="close")
+    factor = _frozen(tmp_path, expr="close_as_traded")
     before = book.read_bytes()
     confirm = ["confirm", "--data", str(data), "--factor", str(factor), "--ledger", str(book)]
     with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
@@ -779,7 +784,15 @@ def test_cli_out_that_takes_no_file_is_refused_before_recording(tmp_path, monkey
     assert book.read_bytes() == before
     # evaluate records a full-sample inspection, so it gets a ledger without a reservation.
     fresh = tmp_path / "fresh.jsonl"
-    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(fresh)]
+    evaluate = [
+        "evaluate",
+        "--data",
+        str(data),
+        "--expr",
+        "close_as_traded",
+        "--ledger",
+        str(fresh),
+    ]
     with pytest.raises(SystemExit, match=re.escape(f"--out {locked}")):
         main([*evaluate, "--out", str(locked)])
     assert not fresh.exists() and list(locked.iterdir()) == []
@@ -826,7 +839,13 @@ def test_cli_existing_output_that_takes_no_write_is_refused_before_recording(tmp
     out = tmp_path / "rerun"
     (out / "confirmation.csv").mkdir(parents=True)
     if command == "confirm":
-        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path, expr="close"))]
+        args = [
+            "confirm",
+            "--data",
+            str(data),
+            "--factor",
+            str(_frozen(tmp_path, expr="close_as_traded")),
+        ]
     else:
         args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
     args += ["--ledger", str(book), "--confirm-start", "2020-09-01", "--out", str(out)]
@@ -842,7 +861,13 @@ def test_cli_write_failure_after_recording_names_the_experiment(tmp_path, monkey
     # with a message naming the recorded experiment instead of a traceback.
     data, book = _reserved_market(tmp_path)
     if command == "confirm":
-        args = ["confirm", "--data", str(data), "--factor", str(_frozen(tmp_path, expr="close"))]
+        args = [
+            "confirm",
+            "--data",
+            str(data),
+            "--factor",
+            str(_frozen(tmp_path, expr="close_as_traded")),
+        ]
     else:
         args = ["search", "--data", str(data), "--trials", "10", "--top-k", "2"]
     if command != "search without a ledger":
@@ -922,7 +947,7 @@ def test_cli_evaluate_refuses_a_tables_folder_that_takes_no_file(tmp_path, monke
         return original(*args, **kwargs)
 
     monkeypatch.setattr(tempfile, "TemporaryFile", refuse)
-    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--ledger", str(book)]
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--ledger", str(book)]
     with pytest.raises(SystemExit, match=re.escape(f"--out {out}")):
         main([*evaluate, "--out", str(out)])
     assert not book.exists()
@@ -947,7 +972,7 @@ def test_cli_evaluate_rerun_with_a_subfolder_in_figures(tmp_path):
     # so a subfolder an earlier run or the user left in figures/ or tables/ is no obstacle.
     data, out = tmp_path / "d", tmp_path / "ev"
     data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "120"])
-    args = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    args = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--out", str(out)]
     assert main(args) == 0
     (out / "figures" / "old").mkdir()
     (out / "tables" / "old").mkdir()
@@ -959,7 +984,7 @@ def test_cli_evaluate_rerun_needs_no_new_file_where_every_output_exists(tmp_path
     # outputs, so folders that take no new file (mode 555, say) must not refuse it.
     data, out, book = tmp_path / "d", tmp_path / "ev", tmp_path / "l.jsonl"
     data_main(["synthetic", "--out", str(data), "--instruments", "20", "--days", "120"])
-    args = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    args = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--out", str(out)]
     assert main(args) == 0
     original = tempfile.TemporaryFile
     full = {out, out / "tables", out / "figures"}
@@ -996,7 +1021,7 @@ def test_cli_reruns_into_read_only_outputs_the_run_only_deletes_or_overwrites(tm
         path.chmod(0o444)
     assert main(search) == 0
     out = tmp_path / "ev"
-    evaluate = ["evaluate", "--data", str(data), "--expr", "close", "--out", str(out)]
+    evaluate = ["evaluate", "--data", str(data), "--expr", "close_as_traded", "--out", str(out)]
     assert main(evaluate) == 0
     folders = [out, out / "tables", out / "figures"]
     for folder in folders:

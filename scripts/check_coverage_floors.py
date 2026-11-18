@@ -66,7 +66,9 @@ def module_key(path: str, packages: Collection[str] = ()) -> str:
 def load_floors(pyproject: Path) -> Floors:
     """Read ``[tool.invest.coverage]`` and check its shape."""
     with pyproject.open("rb") as fh:
-        table = tomllib.load(fh).get("tool", {}).get("invest", {}).get("coverage")
+        table: object = tomllib.load(fh)
+    for name in ("tool", "invest", "coverage"):  # any level may be a non-table value
+        table = table.get(name) if isinstance(table, dict) else None
     if not isinstance(table, dict):
         raise ValueError(f"{pyproject}: no [tool.invest.coverage] table")
     if not isinstance(table.get("files", {}), dict):

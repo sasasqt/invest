@@ -22,7 +22,7 @@ Create `invest_data`, `invest_mining`, and `invest_evaluation` with component ma
 
 ## M2 — Deliver one correct end-to-end baseline
 
-**Status:** done except external flows and unadjusted corporate actions (EVAL-01); its checkpoint review (REVIEW-10) is still due, and bug hunts found defects that affect it (REVIEW-16, REVIEW-17, REVIEW-20, REVIEW-21; REVIEW-19 fixed the gross-of-costs returns, REVIEW-13 fixed the `min_price` look-ahead and now refuses bars that are not total-return adjusted, REVIEW-14 fixed the evaluation reports, and REVIEW-15 fixed the mining diagnostics; REVIEW-18 records low-severity edge cases it left). Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
+**Status:** done except external flows and unadjusted corporate actions (EVAL-01); its checkpoint review (REVIEW-10) is still due, and bug hunts found defects that affect it (REVIEW-16, REVIEW-17; REVIEW-21 fixed the statistics of insolvent wealth paths and the statistics `report.md` left out, REVIEW-20 fixed the liquidation of every holding on a rebalance date without scores, REVIEW-19 fixed the gross-of-costs returns, REVIEW-13 fixed the `min_price` look-ahead and now refuses bars that are not total-return adjusted, REVIEW-14 fixed the evaluation reports, and REVIEW-15 fixed the mining diagnostics; REVIEW-18 records low-severity edge cases it left). Runs with one command on synthetic data (FLOW-03) and on test-only Yahoo Finance history from a saved snapshot (DATA-01, FLOW-02; [results](docs/HISTORICAL_BASELINE.md)). The historical run is survivorship-biased, so it checks the workflow, not alpha. **Depends on:** M0 and M1.
 
 Snapshot publication is exclusive and atomic, replay resolves saved dates or explicit subsets, and supported-market and external-benchmark compatibility checks prevent misleading metadata or daily returns (DATA-03). These checks have offline regression coverage; the historical results remain those of the recorded original run.
 
@@ -42,7 +42,7 @@ Implement the [metric specification](strategy-evaluation/METRICS.md), [quantile 
 
 ## M4 — Add reproducible mining, training, and frozen inference
 
-**Status:** in progress. A typed causal AST, a random-search baseline and frozen expression-factor inference exist. Remaining: artifact compatibility fixtures, learned preprocessing and models, fitted-artifact inference parity, and matched-budget comparisons. **Depends on:** M3; a fixed formula already works in M2.
+**Status:** in progress. A typed causal AST (the mining commands refuse formulas a later split or dividend could change), a random-search baseline and frozen expression-factor inference exist. Remaining: artifact compatibility fixtures, learned preprocessing and models, fitted-artifact inference parity, and matched-budget comparisons. **Depends on:** M3; a fixed formula already works in M2.
 
 Implement typed causal AST operators and a simple search baseline, then learned preprocessing and model fitting inside development splits. Export reloadable fitted artifacts with versioned operator semantics and provenance. Compare subsequent search methods using identical data, objectives, budgets, and evaluation protocols.
 
