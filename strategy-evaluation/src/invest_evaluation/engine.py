@@ -10,8 +10,11 @@ Event order within each session ``t``:
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
    shorts and interest on cash accrue. If equity is then not positive, the run stops.
-3. **Decision.** On rebalance dates, scores dated ``t`` (available after the close of
-   ``t``) are turned into target weights. They fill at the open of ``t + 1 + delay``.
+3. **Decision.** A decision is due every ``rebalance_every`` sessions. On a due session
+   with scores, the scores dated ``t`` (available after the close of ``t``) are turned
+   into target weights, which fill at the open of ``t + 1 + delay``. A due session
+   without any score makes no decision and keeps the holdings; the decision is made on
+   the next session with a score, and the schedule counts from there.
 
 So a decision can never use a price it trades at, and no signal is acted on before the
 session after its decision date. Per-instrument P&L attribution (including costs) is kept
@@ -178,10 +181,14 @@ def run_backtest(
     *,
     record_decisions: bool = False,
 ) -> BacktestResult:
-    """Simulate ``signals`` on ``bars``. ``universe`` (a membership table) limits new
-    positions to instruments that are members on the decision date; holdings that leave
-    the universe are sold at the next rebalance. Optional ``delistings`` contains
-    ``date, instrument, settlement_price`` cash events known at the event date's close.
+    """Simulate ``signals`` on ``bars``. A decision is due every ``rebalance_every``
+    sessions, counted from the first session with a score and then from the last decision
+    made; a due session without any score makes no decision, so the holdings are kept, and
+    the decision is made on the next session with a score. ``universe`` (a membership
+    table) limits new positions to instruments that are members on the decision date;
+    holdings that leave the universe are sold at the next decision. Optional
+    ``delistings`` contains ``date, instrument, settlement_price`` cash events known at
+    the event date's close.
     Missing bars retain the last mark; they never imply a liquidation.
     ``record_decisions`` fills ``BacktestResult.decisions`` (one row per eligible name
     per decision); it is off by default because only bucket reports need it."""
@@ -231,6 +238,14 @@ def run_backtest(
     sessions = np.flatnonzero(mask)
     if len(sessions) < 2:
         raise InputError("evaluation window has fewer than two sessions")
+    # A configured window can hold no score at all (a `start` after the last signal): the
+    # run would be flat and cost-free, so it is refused like the default window above
+    # (BH-2026-10-15-4).
+    if not np.isfinite(scores.to_numpy(dtype=float)[sessions]).any():
+        raise InputError(
+            f"no signal falls in the evaluation window "
+            f"({calendar[sessions[0]].date()} to {calendar[sessions[-1]].date()})"
+        )
 
     px_open, px_close = open_w.to_numpy(), close_w.to_numpy()
     # Price-level eligibility (zero min_price passes every name with a close).
@@ -290,7 +305,10 @@ def run_backtest(
     trades: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
     decisions: list[pd.DataFrame] = []
-    first_decision: int | None = None
+    next_decision: int | None = None  # session from which the next decision is due
+    waiting = False  # a due decision is waiting for a session with a score
+    n_waited = n_decided = n_zero_target = 0
+    first_waited: pd.Timestamp | None = None
     borrow_daily = cm.borrow_bps_annual / 1e4 / cfg.annualization
     cash_daily = cm.cash_rate_annual / cfg.annualization
 
@@ -523,12 +541,27 @@ def run_backtest(
         if equity <= 0:
             break
 
-        # 3. Decision after the close.
-        if first_decision is None and np.isfinite(S[i]).any():
-            first_decision = i
-        if first_decision is not None and (i - first_decision) % cfg.strategy.rebalance_every == 0:
-            fill_i = i + 1 + ex.delay
-            if fill_i <= sessions[-1]:
+        # 3. Decision after the close. A decision is due `rebalance_every` sessions after
+        # the last one (the first on the first session with a score). A due session without
+        # any score decides nothing, so no order is scheduled and the holdings are kept; the
+        # decision waits for the next session with a score, and the schedule counts from
+        # there (BH-2026-10-09-2: sparse signals used to sell every holding there). With a
+        # score on every session the decisions fall on the same sessions as a fixed schedule.
+        # A decision whose fill would fall after the window is neither made nor waited for.
+        has_score = bool(np.isfinite(S[i]).any())
+        if next_decision is None and has_score:
+            next_decision = i
+        fill_i = i + 1 + ex.delay
+        if next_decision is not None and i >= next_decision and fill_i <= sessions[-1]:
+            if not has_score:
+                if not waiting:
+                    waiting = True
+                    n_waited += 1
+                    if first_waited is None:
+                        first_waited = date
+            else:
+                waiting = False
+                next_decision = i + cfg.strategy.rebalance_every
                 tradable = (
                     np.isfinite(S[i])
                     & member[i]
@@ -547,6 +580,9 @@ def run_backtest(
                     strat.target_weights(sc), sc.index, cfg.strategy.gross_leverage
                 )
                 pending[fill_i] = (i, targets)
+                n_decided += 1
+                if not (targets.to_numpy() != 0).any():
+                    n_zero_target += 1
                 if record_decisions:
                     decisions.append(
                         pd.DataFrame(
@@ -560,6 +596,30 @@ def run_backtest(
                         )
                     )
 
+    if n_waited and first_waited is not None:
+        warnings.append(
+            f"{n_waited} scheduled decisions fell on sessions without any score; the holdings "
+            "were kept and each decision was made on the next session with a score, if any "
+            f"(first on {first_waited.date()})"
+        )
+    if n_zero_target:
+        # Decisions that target zero exposure (too few eligible names, or an empty leg) order
+        # the sale of every holding; a sale can still be rejected or partial at the fill
+        # (REVIEW-27). Count them so a run's report shows how often (REVIEW-20).
+        warnings.append(
+            f"{n_zero_target} of {n_decided} decisions targeted zero exposure: no eligible name "
+            "had a score, or the strategy selected no name (fewer eligible names than it needs, "
+            "an empty leg, or a leg below its minimum number of names)"
+        )
+    if not n_decided:
+        # Every score in the window falls on its last `delay` + 1 sessions, where no order
+        # can fill inside it: the run is flat and cost-free (a sibling of BH-2026-10-15-4).
+        # A warning, not a refusal: stress scenarios that add a delay rerun a valid window.
+        last = "its last session" if not ex.delay else f"one of its last {ex.delay + 1} sessions"
+        warnings.append(
+            "no decision was made: every session with a score in the evaluation window is "
+            f"{last}, so no order could fill inside the window and the run held nothing"
+        )
     if unknown_traded_close:
         warnings.append(
             f"{unknown_traded_close} otherwise eligible name-decisions had no positive finite "
