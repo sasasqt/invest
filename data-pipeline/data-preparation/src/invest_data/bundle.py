@@ -31,6 +31,8 @@ from typing import Any, Literal
 import numpy as np
 import pandas as pd
 
+from invest_data._typing import unhandled
+
 CONTRACT_VERSION = 1
 NULL_TOKEN = "\\N"
 ColumnType = Literal["string", "int64", "float64", "boolean", "date", "timestamp", "decimal"]
@@ -380,7 +382,7 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
         return _utc_text(utc)
     if col.type == "decimal":
         return _decimal(col, value)
-    raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
+    raise unhandled(col.type, BundleError(f"unsupported type {col.type}"))  # pragma: no cover
 
 
 def _parse_value(col: Column, raw: Any) -> Any:
@@ -424,7 +426,7 @@ def _parse_value(col: Column, raw: Any) -> Any:
         if isinstance(exc, BundleError):
             raise
         raise BundleError(f"column {col.name!r}: cannot parse {raw!r} as {col.type}") from exc
-    raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
+    raise unhandled(col.type, BundleError(f"unsupported type {col.type}"))  # pragma: no cover
 
 
 def _to_frame(columns: Sequence[Column], rows: list[list[Any]]) -> pd.DataFrame:

@@ -8,6 +8,7 @@ the parameter goes back to ``str``, mypy reports the ignore as unused.
 import pandas as pd
 
 from invest_data.bundle import Column, write_bundle
+from invest_evaluation.config import ValidationConfig
 from invest_evaluation.quantiles import BucketPortfolio
 from invest_evaluation.strategies import Slice
 from invest_evaluation.validation import _check
@@ -23,3 +24,4 @@ def _never_called(frame: pd.DataFrame) -> None:
     Column("volume", "integer")  # type: ignore[arg-type]
     write_bundle(frame, "out", dataset_id="d", fmt="json")  # type: ignore[arg-type]
     ledger.append("ledger.jsonl", "reserve", {})  # type: ignore[arg-type]
+    ValidationConfig(benchmark="spy")  # type: ignore[arg-type]

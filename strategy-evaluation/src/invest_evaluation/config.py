@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass, field, fields, replace
 from datetime import date
 from numbers import Integral, Real
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 
 def _number(name: str, value: Any, *, minimum: float | None = None, strict: bool = False) -> None:
@@ -118,7 +118,8 @@ class ExecutionConfig:
         _number("min_adv_dollar", self.min_adv_dollar, minimum=0)
 
 
-VALIDATION_BENCHMARKS = ("none", "universe", "external")
+ValidationBenchmark = Literal["none", "universe", "external"]
+VALIDATION_BENCHMARKS: tuple[ValidationBenchmark, ...] = ("none", "universe", "external")
 
 
 @dataclass(frozen=True)
@@ -138,7 +139,7 @@ class ValidationConfig:
     min_sessions: int = 252
     min_deflated_sharpe: float = 0.95
     stress_scenarios: tuple[str, ...] = ("costs_x2", "delay_1")
-    benchmark: str = "none"
+    benchmark: ValidationBenchmark = "none"
 
     def __post_init__(self) -> None:
         _integer("min_sessions", self.min_sessions, 60)
@@ -151,7 +152,8 @@ class ValidationConfig:
         if not all(isinstance(n, str) and n for n in names) or len(set(names)) != len(names):
             raise ValueError("stress_scenarios must be unique non-empty names")
         object.__setattr__(self, "stress_scenarios", tuple(names))
-        if self.benchmark not in VALIDATION_BENCHMARKS:
+        benchmark: object = self.benchmark  # a caller can pass any value
+        if benchmark not in VALIDATION_BENCHMARKS:
             raise ValueError(f"benchmark must be one of {VALIDATION_BENCHMARKS}")
 
 
