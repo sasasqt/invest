@@ -22,6 +22,25 @@ from invest_evaluation.metrics import period_rate
 
 _ND = NormalDist()
 EULER_GAMMA = 0.5772156649015329
+# Fewest returns for a bootstrap interval and for PSR/DSR (reports name them).
+MIN_BOOTSTRAP_RETURNS = 60
+MIN_PSR_RETURNS = 30
+
+
+def _insolvent(x: np.ndarray) -> bool:
+    """Whether a wealth path built from simple returns ``x`` reaches zero or below.
+
+    The rule of ``metrics.return_metrics`` (the two copies differ only on inputs no run
+    produces; REVIEW-39 asks for one helper): a Sharpe-type statistic of such a path is
+    ``invalid_input`` (``insolvent_wealth_path``), never a plausible number (METRICS.md
+    section 6).
+    """
+    with np.errstate(invalid="ignore", over="ignore"):
+        return bool(np.any(np.cumprod(1.0 + x) <= 0))
+
+
+def _insolvent_status(n: int) -> dict[str, Any]:
+    return {"status": "invalid_input", "reason": "insolvent_wealth_path", "n": n}
 
 
 def newey_west_mean(x: np.ndarray, lags: int | None = None) -> dict[str, Any]:
@@ -82,7 +101,9 @@ def bootstrap_ci(
 ) -> dict[str, Any]:
     x = returns.dropna().to_numpy(dtype=float)
     n = len(x)
-    if n < 60:
+    if _insolvent(x):
+        return _insolvent_status(n)
+    if n < MIN_BOOTSTRAP_RETURNS:
         return {"status": "insufficient_data", "n": n}
     if isinstance(n_boot, bool) or not isinstance(n_boot, int) or n_boot < 1:
         raise ValueError("n_boot must be a positive integer")
@@ -117,10 +138,15 @@ def bootstrap_ci(
 
 
 def probabilistic_sharpe(returns: pd.Series, benchmark_sr: float = 0.0) -> dict[str, Any]:
-    """P(true per-period SR > benchmark_sr) given skew/kurtosis of the sample."""
+    """P(true per-period SR > benchmark_sr) given skew/kurtosis of the sample.
+
+    Takes excess returns of a solvent path and does not check solvency itself (a
+    ``<= -1`` test would be off by the risk-free rate); ``strategy_statistics`` applies
+    the insolvency check on the raw returns.
+    """
     x = returns.dropna().to_numpy(dtype=float)
     n = len(x)
-    if n < 30:
+    if n < MIN_PSR_RETURNS:
         return {"status": "insufficient_data", "n": n}
     sd = x.std(ddof=1)
     if sd <= 1e-15:
@@ -160,7 +186,8 @@ def deflated_sharpe(
     """DSR = PSR against the expected maximum SR of ``n_trials`` null strategies.
 
     If the variance of trial Sharpe ratios is unknown, the null sampling variance
-    ``1 / (n - 1)`` of a per-period SR estimate is used (labelled in the output).
+    ``1 / (n - 1)`` of a per-period SR estimate is used (labelled in the output). Like
+    ``probabilistic_sharpe``, it expects excess returns of a solvent path.
     """
     x = returns.dropna()
     n = len(x)
@@ -199,7 +226,22 @@ def strategy_statistics(
     *,
     risk_free_annual: float = 0.0,
 ) -> dict[str, Any]:
+    """Uncertainty statistics of ``returns`` (simple returns of one wealth path).
+
+    On a path whose wealth reaches zero or below, the whole bootstrap entry (Sharpe and
+    annual-mean intervals), PSR and DSR are ``invalid_input`` (``insolvent_wealth_path``),
+    as the Sharpe itself is in ``metrics.json``: resampling would move the ruin into the
+    middle of paths that then go on. The HAC mean test and autocorrelations describe the
+    observed raw returns and stay.
+    """
     excess = returns - period_rate(risk_free_annual, annualization)
+    clean = returns.dropna().to_numpy(dtype=float)
+    if _insolvent(clean):
+        psr: dict[str, Any] = _insolvent_status(len(clean))
+        dsr: dict[str, Any] = {**_insolvent_status(len(clean)), "n_trials": n_trials}
+    else:
+        psr = probabilistic_sharpe(excess)
+        dsr = deflated_sharpe(excess, n_trials)
     return {
         "sharpe_basis": "excess_returns",
         "risk_free_annual": risk_free_annual,
@@ -207,7 +249,7 @@ def strategy_statistics(
         "bootstrap": bootstrap_ci(
             returns, annualization, seed=seed, risk_free_annual=risk_free_annual
         ),
-        "probabilistic_sharpe_vs_zero": probabilistic_sharpe(excess),
-        "deflated_sharpe": deflated_sharpe(excess, n_trials),
+        "probabilistic_sharpe_vs_zero": psr,
+        "deflated_sharpe": dsr,
         "return_autocorrelation": autocorrelations(returns),
     }
