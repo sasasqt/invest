@@ -1,0 +1,958 @@
+{
+  "date": "2026-11-18",
+  "field": "strategy evaluation and financial accounting",
+  "identity": {
+    "date": "2026-11-18",
+    "field": "evaluation",
+    "scheduled_for": "2026-11-18T02:00:00Z",
+    "started_utc": "2026-11-18T02:04:26.404507Z",
+    "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+    "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "output_base": "bbff5bb4f84d203ab12f6c7d9ae0493842f0d4ec",
+    "previous_publication": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "model": "unavailable",
+    "effort": "unavailable",
+    "status": "started",
+    "completed_steps": [
+      "load and verify methods",
+      "reconcile published prior visit and checkpoint"
+    ],
+    "remaining_steps": [
+      "common checks",
+      "field scope",
+      "independent review",
+      "report and verify"
+    ],
+    "pending_jobs": [],
+    "started_checkpoint_commit": "39cf6c0fb07e9daf81b7f6bf525c08f195344189",
+    "prior_publication": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "peer_commit": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "method_baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "methods": [
+      {
+        "name": "index",
+        "verified": true,
+        "sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f"
+      },
+      {
+        "name": "baseline-v2.txt",
+        "verified": true,
+        "sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa"
+      },
+      {
+        "name": "overview",
+        "verified": true,
+        "sha256": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848"
+      },
+      {
+        "name": "00-preflight",
+        "verified": true,
+        "sha256": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25"
+      },
+      {
+        "name": "01-scope",
+        "verified": true,
+        "sha256": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90"
+      },
+      {
+        "name": "02-coverage",
+        "verified": true,
+        "sha256": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20"
+      },
+      {
+        "name": "03-consistency",
+        "verified": true,
+        "sha256": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06"
+      },
+      {
+        "name": "04-correctness",
+        "verified": true,
+        "sha256": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23"
+      },
+      {
+        "name": "05-financial-validity",
+        "verified": true,
+        "sha256": "336c6887e1a60b96a27766328db1115cd3579604f3cf68cfa2287eb32cae0eaf"
+      },
+      {
+        "name": "07-independent-checks",
+        "verified": true,
+        "sha256": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0"
+      },
+      {
+        "name": "11-findings-review",
+        "verified": true,
+        "sha256": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a"
+      },
+      {
+        "name": "12-reporting",
+        "verified": true,
+        "sha256": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469"
+      },
+      {
+        "name": "13-continuity",
+        "verified": true,
+        "sha256": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457"
+      },
+      {
+        "name": "14-crosscheck-publication",
+        "verified": true,
+        "sha256": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea"
+      },
+      {
+        "name": "action-boundary",
+        "verified": true,
+        "sha256": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd"
+      }
+    ],
+    "activation": "audits/gpt/protocol/rotation-v3-2026-11-02/activation-state.json",
+    "history_map": "history-rewrite-2026-11-02/commit-map.json",
+    "usage": "unavailable"
+  },
+  "continuity": {
+    "output_prior": "bbff5bb4f84d203ab12f6c7d9ae0493842f0d4ec",
+    "prior_day_completed": "2026-11-17",
+    "missing_reports": [
+      {
+        "date": "2026-11-01",
+        "status": "no final report observed in accessible gpt tree",
+        "execution": "unknown/not observed",
+        "note": "Pre-activation legacy day; no allowance-exhaustion or interruption inference, no catch-up field added."
+      },
+      {
+        "date": "2026-11-07",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-08",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-13",
+        "status": "no final report or started record observed in the audit branch",
+        "execution": "unknown/not observed"
+      }
+    ],
+    "missed_history_status": "unknown/not observed where no final or interruption evidence; no allowance inference",
+    "interface_owners": [
+      {
+        "interface": "source data -> bundle",
+        "owner": "data",
+        "chain_owner": "integration",
+        "invariant": "schema/calendar/units/membership/provenance agreement"
+      },
+      {
+        "interface": "bundle -> point-in-time features",
+        "owner": "data",
+        "chain_owner": "integration",
+        "invariant": "no later-availability input changes past features"
+      },
+      {
+        "interface": "features -> diagnostics",
+        "owner": "mining",
+        "chain_owner": "integration",
+        "invariant": "horizons/ties/counts/trial lineage preserved"
+      },
+      {
+        "interface": "frozen expression -> signals",
+        "owner": "mining",
+        "chain_owner": "integration",
+        "invariant": "export/reload identities and causal semantics agree"
+      },
+      {
+        "interface": "signals -> evaluation",
+        "owner": "evaluation",
+        "chain_owner": "integration",
+        "invariant": "timing/fills/cash/cost/accounting agree"
+      },
+      {
+        "interface": "evaluation -> reports/recorder",
+        "owner": "integration",
+        "chain_owner": "integration",
+        "invariant": "tables/statuses/provenance/atomic recovery agree"
+      },
+      {
+        "interface": "trial/confirmation evidence -> verdict",
+        "owner": "mining",
+        "coowner": "evaluation",
+        "chain_owner": "integration",
+        "invariant": "evidence tiers, reserved-data and trial accounting preserved"
+      }
+    ],
+    "whole_inventory": {
+      "source": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+      "tracked": 148,
+      "inventory_refresh": "Current complete recursive tree; every tracked blob identity matches prior inventory.",
+      "instructions": [
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/PYTHON_GUIDELINES.md",
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/docs/ARCHITECTURE.md"
+      ]
+    },
+    "weekly": "2026-W47 open; Sunday aggregation upcoming, prior weekly summary preserved."
+  },
+  "question": "Does the explicit cash settlement get carried through the universe benchmark and its consumers, and does the current proposal address the existing mismatch within the documented policy?",
+  "stopping_condition": "Trace event validation and cash accounting into benchmark weights/returns, exported series, relative metric and optional verdict. Check last-bar, gap, no-event/equal-close and pre-window cases against proposal and exact CI. Leave untouched product-runtime and any policy alternative open where evidence is unavailable.",
+  "findings": {
+    "retained_root": "GA-2026-10-31-2",
+    "new_verified": [],
+    "source_conclusion": "known open on main",
+    "proposal": {
+      "head": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+      "state": "open",
+      "merge_commit": "e14c126e0469fc49c48366f919fb3b8bcca6efe7",
+      "parents": [
+        "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "30f9db9fc165f2f9ce369986c72b34dd4a45ae90"
+      ],
+      "validated_scope": "Static algorithm and existing exact-merge CI, including the added benchmark test module. Main fix remains unmerged.",
+      "methodology": "Proposal documents that last valid close can predate the window. No newer maintainer direction selecting a freshly initialized reference was found in the examined discussion and decisions ledger. Author acknowledged the separate README wording follow-up and deferred it around #53/#56.",
+      "author_reply": "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422",
+      "latest_conversation": "https://github.com/sasasqt/invest/pull/58#issuecomment-6959523302"
+    },
+    "locations": {
+      "mainEngine": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/engine.py#L469-L505",
+      "mainBench": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/engine.py#L606-L609",
+      "prEngine": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/src/invest_evaluation/engine.py#L153-L183",
+      "prDoc": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/METRICS.md#L121-L125",
+      "prTests": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/tests/test_benchmark_delistings.py#L85-L226",
+      "metrics": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/metrics.py#L282-L323",
+      "validation": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/validation.py#L184-L209",
+      "min_sessions": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/config.py#L138-L145",
+      "reporting": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/strategy-evaluation/src/invest_evaluation/reporting.py#L42-L59",
+      "closed_trade_clock_duplicate": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/docs/audits/open-bugs.md#L102"
+    },
+    "peer_cross_check": {
+      "result": "agree",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "observed_by_peer_on": "2026-11-15",
+      "published_result": "https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md#L22",
+      "reported": "Same-SHA peer rerun reports exit 1; strategy −33.33%, benchmark 0.00% on event day.",
+      "limits": "Published peer evidence is a reported reproduction; raw untouched execution and controls were not reproduced by this worker."
+    },
+    "dropped": {
+      "id": "GA-2026-11-18-DROP-1",
+      "kind": "candidate",
+      "date": "2026-11-18",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "proposal_sha": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+      "disposition": "dropped as distinct defect; preserve comparator-policy sensitivity",
+      "reason": "Proposal explicitly books the entire move when settlement is known using last available earlier close; documenting a tradeoff does not violate the selected policy.",
+      "counterfactual": "A documented evaluation-start initialization rule applying to stale constituents would keep it.",
+      "evidence": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/METRICS.md#L121-L125"
+    }
+  },
+  "reviews": {
+    "reviewer1": {
+      "format": 1,
+      "main": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "proposal": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+      "merge": "e14c126e0469fc49c48366f919fb3b8bcca6efe7",
+      "question": "Does the explicit cash settlement get carried through the universe benchmark and its consumers, and does the current proposal address the existing mismatch within the documented policy?",
+      "stop": "Trace event validation and cash accounting into benchmark weights/returns, exported series, relative metric and optional verdict. Check last-bar, gap, no-event/equal-close and pre-window cases against proposal and exact CI. Leave untouched product-runtime and any policy alternative open where evidence is unavailable.",
+      "candidates": [
+        {
+          "id": "GA-2026-10-31-2",
+          "decision": "keep known open on main",
+          "severity": "medium/P2",
+          "evidence": "engine.py:469-505 books to holdings while :606-609 uses previous membership and adjacent closes only; metrics.py:282-323,481-483 and validation.py:184-209 propagate. Current proposal includes date-of-event overrides and post-event retirement; exact preview parents verified; its 11 added product tests support corrected behavior.",
+          "missing": "Untouched independent repetitions, native workflow not relevant to this question, verdict/report end-to-end product fixture, merge to main."
+        },
+        {
+          "id": "GA-2026-11-18-DROP-1",
+          "decision": "drop as a new correctness defect, preserve policy choice",
+          "severity": "potential decision-relevant comparator sensitivity only",
+          "evidence": "PR helper uses full-calendar last finite close, even before start, and membership at that close; policy explicitly stated in head METRICS.md:125. This can affect a window starting after last close, but does not contradict chosen comparator policy.",
+          "missing": "A maintainer decision that explicitly caps lookback at evaluation start or an authoritative no-prewindow-price contract would change disposition. Latest author's direct reply addresses the adjacent README-only deferral.",
+          "counterfactual": "An adopted in-window-only comparator specification that rejects a settlement based on a pre-window last close."
+        }
+      ]
+    },
+    "reviewer2": {
+      "role": "fresh independent Reviewer 2",
+      "model": "unavailable",
+      "effort": "unavailable",
+      "elapsed_seconds": null,
+      "primary": {
+        "id": "GA-2026-10-31-2",
+        "verdict": "keep; Medium/P2; high confidence static and exact-pinned scope",
+        "main_ranges": {
+          "engine.py": [
+            [
+              469,
+              509
+            ],
+            [
+              606,
+              609
+            ]
+          ],
+          "metrics.py": [
+            [
+              282,
+              336
+            ],
+            [
+              481,
+              489
+            ]
+          ],
+          "validation.py": [
+            [
+              47,
+              53
+            ],
+            [
+              184,
+              209
+            ]
+          ],
+          "cli.py": [
+            [
+              228,
+              247
+            ]
+          ],
+          "quantiles.py": [
+            [
+              214,
+              233
+            ],
+            [
+              273,
+              285
+            ]
+          ]
+        },
+        "proposal_ranges": {
+          "engine.py": [
+            [
+              153,
+              183
+            ],
+            [
+              640,
+              647
+            ]
+          ],
+          "METRICS.md": [
+            [
+              121,
+              125
+            ]
+          ],
+          "tests/test_benchmark_delistings.py": [
+            [
+              85,
+              226
+            ]
+          ]
+        },
+        "math": {
+          "equal_weight_zero": [
+            0,
+            -0.3333333333333333
+          ],
+          "gap": [
+            0.005,
+            -0.06333333333333331
+          ],
+          "event_close_replaced": [
+            0.07,
+            -0.16333333333333333
+          ],
+          "post_event": [
+            0.22555555556,
+            0.005
+          ],
+          "consumer_60_session": {
+            "strategy": "Alternating +0.04% and +0.06%",
+            "benchmark": "Normally +0.1%; on one settled interval change to −6.6%",
+            "ir_before": -78.708,
+            "ir_after": 1.13,
+            "compounded_benchmark_before": 0.0618,
+            "compounded_benchmark_after": -0.00927,
+            "scope": "Independent synthetic arithmetic, assuming the other configured checks pass for any verdict change."
+          }
+        },
+        "missing": "Untouched independent runtime repetitions and negative controls. Author-reported baseline executions and directly checked exact merge CI are separate."
+      },
+      "policy_candidate": {
+        "id": "GA-2026-11-18-DROP-1",
+        "verdict": "drop as distinct bug, retain methodology sensitivity; high confidence of consistency with §7",
+        "counterfactual": "A sanctioned fresh-start policy or an event booked for a nonmember, before known date, or in the external comparator.",
+        "missing": "Far-before-start dedicated fixture and authoritative fresh-start requirement or impact evidence."
+      },
+      "closing": {
+        "checked": "Engine event and benchmark, CI parents and steps, metrics/validation, quantile and external consumers, duplicate registry",
+        "priority_unchecked": [
+          "Serialized report/verdict with proper session count, external control and 19/20 alignment edges",
+          "Long halt spanning start with inherited versus fresh comparator baseline",
+          "Cash settlement price units when adjusted and as-traded prices differ"
+        ],
+        "note": "Open-insolvency stop-row clock mismatch is pre-existing BF-2026-11-02-1; PR fixture preserves external reference clock; separate scope."
+      }
+    },
+    "comparison": "Agreement on retained root and proposed drop. No substantive disagreement, no verifier B. Unchecked settlement units lead queued outside the bounded question.",
+    "local_runtime_repetitions": 0
+  },
+  "arithmetic": {
+    "scope": "Trusted handwritten JavaScript arithmetic. Synthetic arrays only; no imports, product execution or full portfolio verdict.",
+    "repetitions": 2,
+    "first": {
+      "equal_weight_zero_settlement": {
+        "main": 0,
+        "settled": -0.3333333333333333
+      },
+      "gap_with_last_member_close": {
+        "main": 0.005,
+        "settled": -0.06333333333333331
+      },
+      "settlement_equal_to_close": {
+        "main": 0,
+        "settled": 0
+      },
+      "no_event": {
+        "main": 0.005,
+        "settled": 0.005
+      },
+      "consumer_only": {
+        "strategy": [
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          -0.3333333333333333,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002,
+          0.001,
+          0.002
+        ],
+        "current_benchmark": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "settled_benchmark": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -0.3333333333333333,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "current": {
+          "aligned": 24,
+          "mean": -0.012430555555555554,
+          "sample_sd": 0.06835383073042321,
+          "annualized_ir": -2.886874807770006,
+          "benchmark_gate": "fail"
+        },
+        "settled": {
+          "aligned": 24,
+          "mean": 0.001458333333333334,
+          "sample_sd": 0.0005882299658752717,
+          "annualized_ir": 39.355907238367344,
+          "benchmark_gate": "pass"
+        }
+      }
+    },
+    "identical": true
+  },
+  "standard_ci": {
+    "workflow": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/.github/workflows/ci.yml",
+    "run_id": 43614128092,
+    "jobs": [
+      {
+        "id": 132505350169,
+        "python": "3.11",
+        "platform": "Ubuntu Linux",
+        "url": "https://github.com/sasasqt/invest/actions/runs/43614128092/job/132505350169",
+        "result": "passed",
+        "checkout": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "mypy_files": 32,
+        "pytest_passed": 1015,
+        "pytest_skipped": 1,
+        "floor_failures": 0,
+        "total_line_branch_percent": 95.62
+      },
+      {
+        "id": 132505350228,
+        "python": "3.13",
+        "platform": "Ubuntu Linux",
+        "url": "https://github.com/sasasqt/invest/actions/runs/43614128092/job/132505350228",
+        "result": "passed",
+        "checkout": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "mypy_files": 32,
+        "pytest_passed": 1015,
+        "pytest_skipped": 1,
+        "floor_failures": 0,
+        "total_line_branch_percent": 95.62
+      }
+    ],
+    "commands": [
+      "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+      "uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+      "uv run coverage json -q -o coverage.json",
+      "uv run python scripts/check_coverage_floors.py coverage.json"
+    ],
+    "config": {
+      "strict": true,
+      "total": 95,
+      "defaultPerFile": 90,
+      "explicitFileFloors": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/pyproject.toml#L60-L100"
+    },
+    "observed": "Existing logs reread; no new run triggered."
+  },
+  "proposal_merge_ci": {
+    "workflow": "https://github.com/sasasqt/invest/blob/e14c126e0469fc49c48366f919fb3b8bcca6efe7/.github/workflows/ci.yml",
+    "run_id": 43804786650,
+    "jobs": [
+      {
+        "id": 133092949824,
+        "python": "3.11",
+        "platform": "Ubuntu Linux",
+        "url": "https://github.com/sasasqt/invest/actions/runs/43804786650/job/133092949824",
+        "result": "passed",
+        "checkout": "e14c126e0469fc49c48366f919fb3b8bcca6efe7",
+        "mypy_files": 32,
+        "pytest_passed": 1026,
+        "pytest_skipped": 1,
+        "floor_failures": 0,
+        "total_line_branch_percent": 95.76
+      },
+      {
+        "id": 133092949775,
+        "python": "3.13",
+        "platform": "Ubuntu Linux",
+        "url": "https://github.com/sasasqt/invest/actions/runs/43804786650/job/133092949775",
+        "result": "passed",
+        "checkout": "e14c126e0469fc49c48366f919fb3b8bcca6efe7",
+        "mypy_files": 32,
+        "pytest_passed": 1026,
+        "pytest_skipped": 1,
+        "floor_failures": 0,
+        "total_line_branch_percent": 95.76
+      }
+    ],
+    "commands": [
+      "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+      "uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+      "uv run coverage json -q -o coverage.json",
+      "uv run python scripts/check_coverage_floors.py coverage.json"
+    ],
+    "config": {
+      "strict": true,
+      "total": 95,
+      "defaultPerFile": 90,
+      "explicitFileFloors": "https://github.com/sasasqt/invest/blob/e14c126e0469fc49c48366f919fb3b8bcca6efe7/pyproject.toml#L60-L100"
+    },
+    "observed": "Existing logs reread; no new run triggered."
+  },
+  "isolated_runtime": {
+    "gate": "No qualified local execution, no matching isolated workflow run observed, no authorized dispatch surface exposed.",
+    "isolation": "unverified for actual credential boundary and installed dependency versions/origins",
+    "historical_blocked_runner": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "corrected_runner_historical": "44aa87557404b0ae29561e82d35f6b46396527be",
+    "prospective_runner_ref": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "prospective_runner_tree": "180fa208f02820d0ba0669bcee5c2bbb55e2a84b",
+    "actual_runner_sha": null,
+    "workflow": "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/.github/workflows/audit-runtime.yml",
+    "workflow_inputs": {
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+    },
+    "matching_jobs": [],
+    "pending_jobs": [],
+    "executed_local": 0,
+    "dispatched": 0
+  },
+  "remaining_common_controls": {
+    "windows": {
+      "ids": [
+        "REVIEW-40",
+        "REVIEW-41"
+      ],
+      "status": "open; native Windows product evidence unavailable",
+      "scope": "#40 is ancestor of main. No Git for Windows Bash + native Windows Python synthetic RECORD replay or invalid benchmark refusal / temporary-ledger byte checks. Windows host collector tests exercise a different boundary.",
+      "links": [
+        "https://github.com/sasasqt/invest/blob/2edd7ae1168eda1192ff73698ba5d42a7c034a41/TODO.md#L69-L70",
+        "https://github.com/sasasqt/invest/pull/40"
+      ],
+      "next": "Check bytes emitted by ledger append, date output and Bash capture; valid RECORD replay and invalid benchmark refusal without mutating the temporary ledger."
+    },
+    "encoding": {
+      "id": "BF-2026-11-14-5",
+      "status": "#39 is ancestor; #51 open; main acceptance pending",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "merged_39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+      "pr_51_head": "dfdbdafe29b6488bb6bd1d634e1500619425dd5c",
+      "pr_51_merge_preview": "e9785dba8273a4ade64add28c669e7277179c77d",
+      "pr_51_fixture": "https://github.com/sasasqt/invest/blob/dfdbdafe29b6488bb6bd1d634e1500619425dd5c/data-mining-framework/tests/test_scale_check.py#L657-L693",
+      "pr_51_ci": "https://github.com/sasasqt/invest/actions/runs/43637487255",
+      "next": "On newly pinned main with #39 and #51, run the three synthetic invalid UTF-8 CLI refusal cases for --data, --universe and --fundamentals.",
+      "preview_standard_ci": {
+        "checked_merge_parents": [
+          "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "dfdbdafe29b6488bb6bd1d634e1500619425dd5c"
+        ],
+        "jobs": [
+          {
+            "id": 132577383782,
+            "checkout": "e9785dba8273a4ade64add28c669e7277179c77d",
+            "tests_passed": 1191,
+            "tests_skipped": 1,
+            "floor_failures": 0,
+            "total_line_branch_percent": 95.9,
+            "url": "https://github.com/sasasqt/invest/actions/runs/43637487255/job/132577383782"
+          },
+          {
+            "id": 132577383793,
+            "checkout": "e9785dba8273a4ade64add28c669e7277179c77d",
+            "tests_passed": 1191,
+            "tests_skipped": 1,
+            "floor_failures": 0,
+            "total_line_branch_percent": 95.9,
+            "url": "https://github.com/sasasqt/invest/actions/runs/43637487255/job/132577383793"
+          }
+        ]
+      }
+    }
+  },
+  "allocation": {
+    "date": "2026-11-18",
+    "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "field": "evaluation",
+    "planned_percent": {
+      "exploitation": 60,
+      "exploration": 40
+    },
+    "actual_discretionary_unique_lines": {
+      "exploitation": 261,
+      "exploration": 177,
+      "mandatory_callers_contracts": 394
+    },
+    "actual_percent": {
+      "exploitation": 59.58904109589041,
+      "exploration": 40.41095890410959
+    },
+    "pooled_eligible_visits": 3,
+    "pooled_rates_per_1000_lines": {
+      "exploitation": 1.0256410256410255,
+      "exploration": 0
+    },
+    "new_verified_distinct_root_causes": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "evidence_advances": {
+      "proposed_fix_verified_within_static_and_merge_ci_scope": 1,
+      "known_main_mismatch_reverified": 1,
+      "independent_product_runtime_acceptance": 0
+    },
+    "next_percent": {
+      "exploitation": 70,
+      "exploration": 30
+    },
+    "selection": {
+      "seed": "43db3cb95c2941e29ec982f2ece5013251a48de9e99763392a364919f1f2145e",
+      "draw": "docs/QUANTILE_ANALYSIS.md",
+      "eligible": [
+        "docs/QUANTILE_ANALYSIS.md",
+        "strategy-evaluation/src/invest_evaluation/__init__.py",
+        "strategy-evaluation/src/invest_evaluation/cli.py",
+        "strategy-evaluation/src/invest_evaluation/quantiles.py",
+        "strategy-evaluation/src/invest_evaluation/strategies.py",
+        "strategy-evaluation/tests/conftest.py",
+        "strategy-evaluation/tests/test_quantiles.py",
+        "strategy-evaluation/tests/test_stats_and_cli.py",
+        "tests/test_quantile_consistency.py"
+      ],
+      "method": "SHA-256 of Berlin date modulo sorted eligible set; selected path also oldest feasible unread documentation in this set; comparable peer exact-range history unavailable",
+      "lens": "Settlement valuation continuity across the holdings, comparator and report paths; bucket membership and outcome views traced separately"
+    },
+    "ranges": [
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            116,
+            149
+          ],
+          [
+            469,
+            506
+          ],
+          [
+            606,
+            646
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+      },
+      {
+        "path": "strategy-evaluation/tests/test_engine.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            232,
+            272
+          ],
+          [
+            523,
+            557
+          ],
+          [
+            1275,
+            1292
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+        "bucket": "exploitation",
+        "ranges": [
+          [
+            282,
+            335
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+      },
+      {
+        "path": "docs/QUANTILE_ANALYSIS.md",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            1,
+            60
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "621f77a9043144e78e9a14857e74970c7794895e"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+        "bucket": "exploration",
+        "ranges": [
+          [
+            178,
+            294
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "2d90858523a4cbe716596b412aae75a94334b4a4"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            265,
+            281
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            217,
+            305
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            28,
+            108
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            476,
+            491
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            47,
+            53
+          ],
+          [
+            184,
+            215
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/config.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            128,
+            146
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f"
+      },
+      {
+        "path": "strategy-evaluation/METRICS.md",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            121,
+            136
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+      },
+      {
+        "path": "strategy-evaluation/README.md",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            24,
+            28
+          ],
+          [
+            71,
+            83
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "00fbd1d1b74dee8a59f70dec284753ddf08ffda9"
+      },
+      {
+        "path": "tests/test_quantile_consistency.py",
+        "bucket": "mandatory_callers_contracts",
+        "ranges": [
+          [
+            1,
+            99
+          ]
+        ],
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "blob": "8295679fbde48c5ac1d4781c9f812273f65b327c"
+      }
+    ],
+    "rule": "Three comparable evaluation visits contain a single historical first-confirmed root over 975 exploitation lines and zero over 704 exploration lines; lower exploration by 10 points to its 30% floor.",
+    "new_cumulative_lines_all_reviewers": 607,
+    "research": "not scheduled"
+  },
+  "coverage": {
+    "tracked_files": 148,
+    "inventoried": 67,
+    "partially_reviewed": 28,
+    "reviewed": 27,
+    "checked_automatically": 5,
+    "blocked": 21,
+    "unread_lines": 37497,
+    "unread_paths": 113,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 607
+  },
+  "resource_usage": {
+    "planned_minutes": [
+      20,
+      70,
+      30
+    ],
+    "total_plan_minutes": 120,
+    "elapsed_seconds_to_preparation": 926,
+    "helper_count": 1,
+    "helper_exact_elapsed_seconds": null,
+    "new_remote_compute_jobs": 0,
+    "helper_product_runs": 0,
+    "new_optional_recommendations": 0
+  },
+  "next": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead."
+}

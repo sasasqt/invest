@@ -104,3 +104,7 @@ No applicable comparator verdict was found in the accessible Claude findings and
 | K14 / GA-2026-11-02-3 | Agree historically, resolved at current typed ingress | #39 is merged. All four typed readers now require exact declared keys, and the common read path validates their unique non-null tuples. Independent current-source trace and existing exact-main CI. | [Expected/actual and controls](2026-11-16-data/evidence.json) | 2026-11-16 | `2edd7ae1168eda1192ff73698ba5d42a7c034a41` |
 
 | BF-2026-11-09-1 / REVIEW-45 | Agree, current source and #51 | Search and confirm construct the panel and optional-input identity from separate reads. Merged #41 pairs exporter inputs, while #51 retains the recording-side split. Fresh independent static check and synthetic expectations. | [Verification](2026-11-17-mining/evidence.json) | 2026-11-17 | `2edd7ae1168eda1192ff73698ba5d42a7c034a41` |
+
+### 2026-11-18 evaluation
+
+GA-2026-10-31-2: agree with the settlement mismatch at 2edd7ae1168eda1192ff73698ba5d42a7c034a41. Peer reported the same-SHA baseline result on 15 November; today's fresh independent static trace and exact merge CI cover the proposed #58 change. Full verdict and untouched independent runtime controls remain open. [Peer evidence](https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md#L22) · [Verification](2026-11-18-evaluation/evidence.json)

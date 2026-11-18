@@ -1609,6 +1609,257 @@
         }
       ],
       "rule": "Retain one historical first-confirmed exploitation root. Current recheck adds no root. Both denominators positive, so reduce exploration from 40 to 30 per pinned policy. Mandatory, helper and research work are excluded from rates."
+    },
+    {
+      "date": "2026-11-18",
+      "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "field": "evaluation",
+      "planned_percent": {
+        "exploitation": 60,
+        "exploration": 40
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 261,
+        "exploration": 177,
+        "mandatory_callers_contracts": 394
+      },
+      "actual_percent": {
+        "exploitation": 59.58904109589041,
+        "exploration": 40.41095890410959
+      },
+      "pooled_eligible_visits": 3,
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 1.0256410256410255,
+        "exploration": 0
+      },
+      "new_verified_distinct_root_causes": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "evidence_advances": {
+        "proposed_fix_verified_within_static_and_merge_ci_scope": 1,
+        "known_main_mismatch_reverified": 1,
+        "independent_product_runtime_acceptance": 0
+      },
+      "next_percent": {
+        "exploitation": 70,
+        "exploration": 30
+      },
+      "selection": {
+        "seed": "43db3cb95c2941e29ec982f2ece5013251a48de9e99763392a364919f1f2145e",
+        "draw": "docs/QUANTILE_ANALYSIS.md",
+        "eligible": [
+          "docs/QUANTILE_ANALYSIS.md",
+          "strategy-evaluation/src/invest_evaluation/__init__.py",
+          "strategy-evaluation/src/invest_evaluation/cli.py",
+          "strategy-evaluation/src/invest_evaluation/quantiles.py",
+          "strategy-evaluation/src/invest_evaluation/strategies.py",
+          "strategy-evaluation/tests/conftest.py",
+          "strategy-evaluation/tests/test_quantiles.py",
+          "strategy-evaluation/tests/test_stats_and_cli.py",
+          "tests/test_quantile_consistency.py"
+        ],
+        "method": "SHA-256 of Berlin date modulo sorted eligible set; selected path also oldest feasible unread documentation in this set; comparable peer exact-range history unavailable",
+        "lens": "Settlement valuation continuity across the holdings, comparator and report paths; bucket membership and outcome views traced separately"
+      },
+      "ranges": [
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              116,
+              149
+            ],
+            [
+              469,
+              506
+            ],
+            [
+              606,
+              646
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_engine.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              232,
+              272
+            ],
+            [
+              523,
+              557
+            ],
+            [
+              1275,
+              1292
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              282,
+              335
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+        },
+        {
+          "path": "docs/QUANTILE_ANALYSIS.md",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              1,
+              60
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "621f77a9043144e78e9a14857e74970c7794895e"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              178,
+              294
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "2d90858523a4cbe716596b412aae75a94334b4a4"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              265,
+              281
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              217,
+              305
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              28,
+              108
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "0d4475c784ea547dd7fc52aaf13f0643baa8db31"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              476,
+              491
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              47,
+              53
+            ],
+            [
+              184,
+              215
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/config.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              128,
+              146
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f"
+        },
+        {
+          "path": "strategy-evaluation/METRICS.md",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              121,
+              136
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+        },
+        {
+          "path": "strategy-evaluation/README.md",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              24,
+              28
+            ],
+            [
+              71,
+              83
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "00fbd1d1b74dee8a59f70dec284753ddf08ffda9"
+        },
+        {
+          "path": "tests/test_quantile_consistency.py",
+          "bucket": "mandatory_callers_contracts",
+          "ranges": [
+            [
+              1,
+              99
+            ]
+          ],
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "blob": "8295679fbde48c5ac1d4781c9f812273f65b327c"
+        }
+      ],
+      "rule": "Three comparable evaluation visits contain a single historical first-confirmed root over 975 exploitation lines and zero over 704 exploration lines; lower exploration by 10 points to its 30% floor.",
+      "new_cumulative_lines_all_reviewers": 607,
+      "research": "not scheduled"
     }
   ],
   "date": "2026-11-12",

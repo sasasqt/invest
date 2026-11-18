@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "files": [
     {
       "path": ".github/workflows/audit-runtime.yml",
@@ -15,7 +15,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -79,7 +79,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -143,7 +143,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -219,7 +219,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -294,7 +294,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -393,7 +393,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -474,7 +474,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -573,7 +573,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -657,7 +657,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -759,7 +759,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -937,7 +937,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -987,7 +987,7 @@
       "verifier_a_ranges": [],
       "status": "partially_reviewed",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1043,7 +1043,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1096,7 +1096,7 @@
       "verifier_a_ranges": [],
       "status": "partially_reviewed",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1164,7 +1164,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1199,7 +1199,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1234,7 +1234,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1269,7 +1269,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1304,7 +1304,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1339,7 +1339,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1392,7 +1392,7 @@
       "verifier_a_ranges": [],
       "status": "partially_reviewed",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1460,7 +1460,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1521,7 +1521,7 @@
       "verifier_a_ranges": [],
       "status": "partially_reviewed",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1601,7 +1601,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1636,7 +1636,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1671,7 +1671,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1706,7 +1706,7 @@
       "verifier_a_ranges": [],
       "status": "inventoried",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
@@ -1851,7 +1851,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -1907,7 +1907,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -1963,7 +1963,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -2072,7 +2072,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -2150,7 +2150,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -2200,12 +2200,7 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          1,
-          3
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -2231,8 +2226,8 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "existing exact-main standard CI aggregate only; no fresh local or isolated run",
       "static_evidence_freshness": "current for the exact range and bounded static invariant",
       "unread_ranges": [],
@@ -2342,7 +2337,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -2507,40 +2502,7 @@
           606
         ]
       ],
-      "this_run_main_ranges": [
-        [
-          64,
-          79
-        ],
-        [
-          322,
-          375
-        ],
-        [
-          383,
-          426
-        ],
-        [
-          453,
-          500
-        ],
-        [
-          503,
-          530
-        ],
-        [
-          581,
-          611
-        ],
-        [
-          666,
-          687
-        ],
-        [
-          748,
-          781
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -2742,8 +2704,8 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "existing exact-main standard CI aggregate only; no fresh local or isolated run",
       "static_evidence_freshness": "current for the exact range and bounded static invariant",
       "unread_ranges": [
@@ -2907,7 +2869,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3092,7 +3054,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -3232,7 +3194,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3376,7 +3338,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3438,7 +3400,7 @@
       "component": "mining",
       "category": "source/configuration/documentation",
       "line_count": 0,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -3526,7 +3488,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3627,24 +3589,7 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          137,
-          160
-        ],
-        [
-          181,
-          195
-        ],
-        [
-          238,
-          246
-        ],
-        [
-          287,
-          310
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -3751,8 +3696,8 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "existing exact-main standard CI aggregate only; no fresh local or isolated run",
       "static_evidence_freshness": "current for the exact range and bounded static invariant",
       "unread_ranges": [
@@ -3845,7 +3790,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3911,7 +3856,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -3966,12 +3911,7 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          1,
-          181
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -4006,8 +3946,8 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "existing exact-main standard CI aggregate only; no fresh local or isolated run",
       "static_evidence_freshness": "current for the exact range and bounded static invariant",
       "unread_ranges": [
@@ -4061,12 +4001,7 @@
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [
-        [
-          493,
-          548
-        ]
-      ],
+      "this_run_main_ranges": [],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -4123,8 +4058,8 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": true,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "existing exact-main standard CI aggregate only; no fresh local or isolated run",
       "static_evidence_freshness": "current for the exact range and bounded static invariant",
       "unread_ranges": [
@@ -4237,7 +4172,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -4316,7 +4251,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -4355,7 +4290,7 @@
       "inspection_depth": "new or changed bytes; earlier content evidence historical",
       "content_identity": "9b801218cd234efcf1b8003739ae772ca9992487",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "line_count": 58,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
@@ -4484,7 +4419,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -4551,7 +4486,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -4620,7 +4555,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -4718,7 +4653,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -4815,7 +4750,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -4973,7 +4908,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -5066,7 +5001,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -5183,7 +5118,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -5370,7 +5305,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -5426,7 +5361,7 @@
       "component": "data",
       "category": "source/configuration/documentation",
       "line_count": 0,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -5636,7 +5571,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -5764,7 +5699,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -5876,7 +5811,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -5940,7 +5875,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -6089,7 +6024,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -6158,7 +6093,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -6207,7 +6142,7 @@
       "component": "data",
       "category": "test",
       "line_count": 115,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [
@@ -6368,7 +6303,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -6449,7 +6384,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -6522,7 +6457,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -6550,7 +6485,7 @@
       "component": "data",
       "category": "test",
       "line_count": 62,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -6657,7 +6592,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -6687,7 +6622,7 @@
       "component": "workspace",
       "category": "source/configuration/documentation",
       "line_count": 286,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -6832,7 +6767,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -6886,7 +6821,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7032,7 +6967,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -7059,9 +6994,19 @@
       "component": "workspace",
       "category": "documentation",
       "line_count": 60,
-      "inspection_depth": "new blob inventoried; prior semantic ranges historical",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "complete static file read on pinned blob",
+      "line_ranges": [
+        [
+          1,
+          60
+        ]
+      ],
+      "main_ranges": [
+        [
+          1,
+          60
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [
         null,
@@ -7071,21 +7016,29 @@
         "blob_identity",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
-        "inventory"
+        "inventory",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-11-12-integration/evidence.json",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "inventoried",
-      "last_review_date": null,
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          60
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -7094,6 +7047,18 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              1,
+              60
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -7113,16 +7078,11 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
-      "unread_ranges": [
-        [
-          1,
-          60
-        ]
-      ],
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
+      "unread_ranges": [],
       "mode": "100644"
     },
     {
@@ -7202,7 +7162,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -7231,7 +7191,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7283,7 +7243,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7335,7 +7295,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7387,7 +7347,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7420,7 +7380,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7453,7 +7413,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7486,7 +7446,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7519,7 +7479,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7552,7 +7512,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7604,7 +7564,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7656,7 +7616,7 @@
       "bytes_verified_this_run": false,
       "main_ranges": [],
       "verifier_a_ranges": [],
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "prior_evidence_reused": false,
       "prior_ranges": [],
       "checks": [
@@ -7730,7 +7690,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -7801,7 +7761,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -7855,7 +7815,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -7954,7 +7914,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8006,7 +7966,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8063,7 +8023,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8119,7 +8079,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8175,7 +8135,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8226,7 +8186,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8277,7 +8237,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8329,7 +8289,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8385,7 +8345,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8441,7 +8401,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8497,7 +8457,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8553,7 +8513,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8609,7 +8569,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8665,7 +8625,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8721,7 +8681,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8772,7 +8732,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8823,7 +8783,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8879,7 +8839,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8935,7 +8895,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -8991,7 +8951,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -9048,7 +9008,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -9104,7 +9064,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -9124,7 +9084,7 @@
       "component": "workspace",
       "category": "source/configuration/documentation",
       "line_count": 176,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -9214,7 +9174,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -9326,7 +9286,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -9463,7 +9423,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -9561,7 +9521,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "exact-main standard CI where collected; no fresh per-file or isolated execution",
       "static_evidence_freshness": "current exact ranges",
@@ -9658,7 +9618,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -9690,7 +9650,7 @@
       "component": "evaluation",
       "category": "documentation",
       "line_count": 192,
-      "inspection_depth": "new or changed bytes; earlier content evidence historical",
+      "inspection_depth": "pinned semantic ranges",
       "line_ranges": [
         [
           98,
@@ -9717,16 +9677,19 @@
         "blob_identity",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "partially_reviewed",
-      "last_review_date": "2026-11-04",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -9737,7 +9700,12 @@
           192
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          121,
+          136
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -9768,6 +9736,18 @@
             ]
           ],
           "scope": "static semantics; standalone synthetic oracle not product coverage"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              121,
+              136
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -9785,10 +9765,10 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           1,
@@ -9803,25 +9783,56 @@
       "component": "evaluation",
       "category": "documentation",
       "line_count": 85,
-      "inspection_depth": "recursive Git inventory; no semantic review of current blob",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "pinned semantic ranges",
+      "line_ranges": [
+        [
+          24,
+          28
+        ],
+        [
+          71,
+          83
+        ]
+      ],
+      "main_ranges": [
+        [
+          24,
+          28
+        ],
+        [
+          71,
+          83
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [],
       "checks": [
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
-      "lenses": [],
-      "evidence": null,
-      "audited_sha": null,
-      "status": "inventoried",
-      "last_review_date": null,
+      "lenses": [
+        "cash settlement timing and benchmark consumers"
+      ],
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          24,
+          28
+        ],
+        [
+          71,
+          83
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -9851,6 +9862,22 @@
             ]
           ],
           "scope": "trusted static contract read"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              24,
+              28
+            ],
+            [
+              71,
+              83
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -9880,13 +9907,21 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "new or changed; older blob review retained as historical",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           1,
+          23
+        ],
+        [
+          29,
+          70
+        ],
+        [
+          84,
           85
         ]
       ],
@@ -9984,7 +10019,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -10057,7 +10092,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -10109,7 +10144,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -10148,25 +10183,44 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 379,
-      "inspection_depth": "recursive Git inventory; no semantic review of current blob",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "pinned semantic ranges",
+      "line_ranges": [
+        [
+          217,
+          305
+        ]
+      ],
+      "main_ranges": [
+        [
+          217,
+          305
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [],
       "checks": [
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
-      "lenses": [],
-      "evidence": null,
-      "audited_sha": null,
-      "status": "inventoried",
-      "last_review_date": null,
+      "lenses": [
+        "cash settlement timing and benchmark consumers"
+      ],
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "product runtime unavailable in this audit",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          217,
+          305
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -10251,16 +10305,32 @@
             ]
           ],
           "scope": "static performance gate and consumer logic"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              217,
+              305
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "new or changed; older blob review retained as historical",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           1,
+          216
+        ],
+        [
+          306,
           379
         ]
       ],
@@ -10309,7 +10379,7 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 230,
-      "inspection_depth": "new or changed bytes; earlier content evidence historical",
+      "inspection_depth": "complete static file read on pinned blob",
       "line_ranges": [
         [
           1,
@@ -10332,16 +10402,19 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "reviewed",
-      "last_review_date": "2026-11-04",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -10352,7 +10425,12 @@
           230
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          128,
+          146
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -10383,6 +10461,18 @@
             ]
           ],
           "scope": "static semantics; standalone synthetic oracle not product coverage"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              128,
+              146
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -10400,10 +10490,10 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [],
       "remote_test_coverage": {
         "run": 41620332472,
@@ -10434,9 +10524,43 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 646,
-      "inspection_depth": "new blob inventoried; prior semantic ranges historical",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "pinned semantic ranges",
+      "line_ranges": [
+        [
+          116,
+          149
+        ],
+        [
+          265,
+          281
+        ],
+        [
+          469,
+          506
+        ],
+        [
+          606,
+          646
+        ]
+      ],
+      "main_ranges": [
+        [
+          116,
+          149
+        ],
+        [
+          265,
+          281
+        ],
+        [
+          469,
+          506
+        ],
+        [
+          606,
+          646
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [
         "main",
@@ -10447,22 +10571,42 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-11-12-integration/evidence.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "status": "inventoried",
-      "last_review_date": "2026-11-04",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          116,
+          149
+        ],
+        [
+          265,
+          281
+        ],
+        [
+          469,
+          506
+        ],
+        [
+          606,
+          646
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -10492,6 +10636,30 @@
           ],
           "verifier_ranges": [],
           "scope": "static semantics; standalone synthetic oracle not product coverage"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              116,
+              149
+            ],
+            [
+              265,
+              281
+            ],
+            [
+              469,
+              506
+            ],
+            [
+              606,
+              646
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -10521,14 +10689,26 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           1,
-          646
+          115
+        ],
+        [
+          150,
+          264
+        ],
+        [
+          282,
+          468
+        ],
+        [
+          507,
+          605
         ]
       ],
       "remote_test_coverage": {
@@ -10560,7 +10740,7 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 491,
-      "inspection_depth": "semantic exact ranges",
+      "inspection_depth": "pinned semantic ranges",
       "line_ranges": [
         [
           1,
@@ -10604,16 +10784,19 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "partially_reviewed",
-      "last_review_date": "2026-11-04",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -10632,7 +10815,16 @@
           491
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          282,
+          335
+        ],
+        [
+          476,
+          491
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -10684,13 +10876,29 @@
             ]
           ],
           "scope": "static semantics; standalone synthetic oracle not product coverage"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              282,
+              335
+            ],
+            [
+              476,
+              491
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           213,
@@ -10731,7 +10939,7 @@
       "component": "evaluation",
       "category": "source/configuration/documentation",
       "line_count": 0,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -10761,14 +10969,14 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 429,
-      "inspection_depth": "semantic exact ranges",
+      "inspection_depth": "pinned semantic ranges",
       "line_ranges": [
         [
           1,
           150
         ],
         [
-          295,
+          178,
           348
         ],
         [
@@ -10782,7 +10990,7 @@
           150
         ],
         [
-          295,
+          178,
           348
         ],
         [
@@ -10800,15 +11008,18 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
-        "inventory"
+        "inventory",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-11-14-performance/evidence.json",
-      "audited_sha": "d52e12297e5ac89c7a25dd99a0b2110ccf32aee6",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "partially_reviewed",
-      "last_review_date": "2026-11-14",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -10827,7 +11038,12 @@
           429
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          178,
+          294
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -10865,17 +11081,29 @@
             ]
           ],
           "scope": "static performance gate and consumer logic"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              178,
+              294
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           151,
-          294
+          177
         ],
         [
           349,
@@ -10911,7 +11139,7 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 312,
-      "inspection_depth": "semantic exact ranges",
+      "inspection_depth": "complete static file read on pinned blob",
       "line_ranges": [
         [
           1,
@@ -10934,15 +11162,18 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
-        "inventory"
+        "inventory",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json; 2026-11-05-integration/reading-main.json; 2026-11-05-integration/reviewer2/independent-verdict.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "reviewed",
-      "last_review_date": "2026-11-05",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -10953,7 +11184,12 @@
           312
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          28,
+          108
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -11001,13 +11237,25 @@
           ],
           "verifier_ranges": [],
           "scope": "static integration; no repository execution"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              28,
+              108
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [],
       "remote_test_coverage": {
         "run": 41620332472,
@@ -11097,7 +11345,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11198,7 +11446,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11277,7 +11525,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11330,7 +11578,7 @@
       "component": "evaluation",
       "category": "first_party_source",
       "line_count": 240,
-      "inspection_depth": "semantic exact ranges",
+      "inspection_depth": "complete static file read on pinned blob",
       "line_ranges": [
         [
           1,
@@ -11358,16 +11606,19 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements; 2026-11-04-evaluation/reviewer-comparison.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "reviewed",
-      "last_review_date": "2026-11-04",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
@@ -11378,7 +11629,16 @@
           240
         ]
       ],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          47,
+          53
+        ],
+        [
+          184,
+          215
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -11404,13 +11664,29 @@
             ]
           ],
           "scope": "static semantics; standalone synthetic oracle not product coverage"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              47,
+              53
+            ],
+            [
+              184,
+              215
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [],
       "remote_test_coverage": {
         "run": 41620332472,
@@ -11480,7 +11756,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11569,7 +11845,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11582,9 +11858,35 @@
       "component": "evaluation",
       "category": "tests",
       "line_count": 1292,
-      "inspection_depth": "new blob inventoried; prior semantic ranges historical",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "pinned semantic ranges",
+      "line_ranges": [
+        [
+          232,
+          272
+        ],
+        [
+          523,
+          557
+        ],
+        [
+          1275,
+          1292
+        ]
+      ],
+      "main_ranges": [
+        [
+          232,
+          272
+        ],
+        [
+          523,
+          557
+        ],
+        [
+          1275,
+          1292
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [
         null,
@@ -11595,22 +11897,38 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
         "contract consistency",
-        "causality/accounting"
+        "causality/accounting",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-11-12-integration/evidence.json",
-      "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "status": "inventoried",
-      "last_review_date": "2026-11-11",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "partially_reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          232,
+          272
+        ],
+        [
+          523,
+          557
+        ],
+        [
+          1275,
+          1292
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -11644,6 +11962,26 @@
             ]
           ],
           "scope": "trusted static test-quality review"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              232,
+              272
+            ],
+            [
+              523,
+              557
+            ],
+            [
+              1275,
+              1292
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "content_history": [
@@ -11681,14 +12019,22 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
       "unread_ranges": [
         [
           1,
-          1292
+          231
+        ],
+        [
+          273,
+          522
+        ],
+        [
+          558,
+          1274
         ]
       ],
       "mode": "100644"
@@ -11775,7 +12121,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11836,7 +12182,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -11900,7 +12246,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -11990,7 +12336,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -12018,7 +12364,7 @@
       "component": "workspace",
       "category": "test",
       "line_count": 395,
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "bytes_verified_this_run": false,
       "line_ranges": [],
@@ -12092,7 +12438,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -12191,7 +12537,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "new or changed; older blob review retained as historical",
@@ -12225,9 +12571,19 @@
       "component": "workspace",
       "category": "tests",
       "line_count": 99,
-      "inspection_depth": "metadata/hash/parser only",
-      "line_ranges": [],
-      "main_ranges": [],
+      "inspection_depth": "complete static file read on pinned blob",
+      "line_ranges": [
+        [
+          1,
+          99
+        ]
+      ],
+      "main_ranges": [
+        [
+          1,
+          99
+        ]
+      ],
       "verifier_a_ranges": [],
       "reviewer_producer": [
         null,
@@ -12238,21 +12594,29 @@
         "ast_parse",
         "blob_identity_current",
         "AST/TOML/shell where applicable",
-        "recursive Git blob identity"
+        "recursive Git blob identity",
+        "same Git blob hash",
+        "semantic trace"
       ],
       "lenses": [
-        "inventory"
+        "inventory",
+        "cash settlement timing and benchmark consumers"
       ],
-      "evidence": "2026-10-31-repro/reading-main.json; verifier-a-ranges.json; static-checks.json; 2026-11-02-repro/reading-main.json; 2026-11-02-repro/verifier-a/read-ranges.json; prior semantic-continuation supplements",
-      "audited_sha": "90b5ca038155b97833b120baa57dfecd05d6f641",
-      "status": "checked_automatically",
-      "last_review_date": null,
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "reviewed",
+      "last_review_date": "2026-11-18",
       "exclusion_reason": null,
       "behavioral_check": "Not executed this run; same-SHA historical CI separately linked",
       "peer_review": "Peer file-level claim at4930f9e; no per-file blob identities/exact ranges, not unioned",
       "prior_evidence_reused": false,
       "prior_ranges": [],
-      "this_run_main_ranges": [],
+      "this_run_main_ranges": [
+        [
+          1,
+          99
+        ]
+      ],
       "this_run_verifier_ranges": [],
       "review_history": [
         {
@@ -12261,19 +12625,26 @@
           "main_ranges": [],
           "verifier_ranges": [],
           "scope": "static semantic inspection only"
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "main_ranges": [
+            [
+              1,
+              99
+            ]
+          ],
+          "scope": "static semantic reading"
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
-      "bytes_verified_this_run": false,
+      "inventory_date": "2026-11-18",
+      "bytes_verified_this_run": true,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
-      "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
-      "unread_ranges": [
-        [
-          1,
-          99
-        ]
-      ],
+      "static_evidence_freshness": "current for the exact reviewed ranges and traced consumers",
+      "unread_ranges": [],
       "mode": "100644"
     },
     {
@@ -12384,7 +12755,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -12436,7 +12807,7 @@
         }
       ],
       "inventory_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "inventory_date": "2026-11-17",
+      "inventory_date": "2026-11-18",
       "bytes_verified_this_run": false,
       "behavioral_evidence_freshness": "historical or unavailable; no per-file inference",
       "static_evidence_freshness": "historical exact ranges where present; unchanged blob",
@@ -12481,8 +12852,8 @@
       }
     }
   },
-  "run_id": "ce5a20ff-64f8-8328-8e15-35e7b449b63c",
-  "scope_note": "Current complete tree inventory on unchanged main; only explicit new semantic ranges credited. Existing static ranges retain their demonstrated scope. Standard CI aggregate is not evidence of bespoke controls.",
-  "current_run_new_cumulative_semantic_lines": 565,
+  "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+  "scope_note": "Whole pinned tracked inventory; manual credit to actual exact semantic ranges. Existing Actions or peer evidence reported separately.",
+  "current_run_new_cumulative_semantic_lines": 607,
   "external_runner_scope": "Runner is a tracked part of this source revision; November 11 run checked a distinct source and runner checkout."
 }

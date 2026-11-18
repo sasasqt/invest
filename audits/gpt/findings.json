@@ -139,7 +139,8 @@
         "2026-10-31-repro/verifier-a.md",
         "2026-11-11-evaluation/reviewer-comparison.json",
         "2026-11-11-evaluation/oracle-results.json",
-        "https://github.com/sasasqt/invest/blob/f73a1d1136502f6faee9134a65301aa5a090c817/audits/claude/cross-check.md"
+        "https://github.com/sasasqt/invest/blob/f73a1d1136502f6faee9134a65301aa5a090c817/audits/claude/cross-check.md",
+        "2026-11-18-evaluation/evidence.json"
       ],
       "correction_boundary": "Benchmark construction, documentation, saved metrics and verdict regression tests. Do not change external benchmark semantics unless separately justified.",
       "acceptance": "On untouched supported runtime, run the settlement/event case and no-event/equal-close controls twice, cover membership ending on the settlement date, zero settlements and shorts, and a >=20-session relative-metric fixture. The saved benchmark and verdict must follow the declared policy.",
@@ -169,6 +170,19 @@
           "status": "known/open; confirmed static contract mismatch",
           "advance": "Fresh Reviewer 2 independently confirmed the dataflow/contract mismatch; same-SHA peer runtime evidence reports the expected wrong settlement-day benchmark. Local untouched runtime and verdict-flip fixture remain pending.",
           "evidence": "2026-11-11-evaluation/reviewer-comparison.json"
+        },
+        {
+          "date": "2026-11-18",
+          "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "status": "known/open on main; proposed fix corroborated within static and merge-CI scope",
+          "advance": "Settlement tests at exact PR merge preview and optional benchmark-gate consumer scope verified; current main still drops settlement; fresh independent reviewer confirmed.",
+          "proposal": {
+            "head": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+            "merge": "e14c126e0469fc49c48366f919fb3b8bcca6efe7",
+            "ci": "https://github.com/sasasqt/invest/actions/runs/43804786650"
+          },
+          "evidence": "2026-11-18-evaluation/evidence.json"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -180,9 +194,25 @@
           "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        },
+        {
+          "date": "2026-11-18",
+          "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+          "current_source": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+          "status": "current for traced source and reported peer synthetic reproduction; no independent fresh product run",
+          "why": "Fresh semantic trace and exact pinned peer evidence; PR CI on separately identified integration commit"
         }
       ],
-      "runtime_label": "same-SHA peer reproduction corroborated; local product execution unavailable"
+      "runtime_label": "same-SHA peer reproduction corroborated; local product execution unavailable",
+      "acceptance_history": [
+        {
+          "date": "2026-11-18",
+          "metrics_minimum": 20,
+          "verdict_minimum_configurable": 60,
+          "verdict_default_minimum": 252,
+          "remaining": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead."
+        }
+      ]
     },
     {
       "id": "GA-2026-11-02-1",
@@ -659,6 +689,17 @@
       "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "date": "2026-11-09",
       "evidence": "2026-11-09-data/reviewer-comparison.json"
+    },
+    {
+      "id": "GA-2026-11-18-DROP-1",
+      "kind": "candidate",
+      "date": "2026-11-18",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "proposal_sha": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+      "disposition": "dropped as distinct defect; preserve comparator-policy sensitivity",
+      "reason": "Proposal explicitly books the entire move when settlement is known using last available earlier close; documenting a tradeoff does not violate the selected policy.",
+      "counterfactual": "A documented evaluation-start initialization rule applying to stale constituents would keep it.",
+      "evidence": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/METRICS.md#L121-L125"
     }
   ],
   "run_history": [
@@ -716,6 +757,21 @@
         "GA-2026-11-14-1"
       ],
       "evidence": "2026-11-14-performance/evidence.json"
+    },
+    {
+      "date": "2026-11-18",
+      "field": "evaluation",
+      "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
+      "evidence": "2026-11-18-evaluation/evidence.json",
+      "new_findings": [],
+      "carried": [
+        "GA-2026-10-31-2"
+      ],
+      "dropped": [
+        "GA-2026-11-18-DROP-1"
+      ]
     }
   ],
   "carried_cross_checks": [
@@ -729,6 +785,13 @@
         "BH-2026-10-12-3"
       ],
       "evidence": "2026-11-12-integration/evidence.json"
+    },
+    {
+      "date": "2026-11-18",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "id": "GA-2026-10-31-2",
+      "result": "agree; pinned source behavior, peer synthetic result reported",
+      "evidence": "https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md#L22"
     }
   ]
 }
