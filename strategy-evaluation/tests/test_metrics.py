@@ -111,6 +111,33 @@ def test_unrecovered_drawdown_is_censored():
     assert m["current_drawdown"].value == pytest.approx(1 - 100 / 120)
 
 
+@pytest.mark.parametrize(
+    ("wealth", "longest", "censored"),
+    [
+        # From V0 = 100: the first episode runs from V0 to 101 (3 sessions, recovered); the
+        # second starts at 101 and is 1 session old at the end. The maximum is exact.
+        ([90, 95, 101, 100.5], 3, False),
+        ([90, 95, 101, 100.5, 100.8], 3, False),  # open episode 2 sessions, still shorter
+        ([90, 95, 101, 100.5, 100.8, 100.9], 3, True),  # tie: the open one can still grow
+        ([90, 95, 101, 100.5, 100.8, 100.9, 100], 4, True),  # the open one is the longest
+        ([90, 95, 101, 0], 3, False),  # insolvent at the end, open episode 1 session
+        ([101, 0, 0, 0], 3, True),  # insolvent, the open episode (from 101) is the longest
+        ([100, 101, 101, 105], 0, False),  # never under water
+        ([99], 1, True),  # one session, under water
+    ],
+)
+def test_censored_flag_describes_the_longest_drawdown(
+    wealth: list[float], longest: int, censored: bool
+) -> None:
+    """BH-2026-10-14-8: `censored` qualifies the reported maximum, so it is set only when the
+    longest episode is the one still open at the end (METRICS.md section 6), not whenever
+    the last episode is open."""
+    duration = drawdown_metrics(series(wealth), 100.0)["max_drawdown_duration"]
+    assert duration.value == longest
+    assert duration.extra is not None
+    assert duration.extra["censored"] is censored
+
+
 def test_calmar_uses_cagr_over_max_drawdown():
     r = series([0.01, -0.03, 0.02, 0.01, 0.005] * 6)
     m = return_metrics(r, v0=1.0, annualization=252)
