@@ -273,10 +273,18 @@ def run_search(
 def _select_family(
     ledger: pd.DataFrame, values: dict[str, pd.DataFrame], top_k: int, max_corr: float
 ) -> list[str]:
-    """Greedy by dev t-stat, skipping candidates too correlated with already chosen ones."""
+    """Greedy by dev t-stat, skipping candidates too correlated with already chosen ones.
+
+    Exact ties in ``dev_t`` (formulas that rank names identically, such as ``returns`` and
+    ``cs_rank(returns)``) go to the earlier trial. The sort must be stable: NumPy's default
+    quicksort orders ties by a CPU-specific code path, so the family would depend on the
+    machine (BH-2026-11-11-4).
+    """
     if "dev_t" not in ledger:
         return []
-    ranked = ledger[ledger["status"] == "evaluated"].sort_values("dev_t", ascending=False)
+    ranked = ledger[ledger["status"] == "evaluated"].sort_values(
+        "dev_t", ascending=False, kind="stable"
+    )
     chosen: list[str] = []
     for text in ranked["expression"]:
         cand = values[text]

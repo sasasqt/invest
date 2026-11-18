@@ -1,6 +1,7 @@
 import json
 from dataclasses import replace
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -11,7 +12,7 @@ from invest_mining.artifact import FrozenFactor
 from invest_mining.diagnostics import forward_returns
 from invest_mining.expressions import build_panel
 from invest_mining.inference import compute_scores, export_signals
-from invest_mining.search import chronological_split, run_search
+from invest_mining.search import _select_family, chronological_split, run_search
 
 
 def test_split_purges_overlapping_labels():
@@ -168,3 +169,27 @@ def test_development_coverage_is_a_share_of_labelled_cells(bars):
     coverage = result.ledger["dev_coverage"].dropna()
     assert len(coverage) and (coverage <= 1).all()
     assert coverage.max() == pytest.approx(1.0, abs=0.02)
+
+
+def test_family_breaks_exact_dev_t_ties_by_trial_order():
+    """BH-2026-11-11-4: formulas that rank names identically (``returns`` and
+    ``cs_rank(returns)``) tie exactly in ``dev_t``. An unstable sort let NumPy's
+    CPU-specific sort path choose which one entered the family; the earlier trial wins."""
+    rng = np.random.default_rng(7)
+    n = 64  # above NumPy's insertion-sort cutoff, so an unstable sort reorders ties
+    tied = np.zeros(n, dtype=bool)
+    tied[rng.choice(n, size=32, replace=False)] = True
+    texts = [f"f{i:02d}" for i in range(n)]
+    ledger = pd.DataFrame(
+        {
+            "trial": range(n),
+            "expression": texts,
+            "status": "evaluated",
+            "dev_t": np.where(tied, 2.0, 1.0),
+        }
+    )
+    dates = pd.bdate_range("2024-01-01", periods=40)
+    names = [f"N{i}" for i in range(8)]
+    values = {t: pd.DataFrame(rng.normal(size=(40, 8)), index=dates, columns=names) for t in texts}
+    family = _select_family(ledger, values, top_k=32, max_corr=0.99)
+    assert family == [t for t, is_tied in zip(texts, tied, strict=True) if is_tied]
