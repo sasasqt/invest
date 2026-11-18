@@ -815,7 +815,7 @@ def _ledger(args: argparse.Namespace) -> int:
             ledger.check_inspection(entries, window)
     except LedgerError as exc:
         raise SystemExit(f"{args.ledger}: {exc}") from exc
-    kind = "reservation" if args.action == "reserve" else "inspection"
+    kind: ledger.EntryKind = "reservation" if args.action == "reserve" else "inspection"
     entry = ledger.append(args.ledger, kind, {"window": window.to_json(), "note": args.note})
     print(json.dumps(entry))
     return 0

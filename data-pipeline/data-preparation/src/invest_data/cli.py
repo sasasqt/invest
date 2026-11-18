@@ -12,6 +12,7 @@ from typing import Any
 
 import pandas as pd
 
+from invest_data.bundle import StorageFormat
 from invest_data.cleaning import clean_bars
 from invest_data.schemas import (
     ADJUSTED_PRICES,
@@ -113,7 +114,7 @@ def _publish(
     dataset_id: str,
     metadata: dict[str, Any],
     provenance: dict[str, Any],
-    fmt: str,
+    fmt: StorageFormat,
     adjusted_close: str | None = None,
 ) -> int:
     """Clean and publish; ``adjusted_close`` converts raw or split-adjusted prices.

@@ -26,15 +26,29 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from decimal import Context, Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
 
 CONTRACT_VERSION = 1
 NULL_TOKEN = "\\N"
-LOGICAL_TYPES = ("string", "int64", "float64", "boolean", "date", "timestamp", "decimal")
-STORAGE_FORMATS = {"csv": "data.csv", "sqlite": "data.sqlite", "parquet": "data.parquet"}
+ColumnType = Literal["string", "int64", "float64", "boolean", "date", "timestamp", "decimal"]
+LOGICAL_TYPES: tuple[ColumnType, ...] = (
+    "string",
+    "int64",
+    "float64",
+    "boolean",
+    "date",
+    "timestamp",
+    "decimal",
+)
+StorageFormat = Literal["csv", "sqlite", "parquet"]
+STORAGE_FORMATS: dict[StorageFormat, str] = {
+    "csv": "data.csv",
+    "sqlite": "data.sqlite",
+    "parquet": "data.parquet",
+}
 # int64 bounds, and the most digits a Parquet decimal128 holds.
 _INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
 _MAX_DECIMAL_PRECISION = 38
@@ -63,7 +77,7 @@ class BundleError(ValueError):
 @dataclass(frozen=True)
 class Column:
     name: str
-    type: str
+    type: ColumnType
     nullable: bool = True
     precision: int | None = None
     scale: int | None = None
@@ -448,6 +462,7 @@ def infer_columns(
     cols = []
     for name in frame.columns:
         s = frame[name]
+        t: ColumnType
         if pd.api.types.is_bool_dtype(s):
             t = "boolean"
         elif pd.api.types.is_integer_dtype(s):
@@ -522,7 +537,7 @@ def write_bundle(
     path: str | os.PathLike[str],
     *,
     dataset_id: str,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
     columns: Sequence[Column] | None = None,
     primary_key: Sequence[str] = (),
     provenance: Mapping[str, Any] | None = None,
