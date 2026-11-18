@@ -4756,7 +4756,9 @@
     "new_product_runs": 0,
     "evidence": "2026-11-18-evaluation/evidence.json",
     "report": "2026-11-18.md",
-    "publication_status": "prepared"
+    "publication_status": "published_verified",
+    "verified_report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+    "elapsed_to_verified_publication_seconds": 1024
   },
   "publication_history": [
     {
@@ -5278,13 +5280,93 @@
       "readback_verified": true,
       "force": false,
       "verified_utc": "2026-11-17T02:06:29.000Z"
+    },
+    {
+      "date": "2026-11-18",
+      "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+      "status": "published_verified",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+      "report_url": "https://github.com/sasasqt/invest/blob/20a4854aba0163e8b0c0d4f032e24eb1abf96b9c/audits/gpt/2026-11-18.md",
+      "output_parent": "39cf6c0fb07e9daf81b7f6bf525c08f195344189",
+      "verified_head_at_report": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-18-evaluation/evidence.json",
+        "audits/gpt/2026-11-18.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "verified_git_blob_ids": {
+        "audits/gpt/2026-11-18-evaluation/evidence.json": "4713feee3e4afe5eddfcae092b51732eb03f2fee",
+        "audits/gpt/2026-11-18.md": "abaa507972a1b40cd8ca661b8c85a5560973cbe4",
+        "audits/gpt/checkpoint.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+        "audits/gpt/coverage-map.json": "aaa1447b83b77f8088b093bb62d3fcd5f16d4abc",
+        "audits/gpt/coverage-map.md": "92fc2b48796a08a5846d8eb9025f5f715240e593",
+        "audits/gpt/coverage.csv": "7ca8e4dada5d55d4db245bd7c83f4b2bd09abdf8",
+        "audits/gpt/cross-check.md": "f68dc16a9c1498449a679d0d9df1a8b6a7d56973",
+        "audits/gpt/exploration.json": "ea873ed19b1a67db937b1bfb07e6be90cee5ab1e",
+        "audits/gpt/findings.json": "5a703beff9f252421a5719883cd8d71b353a7fd7",
+        "audits/gpt/findings.md": "a969ba59f436d05a86ef61352db6d935258bfa7e",
+        "audits/gpt/state.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+        "audits/gpt/validation.csv": "f75d0616cbf0c08cca5b7ac4afe5ca7024c2ac57"
+      },
+      "readback_verified": true,
+      "force": false,
+      "verified_utc": "2026-11-18T02:21:30Z",
+      "elapsed_to_verified_publication_seconds": 1024
     }
   ],
   "publication_current_run": {
     "date": "2026-11-18",
     "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
-    "status": "prepared",
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+    "status": "published_verified",
+    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+    "report_url": "https://github.com/sasasqt/invest/blob/20a4854aba0163e8b0c0d4f032e24eb1abf96b9c/audits/gpt/2026-11-18.md",
+    "output_parent": "39cf6c0fb07e9daf81b7f6bf525c08f195344189",
+    "verified_head_at_report": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-18-evaluation/evidence.json",
+      "audits/gpt/2026-11-18.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "verified_git_blob_ids": {
+      "audits/gpt/2026-11-18-evaluation/evidence.json": "4713feee3e4afe5eddfcae092b51732eb03f2fee",
+      "audits/gpt/2026-11-18.md": "abaa507972a1b40cd8ca661b8c85a5560973cbe4",
+      "audits/gpt/checkpoint.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+      "audits/gpt/coverage-map.json": "aaa1447b83b77f8088b093bb62d3fcd5f16d4abc",
+      "audits/gpt/coverage-map.md": "92fc2b48796a08a5846d8eb9025f5f715240e593",
+      "audits/gpt/coverage.csv": "7ca8e4dada5d55d4db245bd7c83f4b2bd09abdf8",
+      "audits/gpt/cross-check.md": "f68dc16a9c1498449a679d0d9df1a8b6a7d56973",
+      "audits/gpt/exploration.json": "ea873ed19b1a67db937b1bfb07e6be90cee5ab1e",
+      "audits/gpt/findings.json": "5a703beff9f252421a5719883cd8d71b353a7fd7",
+      "audits/gpt/findings.md": "a969ba59f436d05a86ef61352db6d935258bfa7e",
+      "audits/gpt/state.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+      "audits/gpt/validation.csv": "f75d0616cbf0c08cca5b7ac4afe5ca7024c2ac57"
+    },
+    "readback_verified": true,
+    "force": false,
+    "verified_utc": "2026-11-18T02:21:30Z",
+    "elapsed_to_verified_publication_seconds": 1024
   },
   "remaining_work_current_visit": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead.",
   "runtime_validation_history": [
