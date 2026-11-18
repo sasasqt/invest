@@ -8,5 +8,5 @@ Read-only copies of the routines' open items, so they can be read next to the co
 - `bug-fix.md`: the daily bug fix's open pull requests, the decisions waiting on the user (from its newest run report) and the REVIEW items its pull requests added this week.
 - `bug-fix-decisions.md`: a copy of the bug fix's decisions file `review/bug-fix/decisions.md`.
 - `open-bugs.md`: a copy of the bug hunt's generated open-bug list `review/bug-hunt/open-bugs.md`.
-- `ideas.md`: the idea scout's adopt ideas from `ideas/new-ideas.md` whose status is proposed and that TODO.md and ROADMAP.md do not name yet.
+- `ideas.md`: every idea in the idea scout's index `ideas/new-ideas.md` (adopt, consider, park and reject), grouped by verdict, with its status and whether TODO.md or ROADMAP.md names it.
 - `claude/`: the weekly repo audit's mirror folder `audits/claude/mirror/` on branch `claude/repo-audits`, copied unchanged (the audit writes it ready for this folder).
