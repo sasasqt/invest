@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prepare -> mine -> export -> evaluate -> bucket portfolios on the deterministic
-# synthetic market.
+# synthetic market (bit for bit only on one machine; see README Known limitations).
 #
 # Usage: uv run scripts/synthetic_workflow.sh [OUT_DIR]
 # Every step reads only artifacts published by the previous one; no ids or dates are

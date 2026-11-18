@@ -191,5 +191,7 @@ def test_family_breaks_exact_dev_t_ties_by_trial_order():
     dates = pd.bdate_range("2024-01-01", periods=40)
     names = [f"N{i}" for i in range(8)]
     values = {t: pd.DataFrame(rng.normal(size=(40, 8)), index=dates, columns=names) for t in texts}
-    family = _select_family(ledger, values, top_k=32, max_corr=0.99)
-    assert family == [t for t, is_tied in zip(texts, tied, strict=True) if is_tied]
+    expected = [t for t, is_tied in zip(texts, tied, strict=True) if is_tied]
+    assert _select_family(ledger, values, top_k=32, max_corr=0.99) == expected
+    # The trial number decides, not the row order.
+    assert _select_family(ledger.iloc[::-1], values, top_k=32, max_corr=0.99) == expected
