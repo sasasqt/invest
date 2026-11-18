@@ -277,9 +277,9 @@ def _select_family(
     """Greedy by dev t-stat, skipping candidates too correlated with already chosen ones.
 
     Exact ties in ``dev_t`` (formulas that rank names identically, such as ``returns`` and
-    ``cs_rank(returns)``) go to the earlier trial, whatever the row order. The trial key and
-    the stable sort are both needed: NumPy's default quicksort orders ties by a CPU-specific
-    code path, so the family would depend on the machine (BH-2026-11-11-4).
+    ``cs_rank(returns)``) go to the earlier trial, whatever the row order. The trial is the
+    second sort key so that no ties are left: NumPy's default quicksort orders ties by a
+    CPU-specific code path, so the family would depend on the machine (BH-2026-11-11-4).
     """
     if "dev_t" not in ledger:
         return []
