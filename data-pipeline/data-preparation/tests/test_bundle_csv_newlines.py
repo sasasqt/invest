@@ -7,17 +7,21 @@ for standard CSV quoting, which keeps a quoted field's content exactly (RFC 4180
 
 import json
 from pathlib import Path
+from typing import Literal
 
 import pandas as pd
 import pytest
 
 from invest_data.bundle import Column, read_bundle, write_bundle
 
+# The storage formats write_bundle accepts (StorageFormat once the typing pull request merges).
+Format = Literal["csv", "sqlite", "parquet"]
+FORMATS: tuple[Format, ...] = ("csv", "sqlite", "parquet")
 COLUMNS = (Column("k", "int64", nullable=False), Column("s", "string", nullable=False))
-TEXTS = ["a\rb", "a\r\nb", "\r", "a\nb", "end\r"]
+TEXTS = ["a\rb", "a\r\nb", "\r", "\r\n", "a\nb", "end\r", "\ra", "\\\r", "a\r\rb"]
 
 
-def _write(path: Path, texts: list[str], fmt: str = "csv") -> None:
+def _write(path: Path, texts: list[str], fmt: Format = "csv") -> None:
     frame = pd.DataFrame({"k": list(range(len(texts))), "s": pd.Series(texts, dtype=object)})
     write_bundle(frame, path, dataset_id="t", fmt=fmt, columns=COLUMNS, primary_key=("k",))
 
@@ -26,11 +30,21 @@ def _strings(path: Path) -> list[str]:
     return list(read_bundle(path)[1]["s"])
 
 
-@pytest.mark.parametrize("fmt", ["csv", "sqlite", "parquet"])
-def test_strings_with_carriage_returns_round_trip(tmp_path: Path, fmt: str) -> None:
+@pytest.mark.parametrize("fmt", FORMATS)
+def test_strings_with_carriage_returns_round_trip(tmp_path: Path, fmt: Format) -> None:
     """The writer refused these strings with a content hash mismatch (CSV only)."""
     _write(tmp_path / "b", TEXTS, fmt)
     assert _strings(tmp_path / "b") == TEXTS
+
+
+def test_the_three_formats_hash_strings_with_carriage_returns_alike(tmp_path: Path) -> None:
+    """DATA_CONTRACT: CSV, SQLite and Parquet copies of the same data have the same hash."""
+    hashes: set[str] = set()
+    for fmt in FORMATS:
+        _write(tmp_path / fmt, TEXTS, fmt)
+        manifest = json.loads((tmp_path / fmt / "manifest.json").read_text(encoding="utf-8"))
+        hashes.add(manifest["content_sha256"])
+    assert len(hashes) == 1
 
 
 def test_quoted_carriage_returns_in_a_bundle_without_hash_read_exactly(tmp_path: Path) -> None:
