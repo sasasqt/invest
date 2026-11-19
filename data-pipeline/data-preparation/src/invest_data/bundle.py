@@ -826,7 +826,9 @@ def _legacy_hash_matches(
 
 def _read_csv(path: Path, manifest: Manifest) -> list[list[Any]]:
     try:
-        text = path.read_text(encoding="utf-8")
+        # Decode the bytes: read_text would turn a carriage return inside a quoted field
+        # into a newline (universal newlines) before the CSV parser sees it.
+        text = path.read_bytes().decode("utf-8")
     except UnicodeDecodeError as exc:
         raise BundleError(f"CSV file is not UTF-8 text: {exc}") from exc
     reader = csv.reader(io.StringIO(text, newline=""))
