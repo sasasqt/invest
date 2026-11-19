@@ -1,0 +1,18 @@
+ok  PSR vs paper formula: observed 0.8954715895 expected 0.8954715895
+ok  E[max SR] paper example (per day): observed 0.1131720019 expected 0.1132
+ok  DSR paper example: observed 0.9003968344 expected 0.9004
+ok  DSR(n_trials=50) vs formula: observed 0.1634776398 expected 0.1634776398
+ok  DSR(n_trials=1) == PSR: observed 0.8954715895 expected 0.8954715895
+ok  mining HAC t (L=7): observed -0.7889981948 expected -0.7889981948
+ok  evaluation HAC t (NW94 rule): observed -0.8140560888 expected -0.8140560888
+ok  Holm: observed 0.03 expected 0.03
+ok  Holm: observed 0.06 expected 0.06
+ok  Holm: observed 0.06 expected 0.06
+ok  Holm: observed 0.02 expected 0.02
+ok  BH: observed 0.02 expected 0.02
+ok  BH: observed 0.04 expected 0.04
+ok  BH: observed 0.04 expected 0.04
+ok  BH: observed 0.02 expected 0.02
+ok  Spearman IC with ties: observed 0.5 expected 0.5
+ok  mean block length ~ 8: observed 7.883522727 expected 8
+ALL OK

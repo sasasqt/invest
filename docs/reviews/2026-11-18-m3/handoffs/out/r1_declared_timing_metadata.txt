@@ -1,0 +1,6 @@
+universe declared interval: start_date <= date <= end_date
+  member on end_date 2024-01-04: observed False, expected per its declaration True (or a refusal of the declaration)
+fundamentals declared available_at: available_date_next_open
+  value used at the close of 2024-01-03: observed 1.0, expected per its declaration NaN (known only at the next open) or a refusal
+signals with another available_at: refused -> BundleError signals: only available_at='decision_date_close' is supported
+signals declared signal_type: rank_1_is_best -> accepted; evaluation treats higher as more attractive

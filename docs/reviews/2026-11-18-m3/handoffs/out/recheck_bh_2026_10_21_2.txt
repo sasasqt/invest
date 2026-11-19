@@ -1,0 +1,1 @@
+benchmark on 2021-02-24: with settlement -0.01396, without 0.00274; difference -0.01670 ~ expected about -1/60 = -0.01667 (plus the name's own day return)

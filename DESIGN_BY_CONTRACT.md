@@ -59,6 +59,8 @@ Distinguish **invalid input** from a **valid but undefined statistic**. Invalid 
 | Calculate metrics | Valid observations, frequency, accounting basis, benchmark/MAR/risk-free conventions | Correct units and metadata; applicable undefined results have explicit statuses; calculation does not change strategy inputs |
 | Render report | Saved metrics/tables and methodology metadata | Rendering does not rerun search or alter numerical results; plots retain units, periods, assumptions, and result statuses |
 
+Check a declared property where it is relied on. A consumer that relies on a property its input declares (bar frequency, price adjustment, the time data becomes available, the market signals were scored on) checks it through the shared reader for that kind of data, not in one command; a producer checks a property it declares whenever the data can show it (the spacing of bar dates, for example). Each declared field in [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md) names the reader that checks it (REVIEW-59 adds the missing ones).
+
 These conditions are implementation obligations, not claims that the repository already enforces them. Financial schema details still need to be finalized as described in [the architecture](docs/ARCHITECTURE.md).
 
 ## 5. Numerical contracts

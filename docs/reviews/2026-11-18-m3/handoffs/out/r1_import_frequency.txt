@@ -1,0 +1,6 @@
+weekly.csv median gap between sessions (calendar days): 7.0
+weekly: observed median gap 7.0 days, weekdays ['Wednesday']; published metadata frequency='1d' calendar='XNYS'
+saturday: observed median gap 7.0 days, weekdays ['Saturday']; published metadata frequency='1d' calendar='XNYS'
+expected: a refusal, or frequency matching the data (not '1d' for weekly bars; no Saturday sessions in XNYS)
+{"run": "ev", "cagr": -0.2723104806346557, "sharpe": -1.2768308042599519, "max_drawdown": 0.19540763287405793, "warnings": 3, "factor_status": "not_confirmed", "portfolio_status": "insufficient_data"}
+annualization used: 252 | signals horizon_days: 1 (one bar = 7 calendar days)

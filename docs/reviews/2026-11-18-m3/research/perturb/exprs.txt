@@ -1,0 +1,7 @@
+close / delay(close, 5) - 1
+cs_rank(fund_book_to_price)
+cs_zscore(ts_mean(returns, 10))
+ts_corr(returns, volume, 10)
+cs_rank(close_as_traded)
+fund_earnings_yield - ts_mean(fund_earnings_yield, 60)
+cs_demean(ts_rank(intraday_return, 20))
