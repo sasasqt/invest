@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-19",
+  "field": "integration",
+  "scheduled_for": "2026-11-19T02:00:00Z",
+  "started_utc": "2026-11-19T02:00:53.714892Z",
+  "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "output_base": "5ff3f32621d65c6b37013060fc2ed2455eb2f33c",
+  "previous_publication": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+  "model": "unavailable",
+  "effort": "unavailable",
+  "status": "started",
+  "completed_steps": [
+    "verified methods and latest state",
+    "reconciled verified prior publication"
+  ],
+  "remaining_steps": [
+    "common checks",
+    "field question",
+    "independent review",
+    "report and publication"
+  ],
+  "pending_jobs": []
+}
