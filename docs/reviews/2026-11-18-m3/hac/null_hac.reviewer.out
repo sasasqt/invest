@@ -1,0 +1,6 @@
+factor AR(1) rho=0.0  h=1  sessions=300 lags=5: one-sided 5% rejection rate 0.052 (nominal 0.050, MC s.e. 0.011)
+factor AR(1) rho=0.0  h=5  sessions=300 lags=5: one-sided 5% rejection rate 0.058 (nominal 0.050, MC s.e. 0.011)
+factor AR(1) rho=0.0  h=20 sessions=300 lags=20: one-sided 5% rejection rate 0.085 (nominal 0.050, MC s.e. 0.011)
+factor AR(1) rho=0.98 h=1  sessions=300 lags=5: one-sided 5% rejection rate 0.062 (nominal 0.050, MC s.e. 0.011)
+factor AR(1) rho=0.98 h=5  sessions=300 lags=5: one-sided 5% rejection rate 0.072 (nominal 0.050, MC s.e. 0.011)
+factor AR(1) rho=0.98 h=20 sessions=300 lags=20: one-sided 5% rejection rate 0.120 (nominal 0.050, MC s.e. 0.011)

@@ -1,0 +1,14 @@
+n=60   h=1  lags=3   one-sided 5% size 0.061 (MC s.e. 0.003)
+n=60   h=5  lags=5   one-sided 5% size 0.105 (MC s.e. 0.003)
+n=60   h=10 lags=10  one-sided 5% size 0.145 (MC s.e. 0.003)
+n=60   h=20 lags=20  one-sided 5% size 0.203 (MC s.e. 0.003)
+n=250  h=1  lags=4   one-sided 5% size 0.059 (MC s.e. 0.003)
+n=250  h=5  lags=5   one-sided 5% size 0.081 (MC s.e. 0.003)
+n=250  h=10 lags=10  one-sided 5% size 0.094 (MC s.e. 0.003)
+n=250  h=20 lags=20  one-sided 5% size 0.119 (MC s.e. 0.003)
+n=750  h=1  lags=6   one-sided 5% size 0.050 (MC s.e. 0.003)
+n=750  h=5  lags=6   one-sided 5% size 0.069 (MC s.e. 0.003)
+n=750  h=10 lags=10  one-sided 5% size 0.095 (MC s.e. 0.003)
+n=750  h=20 lags=20  one-sided 5% size 0.112 (MC s.e. 0.003)
+h=5: Bartlett(L=h) long-run variance / true = 0.733; t inflated by 1.168
+h=20: Bartlett(L=h) long-run variance / true = 0.683; t inflated by 1.210

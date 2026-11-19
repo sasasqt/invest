@@ -1,0 +1,6 @@
+n=250 h=5 lags=5 (1h): size 0.086
+n=250 h=5 lags=10 (2h): size 0.068
+n=250 h=5 lags=15 (3h): size 0.068
+n=750 h=20 lags=20 (1h): size 0.112
+n=750 h=20 lags=40 (2h): size 0.083
+n=750 h=20 lags=60 (3h): size 0.080

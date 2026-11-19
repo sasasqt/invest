@@ -1,0 +1,6 @@
+R3 probe weekly-as-daily (checkout code eb64ad8, no PYTHONPATH):
+- make_weekly.py: 300 sessions, every gap 7 days, 11759 rows -> out/weekly.csv
+- invest-data import-csv out/weekly.csv --out out/market --dataset-id weekly --currency USD --calendar XNYS --price-adjustment total_return_adjusted -> rc 0
+- out/market/manifest.json metadata: {'frequency': '1d', ...}  (cli.py:262 hard-codes it; no --frequency option, no spacing check)
+- eval_weekly.py + invest-eval run --no-scenarios -> cagr 0.1607 (status ok), sharpe 0.6624 (ok), annual_volatility 0.2868 (ok), annualization 252
+- Correct for weekly bars: Sharpe x sqrt(52/252) = 0.30; growth 1.1607^(300/252)=1.194 over 5.75 years -> CAGR ~3.1%

@@ -1,0 +1,6 @@
+close / delay(close, 5) - 1
+cs_zscore(ts_std(returns, 20))
+ts_corr(returns, volume, 10)
+volume / ts_mean(volume, 20)
+cs_rank(dollar_volume)
+ts_rank(close, 20)

@@ -1,0 +1,157 @@
+[
+ {
+  "id": "M1e",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/engine.py"
+  ],
+  "target": [
+   "tests/test_pipeline.py"
+  ],
+  "target_rc": 0,
+  "target_s": 96.7,
+  "target_tail": [
+   "...............                                                          [100%]"
+  ],
+  "wider": [
+   "tests/test_pipeline.py"
+  ],
+  "wider_rc": 0,
+  "wider_s": 98.4,
+  "wider_tail": [
+   "...............                                                          [100%]"
+  ],
+  "verdict": "SURVIVED target and wider set"
+ },
+ {
+  "id": "M25",
+  "edits": [
+   "data-mining-framework/src/invest_mining/expressions.py"
+  ],
+  "target": [
+   "tests/test_pipeline.py"
+  ],
+  "target_rc": 0,
+  "target_s": 97.2,
+  "target_tail": [
+   "...............                                                          [100%]"
+  ],
+  "wider": [
+   "data-mining-framework/tests/test_cli.py",
+   "data-mining-framework/tests/test_search_and_inference.py"
+  ],
+  "wider_rc": 1,
+  "wider_s": 12.0,
+  "wider_tail": [
+   "E        +  where {'close', 'dollar_volume', 'intraday_return', 'open', 'volume'} = set(35             volume\\n37               open\\n40               open\\n43               open\\n45      dollar_volume\\n46      ...se\\n57             volume\\n58      dollar_volume\\n61              close\\n64      dollar_volume\\nName: expression, dtype: str)",
+   "",
+   "data-mining-framework/tests/test_search_and_inference.py:80: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED data-mining-framework/tests/test_search_and_inference.py::test_search_recovers_planted_signal_and_records_every_trial",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M22",
+  "edits": [
+   "data-pipeline/data-preparation/src/invest_data/cleaning.py"
+  ],
+  "target": [
+   "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+   "data-pipeline/data-preparation/tests/test_yahoo.py"
+  ],
+  "target_rc": 1,
+  "target_s": 1.5,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-pipeline/data-preparation/tests/test_cleaning_and_sources.py::test_import_csv_converts_raw_prices_to_total_return_bars",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M23",
+  "edits": [
+   "data-mining-framework/src/invest_mining/diagnostics.py"
+  ],
+  "target": [
+   "data-mining-framework/tests/test_diagnostics.py"
+  ],
+  "target_rc": 1,
+  "target_s": 0.6,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-mining-framework/tests/test_diagnostics.py::test_forward_returns_alignment",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M3q",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/engine.py"
+  ],
+  "target": [
+   "strategy-evaluation/tests/test_quantiles.py::test_future_data_cannot_change_earlier_bucket_holdings"
+  ],
+  "target_rc": 1,
+  "target_s": 1.3,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_quantiles.py::test_future_data_cannot_change_earlier_bucket_holdings",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M3p",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/engine.py"
+  ],
+  "target": [
+   "<invest>/docs/reviews/2026-11-18-m3/mutation/causality_variant_probe.py::test_future_prices_and_signals_cannot_change_the_past[5]"
+  ],
+  "target_rc": 0,
+  "target_s": 1.0,
+  "target_tail": [
+   ".                                                                        [100%]"
+  ],
+  "wider": [
+   "<invest>/docs/reviews/2026-11-18-m3/mutation/causality_variant_probe.py"
+  ],
+  "wider_rc": 1,
+  "wider_s": 2.3,
+  "wider_tail": [
+   "E   At positional index 145, first diff: 170516.68286278212 != 176799.83112862086",
+   "",
+   "pandas/_libs/testing.pyx:171: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED ../../../../../../..<invest>/docs/reviews/2026-11-18-m3/mutation/causality_variant_probe.py::test_future_prices_and_signals_cannot_change_the_past[1]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M2p",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/engine.py"
+  ],
+  "target": [
+   "<invest>/docs/reviews/2026-11-18-m3/mutation/causality_variant_probe.py::test_future_prices_and_signals_cannot_change_the_past[5]"
+  ],
+  "target_rc": 0,
+  "target_s": 0.9,
+  "target_tail": [
+   ".                                                                        [100%]"
+  ],
+  "wider": [
+   "<invest>/docs/reviews/2026-11-18-m3/mutation/causality_variant_probe.py"
+  ],
+  "wider_rc": 0,
+  "wider_s": 2.1,
+  "wider_tail": [
+   "..                                                                       [100%]"
+  ],
+  "verdict": "SURVIVED target and wider set"
+ }
+]
