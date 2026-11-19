@@ -94,6 +94,13 @@
           "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "current for stated static chain; runtime unavailable",
           "why": "Fresh source/caller/contract/test review, not unchanged-byte inference."
+        },
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
         }
       ],
       "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
@@ -105,7 +112,7 @@
       "category": "financial benchmark",
       "severity": "medium",
       "priority": "P2",
-      "status": "known/open",
+      "status": "fix merged; owning-field acceptance pending",
       "confidence": "high static contract/dataflow evidence with independent review; same-SHA peer runtime corroboration; local untouched runtime not executed",
       "evidence_label": "confirmed_static_contract_mismatch",
       "title": "Universe benchmark omits explicit cash settlements",
@@ -183,6 +190,13 @@
             "ci": "https://github.com/sasasqt/invest/actions/runs/43804786650"
           },
           "evidence": "2026-11-18-evaluation/evidence.json"
+        },
+        {
+          "date": "2026-11-19",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "fix merged; owning-field acceptance pending",
+          "pr": 58,
+          "evidence": "2026-11-19-integration/evidence.json"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -212,7 +226,8 @@
           "verdict_default_minimum": 252,
           "remaining": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead."
         }
-      ]
+      ],
+      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
     },
     {
       "id": "GA-2026-11-02-1",
@@ -222,7 +237,7 @@
       "severity": "medium",
       "priority": "P2",
       "confidence": "high for static contract/renderer omission; runtime not executed",
-      "status": "known/open",
+      "status": "fix merged; owning-field acceptance pending",
       "evidence_label": "confirmed_static_contract_renderer_contradiction",
       "runtime_label": "unverified on this worker",
       "independent_review_status": "independently reviewed, static only",
@@ -265,6 +280,13 @@
           "status": "known/open; independent static scope revalidated",
           "advance": "Aggregate maximum-duration lower bound distinguished from per-episode recovery; no new numerical defect or verdict effect established.",
           "evidence": "2026-11-04-evaluation/reviewer2/independent-verdict.json"
+        },
+        {
+          "date": "2026-11-19",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "fix merged; owning-field acceptance pending",
+          "pr": 53,
+          "evidence": "2026-11-19-integration/evidence.json"
         }
       ],
       "freshness_history": [
@@ -277,7 +299,8 @@
         }
       ],
       "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-      "current_static_evidence": "2026-11-04-evaluation/reviewer-comparison.json"
+      "current_static_evidence": "2026-11-04-evaluation/reviewer-comparison.json",
+      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
     },
     {
       "id": "GA-2026-11-02-2",
@@ -332,6 +355,13 @@
           "current_source": "9913f94b9b795bd9633a6a683e9f420301e400b3",
           "status": "historical; owning field not scheduled for revalidation today",
           "why": "No inference of unchanged behavior from unchanged bytes; prior evidence and IDs retained."
+        },
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
         }
       ],
       "current_static_source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
@@ -405,7 +435,16 @@
         "scope": "typed ingress, all four kinds and three shared reader paths in source; regressions CSV and positive SQLite in exact main standard CI",
         "runtime_limit": "no fresh product execution or per-node log; expended zero repeats",
         "separate_known": "BH-2026-10-23-6"
-      }
+      },
+      "freshness_history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
+        }
+      ]
     },
     {
       "id": "OPEN-RUNNER-GRAPH-FAILSTOP-001",
@@ -445,6 +484,15 @@
           "run_id": "d1cb58c9-11f8-8321-a973-b235c75e81ba",
           "status": "known/open; independently confirmed static",
           "scope": "base and candidate head; no runtime failure injection"
+        }
+      ],
+      "freshness_history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
         }
       ]
     },
@@ -525,7 +573,16 @@
         "evidence": "2026-11-17-mining/evidence.json",
         "independent_review": "complete",
         "runtime": "unavailable"
-      }
+      },
+      "freshness_history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
+        }
+      ]
     },
     {
       "id": "GA-2026-11-14-1",
@@ -552,7 +609,63 @@
         "OPEN-EXPECTED-ARTIFACT-GATE-001"
       ],
       "review_status": "Independent Reviewer A agrees with evidence scope and severity. No Verifier B triggered.",
-      "evidence": "2026-11-14-performance/evidence.json"
+      "evidence": "2026-11-14-performance/evidence.json",
+      "freshness_history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
+          "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
+        }
+      ]
+    },
+    {
+      "id": "GA-2026-11-19-1",
+      "kind": "documentation consistency",
+      "severity": "low",
+      "confidence": "high direct textual contradiction",
+      "discovery_bucket": "mandatory_callers_contracts",
+      "root_fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+      "expected": "The current limitations enumeration agrees with the merged source and operating instructions.",
+      "observed": "README180 explicitly labels REVIEW-17 open and affecting current results, while README115 describes the new inspection-first two-step workflow and TODO47 marks it fixed by merged #40.",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/README.md#L180",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/README.md#L115",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/TODO.md#L47"
+      ],
+      "missing": "Independent reviewer disposition, final report. No runtime proof needed for conflicting textual status.",
+      "correction": "Reconcile the current limitation statement with the documented inspection-first behavior and preserve genuinely open limitations. Related README5 chronology is incomplete but not a literal contradiction.",
+      "acceptance": "Static README/TODO/source comparison no longer calls the merged REVIEW-17 root open; any tracked-ledger and native Windows acceptance gaps retain their precise scope.",
+      "fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+      "category": "documentation consistency",
+      "title": "Current limitations still list the merged RECORD fix as open",
+      "status": "new/open",
+      "priority": "P3",
+      "evidence_label": "confirmed_textual_inconsistency",
+      "independent_review_status": "Reviewer 2 independently corroborated",
+      "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "observed_static": "README180 lists REVIEW-17 as an open defect affecting current results. README115 describes its inspection-first correction and TODO47 marks it fixed.",
+      "impact": "The current project status misdirects triage and obscures which RECORD checks remain genuinely unverified. No numerical consequence established.",
+      "correction_boundary": "Reconcile the current limitations sentence with merged REVIEW-17 behavior and preserve specifically scoped remaining limitations.",
+      "runtime_repeats": 0,
+      "owner": "documentation/workflow maintainer",
+      "effort": "S estimate",
+      "also_found_by": [],
+      "history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "status": "new/open",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-19-integration/evidence.json"
+        }
+      ],
+      "evidence": [
+        "2026-11-19-integration/evidence.json"
+      ],
+      "dedup": "Own findings, known external ledger, current docs-audit mirror and current PR40 review history searched; no earlier matching stale-current-limitations root found."
     }
   ],
   "known_external": [
@@ -614,14 +727,56 @@
     {
       "id": "REVIEW-17/K3",
       "fingerprint": "workflow:scripts/historical_workflow.sh:tracked-inspection-ledger-invalidates-record-code-cleanliness",
-      "status": "known/open; independently corroborated static chain; runtime pending",
+      "status": "source fix merged and normal CI assertions verified; full tracked-ledger acceptance pending",
       "not_new": true,
       "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
       "priority": "P2",
       "severity": "medium integration/reproducibility",
       "evidence_label": "precise independently corroborated static contradiction; untouched runtime unverified",
       "evidence": "2026-11-05-integration/reviewer2/independent-verdict.json",
-      "acceptance": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history."
+      "acceptance": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history.",
+      "history": [
+        {
+          "date": "2026-11-19",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "original source defect fixed; genuine tracked-ledger runtime acceptance pending",
+          "evidence": "2026-11-19-integration/evidence.json"
+        }
+      ],
+      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "current_evidence": "2026-11-19-integration/evidence.json",
+      "fix_commit": "2a8fc5f8fb7f1ebed8b33b9da4bed25e434c559e"
+    },
+    {
+      "id": "BH-2026-10-12-3",
+      "fingerprint": "recorder:distinct-clean-revisions-accepted-with-single-readme-revision",
+      "not_new": true,
+      "status": "known/open; independently corroborated current static trace",
+      "severity": "medium",
+      "priority": "P2",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "evidence_label": "confirmed_static_contract_mismatch; untouched runtime controls pending",
+      "expected": "Saved record has a consistent source identity or explicitly identifies every distinct producing revision.",
+      "observed_static": "record_files checks nonempty clean revisions separately; README reads eval revision only, so eval A and quantiles B pass the guards and the record is labeled A.",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/save_run.py#L131-L152",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/save_run.py#L155-L190"
+      ],
+      "evidence": "2026-11-19-integration/evidence.json",
+      "acceptance": "An untouched mixed A/B fixture is refused before destination creation or explicitly labeled by producer, and an A/A control passes. Repeat twice with genuine code metadata and no production ledger mutations.",
+      "history": [
+        {
+          "date": "2026-11-12",
+          "evidence": "2026-11-12-integration/evidence.json",
+          "status": "known duplicate queued"
+        },
+        {
+          "date": "2026-11-19",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-19-integration/evidence.json",
+          "status": "current static mechanism independently reverified"
+        }
+      ]
     }
   ],
   "dropped_candidates": [
@@ -700,6 +855,19 @@
       "reason": "Proposal explicitly books the entire move when settlement is known using last available earlier close; documenting a tradeoff does not violate the selected policy.",
       "counterfactual": "A documented evaluation-start initialization rule applying to stale constituents would keep it.",
       "evidence": "https://github.com/sasasqt/invest/blob/30f9db9fc165f2f9ce369986c72b34dd4a45ae90/strategy-evaluation/METRICS.md#L121-L125"
+    },
+    {
+      "id": "DROP-2026-11-19-RECORD-PATH",
+      "date": "2026-11-19",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "kind": "runtime concern",
+      "disposition": "dropped as unexpected new defect; retain documented limitation",
+      "reason": "Output creation and dangling-path refusals occur after pre-inspection by explicit contract and author reply. This visit establishes no new regression.",
+      "counterfactual": "An authoritative requirement that all such filesystem refusals precede the inspection, or a concrete new preflight-known input refusal not covered by the disclosure.",
+      "evidence": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/historical_workflow.sh#L102-L110",
+        "https://github.com/sasasqt/invest/pull/40#issuecomment-6806412330"
+      ]
     }
   ],
   "run_history": [
@@ -772,6 +940,21 @@
       "dropped": [
         "GA-2026-11-18-DROP-1"
       ]
+    },
+    {
+      "date": "2026-11-19",
+      "field": "integration",
+      "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "new_findings": [
+        "GA-2026-11-19-1"
+      ],
+      "source_fix_acceptance": [
+        "REVIEW-17/K3",
+        "INV-PR40-001",
+        "BF-2026-11-14-5"
+      ],
+      "evidence": "2026-11-19-integration/evidence.json"
     }
   ],
   "carried_cross_checks": [
@@ -792,6 +975,18 @@
       "id": "GA-2026-10-31-2",
       "result": "agree; pinned source behavior, peer synthetic result reported",
       "evidence": "https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md#L22"
+    },
+    {
+      "date": "2026-11-19",
+      "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "ids": [
+        "REVIEW-17/K3",
+        "INV-PR40-001",
+        "BH-2026-10-12-3",
+        "BF-2026-11-14-5"
+      ],
+      "evidence": "2026-11-19-integration/evidence.json"
     }
   ]
 }

@@ -1,0 +1,2141 @@
+{
+  "date": "2026-11-19",
+  "field": "integration, artifacts, reporting and recovery",
+  "identity": {
+    "date": "2026-11-19",
+    "field": "integration",
+    "scheduled_for": "2026-11-19T02:00:00Z",
+    "started_utc": "2026-11-19T02:00:53.714892Z",
+    "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+    "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "output_base": "5ff3f32621d65c6b37013060fc2ed2455eb2f33c",
+    "previous_publication": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+    "model": "unavailable",
+    "effort": "unavailable",
+    "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
+    "completed_steps": [
+      "methods and continuity",
+      "common exact-main CI gates",
+      "bounded RECORD/recorder trace",
+      "independent verification",
+      "coverage and queues"
+    ],
+    "remaining_steps": [
+      "publish and verify"
+    ],
+    "pending_jobs": [],
+    "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "actual_runner_sha": null,
+    "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "new_product_runs": 0,
+    "helper_count": 1,
+    "evidence": "2026-11-19-integration/evidence.json",
+    "report": "2026-11-19.md",
+    "publication_status": "prepared",
+    "elapsed_to_preparation_seconds": 976,
+    "method_digests": [
+      {
+        "module": "index",
+        "expected": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "actual": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "verified": true
+      },
+      {
+        "module": "baseline-v2.txt",
+        "expected": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "actual": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "verified": true
+      },
+      {
+        "module": "overview",
+        "expected": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+        "actual": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+        "verified": true
+      },
+      {
+        "module": "00-preflight",
+        "expected": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+        "actual": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+        "verified": true
+      },
+      {
+        "module": "01-scope",
+        "expected": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+        "actual": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+        "verified": true
+      },
+      {
+        "module": "02-coverage",
+        "expected": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+        "actual": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+        "verified": true
+      },
+      {
+        "module": "03-consistency",
+        "expected": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+        "actual": "1b0ee142f2a776643a1e443355a279f496a81fe7c505309e634507ac22f85e06",
+        "verified": true
+      },
+      {
+        "module": "04-correctness",
+        "expected": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+        "actual": "74e96e86450dcdc156568a0a142513dc6b014ef938c687eb43d49f288ec70f23",
+        "verified": true
+      },
+      {
+        "module": "07-independent-checks",
+        "expected": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+        "actual": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+        "verified": true
+      },
+      {
+        "module": "08-integration",
+        "expected": "cbf0689b723a37643af61a5e4f900c0dfc4d453943cad32905bac33c1609d9b1",
+        "actual": "cbf0689b723a37643af61a5e4f900c0dfc4d453943cad32905bac33c1609d9b1",
+        "verified": true
+      },
+      {
+        "module": "11-findings-review",
+        "expected": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+        "actual": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+        "verified": true
+      },
+      {
+        "module": "12-reporting",
+        "expected": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+        "actual": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+        "verified": true
+      },
+      {
+        "module": "13-continuity",
+        "expected": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+        "actual": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+        "verified": true
+      },
+      {
+        "module": "14-crosscheck-publication",
+        "expected": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+        "actual": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+        "verified": true
+      },
+      {
+        "module": "action-boundary",
+        "expected": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+        "actual": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+        "verified": true
+      }
+    ],
+    "output_started_commit": "f512f54c68b547fbb60903d744ca856f6bd68746",
+    "previous_verified_publication": {
+      "date": "2026-11-18",
+      "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+      "status": "published_verified",
+      "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+      "report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+      "report_url": "https://github.com/sasasqt/invest/blob/20a4854aba0163e8b0c0d4f032e24eb1abf96b9c/audits/gpt/2026-11-18.md",
+      "output_parent": "39cf6c0fb07e9daf81b7f6bf525c08f195344189",
+      "verified_head_at_report": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-18-evaluation/evidence.json",
+        "audits/gpt/2026-11-18.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "verified_git_blob_ids": {
+        "audits/gpt/2026-11-18-evaluation/evidence.json": "4713feee3e4afe5eddfcae092b51732eb03f2fee",
+        "audits/gpt/2026-11-18.md": "abaa507972a1b40cd8ca661b8c85a5560973cbe4",
+        "audits/gpt/checkpoint.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+        "audits/gpt/coverage-map.json": "aaa1447b83b77f8088b093bb62d3fcd5f16d4abc",
+        "audits/gpt/coverage-map.md": "92fc2b48796a08a5846d8eb9025f5f715240e593",
+        "audits/gpt/coverage.csv": "7ca8e4dada5d55d4db245bd7c83f4b2bd09abdf8",
+        "audits/gpt/cross-check.md": "f68dc16a9c1498449a679d0d9df1a8b6a7d56973",
+        "audits/gpt/exploration.json": "ea873ed19b1a67db937b1bfb07e6be90cee5ab1e",
+        "audits/gpt/findings.json": "5a703beff9f252421a5719883cd8d71b353a7fd7",
+        "audits/gpt/findings.md": "a969ba59f436d05a86ef61352db6d935258bfa7e",
+        "audits/gpt/state.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
+        "audits/gpt/validation.csv": "f75d0616cbf0c08cca5b7ac4afe5ca7024c2ac57"
+      },
+      "readback_verified": true,
+      "force": false,
+      "verified_utc": "2026-11-18T02:21:30Z",
+      "elapsed_to_verified_publication_seconds": 1024
+    },
+    "source_commit": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "source_committer_date": "2026-11-18T05:49:31Z",
+    "history_map": "history-rewrite-2026-11-02/commit-map.json",
+    "activation_record": "audits/gpt/protocol/rotation-v3-2026-11-02/activation-state.json",
+    "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "source_advanced": false
+  },
+  "question": "Does the merged RECORD path refuse invalid input before ledger mutation, preserve honest source provenance, and safely save/recover the completed artifact set?",
+  "stopping_condition": "Trace initial uninspected, inspected retry and invalid-input paths through actual publishers, ledger and recorder, inspect named synthetic CI assertions and the mixed-source control, and preserve unsupported runtime/platform cases.",
+  "continuity": {
+    "missing_reports": [
+      {
+        "date": "2026-11-01",
+        "status": "no final report observed in accessible gpt tree",
+        "execution": "unknown/not observed",
+        "note": "Pre-activation legacy day; no allowance-exhaustion or interruption inference, no catch-up field added."
+      },
+      {
+        "date": "2026-11-07",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-08",
+        "status": "no final report observed",
+        "execution": "unknown/not observed"
+      },
+      {
+        "date": "2026-11-13",
+        "status": "no final report or started record observed in the audit branch",
+        "execution": "unknown/not observed"
+      }
+    ],
+    "prior_in_progress": "Prior published report, receipt and latest current state reconciled; prior status text is not a live worker/job claim.",
+    "pending_jobs": [],
+    "field_deferrals": {
+      "custom-record-workflow": {
+        "date": "2026-11-19",
+        "reason": "Same-checkout tracked temporary-ledger acceptance still absent; current host isolation/installed origins unqualified and no authorized Actions dispatch tool",
+        "consecutive_comparable_visits": 3,
+        "next_check": "On qualified exact source, repeat genuine same-checkout tracked synthetic ledger inspect/commit/retry and paired mixed-manifest controls. Reserve a bounded oldest-feasible recovery slice if runtime remains blocked."
+      }
+    },
+    "interfaces": [
+      {
+        "interface": "source data -> bundle",
+        "owner": "data",
+        "chain_owner": "integration",
+        "invariant": "schema/calendar/units/membership/provenance agreement"
+      },
+      {
+        "interface": "bundle -> point-in-time features",
+        "owner": "data",
+        "chain_owner": "integration",
+        "invariant": "no later-availability input changes past features"
+      },
+      {
+        "interface": "features -> diagnostics",
+        "owner": "mining",
+        "chain_owner": "integration",
+        "invariant": "horizons/ties/counts/trial lineage preserved"
+      },
+      {
+        "interface": "frozen expression -> signals",
+        "owner": "mining",
+        "chain_owner": "integration",
+        "invariant": "export/reload identities and causal semantics agree"
+      },
+      {
+        "interface": "signals -> evaluation",
+        "owner": "evaluation",
+        "chain_owner": "integration",
+        "invariant": "timing/fills/cash/cost/accounting agree"
+      },
+      {
+        "interface": "evaluation -> reports/recorder",
+        "owner": "integration",
+        "chain_owner": "integration",
+        "invariant": "tables/statuses/provenance/atomic recovery agree"
+      },
+      {
+        "interface": "trial/confirmation evidence -> verdict",
+        "owner": "mining",
+        "coowner": "evaluation",
+        "chain_owner": "integration",
+        "invariant": "evidence tiers, reserved-data and trial accounting preserved"
+      }
+    ],
+    "weekly": "W47 Sunday aggregation not yet due; W46 already recorded; no catch-up field added."
+  },
+  "preflight": {
+    "source_inventory": {
+      "tracked": 156,
+      "git_tree_complete": true,
+      "new_paths": 8,
+      "changed_existing_blobs": 28,
+      "removed_paths": 0,
+      "canonical_text_verified": [
+        {
+          "path": "DESIGN_BY_CONTRACT.md",
+          "blob": "912e9ffa9ca0ea8f7a4462f613864f36d88d11e4",
+          "verified": true,
+          "line_count": 147,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "PYTHON_GUIDELINES.md",
+          "blob": "9dfedd75e60f265262a55cb7c66e7bf99ee0bd43",
+          "verified": true,
+          "line_count": 152,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "RAPID_DEVELOPMENT.md",
+          "blob": "a1af0fcef538f1d2b5a2d299bd0f8d43590921ed",
+          "verified": true,
+          "line_count": 109,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "README.md",
+          "blob": "69ae596307dba2a3a5e0db979c90a559b08701db",
+          "verified": true,
+          "line_count": 200,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "ROADMAP.md",
+          "blob": "8184a851e79583b71bff2026f49050de2d5bc9cb",
+          "verified": true,
+          "line_count": 65,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "TODO.md",
+          "blob": "80a472b1d6b6bb8bc5fe9ee89088c32435e427ef",
+          "verified": true,
+          "line_count": 139,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/README.md",
+          "blob": "614ae8e442b63d468a7bb8dd411d57ab05c7d155",
+          "verified": true,
+          "line_count": 85,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+          "verified": true,
+          "line_count": 1068,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/expressions.py",
+          "blob": "375c8b7467aac46233bcfdc0ab765ecf55d1cbd8",
+          "verified": true,
+          "line_count": 821,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad",
+          "verified": true,
+          "line_count": 374,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_cli.py",
+          "blob": "7e3e80f125ec4250581fa81e5bd5c77d8279cd2c",
+          "verified": true,
+          "line_count": 338,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_coverage_mining.py",
+          "blob": "0e298ddb4f6dc6243309362432fa8ea0340db55d",
+          "verified": true,
+          "line_count": 56,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_evidence.py",
+          "blob": "32849416807e7d9987bbe3c28980e9e8267fad0c",
+          "verified": true,
+          "line_count": 549,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_ledger.py",
+          "blob": "4166d4082632d9e37a147dca6b009e7c52d03a24",
+          "verified": true,
+          "line_count": 1179,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_scale_check.py",
+          "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+          "verified": true,
+          "line_count": 902,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/tests/test_search_and_inference.py",
+          "blob": "de5227893503e6f5af60bcc0eb069773e8dfed3f",
+          "verified": true,
+          "line_count": 170,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/tests/test_coverage_data_cli.py",
+          "blob": "26d773b8eed0b5543856d5b52325d0d734bfb3e8",
+          "verified": true,
+          "line_count": 31,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/tests/test_coverage_schemas.py",
+          "blob": "f38e4281f64737d479d257bf0fc0bfc8e714f738",
+          "verified": true,
+          "line_count": 145,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/tests/test_coverage_sources_and_pit.py",
+          "blob": "5d3cebc40d2b197d1231dc4891c8d068ce240383",
+          "verified": true,
+          "line_count": 51,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "docs/QUANTILE_ANALYSIS.md",
+          "blob": "0c98e844cc1da6dbc6c41cc2a50cb08f920f96cb",
+          "verified": true,
+          "line_count": 60,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "docs/REPORTING.md",
+          "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+          "verified": true,
+          "line_count": 46,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "pyproject.toml",
+          "blob": "7e6d10be25c8ca2e3d03512c586a42be05f4f712",
+          "verified": true,
+          "line_count": 98,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "scripts/check_coverage_floors.py",
+          "blob": "b469ae3184219c852847ac87fe470a8a02900376",
+          "verified": true,
+          "line_count": 178,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/METRICS.md",
+          "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096",
+          "verified": true,
+          "line_count": 194,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/README.md",
+          "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+          "verified": true,
+          "line_count": 85,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+          "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+          "verified": true,
+          "line_count": 744,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+          "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+          "verified": true,
+          "line_count": 491,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+          "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+          "verified": true,
+          "line_count": 337,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+          "blob": "cb1370b53af886e6a0ac9119ca0b3a750cc827c1",
+          "verified": true,
+          "line_count": 255,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+          "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39",
+          "verified": true,
+          "line_count": 226,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+          "blob": "332bd6f387f1101540392d757426de0b6d159723",
+          "verified": true,
+          "line_count": 91,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_metrics.py",
+          "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+          "verified": true,
+          "line_count": 213,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_sparse_signals.py",
+          "blob": "5fc109ca6b6c874737aafe2a957fe5a1caf94567",
+          "verified": true,
+          "line_count": 266,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+          "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+          "verified": true,
+          "line_count": 1173,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/tests/test_validation.py",
+          "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820",
+          "verified": true,
+          "line_count": 485,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "tests/test_check_coverage_floors.py",
+          "blob": "98be61be0e0f9d02df6837acaf3b807443c5c24a",
+          "verified": true,
+          "line_count": 411,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "scripts/historical_workflow.sh",
+          "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+          "verified": true,
+          "line_count": 233,
+          "materialized": "trusted static text",
+          "mode": "100755"
+        },
+        {
+          "path": "scripts/save_run.py",
+          "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+          "verified": true,
+          "line_count": 281,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "tests/test_pipeline.py",
+          "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+          "verified": true,
+          "line_count": 654,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "tests/test_save_run.py",
+          "blob": "f266a908918ecf4e546185adf269894360f8c092",
+          "verified": true,
+          "line_count": 276,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+          "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+          "verified": true,
+          "line_count": 937,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+          "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+          "verified": true,
+          "line_count": 295,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+          "verified": true,
+          "line_count": 561,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/ledger.py",
+          "blob": "39736206241839563a05402eaedc67abe1f876b3",
+          "verified": true,
+          "line_count": 323,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+          "verified": true,
+          "line_count": 379,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "docs/ARCHITECTURE.md",
+          "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89",
+          "verified": true,
+          "line_count": 147,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "blob": "349966e67762855257a7672ca25639a38ef87e7b",
+          "verified": true,
+          "line_count": 79,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": ".github/workflows/audit-runtime.yml",
+          "blob": "535399e4583266314fcf09a93fca6a61dd341d4d",
+          "verified": true,
+          "line_count": 167,
+          "materialized": "trusted static text",
+          "mode": "100644"
+        },
+        {
+          "path": "scripts/synthetic_workflow.sh",
+          "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+          "verified": true,
+          "line_count": 37,
+          "materialized": "trusted static text",
+          "mode": "100755"
+        }
+      ],
+      "old_semantic_lines_invalidated": 2437
+    },
+    "isolation": "current host credential-inaccessible boundary unproven",
+    "installed_graph": "versions/package origins against locked graph unverified in actual host",
+    "lock": "uv.lock identity unchanged in full Git inventory; main pyproject changed coverage floors only",
+    "runtime": "No repository imports, builds, tests or workflows in publishing host.",
+    "resources": {
+      "wall_plan_minutes": {
+        "common": 20,
+        "field": 70,
+        "review_reporting": 30,
+        "total": 120
+      },
+      "elapsed_seconds_to_preparation": 976,
+      "actual_cpu_memory_limits": "unavailable",
+      "model": "unavailable",
+      "effort": "unavailable",
+      "account_usage": "unavailable"
+    }
+  },
+  "independent_review": {
+    "reviewer1": {
+      "date": "2026-11-19",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "question": "Does the merged RECORD path refuse invalid input before ledger mutation, preserve honest source provenance, and safely save/recover the completed artifact set?",
+      "stop": "Trace initial uninspected, inspected retry and invalid-input paths through actual publishers, ledger and recorder, inspect named synthetic CI assertions and the mixed-source control, and preserve unsupported runtime/platform cases.",
+      "candidates": [
+        {
+          "id": "REVIEW-17/K3",
+          "initial_keep_drop": "partially resolved",
+          "severity": "medium integration/P2; original root",
+          "reason": "#40 is merged. Preflight validates cleaned market/benchmark/config/existing bundles before inspection append; stops before outputs and instructs commit+rereun. Same-SHA pipeline CI tests outside ledger. Genuine same-checkout tracked temporary ledger repeats still missing.",
+          "scope": "source fix and existing Linux synthetic test behavior; no new worker execution"
+        },
+        {
+          "id": "BH-2026-10-12-3",
+          "initial_keep_drop": "keep known/open",
+          "severity": "medium/P2",
+          "reason": "save_run record_files tests each manifest revision nonempty/clean separately, _readme reads only eval manifest. Two distinct clean revisions satisfy guards. Existing tests never vary the revisions separately.",
+          "missing": "Untouched mixed-manifest product reproduction twice and matching manifest control"
+        },
+        {
+          "id": "DROP-2026-11-19-RECORD-PATH",
+          "initial_keep_drop": "drop new defect",
+          "reason": "uncreatable output/dangling destination precheck intentionally outside documented preflight. Existing review reply and code comments explicitly retain this limitation.",
+          "counterfactual": "A stronger contract requiring all output publishability errors before ledger append, or a still-undocumented input/schema refusal known before inspection."
+        },
+        {
+          "id": "BF-2026-11-14-5",
+          "initial_keep_drop": "verified under existing same-SHA Linux CI scope",
+          "severity": "low",
+          "reason": "#39 and #51 are present. test_scale_check657-693 parameterizes all 3 CLI flags using synthetic bundle with invalid bytes, expects named error and no ledger or --out. Full exact-SHA suites have1269 pass1 skip each. No local rerun.",
+          "missing": "No nativeWindows claim; full untouched local replay separate from existingCI"
+        },
+        {
+          "id": "GA-2026-11-19-1",
+          "kind": "documentation consistency",
+          "initial_keep_drop": "keep",
+          "severity": "low/P3",
+          "confidence": "high direct textual contradiction",
+          "discovery_bucket": "mandatory_callers_contracts",
+          "root_fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+          "expected": "Current limitations agree with the merged workflow and README's operating instructions.",
+          "observed": "README180 explicitly labels REVIEW-17 open and affecting current results, while README115 describes the new inspection-first two-step workflow and TODO47 marks it fixed by merged #40.",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "locations": [
+            "README.md:115,180",
+            "TODO.md:47",
+            "scripts/historical_workflow.sh:93-173"
+          ],
+          "missing": "Independent reviewer disposition, final report. No runtime proof needed for conflicting textual status.",
+          "correction": "Reconcile the current limitation statement with the documented inspection-first behavior and preserve genuinely open limitations. Related README5 chronology is incomplete but not a literal contradiction.",
+          "acceptance": "A source/README/TODO comparison agrees about REVIEW-17's merged source status and remaining runtime/platform checks."
+        }
+      ]
+    },
+    "reviewer2": {
+      "reviewer": "Reviewer2 independent source review",
+      "date": "2026-11-19",
+      "source": {
+        "repository": "sasasqt/invest",
+        "commit": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c"
+      },
+      "independence": "Did not read reviewer1.json. Derived source conclusions first; then checked known-ID primary mirror for dedup.",
+      "execution": "Static inspection only. No repository imports, tests, builds, workflow dispatch, real vendor observations, tracked edits, publication, commits or comments. Main CI facts supplied by parent and not represented as reviewer-local runtime.",
+      "items": [
+        {
+          "id": "REVIEW-17/K3",
+          "verdict": "drop as current unfixed defect; retain fix-acceptance scope gap",
+          "status": "merged fix source verified, ordinary main-CI evidence; complete tracked-ledger runtime acceptance unproven",
+          "severity": "original medium; evidence gap not new severity",
+          "confidence": "high static / incomplete runtime",
+          "chain": [
+            "historical_workflow.sh50-73 refuses dirty script checkout and unsuitable output locations before work.",
+            "historical_workflow.sh93-172 prevalidates both cleanable datasets, config and already-existing bundle targets; uses cleaned market min/max window; appends inspection iff not covered then exits before publish175.",
+            "After user commits tracked ledger and reruns unchanged snapshot/settings, is_inspected suppresses append. Mining _record_inspection cli206-223 also suppresses append, so evaluator code_revision cli36-64 can remain clean and save_run143-151 accepts clean committed manifests."
+          ],
+          "tests": [
+            "test_pipeline.py406-475 creates synthetic snapshot and clean temporary SCRIPT checkout; ledger430-ish is outside that checkout, not tracked; initial call asserts reservation+inspection, no out/record and refusal; second call reruns WITHOUT any ledger commit and asserts unchanged ledger, published observed window/dataset id and quantiles manifest.",
+            "Retry succeeds and saves record if loaded evaluation module's source checkout already has revision and dirty=False; else test accepts only corresponding save_run missing/dirty provenance refusal. Its source lookup is installed package checkout, not temporary script repo. Thus script stage behavior and conditional end-to-end finish are tested, actual tracked-ledger commit/retry is not.",
+            "test_pipeline.py297-305 separate offline workflow test manually replaces both provenance fields with 0*40/False before saving; it verifies record completeness, not runtime provenance."
+          ],
+          "drop_counterfactual": "Would retain unfixed K3 if a second call after committing a same-checkout tracked ledger still appended it or recorded dirty code; present control flow prevents the original mutation under stable same-source settings, so the old allegation cannot be restated as current open."
+        },
+        {
+          "id": "INV-PR40-001",
+          "verdict": "drop as current unfixed defect within four tested refusal classes",
+          "status": "merged preflight fix source verified + exact-main aggregate CI",
+          "severity": "original medium",
+          "confidence": "high bounded static / CI",
+          "evidence": [
+            "historical_workflow.sh125-155: missing benchmark load refusal, currency consistency, cleaning errors and empty market/benchmark, semantic schema validation, existing market/benchmark bundle target, config load all precede ledger append157.",
+            "test_pipeline.py478-549 parametrizes benchmark missing QQQ, benchmark all OHLC rejected, config min_names0, and stale MARKET bundle; with RECORD asserts nonzero, expected message, bytes-identical ledger, absent record and no out except preexisting stale case. Without RECORD reruns equivalent settings into fresh ordinary output, asserts refusal and unchanged ledger.",
+            "Sibling invest_data/cli.py78-97 and129-150 performs selection/currency/cleaning/empty refusal; schemas.py381-404 performs schema validation; bundle.py536-541 refuses existing target before writes."
+          ],
+          "limits": "No explicit parametrized all-market-rejected, empty market/benchmark, mixed-currency, stale benchmark-target, cleaning-trimmed boundary, or general filesystem failure parity checks in this test. They are source-covered where described, not all runtime-proven."
+        },
+        {
+          "id": "documented-uncreatable-output-path",
+          "verdict": "drop as unexpected new defect; retain documented limitation under INV-PR40-001/REVIEW-17",
+          "status": "known disclosed behavior",
+          "severity": "medium if separately tracking false/unusable inspection outcomes; no new ID",
+          "confidence": "high static",
+          "evidence": [
+            "historical_workflow.sh31-34,107-110 explicitly excludes uncreatable out/data/file/dangling-link/folder-where-file cases; root README115 and TODO47 disclose same.",
+            "Preflight target.exists tests only existing bundle targets, not writability of ancestors. OUT_DIR naming a file may pass target.exists=False then append inspection157-171; later publication mkdir at bundle596 fails. This follows documented post-inspection failure timing.",
+            "Mining evaluate _prepare_out cli305-318 precedes diagnostics/_record_inspection346-348 for ordinary non-RECORD route; that safer ordering does not establish shell-wide RECORD preflight parity."
+          ],
+          "drop_counterfactual": "Retain as new if current contract guaranteed all filesystem refusals before ledger mutation or previously undisclosed class escaped the documented carveout. Present text explicitly carves these out; calling it a newly discovered regression would overclaim."
+        },
+        {
+          "id": "BH-2026-10-12-3",
+          "verdict": "keep exact known duplicate; no new finding ID",
+          "status": "open, source independently corroborated; not runtime reproduced this visit",
+          "severity": "medium",
+          "confidence": "high static",
+          "evidence": [
+            "save_run.py86-87 names eval and quantiles provenance manifests;143-151 checks each independently for a truthy code_revision and code_dirty is False, never compares revisions.",
+            "Trusted synthetic reasoning: two complete fixture manifests eval revision A*40 clean and quantiles revision B*40 clean (A != B) satisfy every provenance predicate and proceed to copying239-249; README155-181 reads only eval/manifest and emits its revision as one Code revision.",
+            "docs/REPORTING.md33 requires each immutable run manifest identify code and input versions; generated record README save_run162 claims historical_workflow run. Existing saved runs/yahoo-test/2026-10-07/README11 labels one Code revision (historical record predates quantiles), supporting the provenance convention but not evidence it itself is mixed.",
+            "tests/test_save_run.py31-49 gives both manifests SAME code revision;243-265 covers missing/dirty eval and dirty quantiles, no distinct clean revisions. test_pipeline297-305 force same clean synthetic revision into both. No refusal fixture tests mixed provenance.",
+            "Primary dedup docs/audits/open-bugs.md59 names exact same acceptance and eval-only README labeling."
+          ],
+          "drop_counterfactual": "Would drop with equality check before staging, or explicit separately labeled multi-revision contract plus binding identities. Neither exists. Retaining each copied manifest does not cure singular README attribution or prove a single workflow revision."
+        },
+        {
+          "id": "BF-2026-11-14-5",
+          "verdict": "drop as current unfixed defect; accept bounded three-flag fix on main",
+          "status": "merged #39 reader + #51 CLI handling source verified; exact-main normal CI acceptance",
+          "severity": "original low",
+          "confidence": "high bounded source / aggregate CI",
+          "evidence": [
+            "bundle.py827-831 catches malformed UTF8 CSV UnicodeDecodeError and raises BundleError; read_bundle758-785 common path used by market/universe/fundamentals schema readers.",
+            "Mining cli268-273 market wrapper and70-80 optional wrappers convert BundleError to SystemExit naming --data/--universe/--fundamentals and path; evaluate294-295 calls them before output preparation305 and ledger append346-348.",
+            "test_scale_check.py657-693 parametrizes exactly three flags, publishes clean synthetic CSV inputs, corrupts ONE copied data.csv with ff fe, invokes evaluate with all three flags, asserts SystemExit matching flag+bad path+not UTF-8 and no ledger/out. No skip inside this test.",
+            "test_scale_check.py636-654 additionally covers wrong optional dataset kinds across evaluate/search/confirm/export;696+ covers broken market across commands. Those tests do not equal malformed-UTF8 all-command coverage.",
+            "Open-bugs mirror137 exact known ID says close after both PRs merged. It is historical wording; merged main source and CI are current evidence."
+          ],
+          "limits": "No reviewer-local repeated three-flag replay, stable-valid paired control per case, all four commands x three flags malformed matrix, malformed manifest/Parquet/SQLite full matrix, or Windows product evidence."
+        }
+      ],
+      "CI_scope": {
+        "supplied_by_parent": true,
+        "run": 44246922942,
+        "jobs": {
+          "3.11": 134607997865,
+          "3.13": 134607997510
+        },
+        "reported": "main checkout, CPython3.11.18 and3.13.18, Git2.56.1; strict mypy three src trees plus scripts;1269 passed1 skipped;0 per-file/total floor violations96.88%",
+        "interpretation": "Exact-main normal suite corroboration; logs aggregate, not individual verbose target-case proof or isolated repeated acceptance. UTF test has no skip; K3 helper skip guard depends on Git config support and observed modern Linux Git is consistent with guard passing. Installed environment/lock provenance in current publishing host still unqualified. No observed isolated dispatch.",
+        "workflow_limits": "ci.yml is ubuntu-only Python3.11/3.13 checks. Wheels and independent-install jobs are different scopes; only claim their result if actual jobs separately verified."
+      },
+      "missing_runtime_controls": [
+        "Qualified locked, nonpublishing same-source checkout with TRACKED reservation-only synthetic ledger: repeat first-inspect -> verify only ledger tracked change/no out -> commit -> retry -> require actual successful record and identical ledger bytes, both manifests same expected clean commit, plus already-inspected and no-RECORD controls.",
+        "Recorder: complete synthetic A/A clean control vs A/B clean mismatch, unknown/dirty controls, repeated calls; assert refusal BEFORE creating destination or parent artifacts when expected. Existing tests do not establish this fix because no equality fix exists.",
+        "Malformed UTF8: repeat all three evaluate flags on main with valid stable controls and byte-identical preexisting ledger as well as absent-ledger cases; extend to other commands only if making all-command acceptance claim."
+      ],
+      "unchecked_places": [
+        {
+          "place": "historical_workflow.sh preflight125-155 vs invest_data cli129-150 / schemas381-404 / write_bundle",
+          "question": "Does duplicated publishability logic remain equivalent for mixed currency, empty/all-rejected MARKET, cleaning-trimmed min/max dates, stale BENCHMARK output and future publisher metadata/canonical storage refusal? Tests cover four classes only. Concrete follow-up; no new defect asserted."
+        },
+        {
+          "place": "save_run.record_files143-152 and save_run(snapshot)223-227",
+          "question": "Are eval and quantiles dataset/signal/config identities bound to the copied manifests and supplied snapshot? Known sibling BH-2026-10-12-4 already covers wrong snapshot; input-binding mismatches need dedup/contract review before any new ID. Mixed clean code revisions is already BH-2026-10-12-3."
+        },
+        {
+          "place": "native Windows shell captures historical_workflow84-90,190-207 and ledger.append183",
+          "question": "Do native Python CRLF range output and default ledger text writes behave as claimed under Git Bash? Already TODO REVIEW-41/40 respectively; Linux main CI cannot answer. No Windows runtime inference."
+        }
+      ],
+      "answer_to_is_that_all": "No. This bounded review independently corroborates one still-open known provenance defect and three source-fixed/disclosed areas; it does not establish exhaustive integration correctness. Missing evidence is true same-checkout tracked-ledger commit/retry success, repeated controlled malformed-input and provenance acceptance, and qualified installed-lock/Windows runtime. The three concrete boundaries above remain follow-ups rather than invented findings.",
+      "doc_staleness": "Root README180 explicitly calls REVIEW-17 open while TODO47 checks it and README115 describes the merged fix. README5 is accurate but incomplete (12-14 done); it is not promoted as a contradiction. Mirror BF row still says PRs open; do not treat historical mirror prose as current merge authority.",
+      "GA-2026-11-19-1": {
+        "independent_verdict": "keep, subject to parent-provided no-match dedup",
+        "status": "source-verified current textual inconsistency; no runtime claim",
+        "severity": "low",
+        "confidence": "high",
+        "exact_evidence": "README180 known-limitations bullet says open defects (REVIEW-16, REVIEW-17) affect current results. TODO47 checks REVIEW-17 and README115 itself describes inspection-first/commit/rerun corrected behavior, with disclosed uncreatable-path carveout.",
+        "target_correction": "Remove REVIEW-17 from current-open-defect enumeration at README180; retain REVIEW-16 only if its own current state warrants it. Any separately documented remaining limitations should keep their existing precise scope rather than imply all REVIEW-17 remains open.",
+        "acceptance": "Static reread of root README known-limitations bullet and TODO47 plus README115 shows no statement that REVIEW-17 is still open. Offline link/format checks only if a docs patch is later authorized; no product test needed to validate this prose correction.",
+        "drop_counterfactual": "Drop if that paragraph were labeled historical state or TODO47 still open. It is a current known-limitations bullet and TODO47 is checked, so current exact text is inconsistent.",
+        "scope_limit": "Does not establish full tracked-ledger runtime acceptance or resolve the separately disclosed output-path limitation. No discretionary yield credit; mandatory consumer discovery."
+      }
+    },
+    "comparison": "Agreement on merged source corrections, remaining genuine tracked-ledger runtime gap, known mixed-revision recorder defect, disclosed path limitation, UTF8 bounded acceptance and the new textual finding. No substantive disagreement and no Verifier B.",
+    "helper_count": 1,
+    "reviewer_stage_elapsed_seconds": null,
+    "helper_product_executions": 0
+  },
+  "new_findings": [
+    {
+      "id": "GA-2026-11-19-1",
+      "kind": "documentation consistency",
+      "severity": "low",
+      "confidence": "high direct textual contradiction",
+      "discovery_bucket": "mandatory_callers_contracts",
+      "root_fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+      "expected": "The current limitations enumeration agrees with the merged source and operating instructions.",
+      "observed": "README180 explicitly labels REVIEW-17 open and affecting current results, while README115 describes the new inspection-first two-step workflow and TODO47 marks it fixed by merged #40.",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/README.md#L180",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/README.md#L115",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/TODO.md#L47"
+      ],
+      "missing": "Independent reviewer disposition, final report. No runtime proof needed for conflicting textual status.",
+      "correction": "Reconcile the current limitation statement with the documented inspection-first behavior and preserve genuinely open limitations. Related README5 chronology is incomplete but not a literal contradiction.",
+      "acceptance": "Static README/TODO/source comparison no longer calls the merged REVIEW-17 root open; any tracked-ledger and native Windows acceptance gaps retain their precise scope.",
+      "fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+      "category": "documentation consistency",
+      "title": "Current limitations still list the merged RECORD fix as open",
+      "status": "new/open",
+      "priority": "P3",
+      "evidence_label": "confirmed_textual_inconsistency",
+      "independent_review_status": "Reviewer 2 independently corroborated",
+      "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "observed_static": "README180 lists REVIEW-17 as an open defect affecting current results. README115 describes its inspection-first correction and TODO47 marks it fixed.",
+      "impact": "The current project status misdirects triage and obscures which RECORD checks remain genuinely unverified. No numerical consequence established.",
+      "correction_boundary": "Reconcile the current limitations sentence with merged REVIEW-17 behavior and preserve specifically scoped remaining limitations.",
+      "runtime_repeats": 0,
+      "owner": "documentation/workflow maintainer",
+      "effort": "S estimate",
+      "also_found_by": [],
+      "history": [
+        {
+          "date": "2026-11-19",
+          "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+          "status": "new/open",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-19-integration/evidence.json"
+        }
+      ],
+      "evidence": [
+        "2026-11-19-integration/evidence.json"
+      ],
+      "dedup": "Own findings, known external ledger, current docs-audit mirror and current PR40 review history searched; no earlier matching stale-current-limitations root found."
+    }
+  ],
+  "retained_findings": [
+    {
+      "id": "BH-2026-10-12-3",
+      "label": "current independently corroborated static mechanism; runtime repetitions not run",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/save_run.py#L131-L152",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/save_run.py#L155-L190"
+      ],
+      "expected": "One record source identity must match its producing outputs, or explicitly describe each source.",
+      "actual_trace": "eval revision A clean and quantile revision B clean both pass individual guards; _readme prints A. Existing fixture uses equal manifests and tests dirty/missing fields, with no mixed-clean-revision control.",
+      "impact": "A standalone recorded directory can misattribute source for its quantile output. No actual historical record is claimed affected.",
+      "next_check": "Two untouched A/B mismatch and A/A matching controls, then dataset/signal/snapshot binding; no product patch performed."
+    }
+  ],
+  "accepted_fixes": [
+    {
+      "id": "REVIEW-17/K3",
+      "merge": "2a8fc5f8fb7f1ebed8b33b9da4bed25e434c559e",
+      "source_status": "original root corrected; runtime envelope incomplete",
+      "source": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/historical_workflow.sh#L93-L173",
+      "tests": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/tests/test_pipeline.py#L344-L475",
+      "limits": "Temporary script-only checkout; external untracked ledger; retry has no actual ledger commit; package provenance uses current loaded source and may justifiably refuse if dirty or untracked."
+    },
+    {
+      "id": "INV-PR40-001",
+      "status": "merged source and current normal CI assertions corroborated for four invalid cases",
+      "tests": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/tests/test_pipeline.py#L478-L549",
+      "cases": [
+        "missing benchmark",
+        "fully rejected benchmark",
+        "invalid config",
+        "stale market bundle output"
+      ],
+      "expected": "Both RECORD and plain invocations refuse and leave ledger bytes unchanged",
+      "other_cases": "Additional publisher parity cases queued. Uncreatable output paths are explicitly disclosed, not cleared."
+    },
+    {
+      "date": "2026-11-19",
+      "id": "BF-2026-11-14-5",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "status": "verified bounded acceptance through existing exact-main normal CI and source assertions",
+      "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+      "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+      "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
+      "run": 44246922942,
+      "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats"
+    }
+  ],
+  "truth_table": {
+    "label": "Source-derived expectations; no product execution in this worker",
+    "valid_uninspected_RECORD": "Prevalidate, append one inspection, stop before output; commit tracked temporary ledger then retry.",
+    "valid_inspected_RECORD": "No preflight append; diagnostics also see covering inspection; current code provenance can remain clean.",
+    "invalid_publisher_inputs": "Four committed regression classes assert refusal and byte-identical ledger.",
+    "uncreatable_output": "Explicitly disclosed possible refusal after recording window."
+  },
+  "standard_ci": {
+    "run_id": 44246922942,
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "path": ".github/workflows/ci.yml",
+    "result": "success",
+    "run_created": "2026-11-18T05:49:34Z",
+    "run_updated": "2026-11-18T06:00:21Z",
+    "jobs": [
+      {
+        "id": 134607997510,
+        "name": "checks (3.13)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:36Z",
+        "completed_at": "2026-11-18T05:57:42Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997510"
+      },
+      {
+        "id": 134607997806,
+        "name": "independent-install (data-pipeline/data-preparation)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:36Z",
+        "completed_at": "2026-11-18T05:49:49Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997806"
+      },
+      {
+        "id": 134607997865,
+        "name": "checks (3.11)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:36Z",
+        "completed_at": "2026-11-18T06:00:20Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997865"
+      },
+      {
+        "id": 134607997876,
+        "name": "independent-install (strategy-evaluation)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:37Z",
+        "completed_at": "2026-11-18T05:51:28Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997876"
+      },
+      {
+        "id": 134607997902,
+        "name": "independent-install (data-mining-framework)",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:37Z",
+        "completed_at": "2026-11-18T05:51:36Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997902"
+      },
+      {
+        "id": 134607997948,
+        "name": "wheels",
+        "status": "completed",
+        "conclusion": "success",
+        "started_at": "2026-11-18T05:49:37Z",
+        "completed_at": "2026-11-18T05:54:19Z",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997948"
+      }
+    ],
+    "checks": [
+      {
+        "python": "3.11.18",
+        "id": 134607997865,
+        "platform": "Ubuntu Linux",
+        "git": "2.56.1",
+        "source_checkout": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997865",
+        "strict_mypy_paths": [
+          "data-pipeline/data-preparation/src",
+          "data-mining-framework/src",
+          "strategy-evaluation/src",
+          "scripts"
+        ],
+        "mypy_source_files": 32,
+        "tests_passed": 1269,
+        "tests_skipped": 1,
+        "pytest_seconds": 629.49,
+        "branch_coverage_enabled": true,
+        "total_line_branch_percent": 96.88,
+        "perfile_floor_failures": 0,
+        "total_floor_failures": 0,
+        "result": "passed"
+      },
+      {
+        "python": "3.13.18",
+        "id": 134607997510,
+        "platform": "Ubuntu Linux",
+        "git": "2.56.1",
+        "source_checkout": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997510",
+        "strict_mypy_paths": [
+          "data-pipeline/data-preparation/src",
+          "data-mining-framework/src",
+          "strategy-evaluation/src",
+          "scripts"
+        ],
+        "mypy_source_files": 32,
+        "tests_passed": 1269,
+        "tests_skipped": 1,
+        "pytest_seconds": 472.72,
+        "branch_coverage_enabled": true,
+        "total_line_branch_percent": 96.88,
+        "perfile_floor_failures": 0,
+        "total_floor_failures": 0,
+        "result": "passed"
+      }
+    ],
+    "workflow": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/ci.yml",
+    "configuration": {
+      "strict": true,
+      "total_floor": 96,
+      "default_file_floor": 90,
+      "perfile_floors": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/pyproject.toml#L60-L100",
+      "checker": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/check_coverage_floors.py"
+    },
+    "commands": [
+      "uv sync --frozen",
+      "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+      "uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+      "uv run coverage json -q -o coverage.json",
+      "uv run python scripts/check_coverage_floors.py coverage.json"
+    ],
+    "scope": "Original exact-main normal CI logs re-read. Aggregate output; no individual verbose target-case transcript. The UTF8 fixture has no skip guard. Linux Git2.56.1 satisfies K3 helper's stated version requirement, while exact skip identity is absent from logs.",
+    "perfile_coverage": [
+      {
+        "path": "data-mining-framework/src/invest_mining/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/artifact.py",
+        "statements": 50,
+        "missing_statements": 0,
+        "branches": 8,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "statements": 448,
+        "missing_statements": 9,
+        "branches": 128,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+        "statements": 174,
+        "missing_statements": 0,
+        "branches": 30,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/expressions.py",
+        "statements": 466,
+        "missing_statements": 15,
+        "branches": 208,
+        "partial_branches": 5,
+        "combined_line_branch_percent": 96,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/inference.py",
+        "statements": 20,
+        "missing_statements": 0,
+        "branches": 2,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/ledger.py",
+        "statements": 151,
+        "missing_statements": 1,
+        "branches": 62,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/reporting.py",
+        "statements": 66,
+        "missing_statements": 0,
+        "branches": 6,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/search.py",
+        "statements": 159,
+        "missing_statements": 4,
+        "branches": 54,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 96,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "statements": 591,
+        "missing_statements": 37,
+        "branches": 298,
+        "partial_branches": 26,
+        "combined_line_branch_percent": 93,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+        "statements": 112,
+        "missing_statements": 2,
+        "branches": 38,
+        "partial_branches": 2,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+        "statements": 150,
+        "missing_statements": 2,
+        "branches": 48,
+        "partial_branches": 2,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+        "statements": 40,
+        "missing_statements": 0,
+        "branches": 22,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "statements": 249,
+        "missing_statements": 0,
+        "branches": 100,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+        "statements": 135,
+        "missing_statements": 0,
+        "branches": 40,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+        "statements": 23,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+        "statements": 221,
+        "missing_statements": 13,
+        "branches": 60,
+        "partial_branches": 9,
+        "combined_line_branch_percent": 92,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "statements": 188,
+        "missing_statements": 1,
+        "branches": 54,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/config.py",
+        "statements": 140,
+        "missing_statements": 3,
+        "branches": 42,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+        "statements": 356,
+        "missing_statements": 10,
+        "branches": 136,
+        "partial_branches": 6,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+        "statements": 186,
+        "missing_statements": 2,
+        "branches": 48,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+        "statements": 192,
+        "missing_statements": 3,
+        "branches": 48,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+        "statements": 186,
+        "missing_statements": 1,
+        "branches": 68,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+        "statements": 27,
+        "missing_statements": 0,
+        "branches": 12,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+        "statements": 117,
+        "missing_statements": 4,
+        "branches": 34,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 95,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+        "statements": 107,
+        "missing_statements": 4,
+        "branches": 42,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 95,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+        "statements": 80,
+        "missing_statements": 0,
+        "branches": 26,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997865,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/artifact.py",
+        "statements": 50,
+        "missing_statements": 0,
+        "branches": 8,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "statements": 448,
+        "missing_statements": 9,
+        "branches": 128,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+        "statements": 174,
+        "missing_statements": 0,
+        "branches": 30,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/expressions.py",
+        "statements": 466,
+        "missing_statements": 15,
+        "branches": 208,
+        "partial_branches": 5,
+        "combined_line_branch_percent": 96,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/inference.py",
+        "statements": 20,
+        "missing_statements": 0,
+        "branches": 2,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/ledger.py",
+        "statements": 151,
+        "missing_statements": 1,
+        "branches": 62,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/reporting.py",
+        "statements": 66,
+        "missing_statements": 0,
+        "branches": 6,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-mining-framework/src/invest_mining/search.py",
+        "statements": 159,
+        "missing_statements": 4,
+        "branches": 54,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 96,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "statements": 591,
+        "missing_statements": 37,
+        "branches": 298,
+        "partial_branches": 26,
+        "combined_line_branch_percent": 93,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+        "statements": 112,
+        "missing_statements": 2,
+        "branches": 38,
+        "partial_branches": 2,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+        "statements": 150,
+        "missing_statements": 2,
+        "branches": 48,
+        "partial_branches": 2,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+        "statements": 40,
+        "missing_statements": 0,
+        "branches": 22,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "statements": 249,
+        "missing_statements": 0,
+        "branches": 100,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+        "statements": 135,
+        "missing_statements": 0,
+        "branches": 40,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+        "statements": 23,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+        "statements": 221,
+        "missing_statements": 13,
+        "branches": 60,
+        "partial_branches": 9,
+        "combined_line_branch_percent": 92,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+        "statements": 1,
+        "missing_statements": 0,
+        "branches": 0,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "statements": 188,
+        "missing_statements": 1,
+        "branches": 54,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/config.py",
+        "statements": 140,
+        "missing_statements": 3,
+        "branches": 42,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+        "statements": 356,
+        "missing_statements": 10,
+        "branches": 136,
+        "partial_branches": 6,
+        "combined_line_branch_percent": 97,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+        "statements": 186,
+        "missing_statements": 2,
+        "branches": 48,
+        "partial_branches": 1,
+        "combined_line_branch_percent": 99,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+        "statements": 192,
+        "missing_statements": 3,
+        "branches": 48,
+        "partial_branches": 3,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+        "statements": 186,
+        "missing_statements": 1,
+        "branches": 68,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 98,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+        "statements": 27,
+        "missing_statements": 0,
+        "branches": 12,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+        "statements": 117,
+        "missing_statements": 4,
+        "branches": 34,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 95,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+        "statements": 107,
+        "missing_statements": 4,
+        "branches": 42,
+        "partial_branches": 4,
+        "combined_line_branch_percent": 95,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+        "statements": 80,
+        "missing_statements": 0,
+        "branches": 26,
+        "partial_branches": 0,
+        "combined_line_branch_percent": 100,
+        "job_id": 134607997510,
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      }
+    ]
+  },
+  "isolated_ci": {
+    "actual_runner_sha": null,
+    "prospective_runner_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "prospective_runner_tree": "180fa208f02820d0ba0669bcee5c2bbb55e2a84b",
+    "workflow": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/audit-runtime.yml",
+    "inputs": {
+      "audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+    },
+    "run_id": null,
+    "status": "unavailable; no matching run observed, dispatch capability absent",
+    "queries": {
+      "dispatch_event_total": 0,
+      "recent_audit_runs": 0,
+      "workflow_specific_query": "connector rejects endpoint with 400"
+    },
+    "blocked_historical_runner": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5",
+    "prior_independent_corrected_runner": "44aa87557404b0ae29561e82d35f6b46396527be",
+    "current_host_qualified": false,
+    "new_dispatches": 0
+  },
+  "native_windows": {
+    "date": "2026-11-19",
+    "owner_field": "engineering",
+    "ids": [
+      "REVIEW-40",
+      "REVIEW-41"
+    ],
+    "status": "open; matching native Windows product evidence unavailable",
+    "evidence": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/TODO.md#L70-L71",
+    "next_check": "Git for Windows Bash/native Python synthetic temporary ledger replay; bytes, captures, valid run and invalid benchmark refusal"
+  },
+  "peer": {
+    "commit": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "last_report": "2026-11-15",
+    "audited_source": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "source_freshness": "historical relative to this main; leads retained, not copied as current behavior",
+    "cross_check": "https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md",
+    "leads": [
+      {
+        "id": "RA-2026-11-08-1",
+        "verdict": "cannot check native Windows snapshot publication; engineering/data owner retained"
+      },
+      {
+        "id": "RA-2026-11-08-2",
+        "verdict": "queued download recovery question outside today's selected RECORD case"
+      },
+      {
+        "id": "RA-2026-11-08-3",
+        "verdict": "historical report-metadata lead; changed report producer requires separate revalidation"
+      },
+      {
+        "id": "RA-2026-11-01-4",
+        "verdict": "fix merged via #53; owning-field acceptance pending, historical prior reproduction preserved"
+      }
+    ]
+  },
+  "syntax": [
+    {
+      "path": "scripts/historical_workflow.sh",
+      "command": "bash -n /tmp/invest-integration-20261119/syntax/historical_workflow.sh",
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "path": "scripts/synthetic_workflow.sh",
+      "command": "bash -n /tmp/invest-integration-20261119/syntax/synthetic_workflow.sh",
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "reading": {
+    "date": "2026-11-19",
+    "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+    "field": "integration",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "planned_percent": {
+      "exploitation": 30,
+      "exploration": 70
+    },
+    "actual_unique_lines": {
+      "exploitation": 286,
+      "exploration": 654,
+      "mandatory_callers_contracts": 849
+    },
+    "actual_discretionary_percent": {
+      "exploitation": 30.425531914893618,
+      "exploration": 69.57446808510639
+    },
+    "new_confirmed_distinct_roots": {
+      "exploitation": 0,
+      "exploration": 0,
+      "mandatory_callers_contracts": 1
+    },
+    "new_roots_scope": "One new textual status mismatch from a mandatory consumer read, excluded from discretionary yield numerators.",
+    "eligible_comparable_visits": 3,
+    "pooled_line_denominators": {
+      "exploitation": 851,
+      "exploration": 1289
+    },
+    "pooled_rates_per_1000": {
+      "exploitation": 0,
+      "exploration": 0
+    },
+    "next_percent": {
+      "exploitation": 30,
+      "exploration": 70
+    },
+    "rule": "Zero/zero tie with positive denominators increases exploration10 points, clamped at70. Known rechecks and common fix verification add no new discretionary root credit.",
+    "selection": {
+      "seed": "089e3699fe7f6a61be3e4b84016bbd5e19699ac5f2d61dd718ac968d5ca17a31",
+      "eligible": [
+        "docs/HISTORICAL_BASELINE.md",
+        "scripts/synthetic_workflow.sh",
+        "tests/test_pipeline.py"
+      ],
+      "index": 2,
+      "draw": "tests/test_pipeline.py",
+      "lens": "Fail-before-inspection and source identity across the RECORD state machine after merged reader/evaluator changes",
+      "planned_percent": {
+        "exploitation": 30,
+        "exploration": 70
+      },
+      "oldest_feasible": "tests/test_pipeline.py and RECORD acceptance after two deferred visits",
+      "peer_exact_ranges": "unavailable",
+      "rule": "SHA-256 scheduled Berlin date modulo sorted eligible set. No outcome-based redraw."
+    },
+    "ranges": [
+      {
+        "bucket": "exploitation",
+        "path": "scripts/historical_workflow.sh",
+        "ranges": [
+          [
+            50,
+            173
+          ]
+        ],
+        "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "exploitation",
+        "path": "scripts/save_run.py",
+        "ranges": [
+          [
+            105,
+            266
+          ]
+        ],
+        "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "exploration",
+        "path": "tests/test_pipeline.py",
+        "ranges": [
+          [
+            1,
+            654
+          ]
+        ],
+        "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "scripts/historical_workflow.sh",
+        "ranges": [
+          [
+            1,
+            49
+          ],
+          [
+            174,
+            233
+          ]
+        ],
+        "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "scripts/save_run.py",
+        "ranges": [
+          [
+            1,
+            104
+          ],
+          [
+            267,
+            281
+          ]
+        ],
+        "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "tests/test_save_run.py",
+        "ranges": [
+          [
+            1,
+            276
+          ]
+        ],
+        "blob": "f266a908918ecf4e546185adf269894360f8c092",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/tests/test_scale_check.py",
+        "ranges": [
+          [
+            657,
+            693
+          ]
+        ],
+        "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "ranges": [
+          [
+            827,
+            837
+          ]
+        ],
+        "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+        "ranges": [
+          [
+            108,
+            146
+          ]
+        ],
+        "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "ranges": [
+          [
+            382,
+            408
+          ]
+        ],
+        "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "ranges": [
+          [
+            50,
+            98
+          ],
+          [
+            206,
+            223
+          ],
+          [
+            279,
+            311
+          ]
+        ],
+        "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/ledger.py",
+        "ranges": [
+          [
+            242,
+            257
+          ]
+        ],
+        "blob": "39736206241839563a05402eaedc67abe1f876b3",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "ranges": [
+          [
+            36,
+            63
+          ]
+        ],
+        "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "docs/ARCHITECTURE.md",
+        "ranges": [
+          [
+            65,
+            95
+          ]
+        ],
+        "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "docs/REPORTING.md",
+        "ranges": [
+          [
+            1,
+            46
+          ]
+        ],
+        "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "README.md",
+        "ranges": [
+          [
+            5,
+            5
+          ],
+          [
+            109,
+            115
+          ],
+          [
+            180,
+            180
+          ]
+        ],
+        "blob": "69ae596307dba2a3a5e0db979c90a559b08701db",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "TODO.md",
+        "ranges": [
+          [
+            47,
+            47
+          ]
+        ],
+        "blob": "80a472b1d6b6bb8bc5fe9ee89088c32435e427ef",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      }
+    ],
+    "new_cumulative_semantic_lines": 1477,
+    "research": "not scheduled; zero papers and experiments; excluded from code yields"
+  },
+  "coverage": {
+    "tracked_files": 156,
+    "inventoried": 81,
+    "partially_reviewed": 24,
+    "reviewed": 25,
+    "checked_automatically": 5,
+    "blocked": 21,
+    "unread_lines": 41334,
+    "unread_paths": 123,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 1477,
+    "component_statuses": {
+      "audit_runner": {
+        "files": 17,
+        "statuses": {
+          "inventoried": 13,
+          "partially_reviewed": 4
+        }
+      },
+      "workspace": {
+        "files": 42,
+        "statuses": {
+          "inventoried": 27,
+          "partially_reviewed": 6,
+          "reviewed": 8,
+          "checked_automatically": 1
+        }
+      },
+      "mining": {
+        "files": 25,
+        "statuses": {
+          "partially_reviewed": 6,
+          "inventoried": 13,
+          "reviewed": 5,
+          "checked_automatically": 1
+        }
+      },
+      "preparation": {
+        "files": 17,
+        "statuses": {
+          "reviewed": 3,
+          "inventoried": 9,
+          "partially_reviewed": 5
+        }
+      },
+      "data": {
+        "files": 6,
+        "statuses": {
+          "inventoried": 5,
+          "reviewed": 1
+        }
+      },
+      "saved_results": {
+        "files": 23,
+        "statuses": {
+          "reviewed": 2,
+          "blocked": 21
+        }
+      },
+      "evaluation": {
+        "files": 26,
+        "statuses": {
+          "inventoried": 14,
+          "reviewed": 6,
+          "checked_automatically": 3,
+          "partially_reviewed": 3
+        }
+      }
+    }
+  },
+  "saved_results": {
+    "records_replayed": 0,
+    "vendor_data_opened": 0,
+    "original_snapshot": "not available in a qualified runtime; saved numerical claims not revalidated",
+    "scope": "Recorder/tests and documented recovery semantics inspected; no historical investment performance claim."
+  },
+  "benchmarks": {
+    "new_runs": 0,
+    "status": "not scheduled"
+  },
+  "research": {
+    "papers": 0,
+    "experiments": 0,
+    "status": "not scheduled"
+  },
+  "recommendations": {
+    "new": 0,
+    "rolling_cap": "existing histories retained"
+  },
+  "next": "On qualified exact source, repeat genuine same-checkout tracked synthetic ledger inspect/commit/retry and paired mixed-manifest controls. Reserve a bounded oldest-feasible recovery slice if runtime remains blocked."
+}

@@ -108,3 +108,11 @@ No applicable comparator verdict was found in the accessible Claude findings and
 ### 2026-11-18 evaluation
 
 GA-2026-10-31-2: agree with the settlement mismatch at 2edd7ae1168eda1192ff73698ba5d42a7c034a41. Peer reported the same-SHA baseline result on 15 November; today's fresh independent static trace and exact merge CI cover the proposed #58 change. Full verdict and untouched independent runtime controls remain open. [Peer evidence](https://github.com/sasasqt/invest/blob/cc4cf4e62b445c066be0e8cccedeeee6dee50836/audits/claude/cross-check.md#L22) · [Verification](2026-11-18-evaluation/evidence.json)
+
+### 2026-11-19 integration
+
+| Claude ID | Verdict | Concrete reason and evidence | Check path | Date | Main SHA |
+|---|---|---|---|---|---|
+| BH-2026-10-12-3 (hunt counterpart) | agree | Recorder individually checks clean revisions, never equality; README names evaluation only. Current independent static corroboration; runtime repeats pending. | [2026-11-19-integration/evidence.json](2026-11-19-integration/evidence.json) | 2026-11-19 | eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2 |
+| RA-2026-11-08-1 | cannot check | Native Windows snapshot publication and product runtime unavailable. Engineering/data queue retained. | [TODO](https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/TODO.md) | 2026-11-19 | eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2 |
+| RA-2026-11-08-2 / RA-2026-11-08-3 | queued | Downloader failure and report-metadata cases lie outside selected RECORD question; prior source evidence remains historical. | [2026-11-19-integration/evidence.json](2026-11-19-integration/evidence.json) | 2026-11-19 | eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2 |

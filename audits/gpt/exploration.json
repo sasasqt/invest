@@ -1860,6 +1860,295 @@
       "rule": "Three comparable evaluation visits contain a single historical first-confirmed root over 975 exploitation lines and zero over 704 exploration lines; lower exploration by 10 points to its 30% floor.",
       "new_cumulative_lines_all_reviewers": 607,
       "research": "not scheduled"
+    },
+    {
+      "date": "2026-11-19",
+      "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+      "field": "integration",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "planned_percent": {
+        "exploitation": 30,
+        "exploration": 70
+      },
+      "actual_unique_lines": {
+        "exploitation": 286,
+        "exploration": 654,
+        "mandatory_callers_contracts": 849
+      },
+      "actual_discretionary_percent": {
+        "exploitation": 30.425531914893618,
+        "exploration": 69.57446808510639
+      },
+      "new_confirmed_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0,
+        "mandatory_callers_contracts": 1
+      },
+      "new_roots_scope": "One new textual status mismatch from a mandatory consumer read, excluded from discretionary yield numerators.",
+      "eligible_comparable_visits": 3,
+      "pooled_line_denominators": {
+        "exploitation": 851,
+        "exploration": 1289
+      },
+      "pooled_rates_per_1000": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 30,
+        "exploration": 70
+      },
+      "rule": "Zero/zero tie with positive denominators increases exploration10 points, clamped at70. Known rechecks and common fix verification add no new discretionary root credit.",
+      "selection": {
+        "seed": "089e3699fe7f6a61be3e4b84016bbd5e19699ac5f2d61dd718ac968d5ca17a31",
+        "eligible": [
+          "docs/HISTORICAL_BASELINE.md",
+          "scripts/synthetic_workflow.sh",
+          "tests/test_pipeline.py"
+        ],
+        "index": 2,
+        "draw": "tests/test_pipeline.py",
+        "lens": "Fail-before-inspection and source identity across the RECORD state machine after merged reader/evaluator changes",
+        "planned_percent": {
+          "exploitation": 30,
+          "exploration": 70
+        },
+        "oldest_feasible": "tests/test_pipeline.py and RECORD acceptance after two deferred visits",
+        "peer_exact_ranges": "unavailable",
+        "rule": "SHA-256 scheduled Berlin date modulo sorted eligible set. No outcome-based redraw."
+      },
+      "ranges": [
+        {
+          "bucket": "exploitation",
+          "path": "scripts/historical_workflow.sh",
+          "ranges": [
+            [
+              50,
+              173
+            ]
+          ],
+          "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "exploitation",
+          "path": "scripts/save_run.py",
+          "ranges": [
+            [
+              105,
+              266
+            ]
+          ],
+          "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "exploration",
+          "path": "tests/test_pipeline.py",
+          "ranges": [
+            [
+              1,
+              654
+            ]
+          ],
+          "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "scripts/historical_workflow.sh",
+          "ranges": [
+            [
+              1,
+              49
+            ],
+            [
+              174,
+              233
+            ]
+          ],
+          "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "scripts/save_run.py",
+          "ranges": [
+            [
+              1,
+              104
+            ],
+            [
+              267,
+              281
+            ]
+          ],
+          "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "tests/test_save_run.py",
+          "ranges": [
+            [
+              1,
+              276
+            ]
+          ],
+          "blob": "f266a908918ecf4e546185adf269894360f8c092",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/tests/test_scale_check.py",
+          "ranges": [
+            [
+              657,
+              693
+            ]
+          ],
+          "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+          "ranges": [
+            [
+              827,
+              837
+            ]
+          ],
+          "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+          "ranges": [
+            [
+              108,
+              146
+            ]
+          ],
+          "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "ranges": [
+            [
+              382,
+              408
+            ]
+          ],
+          "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "ranges": [
+            [
+              50,
+              98
+            ],
+            [
+              206,
+              223
+            ],
+            [
+              279,
+              311
+            ]
+          ],
+          "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/ledger.py",
+          "ranges": [
+            [
+              242,
+              257
+            ]
+          ],
+          "blob": "39736206241839563a05402eaedc67abe1f876b3",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "ranges": [
+            [
+              36,
+              63
+            ]
+          ],
+          "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "docs/ARCHITECTURE.md",
+          "ranges": [
+            [
+              65,
+              95
+            ]
+          ],
+          "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "docs/REPORTING.md",
+          "ranges": [
+            [
+              1,
+              46
+            ]
+          ],
+          "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "README.md",
+          "ranges": [
+            [
+              5,
+              5
+            ],
+            [
+              109,
+              115
+            ],
+            [
+              180,
+              180
+            ]
+          ],
+          "blob": "69ae596307dba2a3a5e0db979c90a559b08701db",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "TODO.md",
+          "ranges": [
+            [
+              47,
+              47
+            ]
+          ],
+          "blob": "80a472b1d6b6bb8bc5fe9ee89088c32435e427ef",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+        }
+      ],
+      "new_cumulative_semantic_lines": 1477,
+      "research": "not scheduled; zero papers and experiments; excluded from code yields"
     }
   ],
   "date": "2026-11-12",

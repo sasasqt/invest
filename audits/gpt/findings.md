@@ -80,3 +80,7 @@ GA-2026-11-10-1 / REVIEW-45, 2026-11-17: **known/open on current main; independe
 ### 2026-11-18 evaluation
 
 GA-2026-10-31-2 remains open on main at `2edd7ae1168eda1192ff73698ba5d42a7c034a41`. PR #58 proposes the correction and its exact merge preview passed the new benchmark tests. Two reviewers agreed on the static scope and retained the pre-window reference choice as a documented policy sensitivity. No new root was confirmed. [Evidence](2026-11-18-evaluation/evidence.json)
+
+### 2026-11-19 integration
+
+GA-2026-11-19-1 (low) is a new independently verified textual mismatch: README180 calls REVIEW-17 open while README115 and TODO47 describe the merged fix. BH-2026-10-12-3 remains a known current recorder provenance defect at static scope. REVIEW-17/K3 and INV-PR40-001 are corrected in merged source and covered by narrower normal CI assertions; genuine tracked-ledger acceptance remains pending. BF-2026-11-14-5 has bounded three-flag malformed UTF-8 acceptance on current main normal CI. [Evidence](2026-11-19-integration/evidence.json)

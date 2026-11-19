@@ -11,8 +11,8 @@
   "memory_ceiling_bytes": 2147483648,
   "research_budget_seconds": 1800,
   "reading_split": [
-    60,
-    40
+    30,
+    70
   ],
   "research_split": {
     "exploitation": 60,
@@ -45,21 +45,21 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "bounded literature/static scope complete; synthetic experiment blocked",
-  "last_audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-  "last_audited_date": "2026-11-18",
-  "last_run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+  "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
+  "last_audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "last_audited_date": "2026-11-19",
+  "last_run_id": "bafac396-d340-8320-a4af-88932fce1027",
   "coverage_counts": {
-    "tracked_files": 148,
-    "inventoried": 67,
-    "partially_reviewed": 28,
-    "reviewed": 27,
+    "tracked_files": 156,
+    "inventoried": 81,
+    "partially_reviewed": 24,
+    "reviewed": 25,
     "checked_automatically": 5,
     "blocked": 21,
-    "unread_lines": 37497,
-    "unread_paths": 113,
+    "unread_lines": 41334,
+    "unread_paths": 123,
     "no_applicable_or_unknown_line_count": 5,
-    "new_unique_semantic_lines": 607
+    "new_unique_semantic_lines": 1477
   },
   "last_four_completed_runs": [
     {
@@ -394,14 +394,22 @@
       "source_fingerprint": "workflow:scripts/historical_workflow.sh:tracked-inspection-ledger-invalidates-record-code-cleanliness",
       "priority": "P2",
       "path": "scripts/historical_workflow.sh:37-50,105-129; scripts/save_run.py:142-155; strategy-evaluation/src/invest_evaluation/cli.py:36-63",
-      "status": "known/open on main; proposed fix source-verified on unmerged PR40; runtime pending",
+      "status": "merged source correction verified; genuine tracked-ledger runtime acceptance pending",
       "first_queued_utc": "2026-11-05T02:04:36.812376+00:00",
-      "last_queued_utc": "2026-11-12T02:05:19Z",
+      "last_queued_utc": "2026-11-19T02:17:10Z",
       "originating_item": "REVIEW-17/K3",
-      "next_check": "Twice run a fabricated pre-cutoff workflow in isolated genuine checkout: not-yet-inspected tracked temporary ledger window, already-inspected control, outside-checkout ledger control. Preserve honest source and ledger provenance; never force code_dirty false or edit ledger history.",
-      "deferral_reason": "current runtime prerequisites missing; do not retry unchanged blocker daily",
+      "next_check": "On qualified exact source, repeat genuine same-checkout tracked synthetic ledger inspect/commit/retry and paired mixed-manifest controls. Reserve a bounded oldest-feasible recovery slice if runtime remains blocked.",
+      "deferral_reason": "Current normal CI covers external-ledger fixture; isolated genuine tracked-ledger case unavailable",
       "last_verified_source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-      "latest_evidence": "2026-11-12-integration/evidence.json"
+      "latest_evidence": "2026-11-12-integration/evidence.json",
+      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "history": [
+        {
+          "date": "2026-11-19",
+          "evidence": "2026-11-19-integration/evidence.json",
+          "status": "source fixed; exact-main CI narrow fixture accepted"
+        }
+      ]
     },
     {
       "id": "OPEN-DATA-METADATA-IDENTITY-001",
@@ -496,11 +504,12 @@
       "path": "scripts/save_run.py:130-190",
       "priority": "P2",
       "first_queued_utc": "2026-11-12T01:59:30.006109Z",
-      "last_queued_utc": "2026-11-12T01:59:30.006109Z",
-      "status": "known counterpart duplicate, independent static corroboration; runtime pending",
+      "last_queued_utc": "2026-11-19T02:17:10Z",
+      "status": "known/open current static corroboration; runtime pending",
       "originating_item": "main hunt mirror",
       "next_check": "mixed clean manifest fixture and matching control; then snapshot and subset provenance",
-      "evidence": "2026-11-12-integration/evidence.json"
+      "evidence": "2026-11-19-integration/evidence.json",
+      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
     },
     {
       "id": "GA-2026-11-14-1",
@@ -542,6 +551,20 @@
       "status": "unchecked lead",
       "deferral_reason": "Separate contract and upstream data-adapter question; no wrong result established",
       "next_check": "Find the declared settlement-price basis and synthetic nonzero example where adjusted close differs from as-traded close."
+    },
+    {
+      "id": "OPEN-DOC-REVIEW17-STATUS-001",
+      "owner_field": "integration",
+      "originating_item": "GA-2026-11-19-1",
+      "priority": "P3",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "source_fingerprint": "documentation:README.md:current-limitations-labels-merged-REVIEW17-open",
+      "path": "README.md:115,180; TODO.md:47",
+      "first_queued_utc": "2026-11-19T02:17:10Z",
+      "last_queued_utc": "2026-11-19T02:17:10Z",
+      "status": "verified textual mismatch, fix not implemented",
+      "next_check": "Static README/TODO/source comparison no longer calls the merged REVIEW-17 root open; any tracked-ledger and native Windows acceptance gaps retain their precise scope.",
+      "evidence": "2026-11-19-integration/evidence.json"
     }
   ],
   "followup_queue_history": [
@@ -962,6 +985,14 @@
       "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
       "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
       "evidence": "2026-11-18-evaluation/evidence.json"
+    },
+    {
+      "date": "2026-11-19",
+      "field": "integration",
+      "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
+      "evidence": "2026-11-19-integration/evidence.json"
     }
   ],
   "latest_current_run_evidence": {
@@ -3205,185 +3236,50 @@
       },
       "integration": {
         "weekday": 3,
-        "last_rotation_visit": "2026-11-12",
-        "last_substantive_advance": "2026-11-12",
+        "last_rotation_visit": "2026-11-19",
+        "last_substantive_advance": "2026-11-19",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
-            "path": "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json",
+            "path": "docs/HISTORICAL_BASELINE.md",
+            "unread_ranges": [
+              [
+                16,
+                19
+              ],
+              [
+                21,
+                55
+              ],
+              [
+                70,
+                74
+              ]
+            ],
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "blob": "baa6e19438c1e67543f6e986230efbae8c520f4e"
+          },
+          {
+            "path": "scripts/check_coverage_floors.py",
             "unread_ranges": [
               [
                 1,
-                220
+                178
               ]
             ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "06a08c4400145564465bd3d8956191a59fc0fd7b"
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "blob": "b469ae3184219c852847ac87fe470a8a02900376"
           },
           {
-            "path": "runs/yahoo-test/2026-10-07/data/market/manifest.json",
-            "unread_ranges": [
-              [
-                1,
-                1210
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "475a5dfb8b118909008573fd44c6716700e50de1"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/config.json",
-            "unread_ranges": [
-              [
-                1,
-                39
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "f2c8645460bb43d4020ec35763b0d6e6410869a7"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/manifest.json",
-            "unread_ranges": [
-              [
-                1,
-                49
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "dffbd1c84a8c8dc7fe1bfc4322b56b3b7d4268a7"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/metrics.json",
-            "unread_ranges": [
-              [
-                1,
-                628
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "41e4f9c1d7f4321ad2241150629f233ab24200bf"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/report.md",
-            "unread_ranges": [
-              [
-                1,
-                93
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "828e480c36bef4f23a6516fd3151e89c142ae200"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/statistics.json",
-            "unread_ranges": [
-              [
-                1,
-                62
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "370e1007111b15f48711ae441bc42ef21ad560d7"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/tables/scenarios.csv",
+            "path": "scripts/synthetic_workflow.sh",
             "unread_ranges": [
               [
                 1,
                 9
               ]
             ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "66254000961b61147dbfa8f86cddf0350fb55d05"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/eval/verdict.json",
-            "unread_ranges": [
-              [
-                1,
-                85
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "5ea1c8b74be6afc40c086b0b7b37f5382a8139b6"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/config.json",
-            "unread_ranges": [
-              [
-                1,
-                7
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "d0fe3533dd3ba5bb567703dff118927adce26aba"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/metrics.json",
-            "unread_ranges": [
-              [
-                1,
-                23
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "e2b5065c74e1375168e82f95b6089077e16050d6"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv",
-            "unread_ranges": [
-              [
-                1,
-                3775
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "881fa2a36b240dc085d91da822d20abd844d2027"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/tail_returns.csv",
-            "unread_ranges": [
-              [
-                1,
-                10
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "be48d864cf9b53cb419fb04b65bde8b2abc1dae2"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/mining/factor.json",
-            "unread_ranges": [
-              [
-                1,
-                21
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "f0b69b34df752b90b9c04aa85f00fa607595599f"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/signals/manifest.json",
-            "unread_ranges": [
-              [
-                1,
-                67
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "4dd1c9efedab6d77815e8cf2690dcaa7615acd06"
-          },
-          {
-            "path": "runs/yahoo-test/2026-10-07/snapshot/snapshot.json",
-            "unread_ranges": [
-              [
-                1,
-                626
-              ]
-            ],
-            "source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
-            "blob": "0e9548b4f97b5867d47dedbdbd95e7087f0a9b14"
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e"
           }
         ],
         "queue_refs": [
@@ -3392,10 +3288,10 @@
         ],
         "deferrals": {
           "custom-record-workflow": {
-            "date": "2026-11-12",
-            "reason": "no proof of this worker's credential isolation or installed graph",
-            "consecutive_comparable_visits": 2,
-            "next_check": "paired tracked synthetic ledger RECORD test on pinned main and separately pinned fix"
+            "date": "2026-11-19",
+            "reason": "Same-checkout tracked temporary-ledger acceptance still absent; current host isolation/installed origins unqualified and no authorized Actions dispatch tool",
+            "consecutive_comparable_visits": 3,
+            "next_check": "On qualified exact source, repeat genuine same-checkout tracked synthetic ledger inspect/commit/retry and paired mixed-manifest controls. Reserve a bounded oldest-feasible recovery slice if runtime remains blocked."
           }
         },
         "reading_allocation": [
@@ -3653,10 +3549,299 @@
                 "blob": "2835562f6048abed2d6918b9c76ff46dcb836d49"
               }
             ]
+          },
+          {
+            "date": "2026-11-19",
+            "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+            "field": "integration",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "planned_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "actual_unique_lines": {
+              "exploitation": 286,
+              "exploration": 654,
+              "mandatory_callers_contracts": 849
+            },
+            "actual_discretionary_percent": {
+              "exploitation": 30.425531914893618,
+              "exploration": 69.57446808510639
+            },
+            "new_confirmed_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0,
+              "mandatory_callers_contracts": 1
+            },
+            "new_roots_scope": "One new textual status mismatch from a mandatory consumer read, excluded from discretionary yield numerators.",
+            "eligible_comparable_visits": 3,
+            "pooled_line_denominators": {
+              "exploitation": 851,
+              "exploration": 1289
+            },
+            "pooled_rates_per_1000": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "rule": "Zero/zero tie with positive denominators increases exploration10 points, clamped at70. Known rechecks and common fix verification add no new discretionary root credit.",
+            "selection": {
+              "seed": "089e3699fe7f6a61be3e4b84016bbd5e19699ac5f2d61dd718ac968d5ca17a31",
+              "eligible": [
+                "docs/HISTORICAL_BASELINE.md",
+                "scripts/synthetic_workflow.sh",
+                "tests/test_pipeline.py"
+              ],
+              "index": 2,
+              "draw": "tests/test_pipeline.py",
+              "lens": "Fail-before-inspection and source identity across the RECORD state machine after merged reader/evaluator changes",
+              "planned_percent": {
+                "exploitation": 30,
+                "exploration": 70
+              },
+              "oldest_feasible": "tests/test_pipeline.py and RECORD acceptance after two deferred visits",
+              "peer_exact_ranges": "unavailable",
+              "rule": "SHA-256 scheduled Berlin date modulo sorted eligible set. No outcome-based redraw."
+            },
+            "ranges": [
+              {
+                "bucket": "exploitation",
+                "path": "scripts/historical_workflow.sh",
+                "ranges": [
+                  [
+                    50,
+                    173
+                  ]
+                ],
+                "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "exploitation",
+                "path": "scripts/save_run.py",
+                "ranges": [
+                  [
+                    105,
+                    266
+                  ]
+                ],
+                "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "exploration",
+                "path": "tests/test_pipeline.py",
+                "ranges": [
+                  [
+                    1,
+                    654
+                  ]
+                ],
+                "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "scripts/historical_workflow.sh",
+                "ranges": [
+                  [
+                    1,
+                    49
+                  ],
+                  [
+                    174,
+                    233
+                  ]
+                ],
+                "blob": "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "scripts/save_run.py",
+                "ranges": [
+                  [
+                    1,
+                    104
+                  ],
+                  [
+                    267,
+                    281
+                  ]
+                ],
+                "blob": "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "tests/test_save_run.py",
+                "ranges": [
+                  [
+                    1,
+                    276
+                  ]
+                ],
+                "blob": "f266a908918ecf4e546185adf269894360f8c092",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/tests/test_scale_check.py",
+                "ranges": [
+                  [
+                    657,
+                    693
+                  ]
+                ],
+                "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "ranges": [
+                  [
+                    827,
+                    837
+                  ]
+                ],
+                "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "ranges": [
+                  [
+                    108,
+                    146
+                  ]
+                ],
+                "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "ranges": [
+                  [
+                    382,
+                    408
+                  ]
+                ],
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "ranges": [
+                  [
+                    50,
+                    98
+                  ],
+                  [
+                    206,
+                    223
+                  ],
+                  [
+                    279,
+                    311
+                  ]
+                ],
+                "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/ledger.py",
+                "ranges": [
+                  [
+                    242,
+                    257
+                  ]
+                ],
+                "blob": "39736206241839563a05402eaedc67abe1f876b3",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "ranges": [
+                  [
+                    36,
+                    63
+                  ]
+                ],
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "docs/ARCHITECTURE.md",
+                "ranges": [
+                  [
+                    65,
+                    95
+                  ]
+                ],
+                "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "docs/REPORTING.md",
+                "ranges": [
+                  [
+                    1,
+                    46
+                  ]
+                ],
+                "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "README.md",
+                "ranges": [
+                  [
+                    5,
+                    5
+                  ],
+                  [
+                    109,
+                    115
+                  ],
+                  [
+                    180,
+                    180
+                  ]
+                ],
+                "blob": "69ae596307dba2a3a5e0db979c90a559b08701db",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "TODO.md",
+                "ranges": [
+                  [
+                    47,
+                    47
+                  ]
+                ],
+                "blob": "80a472b1d6b6bb8bc5fe9ee89088c32435e427ef",
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+              }
+            ],
+            "new_cumulative_semantic_lines": 1477,
+            "research": "not scheduled; zero papers and experiments; excluded from code yields"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "9e7dd61a679cc567d059ce3ded626f9dec10f3e8",
+        "last_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
         "last_substantive_run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
         "validation_freshness": "static named scope current; GitHub hosted same-source synthetic evidence reused; custom RECORD and saved replay unavailable",
         "completed_advances": [
@@ -3967,11 +4152,11 @@
         "GA-2026-10-31-4"
       ]
     },
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 37497,
-    "unread_paths": 113,
+    "unread_lines": 41334,
+    "unread_paths": 123,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -4126,10 +4311,10 @@
         "next_slice": "Reserve a bounded slice for the oldest feasible item if runtime is still blocked."
       },
       "integration_visit": {
-        "date": "2026-11-12",
-        "oldest_feasible_advanced": "K3 and mixed revision provenance static trace; saved README inspection",
-        "twice_deferred": "custom-record-workflow; reserve oldest feasible slice after prerequisites",
-        "fourteen_day_flag": "no measured integration inactivity; unvisited-field baselines unknown"
+        "date": "2026-11-19",
+        "twice_deferred": "custom-record-workflow now three comparable visits; retained prerequisite and oldest-feasible slice required",
+        "oldest_feasible_advanced": "Whole tests/test_pipeline.py synthetic contract and RECORD assertions read",
+        "fourteen_day_flags": "None among known substantive visit dates; engineering13 days; earlier missing executions remain unknown"
       },
       "performance_visit": {
         "date": "2026-11-14",
@@ -4375,8 +4560,40 @@
         "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
         "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
         "evidence": "2026-11-18-evaluation/evidence.json"
+      },
+      {
+        "date": "2026-11-19",
+        "field": "integration",
+        "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
+        "evidence": "2026-11-19-integration/evidence.json"
       }
-    ]
+    ],
+    "shared_controls": {
+      "encoding": {
+        "date": "2026-11-19",
+        "id": "BF-2026-11-14-5",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "status": "verified bounded acceptance through existing exact-main normal CI and source assertions",
+        "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+        "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+        "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
+        "run": 44246922942,
+        "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats"
+      },
+      "windows": {
+        "date": "2026-11-19",
+        "owner_field": "engineering",
+        "ids": [
+          "REVIEW-40",
+          "REVIEW-41"
+        ],
+        "status": "open; matching native Windows product evidence unavailable",
+        "evidence": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/TODO.md#L70-L71",
+        "next_check": "Git for Windows Bash/native Python synthetic temporary ledger replay; bytes, captures, valid run and invalid benchmark refusal"
+      }
+    }
   },
   "concurrent_reconciliation": {
     "parent": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
@@ -4717,48 +4934,89 @@
       "publication_status": "published_verified",
       "verified_report_commit": "6590f42bcde07ba671c4ed3fdbea2b5b4ffd7a78",
       "elapsed_to_verified_publication_seconds": 513
+    },
+    {
+      "date": "2026-11-19",
+      "prior_current_run": {
+        "date": "2026-11-18",
+        "field": "evaluation",
+        "scheduled_for": "2026-11-18T02:00:00Z",
+        "started_utc": "2026-11-18T02:04:26.404507Z",
+        "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
+        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "output_base": "bbff5bb4f84d203ab12f6c7d9ae0493842f0d4ec",
+        "previous_publication": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+        "model": "unavailable",
+        "effort": "unavailable",
+        "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
+        "completed_steps": [
+          "method verification and continuity",
+          "same-SHA CI logs and coverage gates",
+          "main and PR #58 source traces",
+          "synthetic arithmetic and fresh independent review",
+          "exact range and queue updates"
+        ],
+        "remaining_steps": [
+          "common checks",
+          "field scope",
+          "independent review",
+          "report and verify"
+        ],
+        "pending_jobs": [],
+        "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+        "runner_sha": null,
+        "planned_runner_ref": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "elapsed_to_preparation_seconds": 926,
+        "helper_count": 1,
+        "new_product_runs": 0,
+        "evidence": "2026-11-18-evaluation/evidence.json",
+        "report": "2026-11-18.md",
+        "publication_status": "published_verified",
+        "verified_report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
+        "elapsed_to_verified_publication_seconds": 1024
+      },
+      "prior_status": "bounded literature/static scope complete; synthetic experiment blocked"
     }
   ],
   "current_run": {
-    "date": "2026-11-18",
-    "field": "evaluation",
-    "scheduled_for": "2026-11-18T02:00:00Z",
-    "started_utc": "2026-11-18T02:04:26.404507Z",
-    "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+    "date": "2026-11-19",
+    "field": "integration",
+    "scheduled_for": "2026-11-19T02:00:00Z",
+    "started_utc": "2026-11-19T02:00:53.714892Z",
+    "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
     "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
-    "output_base": "bbff5bb4f84d203ab12f6c7d9ae0493842f0d4ec",
-    "previous_publication": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "output_base": "5ff3f32621d65c6b37013060fc2ed2455eb2f33c",
+    "previous_publication": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
     "model": "unavailable",
     "effort": "unavailable",
-    "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
+    "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
     "completed_steps": [
-      "method verification and continuity",
-      "same-SHA CI logs and coverage gates",
-      "main and PR #58 source traces",
-      "synthetic arithmetic and fresh independent review",
-      "exact range and queue updates"
+      "methods and continuity",
+      "common exact-main CI gates",
+      "bounded RECORD/recorder trace",
+      "independent verification",
+      "coverage and queues"
     ],
     "remaining_steps": [
-      "common checks",
-      "field scope",
-      "independent review",
-      "report and verify"
+      "publish and verify"
     ],
     "pending_jobs": [],
     "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
-    "runner_sha": null,
-    "planned_runner_ref": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "elapsed_to_preparation_seconds": 926,
-    "helper_count": 1,
+    "actual_runner_sha": null,
+    "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "new_product_runs": 0,
-    "evidence": "2026-11-18-evaluation/evidence.json",
-    "report": "2026-11-18.md",
-    "publication_status": "published_verified",
-    "verified_report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
-    "elapsed_to_verified_publication_seconds": 1024
+    "helper_count": 1,
+    "evidence": "2026-11-19-integration/evidence.json",
+    "report": "2026-11-19.md",
+    "publication_status": "prepared",
+    "elapsed_to_preparation_seconds": 976
   },
   "publication_history": [
     {
@@ -5326,49 +5584,12 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-18",
-    "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
-    "status": "published_verified",
-    "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "main_rechecked": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
-    "report_url": "https://github.com/sasasqt/invest/blob/20a4854aba0163e8b0c0d4f032e24eb1abf96b9c/audits/gpt/2026-11-18.md",
-    "output_parent": "39cf6c0fb07e9daf81b7f6bf525c08f195344189",
-    "verified_head_at_report": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-18-evaluation/evidence.json",
-      "audits/gpt/2026-11-18.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/findings.md",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv"
-    ],
-    "verified_git_blob_ids": {
-      "audits/gpt/2026-11-18-evaluation/evidence.json": "4713feee3e4afe5eddfcae092b51732eb03f2fee",
-      "audits/gpt/2026-11-18.md": "abaa507972a1b40cd8ca661b8c85a5560973cbe4",
-      "audits/gpt/checkpoint.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
-      "audits/gpt/coverage-map.json": "aaa1447b83b77f8088b093bb62d3fcd5f16d4abc",
-      "audits/gpt/coverage-map.md": "92fc2b48796a08a5846d8eb9025f5f715240e593",
-      "audits/gpt/coverage.csv": "7ca8e4dada5d55d4db245bd7c83f4b2bd09abdf8",
-      "audits/gpt/cross-check.md": "f68dc16a9c1498449a679d0d9df1a8b6a7d56973",
-      "audits/gpt/exploration.json": "ea873ed19b1a67db937b1bfb07e6be90cee5ab1e",
-      "audits/gpt/findings.json": "5a703beff9f252421a5719883cd8d71b353a7fd7",
-      "audits/gpt/findings.md": "a969ba59f436d05a86ef61352db6d935258bfa7e",
-      "audits/gpt/state.json": "63bc14c2f83682a0f7901039d6242e26d968ab0b",
-      "audits/gpt/validation.csv": "f75d0616cbf0c08cca5b7ac4afe5ca7024c2ac57"
-    },
-    "readback_verified": true,
-    "force": false,
-    "verified_utc": "2026-11-18T02:21:30Z",
-    "elapsed_to_verified_publication_seconds": 1024
+    "date": "2026-11-19",
+    "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+    "status": "prepared",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
   },
-  "remaining_work_current_visit": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead.",
+  "remaining_work_current_visit": "On qualified exact source, repeat genuine same-checkout tracked synthetic ledger inspect/commit/retry and paired mixed-manifest controls. Reserve a bounded oldest-feasible recovery slice if runtime remains blocked.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",
