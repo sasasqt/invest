@@ -12,7 +12,7 @@ from typing import Literal
 import pandas as pd
 import pytest
 
-from invest_data.bundle import Column, read_bundle, write_bundle
+from invest_data.bundle import BundleError, Column, read_bundle, write_bundle
 
 # The storage formats write_bundle accepts (StorageFormat once the typing pull request merges).
 Format = Literal["csv", "sqlite", "parquet"]
@@ -38,12 +38,17 @@ def test_strings_with_carriage_returns_round_trip(tmp_path: Path, fmt: Format) -
 
 
 def test_the_three_formats_hash_strings_with_carriage_returns_alike(tmp_path: Path) -> None:
-    """DATA_CONTRACT: CSV, SQLite and Parquet copies of the same data have the same hash."""
+    """DATA_CONTRACT: CSV, SQLite and Parquet copies of the same data have the same hash.
+
+    The writer computes the hash from the frame, so each copy is also read back: its reader
+    must give exactly the values that hash covers (read_bundle verifies it).
+    """
     hashes: set[str] = set()
     for fmt in FORMATS:
         _write(tmp_path / fmt, TEXTS, fmt)
         manifest = json.loads((tmp_path / fmt / "manifest.json").read_text(encoding="utf-8"))
         hashes.add(manifest["content_sha256"])
+        assert _strings(tmp_path / fmt) == TEXTS
     assert len(hashes) == 1
 
 
@@ -66,3 +71,22 @@ def test_row_terminators_outside_quotes_still_end_rows(tmp_path: Path, terminato
     data = path / "data.csv"
     data.write_bytes(data.read_bytes().replace(b"\n", terminator))
     assert _strings(path) == ["x", "y"]
+
+
+@pytest.mark.parametrize("terminator", [b"\r\n", b"\r"])
+def test_a_quoted_newline_converted_after_writing_is_read_as_converted(
+    tmp_path: Path, terminator: bytes
+) -> None:
+    """A tool that rewrites line ends (git core.autocrlf, unix2dos, unix2mac) changes the
+    quoted content too: read exactly without a hash, refused with one (DATA_CONTRACT:
+    readers verify content_sha256 when present)."""
+    path = tmp_path / "b"
+    _write(path, ["a\nb"])
+    data = path / "data.csv"
+    data.write_bytes(data.read_bytes().replace(b"\n", terminator))
+    with pytest.raises(BundleError, match="content hash mismatch"):
+        read_bundle(path)
+    manifest = json.loads((path / "manifest.json").read_text(encoding="utf-8"))
+    del manifest["content_sha256"]
+    (path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    assert _strings(path) == ["a" + terminator.decode() + "b"]
