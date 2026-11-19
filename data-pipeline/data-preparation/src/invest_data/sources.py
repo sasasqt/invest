@@ -1,5 +1,9 @@
 """Data sources: a deterministic synthetic market and a local CSV importer.
 
+The synthetic market repeats bit for bit for a seed on one machine. NumPy's ``exp`` and
+``log`` and the C library's fallbacks round differently on other CPU paths, so another
+machine can publish other last bits and another content hash under the same dataset id.
+
 Network adapters live in their own modules (the test-only Yahoo Finance adapter is
 :mod:`invest_data.yahoo`) because licensing, credentials and rate limits are source
 specific. An adapter returns a raw bars DataFrame with the columns of
