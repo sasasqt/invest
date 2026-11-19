@@ -14,6 +14,7 @@ from invest_evaluation.strategies import Slice
 from invest_evaluation.validation import _check
 from invest_mining import ledger
 from invest_mining.diagnostics import daily_ic
+from invest_mining.expressions import OpSpec
 
 
 def _never_called(frame: pd.DataFrame) -> None:
@@ -25,3 +26,4 @@ def _never_called(frame: pd.DataFrame) -> None:
     write_bundle(frame, "out", dataset_id="d", fmt="json")  # type: ignore[arg-type]
     ledger.append("ledger.jsonl", "reserve", {})  # type: ignore[arg-type]
     ValidationConfig(benchmark="spy")  # type: ignore[arg-type]
+    OpSpec("ternary", lambda x: x)  # type: ignore[arg-type]

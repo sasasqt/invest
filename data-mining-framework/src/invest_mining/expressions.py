@@ -25,7 +25,7 @@ from collections.abc import Callable, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass
 from fractions import Fraction
-from typing import TypeAlias, TypeVar
+from typing import Literal, TypeAlias, TypeVar
 
 import numpy as np
 import pandas as pd
@@ -134,9 +134,14 @@ def _text(node: Node, parts: list[str]) -> str:
     return f"{node.op}({', '.join(parts)})"
 
 
+#: How an operator takes its arguments: one input, two inputs, an input and a window,
+#: two inputs and a window, or one input ranked across names on each date.
+OpKind: TypeAlias = Literal["unary", "binary", "ts", "ts2", "cs"]
+
+
 @dataclass(frozen=True)
 class OpSpec:
-    kind: str  # unary | binary | ts | ts2 | cs
+    kind: OpKind
     fn: Callable[..., pd.DataFrame]
 
 

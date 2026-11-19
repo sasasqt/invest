@@ -49,13 +49,6 @@ enable_error_code = [
 ]
 
 [[tool.mypy.overrides]]
-# One redundant-expr hit is left in stats.py (a runtime check of caller input), next to
-# lines that open pull request #53 changes; once #53 merges, a typing pull request fixes
-# it and removes this entry (QUALITY-04).
-module = ["invest_evaluation.stats"]
-disable_error_code = ["redundant-expr"]
-
-[[tool.mypy.overrides]]
 # pandas and pyarrow ship no py.typed marker and pandas-stubs is not installed (QUALITY-04).
 module = ["pandas", "pandas.*", "pyarrow", "pyarrow.*"]
 ignore_missing_imports = true
