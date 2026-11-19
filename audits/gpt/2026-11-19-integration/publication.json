@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-19",
+  "run_id": "bafac396-d340-8320-a4af-88932fce1027",
+  "status": "published_verified",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "report_commit": "5fe4e5a4d75b62bac08109a472d7562db1d0c216",
+  "report_url": "https://github.com/sasasqt/invest/blob/5fe4e5a4d75b62bac08109a472d7562db1d0c216/audits/gpt/2026-11-19.md",
+  "output_parent": "f512f54c68b547fbb60903d744ca856f6bd68746",
+  "verified_head_at_report": "5fe4e5a4d75b62bac08109a472d7562db1d0c216",
+  "verified_changed_paths": [
+    "audits/gpt/2026-11-19-integration/evidence.json",
+    "audits/gpt/2026-11-19.md",
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/coverage-map.json",
+    "audits/gpt/coverage-map.md",
+    "audits/gpt/coverage.csv",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/exploration.json",
+    "audits/gpt/findings.json",
+    "audits/gpt/findings.md",
+    "audits/gpt/state.json",
+    "audits/gpt/validation.csv"
+  ],
+  "verified_git_blob_ids": {
+    "audits/gpt/2026-11-19-integration/evidence.json": "e4f1e79012d6205b87414c1bc74b4d2cae048454",
+    "audits/gpt/2026-11-19.md": "c94c2045124f4bd76a7f3f2439c0ea774e0c5f83",
+    "audits/gpt/checkpoint.json": "dc013455b46fcc572ef44e06d4747c66f4589724",
+    "audits/gpt/coverage-map.json": "0efff8f4c8a5eb84460eacbe0552dc437a094954",
+    "audits/gpt/coverage-map.md": "7ef8d346f4339c5f083badb965a7adc5ca735021",
+    "audits/gpt/coverage.csv": "ffdea29ccd541cb7906ac58945f89c4cc25c2312",
+    "audits/gpt/cross-check.md": "d1d7f6f72dd509003581779f47643a3ed6cfef4b",
+    "audits/gpt/exploration.json": "7e975b91f9e4046f39e246c027ed1e91a6911f20",
+    "audits/gpt/findings.json": "61701e69fb22e07d314148831d8af3d2d76d1ad2",
+    "audits/gpt/findings.md": "3e689bc7752970924c399323a9947c662336f5fb",
+    "audits/gpt/state.json": "dc013455b46fcc572ef44e06d4747c66f4589724",
+    "audits/gpt/validation.csv": "f05d774ad384236bc7f13ecb98a3297bf4dcc365"
+  },
+  "readback_verified": true,
+  "force": false,
+  "verified_utc": "2026-11-19T02:21:37Z",
+  "elapsed_to_verified_publication_seconds": 1243
+}
