@@ -4,16 +4,17 @@ How changes are checked, released, and turned into reproducible research results
 
 ## What CI checks today
 
-Every pull request and every push to `main` runs:
+Every push to `main` and every pull request that changes more than Markdown runs the jobs below (`ci.yml`). A pull request that changes only `.md` files runs just `links`, because no test, build or type check reads Markdown.
 
 | Job | Checks |
 |---|---|
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
-| `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Formatting, lint, coverage floors and link checks do not depend on the platform and run only in `checks` |
+| `links` (`docs.yml`, every pull request and push to `main`) | An offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, and the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`) |
+| `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Formatting, lint and coverage floors do not depend on the platform and run only in `checks` |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
 
-A PR is mergeable only when all jobs are green on its latest commit.
+A PR is mergeable only when every job that ran is green on its latest commit.
 
 mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
 
@@ -33,7 +34,7 @@ start workflow commands.
 After those checks pass, the workflow runs both full isolated audit jobs. Current
 `main` is resolved once and pinned for the complete matrix; manual runs may instead
 specify an exact source SHA and an optional historical control SHA. Old failing
-trials remain historical failures. These jobs supplement the normal eight CI jobs;
+trials remain historical failures. These jobs supplement the normal nine CI jobs;
 they do not replace their tests or establish a Docker audit on a Windows host or
 historical investment results. See the [Python checks](PYTHON_GUIDELINES.md#development-checks)
 for local commands and the runner README for limits.

@@ -129,7 +129,7 @@ uv run python scripts/check_coverage_floors.py coverage.json
 uv run python scripts/check_markdown_links.py
 ```
 
-CI also builds all three wheels (`uv build --all-packages`), installs them in a clean environment, smoke-tests the CLIs, and runs the component and end-to-end tests against the installed packages. On Windows (`tests-windows`, Python 3.11 and 3.13, in Git Bash) it runs `uv sync --frozen`, the `mypy` command above and `uv run pytest` without coverage. A zero-test run does not demonstrate readiness.
+CI also builds all three wheels (`uv build --all-packages`), installs them in a clean environment, smoke-tests the CLIs, and runs the component and end-to-end tests against the installed packages. The link check runs in its own workflow (`docs.yml`) on every pull request; a pull request that changes only Markdown runs nothing else. On Windows (`tests-windows`, Python 3.11 and 3.13, in Git Bash) it runs `uv sync --frozen`, the `mypy` command above and `uv run pytest` without coverage. A zero-test run does not demonstrate readiness.
 
 ## Continuous integration and change review
 
