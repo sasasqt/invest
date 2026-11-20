@@ -6,7 +6,7 @@ Develop quickly by shortening the path from a concrete requirement to working, v
 
 - Select a task from [TODO.md](TODO.md) that advances the current [roadmap](ROADMAP.md) milestone or resolves a blocking uncertainty.
 - Describe observable acceptance criteria before coding: inputs, expected outputs, failure behavior, and a representative example.
-- Prefer a small complete workflow over completing every layer or interface in advance. For this repository, a fixture dataset → known formula → frozen signals → reconciled strategy report is the first runnable target.
+- Prefer a small complete workflow over completing every layer or interface in advance: first one thin path through every component, a **walking skeleton** (also called a **tracer bullet**), then grow it. For this repository the first such path, dataset → formula → frozen signals → reconciled strategy report, exists: `scripts/synthetic_workflow.sh` runs it in one command on a deterministic synthetic market, and `scripts/historical_workflow.sh` on saved Yahoo history with a fixed formula. Add a new capability the same way: connect its simplest version through every stage it touches (for a learned model: fit a trivial model in the development split, export it, score signals and evaluate them), keep the whole workflow running, then deepen one stage at a time.
 - Limit work in progress. Finish and validate one coherent change before starting unrelated features; make dependencies explicit when work can proceed independently.
 - Split a task when it cannot be reviewed or verified as a focused change. Avoid mixing a feature, a broad refactor, and dependency upgrades.
 
