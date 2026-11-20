@@ -4,8 +4,12 @@ Event order within each session ``t``:
 
 1. **Open.** Positions are marked from the previous mark to the open. If equity is then
    not positive, the run stops before any order is sized on it. Otherwise orders whose
-   fill date is ``t`` execute at the open price; transaction costs are paid in cash, and
-   the run stops if they leave equity not positive.
+   fill date is ``t`` are sized on that equity and execute at the open price. When a sale
+   cannot complete (rejected, or cut by the participation cap), every target is sized on
+   that equity minus ``X / gross_leverage`` (never below zero), where ``X`` is the value
+   the name keeps beyond its target on that reduced equity, so gross exposure at the open
+   stays within ``gross_leverage`` unless that value alone exceeds it (REVIEW-27).
+   Transaction costs are paid in cash, and the run stops if they leave equity not positive.
 2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
@@ -205,6 +209,35 @@ def _validated_weights(weights: pd.Series, eligible: pd.Index, gross_limit: floa
     return pd.Series(values, index=weights.index.copy())
 
 
+def _plan_order(
+    target: float,
+    held: float,
+    price: float,
+    sizing: float,
+    equity: float,
+    adv: float,
+    vol: float,
+    max_participation: float,
+) -> tuple[str, float, bool]:
+    """One order at the open, its target weight sized on ``sizing``: ``("fill", shares,
+    clipped)``; ``("skip", 0.0, False)`` for a trade below 1e-9 of ``equity``; or a
+    rejection reason with no shares. ``price`` is the fill date's open (NaN without a bar);
+    ``adv`` and ``vol`` are the decision date's exit estimates."""
+    if np.isnan(price):
+        return ("no_bar_on_fill_date", 0.0, False)
+    want = target * sizing / price
+    delta = want - held
+    if abs(delta) * price < 1e-9 * equity:
+        return ("skip", 0.0, False)
+    if not (np.isfinite(adv) and adv > 0 and np.isfinite(vol)):
+        return ("no_liquidity_estimate", 0.0, False)
+    cap = max_participation * adv / price
+    clipped = bool(abs(delta) > cap)
+    if clipped:
+        delta = np.sign(delta) * cap
+    return ("fill", float(delta), clipped)
+
+
 def run_backtest(
     bars: pd.DataFrame,
     signals: pd.DataFrame,
@@ -342,6 +375,7 @@ def run_backtest(
     next_decision: int | None = None  # session from which the next decision is due
     waiting = False  # a due decision is waiting for a session with a score
     n_waited = n_decided = n_zero_target = 0
+    n_net_sized = 0  # order sessions sized on equity net of unsold value (REVIEW-27)
     first_waited: pd.Timestamp | None = None
     borrow_daily = cm.borrow_bps_annual / 1e4 / cfg.annualization
     cash_daily = cm.cash_rate_annual / cfg.annualization
@@ -417,7 +451,81 @@ def run_backtest(
             if len(weights):
                 idx = instruments.get_indexer(weights.index)
                 target[idx] = weights.to_numpy()
-            for j in np.flatnonzero((target != 0) | (shares != 0)).tolist():
+            orders = np.flatnonzero((target != 0) | (shares != 0)).tolist()
+
+            # REVIEW-27 (decided 2026-10-26): a sale that cannot complete this session
+            # (rejected, or cut by the participation cap) leaves its name holding more than
+            # its target. Sizing the other targets on the whole open equity would then push
+            # gross exposure above `gross_leverage` and cash below zero, so every target is
+            # sized on equity net of the value that cannot be sold: E' = E - X / L, where X
+            # sums, over the names short of their sale, what each holds after its fill
+            # beyond its own target on E' (the whole holding when the target is zero or on
+            # the other side), and L is `gross_leverage`. With the default L of 1 this is
+            # the decision's E - X; for another L, X / L is the equity X takes up at that
+            # leverage (E - X breaks the limit for L below 1, and for L above 1 has no
+            # solution once the stuck names' targets reach a weight of 1). Solved for E':
+            # (E - P / L) / (1 - W / L), with P what those names hold and W the weights of
+            # their targets on their own side (W < L unless every target is stuck). A
+            # smaller E' only makes their sales bigger (still rejected or capped) and can add
+            # names, so the set only grows. Every other name ends at or below its target on
+            # E', so gross at the open's marks is at most P + E' * (L - W) = L * E, unless P
+            # alone exceeds L * E: then E' is clamped to 0 and gross is P. Nothing short of
+            # its sale: E' is E exactly.
+            divisor = cfg.strategy.gross_leverage
+            sizing = equity_open
+            tol = 1e-9 * equity_open
+            short_of_sale: set[int] = set()
+            while True:
+                planned = {
+                    j: _plan_order(
+                        target[j],
+                        shares[j],
+                        px_open[i][j],
+                        sizing,
+                        equity_open,
+                        ADV_EXIT[dec_i][j],
+                        VOL_EXIT[dec_i][j],
+                        ex.max_participation,
+                    )
+                    for j in orders
+                    if not retired[j]
+                }
+                # Value each name holds after its planned fill, at the open marks (the last
+                # known mark without a bar); a rejection or a skip leaves the holding.
+                kept_after = {
+                    j: abs((shares[j] + delta) * mark[j]) if shares[j] + delta else 0.0
+                    for j, (_, delta, _) in planned.items()
+                }
+                # The part of each target that its holding still serves: none when the
+                # target is zero or the holding is left on the other side.
+                own_side = {
+                    j: abs(target[j]) if (shares[j] + delta) * target[j] > 0 else 0.0
+                    for j, (_, delta, _) in planned.items()
+                }
+                # Only a rejected or capped order can leave its name beyond its target: a
+                # full fill reaches it and a skip is within 1e-9 of the equity. Testing the
+                # value alone lets the rounding of `held + delta` (about 1e-16 of the
+                # holding) pass the tolerance when a holding is millions of times equity.
+                found = {
+                    j
+                    for j, v in kept_after.items()
+                    if (planned[j][0] not in ("fill", "skip") or planned[j][2])
+                    and v > own_side[j] * sizing + tol
+                }
+                if found <= short_of_sale:
+                    break
+                short_of_sale |= found
+                kept = float(sum(kept_after[j] for j in short_of_sale))
+                weight = float(sum(own_side[j] for j in short_of_sale))
+                if divisor - weight <= 1e-12 * divisor:
+                    sizing = 0.0
+                else:
+                    sizing = (equity_open - kept / divisor) / (1 - weight / divisor)
+                    sizing = min(max(sizing, 0.0), equity_open)
+            if short_of_sale:
+                n_net_sized += 1
+
+            for j in orders:
                 if retired[j]:
                     trades.append(
                         {
@@ -430,40 +538,24 @@ def run_backtest(
                     )
                     n_rejected += 1
                     continue
-                want = target[j] * equity_open / px_open[i][j] if has_open[j] else np.nan
-                if not has_open[j]:
+                kind, delta, clipped = planned[j]
+                if kind == "skip":
+                    continue
+                if kind != "fill":
                     trades.append(
                         {
                             "date": date,
                             "instrument": instruments[j],
                             "status": "rejected",
-                            "reason": "no_bar_on_fill_date",
+                            "reason": kind,
                             "decision_date": calendar[dec_i],
                         }
                     )
                     n_rejected += 1
                     continue
-                delta = want - shares[j]
-                if abs(delta) * px_open[i][j] < 1e-9 * equity_open:
-                    continue
-                adv_j, vol_j = ADV_EXIT[dec_i][j], VOL_EXIT[dec_i][j]
-                if not (np.isfinite(adv_j) and adv_j > 0 and np.isfinite(vol_j)):
-                    trades.append(
-                        {
-                            "date": date,
-                            "instrument": instruments[j],
-                            "status": "rejected",
-                            "reason": "no_liquidity_estimate",
-                            "decision_date": calendar[dec_i],
-                        }
-                    )
-                    n_rejected += 1
-                    continue
-                cap = ex.max_participation * adv_j / px_open[i][j]
-                clipped = abs(delta) > cap
                 if clipped:
-                    delta = np.sign(delta) * cap
                     n_clipped += 1
+                adv_j, vol_j = ADV_EXIT[dec_i][j], VOL_EXIT[dec_i][j]
                 notional = abs(delta) * px_open[i][j]
                 c = {
                     "commission": notional * cm.commission_bps / 1e4,
@@ -653,6 +745,12 @@ def run_backtest(
         warnings.append(
             "no decision was made: every session with a score in the evaluation window is "
             f"{last}, so no order could fill inside the window and the run held nothing"
+        )
+    if n_net_sized:
+        warnings.append(
+            f"{n_net_sized} order sessions had a sale that could not complete (rejected, or "
+            "cut by the participation cap), so every target was sized on equity minus "
+            "X / gross_leverage, X being the value that sale kept beyond its target (REVIEW-27)"
         )
     if unknown_traded_close:
         warnings.append(
