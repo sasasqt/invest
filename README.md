@@ -198,3 +198,15 @@ host-side rules its checks enforce.
 ## Local files
 
 The `.gitignore` excludes virtual environments, Python caches, build outputs, coverage reports, and local environment files. Keep credentials out of Git. A sanitized `.env.example` may be committed to document required configuration; dependency lockfiles should also be committed.
+
+## License
+
+Copyright (C) 2026 sasasqt and other human contributors (see the Git history).
+
+Invest is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version (SPDX: `AGPL-3.0-or-later`). It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [full license](LICENSE) for details.
+
+In plain words: anyone may use, study, change and share invest. Whoever gives others a copy, changed or not, must give them a copy of this license, offer them the complete source under it, keep the copyright, license and no-warranty notices intact, and mark a changed version as changed, with a date. Whoever lets people use a changed version over a network must offer those users its source too. These duties are owed to the people who receive the program or use it, not to the public: using or changing invest without giving it to anyone or letting anyone else use it over a network creates none of them. This summary does not replace the license text.
+
+- **Scope.** The license covers this repository's own code, documentation and results. It does not cover third-party data, results computed from it (such as the Yahoo run records under `runs/yahoo-test/`) or files that name another source (for example `scripts/sp100_members.txt`, taken from Wikipedia); those stay under their providers' terms. Each package folder holds a copy of the root `LICENSE` so that its wheel and source archive carry the text; `tests/test_license_files.py` checks that the root text is the unmodified AGPL, that every workspace member's copy matches it and that every `pyproject.toml` declares the license.
+- **AI-assisted work.** Invest is co-developed by human contributors, GPT and Claude. In some jurisdictions, such as the US and Germany, copyright protects only human creative contributions; parts produced by AI without one may not be protected there, and the license cannot be enforced for those parts. Generated code can also reproduce third-party code, which keeps its own license.
+- **Dependencies** keep their own licenses. All current ones are compatible with the AGPL and most are permissive (pathspec, a development tool, is MPL-2.0, and numpy's wheels bundle LGPL and GCC-exception runtime libraries); new ones must be compatible too ([packaging rules](PYTHON_GUIDELINES.md#packaging-and-dependencies)).

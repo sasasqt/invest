@@ -41,3 +41,7 @@ Learned transformations such as scaling, imputation fitting, and feature selecti
 The package has its own `pyproject.toml` and tests. See the [architecture](../../docs/ARCHITECTURE.md) and [Python guidelines](../../PYTHON_GUIDELINES.md).
 
 Tests cover cleaning policies, point-in-time metadata, repeatable exports, CSV/SQLite/Parquet value preservation, and contract validation. Source-failure handling, competing snapshot writers, interrupted-download cleanup, tamper detection, supported-market validation, date subsets, adjustment and replay hash stability are tested offline in `tests/test_yahoo.py`.
+
+## License
+
+`AGPL-3.0-or-later`, like the rest of invest. [LICENSE](LICENSE) is a copy of the [root license](../../LICENSE) so the package carries it; see the [README](../../README.md#license).

@@ -2,6 +2,8 @@
 name = "invest-mining"
 version = "0.1.0"
 description = "Factor expressions, alpha search, diagnostics and frozen signal export."
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 # invest-data is used only for its public, versioned bundle contract (invest_data.bundle).
 dependencies = ["invest-data", "numpy>=1.26", "pandas>=2.1", "matplotlib>=3.8"]
@@ -10,7 +12,7 @@ dependencies = ["invest-data", "numpy>=1.26", "pandas>=2.1", "matplotlib>=3.8"]
 invest-mine = "invest_mining.cli:main"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.uv.sources]
