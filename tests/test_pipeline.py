@@ -19,7 +19,9 @@ def _bash() -> str:
 
     On Windows a bare ``"bash"`` makes CreateProcess search System32 before PATH, so it
     starts the WSL launcher there (which fails without a Linux distribution) instead of
-    Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases.
+    Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases,
+    then Git for Windows' own ``bin`` folder, which a default install leaves off PATH
+    (it adds only ``Git\\cmd``).
     """
     if sys.platform != "win32":
         return "bash"
@@ -30,7 +32,12 @@ def _bash() -> str:
             continue
         if found := shutil.which("bash", path=entry):
             return found
-    raise RuntimeError("no Git Bash on PATH; the workflow scripts need one on Windows")
+    if git := shutil.which("git"):
+        # git.exe sits in Git\cmd, Git\bin or Git\mingw64\bin; bash.exe in Git\bin.
+        for root in Path(git).resolve().parents[1:3]:
+            if (bash := root / "bin" / "bash.exe").is_file():
+                return str(bash)
+    raise RuntimeError("no Git Bash found; the workflow scripts need one on Windows")
 
 
 def run(module: str, *args: str) -> str:

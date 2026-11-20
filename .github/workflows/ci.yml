@@ -34,6 +34,7 @@ jobs:
     # coverage floors and link checks do not depend on the platform and stay in `checks`;
     # strict mypy runs here too because it type-checks the Windows side of platform checks.
     runs-on: windows-latest
+    timeout-minutes: 45 # about 8.5 minutes normally; a hung script test stops here
     strategy:
       fail-fast: false
       matrix:

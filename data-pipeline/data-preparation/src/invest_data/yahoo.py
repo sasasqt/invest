@@ -190,6 +190,23 @@ def _atomic_write(path: Path, data: bytes) -> None:
 # Windows cannot rename a directory onto an existing one, even an empty one, and its
 # rename refuses an existing target instead of replacing it.
 _RENAME_REFUSES_EXISTING_TARGET = os.name == "nt"
+# Waits before each retry of a Windows folder rename that a virus scanner or the search
+# indexer blocks for a moment by holding a file just written into the folder (about 6 s).
+_RENAME_RETRY_WAITS = (0.05, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2)
+
+
+def _rename_retrying(src: Path, dst: Path, sleep: Callable[[float], None]) -> None:
+    """``os.rename`` that retries ``PermissionError``, which a held handle causes on Windows.
+
+    ``FileExistsError`` (another writer published ``dst``) is raised at once.
+    """
+    for wait in _RENAME_RETRY_WAITS:
+        try:
+            os.rename(src, dst)
+            return
+        except PermissionError:
+            sleep(wait)
+    os.rename(src, dst)
 
 
 def download_snapshot(
@@ -210,6 +227,9 @@ def download_snapshot(
     Symbols that fail after retries are recorded under ``failures`` rather than aborting
     the whole download. Exclusively reserve a new destination, write in a private staging
     directory, then publish the whole snapshot with one rename. Existing paths are refused.
+    On Windows, whose rename cannot replace the empty reservation, the reservation is given
+    up just before the rename: a writer that reserves the path in that moment fetches and
+    publishes, and this one fails with ``FileExistsError``; neither overwrites the other.
     """
     root = Path(out)
     names = list(dict.fromkeys(s.strip() for s in symbols if s.strip()))
@@ -219,7 +239,7 @@ def download_snapshot(
         raise ValueError(f"symbols that differ only in case name one instrument: {spellings}")
     chart_url(names[0], start, end)  # validates the date range before any request
     root.parent.mkdir(parents=True, exist_ok=True)
-    root.mkdir()  # exclusive reservation: competing writers fail before fetching
+    root.mkdir()  # exclusive reservation: competing writers fail before fetching (see above)
     reserved = True
     published = False
     try:
@@ -261,10 +281,11 @@ def download_snapshot(
             if _RENAME_REFUSES_EXISTING_TARGET:
                 # Give the empty reservation up just before the rename. A writer that
                 # reserves the path in between keeps it, and this rename then fails
-                # without overwriting anything.
-                root.rmdir()
+                # without overwriting anything. Not ours once rmdir starts, so a failed
+                # or interrupted rmdir is not repeated below.
                 reserved = False
-                os.rename(stage, root)
+                root.rmdir()
+                _rename_retrying(stage, root, sleep or time.sleep)
             else:
                 os.replace(stage, root)  # replaces only our empty reservation
             published = True
