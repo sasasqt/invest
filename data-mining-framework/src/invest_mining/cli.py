@@ -171,7 +171,7 @@ def _prepare_out(
     return root
 
 
-def _unwritten(out: Path, exc: OSError, exp_id: str, use: str) -> SystemExit:
+def _unwritten(out: Path, exc: OSError, exp_id: str, use: ConfirmationUse) -> SystemExit:
     """The error for outputs that failed after the ledger recorded the experiment."""
     return SystemExit(
         f"--out {out}: {exc}; the ledger already recorded experiment {exp_id} ({use})"

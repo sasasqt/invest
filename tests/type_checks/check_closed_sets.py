@@ -5,6 +5,8 @@ its ``# type: ignore`` is needed only while the parameter's ``Literal`` type hol
 the parameter goes back to ``str``, mypy reports the ignore as unused.
 """
 
+from pathlib import Path
+
 import pandas as pd
 
 from invest_data.bundle import Column, write_bundle
@@ -13,6 +15,7 @@ from invest_evaluation.quantiles import BucketPortfolio
 from invest_evaluation.strategies import Slice
 from invest_evaluation.validation import _check
 from invest_mining import ledger
+from invest_mining.cli import _unwritten
 from invest_mining.diagnostics import daily_ic
 from invest_mining.expressions import OpSpec
 from invest_mining.search import mark_confirmation_use
@@ -29,3 +32,4 @@ def _never_called(frame: pd.DataFrame) -> None:
     ValidationConfig(benchmark="spy")  # type: ignore[arg-type]
     OpSpec("ternary", lambda x: x)  # type: ignore[arg-type]
     mark_confirmation_use(frame, "maybe")  # type: ignore[arg-type]
+    _unwritten(Path("out"), OSError(), "e_x", "maybe")  # type: ignore[arg-type]
