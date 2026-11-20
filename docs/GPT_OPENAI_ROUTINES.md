@@ -120,7 +120,7 @@ flowchart TD
     G --> I["Reports and state on gpt/repo-audits"]
 ```
 
-GitHub Actions runs on PRs and pushes to `main`. The six jobs cover two Python versions, wheel installs, and three independent component installs. Both ChatGPT routines can use matching-revision CI evidence. A proposed fix becomes part of `main` after merge and can be checked against the newly pinned source. [CI workflow](../.github/workflows/ci.yml) · [CI/CD guidelines](../CI_CD_GUIDELINES.md#what-ci-checks-today).
+GitHub Actions runs on PRs and pushes to `main`. The eight jobs cover two Python versions on Linux and on Windows, wheel installs, and three independent component installs. Both ChatGPT routines can use matching-revision CI evidence. A proposed fix becomes part of `main` after merge and can be checked against the newly pinned source. [CI workflow](../.github/workflows/ci.yml) · [CI/CD guidelines](../CI_CD_GUIDELINES.md#what-ci-checks-today).
 
 | Peer routine | Handoff visible in the repository |
 | --- | --- |

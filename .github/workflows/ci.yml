@@ -29,6 +29,27 @@ jobs:
       - run: uv run python scripts/check_coverage_floors.py coverage.json
       - run: uv run python scripts/check_markdown_links.py
 
+  tests-windows:
+    # Every change must work on Linux and Windows (PYTHON_GUIDELINES.md). Formatting, lint,
+    # coverage floors and link checks do not depend on the platform and stay in `checks`;
+    # strict mypy runs here too because it type-checks the Windows side of platform checks.
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    defaults:
+      run:
+        shell: bash # Git Bash, which the workflow-script tests also run
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --frozen
+      - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
+      - run: uv run pytest
+
   wheels:
     # Build all three wheels and test them as installed, not from the source tree.
     runs-on: ubuntu-latest

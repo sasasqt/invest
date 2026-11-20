@@ -323,7 +323,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
         code_manifest.update(code_revision="0" * 40, code_dirty=False)
         (out / part / "manifest.json").write_text(json.dumps(code_manifest))
     record = tmp_path / "record"
-    saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
+    saved = {p.as_posix() for p in save_run.save_run(out, record, snapshot)}
     assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
     assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved

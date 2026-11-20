@@ -1,5 +1,5 @@
 # TEMPORARY trial for the "Add Windows to the standard CI tests" thread: runs the
-# standard `checks` job on Windows to see what fails. Not meant for main.
+# proposed `tests-windows` job's steps on every push to this branch. Not meant for main.
 name: Windows trial (temporary)
 
 on:
@@ -11,57 +11,23 @@ permissions:
   contents: read
 
 jobs:
-  checks-windows:
-    name: checks-windows (${{ matrix.python }}, ${{ matrix.eol }})
+  tests-windows-trial:
     runs-on: windows-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        include:
-          # "native": the runner's default Git settings (core.autocrlf=true), what a
-          # Windows contributor gets from Git for Windows. "lf": checkout without CRLF.
-          # Run 1 showed identical results for both; keep the default only.
-          - { python: "3.11", eol: native }
-          - { python: "3.13", eol: native }
+        python: ["3.11", "3.13"]
     defaults:
       run:
         shell: bash
     steps:
-      - name: Keep LF line endings on checkout
-        if: matrix.eol == 'lf'
-        run: git config --global core.autocrlf false
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
         with:
           python-version: ${{ matrix.python }}
-      - name: Environment facts
-        run: |
-          echo "autocrlf=$(git config --get core.autocrlf || echo unset)"
-          file README.md | head -1 || true
-          echo "bash on PATH: $(command -v bash)"
-          uv run --no-project python -c "import locale, shutil, sys; print('preferred encoding', locale.getpreferredencoding(False), 'utf8_mode', sys.flags.utf8_mode); print('which bash', shutil.which('bash'))"
-          ls -la /c/Windows/System32/bash.exe 2>/dev/null || echo "no System32 bash.exe"
       - run: uv sync --frozen
-      - if: ${{ !cancelled() }}
-        run: uv run ruff format --check .
-      - if: ${{ !cancelled() }}
-        run: uv run ruff check .
-      - if: ${{ !cancelled() }}
-        run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
-      - if: ${{ !cancelled() }}
-        run: uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term:skip-covered -rfE --durations=10 --junitxml="$RUNNER_TEMP/junit.xml"
-      - if: ${{ !cancelled() }}
-        run: uv run coverage json -q -o coverage.json
-      - if: ${{ !cancelled() }}
-        run: uv run python scripts/check_coverage_floors.py coverage.json
-      - if: ${{ !cancelled() }}
-        run: uv run python scripts/check_markdown_links.py
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: junit-${{ matrix.python }}-${{ matrix.eol }}
-          path: ${{ runner.temp }}/junit.xml
-          retention-days: 7
+      - run: uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
+      - run: uv run pytest -rfE --durations=10
