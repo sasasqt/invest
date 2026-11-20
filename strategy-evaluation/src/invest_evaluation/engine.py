@@ -6,10 +6,10 @@ Event order within each session ``t``:
    not positive, the run stops before any order is sized on it. Otherwise orders whose
    fill date is ``t`` are sized on that equity and execute at the open price. When a sale
    cannot complete (rejected, or cut by the participation cap), every target is sized on
-   equity net of the value its name keeps beyond its target, divided by
-   ``gross_leverage``, so gross exposure at the open stays within it (REVIEW-27).
-   Transaction
-   costs are paid in cash, and the run stops if they leave equity not positive.
+   that equity minus ``X / gross_leverage`` (never below zero), where ``X`` is the value
+   the name keeps beyond its target on that reduced equity, so gross exposure at the open
+   stays within ``gross_leverage`` unless that value alone exceeds it (REVIEW-27).
+   Transaction costs are paid in cash, and the run stops if they leave equity not positive.
 2. **Close.** Positions are marked to the close. Explicit delisting settlements known at
    this close convert holdings to cash at the supplied settlement price. Missing bars
    alone never imply a delisting; holdings retain their last known mark. Borrow fees on
@@ -468,8 +468,9 @@ def run_backtest(
             # their targets on their own side (W < L unless every target is stuck). A
             # smaller E' only makes their sales bigger (still rejected or capped) and can add
             # names, so the set only grows. Every other name ends at or below its target on
-            # E', so gross at the open's marks is at most P + E' * (L - W) = L * E. Nothing
-            # short of its sale: E' is E exactly.
+            # E', so gross at the open's marks is at most P + E' * (L - W) = L * E, unless P
+            # alone exceeds L * E: then E' is clamped to 0 and gross is P. Nothing short of
+            # its sale: E' is E exactly.
             divisor = cfg.strategy.gross_leverage
             sizing = equity_open
             tol = 1e-9 * equity_open
@@ -739,8 +740,8 @@ def run_backtest(
     if n_net_sized:
         warnings.append(
             f"{n_net_sized} order sessions had a sale that could not complete (rejected, or "
-            "cut by the participation cap), so every target was sized on equity net of the "
-            "value it kept beyond its target (REVIEW-27)"
+            "cut by the participation cap), so every target was sized on equity minus "
+            "X / gross_leverage, X being the value that sale kept beyond its target (REVIEW-27)"
         )
     if unknown_traded_close:
         warnings.append(

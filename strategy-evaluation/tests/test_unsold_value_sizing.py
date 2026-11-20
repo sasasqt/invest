@@ -5,13 +5,15 @@ the participation cap keeps value the strategy wanted sold. The other targets us
 sized on equity that still held it, so gross exposure exceeded ``gross_leverage`` and cash
 went negative. Every target is now sized on equity net of the value that cannot be sold,
 at the configured leverage: ``E' = (E - P / L) / (1 - W / L)``, where ``P`` is what the
-names short of their sale hold after the session's fills and ``W`` their target weights
-(for exits ``W`` is 0, so with ``L`` 1 it is ``E - P``). Every expected value below is
-worked out by hand from prices of 10 and zero costs, so equity never moves.
+names short of their sale hold after the session's fills and ``W`` their target weights on
+the side they still hold (for exits ``W`` is 0, so with ``L`` 1 it is ``E - P``). Every
+expected value below is worked out by hand from prices of 10 and zero costs, so equity
+never moves.
 """
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable
 
 import pandas as pd
@@ -238,9 +240,8 @@ def test_a_long_short_book_with_a_stuck_long_stays_within_its_leverage() -> None
 def test_unsold_value_above_the_leverage_sells_everything_else() -> None:
     """``gross_leverage`` 0.5. A opens at 10 and closes at 100 on session 20 (16.67 shares,
     worth 1666.67 of equity 2500) and is halted from session 21, so its trim to a sixth
-    is rejected. No
-    sizing equity can keep gross within 0.5 then (A alone is 0.67): the others' targets
-    are sized on zero, so B and C are sold and gross is A's 1666.67 / 2500."""
+    is rejected. No sizing equity can keep gross within 0.5 then (A alone is 0.67): the
+    others' targets are sized on zero, so B and C are sold and gross is A's 1666.67 / 2500."""
     bars = market(
         missing=lambda k, n: n == "A" and k >= 21,
         close=lambda k, n: 100.0 if n == "A" and k == 20 else 10.0,
@@ -354,3 +355,82 @@ def test_leverage_above_one_when_the_stuck_targets_weigh_one() -> None:
     assert held(res, "C", 21) == pytest.approx(-500 / 11)
     assert held(res, "D", 21) == pytest.approx(-500 / 11)
     assert res.daily.loc[DATES[21], "gross_exposure"] == pytest.approx(2.0)
+
+
+class Weights:
+    """The scores are the target weights."""
+
+    def target_weights(self, scores: pd.Series) -> pd.Series:
+        return scores
+
+
+def test_a_trim_the_cap_cuts_only_on_the_reduced_equity_is_counted_too() -> None:
+    """A holds 0.3, B 0.6 and C 0.1 of 1000 (B trades $1100 a day, so the 10% cap moves 11
+    shares a session). At decision 15 A drops out and B and C go to half. A has no bar on
+    session 16, so its exit is rejected and it keeps 300. On 1000 - 300 = 700, B's target is
+    350, a sale of 250 that the cap cuts to 110: B keeps 490, beyond its target too. With both
+    short of their sale, E' = (1000 - (300 + 490)) / (1 - 0.5) = 420, B's sale stays capped,
+    and C is bought to 210 (21 shares): gross 300 + 490 + 210 = 1000. Sizing once on 700
+    would buy C to 350 (gross 1.14); before the fix B sold to 50 shares and C bought to 50
+    (gross 1.3)."""
+    bars = market(
+        volume=lambda k, n: 110.0 if n == "B" else 1e9,
+        missing=lambda k, n: n == "A" and k == 16,
+    )
+    signals = scores(bars)
+    early = signals["decision_date"] < DATES[15]
+    signals["score"] = signals["instrument"].map({"A": 0.3, "B": 0.6, "C": 0.1})
+    signals.loc[~early, "score"] = 0.5
+    signals = signals[early | (signals["instrument"] != "A")]
+    res = run_backtest(bars, signals, config(cap=0.1), Weights())
+    assert held(res, "A", 15) == pytest.approx(30.0)
+    assert held(res, "B", 15) == pytest.approx(60.0)
+    assert held(res, "C", 15) == pytest.approx(10.0)
+    assert held(res, "A", 16) == pytest.approx(30.0)
+    assert held(res, "B", 16) == pytest.approx(49.0)
+    assert held(res, "C", 16) == pytest.approx(21.0)
+    assert res.daily.loc[DATES[16], "gross_exposure"] == pytest.approx(1.0)
+    within_leverage(res)
+
+
+def test_every_target_stuck_sizes_on_zero_without_dividing_by_zero() -> None:
+    """A long and B short a half each (50 shares). Both close at 12 on session 20, so each
+    is worth 600 of equity 1000 and should trim to 500, and both have no bar on session 21.
+    Their targets weigh 1, the whole leverage, so ``1 - W / L`` is 0: the sizing equity is
+    0 instead of a division by zero, nothing else has weight, and the two keep their 50
+    shares (gross 1200 / 1000). C, never scored, keeps session 21 on the calendar. Without
+    the guard, numpy's division by zero would warn and give an infinite sizing equity."""
+    bars = market(
+        missing=lambda k, n: n in "AB" and k == 21,
+        close=lambda k, n: 12.0 if n in "AB" and k >= 20 else 10.0,
+        open_=lambda k, n: 12.0 if n in "AB" and k >= 21 else 10.0,
+    )
+    signals = scores(bars)
+    signals = signals[signals["instrument"] != "C"]
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", RuntimeWarning)
+        res = run_backtest(bars, signals, config(), Sides({"A": 1.0, "B": -1.0}, gross=1.0))
+    assert held(res, "A", 21) == pytest.approx(50.0)
+    assert held(res, "B", 21) == pytest.approx(-50.0)
+    assert res.daily.loc[DATES[21], "gross_exposure"] == pytest.approx(1.2)
+    assert any("REVIEW-27" in w for w in res.warnings), res.warnings
+
+
+def test_a_top_up_that_turns_into_a_stuck_trim_on_the_net_equity_is_counted() -> None:
+    """A's exit is rejected from session 20 (zero volume). B closes at 12 on session 19 and
+    has no bar on session 20, so it is worth 400 at its last mark; equity at that open is
+    333.33 + 400 + 333.33 = 1066.67 and B and C target a half. On the full equity B's
+    rejected order is a top-up (533.33 > 400); on E' = 1066.67 - 333.33 = 733.33 it is a
+    trim (366.67 < 400), so B is short of its sale too: E' = (1066.67 - 733.33) / (1 - 0.5)
+    = 666.67 and C keeps its 33.33 shares (gross 1). Stopping after the first pass gives C
+    36.67 shares (gross 1.03); before the fix C bought 53.33 (gross 1.19)."""
+    bars = market(
+        volume=lambda k, n: 0.0 if n == "A" and 15 <= k <= 24 else 1e9,
+        missing=lambda k, n: n == "B" and k == 20,
+        close=lambda k, n: 12.0 if n == "B" and k >= 19 else 10.0,
+        open_=lambda k, n: 12.0 if n == "B" and k >= 21 else 10.0,
+    )
+    res = run_backtest(bars, scores(bars), config(), EqualWeight())
+    assert held(res, "C", 20) == pytest.approx(1000 / 3 / 10)
+    assert res.daily.loc[DATES[20], "gross_exposure"] == pytest.approx(1.0)
+    assert res.daily.loc[DATES[20], "cash"] >= -1e-9

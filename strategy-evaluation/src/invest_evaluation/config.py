@@ -98,9 +98,10 @@ class ExecutionConfig:
     fill at the open of ``t + 1 + delay``. An order for an instrument with no bar on the
     fill date is rejected. Each fill is capped at ``max_participation`` of trailing
     average dollar volume; the unfilled remainder is dropped (and reported). A sale that is
-    rejected or capped keeps value beyond its name's target, so that session's targets are
-    sized on equity net of it divided by ``gross_leverage``, and gross exposure at the open
-    stays within the limit (REVIEW-27). A name is
+    rejected or capped keeps value ``X`` beyond its name's target, so that session's targets
+    are sized on equity minus ``X / gross_leverage`` (never below zero, with ``X`` measured
+    against the target on that reduced equity), and gross exposure at the open stays within
+    the limit unless that value alone exceeds it (REVIEW-27). A name is
     eligible at a decision only with a close, a trailing ADV above ``min_adv_dollar`` and
     a trailing volatility (the cost model's complete windows); the exit of a name whose
     windows a missing bar interrupted uses the bars and daily returns they still hold, or
