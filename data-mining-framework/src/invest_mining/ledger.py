@@ -132,7 +132,7 @@ def _validate_entry(entry: Any) -> None:
         raise LedgerError("experiment entry without experiment_id")
 
 
-def _window_fields(kind: str) -> tuple[str, ...]:
+def _window_fields(kind: EntryKind) -> tuple[str, ...]:
     return ("development", "confirmation") if kind == "experiment" else ("window",)
 
 

@@ -33,3 +33,4 @@ def _never_called(frame: pd.DataFrame) -> None:
     OpSpec("ternary", lambda x: x)  # type: ignore[arg-type]
     mark_confirmation_use(frame, "maybe")  # type: ignore[arg-type]
     _unwritten(Path("out"), OSError(), "e_x", "maybe")  # type: ignore[arg-type]
+    ledger._window_fields("reserve")  # type: ignore[arg-type]
