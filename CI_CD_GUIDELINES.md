@@ -1,20 +1,22 @@
 # CI/CD Guidelines
 
-How changes are checked, released, and turned into reproducible research results. The workflow lives in [`.github/workflows/ci.yml`](.github/workflows/ci.yml); keep this document and that file consistent.
+How changes are checked, released, and turned into reproducible research results. The standard checks live in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and [`.github/workflows/docs.yml`](.github/workflows/docs.yml); keep this document and those files consistent.
 
 ## What CI checks today
 
-Every push to `main` and every pull request that changes more than Markdown runs the jobs below (`ci.yml`). A pull request that changes only `.md` files runs just `links`, because no test, build or type check reads Markdown.
+Every pull request and every push to `main` runs `docs`, `changes` and `ci-ok`. The other jobs run too, except for a pull request that changes only `.md` files (a renamed file counts its old name as well): no test, build or type check can fail on Markdown except formatting and links, which `docs` checks. A Markdown change under `audits/gpt/runner/` also starts the [conditional audit checks](#conditional-isolated-audit-checks).
 
 | Job | Checks |
 |---|---|
-| `links` (`docs.yml`, every pull request and push to `main`) | An offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, and the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`) |
-| `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Formatting, lint and coverage floors do not depend on the platform and run only in `checks` |
+| `docs` (`docs.yml`, `ubuntu-latest` and `windows-latest`) | `ruff format --check` (which also formats the Python blocks in `.md` files) and the Markdown link check below, with `uv run --frozen --only-group dev`; the Windows checkout also refuses file names Windows cannot hold |
+| `changes` | Decides from the pull request's changed files whether the jobs below run; on a push to `main` they always do |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Formatting, lint, coverage floors and link checks do not depend on the platform and run only in `checks` |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
+| `ci-ok` | Passes when every job above passed, or when all of them were skipped for a Markdown-only pull request; fails otherwise |
 
-A PR is mergeable only when every job that ran is green on its latest commit.
+A PR is mergeable only when `docs` and `ci-ok` are green on its latest commit.
 
 mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
 
@@ -34,7 +36,7 @@ start workflow commands.
 After those checks pass, the workflow runs both full isolated audit jobs. Current
 `main` is resolved once and pinned for the complete matrix; manual runs may instead
 specify an exact source SHA and an optional historical control SHA. Old failing
-trials remain historical failures. These jobs supplement the normal nine CI jobs;
+trials remain historical failures. These jobs supplement the normal CI jobs;
 they do not replace their tests or establish a Docker audit on a Windows host or
 historical investment results. See the [Python checks](PYTHON_GUIDELINES.md#development-checks)
 for local commands and the runner README for limits.
@@ -49,7 +51,7 @@ for local commands and the runner README for limits.
 - **No secrets in pull-request jobs.** Jobs triggered by `pull_request` must not need credentials. Never use `pull_request_target` to run code from a PR branch. Store data-vendor keys as environment secrets available only to protected-branch or manual workflows.
 - **Never weaken a check to get green.** Don't skip, mark `xfail`, or delete a failing test, loosen a tolerance, or add a `# type: ignore` without its error code and a reason on the line and in the pull request ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). A failing test is a bug until proven otherwise; re-run once only for infrastructure failures (checkout, install, runner loss). The one exception: a test may skip where the platform or a tool cannot do what it checks (POSIX permission bits or symbolic links on Windows, permission checks run as root, a Git older than 2.32, `chattr` without root), with the reason in the marker or the `pytest.skip` message ([Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows)).
 - **Fail on warnings that signal bugs.** `RuntimeWarning` from project code is an error in pytest (see `filterwarnings` in `pyproject.toml`). It usually means a division by zero or NaN propagation.
-- **Required checks on `main`.** Protect `main`: require the CI jobs above, at least one review, and an up-to-date branch before merge. Prefer squash or merge commits per the [Git guidelines](GIT_GUIDELINES.md); never force-push `main`.
+- **Required checks on `main`.** Protect `main`: require `docs (ubuntu-latest)`, `docs (windows-latest)` and `ci-ok` (not the jobs `ci-ok` summarizes, which a Markdown-only pull request skips, so they would never report), at least one review, and an up-to-date branch before merge. Prefer squash or merge commits per the [Git guidelines](GIT_GUIDELINES.md); never force-push `main`.
 
 ## What every change must keep green
 

@@ -9,13 +9,26 @@ permissions:
   contents: read
 
 jobs:
-  links:
-    # Every pull request, including the Markdown-only ones that skip ci.yml: an offline
-    # check of relative Markdown links and heading anchors (standard library only).
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+  docs:
+    # The checks a Markdown-only pull request can fail, run on every pull request: ruff's
+    # formatting (it also formats the Python blocks in .md files) and the offline check of
+    # Markdown links and heading anchors. Windows too: its checkout refuses file names
+    # Windows cannot hold, which would otherwise break every later Windows run.
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-      - run: python3 scripts/check_markdown_links.py
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.11"
+      - run: uv run --frozen --only-group dev ruff format --check .
+      - run: uv run --frozen --only-group dev python scripts/check_markdown_links.py
