@@ -74,7 +74,7 @@ All must hold at merge time. If one fails, nothing merges and the run's report s
 
 - New skill step 1e, "Merge one ready pull request": the eight gates of section 4, word for word, plus "skip step 1e while `state.json` has `merge_paused: true`".
 - Prompt constraint 4, replacing its first sentence: "Merge only as the skill's step 1e allows (at most one of this routine's own pull requests per run, after two clean ChatGPT reviews and green CI on a head that contains the current main)."
-- README.md, Development guidelines: "nothing merges into `main` without the user's word, except that the bug fix may merge one of its own pull requests per run once CI is green and ChatGPT has confirmed it twice ([merge gate](docs/CLAUDE_WORKFLOW.md#merge-gate))."
+- README.md, Development guidelines: "nothing merges into `main` without the user's word, except that the bug fix may merge one of its own pull requests per run once CI is green and ChatGPT has confirmed it twice (see the merge gate in `docs/CLAUDE_WORKFLOW.md`)."
 - docs/CLAUDE_WORKFLOW.md, bug fix: "**Merges only its own, and only when every gate holds.**" followed by a one-line summary of the gates. Merge gate: a new bullet with the same exception, and "the scheduled bug fix never merges" removed.
 
 ### Option B
