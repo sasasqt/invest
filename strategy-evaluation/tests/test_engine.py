@@ -1223,33 +1223,35 @@ def test_costs_of_the_open_fills_that_take_equity_below_zero_stop_the_run():
     """Equity after the open's fills is checked too. One fill on 2024-01-04 (A +50, B -25)
     at 150 bp (commission 100, half-spread 50) costs 15: cash 985. B opens at 59.36 on
     2024-01-08: equity at the open is 985 + 500 - 25 * 59.36 = 1.00 > 0, so orders are sized
-    on it. A sells to 0.05 shares (49.95, notional 499.5, cost 7.4925); B buys back at most
-    its ADV of 20 * 7.5 = 150 (2.52695 shares, cost 2.25). Equity after the fills is
-    1.00 - 9.7425 = -8.7425; the capped short then gains as B closes at 20 (+875.80), so the
+    on it. B buys back at most its ADV of 20 * 7.5 = 150 (2.52695 shares, cost 2.25), so it
+    stays short about 1334 against a target of 0.50: the targets are sized on equity net of
+    that excess (REVIEW-27), (1.00 - 1334) / (1 - 0.5) below zero, so on zero, and A sells
+    all 50 shares (notional 500, cost 7.5) instead of keeping 0.05. Equity after the fills
+    is 1.00 - 9.75 = -8.75; the capped short then gains as B closes at 20 (+875.80), so the
     close check alone missed it."""
     dates, bars, signals = gap_market(59.36, 20.0, b_volume_before=7.5)
     config = long_short_config(rebalance_every=2, commission_bps=100, half_spread_bps=50)
     res = run_backtest(bars, signals, config, Fixed({"A": 0.5, "B": -0.5}))
     assert insolvency_warnings(res) == [
-        "insolvent after the open's fills on 2024-01-08: equity -8.74"
+        "insolvent after the open's fills on 2024-01-08: equity -8.75"
     ]
     last = res.daily.iloc[-1]
     assert res.daily.index[-1] == dates[5]
-    assert last["equity"] == pytest.approx(-8.7425)
-    assert last["cash"] == pytest.approx(1324.7575)
-    assert last["traded_notional"] == pytest.approx(649.5)
+    assert last["equity"] == pytest.approx(-8.75)
+    assert last["cash"] == pytest.approx(1325.25)
+    assert last["traded_notional"] == pytest.approx(650.0)
     assert last["n_clipped"] == 1 and last["n_rejected"] == 0
-    assert last["commission_cost"] + last["spread_cost"] == pytest.approx(9.7425)
-    assert last["cum_costs"] == pytest.approx(15.0 + 9.7425)
+    assert last["commission_cost"] + last["spread_cost"] == pytest.approx(9.75)
+    assert last["cum_costs"] == pytest.approx(15.0 + 9.75)
     fills = res.trades[(res.trades["status"] == "filled") & (res.trades["date"] == dates[5])]
     assert fills.set_index("instrument")["shares"].to_dict() == pytest.approx(
-        {"A": -49.95, "B": 150.0 / 59.36}
+        {"A": -50.0, "B": 150.0 / 59.36}
     )
-    # Gross of costs, the stop row's return is (-8.7425 + 9.7425) / 985 - 1 on a gross path
+    # Gross of costs, the stop row's return is (-8.75 + 9.75) / 985 - 1 on a gross path
     # still at 1000 (the first fill's 15 is added back that day).
     assert last["equity_before_costs"] == pytest.approx(1000.0 / 985.0)
     held = res.episodes.set_index("instrument")
-    assert held["status"].tolist() == ["open", "open"]
+    assert held["status"].tolist() == ["closed", "open"]
     assert held["holding_sessions"].tolist() == [2, 2]
     assert compute_metrics(res)["performance"]["insolvency"]["value"] == "2024-01-08"
 
