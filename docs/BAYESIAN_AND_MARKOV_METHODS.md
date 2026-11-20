@@ -59,6 +59,7 @@ It calls the private helper `invest_data.cli._publish` to publish each market, s
 ```python
 """Exploratory: winner's curse in invest-mine search families and an empirical-Bayes
 (Tweedie) correction. Synthetic markets only; not research evidence."""
+
 import subprocess, sys
 from pathlib import Path
 import numpy as np, pandas as pd
@@ -67,23 +68,49 @@ from invest_data import cli as dcli
 
 OUT = Path(sys.argv[1])
 rows = []
+
+
 def tweedie(z_all, z_sel):
-    z_all = np.asarray(z_all, float); n = len(z_all)
+    z_all = np.asarray(z_all, float)
+    n = len(z_all)
     h = 1.06 * z_all.std(ddof=1) * n ** (-1 / 5)
     d = (np.asarray(z_sel)[:, None] - z_all[None, :]) / h
     k = np.exp(-0.5 * d * d)
-    f = k.sum(1); fp = (-d / h * k).sum(1)
-    return np.asarray(z_sel) + fp / f   # E[mu | z], unit noise variance
+    f = k.sum(1)
+    fp = (-d / h * k).sum(1)
+    return np.asarray(z_sel) + fp / f  # E[mu | z], unit noise variance
+
+
 for strength in (0.0, 0.0004, 0.0015):
     for seed in (1, 2, 3, 4):
-        tag = f"s{strength}_seed{seed}"; d = OUT / tag
+        tag = f"s{strength}_seed{seed}"
+        d = OUT / tag
         cfg = SyntheticConfig(seed=seed, reversal_strength=strength)
         bars = synthetic_market(cfg)
-        dcli._publish(bars, d / "data", f"syn-{tag}", dcli.SYNTHETIC_METADATA,
-                      {"sources": ["scratch"], "config": cfg.to_dict()}, "parquet")
-        subprocess.run(["invest-mine", "search", "--data", str(d / "data"), "--trials", "200",
-                        "--seed", str(seed), "--out", str(d / "search")], check=True,
-                       capture_output=True)
+        dcli._publish(
+            bars,
+            d / "data",
+            f"syn-{tag}",
+            dcli.SYNTHETIC_METADATA,
+            {"sources": ["scratch"], "config": cfg.to_dict()},
+            "parquet",
+        )
+        subprocess.run(
+            [
+                "invest-mine",
+                "search",
+                "--data",
+                str(d / "data"),
+                "--trials",
+                "200",
+                "--seed",
+                str(seed),
+                "--out",
+                str(d / "search"),
+            ],
+            check=True,
+            capture_output=True,
+        )
         led = pd.read_csv(d / "search" / "ledger.csv")
         conf = pd.read_csv(d / "search" / "confirmation.csv")
         ev = led[led.status == "evaluated"].copy()
@@ -93,11 +120,20 @@ for strength in (0.0, 0.0004, 0.0015):
         se = sel.dev_mean_rank_ic / sel.dev_t
         sel["eb_ic"] = shr_t * se
         conf = conf.set_index("expression")
-        sel = sel.join(conf[["confirm_mean_rank_ic", "status"]].rename(columns={"status": "cstatus"}))
-        rows.append({"strength": strength, "seed": seed, "n_eval": len(ev),
-                     "dev_ic": sel.dev_mean_rank_ic.mean(), "eb_ic": sel.eb_ic.mean(),
-                     "confirm_ic": sel.confirm_mean_rank_ic.mean(),
-                     "passed": int((sel.cstatus == "confirmation_passed").sum())})
+        sel = sel.join(
+            conf[["confirm_mean_rank_ic", "status"]].rename(columns={"status": "cstatus"})
+        )
+        rows.append(
+            {
+                "strength": strength,
+                "seed": seed,
+                "n_eval": len(ev),
+                "dev_ic": sel.dev_mean_rank_ic.mean(),
+                "eb_ic": sel.eb_ic.mean(),
+                "confirm_ic": sel.confirm_mean_rank_ic.mean(),
+                "passed": int((sel.cstatus == "confirmation_passed").sum()),
+            }
+        )
 df = pd.DataFrame(rows)
 print(df.round(4).to_string(index=False))
 print(df.groupby("strength")[["dev_ic", "eb_ic", "confirm_ic", "passed"]].mean().round(4))
