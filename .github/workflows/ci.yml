@@ -23,14 +23,15 @@ jobs:
           fetch-depth: 2 # the pull request's merge commit and its base parent
           persist-credentials: false
       - id: diff
-        shell: bash # with pipefail: a failed git diff fails this job, and ci-ok with it
         env:
           EVENT: ${{ github.event_name }}
         run: |
+          # bash -e: a failed git diff or grep fails this job, and ci-ok with it.
           code=true
           if [[ "$EVENT" == pull_request ]]; then
             files="$(git diff --no-renames --name-only HEAD^1 HEAD)"
-            if [[ -n "$files" ]] && ! grep -qv '\.md$' <<< "$files"; then
+            other="$(grep -v '\.md$' <<< "$files")" || [[ $? -eq 1 ]] # 1: every name is .md
+            if [[ -n "$files" && -z "$other" ]]; then
               code=false
             fi
           fi
@@ -59,8 +60,9 @@ jobs:
       - run: uv run python scripts/check_markdown_links.py
 
   tests-windows:
-    # Every change must work on Linux and Windows (PYTHON_GUIDELINES.md). Formatting, lint,
-    # coverage floors and link checks do not depend on the platform and stay in `checks`;
+    # Every change must work on Linux and Windows (PYTHON_GUIDELINES.md). Lint and coverage
+    # floors do not depend on the platform and stay in `checks` (formatting and links also
+    # run in docs.yml, on both systems);
     # strict mypy runs here too because it type-checks the Windows side of platform checks.
     needs: changes
     if: needs.changes.outputs.code == 'true'
@@ -136,24 +138,20 @@ jobs:
       - run: /tmp/venv/bin/python -m pytest -p no:cacheprovider ${{ matrix.component }}/tests
 
   ci-ok:
-    # The one check of this workflow to require in branch protection: it passes when every
-    # job above passed, or when all of them were skipped for a Markdown-only pull request.
+    # The one check of this workflow to require in branch protection: it passes when
+    # `changes` succeeded and every other job passed, or all of them were skipped for a
+    # Markdown-only pull request. Every new job of this workflow must be added to `needs`.
     needs: [changes, checks, tests-windows, wheels, independent-install]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - env:
-          CHANGES: ${{ needs.changes.result }}
-          CODE: ${{ needs.changes.outputs.code }}
-          RESULTS: >-
-            ${{ needs.checks.result }} ${{ needs.tests-windows.result }}
-            ${{ needs.wheels.result }} ${{ needs.independent-install.result }}
+          NEEDS: ${{ toJSON(needs) }}
         run: |
-          echo "changes: $CHANGES (code: $CODE); jobs: $RESULTS"
-          [[ "$CHANGES" == success ]] || exit 1
-          want=success
-          [[ "$CODE" == false ]] && want=skipped
-          for result in $RESULTS; do
-            [[ "$result" == "$want" ]] || exit 1
-          done
+          jq -c 'map_values(.result)' <<< "$NEEDS"
+          jq -e '
+            .changes.result == "success"
+            and ((if .changes.outputs.code == "false" then "skipped" else "success" end) as $want
+                 | del(.changes) | all(.[]; .result == $want))
+          ' <<< "$NEEDS"

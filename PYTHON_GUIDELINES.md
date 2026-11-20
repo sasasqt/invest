@@ -129,7 +129,7 @@ uv run python scripts/check_coverage_floors.py coverage.json
 uv run python scripts/check_markdown_links.py
 ```
 
-CI also builds all three wheels (`uv build --all-packages`), installs them in a clean environment, smoke-tests the CLIs, and runs the component and end-to-end tests against the installed packages. A pull request that changes only Markdown runs only the formatting and link checks, on Linux and Windows (`docs.yml`, with `uv run --frozen --only-group dev`). On Windows, CI (`tests-windows`, Python 3.11 and 3.13, in Git Bash) runs `uv sync --frozen`, the `mypy` command above and `uv run pytest` without coverage. A zero-test run does not demonstrate readiness.
+CI also builds all three wheels (`uv build --all-packages`), installs them in a clean environment, smoke-tests the CLIs, and runs the component and end-to-end tests against the installed packages. A pull request that changes only Markdown runs only the formatting and link checks (plus the conditional audit checks for Markdown under `audits/gpt/runner/`), on Linux and Windows (`docs.yml`, with `uv run --frozen --only-group dev`). On Windows, CI (`tests-windows`, Python 3.11 and 3.13, in Git Bash) runs `uv sync --frozen`, the `mypy` command above and `uv run pytest` without coverage. A zero-test run does not demonstrate readiness.
 
 ## Continuous integration and change review
 
