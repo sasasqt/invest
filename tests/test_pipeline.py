@@ -21,7 +21,8 @@ def _bash() -> str:
     starts the WSL launcher there (which fails without a Linux distribution) instead of
     Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases,
     then Git for Windows' own ``bin`` folder, which a default install leaves off PATH
-    (it adds only ``Git\\cmd``).
+    (it adds only ``Git\\cmd``). Each folder is checked directly: ``shutil.which`` would
+    look in the current folder first.
     """
     if sys.platform != "win32":
         return "bash"
@@ -30,8 +31,8 @@ def _bash() -> str:
         folder = os.path.normcase(os.path.normpath(entry)) if entry else ""
         if not folder or folder == system or folder.endswith(os.path.normcase(r"\WindowsApps")):
             continue
-        if found := shutil.which("bash", path=entry):
-            return found
+        if os.path.isfile(bash_exe := os.path.join(entry, "bash.exe")):
+            return bash_exe
     if git := shutil.which("git"):
         # git.exe sits in Git\cmd, Git\bin or Git\mingw64\bin; bash.exe in Git\bin.
         for root in Path(git).resolve().parents[1:3]:

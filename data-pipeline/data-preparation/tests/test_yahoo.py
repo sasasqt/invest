@@ -179,7 +179,10 @@ def test_competing_download_cannot_publish_or_overwrite(tmp_path):
 
 @pytest.fixture
 def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Windows' rename rules on any CI host: no rename or replace onto an existing folder."""
+    """Windows' rename rules on any CI host: no rename or replace onto an existing folder.
+
+    Windows itself enforces them in the Windows CI job; elsewhere stand-ins do.
+    """
     rename, replace = os.rename, os.replace
 
     def rename_without_replacement(
@@ -195,8 +198,9 @@ def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
         replace(src, dst)
 
     monkeypatch.setattr(yahoo, "_RENAME_REFUSES_EXISTING_TARGET", True)
-    monkeypatch.setattr(os, "rename", rename_without_replacement)
-    monkeypatch.setattr(os, "replace", replace_no_folder)
+    if os.name != "nt":
+        monkeypatch.setattr(os, "rename", rename_without_replacement)
+        monkeypatch.setattr(os, "replace", replace_no_folder)
 
 
 def test_download_publishes_with_windows_rename_rules(tmp_path: Path, windows_rename: None) -> None:
@@ -249,25 +253,30 @@ def test_a_failed_reservation_removal_does_not_hide_the_first_error(
     assert calls == [tmp_path / "s", tmp_path / "s"]  # the cleanup tried once more
 
 
-def test_an_interrupted_reservation_removal_still_raises_the_interrupt(
+def test_an_interrupt_after_the_reservation_removal_leaves_a_new_reservation_alone(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
 ) -> None:
-    # Ctrl+C right after the reservation is removed, before the rename: the cleanup finds
-    # the folder gone and must still let the KeyboardInterrupt through.
+    # Ctrl+C right after the reservation is removed, before the rename, and another
+    # writer reserves the path while this one cleans up. The cleanup must not remove the
+    # other writer's folder, and the KeyboardInterrupt still gets through.
+    root = tmp_path / "s"
     good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
     rmdir = Path.rmdir
+    interrupted = False
 
     def rmdir_then_interrupt(self: Path) -> None:
+        nonlocal interrupted
         rmdir(self)
-        if self == tmp_path / "s":
+        if self == root and not interrupted:
+            interrupted = True
+            self.mkdir()  # the other writer's reservation
             raise KeyboardInterrupt
 
     monkeypatch.setattr(Path, "rmdir", rmdir_then_interrupt)
     with pytest.raises(KeyboardInterrupt):
-        download_snapshot(
-            ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
-        )
-    assert not list(tmp_path.iterdir())
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good)
+    assert root.is_dir() and not list(root.iterdir())  # the other writer's reservation stays
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]  # no staging folder left
 
 
 def test_unexpected_download_failure_cleans_staging_and_allows_retry(tmp_path):

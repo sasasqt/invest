@@ -264,9 +264,14 @@ def download_snapshot(
             if _RENAME_REFUSES_EXISTING_TARGET:
                 # Give the empty reservation up just before the rename. A writer that
                 # reserves the path in between keeps it, and this rename then fails
-                # without overwriting anything.
-                root.rmdir()
+                # without overwriting anything. Once the rmdir may have happened, the
+                # path may be that writer's, so it is ours again only if the rmdir failed.
                 reserved = False
+                try:
+                    root.rmdir()
+                except OSError:
+                    reserved = True
+                    raise
                 os.rename(stage, root)
             else:
                 os.replace(stage, root)  # replaces only our empty reservation
@@ -275,8 +280,7 @@ def download_snapshot(
     except BaseException:
         if reserved:
             # Only our empty reservation; staged files are cleaned separately. A removal
-            # that fails, or finds it already gone after an interrupted rmdir, must not
-            # hide the error that brought us here.
+            # that fails must not hide the error that brought us here.
             with contextlib.suppress(OSError):
                 root.rmdir()
         raise
