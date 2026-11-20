@@ -40,7 +40,7 @@ Read [Design by Contract Guidelines](DESIGN_BY_CONTRACT.md) for preconditions, p
 
 Read [Rapid Software Development Guidelines](RAPID_DEVELOPMENT.md) for small working increments, bounded experiments, fast feedback, proportionate validation, technical debt management, and reliable research iteration.
 
-The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide lists the prerequisites for the first runnable end-to-end workflow.
+The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide lists the prerequisites for the first runnable end-to-end workflow. A [proposal on Bayesian, inference and Markov methods](docs/BAYESIAN_AND_MARKOV_METHODS.md) maps where they could fit; none of it is implemented or scheduled.
 
 Each component folder has a `src` package layout, its own `pyproject.toml`, and pytest tests under `tests/`. The root `pyproject.toml` defines the uv workspace, the shared dev tools (Ruff, mypy, pytest), and the single lockfile `uv.lock`. Mining and evaluation depend on `invest-data` only for its public, versioned bundle contract (`invest_data.bundle` and `invest_data.schemas`). They never import each other.
 
