@@ -198,3 +198,16 @@ host-side rules its checks enforce.
 ## Local files
 
 The `.gitignore` excludes virtual environments, Python caches, build outputs, coverage reports, and local environment files. Keep credentials out of Git. A sanitized `.env.example` may be committed to document required configuration; dependency lockfiles should also be committed.
+
+## License
+
+Copyright (C) 2026 sasasqt and the invest contributors.
+
+Invest is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version (SPDX: `AGPL-3.0-or-later`). It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [full license](LICENSE) for details.
+
+In plain words: anyone may use, study, change and share invest. Whoever conveys a copy or a modified version, or lets people use a modified version over a network, must offer its complete source under this same license and keep the copyright, license and no-warranty notices intact. Private use and private changes carry no duty to publish. This summary does not replace the license text.
+
+- **Scope.** The license covers this repository's code, documentation and committed results. Each package folder holds a copy of the root `LICENSE` so that its wheel and source archive carry the text; `tests/test_license_files.py` checks that the copies match and that every `pyproject.toml` declares the license.
+- **AI-assisted work.** Invest is co-developed by human contributors, GPT and Claude. Copyright protects human creative contributions; parts produced by AI without one may not be protected, and the license cannot be enforced for those parts.
+- **Third-party data.** The license does not cover market data from Yahoo Finance or any other provider; use such data only as its provider's terms allow (see [Historical workflow](#historical-workflow-yahoo-finance-test-only)).
+- **Dependencies** keep their own licenses. All current ones are permissive and compatible with the AGPL; new ones must be too ([packaging rules](PYTHON_GUIDELINES.md#packaging-and-dependencies)).

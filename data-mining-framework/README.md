@@ -83,3 +83,7 @@ Each component has its own `pyproject.toml` and tests and installs independently
 Test the storage formats against independent contract fixtures, invalid-input errors, deterministic analysis, and training/evaluation separation. A smoke test must read a bundle and produce meaningful results. Follow [Python guidelines](../PYTHON_GUIDELINES.md) for linting, typing, packaging, and test quality.
 
 Implement statistical calibration, causality, and robustness tests from the validation protocol. Factor confirmation and execution-aware strategy validation are separate outcomes; neither may be inferred from training scores alone.
+
+## License
+
+`AGPL-3.0-or-later`, like the rest of invest. [LICENSE](LICENSE) is a copy of the [root license](../LICENSE) so the package carries it; see the [README](../README.md#license).

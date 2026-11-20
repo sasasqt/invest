@@ -35,6 +35,7 @@ Create directories only when there is code that needs them. Small projects can s
 - Use a virtual environment. This repository uses `uv`: the root `pyproject.toml` declares a uv workspace whose members are the three components, with one committed `uv.lock` and frozen installs in CI. Each member keeps its own `pyproject.toml` and runtime dependencies so it still installs on its own; shared development tools are declared once at the root.
 - A component may depend on another component only through an explicitly versioned public module (today: `invest_data.bundle` and `invest_data.schemas`), never on private modules. Evaluation must not depend on mining.
 - Separate runtime dependencies from development tools. Add dependencies only when their maintenance cost is justified.
+- Check a new dependency's license before adding it: invest is `AGPL-3.0-or-later`, so the license must be compatible with it ([GNU license list](https://www.gnu.org/licenses/license-list.html)). Permissive licenses such as MIT, BSD, Apache-2.0 and PSF are; GPL-2.0-only, proprietary, non-commercial and source-available licenses are not. Market data is not a dependency: follow its provider's terms.
 - Use standard packaging entry points for executable commands rather than modifying `sys.path`.
 - Document installation, configuration, common commands, and troubleshooting in `README.md`.
 - Preserve TLS, package signatures, and checksum verification. Never embed credentials in source or lockfiles.
