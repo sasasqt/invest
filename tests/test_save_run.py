@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import importlib.util
 import json
+import os
 import random
 import re
 import subprocess
@@ -127,7 +128,7 @@ def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform="win32"))
 
     def rename_without_replacement(self: Path, target: str | Path) -> Path:
-        if Path(target).exists():
+        if os.path.lexists(target):
             raise FileExistsError(f"{target}: Windows rename refuses an existing destination")
         return rename(self, target)
 

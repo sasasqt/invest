@@ -73,7 +73,7 @@ Every change must work on both Linux and Windows. CI runs the tests and strict m
 - **POSIX-only APIs:** avoid `fcntl`, `os.fork`, `resource`, `pwd`, POSIX signals such as `SIGKILL`, and permission bits from `os.chmod`. When one is needed, give it a Windows path and say so in the docstring.
 - **Time zones:** Windows has no system time-zone database, so code that uses `zoneinfo` must declare the `tzdata` package as a dependency.
 - **Scripts:** new tooling goes in Python. Existing `scripts/*.sh` need a bash (Git Bash or WSL on Windows); a change to them should not add tools Git Bash lacks.
-- **Tests:** use `tmp_path` and `Path`, never `/tmp` or hard-coded separators. Simulate a platform difference in a test that also runs on Linux (as REVIEW-07 did for Windows rename semantics), so a regression fails both CI jobs. Skip a test on Windows only when it checks a POSIX-only feature (permission bits, symbolic links that need extra rights), with the reason in the marker; the same holds where a tool the test needs cannot do it (a Git older than 2.32, `chattr` without root; [CI principles](CI_CD_GUIDELINES.md#principles)).
+- **Tests:** use `tmp_path` and `Path`, never `/tmp` or hard-coded separators. Simulate a platform difference in a test that also runs on Linux (as REVIEW-07 did for Windows rename semantics), so a regression fails both CI jobs. Skip a test on Windows only when it checks a POSIX-only feature (permission bits, symbolic links that need extra rights), with the reason in the marker or the `pytest.skip` message; the same holds where a tool or user the test needs is missing (a Git older than 2.32, `chattr` without root, permission checks run as root; [CI principles](CI_CD_GUIDELINES.md#principles)).
 
 ## Use the type system
 

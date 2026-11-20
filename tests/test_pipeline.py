@@ -22,13 +22,15 @@ def _bash() -> str:
     Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases,
     then Git for Windows' own ``bin`` folder next to the first ``git.exe`` found, which a
     default install leaves off PATH (it adds only ``Git\\cmd``). Each folder is checked
-    directly: ``shutil.which`` would look in the current folder first.
+    directly: ``shutil.which`` would look in the current folder first. Another bash earlier
+    on PATH (MSYS2, Cygwin) is used as found, and a ``git.exe`` shim (scoop) does not lead
+    to Git's folder; put Git Bash's ``bin`` first on PATH then.
     """
     if sys.platform != "win32":
         return "bash"
     system = os.path.normcase(os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "System32"))
     git = ""
-    for entry in os.environ.get("PATH", "").split(os.pathsep):
+    for entry in (e.strip('"') for e in os.environ.get("PATH", "").split(os.pathsep)):
         folder = os.path.normcase(os.path.normpath(entry)) if entry else ""
         if not folder or folder == system or folder.endswith(os.path.normcase(r"\WindowsApps")):
             continue
