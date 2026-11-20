@@ -24,6 +24,8 @@ Use the type system: CI runs mypy in strict mode on the three `src/` trees and `
 
 Every change must work on both Linux and Windows. The standard CI workflow tests only Linux for now (the audit runner's workflow also runs its host tests on Windows), so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
 
+Build in thin end-to-end slices: start a new capability as a **walking skeleton**, also called a **tracer bullet**, which is its simplest version connected through every stage it touches (data → mining → signals → evaluation); keep it running and grow it one stage at a time. The repository's own walking skeleton, grown since, is the workflow in [Getting started](#getting-started), which runs in one command on synthetic data or on saved Yahoo history; see [rapid development §1](RAPID_DEVELOPMENT.md#1-pick-a-small-outcome).
+
 Before marking a pull request ready, follow the [author steps](GIT_GUIDELINES.md#before-marking-ready): a review ladder that raises effort and switches model only when a round finds real defects (plus one extra full-diff round when a change alters results or is large), unrelated bugs found along the way recorded in TODO rather than fixed in place, review fixes delivered by editing the existing pull request (or closing it and opening a new one), and new medium or high bug-hunt findings added to TODO by the next bug-fix pull request (or the next pull request of any kind if no bug-fix pull request is planned). When the requester asks to make a change bug free or to harden it, [hardening rounds](GIT_GUIDELINES.md#hardening-rounds) replace the ladder and keep the pull request a draft until a clean round, or an early stop after all-low rounds confirmed by a Fable round at max effort, with a default cap of 10 rounds (a clean round 10 that ran below max effort still gets its confirming round) and severity rated by outcome rather than likelihood. Reviewers follow [when reviewing](GIT_GUIDELINES.md#when-reviewing).
 
 Before a milestone closes, or earlier when the same kind of defect keeps recurring, run a [checkpoint review](RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system before starting the next feature.
@@ -40,7 +42,7 @@ Read [Design by Contract Guidelines](DESIGN_BY_CONTRACT.md) for preconditions, p
 
 Read [Rapid Software Development Guidelines](RAPID_DEVELOPMENT.md) for small working increments, bounded experiments, fast feedback, proportionate validation, technical debt management, and reliable research iteration.
 
-The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide lists the prerequisites for the first runnable end-to-end workflow.
+The shared [quantile analysis](docs/QUANTILE_ANALYSIS.md) and [reporting](docs/REPORTING.md) specifications cover bucket comparisons, visualization ownership, and generated artifacts. The architecture guide gives the order in which the end-to-end workflow was built and is extended.
 
 Each component folder has a `src` package layout, its own `pyproject.toml`, and pytest tests under `tests/`. The root `pyproject.toml` defines the uv workspace, the shared dev tools (Ruff, mypy, pytest), and the single lockfile `uv.lock`. Mining and evaluation depend on `invest-data` only for its public, versioned bundle contract (`invest_data.bundle` and `invest_data.schemas`). They never import each other.
 

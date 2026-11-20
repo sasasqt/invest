@@ -2,7 +2,7 @@
 
 A first end-to-end baseline (M1 and M2) is implemented and tested on synthetic data and has run on test-only Yahoo Finance history, with parts of M3 and M4 already in place. The next goal is credible alpha and portfolio evidence: validation on the historical baseline and an authorized research data source. Yahoo Finance is the test-only data source; the research market and authorized source are still open. See [TODO.md](TODO.md) for actionable work and [the architecture](docs/ARCHITECTURE.md) for ownership and interfaces.
 
-Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts.
+Order work by dependencies and acceptance evidence, rather than calendar promises. Keep the three components independently installable in their own top-level folders. Start with one declared market, instrument universe, bar frequency, and execution convention; broaden support through explicit contracts. M2's end-to-end baseline was built while M0 and M1 were still open, as the walking skeleton (also called the tracer bullet) of [rapid development §1](RAPID_DEVELOPMENT.md#1-pick-a-small-outcome): M0's schemas and fixtures are finalized as that flow shows what they must carry, so M2's **Depends on** names gates that must pass before M2 closes, not work that had to finish before it started.
 
 ## M0 — Finalize contracts and scope
 
