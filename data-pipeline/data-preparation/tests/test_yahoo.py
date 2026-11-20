@@ -30,7 +30,7 @@ from invest_data.yahoo import (
 )
 
 
-def bars(n_instruments=3, n_days=40, seed=3):
+def bars(n_instruments: int = 3, n_days: int = 40, seed: int = 3) -> pd.DataFrame:
     return synthetic_market(SyntheticConfig(n_instruments=n_instruments, n_days=n_days, seed=seed))
 
 
@@ -195,8 +195,8 @@ def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
         replace(src, dst)
 
     monkeypatch.setattr(yahoo, "_RENAME_REFUSES_EXISTING_TARGET", True)
-    monkeypatch.setattr(yahoo.os, "rename", rename_without_replacement)
-    monkeypatch.setattr(yahoo.os, "replace", replace_no_folder)
+    monkeypatch.setattr(os, "rename", rename_without_replacement)
+    monkeypatch.setattr(os, "replace", replace_no_folder)
 
 
 def test_download_publishes_with_windows_rename_rules(tmp_path: Path, windows_rename: None) -> None:
@@ -215,97 +215,59 @@ def test_windows_publication_leaves_a_competing_reservation_alone(
     # Another writer reserves the path between giving up the reservation and the rename.
     root = tmp_path / "s"
     good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
-    rename: Callable[[str | os.PathLike[str], str | os.PathLike[str]], None] = yahoo.os.rename
+    rename: Callable[[str | os.PathLike[str], str | os.PathLike[str]], None] = os.rename
 
     def competitor_first(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
         Path(dst).mkdir()
         rename(src, dst)
 
-    monkeypatch.setattr(yahoo.os, "rename", competitor_first)
-    waits: list[float] = []
+    monkeypatch.setattr(os, "rename", competitor_first)
     with pytest.raises(FileExistsError):
-        download_snapshot(
-            ["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good, sleep=waits.append
-        )
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good)
     assert root.is_dir() and not list(root.iterdir())  # the competitor's reservation stays
     assert [p.name for p in tmp_path.iterdir()] == ["s"]
-    assert waits == []  # an existing destination is not retried
 
 
-def test_windows_publication_retries_a_rename_a_held_file_blocks(
+def test_a_failed_reservation_removal_does_not_hide_the_first_error(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
 ) -> None:
-    # A virus scanner or the indexer holding a just-written file makes the rename fail for
-    # a moment; the download is published once the handle goes, not thrown away.
-    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
-    rename: Callable[[str | os.PathLike[str], str | os.PathLike[str]], None] = yahoo.os.rename
-    blocked = [PermissionError("held"), PermissionError("held")]
-
-    def held_twice(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
-        if blocked:
-            raise blocked.pop()
-        rename(src, dst)
-
-    monkeypatch.setattr(yahoo.os, "rename", held_twice)
-    waits: list[float] = []
-    manifest = download_snapshot(
-        ["AAA"],
-        "2020-01-01",
-        "2020-02-01",
-        tmp_path / "s",
-        fetcher=lambda u, t: good,
-        sleep=waits.append,
-    )
-    assert json.loads((tmp_path / "s" / "snapshot.json").read_bytes()) == manifest
-    assert waits == list(yahoo._RENAME_RETRY_WAITS[:2])
-    assert [p.name for p in tmp_path.iterdir()] == ["s"]
-
-
-def test_windows_publication_gives_up_on_a_rename_that_stays_blocked(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
-) -> None:
-    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
-    attempts: list[str] = []
-
-    def always_held(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
-        attempts.append(os.fspath(dst))
-        raise PermissionError("held")
-
-    monkeypatch.setattr(yahoo.os, "rename", always_held)
-    waits: list[float] = []
-    with pytest.raises(PermissionError, match="held"):
-        download_snapshot(
-            ["AAA"],
-            "2020-01-01",
-            "2020-02-01",
-            tmp_path / "s",
-            fetcher=lambda u, t: good,
-            sleep=waits.append,
-        )
-    assert waits == list(yahoo._RENAME_RETRY_WAITS)
-    assert len(attempts) == len(yahoo._RENAME_RETRY_WAITS) + 1
-    assert not list(tmp_path.iterdir())  # no reservation and no staging folder left
-
-
-def test_windows_publication_does_not_repeat_a_failed_reservation_removal(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
-) -> None:
-    # Explorer open inside the empty reservation can make its removal fail: one error, not
-    # a second one from removing it again while unwinding.
+    # Explorer open inside the empty reservation can stop its removal on Windows. The caller
+    # sees that error, not a second one from the cleanup's own attempt to remove it.
     good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
     calls: list[Path] = []
 
     def held_rmdir(self: Path) -> None:
         calls.append(self)
-        raise PermissionError("in use")
+        raise PermissionError(f"in use, attempt {len(calls)}")
 
     monkeypatch.setattr(Path, "rmdir", held_rmdir)
-    with pytest.raises(PermissionError, match="in use") as raised:
+    with pytest.raises(PermissionError) as raised:
         download_snapshot(
             ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
         )
-    assert calls == [tmp_path / "s"]
-    assert raised.value.__context__ is None
+    assert str(raised.value) == "in use, attempt 1"
+    assert calls == [tmp_path / "s", tmp_path / "s"]  # the cleanup tried once more
+
+
+def test_an_interrupted_reservation_removal_still_raises_the_interrupt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
+) -> None:
+    # Ctrl+C right after the reservation is removed, before the rename: the cleanup finds
+    # the folder gone and must still let the KeyboardInterrupt through.
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    rmdir = Path.rmdir
+
+    def rmdir_then_interrupt(self: Path) -> None:
+        rmdir(self)
+        if self == tmp_path / "s":
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr(Path, "rmdir", rmdir_then_interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        download_snapshot(
+            ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
+        )
+    assert not list(tmp_path.iterdir())
 
 
 def test_unexpected_download_failure_cleans_staging_and_allows_retry(tmp_path):

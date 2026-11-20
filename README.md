@@ -46,7 +46,7 @@ Each component folder has a `src` package layout, its own `pyproject.toml`, and 
 
 ## Getting started
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). CI tests Linux and Windows. The workflow scripts below need a bash: on Windows, run them from Git Bash with the environment activated (`source .venv/Scripts/activate`) as `bash scripts/<name>.sh` instead of `uv run scripts/<name>.sh`, because Windows cannot start a `.sh` file directly. The three packages form one uv workspace with a single committed lockfile; each package still installs on its own (CI checks this).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). CI tests Linux and Windows. The workflow scripts below need a bash: on Windows, run them from Git Bash with the environment activated (`source .venv/Scripts/activate`) as `bash scripts/<name>.sh` instead of `uv run scripts/<name>.sh`, because Windows cannot start a `.sh` file directly. WSL is a Linux system: there, make its own environment with `uv sync` and use the commands as shown. The three packages form one uv workspace with a single committed lockfile; each package still installs on its own (CI checks this).
 
 ```sh
 uv sync --frozen

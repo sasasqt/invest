@@ -161,63 +161,6 @@ def test_windows_refuses_a_destination_created_while_saving(
     assert [p.name for p in dest.parent.iterdir()] == ["day"]
 
 
-def test_windows_retries_a_rename_a_held_file_blocks(tmp_path, monkeypatch, windows_rename):
-    # A virus scanner or the indexer holding a just-copied file blocks the rename for a moment.
-    out = _output(tmp_path)
-    dest = tmp_path / "runs" / "day"
-    rename = Path.rename
-    blocked = [PermissionError("held"), PermissionError("held")]
-
-    def held_twice(self: Path, target: Path) -> Path:
-        if blocked:
-            raise blocked.pop()
-        return rename(self, target)
-
-    waits: list[float] = []
-    monkeypatch.setattr(Path, "rename", held_twice)
-    monkeypatch.setattr(save_run.time, "sleep", waits.append)
-    saved = {p.as_posix() for p in save_run.save_run(out, dest)}
-    assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
-    assert waits == list(save_run._RENAME_RETRY_WAITS[:2])
-    assert [p.name for p in dest.parent.iterdir()] == ["day"]
-
-
-def test_windows_gives_up_on_a_rename_that_stays_blocked(tmp_path, monkeypatch, windows_rename):
-    out = _output(tmp_path)
-    dest = tmp_path / "runs" / "day"
-    attempts: list[Path] = []
-
-    def always_held(self: Path, target: Path) -> Path:
-        attempts.append(Path(target))
-        raise PermissionError("held")
-
-    waits: list[float] = []
-    monkeypatch.setattr(Path, "rename", always_held)
-    monkeypatch.setattr(save_run.time, "sleep", waits.append)
-    with pytest.raises(PermissionError, match="held"):
-        save_run.save_run(out, dest)
-    assert waits == list(save_run._RENAME_RETRY_WAITS)
-    assert attempts == [dest] * (len(save_run._RENAME_RETRY_WAITS) + 1)
-    assert not dest.exists() and not list(dest.parent.iterdir())
-
-
-def test_posix_does_not_retry_a_refused_rename(tmp_path, monkeypatch):
-    # Outside Windows a PermissionError from rename is a real refusal, not a held handle.
-    out = _output(tmp_path)
-    attempts: list[Path] = []
-
-    def refused(self: Path, target: Path) -> Path:
-        attempts.append(Path(target))
-        raise PermissionError("refused")
-
-    monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform="linux"))
-    monkeypatch.setattr(Path, "rename", refused)
-    monkeypatch.setattr(save_run.time, "sleep", lambda wait: pytest.fail("retried"))
-    with pytest.raises(PermissionError, match="refused"):
-        save_run.save_run(out, tmp_path / "runs" / "day")
-    assert len(attempts) == 1
-
-
 @pytest.mark.parametrize("platform", ["linux", "win32"])
 def test_failed_publication_removes_only_its_own_directories(tmp_path, monkeypatch, platform):
     out = _output(tmp_path)

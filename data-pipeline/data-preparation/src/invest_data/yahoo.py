@@ -17,6 +17,7 @@ Snapshots belong under the ignored ``artifacts/`` directory; never commit vendor
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -190,23 +191,6 @@ def _atomic_write(path: Path, data: bytes) -> None:
 # Windows cannot rename a directory onto an existing one, even an empty one, and its
 # rename refuses an existing target instead of replacing it.
 _RENAME_REFUSES_EXISTING_TARGET = os.name == "nt"
-# Waits before each retry of a Windows folder rename that a virus scanner or the search
-# indexer blocks for a moment by holding a file just written into the folder (about 6 s).
-_RENAME_RETRY_WAITS = (0.05, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2)
-
-
-def _rename_retrying(src: Path, dst: Path, sleep: Callable[[float], None]) -> None:
-    """``os.rename`` that retries ``PermissionError``, which a held handle causes on Windows.
-
-    ``FileExistsError`` (another writer published ``dst``) is raised at once.
-    """
-    for wait in _RENAME_RETRY_WAITS:
-        try:
-            os.rename(src, dst)
-            return
-        except PermissionError:
-            sleep(wait)
-    os.rename(src, dst)
 
 
 def download_snapshot(
@@ -241,7 +225,6 @@ def download_snapshot(
     root.parent.mkdir(parents=True, exist_ok=True)
     root.mkdir()  # exclusive reservation: competing writers fail before fetching (see above)
     reserved = True
-    published = False
     try:
         with tempfile.TemporaryDirectory(prefix=f".{root.name}-", dir=root.parent) as tmp:
             stage = Path(tmp) / "snapshot"
@@ -281,18 +264,22 @@ def download_snapshot(
             if _RENAME_REFUSES_EXISTING_TARGET:
                 # Give the empty reservation up just before the rename. A writer that
                 # reserves the path in between keeps it, and this rename then fails
-                # without overwriting anything. Not ours once rmdir starts, so a failed
-                # or interrupted rmdir is not repeated below.
-                reserved = False
+                # without overwriting anything.
                 root.rmdir()
-                _rename_retrying(stage, root, sleep or time.sleep)
+                reserved = False
+                os.rename(stage, root)
             else:
                 os.replace(stage, root)  # replaces only our empty reservation
-            published = True
+                reserved = False
             return manifest
-    finally:
-        if reserved and not published:
-            root.rmdir()  # only our empty reservation; staged files are cleaned separately
+    except BaseException:
+        if reserved:
+            # Only our empty reservation; staged files are cleaned separately. A removal
+            # that fails, or finds it already gone after an interrupted rmdir, must not
+            # hide the error that brought us here.
+            with contextlib.suppress(OSError):
+                root.rmdir()
+        raise
 
 
 def parse_chart(payload: bytes | dict[str, Any], symbol: str) -> pd.DataFrame:

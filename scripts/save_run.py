@@ -29,7 +29,6 @@ import json
 import shutil
 import sys
 import tempfile
-import time
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -255,7 +254,7 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
             if sys.platform != "win32":
                 dest.mkdir()
                 reserved = True
-            _rename_retrying(stage, dest)
+            stage.rename(dest)
         except FileExistsError:
             raise SystemExit(f"{dest}: already exists; run records are never overwritten") from None
     except BaseException:
@@ -265,26 +264,6 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
     finally:
         shutil.rmtree(owned, ignore_errors=True)
     return sorted(p.relative_to(dest) for p in dest.rglob("*") if p.is_file())
-
-
-# Waits before each retry of a Windows folder rename that a virus scanner or the search
-# indexer blocks for a moment by holding a file just written into the folder (about 6 s).
-_RENAME_RETRY_WAITS = (0.05, 0.1, 0.2, 0.4, 0.8, 1.6, 3.2)
-
-
-def _rename_retrying(src: Path, dst: Path) -> None:
-    """``Path.rename``, retrying ``PermissionError`` on Windows, where a held handle causes it.
-
-    ``FileExistsError`` (the destination appeared) is raised at once.
-    """
-    if sys.platform == "win32":
-        for wait in _RENAME_RETRY_WAITS:
-            try:
-                src.rename(dst)
-                return
-            except PermissionError:
-                time.sleep(wait)
-    src.rename(dst)
 
 
 def main(argv: list[str] | None = None) -> int:
