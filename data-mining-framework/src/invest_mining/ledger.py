@@ -268,7 +268,7 @@ def assess_confirmation(
     exp_id: str,
     *,
     sessions: Iterable[date] | None = None,
-) -> tuple[str, list[str]]:
+) -> tuple[Literal["confirmatory", "exploratory"], list[str]]:
     """Classify a planned search as ``confirmatory`` or ``exploratory``, with reasons.
 
     Raises :class:`LedgerError` (before any data is evaluated) when the development window

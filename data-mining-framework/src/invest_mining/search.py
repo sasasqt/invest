@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
@@ -354,10 +354,11 @@ def confirm(
     return out
 
 
-CONFIRMATION_USES = ("confirmatory", "exploratory", "unrecorded")
+ConfirmationUse = Literal["confirmatory", "exploratory", "unrecorded"]
+CONFIRMATION_USES: tuple[ConfirmationUse, ...] = ("confirmatory", "exploratory", "unrecorded")
 
 
-def mark_confirmation_use(confirmation: pd.DataFrame, use: str) -> pd.DataFrame:
+def mark_confirmation_use(confirmation: pd.DataFrame, use: ConfirmationUse) -> pd.DataFrame:
     """Label how far a confirmation table can be trusted, keeping the raw test outcome.
 
     ``test_outcome`` always holds the test result. ``status`` keeps it only when the

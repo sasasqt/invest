@@ -60,6 +60,7 @@ from invest_mining.reporting import write_factor_report
 from invest_mining.search import (
     MIN_CONFIRM_DATES,
     SEARCH_VERSION,
+    ConfirmationUse,
     chronological_split,
     confirm,
     mark_confirmation_use,
@@ -414,7 +415,8 @@ def _search(args: argparse.Namespace) -> int:
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
-    use, reasons = "unrecorded", list[str]()
+    use: ConfirmationUse = "unrecorded"
+    reasons: list[str] = []
     if args.ledger is not None:
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
