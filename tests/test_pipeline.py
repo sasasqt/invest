@@ -14,6 +14,25 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "strategy-evaluation/examples/quantile_long_short.json"
 
 
+def _bash() -> str:
+    """The bash that runs the workflow scripts.
+
+    On Windows a bare ``"bash"`` makes CreateProcess search System32 before PATH, so it
+    starts the WSL launcher there (which fails without a Linux distribution) instead of
+    Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases.
+    """
+    if sys.platform != "win32":
+        return "bash"
+    system = os.path.normcase(os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "System32"))
+    for entry in os.environ.get("PATH", "").split(os.pathsep):
+        folder = os.path.normcase(os.path.normpath(entry)) if entry else ""
+        if not folder or folder == system or folder.endswith(os.path.normcase(r"\WindowsApps")):
+            continue
+        if found := shutil.which("bash", path=entry):
+            return found
+    raise RuntimeError("no Git Bash on PATH; the workflow scripts need one on Windows")
+
+
 def run(module: str, *args: str) -> str:
     out = subprocess.run(
         [sys.executable, "-m", module, *args],
@@ -143,7 +162,7 @@ def test_synthetic_workflow_script(tmp_path):
     }
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/synthetic_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/synthetic_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -205,7 +224,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     }
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -356,7 +375,7 @@ def _clean_checkout_of_the_workflow(path):
 
 def _run_workflow(script, out, env):
     return subprocess.run(
-        ["bash", str(script), str(out)],
+        [_bash(), str(script), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -594,7 +613,7 @@ def test_historical_workflow_refuses_an_existing_record_before_work(tmp_path):
         "RECORD": str(record),
     }
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(tmp_path / "wf")],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(tmp_path / "wf")],
         capture_output=True,
         text=True,
         check=False,
@@ -615,7 +634,7 @@ def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tm
     )
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -637,7 +656,7 @@ def test_historical_workflow_refuses_the_reserved_window_before_download(tmp_pat
     """The committed Yahoo ledger keeps 2025 onward untouched for confirmation."""
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,

@@ -21,9 +21,9 @@ jobs:
         include:
           # "native": the runner's default Git settings (core.autocrlf=true), what a
           # Windows contributor gets from Git for Windows. "lf": checkout without CRLF.
+          # Run 1 showed identical results for both; keep the default only.
           - { python: "3.11", eol: native }
           - { python: "3.13", eol: native }
-          - { python: "3.13", eol: lf }
     defaults:
       run:
         shell: bash

@@ -2,12 +2,16 @@
 
 import io
 import json
+import os
 import urllib.error
+from collections.abc import Callable
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 
+from invest_data import yahoo
 from invest_data.cleaning import clean_bars
 from invest_data.cli import main
 from invest_data.schemas import publish_market_bars, read_market_bars
@@ -171,6 +175,57 @@ def test_competing_download_cannot_publish_or_overwrite(tmp_path):
     with pytest.raises(FileExistsError):
         download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetcher)
     assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+
+@pytest.fixture
+def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Windows' rename rules on any CI host: no rename or replace onto an existing folder."""
+    rename, replace = os.rename, os.replace
+
+    def rename_without_replacement(
+        src: str | os.PathLike[str], dst: str | os.PathLike[str]
+    ) -> None:
+        if os.path.lexists(dst):
+            raise FileExistsError(f"{dst}: Windows rename refuses an existing destination")
+        rename(src, dst)
+
+    def replace_no_folder(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        if os.path.isdir(dst):
+            raise PermissionError(f"{dst}: Windows cannot replace a folder")
+        replace(src, dst)
+
+    monkeypatch.setattr(yahoo, "_RENAME_REFUSES_EXISTING_TARGET", True)
+    monkeypatch.setattr(yahoo.os, "rename", rename_without_replacement)
+    monkeypatch.setattr(yahoo.os, "replace", replace_no_folder)
+
+
+def test_download_publishes_with_windows_rename_rules(tmp_path: Path, windows_rename: None) -> None:
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    manifest = download_snapshot(
+        ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
+    )
+    assert json.loads((tmp_path / "s" / "snapshot.json").read_bytes()) == manifest
+    assert (tmp_path / "s" / manifest["files"]["AAA"]["path"]).read_bytes() == good
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]  # no staging folder left
+
+
+def test_windows_publication_leaves_a_competing_reservation_alone(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
+) -> None:
+    # Another writer reserves the path between giving up the reservation and the rename.
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    rename: Callable[[str | os.PathLike[str], str | os.PathLike[str]], None] = yahoo.os.rename
+
+    def competitor_first(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        Path(dst).mkdir()
+        rename(src, dst)
+
+    monkeypatch.setattr(yahoo.os, "rename", competitor_first)
+    with pytest.raises(FileExistsError):
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good)
+    assert root.is_dir() and not list(root.iterdir())  # the competitor's reservation stays
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]
 
 
 def test_unexpected_download_failure_cleans_staging_and_allows_retry(tmp_path):

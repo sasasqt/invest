@@ -187,6 +187,11 @@ def _atomic_write(path: Path, data: bytes) -> None:
     os.replace(tmp, path)
 
 
+# Windows cannot rename a directory onto an existing one, even an empty one, and its
+# rename refuses an existing target instead of replacing it.
+_RENAME_REFUSES_EXISTING_TARGET = os.name == "nt"
+
+
 def download_snapshot(
     symbols: Iterable[str],
     start: str,
@@ -215,6 +220,7 @@ def download_snapshot(
     chart_url(names[0], start, end)  # validates the date range before any request
     root.parent.mkdir(parents=True, exist_ok=True)
     root.mkdir()  # exclusive reservation: competing writers fail before fetching
+    reserved = True
     published = False
     try:
         with tempfile.TemporaryDirectory(prefix=f".{root.name}-", dir=root.parent) as tmp:
@@ -252,11 +258,19 @@ def download_snapshot(
                 "test_only": True,
             }
             _atomic_write(stage / "snapshot.json", (json.dumps(manifest, indent=2) + "\n").encode())
-            os.replace(stage, root)
+            if _RENAME_REFUSES_EXISTING_TARGET:
+                # Give the empty reservation up just before the rename. A writer that
+                # reserves the path in between keeps it, and this rename then fails
+                # without overwriting anything.
+                root.rmdir()
+                reserved = False
+                os.rename(stage, root)
+            else:
+                os.replace(stage, root)  # replaces only our empty reservation
             published = True
             return manifest
     finally:
-        if not published:
+        if reserved and not published:
             root.rmdir()  # only our empty reservation; staged files are cleaned separately
 
 

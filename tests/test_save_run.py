@@ -51,7 +51,7 @@ def _output(tmp_path: Path, **manifest: object) -> Path:
 
 def test_saves_a_complete_record(tmp_path):
     out = _output(tmp_path)
-    saved = {str(p) for p in save_run.save_run(out, tmp_path / "runs" / "day")}
+    saved = {p.as_posix() for p in save_run.save_run(out, tmp_path / "runs" / "day")}
     assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
     assert [p.name for p in (tmp_path / "runs").iterdir()] == ["day"]  # no staging left
 
@@ -132,7 +132,7 @@ def windows_rename(monkeypatch):
 def test_saves_a_complete_record_with_windows_rename_semantics(tmp_path, windows_rename):
     out = _output(tmp_path)
     dest = tmp_path / "runs" / "day"
-    saved = {str(p) for p in save_run.save_run(out, dest)}
+    saved = {p.as_posix() for p in save_run.save_run(out, dest)}
     assert saved == {*save_run.REQUIRED, "data/benchmark/manifest.json", "README.md"}
     assert (dest / "eval/manifest.json").read_bytes() == (out / "eval/manifest.json").read_bytes()
     assert [p.name for p in dest.parent.iterdir()] == ["day"]
@@ -265,6 +265,7 @@ def test_refuses_quantile_portfolios_from_uncommitted_code(tmp_path):
         save_run.save_run(out, tmp_path / "runs" / "day")
 
 
+@pytest.mark.skipif(sys.platform == "win32", reason="needs POSIX permission bits")
 def test_record_directory_gets_normal_permissions(tmp_path):
     import os
 
