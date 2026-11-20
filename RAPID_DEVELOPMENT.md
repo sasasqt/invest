@@ -1,6 +1,6 @@
 # Rapid Software Development Guidelines
 
-Develop quickly by shortening the path from a concrete requirement to working, verified behavior. Use small increments, reusable tooling, and fast feedback. These practices complement the [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) guidelines; they do not imply that the planned application or CI already exists.
+Develop quickly by shortening the path from a concrete requirement to working, verified behavior. Use small increments, reusable tooling, and fast feedback. These practices complement the [Python](PYTHON_GUIDELINES.md), [Git](GIT_GUIDELINES.md), and [design-by-contract](DESIGN_BY_CONTRACT.md) guidelines.
 
 ## 1. Pick a small outcome
 
@@ -37,7 +37,7 @@ A small increment must remain correct for its declared scope. Explicitly unsuppo
 - Run targeted tests during development, then the required component checks and affected integration checks before completion. Do not present targeted success as full validation.
 - Exercise independent adapters against shared contract fixtures. Check installed packages and entry points when packaging behavior changes.
 - Investigate flaky tests and slow checks. Measure durations before adding parallelism or caches; ensure caching cannot hide stale schemas, data, or artifacts.
-- Make common setup and check commands repeatable once tooling exists, and document the exact commands in component READMEs. Avoid maintaining separate local and CI procedures.
+- Keep common setup and check commands repeatable, and document the exact commands in component READMEs. Avoid maintaining separate local and CI procedures.
 - Do not add tests that only repeat implementation details or invent an application test suite for a documentation-only change. Documentation changes need link, example, and whitespace validation as applicable.
 
 Fast checks support frequent feedback; they do not replace required acceptance gates.
