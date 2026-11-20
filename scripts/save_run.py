@@ -23,6 +23,7 @@ compressed is refused.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import gzip
 import hashlib
 import json
@@ -258,8 +259,11 @@ def save_run(out: Path, dest: Path, snapshot_dir: Path | None = None) -> list[Pa
         except FileExistsError:
             raise SystemExit(f"{dest}: already exists; run records are never overwritten") from None
     except BaseException:
-        if reserved and dest.is_dir() and not any(dest.iterdir()):
-            dest.rmdir()
+        if reserved:
+            # Only our reservation, and rmdir removes it only while it is empty. A removal
+            # that fails must not hide the error that brought us here.
+            with contextlib.suppress(OSError):
+                dest.rmdir()
         raise
     finally:
         shutil.rmtree(owned, ignore_errors=True)

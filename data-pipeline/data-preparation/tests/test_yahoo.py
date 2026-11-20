@@ -253,6 +253,25 @@ def test_a_failed_reservation_removal_does_not_hide_the_first_error(
     assert calls == [tmp_path / "s", tmp_path / "s"]  # the cleanup tried once more
 
 
+def test_windows_publishes_when_the_reservation_was_removed_meanwhile(
+    tmp_path: Path, windows_rename: None
+) -> None:
+    # Someone removes the empty reservation during the fetch. The path is free, so the
+    # download publishes, as POSIX's replace does, and nothing is treated as still ours.
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+
+    def fetch_after_removal(url: str, timeout: float) -> bytes:
+        root.rmdir()
+        return good
+
+    manifest = download_snapshot(
+        ["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetch_after_removal
+    )
+    assert json.loads((root / "snapshot.json").read_bytes()) == manifest
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]
+
+
 def test_an_interrupt_after_the_reservation_removal_leaves_a_new_reservation_alone(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
 ) -> None:

@@ -116,12 +116,17 @@ def test_refuses_a_file_still_over_the_limit_when_compressed(tmp_path):
 
 
 @pytest.fixture
-def windows_rename(monkeypatch):
-    """Exercise Windows' refusal to rename onto an existing target on any CI host."""
+def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Exercise Windows' refusal to rename onto an existing target on any CI host.
+
+    Windows itself enforces it in the Windows CI job; elsewhere a stand-in does.
+    """
+    if sys.platform == "win32":
+        return
     rename = Path.rename
     monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform="win32"))
 
-    def rename_without_replacement(self, target):
+    def rename_without_replacement(self: Path, target: str | Path) -> Path:
         if Path(target).exists():
             raise FileExistsError(f"{target}: Windows rename refuses an existing destination")
         return rename(self, target)
@@ -178,6 +183,25 @@ def test_failed_publication_removes_only_its_own_directories(tmp_path, monkeypat
         save_run.save_run(out, dest)
     assert [p.name for p in dest.parent.iterdir()] == [".day.other.partial"]
     assert (other / "notes.txt").read_text() == "mine"
+
+
+def test_a_failed_reservation_removal_does_not_hide_the_publication_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    out = _output(tmp_path)
+    dest = tmp_path / "runs" / "day"
+    monkeypatch.setattr(save_run, "sys", SimpleNamespace(platform="linux"))
+
+    def fail(*args: object) -> None:
+        raise OSError("publication failed")
+
+    def held_rmdir(self: Path) -> None:
+        raise OSError("reservation in use")
+
+    monkeypatch.setattr(Path, "rename", fail)
+    monkeypatch.setattr(Path, "rmdir", held_rmdir)
+    with pytest.raises(OSError, match="publication failed"):
+        save_run.save_run(out, dest)
 
 
 def test_never_deletes_an_existing_directory_named_like_staging(tmp_path):

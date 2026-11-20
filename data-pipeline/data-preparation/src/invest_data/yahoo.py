@@ -265,10 +265,13 @@ def download_snapshot(
                 # Give the empty reservation up just before the rename. A writer that
                 # reserves the path in between keeps it, and this rename then fails
                 # without overwriting anything. Once the rmdir may have happened, the
-                # path may be that writer's, so it is ours again only if the rmdir failed.
+                # path may be that writer's, so it is ours again only if the rmdir failed
+                # on a folder that was still there.
                 reserved = False
                 try:
                     root.rmdir()
+                except FileNotFoundError:
+                    pass  # someone removed it; publish as POSIX's replace would
                 except OSError:
                     reserved = True
                     raise

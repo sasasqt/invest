@@ -20,20 +20,23 @@ def _bash() -> str:
     On Windows a bare ``"bash"`` makes CreateProcess search System32 before PATH, so it
     starts the WSL launcher there (which fails without a Linux distribution) instead of
     Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases,
-    then Git for Windows' own ``bin`` folder, which a default install leaves off PATH
-    (it adds only ``Git\\cmd``). Each folder is checked directly: ``shutil.which`` would
-    look in the current folder first.
+    then Git for Windows' own ``bin`` folder next to the first ``git.exe`` found, which a
+    default install leaves off PATH (it adds only ``Git\\cmd``). Each folder is checked
+    directly: ``shutil.which`` would look in the current folder first.
     """
     if sys.platform != "win32":
         return "bash"
     system = os.path.normcase(os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "System32"))
+    git = ""
     for entry in os.environ.get("PATH", "").split(os.pathsep):
         folder = os.path.normcase(os.path.normpath(entry)) if entry else ""
         if not folder or folder == system or folder.endswith(os.path.normcase(r"\WindowsApps")):
             continue
         if os.path.isfile(bash_exe := os.path.join(entry, "bash.exe")):
             return bash_exe
-    if git := shutil.which("git"):
+        if not git and os.path.isfile(git_exe := os.path.join(entry, "git.exe")):
+            git = git_exe
+    if git:
         # git.exe sits in Git\cmd, Git\bin or Git\mingw64\bin; bash.exe in Git\bin.
         for root in Path(git).resolve().parents[1:3]:
             if (bash := root / "bin" / "bash.exe").is_file():
