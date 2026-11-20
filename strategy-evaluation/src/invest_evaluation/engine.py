@@ -502,7 +502,16 @@ def run_backtest(
                     j: abs(target[j]) if (shares[j] + delta) * target[j] > 0 else 0.0
                     for j, (_, delta, _) in planned.items()
                 }
-                found = {j for j, v in kept_after.items() if v > own_side[j] * sizing + tol}
+                # Only a rejected or capped order can leave its name beyond its target: a
+                # full fill reaches it and a skip is within 1e-9 of the equity. Testing the
+                # value alone lets the rounding of `held + delta` (about 1e-16 of the
+                # holding) pass the tolerance when a holding is millions of times equity.
+                found = {
+                    j
+                    for j, v in kept_after.items()
+                    if (planned[j][0] not in ("fill", "skip") or planned[j][2])
+                    and v > own_side[j] * sizing + tol
+                }
                 if found <= short_of_sale:
                     break
                 short_of_sale |= found

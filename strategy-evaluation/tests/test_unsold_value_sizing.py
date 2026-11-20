@@ -7,8 +7,8 @@ went negative. Every target is now sized on equity net of the value that cannot 
 at the configured leverage: ``E' = (E - P / L) / (1 - W / L)``, where ``P`` is what the
 names short of their sale hold after the session's fills and ``W`` their target weights on
 the side they still hold (for exits ``W`` is 0, so with ``L`` 1 it is ``E - P``). Every
-expected value below is worked out by hand from prices of 10 and zero costs, so equity
-never moves.
+expected value below is worked out by hand from the stated prices (10 unless a test says
+otherwise) and zero costs.
 """
 
 from __future__ import annotations
@@ -434,3 +434,25 @@ def test_a_top_up_that_turns_into_a_stuck_trim_on_the_net_equity_is_counted() ->
     assert held(res, "C", 20) == pytest.approx(1000 / 3 / 10)
     assert res.daily.loc[DATES[20], "gross_exposure"] == pytest.approx(1.0)
     assert res.daily.loc[DATES[20], "cash"] >= -1e-9
+
+
+def test_full_fills_at_an_equity_far_below_the_book_are_not_net_sized() -> None:
+    """``gross_leverage`` 2: A long and B short 100 shares at 10. B opens and closes at
+    20 - 1e-7 from session 21, so equity at that open is 1000 + 1000 - 100 * (20 - 1e-7)
+    = 1e-5 while each leg is worth about 1000. Every order fills in full (no cap, ample
+    volume), so A and B go to their targets on that equity and gross is 2, as before the
+    fix. Counting the rounding of a full fill (about 1e-16 of a 1000 holding, above the
+    1e-9 tolerance of a 1e-5 equity) as a sale that could not complete sized both on 0."""
+    tiny = 20.0 - 1e-7
+    bars = market(
+        "AB",
+        close=lambda k, n: tiny if n == "B" and k >= 21 else 10.0,
+        open_=lambda k, n: tiny if n == "B" and k >= 21 else 10.0,
+    )
+    strategy = Sides({"A": 1.0, "B": -1.0}, gross=2.0)
+    res = run_backtest(bars, scores(bars), config(gross=2.0), strategy)
+    assert (res.trades["status"] == "filled").all()
+    assert held(res, "A", 20) == pytest.approx(100.0)
+    assert res.daily.loc[DATES[21], "equity"] == pytest.approx(1e-5, rel=1e-6)
+    assert res.daily.loc[DATES[21], "gross_exposure"] == pytest.approx(2.0, rel=1e-6)
+    assert not any("REVIEW-27" in w for w in res.warnings)
