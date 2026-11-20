@@ -2,12 +2,16 @@
 
 import io
 import json
+import os
 import urllib.error
+from collections.abc import Callable
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 
+from invest_data import yahoo
 from invest_data.cleaning import clean_bars
 from invest_data.cli import main
 from invest_data.schemas import publish_market_bars, read_market_bars
@@ -26,7 +30,7 @@ from invest_data.yahoo import (
 )
 
 
-def bars(n_instruments=3, n_days=40, seed=3):
+def bars(n_instruments: int = 3, n_days: int = 40, seed: int = 3) -> pd.DataFrame:
     return synthetic_market(SyntheticConfig(n_instruments=n_instruments, n_days=n_days, seed=seed))
 
 
@@ -171,6 +175,127 @@ def test_competing_download_cannot_publish_or_overwrite(tmp_path):
     with pytest.raises(FileExistsError):
         download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetcher)
     assert before == {p.relative_to(root): p.read_bytes() for p in root.rglob("*") if p.is_file()}
+
+
+@pytest.fixture
+def windows_rename(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Windows' rename rules on any CI host: no rename or replace onto an existing folder.
+
+    Windows itself enforces them in the Windows CI job; elsewhere stand-ins do.
+    """
+    rename, replace = os.rename, os.replace
+
+    def rename_without_replacement(
+        src: str | os.PathLike[str], dst: str | os.PathLike[str]
+    ) -> None:
+        if os.path.lexists(dst):
+            raise FileExistsError(f"{dst}: Windows rename refuses an existing destination")
+        rename(src, dst)
+
+    def replace_no_folder(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        if os.path.isdir(dst):
+            raise PermissionError(f"{dst}: Windows cannot replace a folder")
+        replace(src, dst)
+
+    monkeypatch.setattr(yahoo, "_RENAME_REFUSES_EXISTING_TARGET", True)
+    if os.name != "nt":
+        monkeypatch.setattr(os, "rename", rename_without_replacement)
+        monkeypatch.setattr(os, "replace", replace_no_folder)
+
+
+def test_download_publishes_with_windows_rename_rules(tmp_path: Path, windows_rename: None) -> None:
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    manifest = download_snapshot(
+        ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
+    )
+    assert json.loads((tmp_path / "s" / "snapshot.json").read_bytes()) == manifest
+    assert (tmp_path / "s" / manifest["files"]["AAA"]["path"]).read_bytes() == good
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]  # no staging folder left
+
+
+def test_windows_publication_leaves_a_competing_reservation_alone(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
+) -> None:
+    # Another writer reserves the path between giving up the reservation and the rename.
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    rename: Callable[[str | os.PathLike[str], str | os.PathLike[str]], None] = os.rename
+
+    def competitor_first(src: str | os.PathLike[str], dst: str | os.PathLike[str]) -> None:
+        Path(dst).mkdir()
+        rename(src, dst)
+
+    monkeypatch.setattr(os, "rename", competitor_first)
+    with pytest.raises(FileExistsError):
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good)
+    assert root.is_dir() and not list(root.iterdir())  # the competitor's reservation stays
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]
+
+
+def test_a_failed_reservation_removal_does_not_hide_the_first_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
+) -> None:
+    # Explorer open inside the empty reservation can stop its removal on Windows. The caller
+    # sees that error, not a second one from the cleanup's own attempt to remove it.
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    calls: list[Path] = []
+
+    def held_rmdir(self: Path) -> None:
+        calls.append(self)
+        raise PermissionError(f"in use, attempt {len(calls)}")
+
+    monkeypatch.setattr(Path, "rmdir", held_rmdir)
+    with pytest.raises(PermissionError) as raised:
+        download_snapshot(
+            ["AAA"], "2020-01-01", "2020-02-01", tmp_path / "s", fetcher=lambda u, t: good
+        )
+    assert str(raised.value) == "in use, attempt 1"
+    assert calls == [tmp_path / "s", tmp_path / "s"]  # the cleanup tried once more
+
+
+def test_windows_publishes_when_the_reservation_was_removed_meanwhile(
+    tmp_path: Path, windows_rename: None
+) -> None:
+    # Someone removes the empty reservation during the fetch. The path is free, so the
+    # download publishes, as POSIX's replace does, and nothing is treated as still ours.
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+
+    def fetch_after_removal(url: str, timeout: float) -> bytes:
+        root.rmdir()
+        return good
+
+    manifest = download_snapshot(
+        ["AAA"], "2020-01-01", "2020-02-01", root, fetcher=fetch_after_removal
+    )
+    assert json.loads((root / "snapshot.json").read_bytes()) == manifest
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]
+
+
+def test_an_interrupt_after_the_reservation_removal_leaves_a_new_reservation_alone(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, windows_rename: None
+) -> None:
+    # Ctrl+C right after the reservation is removed, before the rename, and another
+    # writer reserves the path while this one cleans up. The cleanup must not remove the
+    # other writer's folder, and the KeyboardInterrupt still gets through.
+    root = tmp_path / "s"
+    good = json.dumps(fake_chart(bars(1, 5), "AAA")).encode()
+    rmdir = Path.rmdir
+    interrupted = False
+
+    def rmdir_then_interrupt(self: Path) -> None:
+        nonlocal interrupted
+        rmdir(self)
+        if self == root and not interrupted:
+            interrupted = True
+            self.mkdir()  # the other writer's reservation
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr(Path, "rmdir", rmdir_then_interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        download_snapshot(["AAA"], "2020-01-01", "2020-02-01", root, fetcher=lambda u, t: good)
+    assert root.is_dir() and not list(root.iterdir())  # the other writer's reservation stays
+    assert [p.name for p in tmp_path.iterdir()] == ["s"]  # no staging folder left
 
 
 def test_unexpected_download_failure_cleans_staging_and_allows_retry(tmp_path):

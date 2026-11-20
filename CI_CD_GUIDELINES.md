@@ -9,6 +9,7 @@ Every pull request and every push to `main` runs:
 | Job | Checks |
 |---|---|
 | `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Formatting, lint, coverage floors and link checks do not depend on the platform and run only in `checks` |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
 
@@ -32,7 +33,7 @@ start workflow commands.
 After those checks pass, the workflow runs both full isolated audit jobs. Current
 `main` is resolved once and pinned for the complete matrix; manual runs may instead
 specify an exact source SHA and an optional historical control SHA. Old failing
-trials remain historical failures. These jobs supplement the normal six CI jobs;
+trials remain historical failures. These jobs supplement the normal eight CI jobs;
 they do not replace their tests or establish a Docker audit on a Windows host or
 historical investment results. See the [Python checks](PYTHON_GUIDELINES.md#development-checks)
 for local commands and the runner README for limits.
@@ -45,7 +46,7 @@ for local commands and the runner README for limits.
 - **Least privilege.** Workflows default to `permissions: contents: read`. A job that needs more (publishing a release, writing comments) declares it in that job only.
 - **Pinned actions.** Reference third-party actions by full commit SHA with the version in a comment (`uses: actions/checkout@<sha> # v4.4.0`). Update pins deliberately, ideally through Dependabot or Renovate PRs, and read the changelog.
 - **No secrets in pull-request jobs.** Jobs triggered by `pull_request` must not need credentials. Never use `pull_request_target` to run code from a PR branch. Store data-vendor keys as environment secrets available only to protected-branch or manual workflows.
-- **Never weaken a check to get green.** Don't skip, mark `xfail`, or delete a failing test, loosen a tolerance, or add a `# type: ignore` without its error code and a reason on the line and in the pull request ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). A failing test is a bug until proven otherwise; re-run once only for infrastructure failures (checkout, install, runner loss).
+- **Never weaken a check to get green.** Don't skip, mark `xfail`, or delete a failing test, loosen a tolerance, or add a `# type: ignore` without its error code and a reason on the line and in the pull request ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). A failing test is a bug until proven otherwise; re-run once only for infrastructure failures (checkout, install, runner loss). The one exception: a test may skip where the platform or a tool cannot do what it checks (POSIX permission bits or symbolic links on Windows, permission checks run as root, a Git older than 2.32, `chattr` without root), with the reason in the marker or the `pytest.skip` message ([Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows)).
 - **Fail on warnings that signal bugs.** `RuntimeWarning` from project code is an error in pytest (see `filterwarnings` in `pyproject.toml`). It usually means a division by zero or NaN propagation.
 - **Required checks on `main`.** Protect `main`: require the CI jobs above, at least one review, and an up-to-date branch before merge. Prefer squash or merge commits per the [Git guidelines](GIT_GUIDELINES.md); never force-push `main`.
 

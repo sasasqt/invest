@@ -17,6 +17,7 @@ Snapshots belong under the ignored ``artifacts/`` directory; never commit vendor
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -187,6 +188,11 @@ def _atomic_write(path: Path, data: bytes) -> None:
     os.replace(tmp, path)
 
 
+# Windows cannot rename a directory onto an existing one, even an empty one, and its
+# rename refuses an existing target instead of replacing it.
+_RENAME_REFUSES_EXISTING_TARGET = os.name == "nt"
+
+
 def download_snapshot(
     symbols: Iterable[str],
     start: str,
@@ -205,6 +211,9 @@ def download_snapshot(
     Symbols that fail after retries are recorded under ``failures`` rather than aborting
     the whole download. Exclusively reserve a new destination, write in a private staging
     directory, then publish the whole snapshot with one rename. Existing paths are refused.
+    On Windows, whose rename cannot replace the empty reservation, the reservation is given
+    up just before the rename: a writer that reserves the path in that moment fetches and
+    publishes, and this one fails with ``FileExistsError``; neither overwrites the other.
     """
     root = Path(out)
     names = list(dict.fromkeys(s.strip() for s in symbols if s.strip()))
@@ -214,8 +223,8 @@ def download_snapshot(
         raise ValueError(f"symbols that differ only in case name one instrument: {spellings}")
     chart_url(names[0], start, end)  # validates the date range before any request
     root.parent.mkdir(parents=True, exist_ok=True)
-    root.mkdir()  # exclusive reservation: competing writers fail before fetching
-    published = False
+    root.mkdir()  # exclusive reservation: competing writers fail before fetching (see above)
+    reserved = True
     try:
         with tempfile.TemporaryDirectory(prefix=f".{root.name}-", dir=root.parent) as tmp:
             stage = Path(tmp) / "snapshot"
@@ -252,12 +261,32 @@ def download_snapshot(
                 "test_only": True,
             }
             _atomic_write(stage / "snapshot.json", (json.dumps(manifest, indent=2) + "\n").encode())
-            os.replace(stage, root)
-            published = True
+            if _RENAME_REFUSES_EXISTING_TARGET:
+                # Give the empty reservation up just before the rename. A writer that
+                # reserves the path in between keeps it, and this rename then fails
+                # without overwriting anything. Once the rmdir may have happened, the
+                # path may be that writer's, so it is ours again only if the rmdir failed
+                # on a folder that was still there.
+                reserved = False
+                try:
+                    root.rmdir()
+                except FileNotFoundError:
+                    pass  # someone removed it; publish as POSIX's replace would
+                except OSError:
+                    reserved = True
+                    raise
+                os.rename(stage, root)
+            else:
+                os.replace(stage, root)  # replaces only our empty reservation
+                reserved = False
             return manifest
-    finally:
-        if not published:
-            root.rmdir()  # only our empty reservation; staged files are cleaned separately
+    except BaseException:
+        if reserved:
+            # Only our empty reservation; staged files are cleaned separately. A removal
+            # that fails must not hide the error that brought us here.
+            with contextlib.suppress(OSError):
+                root.rmdir()
+        raise
 
 
 def parse_chart(payload: bytes | dict[str, Any], symbol: str) -> pd.DataFrame:
