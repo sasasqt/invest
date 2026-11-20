@@ -9,7 +9,37 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    # Markdown-only pull requests skip the jobs below: no test, build or type check can
+    # fail on a .md file except formatting and links, which docs.yml checks on every pull
+    # request. Pushes to main run everything. A rename counts its old name too.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 2 # the pull request's merge commit and its base parent
+          persist-credentials: false
+      - id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          # bash -e: a failed git diff or grep fails this job, and ci-ok with it.
+          code=true
+          if [[ "$EVENT" == pull_request ]]; then
+            files="$(git diff --no-renames --name-only HEAD^1 HEAD)"
+            other="$(grep -v '\.md$' <<< "$files")" || [[ $? -eq 1 ]] # 1: every name is .md
+            if [[ -n "$files" && -z "$other" ]]; then
+              code=false
+            fi
+          fi
+          echo "code=$code" | tee -a "$GITHUB_OUTPUT"
+
   checks:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -30,9 +60,12 @@ jobs:
       - run: uv run python scripts/check_markdown_links.py
 
   tests-windows:
-    # Every change must work on Linux and Windows (PYTHON_GUIDELINES.md). Formatting, lint,
-    # coverage floors and link checks do not depend on the platform and stay in `checks`;
+    # Every change must work on Linux and Windows (PYTHON_GUIDELINES.md). Lint and coverage
+    # floors do not depend on the platform and stay in `checks` (formatting and links also
+    # run in docs.yml, on both systems);
     # strict mypy runs here too because it type-checks the Windows side of platform checks.
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: windows-latest
     timeout-minutes: 45 # about 8.5 minutes normally; a hung script test stops here
     strategy:
@@ -53,6 +86,8 @@ jobs:
 
   wheels:
     # Build all three wheels and test them as installed, not from the source tree.
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -78,6 +113,8 @@ jobs:
 
   independent-install:
     # Each component must install and pass its own tests without the others' dev setup.
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -99,3 +136,22 @@ jobs:
         if: matrix.component == 'strategy-evaluation'
         run: /tmp/venv/bin/python -c "import importlib.util, sys; sys.exit(importlib.util.find_spec('invest_mining') is not None)"
       - run: /tmp/venv/bin/python -m pytest -p no:cacheprovider ${{ matrix.component }}/tests
+
+  ci-ok:
+    # The one check of this workflow to require in branch protection: it passes when
+    # `changes` succeeded and every other job passed, or all of them were skipped for a
+    # Markdown-only pull request. Every new job of this workflow must be added to `needs`.
+    needs: [changes, checks, tests-windows, wheels, independent-install]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          jq -c 'map_values(.result)' <<< "$NEEDS"
+          jq -e '
+            .changes.result == "success"
+            and ((if .changes.outputs.code == "false" then "skipped" else "success" end) as $want
+                 | del(.changes) | all(.[]; .result == $want))
+          ' <<< "$NEEDS"
