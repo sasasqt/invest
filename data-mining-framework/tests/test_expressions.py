@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from invest_data.sources import synthetic_universe
 from invest_mining.expressions import (
     ExpressionError,
     build_panel,
@@ -10,6 +11,7 @@ from invest_mining.expressions import (
     lookback,
     parse,
     random_expression,
+    restrict,
 )
 
 
@@ -144,3 +146,138 @@ def test_fundamental_expressions_are_causal(bars):
         pd.testing.assert_frame_equal(
             evaluate(text, full).loc[:cut], evaluate(text, known), check_freq=False
         )
+
+
+def _bars_and_universe() -> tuple[pd.DataFrame, pd.DataFrame, pd.DatetimeIndex]:
+    """Closes 4, 9, 16 (A) and 1, 1, 1 (B); A joins the universe on the second date."""
+    dates = pd.to_datetime(["2024-01-02", "2024-01-03", "2024-01-04"])
+    rows = [
+        {"date": d, "instrument": inst, "open": c, "high": c, "low": c, "close": c, "volume": 1e3}
+        for inst, closes in (("A", [4.0, 9.0, 16.0]), ("B", [1.0, 1.0, 1.0]))
+        for d, c in zip(dates, closes, strict=True)
+    ]
+    universe = pd.DataFrame(
+        {
+            "universe": ["U", "U"],
+            "instrument": ["A", "B"],
+            "start_date": [dates[1], dates[0]],
+            "end_date": [pd.NaT, pd.NaT],
+        }
+    )
+    return pd.DataFrame(rows), universe, pd.DatetimeIndex(dates)
+
+
+def test_unary_operators_keep_pre_membership_history_under_time_series_operators() -> None:
+    """REVIEW-28 / RA-2026-11-01-2: only cross-sectional operators see members only.
+
+    build_panel's docstring: time-series operators use each instrument's full history. A joins the
+    universe on the second date, so on that date ts_sum(abs(close), 2) must still see A's first
+    close. Expected values are hand calculations on the closes 4, 9, 16 (A) and 1, 1, 1 (B).
+    """
+    bars, universe, dates = _bars_and_universe()
+    panel = build_panel(bars, universe=universe)
+    entry = dates[1]
+    expected = {
+        "ts_sum(close, 2)": 13.0,  # the control: no unary operator
+        "ts_sum(abs(close), 2)": 13.0,  # 4 + 9
+        "ts_sum(neg(close), 2)": -13.0,
+        "ts_sum(sign(close), 2)": 2.0,
+        "ts_sum(log(close), 2)": np.log(36.0),  # ln 4 + ln 9
+        "ts_sum(abs(neg(close)), 2)": 13.0,  # nested unary operators
+        "ts_mean(abs(close), 2)": 6.5,
+        "delay(abs(close), 1)": 4.0,
+        "delta(abs(close), 1)": 5.0,  # 9 - 4
+        "delta(neg(close), 1)": -5.0,  # -9 - (-4)
+    }
+    for text, value in expected.items():
+        got = evaluate(text, panel).loc[entry, "A"]
+        assert got == pytest.approx(value), f"{text}: {got} != {value}"
+    # Both operands of a two-input time-series operator keep the history: abs(close) and
+    # neg(close) move in exact opposition over 4, 9, 16, so their correlation is -1.
+    corr = evaluate("ts_corr(abs(close), neg(close), 3)", panel).loc[dates[2], "A"]
+    assert corr == pytest.approx(-1.0)
+    # Without a universe the same formulas give the same numbers for A.
+    plain = build_panel(bars)
+    for text, value in expected.items():
+        assert evaluate(text, plain).loc[entry, "A"] == pytest.approx(value)
+
+
+def test_cross_sections_still_see_members_only_and_restrict_masks_non_members() -> None:
+    """The REVIEW-28 fix must not widen cross-sections, and callers still mask non-members."""
+    bars, universe, dates = _bars_and_universe()
+    panel = build_panel(bars, universe=universe)
+    # On the first date A is not a member, so B ranks alone and cs_demean leaves it at 0.
+    first = evaluate("cs_rank(abs(close))", panel).loc[dates[0]]
+    assert np.isnan(first["A"]) and first["B"] == 1.0
+    assert evaluate("cs_demean(close)", panel).loc[dates[0], "B"] == 0.0
+    # A cross-sectional operator under a time-series one: A had no rank before it joined, so the
+    # window over its entry date stays missing (by design, with or without the fix).
+    assert np.isnan(evaluate("ts_sum(cs_rank(close), 2)", panel).loc[dates[1], "A"])
+    # evaluate computes a unary operator for a non-member like the bare feature; restrict,
+    # which every scoring path applies, masks it.
+    assert evaluate("abs(close)", panel).loc[dates[0], "A"] == 4.0
+    assert np.isnan(restrict(evaluate("abs(close)", panel), panel).loc[dates[0], "A"])
+    assert restrict(evaluate("abs(close)", panel), panel).loc[dates[0], "B"] == 1.0
+
+
+def test_time_series_operators_see_the_bars_of_a_membership_gap() -> None:
+    """A leaves the universe and comes back: on re-entry the window uses the gap's bars."""
+    dates = pd.to_datetime(
+        ["2024-01-02", "2024-01-03", "2024-01-04", "2024-01-05", "2024-01-08", "2024-01-09"]
+    )
+    closes = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    rows = [
+        {"date": d, "instrument": "A", "open": c, "high": c, "low": c, "close": c, "volume": 1e3}
+        for d, c in zip(dates, closes, strict=True)
+    ]
+    # D is a member throughout but has bars on the first four dates only (delisted).
+    rows += [
+        {"date": d, "instrument": "D", "open": c, "high": c, "low": c, "close": c, "volume": 1e3}
+        for d, c in zip(dates[:4], [10.0, 20.0, 30.0, 40.0], strict=True)
+    ]
+    bars = pd.DataFrame(rows)
+    universe = pd.DataFrame(
+        {
+            "universe": ["U", "U", "U"],
+            "instrument": ["A", "A", "D"],
+            "start_date": [dates[0], dates[5], dates[0]],  # A: member, gap, member again
+            "end_date": [dates[3], pd.NaT, pd.NaT],  # end_date is exclusive
+        }
+    )
+    panel = build_panel(bars, universe=universe)
+    assert bool(panel["universe"].loc[dates[3], "A"]) is False  # the gap starts here
+    reentry = dates[5]
+    assert evaluate("ts_sum(abs(close), 2)", panel).loc[reentry, "A"] == 11.0  # 5 + 6
+    assert evaluate("ts_mean(neg(close), 3)", panel).loc[reentry, "A"] == -5.0  # -(4+5+6)/3
+    # The reference: the same panel without a universe, which the fix does not touch.
+    plain = build_panel(bars)
+    for text in ("ts_sum(abs(close), 2)", "ts_mean(neg(close), 3)", "delay(abs(close), 2)"):
+        assert evaluate(text, panel).loc[reentry, "A"] == evaluate(text, plain).loc[reentry, "A"]
+    # A delisted member keeps its history on its last bar and has no value afterwards.
+    delisted = evaluate("ts_sum(abs(close), 2)", panel)["D"]
+    assert delisted.loc[dates[3]] == 70.0  # 30 + 40
+    assert delisted.loc[dates[4:]].isna().all()
+
+
+def test_universe_changes_only_cross_sectional_results(bars) -> None:
+    """A universe changes nothing a member sees unless the formula has a cross-sectional operator.
+
+    For every generated formula without one, the values with a universe, masked by ``restrict``,
+    equal the values without a universe masked to members with a bar (the contract of
+    ``build_panel``: time-series operators still use each instrument's full history).
+    """
+    universe = synthetic_universe(bars)
+    with_universe = build_panel(bars, universe=universe)
+    plain = build_panel(bars)
+    members = with_universe["close"].notna() & with_universe["universe"]
+    rng = np.random.default_rng(28)
+    checked = 0
+    for _ in range(80):
+        node = random_expression(rng, max_depth=4)
+        if "cs_" in str(node):
+            continue
+        checked += 1
+        got = restrict(evaluate(node, with_universe), with_universe)
+        want = evaluate(node, plain).where(members)
+        pd.testing.assert_frame_equal(got, want, check_freq=False, obj=str(node))
+    assert checked >= 20

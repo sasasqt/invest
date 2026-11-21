@@ -9,7 +9,8 @@ Every operator is causal by construction: time-series operators look only backwa
 along the date axis of a wide (date x instrument) panel; cross-sectional operators use
 only same-date values. Invalid numerical domains (log of non-positive values, division by
 ~0, constant windows) yield missing values, never infinities. Operator semantics are
-versioned by :data:`OPERATOR_VERSION`; change it whenever any result could change.
+versioned by :data:`OPERATOR_VERSION`; change it whenever any result could change, unless a
+recorded decision keeps it (see the comment next to it).
 
 Adjusted bars are not causal by themselves: a later split or dividend rescales an
 instrument's whole earlier adjusted history. :func:`check_scale_free` tells which formulas
@@ -33,6 +34,9 @@ import pandas as pd
 from invest_data.pit import fundamentals_asof, membership_panel
 
 OPERATOR_VERSION = "1"
+# Kept at "1" through the REVIEW-28 fix of 2026-11-21 (unary operands no longer masked by the
+# universe, so some evaluated values changed): the user's decision of 2026-11-18 for REVIEW-47,
+# no factors mined for real yet, was applied again; the pull request records it.
 BASE_FIELDS = ("open", "high", "low", "close", "volume")
 # Derived features and the number of extra past sessions each needs.
 DERIVED_FIELDS: dict[str, int] = {"returns": 1, "dollar_volume": 0, "intraday_return": 0}
@@ -730,7 +734,11 @@ def build_panel(
 
 
 def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
-    """Evaluate an expression on a wide panel; returns a date x instrument frame."""
+    """Evaluate an expression on a wide panel; returns a date x instrument frame.
+
+    With a ``universe`` entry only cross-sectional operators mask their operand to members:
+    unary, binary and time-series operators compute every instrument's cells, so the result
+    holds values for non-members, like a bare feature does; :func:`restrict` masks them."""
     tree = parse(node) if isinstance(node, str) else node
     like = panel["close"]
     cache: dict[str, Value] = {}
@@ -754,11 +762,13 @@ def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
                 out = spec.fn(_frame(a, like), _frame(b, like))
             elif spec.kind in ("ts", "ts2"):
                 out = spec.fn(*[_frame(v, like) for v in vals], n.window)
-            else:
+            elif spec.kind == "cs":
                 arg = _frame(vals[0], like)
                 if UNIVERSE_KEY in panel:
-                    arg = arg.where(panel[UNIVERSE_KEY])
+                    arg = arg.where(panel[UNIVERSE_KEY])  # cross-sections see members only
                 out = spec.fn(arg)
+            else:  # unary: elementwise, so it keeps every instrument's full history
+                out = spec.fn(_frame(vals[0], like))
             out = _clean(_frame(out, like))
         cache[key] = out
         return out
