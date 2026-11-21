@@ -9,7 +9,8 @@ Every operator is causal by construction: time-series operators look only backwa
 along the date axis of a wide (date x instrument) panel; cross-sectional operators use
 only same-date values. Invalid numerical domains (log of non-positive values, division by
 ~0, constant windows) yield missing values, never infinities. Operator semantics are
-versioned by :data:`OPERATOR_VERSION`; change it whenever any result could change.
+versioned by :data:`OPERATOR_VERSION`; change it whenever any result could change, unless a
+recorded decision keeps it (see the comment next to it).
 
 Adjusted bars are not causal by themselves: a later split or dividend rescales an
 instrument's whole earlier adjusted history. :func:`check_scale_free` tells which formulas

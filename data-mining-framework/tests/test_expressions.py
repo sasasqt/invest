@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from invest_data.sources import synthetic_universe
 from invest_mining.expressions import (
     ExpressionError,
     build_panel,
@@ -256,3 +257,27 @@ def test_time_series_operators_see_the_bars_of_a_membership_gap() -> None:
     delisted = evaluate("ts_sum(abs(close), 2)", panel)["D"]
     assert delisted.loc[dates[3]] == 70.0  # 30 + 40
     assert delisted.loc[dates[4:]].isna().all()
+
+
+def test_universe_changes_only_cross_sectional_results(bars) -> None:
+    """A universe changes nothing a member sees unless the formula has a cross-sectional operator.
+
+    For every generated formula without one, the values with a universe, masked by ``restrict``,
+    equal the values without a universe masked to members with a bar (the contract of
+    ``build_panel``: time-series operators still use each instrument's full history).
+    """
+    universe = synthetic_universe(bars)
+    with_universe = build_panel(bars, universe=universe)
+    plain = build_panel(bars)
+    members = with_universe["close"].notna() & with_universe["universe"]
+    rng = np.random.default_rng(28)
+    checked = 0
+    for _ in range(80):
+        node = random_expression(rng, max_depth=4)
+        if "cs_" in str(node):
+            continue
+        checked += 1
+        got = restrict(evaluate(node, with_universe), with_universe)
+        want = evaluate(node, plain).where(members)
+        pd.testing.assert_frame_equal(got, want, check_freq=False, obj=str(node))
+    assert checked >= 20
