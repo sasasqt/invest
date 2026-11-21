@@ -186,6 +186,7 @@ def test_unary_operators_keep_pre_membership_history_under_time_series_operators
         "ts_mean(abs(close), 2)": 6.5,
         "delay(abs(close), 1)": 4.0,
         "delta(abs(close), 1)": 5.0,  # 9 - 4
+        "delta(neg(close), 1)": -5.0,  # -9 - (-4)
     }
     for text, value in expected.items():
         got = evaluate(text, panel).loc[entry, "A"]
@@ -228,13 +229,18 @@ def test_time_series_operators_see_the_bars_of_a_membership_gap() -> None:
         {"date": d, "instrument": "A", "open": c, "high": c, "low": c, "close": c, "volume": 1e3}
         for d, c in zip(dates, closes, strict=True)
     ]
+    # D is a member throughout but has bars on the first four dates only (delisted).
+    rows += [
+        {"date": d, "instrument": "D", "open": c, "high": c, "low": c, "close": c, "volume": 1e3}
+        for d, c in zip(dates[:4], [10.0, 20.0, 30.0, 40.0], strict=True)
+    ]
     bars = pd.DataFrame(rows)
     universe = pd.DataFrame(
         {
-            "universe": ["U", "U"],
-            "instrument": ["A", "A"],
-            "start_date": [dates[0], dates[5]],  # member for the first three dates, then again
-            "end_date": [dates[3], pd.NaT],  # end_date is exclusive
+            "universe": ["U", "U", "U"],
+            "instrument": ["A", "A", "D"],
+            "start_date": [dates[0], dates[5], dates[0]],  # A: member, gap, member again
+            "end_date": [dates[3], pd.NaT, pd.NaT],  # end_date is exclusive
         }
     )
     panel = build_panel(bars, universe=universe)
@@ -246,3 +252,7 @@ def test_time_series_operators_see_the_bars_of_a_membership_gap() -> None:
     plain = build_panel(bars)
     for text in ("ts_sum(abs(close), 2)", "ts_mean(neg(close), 3)", "delay(abs(close), 2)"):
         assert evaluate(text, panel).loc[reentry, "A"] == evaluate(text, plain).loc[reentry, "A"]
+    # A delisted member keeps its history on its last bar and has no value afterwards.
+    delisted = evaluate("ts_sum(abs(close), 2)", panel)["D"]
+    assert delisted.loc[dates[3]] == 70.0  # 30 + 40
+    assert delisted.loc[dates[4:]].isna().all()
