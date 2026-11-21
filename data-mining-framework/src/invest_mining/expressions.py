@@ -33,6 +33,9 @@ import pandas as pd
 from invest_data.pit import fundamentals_asof, membership_panel
 
 OPERATOR_VERSION = "1"
+# Kept at "1" through the REVIEW-28 fix of 2026-11-21 (unary operands no longer masked by the
+# universe, so some evaluated values changed): the user's decision of 2026-11-18 for REVIEW-47,
+# no factors mined for real yet, was applied again; the pull request records it.
 BASE_FIELDS = ("open", "high", "low", "close", "volume")
 # Derived features and the number of extra past sessions each needs.
 DERIVED_FIELDS: dict[str, int] = {"returns": 1, "dollar_volume": 0, "intraday_return": 0}
