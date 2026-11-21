@@ -11,12 +11,13 @@ import pandas as pd
 
 from invest_data.bundle import Column, write_bundle
 from invest_evaluation.config import ValidationConfig
+from invest_evaluation.metrics import Metric, _undef
 from invest_evaluation.quantiles import BucketPortfolio
 from invest_evaluation.strategies import Slice
 from invest_evaluation.validation import _check
 from invest_mining import ledger
 from invest_mining.cli import _unwritten
-from invest_mining.diagnostics import daily_ic
+from invest_mining.diagnostics import MeanTest, daily_ic
 from invest_mining.expressions import OpSpec
 from invest_mining.search import mark_confirmation_use
 
@@ -34,3 +35,6 @@ def _never_called(frame: pd.DataFrame) -> None:
     mark_confirmation_use(frame, "maybe")  # type: ignore[arg-type]
     _unwritten(Path("out"), OSError(), "e_x", "maybe")  # type: ignore[arg-type]
     ledger._window_fields("reserve")  # type: ignore[arg-type]
+    Metric(1.0, "ratio", status="fine")  # type: ignore[arg-type]
+    _undef("ratio", "no_data", "missing")  # type: ignore[arg-type]
+    MeanTest(0.0, 1.0, 0.0, 1.0, 0.5, 30, 5, "pending")  # type: ignore[arg-type]

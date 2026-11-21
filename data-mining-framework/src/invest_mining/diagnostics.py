@@ -79,6 +79,11 @@ def newey_west_lags(n: int, horizon: int = 1) -> int:
     return max(horizon, rule)
 
 
+#: Whether the HAC mean test could be run: ``ok``, too few observations, or a long-run
+#: variance of zero (the statistic is undefined).
+TestStatus = Literal["ok", "insufficient_data", "undefined"]
+
+
 @dataclass(frozen=True)
 class MeanTest:
     mean: float
@@ -88,7 +93,7 @@ class MeanTest:
     p_one_sided: float  # H1: mean > 0
     n: int
     lags: int
-    status: str
+    status: TestStatus
     reason: str | None = None
 
     def to_dict(self) -> dict[str, object]:
