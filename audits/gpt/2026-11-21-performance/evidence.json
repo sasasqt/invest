@@ -149,6 +149,15 @@
   "elapsed_to_preparation_seconds": 1059,
   "helper_stage_elapsed_seconds_approx": 257,
   "time_limit_note": "120minutes provisional maximum, not consumed quota; setup, static field work and reporting tracked by wall-clock endpoints only",
-  "publication": "prepared final files; started checkpoint published; final exact report commit recorded after guarded publication/readback",
-  "sanitization": "audit-only evidence; no product source restoration, raw observations, licensed/reserved data, new issues/comments/PRs or schedule changes"
+  "publication": {
+    "status": "published_verified",
+    "report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
+    "report_url": "https://github.com/sasasqt/invest/blob/194e0f5b856a67fdf578effaa3a7749a69eb08e4/audits/gpt/2026-11-21.md",
+    "readback_verified": true,
+    "verified_utc": "2026-11-21T02:23:23.729243Z",
+    "path_scope": "23 expected paths under audits/gpt only; no removals/out-of-scope changes; single audit-only parent, force=false",
+    "verification_record": "2026-11-21-performance/publication.json"
+  },
+  "sanitization": "audit-only evidence; no product source restoration, raw observations, licensed/reserved data, new issues/comments/PRs or schedule changes",
+  "elapsed_to_verified_publication_seconds": 1327
 }

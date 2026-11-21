@@ -9,7 +9,7 @@
   "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
   "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
   "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-  "status": "bounded static work completed; final publication prepared",
+  "status": "completed bounded static slice and published_verified; runtime scope partial",
   "model": "unavailable",
   "effort": "unavailable",
   "budget_minutes": 120,
@@ -22,5 +22,7 @@
   },
   "completed_static_utc": "2026-11-21T02:18:56.542226Z",
   "evidence": "2026-11-21-performance/evidence.json",
-  "remaining": "runtime gates and guarded final publication"
+  "remaining": "qualified runtime controls, complete bundle/export schema and trial consumer trace, matched benchmarks",
+  "verified_report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
+  "completed_utc": "2026-11-21T02:23:23.729243Z"
 }
