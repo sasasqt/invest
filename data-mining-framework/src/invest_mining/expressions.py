@@ -730,7 +730,11 @@ def build_panel(
 
 
 def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
-    """Evaluate an expression on a wide panel; returns a date x instrument frame."""
+    """Evaluate an expression on a wide panel; returns a date x instrument frame.
+
+    With a ``universe`` entry only cross-sectional operators mask their operand to members:
+    unary, binary and time-series operators compute every instrument's cells, so the result
+    holds values for non-members, like a bare feature does; :func:`restrict` masks them."""
     tree = parse(node) if isinstance(node, str) else node
     like = panel["close"]
     cache: dict[str, Value] = {}
@@ -754,11 +758,13 @@ def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
                 out = spec.fn(_frame(a, like), _frame(b, like))
             elif spec.kind in ("ts", "ts2"):
                 out = spec.fn(*[_frame(v, like) for v in vals], n.window)
-            else:
+            elif spec.kind == "cs":
                 arg = _frame(vals[0], like)
                 if UNIVERSE_KEY in panel:
-                    arg = arg.where(panel[UNIVERSE_KEY])
+                    arg = arg.where(panel[UNIVERSE_KEY])  # cross-sections see members only
                 out = spec.fn(arg)
+            else:  # unary: elementwise, so it keeps every instrument's full history
+                out = spec.fn(_frame(vals[0], like))
             out = _clean(_frame(out, like))
         cache[key] = out
         return out
