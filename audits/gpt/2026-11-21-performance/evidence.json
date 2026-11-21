@@ -1,0 +1,154 @@
+{
+  "date": "2026-11-21",
+  "field": "software performance, scaling and comparator integrity",
+  "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "output_initial": "39396addae134f51d0cf66190482ee8b319c2141",
+  "started_commit": "cc5a4f48506c1b930fb8adbf0a09eb9f37a53ea6",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "date_resolution": "scheduler run metadata:21Nov03:00Europe/Berlin; no local-date fallback",
+  "question": "Define the synth-S expected-output acceptance boundary: distinguish documented repeatability from producer/schema correctness, including gzip and trial accounting.",
+  "stopping_condition": "Versioned required-artifact/control matrix, source+test+consumer trace and independent review; no product benchmark or runtime on unqualified routes.",
+  "daily_scope": "partial: bounded static question and independent review completed, full expected schema/runtime gates pending",
+  "whole_repository": "Audit incomplete",
+  "concrete_advance": [
+    "versioned partial producer/control matrix separates repeatability, required artifacts, gzip container validity and typed/numeric acceptance",
+    "synth-S20 random trials+7 templates=27 source-derived proposal rows; full durable producer count preserved, downstream trial/DSR not verified",
+    "deterministic reporting test/producer exploration checked cohort overlapping-return/gap/insufficient semantics and separate mine evaluate scope"
+  ],
+  "counts": {
+    "new_verified_defects": 0,
+    "new_unverified_concerns": 0,
+    "new_optional_recommendations": 0,
+    "known_low_revisited": 1,
+    "runtime_prerequisites_carried": 3,
+    "new_product_runs": 0,
+    "remote_jobs_dispatched": 0,
+    "new_timing_samples": 0
+  },
+  "coverage": {
+    "tracked_files": 156,
+    "inventoried": 77,
+    "partially_reviewed": 25,
+    "reviewed": 28,
+    "checked_automatically": 5,
+    "blocked": 21,
+    "unread_lines": 40367,
+    "unread_paths": 120,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 967
+  },
+  "allocation": {
+    "date": "2026-11-21",
+    "field": "performance",
+    "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+    "planned_percent": [
+      70,
+      30
+    ],
+    "actual_percent": [
+      83.77358490566037,
+      16.22641509433962
+    ],
+    "primary_discretionary_lines": [
+      888,
+      172
+    ],
+    "mandatory_lines": 351,
+    "new_verified_distinct_root_causes": [
+      0,
+      0
+    ],
+    "pooled_rates_per_1000_lines": [
+      0.8810572687224669,
+      0.0
+    ],
+    "comparable_visits": 2,
+    "next_planned_percent": [
+      70,
+      30
+    ],
+    "evidence": "2026-11-21-performance/evidence.json"
+  },
+  "new_checks": [
+    "current canonical methods/source identities",
+    "source/test/producer control specification",
+    "AST8 and bash syntax1",
+    "fresh independent Reviewer2",
+    "native Windows3.11 PR66 log/merge parents/test assertions read"
+  ],
+  "reused_checks": [
+    "main CI44246922942 exacteb64, logs refreshed;3.11/3.13 1269pass1skip, floors96.88/0fail",
+    "GA14Nov standalone stdlib gzip controls, historical source d52; current unchanged comparator trace only",
+    "BF14Nov5 exact-source bounded malformed-UTF8 three flags acceptance from19Nov; no local repeats",
+    "19Nov pipeline inspection retained as historical exact-source scope; no full workflow run today"
+  ],
+  "checks_not_run": [
+    "all repository imports/tests/builds/installs",
+    "untouched runner acceptance controls",
+    "native Windows product execution locally",
+    "benchmark S/M/L/XL, formats, memory, matched baseline"
+  ],
+  "runtime_gates": {
+    "local": "credential isolation and installed-lock origins unverified; no product execution",
+    "remote": "no callable authorized dispatch tool discovered; existing manual-run query empty; no pending remote job inferred",
+    "known_unsafe_runner": "a73149d3cf8df7c133ea436a7787c5d5a2dc88b5 remains prohibited until independent collector/summary/upload resolution verification; corrected44aa875 source-review evidence remains historical, does not qualify this worker/current runtime",
+    "maintainer_request": "Use existing .github/workflows/audit-runtime.yml on trusted main only after qualification; audited_sha=eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2; no dispatch made."
+  },
+  "independent_review": {
+    "date": "2026-11-21",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "initial_record": "reviewer1-initial.json",
+    "independent_record": "reviewer2-verification.json",
+    "helper_count": 1,
+    "helper_stage_elapsed_seconds": 257,
+    "helper_elapsed_label": "approximately4m17 reported by helper; token/compute use unexposed",
+    "model": "unavailable",
+    "effort": "unavailable",
+    "verifier_b": "not triggered; no substantive disagreement",
+    "decisions": [
+      {
+        "id": "GA-2026-11-14-1",
+        "result": "agree: known low/P3 current static + historical standalone control; untouched runtime pending; zero new root count"
+      },
+      {
+        "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+        "result": "agree: retain validation prerequisite; drop new W5/schema/finance correctness violation interpretation"
+      },
+      {
+        "id": "PERF-TRIAL-ACCOUNTING-20261121",
+        "helper_alias": "SAT-2026-11-21-TRIAL-ACCOUNTING-CHECK",
+        "result": "agree:7 templates+20 random=27 proposal rows; no producer undercount established; downstream unverified"
+      },
+      {
+        "id": "PERF-REPORT-TABLE-FIGURE-20261121",
+        "helper_aliases": [
+          "SAT-2026-11-21-FACTOR-REPORT-SCOPE-CHECK",
+          "SAT-2026-11-21-REPORT-FIGURE-CONTRACT-CHECK"
+        ],
+        "result": "agree: factor-report not invoked by synth-S; no missingness/cohort plot defect established; no dynamic pass today"
+      }
+    ],
+    "closing_answer": "Checked comparator, synthetic script, search/ledger producer and report tests/writers. Priorities left: qualified untouched runtime controls and complete expected bundle/export schema; downstream trial/DSR propagation; full pipeline/renderer edge readbacks. Existing main CI and19Nov pipeline inspection reusable only for their demonstrated scope."
+  },
+  "interfaces": [
+    "frozen expression -> signals (mining), trial evidence -> verdict (mining/evaluation), evaluation -> reports (integration) consulted; performance owns measurement acceptance; untouched downstream verification remains queued"
+  ],
+  "known_findings": "GA-2026-11-14-1 current static/historical control scope only. No new GA ID allocated. Other material carried findings retained in maintained state/findings at original scope.",
+  "weekly": "2026-W46 already aggregated; W47 summary dueSunday22Nov, no duplicate weekly pass. Four-week assessment not yet due from2Novactivation.",
+  "continuity": "20Nov missing final/started unknown execution; no catchup Friday field. Engineering15days without recorded advance flagged for next owning visit. Other fields not scheduled today neither passed nor failed.",
+  "model": "unavailable",
+  "effort": "unavailable",
+  "scheduler_settings_verified": false,
+  "usage": "token/account allowance/remote compute usage unexposed; no inferred exhaustion",
+  "budget_minutes": 120,
+  "prepared_utc": "2026-11-21T02:18:56.542226Z",
+  "elapsed_to_preparation_seconds": 1059,
+  "helper_stage_elapsed_seconds_approx": 257,
+  "time_limit_note": "120minutes provisional maximum, not consumed quota; setup, static field work and reporting tracked by wall-clock endpoints only",
+  "publication": "prepared final files; started checkpoint published; final exact report commit recorded after guarded publication/readback",
+  "sanitization": "audit-only evidence; no product source restoration, raw observations, licensed/reserved data, new issues/comments/PRs or schedule changes"
+}

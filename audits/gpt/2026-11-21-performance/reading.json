@@ -1,0 +1,285 @@
+{
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "main": {
+    "audits/gpt/runner/runner_workload.py": [
+      [
+        1,
+        210
+      ],
+      [
+        396,
+        510
+      ],
+      [
+        526,
+        627
+      ]
+    ],
+    "audits/gpt/runner/test_guards.py": [
+      [
+        3201,
+        3245
+      ],
+      [
+        3463,
+        3567
+      ]
+    ],
+    "scripts/synthetic_workflow.sh": [
+      [
+        1,
+        37
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/search.py": [
+      [
+        26,
+        85
+      ],
+      [
+        126,
+        185
+      ],
+      [
+        234,
+        329
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/cli.py": [
+      [
+        441,
+        535
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/reporting.py": [
+      [
+        21,
+        65
+      ]
+    ],
+    "strategy-evaluation/src/invest_evaluation/quantiles.py": [
+      [
+        266,
+        355
+      ],
+      [
+        369,
+        429
+      ]
+    ],
+    "data-mining-framework/tests/test_reporting.py": [
+      [
+        1,
+        58
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/reporting.py": [
+      [
+        1,
+        114
+      ]
+    ],
+    "audits/gpt/runner/README.md": [
+      [
+        61,
+        96
+      ]
+    ],
+    "audits/gpt/runner/CONTRACT.md": [
+      [
+        127,
+        162
+      ]
+    ],
+    "docs/REPORTING.md": [
+      [
+        1,
+        46
+      ]
+    ]
+  },
+  "buckets": {
+    "exploitation": {
+      "audits/gpt/runner/runner_workload.py": [
+        [
+          33,
+          149
+        ],
+        [
+          547,
+          623
+        ]
+      ],
+      "audits/gpt/runner/test_guards.py": [
+        [
+          3201,
+          3245
+        ],
+        [
+          3463,
+          3567
+        ]
+      ],
+      "scripts/synthetic_workflow.sh": [
+        [
+          1,
+          37
+        ]
+      ],
+      "data-mining-framework/src/invest_mining/search.py": [
+        [
+          26,
+          85
+        ],
+        [
+          126,
+          185
+        ],
+        [
+          234,
+          329
+        ]
+      ],
+      "data-mining-framework/src/invest_mining/cli.py": [
+        [
+          441,
+          535
+        ]
+      ],
+      "strategy-evaluation/src/invest_evaluation/reporting.py": [
+        [
+          21,
+          65
+        ]
+      ],
+      "strategy-evaluation/src/invest_evaluation/quantiles.py": [
+        [
+          266,
+          355
+        ],
+        [
+          369,
+          429
+        ]
+      ]
+    },
+    "exploration": {
+      "data-mining-framework/tests/test_reporting.py": [
+        [
+          1,
+          58
+        ]
+      ],
+      "data-mining-framework/src/invest_mining/reporting.py": [
+        [
+          1,
+          114
+        ]
+      ]
+    },
+    "mandatory": {
+      "audits/gpt/runner/runner_workload.py": [
+        [
+          1,
+          32
+        ],
+        [
+          150,
+          210
+        ],
+        [
+          396,
+          510
+        ],
+        [
+          526,
+          546
+        ],
+        [
+          624,
+          627
+        ]
+      ],
+      "audits/gpt/runner/README.md": [
+        [
+          61,
+          96
+        ]
+      ],
+      "audits/gpt/runner/CONTRACT.md": [
+        [
+          127,
+          162
+        ]
+      ],
+      "docs/REPORTING.md": [
+        [
+          1,
+          46
+        ]
+      ]
+    }
+  },
+  "planned_percent": [
+    70,
+    30
+  ],
+  "primary_discretionary_lines": [
+    888,
+    172
+  ],
+  "mandatory_product_lines": 351,
+  "mandatory_external_scope": {
+    "pr66_merge": "013791c31ff147ad776a303618618091cc0bc822",
+    "tests/test_pipeline.py": [
+      [
+        320,
+        364
+      ],
+      [
+        435,
+        499
+      ],
+      [
+        510,
+        582
+      ]
+    ],
+    "note": "External PR scope, excluded from pinned-main coverage and discretionary denominator."
+  },
+  "helper_exact_coverage_credit": {
+    "data-mining-framework/tests/test_reporting.py": [
+      [
+        1,
+        58
+      ]
+    ],
+    "data-mining-framework/src/invest_mining/reporting.py": [
+      [
+        1,
+        114
+      ]
+    ]
+  },
+  "helper_note": "Only explicitly reported full-file reporting reads credited. Other cited helper locations are evidence, not inferred continuous read ranges.",
+  "selection": {
+    "date_seed": "2026-11-21",
+    "sha256": "82f092903953279ea0c40b5afd8d0b2a07b20e89fb811fc07bdd1596b1ce6ccd",
+    "algorithm": "random.Random(int.from_bytes(sha256(date UTF8).digest(), big)).choice(sorted eligible set)",
+    "eligible": [
+      "data-mining-framework/src/invest_mining/reporting.py",
+      "data-mining-framework/tests/test_reporting.py",
+      "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "strategy-evaluation/tests/test_quantiles.py"
+    ],
+    "selected": "data-mining-framework/tests/test_reporting.py",
+    "followed": "data-mining-framework/src/invest_mining/reporting.py",
+    "lens": "saved numeric tables, overlapping diagnostic cohorts and missingness in plots",
+    "peer_uncertainty": "No compatible current per-blob exact-range peer map; do not claim peer absence."
+  },
+  "allocation_reason": "Required producer/consumer tracing expanded exploitation beyond planned70%; actual ranges retained rather than relabelled to meet quota.",
+  "actual_percent": [
+    83.77358490566037,
+    16.22641509433962
+  ]
+}

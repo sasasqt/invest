@@ -1,0 +1,80 @@
+{
+  "kind": "trusted_static_parsing_only",
+  "product_execution": false,
+  "checks": [
+    {
+      "path": "audits/gpt/runner/runner_workload.py",
+      "git_blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "audits/gpt/runner/test_guards.py",
+      "git_blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "audits/gpt/runner/README.md",
+      "git_blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+      "blob_match": true
+    },
+    {
+      "path": "audits/gpt/runner/CONTRACT.md",
+      "git_blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd",
+      "blob_match": true
+    },
+    {
+      "path": "scripts/synthetic_workflow.sh",
+      "git_blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+      "blob_match": true
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "git_blob": "eab461c558af00fa982c387726f6a49a485e029b",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "data-mining-framework/tests/test_reporting.py",
+      "git_blob": "9b801218cd234efcf1b8003739ae772ca9992487",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "git_blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "git_blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "git_blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "git_blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+      "blob_match": true,
+      "ast_parse": "passed"
+    },
+    {
+      "path": "docs/REPORTING.md",
+      "git_blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+      "blob_match": true
+    }
+  ],
+  "bash_n": {
+    "path": "scripts/synthetic_workflow.sh",
+    "exit": 0,
+    "sourced": false
+  },
+  "elapsed_seconds": 0.2187334870000086
+}

@@ -22,3 +22,7 @@ Earlier measurements at the recorded version-1 runner revisions omitted compress
 | [124557059770](https://github.com/sasasqt/invest/actions/runs/41208034002/job/124557059770) | audited / 3.13 | known main test failure | 7 | 5.372929151 |
 | [124557059691](https://github.com/sasasqt/invest/actions/runs/41208034002/job/124557059691) | control / 3.11 | success | 7 | 5.828128028 |
 | [124557059601](https://github.com/sasasqt/invest/actions/runs/41208034002/job/124557059601) | audited / 3.11 | known main test failure | 7 | 6.880967375 |
+
+## 2026-11-21 acceptance-boundary review
+
+Source `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`: **zero new measurements**, no wall/CPU/RSS, throughput, scaling or speed comparison. Existing raw.jsonl is unchanged; earlier samples retain original source/runner/gate/hardware scope. [Partial producer-anchored acceptance specification](../2026-11-21-performance/expected-artifacts.json) separates warmup repeatability from required paths, schemas and substantive trial accounting. Synth-S parameter20 means20 random proposals plus7 templates; no generated27-row ledger is claimed today. Qualified negative controls, logical formats and matched baselines remain pending.

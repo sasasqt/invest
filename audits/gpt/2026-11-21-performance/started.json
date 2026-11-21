@@ -9,7 +9,7 @@
   "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
   "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
   "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-  "status": "started",
+  "status": "bounded static work completed; final publication prepared",
   "model": "unavailable",
   "effort": "unavailable",
   "budget_minutes": 120,
@@ -19,5 +19,8 @@
     "date": "2026-11-20",
     "status": "no report or started record observed yet",
     "execution": "unknown/not observed; task's latest accessible result is19Nov; no exhaustion inference"
-  }
+  },
+  "completed_static_utc": "2026-11-21T02:18:56.542226Z",
+  "evidence": "2026-11-21-performance/evidence.json",
+  "remaining": "runtime gates and guarded final publication"
 }

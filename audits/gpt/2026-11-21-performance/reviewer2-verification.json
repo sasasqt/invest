@@ -1,0 +1,199 @@
+{
+  "reviewer": "Independent Reviewer 2 / Verifier A",
+  "date": "2026-11-21",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "output_base": "39396addae134f51d0cf66190482ee8b319c2141",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "model_effort": "unavailable; configuration not exposed",
+  "independence": "Did not read reviewer1-initial.json or Reviewer 1 dispositions. Reviewed source plus supplied historical evidence/queues as data.",
+  "identity_check": "Computed Git blob SHA-1 over supplied UTF-8 source bytes for all 12 source entries. All matched declared blob IDs. No repository code imported or executed.",
+  "runtime": "No repository execution, replacement-function execution, installs, tests, benchmarks or workflows. Credential isolation and installed-lock remain unverified. Historical stdlib controls are reused records, not reproduced today.",
+  "candidates": [
+    {
+      "id": "GA-2026-11-14-1",
+      "kind": "carried comparator malformed-input finding",
+      "independent_verdict": "keep open; current static path remains unchanged; no current end-to-end reproduction",
+      "reason": "runner_workload.py:107-113 trusts gzip.open().read() to establish compressed validity and hashes its returned payload. It does not explicitly require a gzip member. README:79-80 promises invalid compressed data fails. The previous evidence records two standalone stdlib controls where zero bytes and a valid empty member both decode to empty bytes. Current workload blob matches that historical record, so the source-level gap persists for the demonstrated path; producer corruption is not observed.",
+      "locations": [
+        "audits/gpt/runner/runner_workload.py:107-113 blob 8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+        "audits/gpt/runner/README.md:63-81 blob c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+        "audits/gpt/runner/test_guards.py:3201-3242 blob e1e3f3e6f751957a923faa853d5283cceb825e8b",
+        "strategy-evaluation/src/invest_evaluation/quantiles.py:307-311 blob 2d90858523a4cbe716596b412aae75a94334b4a4"
+      ],
+      "expected": "A zero-byte file is not a valid gzip member and must fail the documented invalid-compressed-data gate with the artifact path; a valid empty gzip member must remain distinct from gzip container invalidity. CSV schema validity is a separate contract.",
+      "actual": "Static source hashes whatever gzip returns, without a member-presence test. Historical 2026-11-14 source d52e12297e5ac89c7a25dd99a0b2110ccf32aee6 records zero-byte and valid-empty equality, not an untouched runner execution.",
+      "control_repeats": "Historical standalone stdlib control record says 2 repetitions: zero bytes -> empty, valid empty member -> empty, valid data member -> data, bad non-gzip header -> BadGzipFile. Not rerun today. Current untouched runner warmup/measured-sample positive and negative controls blocked.",
+      "severity": "low / P3",
+      "impact": "A malformed compressed artifact could participate in an apparently repeatable benchmark if every repetition emits the same invalid empty stream. No observed normal producer failure, timing corruption or financial-result error.",
+      "confidence": "high static continuity of the documented path; historical stdlib control scope only; current untouched-run behavior pending",
+      "evidence_label": "current_static_plus_historical_independent_stdlib_control",
+      "checked_siblings": [
+        "corrupt non-gzip/truncated gzip tests",
+        "gzip timestamp/numeric/addition/deletion controls",
+        "quantile daily_returns and memberships writers",
+        "manifest record/figure minimum"
+      ],
+      "unchecked_siblings": [
+        "native runtime version-specific full gate behavior",
+        "collector/summary/upload route qualification"
+      ],
+      "duplicates": [
+        "GA-2026-11-14-1",
+        "historical AUDIT-RUNNER-CSVGZ-001 association"
+      ],
+      "missing_evidence": "Safe locked runtime source-pinned gate invocation twice, zero-byte failure plus valid empty/nonempty controls; no current execution claim.",
+      "required_correction": "Require valid gzip member presence without rejecting legal header variations or equating valid empty decoded CSV with a valid CSV schema. Preserve path-specific refusal and timestamp-normalization behavior.",
+      "acceptance": "At pinned corrected runner, a zero-byte .csv.gz fixture refuses during warmup and a measured sample, while valid gzip members with equal decoded data and differing timestamps compare equal. Valid-empty container case has an explicit separate expectation.",
+      "change_condition_drop_counterfactual": "Drop this narrow finding if a valid-member check before hashing is independently shown to reject zero bytes on the actual runner path; matching hashes alone cannot supply that evidence."
+    },
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "kind": "carried expected-output validation boundary; proposed bug interpretation checked",
+      "independent_verdict": "keep the validation queue; drop interpretation as a new W5/README schema or financial-correctness violation",
+      "reason": "README:65-67 explicitly says comparison is with the warmup rather than an external reference and proves repeatability, not correctness. W5:139-151 promises every encountered file is accounted for or rejected and later hashes equal warmup, not an expected artifact schema or financial oracle. The workload:135-136 minimum of one record plus one nonempty PNG is consistent with this declared narrow gate. Equal missing required outputs can therefore remain undetected, which is a limitation needing independent acceptance evidence before performance/correctness claims, rather than evidence of a newly broken promised gate.",
+      "locations": [
+        "audits/gpt/runner/README.md:63-81 blob c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+        "audits/gpt/runner/CONTRACT.md:139-152 blob cfb25f94de6d731483026570a51ff66a4b6fdecd",
+        "audits/gpt/runner/runner_workload.py:85-143,547-623 blob 8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+        "audits/gpt/runner/test_guards.py:3549-3564,3645-3650,3859-3901 blob e1e3f3e6f751957a923faa853d5283cceb825e8b",
+        "scripts/synthetic_workflow.sh:19-37 blob 09a0e78a5428b9a2791dc220b28958c4a3cd485e"
+      ],
+      "expected_actual_control": "Independent static trace: one JSON plus one nonempty PNG satisfies this comparator's declared minimum. Stubbed WorkloadOrderTests deliberately create only table.json and figure.png; those tests prove orchestration logic only. A path added/removed in one repetition changes manifest rows; the same path missing from all repetitions supplies no external reference. No modified/stubbed output is treated as evidence that the untouched full product actually omits an artifact.",
+      "repeat_status": "Runtime controls blocked. No fresh benchmark or financial correctness conclusion.",
+      "severity": "existing P2 validation prerequisite; no new defect severity",
+      "impact": "Warmup-equal results alone cannot establish complete artifacts or correct finance; absent independent expected-output checks limits usable benchmark evidence.",
+      "confidence": "high for contract interpretation and static comparator boundary",
+      "evidence_label": "verified_textual_contract_and_static_trace; runtime acceptance pending",
+      "checked_siblings": [
+        "search emitted ledger/config/factor artifacts",
+        "evaluation save_run table/JSON producer",
+        "quantile compressed table/versioned JSON producer",
+        "factor-report tables/figure producer and regression tests"
+      ],
+      "unchecked_siblings": [
+        "current tests/test_pipeline.py and latest exact-source execution were not supplied",
+        "full producer-to-consumer schema readbacks"
+      ],
+      "duplicates": [
+        "existing OPEN-EXPECTED-ARTIFACT-GATE-001; do not allocate a new root-cause ID"
+      ],
+      "missing_evidence": "Independently specified synth-S artifact inventory, typed field/metric invariants and isolated same-missing-path controls. Existing current CI evidence must be assessed by main reviewer, not inferred from historical data.",
+      "change_condition_drop_counterfactual": "A current independent acceptance oracle that rejects equal missing/invalid required artifacts would close the queue for its demonstrated scope. To keep a W5 defect interpretation, an observed undocumented omission from hashing or an explicit schema/correctness promise would be needed; neither occurs in the checked text."
+    },
+    {
+      "id": "SAT-2026-11-21-TRIAL-ACCOUNTING-CHECK",
+      "kind": "proposed trial undercount; static observation",
+      "independent_verdict": "drop new undercount defect; retain explicit workload parameter accounting in report",
+      "reason": "AST literal extraction gives seven SEED_TEMPLATES. search.py:169-183 appends each template, then all n_trials random proposal slots, and appends a ledger row before duplicate/invalid/rejection exits. Hence synth-S TRIALS=20 requests 20 random proposals plus seven templates, 27 proposal rows for a successful completed search. Search factor selection records len(proposals) and CLI experiment ledger records len(result.ledger). The runner's trials=20 metadata is the passed search parameter, not evidence the full ledger contains only 20. Do not describe it as 20 total proposal trials.",
+      "locations": [
+        "data-mining-framework/src/invest_mining/search.py:1-13,56-64,169-204,224-270 blob 1c57205909eac9ac78b137c2ecb0105ad14490ad",
+        "data-mining-framework/src/invest_mining/cli.py:438-496,719-728,829-868 blob 34019f08773791fa45fab181fe5a3794dfadc079",
+        "audits/gpt/runner/runner_workload.py:549-570 blob 8a48e64dacc6645cad5a94e13d33de4c8d01aa26"
+      ],
+      "expected_actual_control": "Contract search.py:8 requires every proposal, including duplicate/invalid formulas, be recorded. Static branches append rows before each such status. Factor selection n_proposals=len(proposals), experiment ledger n_proposals=len(result.ledger). AST count7 is trusted static parsing, not repository execution. Actual ledger at this source was not generated/read.",
+      "repeat_status": "Runtime product checks blocked; no dynamic failure or repeats claimed.",
+      "severity": "none established",
+      "impact": "Audit and benchmark descriptions must account for 27 proposed formulas, distinguishing 20 random trials from templates. No full proposal undercount established in inspected producers.",
+      "confidence": "high static for search and experiment-ledger construction; downstream n_trials propagation not fully covered",
+      "checked_siblings": [
+        "search ledger status branches",
+        "factor selection metadata",
+        "CLI durable experiment ledger",
+        "search-only export uses own tagged factor file"
+      ],
+      "unchecked_siblings": [
+        "export_signals implementation and evaluation DSR consumer outside supplied source set",
+        "end-to-end generated selection/ledger/signal/DSR n_trials equality"
+      ],
+      "duplicates": [
+        "BH-2026-11-10-1 appears only as SEARCH_VERSION provenance; no duplicate trial-ledger defect established"
+      ],
+      "missing_evidence": "Pinned runtime generation of ledger and signal bundle; downstream trial-count consumer source if a statistical accounting claim is required.",
+      "change_condition_drop_counterfactual": "A completed search with !=27 ledger proposal rows for TRIALS=20, omitted invalid/duplicate rows, or a downstream signal/DSR consumer reducing len(proposals) to20 would keep a defect candidate. The checked producer does not show that."
+    },
+    {
+      "id": "SAT-2026-11-21-FACTOR-REPORT-SCOPE-CHECK",
+      "kind": "proposed missing synth-S report artifacts; exploration contract check",
+      "independent_verdict": "drop missing-factor-report-in-synth-S defect; retain exploration evidence separately",
+      "reason": "synthetic_workflow.sh invokes mine search then export and evaluation, never mine evaluate. CLI's evaluate path writes factor reports. Therefore the mining factor-report four CSVs, config/metrics JSON and two PNGs are not promised synth-S outputs. Their absence from a synth-S artifact inventory is not a missing required stage. Exploration review of the separate report path is useful but does not validate the benchmark's producer set.",
+      "locations": [
+        "scripts/synthetic_workflow.sh:19-37 blob 09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+        "data-mining-framework/src/invest_mining/cli.py:330-363 blob 34019f08773791fa45fab181fe5a3794dfadc079",
+        "data-mining-framework/src/invest_mining/reporting.py:24-45,72-114 blob eab461c558af00fa982c387726f6a49a485e029b",
+        "docs/REPORTING.md:3,28,33,46 blob 648df723460b75355cfa274d9fc99f302f0faabd"
+      ],
+      "expected_actual_control": "Static caller trace separates mine evaluate -> write_factor_report from search -> export. The factor writer saves tables before rendering, and render reads config/daily_ic/quantile_returns/quantile_summary from disk. tail_returns is saved numerical output but not an input to these two figures. No artifact was generated or opened.",
+      "repeat_status": "No runtime execution or stub controls.",
+      "severity": "none established",
+      "impact": "Prevents overstating synth-S expected artifact coverage or calling an uninvoked report producer missing.",
+      "confidence": "high static call and declared workflow scope",
+      "checked_siblings": [
+        "search output inventory",
+        "evaluation save_run",
+        "quantile save_quantile_run",
+        "reporting documentation"
+      ],
+      "unchecked_siblings": [
+        "full CLI parser/dispatch graph beyond inspected evaluate and workflow paths"
+      ],
+      "duplicates": [],
+      "missing_evidence": "No dynamic producer invocation needed to establish this textual scope distinction; dynamic completeness remains separate.",
+      "change_condition_drop_counterfactual": "An explicit workflow stage/contract requiring mine evaluate artifacts in synth-S, or an actual call to that producer, would keep a missing-output candidate. Neither is present in the inspected script."
+    },
+    {
+      "id": "SAT-2026-11-21-REPORT-FIGURE-CONTRACT-CHECK",
+      "kind": "source-table figure semantics and test-strength check",
+      "independent_verdict": "no new defect established in inspected report path; retain runtime/coverage limitations",
+      "reason": "Factor renderer reads persisted numerical inputs, includes missing IC as NaN gaps, filters insufficient bucket bars, and labels staggered forward outcomes as diagnostic rather than realized wealth. Independent invariant for a horizon-h constant h-day spread is each of h equally weighted cohorts trades every h dates; the constant-return and missing-date tests exercise this rather than simply mirroring arrays from implementation. Pixel bytes intentionally excluded from comparator; W5 promises nonempty figures only, so a nonempty invalid PNG is not a newly broken W5 decoder contract.",
+      "locations": [
+        "data-mining-framework/src/invest_mining/reporting.py:48-114 blob eab461c558af00fa982c387726f6a49a485e029b",
+        "data-mining-framework/tests/test_reporting.py:10-58 blob 9b801218cd234efcf1b8003739ae772ca9992487",
+        "docs/REPORTING.md:3,33,39,46 blob 648df723460b75355cfa274d9fc99f302f0faabd",
+        "audits/gpt/runner/runner_workload.py:120-142 blob 8a48e64dacc6645cad5a94e13d33de4c8d01aa26"
+      ],
+      "expected_actual_control": "Static test expectations include horizon3 terminal1.03**10 vs horizon1 terminal1.03**30; horizon2 missing-date control terminal (1.02*1.04+1)/2 and NaN gap; invalid horizons0/True/1.5 reject; missing top decile has no bar and all-NaN spread chart. Test inspects plotted inputs, not pixels. No tests run today, including native Windows or Python3.11 runtime.",
+      "repeat_status": "Runtime repeats and controls blocked by execution prerequisite; purely source-level assessment only.",
+      "severity": "none established",
+      "impact": "Tests meaningfully cover overlapping-return double compounding and undefined-as-zero regressions in this report path, without establishing all report correctness or full benchmark acceptance.",
+      "confidence": "moderate-high for inspected static contracts/tests; no dynamic pass claim",
+      "checked_siblings": [
+        "mine evaluate caller",
+        "factor saved tables",
+        "runner figure-presence contract",
+        "evaluation and quantile saved output producers"
+      ],
+      "unchecked_siblings": [
+        "evaluation renderer/statistics semantics",
+        "full quantile render_quantiles table/figure fields",
+        "empty/singleton/all-undefined report fixture matrix"
+      ],
+      "duplicates": [
+        "K2, S3-1, K7 appear in committed test docstrings; no claim of current ledger status beyond supplied queues"
+      ],
+      "missing_evidence": "Actual locked-environment test result for this revision, focused empty/singleton/readback tests and remaining renderer semantics.",
+      "change_condition_drop_counterfactual": "A saved table/plot numeric mismatch, an undefined bucket rendered as zero, or a realized-wealth label for forward outcomes would keep a defect candidate. No such mismatch is established in these checked lines."
+    }
+  ],
+  "closing_question": "Is that all? What is missing? What else could be wrong that nobody looked at?",
+  "closing_answer": "Nothing further found within the inspected source scope. Actually checked runner semantic_manifest and sample loop, W5/README, compressed and orchestration guard fixtures, synthetic workflow stages, search proposal rows and n_proposals metadata, evaluate caller, factor report writer/renderer and all58lines of its tests, evaluation save_run and quantile save_quantile_run producer inventories, and reporting contract. This is not full repository coverage.",
+  "prioritized_unchecked_queue": [
+    {
+      "priority": 1,
+      "place": "Qualified isolated runner full semantic gate + independent expected synth-S artifact oracle",
+      "reason_next": "Unsafe/unverified execution boundary blocks dynamic evidence. Once qualified, test equal missing required outputs and zero-byte gzip twice with valid controls; do not use toy stub as untouched product proof."
+    },
+    {
+      "priority": 2,
+      "place": "export_signals trial-count propagation and evaluation DSR consumer",
+      "reason_next": "Search records27 proposals correctly in inspected source, but downstream statistical accounting needs its own exact-source trace/generated synthetic control before claiming end-to-end verification."
+    },
+    {
+      "priority": 3,
+      "place": "current tests/test_pipeline.py plus evaluation/quantile figure readback and empty/singleton/all-undefined cases",
+      "reason_next": "These were not supplied/currently executed in this bounded helper pass; compare expected typed artifacts and saved numerical fields rather than only warmup equality or figure existence."
+    }
+  ],
+  "reviewer1_comparison": "Not performed; main reviewer to consolidate only after this independent record is saved.",
+  "verifier_b": "Not requested; substantive disagreement unknown until main compares saved decisions."
+}

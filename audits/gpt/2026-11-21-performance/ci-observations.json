@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-21",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "main_ci": {
+    "run": 44246922942,
+    "jobs": [
+      134607997865,
+      134607997510
+    ],
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "observations": [
+      {
+        "job": 134607997865,
+        "lines": [
+          "2026-11-18T05:49:38.6435603Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2:refs/remotes/origin/main",
+          "2026-11-18T05:49:39.0451282Z  * [new ref]         eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2 -> origin/main",
+          "2026-11-18T05:49:39.0860379Z eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "2026-11-18T05:49:42.7841582Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+          "2026-11-18T05:49:46.4261680Z Success: no issues found in 32 source files",
+          "2026-11-18T06:00:17.8061888Z 1269 passed, 1 skipped in 629.49s (0:10:29)",
+          "2026-11-18T06:00:18.6869412Z coverage floors: 0 failure(s), total 96.88%"
+        ]
+      },
+      {
+        "job": 134607997510,
+        "lines": [
+          "2026-11-18T05:49:38.2573455Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2:refs/remotes/origin/main",
+          "2026-11-18T05:49:38.5701592Z  * [new ref]         eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2 -> origin/main",
+          "2026-11-18T05:49:38.6073937Z eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "2026-11-18T05:49:41.6242123Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+          "2026-11-18T05:49:45.0248492Z Success: no issues found in 32 source files",
+          "2026-11-18T05:57:39.3979895Z 1269 passed, 1 skipped in 472.72s (0:07:52)",
+          "2026-11-18T05:57:40.0886402Z coverage floors: 0 failure(s), total 96.88%"
+        ]
+      }
+    ]
+  },
+  "windows": {
+    "source_merge": "013791c31ff147ad776a303618618091cc0bc822",
+    "parents": [
+      "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "513470e00dc4a58a7bb65aa3e0a1809dff04149e"
+    ],
+    "pr66_head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+    "run": 44802209769,
+    "job": 136516962817,
+    "lines": [
+      "2026-11-20T19:27:07.7008038Z HEAD is now at 013791c Merge 513470e00dc4a58a7bb65aa3e0a1809dff04149e into eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "2026-11-20T19:27:10.5297970Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}",
+      "2026-11-20T19:27:11.0802520Z Using CPython 3.11.9 interpreter at: C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+      "2026-11-20T19:27:15.1209968Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+      "2026-11-20T19:27:15.1223821Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}",
+      "2026-11-20T19:27:19.2439889Z Success: no issues found in 32 source files",
+      "2026-11-20T19:27:19.2843496Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}",
+      "2026-11-20T19:33:47.6051999Z 1269 passed, 7 skipped in 385.69s (0:06:25)"
+    ],
+    "status": "PR merge evidence only; main unchanged; REVIEW-40 open, REVIEW-41 not reproduced within demonstrated configuration; native product results do not attest lock origins."
+  },
+  "main_ci_gates": {
+    "strict_mypy": "pyproject.toml:41 strict=true; three src trees and scripts/",
+    "coverage": "pyproject.toml:66-67 total96/default90 plus named per-file floors; check_coverage_floors.py run in both jobs",
+    "isolation": "standard CI evidence only; no current isolated audit result inferred",
+    "installed_runtime_lock": "not attested; uv sync --frozen followed by plain uv run and unlocked packaging is a known limitation"
+  },
+  "pending_dispatch_query": {
+    "total_count": 0,
+    "workflow_runs": []
+  },
+  "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "peer_source_scope": "last report2026-11-15, source2edd; unchanged peer head, six days old; no new performance lead in relevant findings/recommendation rows.",
+  "peer_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+}

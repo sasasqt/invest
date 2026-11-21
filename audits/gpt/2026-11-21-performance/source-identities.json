@@ -1,0 +1,62 @@
+[
+  {
+    "path": "audits/gpt/runner/runner_workload.py",
+    "blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+    "match": true
+  },
+  {
+    "path": "audits/gpt/runner/test_guards.py",
+    "blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b",
+    "match": true
+  },
+  {
+    "path": "audits/gpt/runner/README.md",
+    "blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+    "match": true
+  },
+  {
+    "path": "audits/gpt/runner/CONTRACT.md",
+    "blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd",
+    "match": true
+  },
+  {
+    "path": "scripts/synthetic_workflow.sh",
+    "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+    "match": true
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/reporting.py",
+    "blob": "eab461c558af00fa982c387726f6a49a485e029b",
+    "match": true
+  },
+  {
+    "path": "data-mining-framework/tests/test_reporting.py",
+    "blob": "9b801218cd234efcf1b8003739ae772ca9992487",
+    "match": true
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/search.py",
+    "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad",
+    "match": true
+  },
+  {
+    "path": "data-mining-framework/src/invest_mining/cli.py",
+    "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+    "match": true
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+    "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+    "match": true
+  },
+  {
+    "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+    "blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+    "match": true
+  },
+  {
+    "path": "docs/REPORTING.md",
+    "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+    "match": true
+  }
+]

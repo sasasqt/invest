@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-21",
+  "field": "performance",
+  "source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "question": "Define the synth-S expected-output acceptance boundary: distinguish documented repeatability from producer/schema correctness, including gzip and trial accounting.",
+  "stopping": "Versioned required-artifact/control matrix, source+test+consumer trace and independent review; no product benchmark or runtime on unqualified routes.",
+  "reading": {
+    "planned": [
+      70,
+      30
+    ],
+    "allocation_inherited_from": "performance2026-11-14",
+    "exploration_seed": "sha2562026-11-21",
+    "selected": "data-mining-framework/tests/test_reporting.py",
+    "caller_follow": "data-mining-framework/src/invest_mining/reporting.py"
+  },
+  "candidates": [
+    {
+      "id": "GA-2026-11-14-1",
+      "kind": "known/open",
+      "initial": "keep known zero-byte gzip defect; refresh unchanged source identity only, no newcount",
+      "reason": "gzip magic notchecked before empty decompression; previous stdlibcontrol historical; runtimeacceptanceblocked",
+      "severity": "low/P3",
+      "missing": "untouched pinnedrunnernegativecontrols in qualified environment"
+    },
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "kind": "proposed bug drop / validation contract",
+      "initial": "drop characterization as violated W5/productbug; retain incomplete full-audit acceptance queue",
+      "reason": "README63-81 explicitlyrepeatabilitynotcorrectness, W5manifesthashcontractdoesnotpromiseexternalschema; current audit acceptance stillneeds extraexpectedpaths/schema gate",
+      "severity": "no newdefect",
+      "counterfactual": "undocumentedclaim that equalityguaranteesfinancial/schema correctness wouldretain"
+    },
+    {
+      "id": "PERF-TRIAL-ACCOUNTING-20261121",
+      "kind": "judgment / controlspec",
+      "initial": "retain material workload accounting observation, no newdefect",
+      "reason": "run_search seeds templates thenn_trials randomproposals;20 parameter≠totalledgerlength; sourceledgerorigin counts mustbechecked byfuturegate",
+      "severity": "none demonstrated",
+      "counterfactual": "benchmarkclaims20totalproposals orfiltersouttemplateswouldretainbug"
+    },
+    {
+      "id": "PERF-REPORT-TABLE-FIGURE-20261121",
+      "kind": "exploration / proposed drop",
+      "initial": "no newplotmissingnessbug established",
+      "reason": "test_reporting preserves gaps, labels insufficient buckets; renderreads savedtables; producerbelongs evaluate not synth-S search; do not requirediagnosticoutputs in defaultworkflow",
+      "missing": "qualified runtime format comparison"
+    }
+  ],
+  "constraints": "No productcodeexecution/import/build/tests/workflows, no runtime source transplantation/stubs usedasuntouchedproof, no reservedrealdata, no productfixes or auditrunnerupdates",
+  "metrics": "No timing/RSS/throughput/scaling newmeasurements orregressionclaim."
+}

@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-21",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "initial_record": "reviewer1-initial.json",
+  "independent_record": "reviewer2-verification.json",
+  "helper_count": 1,
+  "helper_stage_elapsed_seconds": 257,
+  "helper_elapsed_label": "approximately4m17 reported by helper; token/compute use unexposed",
+  "model": "unavailable",
+  "effort": "unavailable",
+  "verifier_b": "not triggered; no substantive disagreement",
+  "decisions": [
+    {
+      "id": "GA-2026-11-14-1",
+      "result": "agree: known low/P3 current static + historical standalone control; untouched runtime pending; zero new root count"
+    },
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "result": "agree: retain validation prerequisite; drop new W5/schema/finance correctness violation interpretation"
+    },
+    {
+      "id": "PERF-TRIAL-ACCOUNTING-20261121",
+      "helper_alias": "SAT-2026-11-21-TRIAL-ACCOUNTING-CHECK",
+      "result": "agree:7 templates+20 random=27 proposal rows; no producer undercount established; downstream unverified"
+    },
+    {
+      "id": "PERF-REPORT-TABLE-FIGURE-20261121",
+      "helper_aliases": [
+        "SAT-2026-11-21-FACTOR-REPORT-SCOPE-CHECK",
+        "SAT-2026-11-21-REPORT-FIGURE-CONTRACT-CHECK"
+      ],
+      "result": "agree: factor-report not invoked by synth-S; no missingness/cohort plot defect established; no dynamic pass today"
+    }
+  ],
+  "closing_answer": "Checked comparator, synthetic script, search/ledger producer and report tests/writers. Priorities left: qualified untouched runtime controls and complete expected bundle/export schema; downstream trial/DSR propagation; full pipeline/renderer edge readbacks. Existing main CI and19Nov pipeline inspection reusable only for their demonstrated scope."
+}

@@ -590,7 +590,7 @@
       "category": "benchmark semantic gate",
       "severity": "low",
       "priority": "P3",
-      "status": "new/open",
+      "status": "known/open",
       "confidence": "high for source + stdlib control",
       "evidence_label": "verified_source_and_independent_standard_library_control",
       "runtime_label": "untouched runner end-to-end pending",
@@ -617,8 +617,17 @@
           "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
           "status": "historical for demonstrated source; changed product/consumer scope requires owning-field revalidation",
           "why": "Seven main commits advanced relevant callers and outputs; no unchanged-byte inference."
+        },
+        {
+          "date": "2026-11-21",
+          "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+          "current_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "status": "current static source/contract continuity; historical stdlib controls only",
+          "why": "Canonical workload blob unchanged; exact current gate/test/quantile writer reviewed by two reviewers. Changed producer scope is not inferred dynamically equivalent.",
+          "evidence": "2026-11-21-performance/evidence.json"
         }
-      ]
+      ],
+      "latest_evidence": "2026-11-21-performance/evidence.json"
     },
     {
       "id": "GA-2026-11-19-1",
@@ -988,5 +997,16 @@
       ],
       "evidence": "2026-11-19-integration/evidence.json"
     }
-  ]
+  ],
+  "current_visit": {
+    "date": "2026-11-21",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "new_verified_defects": 0,
+    "new_unverified_concerns": 0,
+    "optional_improvements": 0,
+    "known_revisited": [
+      "GA-2026-11-14-1"
+    ],
+    "evidence": "2026-11-21-performance/evidence.json"
+  }
 }

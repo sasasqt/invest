@@ -84,3 +84,7 @@ GA-2026-10-31-2 remains open on main at `2edd7ae1168eda1192ff73698ba5d42a7c034a4
 ### 2026-11-19 integration
 
 GA-2026-11-19-1 (low) is a new independently verified textual mismatch: README180 calls REVIEW-17 open while README115 and TODO47 describe the merged fix. BH-2026-10-12-3 remains a known current recorder provenance defect at static scope. REVIEW-17/K3 and INV-PR40-001 are corrected in merged source and covered by narrower normal CI assertions; genuine tracked-ledger acceptance remains pending. BF-2026-11-14-5 has bounded three-flag malformed UTF-8 acceptance on current main normal CI. [Evidence](2026-11-19-integration/evidence.json)
+
+### 2026-11-21 performance
+
+No new defect confirmed in the bounded static acceptance review at `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`. GA-2026-11-14-1 remains low/P3 and open: current source still trusts decoded gzip bytes without a member-presence check. Historical standalone controls remain historical; no untouched runner execution today. Two reviewers agree. OPEN-EXPECTED-ARTIFACT-GATE-001 remains a validation prerequisite, while a new W5/schema-correctness defect interpretation was dropped against the explicit repeatability contract. [Evidence](2026-11-21-performance/evidence.json) · [Control specification](2026-11-21-performance/expected-artifacts.json).

@@ -1,29 +1,28 @@
 {
-  "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
-  "planned_percent": {
-    "exploitation": 40,
-    "exploration": 60
-  },
-  "actual_primary_unique_lines": {
-    "exploitation": 156,
-    "exploration": 221,
-    "mandatory_callers_contracts": 377
-  },
-  "new_verified_distinct_root_causes": {
-    "exploitation": 0,
-    "exploration": 0
-  },
-  "evidence_scope": "known roots corroborated at current static scope; no new root count",
-  "pooled_rates_per_1000_lines": {
-    "exploitation": 0,
-    "exploration": 0
-  },
+  "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+  "planned_percent": [
+    70,
+    30
+  ],
+  "actual_primary_unique_lines": [
+    888,
+    172
+  ],
+  "new_verified_distinct_root_causes": [
+    0,
+    0
+  ],
+  "evidence_scope": "2026-11-21-performance/evidence.json",
+  "pooled_rates_per_1000_lines": [
+    0.8810572687224669,
+    0.0
+  ],
   "runs": 2,
   "completed_full_audits": 0,
-  "next_planned_percent": {
-    "exploitation": 30,
-    "exploration": 70
-  },
+  "next_planned_percent": [
+    70,
+    30
+  ],
   "last_four_completed_runs": [
     {
       "run_id": "GA-2026-10-31T001744Z",
@@ -50,23 +49,25 @@
   ],
   "helper_overlap": "tracked in coverage, not added to primary reading denominators or root counts",
   "selection": {
-    "seed": "c0fbeb5078d4b7e20262d61a0442100c3c13b6405d3436bb319a3cc96a2baa52",
+    "date_seed": "2026-11-21",
+    "sha256": "82f092903953279ea0c40b5afd8d0b2a07b20e89fb811fc07bdd1596b1ce6ccd",
+    "algorithm": "random.Random(int.from_bytes(sha256(date UTF8).digest(), big)).choice(sorted eligible set)",
     "eligible": [
-      "docs/HISTORICAL_BASELINE.md",
-      "runs/yahoo-test/2026-10-07/README.md",
-      "tests/test_save_run.py"
+      "data-mining-framework/src/invest_mining/reporting.py",
+      "data-mining-framework/tests/test_reporting.py",
+      "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "strategy-evaluation/tests/test_quantiles.py"
     ],
-    "i": 0,
-    "draw": "docs/HISTORICAL_BASELINE.md",
-    "rule": "sorted eligible metadata/recovery areas; SHA-256 of scheduled Berlin date modulo candidate count",
-    "lens": "single-revision provenance across saved README and retained manifests; previous visit emphasized atomic staging and compressed bytes",
-    "peer_exact_ranges": "unavailable"
+    "selected": "data-mining-framework/tests/test_reporting.py",
+    "followed": "data-mining-framework/src/invest_mining/reporting.py",
+    "lens": "saved numeric tables, overlapping diagnostic cohorts and missingness in plots",
+    "peer_uncertainty": "No compatible current per-blob exact-range peer map; do not claim peer absence."
   },
-  "actual_percent": {
-    "exploitation": 41.37931034482759,
-    "exploration": 58.62068965517241
-  },
-  "limitations": "No accuracy/recall claim. Static scope; current worker did not execute product code. Same-SHA peer runtime is corroboration, not this run's execution.",
+  "actual_percent": [
+    83.77358490566037,
+    16.22641509433962
+  ],
+  "limitations": "Required producer/consumer tracing expanded exploitation beyond planned70%; actual ranges retained rather than relabelled to meet quota.",
   "rotation_v3_visits": [
     {
       "run_id": "GA-2026-11-02-data-092201Z",
@@ -2149,8 +2150,40 @@
       ],
       "new_cumulative_semantic_lines": 1477,
       "research": "not scheduled; zero papers and experiments; excluded from code yields"
+    },
+    {
+      "date": "2026-11-21",
+      "field": "performance",
+      "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+      "planned_percent": [
+        70,
+        30
+      ],
+      "actual_percent": [
+        83.77358490566037,
+        16.22641509433962
+      ],
+      "primary_discretionary_lines": [
+        888,
+        172
+      ],
+      "mandatory_lines": 351,
+      "new_verified_distinct_root_causes": [
+        0,
+        0
+      ],
+      "pooled_rates_per_1000_lines": [
+        0.8810572687224669,
+        0.0
+      ],
+      "comparable_visits": 2,
+      "next_planned_percent": [
+        70,
+        30
+      ],
+      "evidence": "2026-11-21-performance/evidence.json"
     }
   ],
-  "date": "2026-11-12",
+  "date": "2026-11-21",
   "note": "Wednesday evaluation visit; research not scheduled."
 }

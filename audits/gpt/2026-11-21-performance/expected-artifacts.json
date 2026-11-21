@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "id": "synth-S-acceptance-boundary-v1",
+  "date": "2026-11-21",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "runner_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "status": "producer-anchored partial acceptance specification; not executable or executed; bundle/export readback and full typed schemas still required",
+  "workload": {
+    "instruments": 20,
+    "sessions": 300,
+    "random_search_trials": 20,
+    "seed_templates": 7,
+    "expected_proposal_rows_for_completed_search": 27,
+    "warmups": 1,
+    "measured_repetitions": 7,
+    "fresh_temporary_root_and_ledger_each_repetition": true
+  },
+  "scope": "Independent expected-output layer is separate from current warmup-equality gate. Successful complete workflow only; failed or empty-family searches are retained failures and cannot enter time medians.",
+  "existing_gate": {
+    "files": "Full encountered-file inventory; additions/removals affect equality. JSON/JSONL parsed with declared timestamp/output-root normalization; ledger substantive fields and row order retained; plain CSV bytes and decoded .csv.gz bytes compared; other formats conservative raw bytes; figures nonempty, pixels not compared.",
+    "minimum": "At least one record and one nonempty figure; no externally expected path/schema set.",
+    "contract": "runner README63-81 explicitly promises repeatability, not financial/schema correctness; CONTRACT W5 139-152."
+  },
+  "required_groups": [
+    {
+      "stage": "data and signals bundles",
+      "prefixes": [
+        "data/market/",
+        "data/universe/",
+        "data/fundamentals/",
+        "signals/"
+      ],
+      "requirement": "Workflow invocation and declared Parquet format confirmed. Complete manifest/storage/schema/dataset-content readback must be resolved from bundle/export contracts before gate activation. Do not invent a complete path or row-count oracle.",
+      "source": "scripts/synthetic_workflow.sh:19-29",
+      "validation": "pending producer/readback schema completion"
+    },
+    {
+      "stage": "search",
+      "required_paths": [
+        "mining/ledger.jsonl",
+        "mining/search/ledger.csv",
+        "mining/search/confirmation.csv",
+        "mining/search/config.json"
+      ],
+      "conditional_paths": [
+        "mining/search/factors/<factor_id>.json for every selected family member"
+      ],
+      "invariants": [
+        "ledger.csv has27 proposal rows:7 template origins and20 random origins; preserve invalid, duplicate and rejected rows with trial indices/order",
+        "durable experiment n_proposals equals full result.ledger length; frozen selection n_proposals equals len(proposals)",
+        "confirmation family IDs, factor files and durable experiment family agree; do not use confirmation success to choose the exported factor",
+        "seed, split, experiment identity, confirmatory/exploratory use and source hashes survive normalization"
+      ],
+      "source": [
+        "data-mining-framework/src/invest_mining/search.py:56-64,169-185,234-270",
+        "data-mining-framework/src/invest_mining/cli.py:444-489"
+      ],
+      "validation": "producer trace current; full export_signals/DSR propagation and generated readback pending"
+    },
+    {
+      "stage": "evaluation",
+      "required_paths": [
+        "eval/tables/daily.csv",
+        "eval/tables/trades.csv",
+        "eval/tables/episodes.csv",
+        "eval/config.json",
+        "eval/metrics.json",
+        "eval/statistics.json",
+        "eval/manifest.json"
+      ],
+      "conditional_paths": [
+        "eval/tables/scenarios.csv if scenarios supplied",
+        "eval/verdict.json if verdict supplied"
+      ],
+      "rendered_outputs": [
+        "eval/figures/equity_drawdown.png",
+        "eval/figures/diagnostics.png",
+        "eval/report.md",
+        "eval/figures/scenarios.png if scenarios table is present"
+      ],
+      "invariants": [
+        "daily return/gross_return/benchmark_return fields retained; external benchmark alignment missingness retained when supplied",
+        "substantive provenance, warnings, metrics, status and trial counts compared; independent accounting oracle still required"
+      ],
+      "source": "strategy-evaluation/src/invest_evaluation/reporting.py:28-62; figure path scan117,140,168; report path337",
+      "validation": "writer trace only; renderer file names scanned, not full renderer/financial semantics reviewed today"
+    },
+    {
+      "stage": "quantile portfolios",
+      "required_paths": [
+        "quantiles/tables/portfolios.csv",
+        "quantiles/tables/daily_returns.csv.gz",
+        "quantiles/tables/memberships.csv.gz",
+        "quantiles/config.json",
+        "quantiles/quantiles.json",
+        "quantiles/manifest.json",
+        "quantiles/figures/quantile_portfolios.png",
+        "quantiles/report.md"
+      ],
+      "invariants": [
+        "quantiles.json preserves report_version, kind=quantile_portfolios, settings, membership_rule, min_cross_section and portfolios",
+        "decode both compressed CSVs; require a gzip member separately from CSV schema validity",
+        "preserve missing/insufficient statuses and saved numerical table/figure agreement; tails overlap and are not summed as disjoint portfolios"
+      ],
+      "source": "strategy-evaluation/src/invest_evaluation/quantiles.py:297-355,369-429",
+      "validation": "current static writer/partial renderer trace; no generated readback or pixel equivalence"
+    }
+  ],
+  "out_of_default_workflow": {
+    "mine_evaluate_factor_report": [
+      "tables/daily_ic.csv",
+      "tables/quantile_returns.csv",
+      "tables/quantile_summary.csv",
+      "tables/tail_returns.csv",
+      "config.json",
+      "metrics.json",
+      "figures/ic.png",
+      "figures/quantiles.png"
+    ],
+    "reason": "synthetic_workflow invokes search and export, not mine evaluate. These eight files are a separate explored report contract; do not require them under mining/search.",
+    "source": "data-mining-framework/src/invest_mining/reporting.py:24-45; synthetic_workflow.sh:19-37"
+  },
+  "negative_control_plan": [
+    {
+      "id": "ZERO-GZIP",
+      "alteration": "Replace one .csv.gz with zero bytes in a synthetic control; keep untouched source separate.",
+      "expected": "path-specific invalid-container refusal at warmup and measured sample; repeat twice.",
+      "control": "valid empty member versus valid nonempty member; timestamp-only gzip changes preserve decoded equality",
+      "status": "known GA-2026-11-14-1; untouched runtime pending"
+    },
+    {
+      "id": "SAME-MISSING",
+      "alteration": "Omit a required producer artifact in both warmup and all synthetic measured controls.",
+      "expected": "independent expected-path layer rejects; existing equality alone cannot establish completeness.",
+      "control": "complete required group accepted, one-sided removal fails manifest equality",
+      "status": "pending; synthetic modified fixture cannot prove untouched producer omits files"
+    },
+    {
+      "id": "SUBSTANTIVE-LEDGER",
+      "alteration": "Change experiment/family/n_proposals/status or ledger record order; add/remove an invalid/duplicate proposal.",
+      "expected": "reject substantive difference; no whole-ledger timestamp exemption",
+      "control": "only documented volatile creation fields/output roots may normalize",
+      "status": "source comparator and existing guard-test trace; dynamic acceptance pending"
+    },
+    {
+      "id": "FIGURE-TABLE",
+      "alteration": "Preserve nonempty PNG while changing/missing its source table.",
+      "expected": "source table required-path/schema and numeric gates reject; PNG existence is not a financial oracle",
+      "control": "matching saved numerical inputs; pixels explicitly outside current comparator",
+      "status": "separate factor-report tests statically meaningful; complete synth-S numeric oracle pending"
+    },
+    {
+      "id": "FORMATS",
+      "alteration": "CSV/SQLite/Parquet equivalent logical content, with order/types/nulls/date identity and additions/removals checked",
+      "expected": "validated logical equality plus disclosed raw-byte fallback where unavailable",
+      "control": "one substantive cell/schema/status change rejects",
+      "status": "OPEN-AUDIT-FORMAT-GATES-001 blocked qualified runtime; no format/timing claim"
+    }
+  ],
+  "activation_prerequisites": [
+    "qualified execution boundary including collector/summary/upload and installed-lock versions/origins",
+    "complete bundle/export schemas and signal-to-DSR trial propagation",
+    "source-pinned positive/negative controls and two repeated runtime bug signatures where claimed",
+    "matched host/input/budget baseline and complete raw samples before any performance comparison"
+  ],
+  "investment_scope": "Synthetic only; no historical investment performance or reserved observations."
+}
