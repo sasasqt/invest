@@ -227,7 +227,9 @@ def _expected_shortfall(loss: np.ndarray, level: float) -> tuple[float, float, i
     only their own weight, so a book that is flat on most sessions no longer averages every
     flat session into the tail (BH-2026-11-03-1). Returns the mean tail loss, the tail mass
     and the number of observations with positive weight. A fractional part below 1e-9 is
-    rounding noise (``0.05 * 100`` is ``5.000000000000004``) and counts as zero.
+    rounding noise (``0.05 * 100`` is ``5.000000000000004``) and counts as zero, unless it is
+    the whole tail (a tail mass below 1e-9): then it is kept and the estimate is the largest
+    loss.
     """
     mass = (1.0 - level) * len(loss)
     whole = math.floor(mass + 1e-9)
@@ -242,7 +244,13 @@ def _expected_shortfall(loss: np.ndarray, level: float) -> tuple[float, float, i
     total = float(ordered[:whole].sum())
     if frac > 0.0:
         total += frac * float(ordered[whole])
-    return total / mass, round(mass, 9), whole + (1 if frac > 0.0 else 0)
+    return total / mass, _significant(mass), whole + (1 if frac > 0.0 else 0)
+
+
+def _significant(x: float, digits: int = 12) -> float:
+    """``x`` with rounding noise removed (``5.000000000000004`` becomes ``5.0``), keeping small
+    values such as a tail probability of ``1e-12`` instead of rounding them to zero."""
+    return float(f"{x:.{digits}g}")
 
 
 def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
@@ -271,7 +279,7 @@ def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
         es,
         "fraction/period",
         estimator="acerbi_tasche",
-        tail_probability=round(1.0 - level, 10),
+        tail_probability=_significant(1.0 - level),
         tail_mass=tail_mass,
         tail_observations=tail_observations,
     )
