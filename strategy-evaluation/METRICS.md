@@ -76,7 +76,7 @@ For XIRR, require cash flows of both signs, restrict the usual real-valued rate 
 | Skewness | Asymmetry of the return distribution | Declare bias correction and minimum valid sample |
 | Kurtosis | Tail/shape statistic | Default excess kurtosis; distinguish it from raw kurtosis |
 | Historical VaR / `var_loss_95`, etc. | Quantile of loss `L_t = -r_t` at the stated confidence/horizon | Specify quantile interpolation and sign convention; `variance_return` is a separate field |
-| Expected shortfall / CVaR | Mean loss in the upper tail under the declared estimator | Define tail probability and treatment of ties/fractional tail mass; interval estimates matter with few tail observations |
+| Expected shortfall / CVaR / `expected_shortfall_95` | Mean of the worst `(1 - level) * N` losses by rank (Acerbi-Tasche): the whole part of that tail mass counts fully, the fractional remainder weights the next largest loss; at the 95 % level the tail probability is 5 % | Ties carry only their own weight (a book that is flat on most sessions no longer averages every flat session into the tail); `metrics.json` records `estimator`, `tail_probability`, `tail_mass` and `tail_observations` (observations with positive weight); interval estimates matter with few tail observations |
 | Tail ratio | Positive upper return quantile / absolute lower quantile | For example 95th/5th; define behavior when expected tail signs do not hold |
 | Gain/loss concentration | Contribution of largest winners, losers, dates, or instruments | Reveals dependence on a few observations |
 | Stress losses | Observed and scenario losses under specified shocks | Distinguish historical outcomes from hypothetical scenarios |

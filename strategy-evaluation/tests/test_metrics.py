@@ -1,4 +1,5 @@
 import math
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -164,15 +165,97 @@ def test_insolvency_invalidates_growth_ratios():
     assert m["max_drawdown"].value == 1.0
 
 
-def test_var_and_expected_shortfall():
+def test_var_and_expected_shortfall() -> None:
     r = np.linspace(-0.05, 0.05, 101)  # losses 0.05 .. -0.05
     t = tail_metrics(r)
     assert t["var_loss_95"].value == pytest.approx(np.quantile(-r, 0.95))
-    assert t["expected_shortfall_95"].value == pytest.approx(
-        np.mean([0.05, 0.049, 0.048, 0.047, 0.046, 0.045])
-    )
+    # Tail mass 0.05 * 101 = 5.05 observations: the five largest losses whole, 5 % of the sixth.
+    es = t["expected_shortfall_95"]
+    assert es.value == pytest.approx((0.05 + 0.049 + 0.048 + 0.047 + 0.046 + 0.05 * 0.045) / 5.05)
+    assert es.extra["estimator"] == "acerbi_tasche"
+    assert es.extra["tail_probability"] == pytest.approx(0.05)
+    assert es.extra["tail_mass"] == pytest.approx(5.05)
+    assert es.extra["tail_observations"] == 6
     assert t["skewness"].value == pytest.approx(0.0, abs=1e-12)
     assert tail_metrics(r[:10])["var_loss_95"].status == "insufficient_data"
+
+
+def test_expected_shortfall_ties_use_the_tail_mass_not_every_tied_loss() -> None:
+    # BH-2026-11-03-1: 100 sessions, 3 losses of 1 %, 90 flat, 7 gains. VaR sits on the flat
+    # value; the 5 % tail is five observations (the three losses and two flat sessions), so
+    # ES = 0.03 / 5, not the mean of the 93 sessions at or above VaR.
+    r = np.array([-0.01] * 3 + [0.0] * 90 + [0.005] * 7)
+    es = tail_metrics(r)["expected_shortfall_95"]
+    assert tail_metrics(r)["var_loss_95"].value == pytest.approx(0.0)
+    assert es.value == pytest.approx(0.006)
+    assert es.extra["tail_observations"] == 5
+    assert es.extra["tail_mass"] == pytest.approx(5.0)
+
+
+def test_expected_shortfall_with_ties_at_var_and_with_a_negative_var() -> None:
+    # Ties at VaR: losses 2 x 0.03, 8 x 0.01, 90 x 0 give VaR 0.01; the worst five by rank are
+    # the two 0.03 losses and three of the 0.01 losses.
+    t = tail_metrics(-np.array([0.03] * 2 + [0.01] * 8 + [0.0] * 90))
+    assert t["var_loss_95"].value == pytest.approx(0.01)
+    assert t["expected_shortfall_95"].value == pytest.approx((0.06 + 0.03) / 5)
+    # Negative VaR: 4 losses of 2 % and 96 gains of 1 %; the tail holds the four losses and one
+    # gain, and ES stays at or above VaR.
+    t = tail_metrics(np.array([-0.02] * 4 + [0.01] * 96))
+    assert t["var_loss_95"].value == pytest.approx(-0.01)
+    assert t["expected_shortfall_95"].value == pytest.approx((0.08 - 0.01) / 5)
+
+
+def test_expected_shortfall_fractional_tail_mass_on_small_samples() -> None:
+    losses = np.arange(1, 22) / 100  # 0.01 .. 0.21; n = 21 gives a tail mass of 1.05
+    es = tail_metrics(-losses)["expected_shortfall_95"]
+    assert es.value == pytest.approx((0.21 + 0.05 * 0.20) / 1.05)
+    assert es.extra["tail_observations"] == 2
+    es20 = tail_metrics(-losses[:20])["expected_shortfall_95"]  # n = 20: a tail mass of one
+    assert es20.value == pytest.approx(0.20)
+    assert es20.extra["tail_observations"] == 1
+    assert es20.extra["tail_mass"] == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize("seed", [0, 1, 2])
+def test_expected_shortfall_is_at_least_var_and_is_the_worst_5_percent_mean(seed: int) -> None:
+    rng = np.random.default_rng(seed)
+    for n, flat_share in ((60, 0.0), (100, 0.9), (250, 0.5), (401, 0.0)):
+        r = rng.normal(0.0, 0.01, n)
+        r[rng.random(n) < flat_share] = 0.0
+        t = tail_metrics(r)
+        es, var = t["expected_shortfall_95"].value, t["var_loss_95"].value
+        assert isinstance(es, float) and isinstance(var, float)
+        assert es >= var - 1e-12
+        if n % 20 == 0:  # an integer tail mass: the plain mean of the worst 5 % of losses
+            worst = np.sort(-r)[::-1][: n // 20]
+            assert es == pytest.approx(worst.mean())
+            assert t["expected_shortfall_95"].extra["tail_observations"] == n // 20
+
+
+def test_tail_metrics_rejects_a_level_outside_the_unit_interval() -> None:
+    with pytest.raises(ValueError):
+        tail_metrics(np.linspace(-0.05, 0.05, 30), level=1.0)
+
+
+def test_expected_shortfall_at_another_level_has_no_rounding_residue() -> None:
+    # (1 - 0.9) * 100 is 9.999999999999998 in floating point: the tail is still exactly the ten
+    # largest losses, with no negative weight on an eleventh.
+    losses = np.arange(1, 101) / 1000  # 0.001 .. 0.100
+    es = tail_metrics(-losses, level=0.9)["expected_shortfall_95"]
+    assert es.value == pytest.approx(np.mean(np.arange(91, 101) / 1000))
+    assert es.extra["tail_observations"] == 10
+    assert es.extra["tail_mass"] == pytest.approx(10.0)
+    assert es.extra["tail_probability"] == pytest.approx(0.1)
+
+
+def test_tail_metrics_with_a_nan_return_stay_undefined_without_a_warning() -> None:
+    r = np.linspace(-0.05, 0.05, 40)
+    r[3] = np.nan
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        t = tail_metrics(r)
+    assert t["expected_shortfall_95"].to_dict()["status"] == "undefined"
+    assert t["var_loss_95"].to_dict()["status"] == "undefined"
 
 
 def test_trade_episode_metrics():
