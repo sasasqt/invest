@@ -244,7 +244,13 @@ def _expected_shortfall(loss: np.ndarray, level: float) -> tuple[float, float, i
     total = float(ordered[:whole].sum())
     if frac > 0.0:
         total += frac * float(ordered[whole])
-    return total / mass, _significant(mass), whole + (1 if frac > 0.0 else 0)
+    # Record the mass from the parts the count uses, so the two always agree: a remainder
+    # dropped as noise is not shown, and one kept (at least 1e-9) survives the rounding.
+    return (
+        total / mass,
+        whole + (round(frac, 9) if whole else frac),
+        whole + (1 if frac > 0.0 else 0),
+    )
 
 
 def _significant(x: float, digits: int = 12) -> float:

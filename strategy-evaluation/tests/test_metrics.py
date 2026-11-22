@@ -248,6 +248,20 @@ def test_expected_shortfall_at_another_level_has_no_rounding_residue() -> None:
     assert es.extra["tail_probability"] == pytest.approx(0.1)
 
 
+def test_expected_shortfall_tail_mass_record_agrees_with_the_observation_count() -> None:
+    # Review round 4: a remainder of 2e-9 on a whole part of 5000 is kept (one more observation
+    # with weight), so the recorded mass must show it; 12 significant digits of the mass hid it.
+    n = 100_000
+    extra = tail_metrics(-np.arange(1, n + 1) / n, level=1 - (5000 + 2e-9) / n)[
+        "expected_shortfall_95"
+    ].extra
+    mass = extra["tail_mass"]
+    assert isinstance(mass, float)
+    assert extra["tail_observations"] == 5001
+    assert mass > 5000.0
+    assert mass == pytest.approx(5000.000000002, abs=1e-11)
+
+
 def test_expected_shortfall_with_a_tail_mass_below_the_tolerance_is_the_largest_loss() -> None:
     # Review round 3: a tail probability under 1e-9 / n leaves a remainder that is the whole
     # tail; it must stay, so the estimate is the largest loss, not a zero from an empty tail.
