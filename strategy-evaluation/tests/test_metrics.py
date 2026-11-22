@@ -184,9 +184,9 @@ def test_expected_shortfall_ties_use_the_tail_mass_not_every_tied_loss() -> None
     # BH-2026-11-03-1: 100 sessions, 3 losses of 1 %, 90 flat, 7 gains. VaR sits on the flat
     # value; the 5 % tail is five observations (the three losses and two flat sessions), so
     # ES = 0.03 / 5, not the mean of the 93 sessions at or above VaR.
-    r = np.array([-0.01] * 3 + [0.0] * 90 + [0.005] * 7)
-    es = tail_metrics(r)["expected_shortfall_95"]
-    assert tail_metrics(r)["var_loss_95"].value == pytest.approx(0.0)
+    t = tail_metrics(np.array([-0.01] * 3 + [0.0] * 90 + [0.005] * 7))
+    es = t["expected_shortfall_95"]
+    assert t["var_loss_95"].value == pytest.approx(0.0)
     assert es.value == pytest.approx(0.006)
     assert es.extra["tail_observations"] == 5
     assert es.extra["tail_mass"] == pytest.approx(5.0)
@@ -246,6 +246,16 @@ def test_expected_shortfall_at_another_level_has_no_rounding_residue() -> None:
     assert es.extra["tail_observations"] == 10
     assert es.extra["tail_mass"] == pytest.approx(10.0)
     assert es.extra["tail_probability"] == pytest.approx(0.1)
+
+
+def test_expected_shortfall_with_a_tail_mass_below_the_tolerance_is_the_largest_loss() -> None:
+    # Review round 3: a tail probability under 1e-9 / n leaves a remainder that is the whole
+    # tail; it must stay, so the estimate is the largest loss, not a zero from an empty tail.
+    losses = np.arange(1, 31) / 100
+    es = tail_metrics(-losses, level=1 - 1e-12)["expected_shortfall_95"]
+    assert es.value == pytest.approx(0.30)
+    assert es.extra["tail_observations"] == 1
+    assert es.status == "ok"
 
 
 def test_tail_metrics_with_a_nan_return_stay_undefined_without_a_warning() -> None:

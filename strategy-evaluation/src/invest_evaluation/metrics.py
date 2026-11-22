@@ -232,9 +232,11 @@ def _expected_shortfall(loss: np.ndarray, level: float) -> tuple[float, float, i
     mass = (1.0 - level) * len(loss)
     whole = math.floor(mass + 1e-9)
     # The remainder is clamped at zero: rounding can leave it slightly negative (level 0.9 on
-    # 100 observations gives a mass of 9.999999999999998 and a whole part of 10).
+    # 100 observations gives a mass of 9.999999999999998 and a whole part of 10). A remainder
+    # that is the whole tail (a tail mass below the tolerance) is kept, so the estimate is the
+    # largest loss and never a zero from an empty tail.
     frac = mass - whole
-    if frac < 1e-9:
+    if whole and frac < 1e-9:
         frac = 0.0
     ordered = np.sort(loss)[::-1]
     total = float(ordered[:whole].sum())
