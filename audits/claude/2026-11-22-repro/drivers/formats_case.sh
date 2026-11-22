@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Audit copy (repo audit 2026-11-22) of scripts/synthetic_workflow.sh at eb64ad8: market and signals published as $FORMAT; ROOT names the worktree so CONFIG resolves there (the 2026-11-15 copy resolved it against its own folder).
+# Prepare -> mine -> export -> evaluate -> bucket portfolios on the deterministic
+# synthetic market.
+#
+# Usage: uv run scripts/synthetic_workflow.sh [OUT_DIR]
+# Every step reads only artifacts published by the previous one; no ids or dates are
+# copied by hand. Sizes can be reduced for quick runs with INSTRUMENTS, DAYS, TRIALS;
+# DAYS needs at least 153, because the search's ledger refuses a confirmation window
+# with fewer than 60 labelled decision dates.
+set -euo pipefail
+
+out="${1:-artifacts/synthetic-workflow}"
+root="${ROOT:?ROOT unset}"
+instruments="${INSTRUMENTS:-60}"
+days="${DAYS:-750}"
+trials="${TRIALS:-200}"
+config="${CONFIG:-$root/strategy-evaluation/examples/quantile_long_short.json}"
+
+invest-data synthetic --out "$out/data/market" --format "${FORMAT:?FORMAT unset}" \
+  --instruments "$instruments" --days "$days" \
+  --universe-out "$out/data/universe" --fundamentals-out "$out/data/fundamentals"
+
+# The ledger classifies the confirmation as confirmatory or, on a rerun, exploratory.
+invest-mine search --data "$out/data/market" --universe "$out/data/universe" \
+  --trials "$trials" --ledger "$out/mining/ledger.jsonl" --out "$out/mining/search"
+
+# The first development-selected factor, regardless of its confirmation outcome.
+invest-mine export --data "$out/data/market" --universe "$out/data/universe" \
+  --from-search "$out/mining/search" --format "${FORMAT:?FORMAT unset}" --out "$out/signals"
+
+# The deflated Sharpe uses the number of search proposals recorded in the signals bundle.
+invest-eval run --data "$out/data/market" --universe "$out/data/universe" \
+  --signals "$out/signals" --config "$config" --out "$out/eval"
+
+# Every decile and top/bottom tail of the same signals as separate backtests.
+invest-eval quantiles --data "$out/data/market" --universe "$out/data/universe" \
+  --signals "$out/signals" --config "$config" --out "$out/quantiles"

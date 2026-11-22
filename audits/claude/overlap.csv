@@ -70,3 +70,26 @@ date,check,minutes,findings,findings another routine already had,unique findings
 2026-11-15,s6 GPT cross-check (6 GPT items incl. GA-2026-11-14-1 stdlib check),10,0,6 (existing rows or GPT's own),0,GPT audit 2026-11-09 to 2026-11-14
 2026-11-15,s6 second review (Opus 5.5 xhigh blind: 18 candidates and 10 measured facts settled; 3 places checked beyond the brief),17,1 (RA-2026-11-15-1 zero-volume entry fill),0,1,none (REVIEW-27 and the bug hunt cover only the exit side)
 2026-11-15,s6 verification of A12 (the run's own exit-coded check twice on 2edd7ae),6,0 (verifies RA-2026-11-15-1),0,0,n/a
+2026-11-22,s2 uv lock --check + pyproject consistency + dependency declarations + console scripts,2,0,0,0,none (GPT audit reads pyprojects statically)
+2026-11-22,s2 ci.yml and audit-runtime.yml pins/permissions/triggers + docs commands vs ci.yml,3,0 (CI_CD_GUIDELINES/README command rows: docs-audit scope),0,0,docs audit 2026-11-21 CI-command check
+2026-11-22,s2 portability scan + AST recount of changed files,4,0 (+6 test reads without encoding=: evidence for RA-2026-11-01-11 / RA-2026-11-08-6),0,0,none
+2026-11-22,s3 checks (3.13): ruff + mypy + pytest --cov + coverage floors + links,10,0,0,0,GitHub CI run 44246922942 on eb64ad8 (green)
+2026-11-22,s3 checks (3.11),12,0,0,0,GitHub CI run 44246922942 (green)
+2026-11-22,"s3 wheels job (pip, unpinned pandas)",6,0 (RA-2026-11-01-3 warnings re-seen),1,0,GitHub CI same SHA (green; warnings not surfaced)
+2026-11-22,s3 independent installs x3,4,0,0,0,GitHub CI same SHA
+2026-11-22,s3 flaky detection (PYTHONHASHSEED repeat; 3.11 vs 3.13 per-test outcomes),6,0,0,0,none
+2026-11-22,s4 replay at recorded revision c6f2961 + compare_record,2,0,0,0,bug hunt real-data replay (nightly)
+2026-11-22,"s4 replay at main eb64ad8 + drift attribution (1 new and 2 changed rows: #56, #53) + doc numbers",4,0,0,0,docs audit numbers check
+2026-11-22,s5 benchmarks (8 cases; stage timings recorded),30,0 (machine changed; not compared),0,0,none
+2026-11-22,s5 same-host A/B control 2edd7ae vs eb64ad8 (synth-M x3 each),4,0 (synth-M +1.9 %; search stage +0.9 to 1 s after #51),0,0,none
+2026-11-22,s6 re-runs of earlier checks on main (RA-2026-11-01-2/3/4; RA-2026-11-08-1/2/3; RA-2026-11-15-1; BH-2026-10-21-2),5,0 (RA-2026-11-01-4 and BH-2026-10-21-2 now pass),7,0,bug fix routine PRs #73 and #66 propose fixes for two of them
+2026-11-22,s6 open places (pit same available_date; zero-volume with delay 1),6,0 (zero-volume with delay 1 widens RA-2026-11-15-1),1,0,none
+2026-11-22,"s6 scale-invariance property lens on #51's check_scale_free (656 formulas, fixed seed)",6,"0 (10 changes, all BF-2026-11-12-1/-2)",2,0,bug fix review rounds of #51 (BF-2026-11-12-1/-2)
+2026-11-22,"s6 test-quality slice (6 new test files, 1,411 lines) + exploration draw (verify_installed.py) + uncovered decision branches check",12,0 (one test-gap recommendation RA-2026-11-22-1),0,1,none
+2026-11-22,s6 accounting lens (3 evaluations + cash interest run),3,0,0,0,none
+2026-11-22,s6 statistics lens (29 metrics x 4 evaluations incl. rf/MAR and cash rate) + censored rule check,4,0,0,0,"bug hunt Wednesday statistics cross-check (2026-11-18, synthetic run)"
+2026-11-22,"s6 reported-outputs lens (26/26 synth-M, 31/31 replay)",2,0,0,0,none
+2026-11-22,s6 timing lens v3 (family check repaired),3,0 (prefix-invariant),0,0,bug hunt causality tests (not the same inputs)
+2026-11-22,s6 formats lens (csv/sqlite/parquet),1,0,0,0,tests/test_pipeline.py::test_prepare_mine_evaluate[fmt] (CI)
+2026-11-22,s6 GPT cross-check (7 GPT items),8,0,7,0,GPT audit 2026-11-15 to 2026-11-21
+2026-11-22,"s6 second review (Opus 5.5 xhigh, blind: 6 candidates, 6 measured facts)",18,0 new rows (exit-side zero-volume fill widens RA-2026-11-15-1),1,0,none

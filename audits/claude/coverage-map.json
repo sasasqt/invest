@@ -1,8 +1,8 @@
 {
  "coverage_unmatched": {
-  "date": "2026-11-15",
+  "date": "2026-11-22",
   "paths": [],
-  "run_id": "repo-audit-2026-11-15"
+  "run_id": "repo-audit-2026-11-22"
  },
  "files": {
   ".github/workflows/audit-runtime.yml": {
@@ -38,11 +38,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 167,
    "present": true
   },
@@ -156,11 +177,39 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "ci-parity",
+     "reason": "s2/s3 local jobs vs GitHub CI run 44246922942 on eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 79,
    "present": true
   },
@@ -239,11 +288,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "checked_automatically",
    "lines": 41,
    "present": true
   },
@@ -322,11 +385,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 83,
    "present": true
   },
@@ -377,10 +454,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 147,
    "present": true
@@ -439,10 +530,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 152,
    "present": true
@@ -515,12 +620,26 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
-   "lines": 149,
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
+   "lines": 152,
    "present": true
   },
   "RAPID_DEVELOPMENT.md": {
@@ -577,12 +696,26 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 106,
+   "lines": 109,
    "present": true
   },
   "README.md": {
@@ -660,12 +793,26 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
-   "lines": 199,
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
+   "lines": 200,
    "present": true
   },
   "ROADMAP.md": {
@@ -736,11 +883,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 65,
    "present": true
   },
@@ -819,12 +980,26 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
-   "lines": 128,
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
+   "lines": 139,
    "present": true
   },
   "audits/gpt/runner/CONTRACT.md": {
@@ -839,11 +1014,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-15",
-   "last_status": "inventoried",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 234,
    "present": true
   },
@@ -859,10 +1048,17 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "inventoried",
    "lines": 17,
    "present": true
@@ -879,11 +1075,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-15",
-   "last_status": "inventoried",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 157,
    "present": true
   },
@@ -899,10 +1109,17 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "inventoried",
    "lines": 6,
    "present": true
@@ -926,10 +1143,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 57,
    "present": true
@@ -953,10 +1184,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 182,
    "present": true
@@ -980,10 +1225,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 23,
    "present": true
@@ -1007,10 +1266,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 920,
    "present": true
@@ -1034,10 +1307,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 740,
    "present": true
@@ -1061,11 +1348,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-15",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 627,
    "present": true
   },
@@ -1088,10 +1396,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 291,
    "present": true
@@ -1115,10 +1437,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 4269,
    "present": true
@@ -1142,10 +1478,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 1096,
    "present": true
@@ -1169,10 +1519,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 2024,
    "present": true
@@ -1196,11 +1560,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": null,
-   "last_seen": "2026-11-15",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
    "lines": 61,
    "present": true
   },
@@ -1223,10 +1608,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": null,
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 167,
    "present": true
@@ -1278,10 +1677,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 155,
    "present": true
@@ -1333,10 +1746,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 282,
    "present": true
@@ -1388,10 +1815,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 358,
    "present": true
@@ -1450,12 +1891,26 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 83,
+   "lines": 85,
    "present": true
   },
   "data-mining-framework/pyproject.toml": {
@@ -1526,11 +1981,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-15",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 17,
    "present": true
   },
@@ -1539,12 +2015,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -1618,10 +2094,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 3,
    "present": true
@@ -1630,13 +2127,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 75.0,
-    "date": "2026-11-15",
-    "line_pct": 93.1,
-    "missing_branches": 2,
-    "missing_lines": 2,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 8,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 50
    },
    "first_seen": "2026-11-01",
@@ -1717,10 +2214,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 72,
    "present": true
@@ -1729,14 +2247,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 97.41,
-    "date": "2026-11-15",
-    "line_pct": 97.7,
+    "branch_pct": 97.66,
+    "date": "2026-11-22",
+    "line_pct": 97.92,
     "missing_branches": 3,
     "missing_lines": 9,
-    "num_branches": 116,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 405
+    "num_branches": 128,
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 448
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -1844,25 +2362,53 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 979,
+   "lines": 1068,
    "present": true
   },
   "data-mining-framework/src/invest_mining/diagnostics.py": {
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 93.33,
-    "date": "2026-11-15",
-    "line_pct": 98.04,
-    "missing_branches": 2,
-    "missing_lines": 2,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 30,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 174
    },
    "first_seen": "2026-11-01",
@@ -1957,10 +2503,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 363,
    "present": true
@@ -1969,14 +2536,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 90.62,
-    "date": "2026-11-15",
-    "line_pct": 93.94,
+    "branch_pct": 95.67,
+    "date": "2026-11-22",
+    "line_pct": 96.44,
     "missing_branches": 9,
-    "missing_lines": 11,
-    "num_branches": 96,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 234
+    "missing_lines": 15,
+    "num_branches": 208,
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 466
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -2084,12 +2651,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 386,
+   "lines": 821,
    "present": true
   },
   "data-mining-framework/src/invest_mining/inference.py": {
@@ -2097,12 +2692,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 100.0,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 2,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 20
    },
    "first_seen": "2026-11-01",
@@ -2197,10 +2792,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 77,
    "present": true
@@ -2210,12 +2826,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 98.39,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 99.06,
     "missing_branches": 1,
     "missing_lines": 1,
     "num_branches": 62,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 151
    },
    "first_seen": "2026-11-01",
@@ -2310,10 +2926,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 323,
    "present": true
@@ -2344,11 +2981,18 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "inventoried",
    "lines": 0,
    "present": true
   },
@@ -2357,12 +3001,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 100.0,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 6,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 66
    },
    "first_seen": "2026-11-01",
@@ -2450,10 +3094,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 114,
    "present": true
@@ -2463,13 +3128,13 @@
    "category": "source",
    "coverage": {
     "branch_pct": 92.59,
-    "date": "2026-11-15",
-    "line_pct": 96.23,
+    "date": "2026-11-22",
+    "line_pct": 96.24,
     "missing_branches": 4,
     "missing_lines": 4,
     "num_branches": 54,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 158
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 159
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -2570,12 +3235,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 365,
+   "lines": 374,
    "present": true
   },
   "data-mining-framework/tests/conftest.py": {
@@ -2653,10 +3346,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 33,
    "present": true
@@ -2743,12 +3457,74 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 338,
+   "present": true
+  },
+  "data-mining-framework/tests/test_coverage_mining.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 56,
    "present": true
   },
   "data-mining-framework/tests/test_diagnostics.py": {
@@ -2826,10 +3602,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 295,
    "present": true
@@ -2916,12 +3713,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 548,
+   "lines": 549,
    "present": true
   },
   "data-mining-framework/tests/test_expressions.py": {
@@ -2999,10 +3817,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 146,
    "present": true
@@ -3082,12 +3921,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 1154,
+   "lines": 1179,
    "present": true
   },
   "data-mining-framework/tests/test_reporting.py": {
@@ -3144,12 +4004,74 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 58,
+   "present": true
+  },
+  "data-mining-framework/tests/test_scale_check.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 902,
    "present": true
   },
   "data-mining-framework/tests/test_search_and_inference.py": {
@@ -3227,12 +4149,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 164,
+   "lines": 170,
    "present": true
   },
   "data-pipeline/README.md": {
@@ -3282,10 +4225,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 7,
    "present": true
@@ -3344,10 +4301,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 43,
    "present": true
@@ -3420,11 +4391,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-15",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 13,
    "present": true
   },
@@ -3433,12 +4425,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -3505,10 +4497,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 3,
    "present": true
@@ -3517,13 +4530,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 90.27,
-    "date": "2026-11-15",
-    "line_pct": 92.46,
-    "missing_branches": 29,
-    "missing_lines": 38,
+    "branch_pct": 90.6,
+    "date": "2026-11-22",
+    "line_pct": 92.69,
+    "missing_branches": 28,
+    "missing_lines": 37,
     "num_branches": 298,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 591
    },
    "first_seen": "2026-11-01",
@@ -3618,10 +4631,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 937,
    "present": true
@@ -3631,12 +4665,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 94.74,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 97.33,
     "missing_branches": 2,
     "missing_lines": 2,
     "num_branches": 38,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 112
    },
    "first_seen": "2026-11-01",
@@ -3717,10 +4751,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 182,
    "present": true
@@ -3729,13 +4784,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 89.58,
-    "date": "2026-11-15",
-    "line_pct": 94.95,
-    "missing_branches": 5,
-    "missing_lines": 5,
+    "branch_pct": 95.83,
+    "date": "2026-11-22",
+    "line_pct": 97.98,
+    "missing_branches": 2,
+    "missing_lines": 2,
     "num_branches": 48,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 150
    },
    "first_seen": "2026-11-01",
@@ -3830,10 +4885,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 295,
    "present": true
@@ -3842,13 +4918,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 95.45,
-    "date": "2026-11-15",
-    "line_pct": 96.77,
-    "missing_branches": 1,
-    "missing_lines": 1,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 22,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 40
    },
    "first_seen": "2026-11-01",
@@ -3929,10 +5005,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 72,
    "present": true
@@ -3963,11 +5060,18 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "inventoried",
    "lines": 0,
    "present": true
   },
@@ -3975,13 +5079,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 92.0,
-    "date": "2026-11-15",
-    "line_pct": 94.84,
-    "missing_branches": 8,
-    "missing_lines": 10,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 100,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 249
    },
    "first_seen": "2026-11-01",
@@ -4083,10 +5187,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 561,
    "present": true
@@ -4095,13 +5220,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 95.0,
-    "date": "2026-11-15",
-    "line_pct": 97.71,
-    "missing_branches": 2,
-    "missing_lines": 2,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 40,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 135
    },
    "first_seen": "2026-11-01",
@@ -4189,10 +5314,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 243,
    "present": true
@@ -4202,12 +5348,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 23
    },
    "first_seen": "2026-11-01",
@@ -4281,10 +5427,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 96,
    "present": true
@@ -4294,12 +5461,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 85.0,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 92.17,
     "missing_branches": 9,
     "missing_lines": 13,
     "num_branches": 60,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 221
    },
    "first_seen": "2026-11-01",
@@ -4387,10 +5554,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 441,
    "present": true
@@ -4470,10 +5658,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 861,
    "present": true
@@ -4553,12 +5762,156 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 694,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_coverage_data_cli.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 31,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_coverage_schemas.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 145,
+   "present": true
+  },
+  "data-pipeline/data-preparation/tests/test_coverage_sources_and_pit.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 51,
    "present": true
   },
   "data-pipeline/data-preparation/tests/test_dataset_keys.py": {
@@ -4594,11 +5947,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 115,
    "present": true
   },
@@ -4677,10 +6051,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 154,
    "present": true
@@ -4760,10 +6155,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 330,
    "present": true
@@ -4843,10 +6259,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 464,
    "present": true
@@ -4884,11 +6321,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 62,
    "present": true
   },
@@ -4946,11 +6404,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 147,
    "present": true
   },
@@ -4973,10 +6445,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 286,
    "present": true
@@ -5042,11 +6528,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 85,
    "present": true
   },
@@ -5069,10 +6569,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 188,
    "present": true
@@ -5152,10 +6666,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 74,
    "present": true
@@ -5221,10 +6749,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 60,
    "present": true
@@ -5283,10 +6825,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 46,
    "present": true
@@ -5310,10 +6866,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 12,
    "present": true
@@ -5337,10 +6907,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 86,
    "present": true
@@ -5364,10 +6948,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 49,
    "present": true
@@ -5398,10 +6996,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "cross-check",
+     "reason": "s7 GPT cross-check: files GPT findings name, re-checked on main",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 40,
    "present": true
@@ -5432,10 +7051,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "cross-check",
+     "reason": "s7 GPT cross-check: files GPT findings name, re-checked on main",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 97,
    "present": true
@@ -5466,10 +7106,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "cross-check",
+     "reason": "s7 GPT cross-check: files GPT findings name, re-checked on main",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 12,
    "present": true
@@ -5500,10 +7161,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "cross-check",
+     "reason": "s7 GPT cross-check: files GPT findings name, re-checked on main",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 10,
    "present": true
@@ -5534,10 +7216,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "cross-check",
+     "reason": "s7 GPT cross-check: files GPT findings name, re-checked on main",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 15,
    "present": true
@@ -5561,10 +7264,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 18,
    "present": true
@@ -5588,10 +7305,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 12,
    "present": true
@@ -5622,11 +7353,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 182,
    "present": true
   },
@@ -5677,10 +7422,24 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 12,
    "present": true
@@ -5746,10 +7505,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 2,
    "present": true
@@ -5836,11 +7609,25 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "checked_automatically",
    "lines": 98,
    "present": true
   },
@@ -5912,10 +7699,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 24,
    "present": true
@@ -5981,10 +7782,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 220,
    "present": true
@@ -6050,10 +7865,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 1210,
    "present": true
@@ -6119,10 +7948,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 39,
    "present": true
@@ -6188,10 +8031,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -6257,10 +8114,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -6326,10 +8197,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -6395,10 +8280,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 49,
    "present": true
@@ -6464,10 +8363,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 628,
    "present": true
@@ -6533,10 +8446,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 93,
    "present": true
@@ -6602,10 +8529,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 62,
    "present": true
@@ -6671,10 +8612,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 9,
    "present": true
@@ -6740,10 +8695,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 85,
    "present": true
@@ -6809,10 +8778,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 7,
    "present": true
@@ -6878,10 +8861,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -6947,10 +8944,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": null,
    "present": true
@@ -7016,10 +9027,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 23,
    "present": true
@@ -7085,10 +9110,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 3775,
    "present": true
@@ -7154,10 +9193,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 10,
    "present": true
@@ -7223,10 +9276,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 21,
    "present": true
@@ -7292,10 +9359,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 67,
    "present": true
@@ -7361,10 +9442,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "saved-results",
+     "reason": "s4 replay of the committed run record at c6f2961 and at main eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 626,
    "present": true
@@ -7395,12 +9490,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
-   "lines": 176,
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
+   "lines": 178,
    "present": true
   },
   "scripts/check_markdown_links.py": {
@@ -7464,10 +9580,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 111,
    "present": true
@@ -7568,10 +9705,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "benchmark",
+     "reason": "s5 benchmark cases and same-host A/B control 2edd7ae vs eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "workflow",
+     "reason": "s2 workflow read of ci.yml, docs.yml and audit-runtime.yml",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 233,
    "present": true
@@ -7644,10 +9809,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 281,
    "present": true
@@ -7706,11 +9892,18 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "inventoried",
    "lines": 104,
    "present": true
   },
@@ -7810,10 +10003,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "benchmark",
+     "reason": "s5 benchmark cases and same-host A/B control 2edd7ae vs eb64ad8",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "workflow",
+     "reason": "s2 workflow read of ci.yml, docs.yml and audit-runtime.yml",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 37,
    "present": true
@@ -7886,12 +10107,33 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 192,
+   "lines": 194,
    "present": true
   },
   "strategy-evaluation/README.md": {
@@ -7948,10 +10190,31 @@
      "reason": "docs audit 2026-11-14 at d52e122 (38 Markdown docs + both workflow files)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "docs-audit",
+     "reason": "docs audit 2026-11-21 report covers these docs (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 85,
    "present": true
@@ -8017,10 +10280,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "workflow",
+     "reason": "s2 workflow read of ci.yml, docs.yml and audit-runtime.yml",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "reviewed",
    "lines": 15,
    "present": true
@@ -8093,11 +10377,32 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-15",
-   "last_status": "checked_automatically",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 17,
    "present": true
   },
@@ -8106,12 +10411,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": null,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 0,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 1
    },
    "first_seen": "2026-11-01",
@@ -8178,10 +10483,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 3,
    "present": true
@@ -8190,13 +10516,13 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 92.59,
-    "date": "2026-11-15",
-    "line_pct": 95.87,
-    "missing_branches": 4,
-    "missing_lines": 6,
+    "branch_pct": 98.15,
+    "date": "2026-11-22",
+    "line_pct": 99.17,
+    "missing_branches": 1,
+    "missing_lines": 1,
     "num_branches": 54,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 188
    },
    "first_seen": "2026-11-01",
@@ -8291,10 +10617,31 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 379,
    "present": true
@@ -8304,12 +10651,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 92.86,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 96.7,
     "missing_branches": 3,
     "missing_lines": 3,
     "num_branches": 42,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 140
    },
    "first_seen": "2026-11-01",
@@ -8390,10 +10737,38 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 230,
    "present": true
@@ -8402,14 +10777,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 90.35,
-    "date": "2026-11-15",
-    "line_pct": 94.17,
-    "missing_branches": 11,
-    "missing_lines": 14,
-    "num_branches": 114,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 315
+    "branch_pct": 95.59,
+    "date": "2026-11-22",
+    "line_pct": 96.75,
+    "missing_branches": 6,
+    "missing_lines": 10,
+    "num_branches": 136,
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 356
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -8517,12 +10892,40 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 646,
+   "lines": 744,
    "present": true
   },
   "strategy-evaluation/src/invest_evaluation/metrics.py": {
@@ -8530,13 +10933,13 @@
    "category": "source",
    "coverage": {
     "branch_pct": 97.92,
-    "date": "2026-11-15",
-    "line_pct": 98.71,
+    "date": "2026-11-22",
+    "line_pct": 98.72,
     "missing_branches": 1,
     "missing_lines": 2,
     "num_branches": 48,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 184
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 186
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -8637,10 +11040,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 491,
    "present": true
@@ -8671,11 +11102,18 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
     }
    ],
    "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "partially_reviewed",
+   "last_seen": "2026-11-22",
+   "last_status": "inventoried",
    "lines": 0,
    "present": true
   },
@@ -8684,12 +11122,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 93.75,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 97.5,
     "missing_branches": 3,
     "missing_lines": 3,
     "num_branches": 48,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 192
    },
    "first_seen": "2026-11-01",
@@ -8784,10 +11222,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 429,
    "present": true
@@ -8796,14 +11255,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 93.55,
-    "date": "2026-11-15",
-    "line_pct": 97.88,
+    "branch_pct": 94.12,
+    "date": "2026-11-22",
+    "line_pct": 98.03,
     "missing_branches": 4,
     "missing_lines": 1,
-    "num_branches": 62,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 174
+    "num_branches": 68,
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 186
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -8904,25 +11363,53 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 312,
+   "lines": 337,
    "present": true
   },
   "strategy-evaluation/src/invest_evaluation/robustness.py": {
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 91.67,
-    "date": "2026-11-15",
-    "line_pct": 94.87,
-    "missing_branches": 1,
-    "missing_lines": 1,
+    "branch_pct": 100.0,
+    "date": "2026-11-22",
+    "line_pct": 100.0,
+    "missing_branches": 0,
+    "missing_lines": 0,
     "num_branches": 12,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 27
    },
    "first_seen": "2026-11-01",
@@ -8996,10 +11483,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 79,
    "present": true
@@ -9008,14 +11516,14 @@
    "binary": false,
    "category": "source",
    "coverage": {
-    "branch_pct": 83.33,
-    "date": "2026-11-15",
-    "line_pct": 92.42,
-    "missing_branches": 5,
-    "missing_lines": 5,
-    "num_branches": 30,
-    "run_id": "repo-audit-2026-11-15",
-    "statements": 102
+    "branch_pct": 88.24,
+    "date": "2026-11-22",
+    "line_pct": 94.7,
+    "missing_branches": 4,
+    "missing_lines": 4,
+    "num_branches": 34,
+    "run_id": "repo-audit-2026-11-22",
+    "statements": 117
    },
    "first_seen": "2026-11-01",
    "history": [
@@ -9102,12 +11610,40 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 213,
+   "lines": 255,
    "present": true
   },
   "strategy-evaluation/src/invest_evaluation/strategies.py": {
@@ -9115,12 +11651,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 90.48,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 94.63,
     "missing_branches": 4,
     "missing_lines": 4,
     "num_branches": 42,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 107
    },
    "first_seen": "2026-11-01",
@@ -9208,10 +11744,38 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "deep-read",
+     "reason": "s6 deep read of files changed since 2edd7ae and their callers (lenses, branch check)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 216,
    "present": true
@@ -9221,12 +11785,12 @@
    "category": "source",
    "coverage": {
     "branch_pct": 100.0,
-    "date": "2026-11-15",
+    "date": "2026-11-22",
     "line_pct": 100.0,
     "missing_branches": 0,
     "missing_lines": 0,
     "num_branches": 26,
-    "run_id": "repo-audit-2026-11-15",
+    "run_id": "repo-audit-2026-11-22",
     "statements": 80
    },
    "first_seen": "2026-11-01",
@@ -9314,10 +11878,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 240,
    "present": true
@@ -9397,12 +11982,74 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
-   "last_status": "reviewed",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
    "lines": 19,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_benchmark_delistings.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 226,
    "present": true
   },
   "strategy-evaluation/tests/test_config.py": {
@@ -9480,12 +12127,74 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 73,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_coverage_evaluation.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "reviewed",
+   "lines": 91,
    "present": true
   },
   "strategy-evaluation/tests/test_engine.py": {
@@ -9563,10 +12272,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 1292,
    "present": true
@@ -9646,12 +12376,33 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 186,
+   "lines": 213,
    "present": true
   },
   "strategy-evaluation/tests/test_quantiles.py": {
@@ -9729,12 +12480,74 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 439,
+   "present": true
+  },
+  "strategy-evaluation/tests/test_sparse_signals.py": {
+   "binary": false,
+   "category": "tests",
+   "coverage": null,
+   "first_seen": "2026-11-22",
+   "history": [
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "test-quality",
+     "reason": "s6 rotation slice (6 new test files, 1,411 lines) and verify_installed.py draw",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
+    }
+   ],
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
+   "last_status": "partially_reviewed",
+   "lines": 266,
    "present": true
   },
   "strategy-evaluation/tests/test_stats_and_cli.py": {
@@ -9805,12 +12618,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 862,
+   "lines": 1173,
    "present": true
   },
   "strategy-evaluation/tests/test_validation.py": {
@@ -9881,12 +12715,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 484,
+   "lines": 485,
    "present": true
   },
   "tests/test_check_coverage_floors.py": {
@@ -9915,12 +12770,33 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
-   "lines": 395,
+   "lines": 411,
    "present": true
   },
   "tests/test_markdown_links.py": {
@@ -9991,10 +12867,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 96,
    "present": true
@@ -10074,10 +12971,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 654,
    "present": true
@@ -10150,10 +13068,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 99,
    "present": true
@@ -10233,10 +13172,31 @@
      "reason": "bug hunt deep passes 2026-11-09 data-pipeline, 2026-11-10 data-mining-framework, 2026-11-11 strategy-evaluation, 2026-11-12 scripts/root tests (credited on the audit's date)",
      "run_id": "repo-audit-2026-11-15",
      "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "bug-hunt-deep-pass",
+     "reason": "bug hunt reports 2026-11-16 to 2026-11-20 name these components as deep-passed (read-only)",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "partially_reviewed"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "tests-run",
+     "reason": "s3 full suite on 3.11 and 3.13 with branch coverage",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
-   "last_reviewed": "2026-11-15",
-   "last_seen": "2026-11-15",
+   "last_reviewed": "2026-11-22",
+   "last_seen": "2026-11-22",
    "last_status": "partially_reviewed",
    "lines": 276,
    "present": true
@@ -10309,10 +13269,24 @@
      "reason": null,
      "run_id": "repo-audit-2026-11-15",
      "status": "checked_automatically"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "inventory",
+     "reason": null,
+     "run_id": "repo-audit-2026-11-22",
+     "status": "inventoried"
+    },
+    {
+     "date": "2026-11-22",
+     "lens": "config",
+     "reason": "s2 config checks: uv lock --check, pyproject consistency, CI pins/permissions/triggers",
+     "run_id": "repo-audit-2026-11-22",
+     "status": "checked_automatically"
     }
    ],
    "last_reviewed": "2026-11-01",
-   "last_seen": "2026-11-15",
+   "last_seen": "2026-11-22",
    "last_status": "checked_automatically",
    "lines": 1517,
    "present": true
@@ -10336,6 +13310,12 @@
    "date": "2026-11-15",
    "inventory_files": 148,
    "run_id": "repo-audit-2026-11-15"
+  },
+  {
+   "credited": 254,
+   "date": "2026-11-22",
+   "inventory_files": 156,
+   "run_id": "repo-audit-2026-11-22"
   }
  ],
  "schema": 1,
@@ -10366,6 +13346,14 @@
    "strategy-evaluation/tests/test_config.py",
    "strategy-evaluation/tests/test_metrics.py",
    "strategy-evaluation/tests/test_quantiles.py"
+  ],
+  "2026-11-22": [
+   "data-mining-framework/tests/test_coverage_mining.py",
+   "data-mining-framework/tests/test_scale_check.py",
+   "data-pipeline/data-preparation/tests/test_coverage_data_cli.py",
+   "data-pipeline/data-preparation/tests/test_coverage_schemas.py",
+   "data-pipeline/data-preparation/tests/test_coverage_sources_and_pit.py",
+   "strategy-evaluation/tests/test_benchmark_delistings.py"
   ]
  }
 }

@@ -1,0 +1,24 @@
+{
+ "run_id": "repo-audit-2026-11-22",
+ "date": "2026-11-22",
+ "main_full": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+ "main_short": "eb64ad8",
+ "gpt_commit": "d3d14ce",
+ "health": [
+  "No sandbox for repository code; the clean worktrees were checked with `git status` after every step (empty).",
+  "Model: the run was planned on Fable 5.1 xhigh and ran on Opus 5.5 xhigh from the start, because the Fable gauge read 96 % at 23:37Z (rule 28 c; reset 2026-11-28 00:00 UTC); reviewer 2 ran on Opus 5.5 xhigh; verifier B was not needed. seven_day read 53 % in the Fable-model event at 23:37Z and 7 % in the run's Opus event at 00:01Z (same reset); no Fable gauge-log row appended (not in the run's write list).",
+  "Benchmarks: the machine fingerprint changed again, so there is no week-over-week comparison; a same-host A/B control put eb64ad8 1.9 % behind 2edd7ae on synth-M (search stage about 1 s slower after #51's scale check; below the 25 % threshold). Last week's formats driver published signals as parquet in every case, so the csv and sqlite medians start a new series.",
+  "Lens fixes: the timing lens's selected-family check was repaired (v3, prefix-invariant). Lens limits found this run: the statistics lens recomputes with a 0.1 % tolerance and checks the deepest drawdown's duration, not the longest; the accounting lens checks internal identities only; the formats lens reads through the code under test; the timing lens never asserts that a shock becomes visible; RA-2026-11-08-3's check matches ISO dates anywhere in report.md.",
+  "Pipe repair (v6): rows RA-2026-11-01-4, RA-2026-11-01-5 and RA-2026-11-08-2 had unescaped `|` in cells; they were rewritten with `\\|` so every row keeps its column count.",
+  "Mutation testing stays off (mutmut needs an install approval). No web page was read. Research data: the Yahoo snapshot ends 2024-12-31; nothing dated 2025-01-01 or later was read.",
+  "Reviewer 2 could not write its REPORT.md (the harness refused the write); its report came back as a message and its NOTES.md was copied to the run's work folder."
+ ],
+ "todo_candidates": [
+  "- [ ] RA-2026-11-01-10 (P3, hygiene, BUILD-03): write the two gzip tables of `quantiles/` with a fixed header (`mtime=0`) so the whole output is byte-reproducible. Done when `python -I 2026-11-01-repro/ra_gzip_tables_carry_wall_clock_mtime.py <quantiles dir> <quantiles dir of a second run>` exits 0. *Found by the weekly repo audit 2026-11-01 (re-checked 2026-11-22 on eb64ad8), ledger `audits/claude/recommendations.md` on `claude/repo-audits`.*"
+ ],
+ "todo_notes": [
+  "RA-2026-11-01-11 (route todo) is already BUILD-03 in TODO.md: no new line; this run adds evidence only (+6 test reads without `encoding=`).",
+  "RA-2026-11-22-1 (new, P2) waits for GPT's verdict (route waiting-gpt), so it gets no TODO line yet."
+ ],
+ "roadmap_candidates": []
+}
