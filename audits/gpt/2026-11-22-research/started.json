@@ -7,10 +7,12 @@
   "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
   "output_parent": "d3d14ceb2172f5efa3101cc5b1a080d21961d14c",
   "protocol": "bab6ba12399787496ba1108a9a368e00f8643441",
-  "status": "field and review complete; final verification pending",
+  "status": "bounded scope complete; report published and verified",
   "pending_jobs": [],
   "budget_minutes": 120,
   "evidence": "2026-11-22-research/evidence.json",
   "report": "2026-11-22.md",
-  "prepared_utc": "2026-11-22T02:12:57Z"
+  "prepared_utc": "2026-11-22T02:12:57Z",
+  "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+  "completed_utc": "2026-11-22T02:14:02Z"
 }

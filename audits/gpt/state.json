@@ -1042,12 +1042,14 @@
   ],
   "latest_current_run_evidence": "2026-11-22-research/evidence.json",
   "report_summary_counts": {
-    "date": "2026-11-21",
+    "date": "2026-11-22",
     "new_verified_defects": 0,
     "new_unverified_concerns": 0,
     "optional_improvements": 0,
-    "known_revisited": 1,
-    "carried_runtime_prerequisites": 3
+    "research_candidates": 1,
+    "independent_verified_research_advances": 1,
+    "experiments_attempted": 0,
+    "remote_dispatches": 0
   },
   "rotation_v3": {
     "version": 3,
@@ -4787,11 +4789,10 @@
           "targeted primary-source research",
           "prospective synthetic design",
           "fresh independent review and reconciliation",
-          "cumulative state and week aggregation"
+          "cumulative state and week aggregation",
+          "guarded publication and remote readback"
         ],
-        "remaining_steps": [
-          "guarded report publication and remote verification"
-        ],
+        "remaining_steps": [],
         "pending_jobs": [],
         "model": "gpt-6.2-sol",
         "effort": "unavailable",
@@ -4804,7 +4805,7 @@
         "helper_stage_elapsed_seconds_approx": 210,
         "evidence": "2026-11-22-research/evidence.json",
         "report": "2026-11-22.md",
-        "publication_status": "prepared",
+        "publication_status": "published_verified",
         "prepared_utc": "2026-11-22T02:12:57Z",
         "elapsed_to_preparation_seconds": 687,
         "scope_counts": {
@@ -4818,7 +4819,10 @@
           "unread_paths": 120,
           "no_applicable_or_unknown_line_count": 5,
           "new_unique_semantic_lines": 0
-        }
+        },
+        "completed_utc": "2026-11-22T02:14:02Z",
+        "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+        "elapsed_to_verified_publication_seconds": 752
       }
     ],
     "shared_controls": {
@@ -5233,11 +5237,10 @@
       "targeted primary-source research",
       "prospective synthetic design",
       "fresh independent review and reconciliation",
-      "cumulative state and week aggregation"
+      "cumulative state and week aggregation",
+      "guarded publication and remote readback"
     ],
-    "remaining_steps": [
-      "guarded report publication and remote verification"
-    ],
+    "remaining_steps": [],
     "pending_jobs": [],
     "model": "gpt-6.2-sol",
     "effort": "unavailable",
@@ -5250,7 +5253,7 @@
     "helper_stage_elapsed_seconds_approx": 210,
     "evidence": "2026-11-22-research/evidence.json",
     "report": "2026-11-22.md",
-    "publication_status": "prepared",
+    "publication_status": "published_verified",
     "prepared_utc": "2026-11-22T02:12:57Z",
     "elapsed_to_preparation_seconds": 687,
     "scope_counts": {
@@ -5264,7 +5267,10 @@
       "unread_paths": 120,
       "no_applicable_or_unknown_line_count": 5,
       "new_unique_semantic_lines": 0
-    }
+    },
+    "completed_utc": "2026-11-22T02:14:02Z",
+    "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+    "elapsed_to_verified_publication_seconds": 752
   },
   "publication_history": [
     {
@@ -5938,16 +5944,151 @@
       "verified_utc": "2026-11-21T02:23:23.729243Z",
       "elapsed_to_verified_publication_seconds": 1327,
       "scope_note": "These blob IDs describe the first completed report commit. This subsequent verification checkpoint records that publication; its own commit identity is reported after remote readback, avoiding a circular self-hash."
+    },
+    {
+      "date": "2026-11-22",
+      "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+      "branch": "gpt/repo-audits",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+      "verified_head_at_report": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+      "output_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+      "tree": "e34f812eea58fd6a2424880a711c667bde459ab2",
+      "status": "published_verified",
+      "verified_utc": "2026-11-22T02:14:02Z",
+      "report_url": "https://github.com/sasasqt/invest/blob/a0959fe1f7e5e47e4da4981ccf3e4258298f1dba/audits/gpt/2026-11-22.md",
+      "guarded_expected_old_sha": true,
+      "force": false,
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-22-research/ci-observations.json",
+        "audits/gpt/2026-11-22-research/evidence.json",
+        "audits/gpt/2026-11-22-research/method-verification.json",
+        "audits/gpt/2026-11-22-research/publication.json",
+        "audits/gpt/2026-11-22-research/reviewer1-initial.json",
+        "audits/gpt/2026-11-22-research/reviewer2.md",
+        "audits/gpt/2026-11-22-research/started.json",
+        "audits/gpt/2026-11-22-research/verification-comparison.json",
+        "audits/gpt/2026-11-22.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/research/backlog.md",
+        "audits/gpt/research/experiments.jsonl",
+        "audits/gpt/research/ideas.md",
+        "audits/gpt/research/papers.jsonl",
+        "audits/gpt/research/queries.jsonl",
+        "audits/gpt/research/scouting-2026-11-22.md",
+        "audits/gpt/research/state.json",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv",
+        "audits/gpt/weekly-2026-W47.md"
+      ],
+      "verified_git_blob_ids": {
+        "audits/gpt/2026-11-22.md": "e46d9f51044dfbd346bd59212de15d47e2e5890a",
+        "audits/gpt/weekly-2026-W47.md": "c5eff7457b555e7e7da9db5af451d691e74a136b",
+        "audits/gpt/state.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
+        "audits/gpt/checkpoint.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
+        "audits/gpt/2026-11-22-research/started.json": "e06fc49af982921fabe9e0d0fc0d583ba4047445",
+        "audits/gpt/2026-11-22-research/method-verification.json": "d0790485b8772c2c138e5af7bda606fe51fd3a6e",
+        "audits/gpt/2026-11-22-research/evidence.json": "4bd9400610821ad090c0e015b9cfb88492bfcdf3",
+        "audits/gpt/2026-11-22-research/ci-observations.json": "ae1ab06d6f1baa96be976d8a4712c7f6cc072012",
+        "audits/gpt/2026-11-22-research/reviewer1-initial.json": "8bc89579614a9dbfc58c72cbc9fa4d8261c60b7d",
+        "audits/gpt/2026-11-22-research/reviewer2.md": "33b2689260a5101df8136ebf5e684d9f9dc74e05",
+        "audits/gpt/2026-11-22-research/verification-comparison.json": "4cdd051b0230a60fa068df04ee2562297224d591",
+        "audits/gpt/2026-11-22-research/publication.json": "9f906ebbdece65dc838da188fd54fc5ab0ce26bf",
+        "audits/gpt/research/scouting-2026-11-22.md": "064779778a53ba6512be28e69323afb78b7339f7",
+        "audits/gpt/research/state.json": "b845d5438fb413bd40dd8ef31d38cf9705d68182",
+        "audits/gpt/research/ideas.md": "a44add9e4d92efb71dd09ca10428e5defa36be16",
+        "audits/gpt/research/backlog.md": "3312b56c96351e98ebeda41e4de288b0b1bd6498",
+        "audits/gpt/research/papers.jsonl": "e724e8724b5be753a22f4051abe53285173e8d2a",
+        "audits/gpt/research/queries.jsonl": "e88115fb5b9674246dc9897beadbfdd56960721d",
+        "audits/gpt/research/experiments.jsonl": "92aa8de193a142b8052fe17c2079dd4921c1c726",
+        "audits/gpt/cross-check.md": "ac44142ceb29fe317ba0638d72e5b4c88d0212ee",
+        "audits/gpt/validation.csv": "43512a71afb07a60d7493568cf04bb90aec8058c"
+      },
+      "full_text_readback_paths": [
+        "audits/gpt/2026-11-22.md",
+        "audits/gpt/weekly-2026-W47.md",
+        "audits/gpt/state.json",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/research/state.json",
+        "audits/gpt/2026-11-22-research/evidence.json"
+      ],
+      "peer_and_root_tree_unchanged": true,
+      "elapsed_to_verified_publication_seconds": 752
     }
   ],
   "publication_current_run": {
     "date": "2026-11-22",
     "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
-    "status": "prepared",
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "output_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
     "branch": "gpt/repo-audits",
-    "report": "2026-11-22.md"
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+    "verified_head_at_report": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+    "output_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+    "tree": "e34f812eea58fd6a2424880a711c667bde459ab2",
+    "status": "published_verified",
+    "verified_utc": "2026-11-22T02:14:02Z",
+    "report_url": "https://github.com/sasasqt/invest/blob/a0959fe1f7e5e47e4da4981ccf3e4258298f1dba/audits/gpt/2026-11-22.md",
+    "guarded_expected_old_sha": true,
+    "force": false,
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-22-research/ci-observations.json",
+      "audits/gpt/2026-11-22-research/evidence.json",
+      "audits/gpt/2026-11-22-research/method-verification.json",
+      "audits/gpt/2026-11-22-research/publication.json",
+      "audits/gpt/2026-11-22-research/reviewer1-initial.json",
+      "audits/gpt/2026-11-22-research/reviewer2.md",
+      "audits/gpt/2026-11-22-research/started.json",
+      "audits/gpt/2026-11-22-research/verification-comparison.json",
+      "audits/gpt/2026-11-22.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/research/backlog.md",
+      "audits/gpt/research/experiments.jsonl",
+      "audits/gpt/research/ideas.md",
+      "audits/gpt/research/papers.jsonl",
+      "audits/gpt/research/queries.jsonl",
+      "audits/gpt/research/scouting-2026-11-22.md",
+      "audits/gpt/research/state.json",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv",
+      "audits/gpt/weekly-2026-W47.md"
+    ],
+    "verified_git_blob_ids": {
+      "audits/gpt/2026-11-22.md": "e46d9f51044dfbd346bd59212de15d47e2e5890a",
+      "audits/gpt/weekly-2026-W47.md": "c5eff7457b555e7e7da9db5af451d691e74a136b",
+      "audits/gpt/state.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
+      "audits/gpt/checkpoint.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
+      "audits/gpt/2026-11-22-research/started.json": "e06fc49af982921fabe9e0d0fc0d583ba4047445",
+      "audits/gpt/2026-11-22-research/method-verification.json": "d0790485b8772c2c138e5af7bda606fe51fd3a6e",
+      "audits/gpt/2026-11-22-research/evidence.json": "4bd9400610821ad090c0e015b9cfb88492bfcdf3",
+      "audits/gpt/2026-11-22-research/ci-observations.json": "ae1ab06d6f1baa96be976d8a4712c7f6cc072012",
+      "audits/gpt/2026-11-22-research/reviewer1-initial.json": "8bc89579614a9dbfc58c72cbc9fa4d8261c60b7d",
+      "audits/gpt/2026-11-22-research/reviewer2.md": "33b2689260a5101df8136ebf5e684d9f9dc74e05",
+      "audits/gpt/2026-11-22-research/verification-comparison.json": "4cdd051b0230a60fa068df04ee2562297224d591",
+      "audits/gpt/2026-11-22-research/publication.json": "9f906ebbdece65dc838da188fd54fc5ab0ce26bf",
+      "audits/gpt/research/scouting-2026-11-22.md": "064779778a53ba6512be28e69323afb78b7339f7",
+      "audits/gpt/research/state.json": "b845d5438fb413bd40dd8ef31d38cf9705d68182",
+      "audits/gpt/research/ideas.md": "a44add9e4d92efb71dd09ca10428e5defa36be16",
+      "audits/gpt/research/backlog.md": "3312b56c96351e98ebeda41e4de288b0b1bd6498",
+      "audits/gpt/research/papers.jsonl": "e724e8724b5be753a22f4051abe53285173e8d2a",
+      "audits/gpt/research/queries.jsonl": "e88115fb5b9674246dc9897beadbfdd56960721d",
+      "audits/gpt/research/experiments.jsonl": "92aa8de193a142b8052fe17c2079dd4921c1c726",
+      "audits/gpt/cross-check.md": "ac44142ceb29fe317ba0638d72e5b4c88d0212ee",
+      "audits/gpt/validation.csv": "43512a71afb07a60d7493568cf04bb90aec8058c"
+    },
+    "full_text_readback_paths": [
+      "audits/gpt/2026-11-22.md",
+      "audits/gpt/weekly-2026-W47.md",
+      "audits/gpt/state.json",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/research/state.json",
+      "audits/gpt/2026-11-22-research/evidence.json"
+    ],
+    "peer_and_root_tree_unchanged": true,
+    "elapsed_to_verified_publication_seconds": 752
   },
   "remaining_work_current_visit": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment.",
   "runtime_validation_history": [
