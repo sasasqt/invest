@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-22",
+  "candidates": [
+    {
+      "id": "GA-2026-11-22-1",
+      "kind": "research hypothesis",
+      "decision": "retain as specified with data/API gaps; no new defect",
+      "severity": "not a defect",
+      "reason": "Primary paper separates curve measurement and trade returns; source supports scalar score transport but not an equivalent futures replay. Paired toy establishes nonidentifiability, not a signal edge.",
+      "missing": "authorized pre2025 named history, contract selection/mark/cost validation and independent futures accounting"
+    },
+    {
+      "id": "CARRY-BARS-PROXY-DROP",
+      "decision": "drop faithful carry reconstruction from one OHLCV series; keep separate possible equity dividend-yield hypothesis unqualified",
+      "reason": "Same front has opposite carry under different deferred quotes; adjusted total-return bars are not contemporaneous expected dividend cashflows. Faithful claim needs independent observable curve or documented forward cashflow information."
+    }
+  ]
+}

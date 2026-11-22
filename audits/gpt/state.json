@@ -47,8 +47,8 @@
   },
   "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
   "last_audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-  "last_audited_date": "2026-11-21",
-  "last_run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+  "last_audited_date": "2026-11-22",
+  "last_run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
   "coverage_counts": {
     "tracked_files": 156,
     "inventoried": 77,
@@ -85,7 +85,7 @@
       "confirmed_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations"
     }
   ],
-  "last_peer_revision": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+  "last_peer_revision": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
   "peer_fingerprints": [
     "RA-2026-11-01-1",
     "RA-2026-11-01-2",
@@ -239,9 +239,9 @@
     "16": "s",
     "17": "o",
     "18": "n",
-    "latest": "2026-11-15",
+    "latest": "2026-11-22",
     "state_path": "research/state.json",
-    "candidate": "GA-2026-11-15-1",
+    "candidate": "GA-2026-11-22-1",
     "experiments_run": 0
   },
   "completed_utc": "2026-11-14T02:11:34Z",
@@ -1030,9 +1030,17 @@
       "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
       "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
       "evidence": "2026-11-19-integration/evidence.json"
+    },
+    {
+      "date": "2026-11-22",
+      "field": "research",
+      "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
+      "evidence": "2026-11-22-research/evidence.json"
     }
   ],
-  "latest_current_run_evidence": "2026-11-21-performance/evidence.json",
+  "latest_current_run_evidence": "2026-11-22-research/evidence.json",
   "report_summary_counts": {
     "date": "2026-11-21",
     "new_verified_defects": 0,
@@ -4144,7 +4152,7 @@
             ],
             "pooled_rates_per_1000_lines": [
               0.8810572687224669,
-              0.0
+              0
             ],
             "comparable_visits": 2,
             "next_planned_percent": [
@@ -4160,8 +4168,8 @@
       },
       "research": {
         "weekday": 6,
-        "last_rotation_visit": "2026-11-15",
-        "last_substantive_advance": "2026-11-15",
+        "last_rotation_visit": "2026-11-22",
+        "last_substantive_advance": "2026-11-22",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
@@ -4190,7 +4198,8 @@
         "queue_refs": [
           "GA-2026-10-31-3",
           "GA-2026-10-31-4",
-          "GA-2026-11-15-1"
+          "GA-2026-11-15-1",
+          "GA-2026-11-22-1"
         ],
         "deferrals": {},
         "reading_allocation": [
@@ -4199,13 +4208,20 @@
         ],
         "field_yield_history": [],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-        "last_report": "2026-11-15.md",
-        "next_item": "after isolation and warm-up, test actual-fill membership against rejected-vs-clipped synthetic pair",
+        "last_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "last_report": "2026-11-22.md",
+        "next_item": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment.",
         "completed_advances": [
-          "ADV-2026-11-15-1"
+          "ADV-2026-11-15-1",
+          "Pinned source and two opposing synthetic curves establish required cross-maturity inputs. Independent review separately confirmed score transport and return-accounting gaps."
         ],
-        "validation_freshness": "primary literature and static feasibility at named main, no execution"
+        "validation_freshness": {
+          "label": "current for named static feasibility and primary method scope; experimental unavailable",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-22-research/evidence.json",
+          "date": "2026-11-22"
+        },
+        "last_substantive_run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f"
       }
     },
     "inherited_queues": {
@@ -4235,6 +4251,49 @@
         "week_id": "2026-W46",
         "report": "weekly-2026-W46.md",
         "run_id": "cca879dd-1568-8330-a387-44c5c10194a4"
+      },
+      {
+        "week_id": "2026-W47",
+        "report": "weekly-2026-W47.md",
+        "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+        "generated_date": "2026-11-22",
+        "field_source_snapshot": [
+          {
+            "field": "Data integrity",
+            "date": "2026-11-16",
+            "sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+          },
+          {
+            "field": "Factor mining",
+            "date": "2026-11-17",
+            "sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+          },
+          {
+            "field": "Strategy evaluation",
+            "date": "2026-11-18",
+            "sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41"
+          },
+          {
+            "field": "Integration",
+            "date": "2026-11-19",
+            "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+          },
+          {
+            "field": "Engineering",
+            "date": "2026-11-06",
+            "sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
+          },
+          {
+            "field": "Performance",
+            "date": "2026-11-21",
+            "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+          },
+          {
+            "field": "Research",
+            "date": "2026-11-22",
+            "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+          }
+        ]
       }
     ],
     "last_four_week_assessment": null,
@@ -4401,10 +4460,18 @@
         ]
       },
       "research_visit": {
-        "date": "2026-11-15",
+        "date": "2026-11-22",
         "neglected_topic": "carry",
-        "two_visit_deferrals": "no two comparable research visits observed in active rotation",
-        "fourteen_day_flags": "none among dated field advances; 13 November unknown"
+        "oldest_feasible_advanced": "GA-2026-11-22-1",
+        "retained_prior_items": [
+          "GA-2026-10-31-3",
+          "GA-2026-10-31-4",
+          "GA-2026-11-15-1"
+        ],
+        "fourteen_day_flags": [
+          "engineering: last 2026-11-06, age 16 days; take oldest feasible slice next visit"
+        ],
+        "next": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment."
       }
     },
     "visit_history": [
@@ -4699,6 +4766,59 @@
         },
         "verified_report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
         "completed_utc": "2026-11-21T02:23:23.729243Z"
+      },
+      {
+        "date": "2026-11-22",
+        "field": "research",
+        "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+        "scheduled_for": "2026-11-22T02:00:00Z",
+        "started_utc": "2026-11-22T02:01:29.986058Z",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "output_base": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+        "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
+        "completed_steps": [
+          "pinned identities and verified methods",
+          "overlap and started checkpoint",
+          "same-SHA CI and common controls",
+          "targeted primary-source research",
+          "prospective synthetic design",
+          "fresh independent review and reconciliation",
+          "cumulative state and week aggregation"
+        ],
+        "remaining_steps": [
+          "guarded report publication and remote verification"
+        ],
+        "pending_jobs": [],
+        "model": "gpt-6.2-sol",
+        "effort": "unavailable",
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+        "actual_runner_sha": null,
+        "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "helper_count": 1,
+        "helper_stage_elapsed_seconds_approx": 210,
+        "evidence": "2026-11-22-research/evidence.json",
+        "report": "2026-11-22.md",
+        "publication_status": "prepared",
+        "prepared_utc": "2026-11-22T02:12:57Z",
+        "elapsed_to_preparation_seconds": 687,
+        "scope_counts": {
+          "tracked_files": 156,
+          "inventoried": 77,
+          "partially_reviewed": 25,
+          "reviewed": 28,
+          "checked_automatically": 5,
+          "blocked": 21,
+          "unread_lines": 40367,
+          "unread_paths": 120,
+          "no_applicable_or_unknown_line_count": 5,
+          "new_unique_semantic_lines": 0
+        }
       }
     ],
     "shared_controls": {
@@ -4712,8 +4832,8 @@
         "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
         "run": 44246922942,
         "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
-        "last_reused_date": "2026-11-21",
-        "reuse_reason": "Same pinned source eb64; fixture657-693 re-read and exact-source normal CI logs refreshed. Existing bounded three-flag acceptance, no local repeats."
+        "last_reused_date": "2026-11-22",
+        "reuse_reason": "Re-read exact current-main fixture and standard CI logs. Same demonstrated case/refusal scope."
       },
       "windows": {
         "date": "2026-11-21",
@@ -4731,9 +4851,29 @@
         "job": 136516962817,
         "result": "Python3.11.9 Windows product CI1269passed7skipped; logged native Git Bash, strict mypy command; matching merge parents checked. Python3.13 job success observed, detailed log not reread.",
         "evidence": "2026-11-21-performance/ci-observations.json",
-        "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested."
+        "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested.",
+        "pr66_state_rechecked": "2026-11-22",
+        "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7049539333"
       }
-    }
+    },
+    "peer_leads": [
+      {
+        "id": "RA-2026-11-22-1",
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+        "checked": "2026-11-22",
+        "status": "cannot check within Sunday scope",
+        "owners": [
+          "engineering",
+          "mining",
+          "evaluation"
+        ],
+        "next": [
+          "retired pending orders",
+          "parser unary positive/constant functions",
+          "leg-size/split correction"
+        ]
+      }
+    ]
   },
   "concurrent_reconciliation": {
     "parent": "40187531fedd04c2fc8be5a049874cd49b0b6cee",
@@ -4745,7 +4885,7 @@
     "current_unread_lines": 17827,
     "current_unread_paths": 69
   },
-  "prepared_utc": "2026-11-09T02:10:45.754Z",
+  "prepared_utc": "2026-11-22T02:12:57Z",
   "elapsed_wall_seconds_from_supplied_run_context": 713,
   "elapsed_clock_limitation": "Wall-clock difference from scheduled run start; not exclusive model/tool CPU.",
   "delivery_observation": {
@@ -4863,63 +5003,6 @@
       },
       "last_run_id": "223322f0-d428-8329-9139-ee662049dd92",
       "snapshot_date": "2026-11-05"
-    },
-    {
-      "current_run": {
-        "run_id": "b0aeab97-b1b8-832f-be0b-d1fe80bcfc01",
-        "date": "2026-11-05",
-        "field": "integration",
-        "scheduled_for": "2026-11-05T02:00:00Z",
-        "started_utc": "2026-11-05T01:55:56.493488Z",
-        "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
-        "output_base": "8de0b4591938a6712bdbf0079e2c0133e1f4be76",
-        "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
-        "question": "Recorder atomic publication, content inventory and provenance across synthetic workflow -> saved run; static work until runtime prerequisites proven",
-        "status": "bounded static question complete; custom product runtime blocked",
-        "budget_minutes": {
-          "total": 120,
-          "common": 20,
-          "field": 70,
-          "review_report": 30
-        },
-        "model": "gpt-6.1-sol",
-        "effort": "unavailable",
-        "prior_run_reconciliation": "Nov4 completed report and receipt present; no active remote jobs recorded; Nov1 missing final remains unknown execution",
-        "prepared_utc": "2026-11-05T02:04:36.812376+00:00",
-        "report": "2026-11-05.md",
-        "scope_counts": {
-          "tracked_files": 111,
-          "bytes_verified_files": 16,
-          "primary_semantic_lines": 2053,
-          "primary_by_bucket": {
-            "exploitation": 409,
-            "exploration": 414,
-            "mandatory_callers_contracts": 1230
-          },
-          "helper_lines_separate": 1082,
-          "new_cumulative_lines_all_reviewers": 1289,
-          "statuses": {
-            "reviewed": 42,
-            "inventoried": 16,
-            "partially_reviewed": 18,
-            "checked_automatically": 13,
-            "blocked": 22
-          },
-          "unread_lines": 18071,
-          "unread_paths": 64
-        },
-        "helper_count": 1,
-        "helper_budget_minutes": 15,
-        "new_product_runs": 0,
-        "remote_compute_dispatched": 0,
-        "publication_status": "published; remote ref/diff/report/blob verification complete",
-        "elapsed_to_preparation_seconds": 520.318888,
-        "usage": "tokens/cost/helper compute unavailable; no invented allowance",
-        "report_commit": "677b3d445bfd3698729c343c7920dd73caa753bc",
-        "publication_verified_utc": "2026-11-05T02:08:14Z",
-        "delivery_main_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3"
-      },
-      "snapshot_date": "2026-11-06"
     },
     {
       "run_id": "8110c723-e0a4-8332-8efe-10b6fbb6b7fa",
@@ -5076,173 +5159,100 @@
       "elapsed_to_verified_publication_seconds": 513
     },
     {
-      "date": "2026-11-19",
-      "prior_current_run": {
-        "date": "2026-11-18",
-        "field": "evaluation",
-        "scheduled_for": "2026-11-18T02:00:00Z",
-        "started_utc": "2026-11-18T02:04:26.404507Z",
-        "run_id": "db146810-e628-832e-8e30-4f6a8cac6088",
-        "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-        "source_tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
-        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
-        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
-        "output_base": "bbff5bb4f84d203ab12f6c7d9ae0493842f0d4ec",
-        "previous_publication": "40ddb21c3e868ebcc9c985a4621ce70d4554291c",
-        "model": "unavailable",
-        "effort": "unavailable",
-        "status": "bounded static and exact-CI scope complete; independent runtime acceptance pending",
-        "completed_steps": [
-          "method verification and continuity",
-          "same-SHA CI logs and coverage gates",
-          "main and PR #58 source traces",
-          "synthetic arithmetic and fresh independent review",
-          "exact range and queue updates"
-        ],
-        "remaining_steps": [
-          "common checks",
-          "field scope",
-          "independent review",
-          "report and verify"
-        ],
-        "pending_jobs": [],
-        "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
-        "runner_sha": null,
-        "planned_runner_ref": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-        "elapsed_to_preparation_seconds": 926,
-        "helper_count": 1,
-        "new_product_runs": 0,
-        "evidence": "2026-11-18-evaluation/evidence.json",
-        "report": "2026-11-18.md",
-        "publication_status": "published_verified",
-        "verified_report_commit": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
-        "elapsed_to_verified_publication_seconds": 1024
+      "date": "2026-11-21",
+      "field": "performance",
+      "scheduled_for": "2026-11-21T02:00:00Z",
+      "started_utc": "2026-11-21T02:01:17.176474Z",
+      "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+      "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "output_base": "cc5a4f48506c1b930fb8adbf0a09eb9f37a53ea6",
+      "model": "unavailable",
+      "effort": "unavailable",
+      "status": "bounded static review complete; daily runtime/performance scope partial; whole-repository Audit incomplete",
+      "completed_steps": [
+        "verified methods/continuity/started checkpoint",
+        "current source CI observations",
+        "partial expected-artifact control specification",
+        "independent verification",
+        "coverage and queues",
+        "prepared report and checkpoint",
+        "guarded publication and remote readback"
+      ],
+      "remaining_steps": [],
+      "pending_jobs": [],
+      "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+      "actual_runner_sha": null,
+      "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "helper_count": 1,
+      "helper_stage_elapsed_seconds_approx": 257,
+      "evidence": "2026-11-21-performance/evidence.json",
+      "report": "2026-11-21.md",
+      "publication_status": "published_verified",
+      "prepared_utc": "2026-11-21T02:18:56.542226Z",
+      "elapsed_to_preparation_seconds": 1059,
+      "scope_counts": {
+        "tracked_files": 156,
+        "inventoried": 77,
+        "partially_reviewed": 25,
+        "reviewed": 28,
+        "checked_automatically": 5,
+        "blocked": 21,
+        "unread_lines": 40367,
+        "unread_paths": 120,
+        "no_applicable_or_unknown_line_count": 5,
+        "new_unique_semantic_lines": 967
       },
-      "prior_status": "bounded literature/static scope complete; synthetic experiment blocked"
-    },
-    {
-      "current_run": {
-        "date": "2026-11-19",
-        "field": "integration",
-        "scheduled_for": "2026-11-19T02:00:00Z",
-        "started_utc": "2026-11-19T02:00:53.714892Z",
-        "run_id": "bafac396-d340-8320-a4af-88932fce1027",
-        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
-        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
-        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
-        "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-        "output_base": "5ff3f32621d65c6b37013060fc2ed2455eb2f33c",
-        "previous_publication": "20a4854aba0163e8b0c0d4f032e24eb1abf96b9c",
-        "model": "unavailable",
-        "effort": "unavailable",
-        "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
-        "completed_steps": [
-          "methods and continuity",
-          "common exact-main CI gates",
-          "bounded RECORD/recorder trace",
-          "independent verification",
-          "coverage and queues",
-          "guarded publication and remote readback"
-        ],
-        "remaining_steps": [],
-        "pending_jobs": [],
-        "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
-        "actual_runner_sha": null,
-        "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "new_product_runs": 0,
-        "helper_count": 1,
-        "evidence": "2026-11-19-integration/evidence.json",
-        "report": "2026-11-19.md",
-        "publication_status": "published_verified",
-        "elapsed_to_preparation_seconds": 976,
-        "verified_report_commit": "5fe4e5a4d75b62bac08109a472d7562db1d0c216",
-        "elapsed_to_verified_publication_seconds": 1243
-      },
-      "publication_current_run": {
-        "date": "2026-11-19",
-        "run_id": "bafac396-d340-8320-a4af-88932fce1027",
-        "status": "published_verified",
-        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "report_commit": "5fe4e5a4d75b62bac08109a472d7562db1d0c216",
-        "report_url": "https://github.com/sasasqt/invest/blob/5fe4e5a4d75b62bac08109a472d7562db1d0c216/audits/gpt/2026-11-19.md",
-        "output_parent": "f512f54c68b547fbb60903d744ca856f6bd68746",
-        "verified_head_at_report": "5fe4e5a4d75b62bac08109a472d7562db1d0c216",
-        "verified_changed_paths": [
-          "audits/gpt/2026-11-19-integration/evidence.json",
-          "audits/gpt/2026-11-19.md",
-          "audits/gpt/checkpoint.json",
-          "audits/gpt/coverage-map.json",
-          "audits/gpt/coverage-map.md",
-          "audits/gpt/coverage.csv",
-          "audits/gpt/cross-check.md",
-          "audits/gpt/exploration.json",
-          "audits/gpt/findings.json",
-          "audits/gpt/findings.md",
-          "audits/gpt/state.json",
-          "audits/gpt/validation.csv"
-        ],
-        "verified_git_blob_ids": {
-          "audits/gpt/2026-11-19-integration/evidence.json": "e4f1e79012d6205b87414c1bc74b4d2cae048454",
-          "audits/gpt/2026-11-19.md": "c94c2045124f4bd76a7f3f2439c0ea774e0c5f83",
-          "audits/gpt/checkpoint.json": "dc013455b46fcc572ef44e06d4747c66f4589724",
-          "audits/gpt/coverage-map.json": "0efff8f4c8a5eb84460eacbe0552dc437a094954",
-          "audits/gpt/coverage-map.md": "7ef8d346f4339c5f083badb965a7adc5ca735021",
-          "audits/gpt/coverage.csv": "ffdea29ccd541cb7906ac58945f89c4cc25c2312",
-          "audits/gpt/cross-check.md": "d1d7f6f72dd509003581779f47643a3ed6cfef4b",
-          "audits/gpt/exploration.json": "7e975b91f9e4046f39e246c027ed1e91a6911f20",
-          "audits/gpt/findings.json": "61701e69fb22e07d314148831d8af3d2d76d1ad2",
-          "audits/gpt/findings.md": "3e689bc7752970924c399323a9947c662336f5fb",
-          "audits/gpt/state.json": "dc013455b46fcc572ef44e06d4747c66f4589724",
-          "audits/gpt/validation.csv": "f05d774ad384236bc7f13ecb98a3297bf4dcc365"
-        },
-        "readback_verified": true,
-        "force": false,
-        "verified_utc": "2026-11-19T02:21:37Z",
-        "elapsed_to_verified_publication_seconds": 1243
-      },
-      "preserved_at": "2026-11-21T02:18:56.542226Z"
+      "verified_report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
+      "completed_utc": "2026-11-21T02:23:23.729243Z",
+      "elapsed_to_verified_publication_seconds": 1327
     }
   ],
   "current_run": {
-    "date": "2026-11-21",
-    "field": "performance",
-    "scheduled_for": "2026-11-21T02:00:00Z",
-    "started_utc": "2026-11-21T02:01:17.176474Z",
-    "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
+    "date": "2026-11-22",
+    "field": "research",
+    "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+    "scheduled_for": "2026-11-22T02:00:00Z",
+    "started_utc": "2026-11-22T02:01:29.986058Z",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
     "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
     "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-    "output_base": "cc5a4f48506c1b930fb8adbf0a09eb9f37a53ea6",
-    "model": "unavailable",
-    "effort": "unavailable",
-    "status": "bounded static review complete; daily runtime/performance scope partial; whole-repository Audit incomplete",
+    "output_base": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+    "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
     "completed_steps": [
-      "verified methods/continuity/started checkpoint",
-      "current source CI observations",
-      "partial expected-artifact control specification",
-      "independent verification",
-      "coverage and queues",
-      "prepared report and checkpoint",
-      "guarded publication and remote readback"
+      "pinned identities and verified methods",
+      "overlap and started checkpoint",
+      "same-SHA CI and common controls",
+      "targeted primary-source research",
+      "prospective synthetic design",
+      "fresh independent review and reconciliation",
+      "cumulative state and week aggregation"
     ],
-    "remaining_steps": [],
+    "remaining_steps": [
+      "guarded report publication and remote verification"
+    ],
     "pending_jobs": [],
-    "peer_sha": "cc4cf4e62b445c066be0e8cccedeeee6dee50836",
+    "model": "gpt-6.2-sol",
+    "effort": "unavailable",
+    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
     "actual_runner_sha": null,
     "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
     "helper_count": 1,
-    "helper_stage_elapsed_seconds_approx": 257,
-    "evidence": "2026-11-21-performance/evidence.json",
-    "report": "2026-11-21.md",
-    "publication_status": "published_verified",
-    "prepared_utc": "2026-11-21T02:18:56.542226Z",
-    "elapsed_to_preparation_seconds": 1059,
+    "helper_stage_elapsed_seconds_approx": 210,
+    "evidence": "2026-11-22-research/evidence.json",
+    "report": "2026-11-22.md",
+    "publication_status": "prepared",
+    "prepared_utc": "2026-11-22T02:12:57Z",
+    "elapsed_to_preparation_seconds": 687,
     "scope_counts": {
       "tracked_files": 156,
       "inventoried": 77,
@@ -5253,11 +5263,8 @@
       "unread_lines": 40367,
       "unread_paths": 120,
       "no_applicable_or_unknown_line_count": 5,
-      "new_unique_semantic_lines": 967
-    },
-    "verified_report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
-    "completed_utc": "2026-11-21T02:23:23.729243Z",
-    "elapsed_to_verified_publication_seconds": 1327
+      "new_unique_semantic_lines": 0
+    }
   },
   "publication_history": [
     {
@@ -5934,72 +5941,15 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-21",
-    "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
-    "status": "published_verified",
+    "date": "2026-11-22",
+    "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+    "status": "prepared",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
-    "report_url": "https://github.com/sasasqt/invest/blob/194e0f5b856a67fdf578effaa3a7749a69eb08e4/audits/gpt/2026-11-21.md",
-    "output_parent": "cc5a4f48506c1b930fb8adbf0a09eb9f37a53ea6",
-    "verified_head_at_report": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-21-performance/started.json",
-      "audits/gpt/benchmarks/history.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/findings.md",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv",
-      "audits/gpt/2026-11-21-performance/ci-observations.json",
-      "audits/gpt/2026-11-21-performance/evidence.json",
-      "audits/gpt/2026-11-21-performance/expected-artifacts.json",
-      "audits/gpt/2026-11-21-performance/method-verification.json",
-      "audits/gpt/2026-11-21-performance/reading.json",
-      "audits/gpt/2026-11-21-performance/reviewer1-initial.json",
-      "audits/gpt/2026-11-21-performance/reviewer2-verification.json",
-      "audits/gpt/2026-11-21-performance/source-identities.json",
-      "audits/gpt/2026-11-21-performance/static-checks.json",
-      "audits/gpt/2026-11-21-performance/verification-comparison.json",
-      "audits/gpt/2026-11-21.md"
-    ],
-    "verified_git_blob_ids": {
-      "audits/gpt/2026-11-21-performance/ci-observations.json": "9e1031a85105dc864d03ba071ab59c837f80e601",
-      "audits/gpt/2026-11-21-performance/evidence.json": "3244277b5b7a0574cdfd79249bbf88e2d648c7bb",
-      "audits/gpt/2026-11-21-performance/expected-artifacts.json": "4799d07f721f8a5f4d50a698f534ec9111094827",
-      "audits/gpt/2026-11-21-performance/method-verification.json": "e829501a6091a3180b5f5604d03c9e95a13e83d1",
-      "audits/gpt/2026-11-21-performance/reading.json": "f3d9b724584b6df017a5434a3bb50e9d62106cce",
-      "audits/gpt/2026-11-21-performance/reviewer1-initial.json": "b098d1bfd268e846d63a7039c231d52ea88016d7",
-      "audits/gpt/2026-11-21-performance/reviewer2-verification.json": "bdedfba69b5602f44e9884ace0a8e63a9dc61266",
-      "audits/gpt/2026-11-21-performance/source-identities.json": "e7f862b837932df7bd3b44f5cd29ef7faac939f7",
-      "audits/gpt/2026-11-21-performance/started.json": "8686064e6d215474e97de8e392a0c97b250246c5",
-      "audits/gpt/2026-11-21-performance/static-checks.json": "2995f46e80032b8c920b6c46af661c1812e8e731",
-      "audits/gpt/2026-11-21-performance/verification-comparison.json": "782b3002a36a85c50ee516b44b2458e4492dccc5",
-      "audits/gpt/2026-11-21.md": "a6f702d94a36d0ee082af5ad1de8adf12dd2f38c",
-      "audits/gpt/benchmarks/history.md": "7585705771c31425e1681d88fddcf56cd7114929",
-      "audits/gpt/checkpoint.json": "addc2e1e08d46ae0dd2409067065c32ffc1ad460",
-      "audits/gpt/coverage-map.json": "581b63935ec22ae6de683a2f997a40672573bb2b",
-      "audits/gpt/coverage-map.md": "1f3ff4b5dc5064fc3a34bf99acd618efec08e423",
-      "audits/gpt/coverage.csv": "0e2d091beb5af347334e89ec55d916e9a35d3da4",
-      "audits/gpt/cross-check.md": "42cf117725da39ab22e8fbd59d5dc03706d4f406",
-      "audits/gpt/exploration.json": "4b0c975ebcaf574aa6b3254b13173381d257fde5",
-      "audits/gpt/findings.json": "1f7c6d234b3e4463c64b7dfb9937f97f9354c925",
-      "audits/gpt/findings.md": "e7ef52b2e124b09fd0a711e61666653445c12acb",
-      "audits/gpt/state.json": "addc2e1e08d46ae0dd2409067065c32ffc1ad460",
-      "audits/gpt/validation.csv": "fd08c8655c21162d78969d653abfb5cca39f9826"
-    },
-    "readback_verified": true,
-    "force": false,
-    "verified_utc": "2026-11-21T02:23:23.729243Z",
-    "elapsed_to_verified_publication_seconds": 1327,
-    "scope_note": "These blob IDs describe the first completed report commit. This subsequent verification checkpoint records that publication; its own commit identity is reported after remote readback, avoiding a circular self-hash."
+    "output_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+    "branch": "gpt/repo-audits",
+    "report": "2026-11-22.md"
   },
-  "remaining_work_current_visit": "bounded static review complete; daily runtime/performance scope partial; whole-repository Audit incomplete; Complete bundle/export schemas and downstream trial/DSR trace, then qualified zero-byte gzip and equal-missing-output controls; matched scale/format timings remain blocked.",
+  "remaining_work_current_visit": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",

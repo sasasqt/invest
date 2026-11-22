@@ -19,3 +19,8 @@ Zero experiments declared or attempted today; no real data accessed. Existing GA
 
 - **GA-2026-11-15-1** · Fingerprint `research:strategy:executed-holdings-entry-retention-buffer` · Exploitation · Literature-only, specified with execution gap. The 10/20 synthetic rule distinguishes a rejected order from a partial fill under the same next ranks. [Specification](scouting-2026-11-15.md)
 - Fixed-b rank-IC calibration remains attached to **IS-2026-10-24-1**. Standalone ID dropped as overlapping scope. Keep the method lead with matching kernel and critical values, and the size/power and missing-session checks. [Source trace](scouting-2026-11-15.md#deterministic-exploration-draw)
+
+## 2026-11-22
+
+- **GA-2026-11-22-1** · Fingerprint `research:commodity-carry:point-in-time-curve-and-contract-return-accounting` · Exploration · Literature-only, specified with gaps. Same-front counterexamples and separate roll/collateral controls define a feasible synthetic acceptance packet. [Specification](scouting-2026-11-22.md)
+- Dropped front-bar and adjusted-bar dividend substitutions as faithful carry inputs. Retain the external score path with a separately validated PIT producer and return series. [Decisions](../2026-11-22-research/verification-comparison.json)

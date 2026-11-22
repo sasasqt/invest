@@ -1,0 +1,95 @@
+{
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "verification": "canonical UTF-8 text bytes matched Git blob SHA-1 and SHA-256, verified against the pinned index",
+  "index_and_modules": [
+    {
+      "id": "index",
+      "sha": "3b4c33551bc0e0c32fab3c3bba613bdc353f1f3b",
+      "digest": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "bytes": 6525
+    },
+    {
+      "id": "overview",
+      "sha": "6013adc8de8625ae20f011a976e69d778475e11c",
+      "digest": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "bytes": 4730
+    },
+    {
+      "id": "00-preflight",
+      "sha": "0ec6804d6a3616113b927f0a24afe3623bfa7335",
+      "digest": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "bytes": 5975
+    },
+    {
+      "id": "01-scope",
+      "sha": "3d8f9084843949afcc5f4af1b1c2650550b2f7c3",
+      "digest": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+      "bytes": 3404
+    },
+    {
+      "id": "13-continuity",
+      "sha": "f80497a8448ff68bdfb51a6fee7c6e0d9ab7bb3b",
+      "digest": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+      "bytes": 3863
+    },
+    {
+      "id": "action-boundary",
+      "sha": "91b4620c27c4c12fff4dbbc320ea5e18b52af04d",
+      "digest": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "bytes": 1265
+    },
+    {
+      "id": "15-research",
+      "sha": "6e95561b9563171bdd438b344bf46dd684f82c7b",
+      "digest": "caa548319f4139d96d1d3313d966116c9494c0518bce300d454e88f7971436f3",
+      "bytes": 14569
+    },
+    {
+      "id": "02-coverage",
+      "sha": "5167046b421b44702de387968a20e16a474b92de",
+      "digest": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "bytes": 2035
+    },
+    {
+      "id": "11-findings-review",
+      "sha": "480c94f9f4a4e39e9efb812cf187620e76c69c65",
+      "digest": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "bytes": 14408
+    },
+    {
+      "id": "10-improvements",
+      "sha": "7d90b5e5b50f258b1f36f16c58e9991412df5b14",
+      "digest": "81983f4cecb351cd72571a2067879f3c650f2f524abce9db1ff3452f9eca17fb",
+      "bytes": 2824
+    },
+    {
+      "id": "12-reporting",
+      "sha": "8a83745c2502c507ecd824ab49277219033a27d3",
+      "digest": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "bytes": 5093
+    },
+    {
+      "id": "14-crosscheck-publication",
+      "sha": "d67dc237af9df166806b599068575ce7109af50b",
+      "digest": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+      "bytes": 12483
+    },
+    {
+      "id": "05-financial-validity",
+      "sha": "82b309cca56934c19608d0622c8420bb3a923268",
+      "digest": "336c6887e1a60b96a27766328db1115cd3579604f3cf68cfa2287eb32cae0eaf",
+      "bytes": 2707
+    },
+    {
+      "id": "07-independent-checks",
+      "sha": "1b4b0a4d11df1a113ec68b681e076e385fc9b152",
+      "digest": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "bytes": 1273
+    }
+  ],
+  "baseline": {
+    "blob": "c0ea67e98e9cc33f49effaf9bc2ec8a043145a4d",
+    "sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "bytes": 91850
+  }
+}

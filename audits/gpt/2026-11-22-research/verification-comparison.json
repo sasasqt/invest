@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-22",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "reviewer1_pre_review": "reviewer1-initial.json",
+  "reviewer2_record": "reviewer2.md",
+  "reviewer2": "fresh independent blind pass",
+  "verifier_b": "not needed; no substantive disagreement",
+  "elapsed_seconds_approx": 210,
+  "actual_model": "gpt-6.2-sol (inherited)",
+  "reasoning_effort": "unavailable",
+  "candidates": [
+    {
+      "id": "GA-2026-11-22-1",
+      "kind": "research",
+      "decision": "retained",
+      "tier": "literature-only; specified with gaps",
+      "severity": "no product defect",
+      "confidence": "high for analytical and named source-path scope; historical performance unavailable",
+      "first": "Keep, curve and return production are distinct and required.",
+      "independent": "Keep, independently verified equation, curve arithmetic, label and accounting contracts. Adds a flat-roll P&L oracle and transport qualifications.",
+      "primary_inputs": [
+        "P12 §2.3 Eq. 9 and Appendix D",
+        "P13 primary abstract",
+        "P14 §§2–3.1"
+      ],
+      "expected_actual_control": {
+        "expected": "same observed front history can admit different directed carry signals",
+        "actual": "+10/95 and -10/105",
+        "negative_control": "flat curve 0; flat contracts roll gives zero same-contract P&L",
+        "repeat": "separate independent hand derivation; no runtime repetition"
+      },
+      "checked_siblings": [
+        "DATA_CONTRACT and typed bars",
+        "PIT fundamentals and expression binder",
+        "open-to-open diagnostic labels",
+        "strategy target weights and share/cash order and mark engine"
+      ],
+      "duplicate_ids": [
+        "carry topic already queued",
+        "GA-2026-10-31-3 cost controls",
+        "GA-2026-10-31-4 timing controls",
+        "GA-2026-11-15-1 turnover buffer",
+        "IS-2026-10-10-1",
+        "IS-2026-10-17-1",
+        "IS-2026-10-24-1/2"
+      ],
+      "impact": "A label or P&L from front-only bars could misstate commodity curve exposure and outcome.",
+      "missing": "PIT contract/quote source and metadata, account oracle and statistical confirmation",
+      "change_condition": "qualified synthetic fixture and approved PIT evidence establish the scoped adaptation; full paper instrument, return and timing rules would be needed for replication"
+    },
+    {
+      "id": "CARRY-BARS-PROXY-DROP",
+      "kind": "research substitution",
+      "decision": "dropped",
+      "confidence": "high for typed front equity-bar input",
+      "first": "Drop curve identification and the adjusted-bar dividend substitute.",
+      "independent": "Drop both and preserve possible separately scoped equity dividends.",
+      "reason": "Identical front inputs admit opposite carry. Declared adjusted bars carry no required dated expected dividends.",
+      "counterfactual": "Synchronous released curve or validated released external score would identify the commodity signal. A PIT dividend or forward index dividend input could support a separately scoped equity study."
+    },
+    {
+      "id": "CARRY-TOY-REPLICATION-DROP",
+      "kind": "claim scope",
+      "decision": "dropped",
+      "confidence": "high",
+      "first": "Hand control covers mechanics, with no trading outcome.",
+      "independent": "Paper's universe, maturity/LME conventions, dated GSCI excess returns, centered monthly ranks and cost sensitivity exceed the toy.",
+      "counterfactual": "Reproduce the published dated sample, returns, weights and costs under licensed permitted evidence and fixed tolerances."
+    }
+  ],
+  "closing_question": {
+    "checked": [
+      "pit.py:41–72",
+      "diagnostics.py:35–45",
+      "engine.py:208–258,433–487,521–571"
+    ],
+    "answer": "A score can go stale under forward fill and a valid external score can still be paired with an unsuitable open-price return label.",
+    "unchecked": [
+      "PIT quote release, rolls and contract master including missing and nonpositive cases",
+      "independently reconciled excess P&L, collateral and roll-cost oracle",
+      "predeclared monthly outcome, matched controls and dependence-aware uncertainty"
+    ]
+  },
+  "runtime": "Local credential and installed-lock gates unproven. No qualified current isolated job, no product execution and no new dispatch."
+}

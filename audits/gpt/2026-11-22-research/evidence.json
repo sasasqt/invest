@@ -1,0 +1,187 @@
+{
+  "date": "2026-11-22",
+  "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+  "scheduled_for": "2026-11-22T02:00:00Z",
+  "started_utc": "2026-11-22T02:01:29.986058Z",
+  "source": {
+    "ref": "main",
+    "sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+    "tracked_files": 156,
+    "tree_entries": 197,
+    "unchanged_since": "2026-11-21"
+  },
+  "output": {
+    "initial_head": "d3d14ceb2172f5efa3101cc5b1a080d21961d14c",
+    "started_checkpoint": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+    "prepublication_head": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+    "branch": "gpt/repo-audits",
+    "read_only_root": [
+      "README.md"
+    ]
+  },
+  "protocol": {
+    "sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "verified": "method-verification.json",
+    "modules": 13,
+    "activation": "../2026-11-02-rotation-activation.md",
+    "history_map": "../history-rewrite-2026-11-02/commit-map.json"
+  },
+  "execution": {
+    "actual_model": "gpt-6.2-sol",
+    "reasoning_effort": "unavailable",
+    "usage_metrics": "unavailable",
+    "worker": "static connector reads and trusted local stdlib for canonical hashes; hand control",
+    "runner_sha": null,
+    "new_product_runs": 0,
+    "experiment_attempts": 0,
+    "dispatches": 0,
+    "remote_compute_seconds": 0,
+    "reserved_data_access": false
+  },
+  "plan": {
+    "question": "Can a pure-carry hypothesis be specified faithfully for Invest, and which signal and return inputs are missing?",
+    "stop": "Verify primary definitions and one independent source, trace pinned data and signal contracts and a falsifiable synthetic design, check overlap and review independently.",
+    "wall_minutes": [
+      20,
+      70,
+      30
+    ],
+    "research_minutes": {
+      "exploitation": 42,
+      "exploration": 28
+    },
+    "seed": "df8e31284b7270530f6b0c4ef892509a2228c765cf5c609e4198670a7ed787e0",
+    "draw": "carry",
+    "eligible": [
+      "carry",
+      "liquidity reversal",
+      "perturbation robustness"
+    ]
+  },
+  "time": {
+    "prepared_utc": "2026-11-22T02:12:57Z",
+    "elapsed_from_actual_start_seconds": 687,
+    "research_activity_envelope": {
+      "first": "2026-11-22T02:03:30Z",
+      "last": "2026-11-22T02:08:09Z",
+      "elapsed_seconds": 279
+    },
+    "exclusive_research_bucket_minutes": null,
+    "reason": "repository/source/peer work, independent review and research interleaved; no comparable exclusive times",
+    "helper_stage_elapsed_seconds_approx": 210,
+    "helper_token_and_compute_usage": "unavailable"
+  },
+  "findings": {
+    "new_verified": 0,
+    "new_plausible_product": 0,
+    "retained_research_candidates": [
+      "GA-2026-11-22-1"
+    ],
+    "optional_implementation_recommendations": 0,
+    "source_papers": [
+      "P12",
+      "P13",
+      "P14"
+    ],
+    "targeted_search_range": [
+      "2026-11-16",
+      "2026-11-22"
+    ],
+    "new_relevant_first_published_in_targeted_window": 0
+  },
+  "control": {
+    "reused": "same-source coverage map and shared existing exact-source CI scope. Current CI logs reread; Windows scoped prior merge evidence reused.",
+    "new": "trusted hashes, two primary methods and abstract, analytical identifiability and return controls, current PR metadata, independent review",
+    "requirements": "The toy covers the declared observation set. No market validation."
+  },
+  "source_ranges": {
+    "scope": "research feasibility only; no additional semantic coverage claimed",
+    "files": {
+      "docs/DATA_CONTRACT.md": [
+        [
+          38,
+          56
+        ]
+      ],
+      "data-pipeline/data-preparation/src/invest_data/schemas.py": [
+        [
+          400,
+          470
+        ]
+      ],
+      "data-pipeline/data-preparation/src/invest_data/pit.py": [
+        [
+          41,
+          72
+        ]
+      ],
+      "data-mining-framework/src/invest_mining/expressions.py": [
+        [
+          697,
+          729
+        ]
+      ],
+      "data-mining-framework/src/invest_mining/diagnostics.py": [
+        [
+          24,
+          50
+        ]
+      ],
+      "strategy-evaluation/src/invest_evaluation/strategies.py": [
+        [
+          23,
+          26
+        ]
+      ],
+      "strategy-evaluation/src/invest_evaluation/engine.py": [
+        [
+          13,
+          17
+        ],
+        [
+          208,
+          263
+        ],
+        [
+          433,
+          488
+        ],
+        [
+          521,
+          572
+        ]
+      ]
+    }
+  },
+  "inventory": {
+    "tracked_files": 156,
+    "inventoried": 77,
+    "partially_reviewed": 25,
+    "reviewed": 28,
+    "checked_automatically": 5,
+    "blocked": 21,
+    "unread_lines": 40367,
+    "unread_paths": 120,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 0
+  },
+  "peer": {
+    "head": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "status": "current report observed; no distinct carry source in inspected mirrors",
+    "record": "../cross-check.md#2026-11-22",
+    "private_research": "unavailable",
+    "verified_current_pr_heads": {
+      "61": "a547a793ec90aea87692d549671909d627ea8fbf",
+      "66": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+      "73": "f625d1961505aa3c8fffe9ab662da967649754c8"
+    }
+  },
+  "pending_second_review": [],
+  "pending_jobs": [],
+  "next": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment.",
+  "review": "verification-comparison.json",
+  "ci": "ci-observations.json"
+}

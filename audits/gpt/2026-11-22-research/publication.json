@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-22",
+  "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "branch": "gpt/repo-audits",
+  "status": "prepared for guarded publication; verification receipt to follow",
+  "expected_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+  "prepared_utc": "2026-11-22T02:12:57Z"
+}

@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
-  "search_cutoff": "2026-11-15",
-  "search_range": "2026-11-02 through 2026-11-15 targeted sweep plus older foundational/counterevidence reads",
-  "papers_screened": 5,
-  "primary_bibliographies_verified": 5,
+  "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+  "search_cutoff": "2026-11-22",
+  "search_range": "Targeted 2026-11-16 through 2026-11-22 plus three older primary anchors. Scope limited to returned results and accessible primary records.",
+  "papers_screened": 3,
+  "primary_bibliographies_verified": 3,
   "qualified_new_explicit_queue_candidates": 1,
   "experiments_run": 0,
   "planned_minutes": 70,
   "actual_exclusive_minutes": null,
-  "actual_timing_limitation": "Research and source inspection interleaved; no reliable per-bucket exclusive research time. Tool-return durations are not research-hour denominators.",
+  "actual_timing_limitation": "repository/source/peer work, independent review and research interleaved; no comparable exclusive times",
   "planned_split": {
     "exploitation": 60,
     "exploration": 40
@@ -40,6 +40,15 @@
       "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
       "resolution": "Primary method recovered and discriminating warmed synthetic fixture specified. The score-only callback prevents direct implementation based on realized holdings.",
       "evidence": "../2026-11-15-research/evidence.json"
+    },
+    {
+      "id": "ADV-2026-11-22-1",
+      "candidate": "GA-2026-11-22-1",
+      "date": "2026-11-22",
+      "bucket": "exploration",
+      "question": "Can a pure-carry hypothesis be specified faithfully for Invest, and which signal and return inputs are missing?",
+      "resolution": "Pinned source and two opposing synthetic curves establish required cross-maturity inputs. Independent review separately confirmed score transport and return-accounting gaps.",
+      "evidence": "../2026-11-22-research/evidence.json"
     }
   ],
   "rates_advances_per_hour": {
@@ -50,7 +59,7 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "reason": "exclusive bucket minutes unavailable; preserve 60/40",
+  "reason": "Exclusive minutes unavailable in either bucket. Retain 60/40 with unknown rates.",
   "last_four_completed_runs": [
     {
       "date": "2026-11-15",
@@ -60,22 +69,34 @@
       ],
       "exclusive_minutes": null,
       "scouting": "complete for bounded question"
+    },
+    {
+      "date": "2026-11-22",
+      "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "search_cutoff": "2026-11-22",
+      "advances": [
+        "ADV-2026-11-22-1"
+      ],
+      "exclusive_minutes": null,
+      "scouting": "complete for bounded question, follow-up experiments blocked"
     }
   ],
   "queued_ids": [
     "GA-2026-10-31-3",
     "GA-2026-10-31-4",
-    "GA-2026-11-15-1"
+    "GA-2026-11-15-1",
+    "GA-2026-11-22-1"
   ],
   "query_history": "queries.jsonl",
   "source_history": "papers.jsonl",
-  "seed_draw": "small-sample statistical calibration",
+  "seed_draw": "df8e31284b7270530f6b0c4ef892509a2228c765cf5c609e4198670a7ed787e0",
   "preexisting_unpublished_leads": [
     "cohort accounting",
     "lineage balancing",
     "VIX-gated reversal"
   ],
-  "experiments_status": "one new specified, zero attempts; runtime and API gap",
+  "experiments_status": "one new synthetic specification, zero attempts, only paper and hand controls",
   "history": [
     {
       "run_id": "GA-2026-10-31T001744Z",
@@ -86,19 +107,33 @@
       "run_id": "GA-2026-11-02",
       "search_cutoff": "2026-11-02",
       "summary": "no attempts; existing candidates blocked; no confirmation data consumed"
+    },
+    {
+      "date": "2026-11-15",
+      "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
+      "search_cutoff": "2026-11-15",
+      "state_evidence": "d3d14ceb2172f5efa3101cc5b1a080d21961d14c",
+      "advances": [
+        "ADV-2026-11-15-1"
+      ]
     }
   ],
   "new_advances": [
     {
-      "id": "ADV-2026-11-15-1",
-      "candidate": "GA-2026-11-15-1",
-      "date": "2026-11-15",
-      "bucket": "exploitation",
-      "question": "Can an executed-holdings entry/exit buffer be translated faithfully to a falsifiable daily equity comparison in this repository?",
-      "resolution": "Primary method recovered and discriminating warmed synthetic fixture specified. The score-only callback prevents direct implementation based on realized holdings.",
-      "evidence": "../2026-11-15-research/evidence.json"
+      "id": "ADV-2026-11-22-1",
+      "candidate": "GA-2026-11-22-1",
+      "date": "2026-11-22",
+      "bucket": "exploration",
+      "question": "Can a pure-carry hypothesis be specified faithfully for Invest, and which signal and return inputs are missing?",
+      "resolution": "Pinned source and two opposing synthetic curves establish required cross-maturity inputs. Independent review separately confirmed score transport and return-accounting gaps.",
+      "evidence": "../2026-11-22-research/evidence.json"
     }
   ],
-  "topic_draw": "small-sample statistical calibration; carry queued",
-  "peer_research": "public ideas mirror available; dedicated/private peer research unavailable"
+  "topic_draw": "carry",
+  "peer_research": "same-source peer report and recommendations accessible; dedicated peer research path unavailable",
+  "research_envelope": {
+    "first": "2026-11-22T02:03:30Z",
+    "last": "2026-11-22T02:08:09Z",
+    "elapsed_seconds": 279
+  }
 }

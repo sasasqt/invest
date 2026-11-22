@@ -20,3 +20,8 @@ New topic inspected: cost/capacity and contradictory anomaly replication. No ver
 - Carry GA-2026-10-31-3 and GA-2026-10-31-4 forward. The six-case oracle still needs isolation. The exact monthly overlay still needs scheduling support and authorized data.
 - GA-2026-11-15-1 advances the prior cost/capacity lead. Verify the paired rejected-versus-clipped synthetic fixture first, then assess comparable exposure and permitted pre-cutoff data. No implemented strategy or historical experiment is claimed.
 - Fold fixed-b calibration into IS-2026-10-24-1. Leave carry queued as the oldest neglected topic. Private peer overlap and the 2026 SSRN revision text remain unavailable.
+
+## 2026-11-22
+
+- Carry received its first explicit commodity specification in the inspected queue. **GA-2026-11-22-1** awaits deterministic PIT/roll mechanics verification with a qualified environment, then permitted contract-level input evidence. No historical trial. [Specification](scouting-2026-11-22.md)
+- Retain GA-2026-10-31-3, GA-2026-10-31-4 and GA-2026-11-15-1. Use the oldest feasible actual-fill buffer fixture when the execution and interface prerequisites allow. Leave liquidity reversal and perturbation robustness eligible for future dated draws.
