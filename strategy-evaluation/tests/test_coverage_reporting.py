@@ -2,10 +2,12 @@
 
 docs/REPORTING.md: reporting consumes saved numerical results and prints what a run
 saved, so a run saved by older code, or by a caller that saved fewer statistics, renders
-as it was saved and nothing is recomputed. Every run here holds nothing for 20 sessions,
-so its expected lines follow by hand from the saved values: a metric without a value
-prints as ``n/a (<reason>)``, and README.md (strategy-evaluation) gives the wording of
-the bootstrap and deflated Sharpe lines with their minimum return counts (60 and 30).
+as it was saved and nothing is recomputed. Every run here holds nothing, so its
+expected lines follow by hand from the saved values: a metric without a value prints as
+``n/a (<reason>)``, and README.md (strategy-evaluation) gives the reason format of the
+bootstrap and deflated Sharpe lines and their minimum return counts (60 and 30); the
+deflated Sharpe label is the one in the saved record runs/yahoo-test/2026-10-07, and the
+unavailable-bootstrap label the one test_stats_and_cli.py already checks (BH-2026-10-09-6).
 """
 
 from __future__ import annotations
@@ -33,8 +35,8 @@ class _Flat:
         return pd.Series(dtype=float)
 
 
-def _flat_result() -> BacktestResult:
-    dates = pd.bdate_range("2024-01-01", periods=20)
+def _flat_result(periods: int = 20) -> BacktestResult:
+    dates = pd.bdate_range("2024-01-01", periods=periods)
     bars = pd.DataFrame(
         [[d, "A", 10.0, 10.0, 10.0, 10.0, 1e9] for d in dates],
         columns=["date", "instrument", "open", "high", "low", "close", "volume"],
@@ -105,6 +107,25 @@ def test_a_benchmark_saved_without_coverage_counts_renders_no_coverage_line(
     assert not any(line.startswith(("Benchmark: ", "Aligned daily returns: ")) for line in lines)
 
 
+def test_a_benchmark_saved_with_its_name_only_renders_no_coverage_line(tmp_path: Path) -> None:
+    """The first commit (2026-10-05, before PR #5) saved a benchmark with 20 or more aligned
+    returns with only its name in ``extra``, no ``aligned_sessions``: rendered again, its
+    table prints and no coverage line does, since no counts were saved."""
+    result = _flat_result(25)  # 24 aligned returns: the first session has no earlier close
+    root = _save(tmp_path / "run", result, strategy_statistics(result.returns, 252))
+    path = root / "metrics.json"
+    metrics = json.loads(path.read_text(encoding="utf-8"))
+    entry = metrics["benchmark"]["benchmark_total_return"]
+    assert entry["extra"]["aligned_sessions"] == 24
+    entry["extra"] = {"benchmark": entry["extra"]["benchmark"]}  # as the first commit saved it
+    path.write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
+    render(root)
+    lines = _report(root)
+    # Flat closes: the benchmark gained nothing.
+    assert "| benchmark_total_return | 0.00% |" in lines
+    assert not any(line.startswith("Aligned daily returns: ") for line in lines)
+
+
 @pytest.mark.parametrize(
     "missing",
     [("bootstrap",), ("deflated_sharpe",), ("bootstrap", "deflated_sharpe")],
@@ -114,7 +135,9 @@ def test_a_statistic_that_was_never_saved_gets_no_report_line(
 ) -> None:
     """report.md prints the bootstrap interval and the deflated Sharpe for every saved
     status, with the reason when unavailable; an entry that was never saved has no status,
-    so it gets no line (not an invented ``n/a``), and the other entry keeps its line."""
+    so today it gets no line, and the other entry keeps its line. This pins today's
+    behavior: TODO.md REVIEW-50 asks for a line for every picked performance row of an
+    insolvent run, and a change of that rule for statistics changes this test too."""
     result = _flat_result()
     n = len(result.returns)
     assert n < 30  # both statistics are insufficient_data on this run
