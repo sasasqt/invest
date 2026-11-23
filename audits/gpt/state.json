@@ -5733,11 +5733,10 @@
           "reconfirm CI and carried controls",
           "read primary data path and explored tests",
           "review pinned sources independently and reconcile",
-          "prepare coverage and cumulative state"
+          "prepare coverage and cumulative state",
+          "guarded report publication and remote readback"
         ],
-        "remaining_steps": [
-          "guarded publication and remote readback"
-        ],
+        "remaining_steps": [],
         "pending_jobs": [],
         "model": "gpt-6.2-sol",
         "effort": "unavailable",
@@ -5750,7 +5749,7 @@
         "helper_stage_elapsed_seconds_approx": 260,
         "evidence": "2026-11-23-data/evidence.json",
         "report": "2026-11-23.md",
-        "publication_status": "prepared_pending_guarded_publication",
+        "publication_status": "published_verified",
         "prepared_utc": "2026-11-23T02:13:51Z",
         "elapsed_to_preparation_seconds": 635,
         "scope_counts": {
@@ -5764,7 +5763,10 @@
           "unread_paths": 119,
           "no_applicable_or_unknown_line_count": 5,
           "new_unique_semantic_lines": 1120
-        }
+        },
+        "completed_utc": "2026-11-23T02:15:28Z",
+        "verified_report_commit": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+        "elapsed_to_verified_publication_seconds": 732
       }
     ],
     "shared_controls": {
@@ -6236,11 +6238,10 @@
       "reconfirm CI and carried controls",
       "read primary data path and explored tests",
       "review pinned sources independently and reconcile",
-      "prepare coverage and cumulative state"
+      "prepare coverage and cumulative state",
+      "guarded report publication and remote readback"
     ],
-    "remaining_steps": [
-      "guarded publication and remote readback"
-    ],
+    "remaining_steps": [],
     "pending_jobs": [],
     "model": "gpt-6.2-sol",
     "effort": "unavailable",
@@ -6253,7 +6254,7 @@
     "helper_stage_elapsed_seconds_approx": 260,
     "evidence": "2026-11-23-data/evidence.json",
     "report": "2026-11-23.md",
-    "publication_status": "prepared_pending_guarded_publication",
+    "publication_status": "published_verified",
     "prepared_utc": "2026-11-23T02:13:51Z",
     "elapsed_to_preparation_seconds": 635,
     "scope_counts": {
@@ -6267,7 +6268,10 @@
       "unread_paths": 119,
       "no_applicable_or_unknown_line_count": 5,
       "new_unique_semantic_lines": 1120
-    }
+    },
+    "completed_utc": "2026-11-23T02:15:28Z",
+    "verified_report_commit": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+    "elapsed_to_verified_publication_seconds": 732
   },
   "publication_history": [
     {
@@ -7013,15 +7017,147 @@
       ],
       "peer_and_root_tree_unchanged": true,
       "elapsed_to_verified_publication_seconds": 752
+    },
+    {
+      "date": "2026-11-23",
+      "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+      "branch": "gpt/repo-audits",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "report_commit": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+      "verified_head_at_report": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+      "output_base": "429715ca66f671644b2905dc20254038b9ec2f88",
+      "started_checkpoint": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+      "output_parent": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+      "tree": "b8b168a7fb95c59c16a8ad324eb814190336b574",
+      "status": "published_verified",
+      "verified_utc": "2026-11-23T02:15:28Z",
+      "report_url": "https://github.com/sasasqt/invest/blob/4ca507b95e9e2261bd6b62b4ea62fca94b6207af/audits/gpt/2026-11-23.md",
+      "guarded_expected_old_sha": true,
+      "force": false,
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-23-data/ci-observations.json",
+        "audits/gpt/2026-11-23-data/evidence.json",
+        "audits/gpt/2026-11-23-data/method-verification.json",
+        "audits/gpt/2026-11-23-data/publication.json",
+        "audits/gpt/2026-11-23-data/reading.json",
+        "audits/gpt/2026-11-23-data/reviewer1-initial.json",
+        "audits/gpt/2026-11-23-data/reviewer2-initial.md",
+        "audits/gpt/2026-11-23-data/reviewer2.md",
+        "audits/gpt/2026-11-23-data/started.json",
+        "audits/gpt/2026-11-23-data/verification-comparison.json",
+        "audits/gpt/2026-11-23.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "verified_git_blob_ids": {
+        "audits/gpt/2026-11-23.md": "90c3455d7e3cb7b29fde989a890e921101654d86",
+        "audits/gpt/2026-11-23-data/evidence.json": "ebffc0cd08542950146f38c76154f53ecf68329f",
+        "audits/gpt/2026-11-23-data/reading.json": "9dd4f1d2dab301e121d95e153aaf0c1e7faf71ee",
+        "audits/gpt/2026-11-23-data/method-verification.json": "f811149619aad735dc65123e93e5e2819748a37f",
+        "audits/gpt/2026-11-23-data/ci-observations.json": "38cb12fb25b8f4785010e1f7547f1d7503bbae8e",
+        "audits/gpt/2026-11-23-data/reviewer1-initial.json": "e914eedbbb0c3a93503b38a67982b35c64362f8e",
+        "audits/gpt/2026-11-23-data/reviewer2-initial.md": "d8028bad15408311d11bba23b8922a1fbf0ff3cf",
+        "audits/gpt/2026-11-23-data/reviewer2.md": "e3f2ae199240f18d63deb130bdb0ab14a51766c8",
+        "audits/gpt/2026-11-23-data/verification-comparison.json": "d41e9b47ff1cd9aef13bc6a02e21414bf447b7be",
+        "audits/gpt/2026-11-23-data/publication.json": "1a0c88dee99430a4bf582c49e7c9b6c358716d4a",
+        "audits/gpt/state.json": "db40d2a92b415dab03367d6a456237d5eeb06d60",
+        "audits/gpt/checkpoint.json": "db40d2a92b415dab03367d6a456237d5eeb06d60",
+        "audits/gpt/coverage-map.json": "b0b496021719c3facf2d8978d17de8cab61222f2",
+        "audits/gpt/coverage-map.md": "17b1a31caf7978d4087d7ffc00a66cb75ddb22ad",
+        "audits/gpt/coverage.csv": "eae6922c70059ef989d4533e7c0c18e74643f23b",
+        "audits/gpt/exploration.json": "7182b6a379e42fc6386619ff4c8d6f5d34439804",
+        "audits/gpt/cross-check.md": "cd71b2e276ad3d07fb3045cad30181293f7e4f15",
+        "audits/gpt/validation.csv": "c3ab66404479bfb412394a74e71bc4f57b8fe98c",
+        "audits/gpt/2026-11-23-data/started.json": "360eefc13e874142a03af8d09a102b730a0624fe"
+      },
+      "full_text_readback_paths": [
+        "audits/gpt/2026-11-23.md",
+        "audits/gpt/state.json",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/2026-11-23-data/evidence.json",
+        "audits/gpt/2026-11-23-data/verification-comparison.json",
+        "audits/gpt/2026-11-23-data/started.json"
+      ],
+      "peer_and_root_tree_unchanged": true,
+      "elapsed_to_verified_publication_seconds": 732
     }
   ],
   "publication_current_run": {
     "date": "2026-11-23",
     "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
-    "status": "prepared_pending_guarded_publication",
     "branch": "gpt/repo-audits",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "output_parent": "7a9bcb977b1947b9135c88e862fc26af5507bcad"
+    "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "report_commit": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+    "verified_head_at_report": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
+    "output_base": "429715ca66f671644b2905dc20254038b9ec2f88",
+    "started_checkpoint": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+    "output_parent": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+    "tree": "b8b168a7fb95c59c16a8ad324eb814190336b574",
+    "status": "published_verified",
+    "verified_utc": "2026-11-23T02:15:28Z",
+    "report_url": "https://github.com/sasasqt/invest/blob/4ca507b95e9e2261bd6b62b4ea62fca94b6207af/audits/gpt/2026-11-23.md",
+    "guarded_expected_old_sha": true,
+    "force": false,
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-23-data/ci-observations.json",
+      "audits/gpt/2026-11-23-data/evidence.json",
+      "audits/gpt/2026-11-23-data/method-verification.json",
+      "audits/gpt/2026-11-23-data/publication.json",
+      "audits/gpt/2026-11-23-data/reading.json",
+      "audits/gpt/2026-11-23-data/reviewer1-initial.json",
+      "audits/gpt/2026-11-23-data/reviewer2-initial.md",
+      "audits/gpt/2026-11-23-data/reviewer2.md",
+      "audits/gpt/2026-11-23-data/started.json",
+      "audits/gpt/2026-11-23-data/verification-comparison.json",
+      "audits/gpt/2026-11-23.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "verified_git_blob_ids": {
+      "audits/gpt/2026-11-23.md": "90c3455d7e3cb7b29fde989a890e921101654d86",
+      "audits/gpt/2026-11-23-data/evidence.json": "ebffc0cd08542950146f38c76154f53ecf68329f",
+      "audits/gpt/2026-11-23-data/reading.json": "9dd4f1d2dab301e121d95e153aaf0c1e7faf71ee",
+      "audits/gpt/2026-11-23-data/method-verification.json": "f811149619aad735dc65123e93e5e2819748a37f",
+      "audits/gpt/2026-11-23-data/ci-observations.json": "38cb12fb25b8f4785010e1f7547f1d7503bbae8e",
+      "audits/gpt/2026-11-23-data/reviewer1-initial.json": "e914eedbbb0c3a93503b38a67982b35c64362f8e",
+      "audits/gpt/2026-11-23-data/reviewer2-initial.md": "d8028bad15408311d11bba23b8922a1fbf0ff3cf",
+      "audits/gpt/2026-11-23-data/reviewer2.md": "e3f2ae199240f18d63deb130bdb0ab14a51766c8",
+      "audits/gpt/2026-11-23-data/verification-comparison.json": "d41e9b47ff1cd9aef13bc6a02e21414bf447b7be",
+      "audits/gpt/2026-11-23-data/publication.json": "1a0c88dee99430a4bf582c49e7c9b6c358716d4a",
+      "audits/gpt/state.json": "db40d2a92b415dab03367d6a456237d5eeb06d60",
+      "audits/gpt/checkpoint.json": "db40d2a92b415dab03367d6a456237d5eeb06d60",
+      "audits/gpt/coverage-map.json": "b0b496021719c3facf2d8978d17de8cab61222f2",
+      "audits/gpt/coverage-map.md": "17b1a31caf7978d4087d7ffc00a66cb75ddb22ad",
+      "audits/gpt/coverage.csv": "eae6922c70059ef989d4533e7c0c18e74643f23b",
+      "audits/gpt/exploration.json": "7182b6a379e42fc6386619ff4c8d6f5d34439804",
+      "audits/gpt/cross-check.md": "cd71b2e276ad3d07fb3045cad30181293f7e4f15",
+      "audits/gpt/validation.csv": "c3ab66404479bfb412394a74e71bc4f57b8fe98c",
+      "audits/gpt/2026-11-23-data/started.json": "360eefc13e874142a03af8d09a102b730a0624fe"
+    },
+    "full_text_readback_paths": [
+      "audits/gpt/2026-11-23.md",
+      "audits/gpt/state.json",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/2026-11-23-data/evidence.json",
+      "audits/gpt/2026-11-23-data/verification-comparison.json",
+      "audits/gpt/2026-11-23-data/started.json"
+    ],
+    "peer_and_root_tree_unchanged": true,
+    "elapsed_to_verified_publication_seconds": 732
   },
   "remaining_work_current_visit": [
     "Review the remaining typed metadata and supported calendar contract, starting with callers that establish the full session axis. Retain the synthetic REVIEW-59 controls and extended K14 matrix for a qualified runner.",
