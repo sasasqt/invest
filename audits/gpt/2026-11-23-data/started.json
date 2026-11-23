@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-23",
+  "field": "data",
+  "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+  "started_utc": "2026-11-23T02:03:15.911883Z",
+  "scheduled_for": "2026-11-23T02:00:00Z",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "output_parent": "429715ca66f671644b2905dc20254038b9ec2f88",
+  "protocol": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "status": "started",
+  "pending_jobs": [],
+  "budget_minutes": 120
+}
