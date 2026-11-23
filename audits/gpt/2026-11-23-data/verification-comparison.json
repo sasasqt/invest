@@ -1,0 +1,147 @@
+{
+  "id": "REVIEW-59 (frequency/calendar slice)",
+  "date": "2026-11-23",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "output_base": "429715ca66f671644b2905dc20254038b9ec2f88",
+  "aliases": [
+    "BH-2026-11-17-2",
+    "BH-2026-11-18-1"
+  ],
+  "severity": "medium (P2) with silent metrics and period errors",
+  "scope": "Static corroboration of existing finding. No new root, no new product execution.",
+  "main_initial": "reviewer1-initial.json",
+  "independent_initial": "reviewer2-initial.md",
+  "independent_final": "reviewer2.md",
+  "helpers": {
+    "fresh_reviewer_2": 1,
+    "verifier_b": 0,
+    "verifier_b_reason": "Independent reviewer agreed on candidate disposition and severity. The benchmark gap is added as an acceptance case under the same root.",
+    "model": "gpt-6.2-sol (inherited)",
+    "reasoning_effort": "unavailable",
+    "stage_elapsed_seconds_approx": 260
+  },
+  "decisions": [
+    {
+      "kind": "existing finding",
+      "initial": "keep the known producer/consumer cadence and calendar omission",
+      "independent": "keep medium/high static confidence, duplicate TODO REVIEW-59 and named BH items",
+      "final": "current high-confidence source corroboration; existing historical product reproductions stay historical",
+      "confidence": "high for pinned code path; runtime repeats and cross-format success/refusal control pending"
+    },
+    {
+      "kind": "proposed spacing rule",
+      "initial": "drop",
+      "independent": "drop because the same rows can be sparse daily or weekly aggregation",
+      "final": "dropped as proving aggregation or for unconditional rejection",
+      "counterfactual": "Independent trusted interval provenance can prove aggregation for an input. A guaranteed complete session axis can prove missing coverage without proving aggregation."
+    },
+    {
+      "kind": "full-market date omitted by alignment",
+      "initial": "existing external benchmark guard checks declared daily only",
+      "independent": "retain benchmark index consequence within REVIEW-59",
+      "final": "high-confidence static acceptance case, no separate ID",
+      "counterfactual": "Re-triage separately if supported sparse markets retain a compressed daily benchmark return after REVIEW-59 is addressed."
+    },
+    {
+      "kind": "identity queue",
+      "initial": "separate",
+      "independent": "separate",
+      "final": "preserve OPEN-DATA-METADATA-IDENTITY-001 as an unchecked broader design lead"
+    }
+  ],
+  "sources": [
+    {
+      "name": "Producer",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cli.py#L180-L199",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cli.py#L261-L291",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/sources.py#L135-L183",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cleaning.py#L121-L169"
+      ],
+      "expected": "An XNYS session label represents a valid regular trading session. Publication as daily requires a truthful source interval declaration.",
+      "observed": "ISO complete dates are parsed and normalized, calendar is copied and frequency hardcoded to 1d. There is no source aggregation or supported-calendar validation in this path."
+    },
+    {
+      "name": "Typed data boundary",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L5-L14",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L190-L230",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L381-L433",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/bundle.py#L758-L785"
+      ],
+      "expected": "Daily market_bars must have supported frequency and the consumer must reject contradictory labels before output.",
+      "observed": "Typed writer and reader require the fields and check adjustment and numeric invariants. Missing frequency is refused; a present explicit 1wk is not refused by those checks. Canonical content hash covers rows and schema."
+    },
+    {
+      "name": "Mining",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/cli.py#L268-L323",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/expressions.py#L697-L725",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/diagnostics.py#L35-L45"
+      ],
+      "expected": "horizon_days is a count of trading sessions with causal entry after the decision.",
+      "observed": "Shared adjusted read enters observed-date panels and uses shifts by observed row index. Missing complete market dates and weekly bars can give longer economic periods than the label."
+    },
+    {
+      "name": "Evaluation and benchmark",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/cli.py#L200-L247",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/cli.py#L323-L339",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/engine.py#L235-L248",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/engine.py#L346-L347",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/metrics.py#L260-L279"
+      ],
+      "expected": "Valuation, delays, financing and annualization use the intended session axis. Daily benchmark gaps must not be bridged.",
+      "observed": "Run with no external benchmark and quantiles share the adjusted reader without a frequency gate. The external benchmark path rejects matching explicit non-1d metadata but only aligns to dates represented in market rows. The toy close-100/110/121 control traverses both retained closes after the middle market date is removed."
+    }
+  ],
+  "checked_siblings": [
+    "Typed reader/writer and adjustment checks",
+    "CSV date/time-zone parsing and cleaning tests",
+    "Synthetic calendar and Yahoo source interval metadata",
+    "Mining observed-date label and evaluation annualization paths",
+    "External benchmark matching, both-weekly refusal and benchmark-only gap tests"
+  ],
+  "dedup": [
+    "https://github.com/sasasqt/invest/blob/a547a793ec90aea87692d549671909d627ea8fbf/TODO.md#L88",
+    "https://github.com/sasasqt/invest/pull/61#issuecomment-7085034008"
+  ],
+  "closing_checked": "Independent reviewer checked data schema, actual CLI paths, label/fill-index and benchmark calculations. Earliest feasible untouched slice in this visit was the data preparation README.",
+  "unchecked": [
+    "Supported exchange and custom calendar ownership and whole-market coverage rules",
+    "Untouched-source daily/weekly/malformed and sparse acceptance across formats and all relevant entry points",
+    "Full-market gap handling at workflow and ledger boundaries"
+  ],
+  "controls": {
+    "run": "source-only trace and synthetic hand arithmetic",
+    "executed_repository_repeats": 0,
+    "expected_to_run_on_qualified_runner": [
+      {
+        "case": "Valid daily control",
+        "input": "Complete synthetic declared daily market, with enough dates and names and as-traded closes or disabled minimum price. Add a separate missing single-instrument session retaining another instrument's bar.",
+        "expected": "Supported daily workflows proceed, a per-name gap remains missing, and no data are filled to make an instrument tradable."
+      },
+      {
+        "case": "Explicit unsupported interval and malformed typed metadata",
+        "input": "A validly shaped synthetic `market_bars` bundle declared 1wk. Add a malformed present-null frequency as a related control. Use a separately constructed fixture when a corrected typed publisher appropriately refuses to write the control.",
+        "expected": "Clear typed-boundary or option-specific refusal before ledger/result mutation in evaluate, search, confirm, default run or quantiles. Matching explicit weekly benchmark refusal stays covered, with affected existing test updated if the refusal moves to the source schema."
+      },
+      {
+        "case": "Calendar membership and aggregation are distinct",
+        "input": "Valid XNYS session, ISO-valid XNYS Saturday and announced 2024-01-15 holiday, impossible ISO date, and legitimate non-XNYS synthetic weekday. Pair two identical OHLCV sparse-date grids whose independently declared source intervals differ.",
+        "expected": "A supported exchange calendar distinguishes valid and invalid sessions while preserving other supported calendars. Provenance distinguishes aggregation only when it specifies interval. Timestamp spacing alone cannot classify the pair."
+      },
+      {
+        "case": "Whole-market gap vs single-instrument benchmark gap",
+        "input": "Synthetic market dates 2024-01-05 and 09 with a guaranteed middle session on Jan 08. Benchmark closes 100/110/121 across all three dates. Compare a dense market axis with only benchmark close Jan 08 missing.",
+        "expected": "No 21% two-session benchmark return is represented as a one-session daily observation. Preserve the existing per-benchmark-gap behavior. If publication allows intentionally sparse whole-market histories, make the rule for full-axis gaps explicit."
+      },
+      {
+        "case": "Windows REVIEW-40/41 separate",
+        "input": "Matching native Git for Windows Bash and native Python on current source with a synthetic snapshot and temporary ledger.",
+        "expected": "Retain pending successful ledger LF/CRLF and direct date-byte captures, valid replay, and invalid benchmark refusal without ledger mutation."
+      }
+    ]
+  }
+}

@@ -128,3 +128,13 @@ Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` has a same-main report. Che
 Cannot check today's RA-2026-11-22-1 unexecuted-test leads for retired pending orders, parser positive unary/constant functions and leg-size/split corrections within the Sunday scope. Queue their respective engineering, mining and evaluation owners. The peer's zero-volume and benchmark results also remain peer claims within their particular scope. Independent controls and exact-product causal comparison are required before inheriting them. No new peer primary carry evidence in the inspected records and no compatible current repository-range union. [Peer handoffs](https://github.com/sasasqt/invest/blob/3e7b4d5c3f6e64897164c2bb5df717260ee10497/audits/claude/handoffs.md)
 
 Fresh independent review agreed on the literature-only carry candidate and three scope drops. No Verifier B required. [Decisions](2026-11-22-research/verification-comparison.json)
+
+## 2026-11-23 data integrity
+
+| Lead | Verdict | Evidence and limit |
+|---|---|---|
+| REVIEW-59 / BH-2026-11-17-2 / BH-2026-11-18-1 | Agree in source scope | The #61 checkpoint already records both frequency paths and the CSV calendar assertion. Independent source reviewers added the all-market-gap benchmark case and dropped spacing-only proof. No runtime repeats. [Verification](2026-11-23-data/verification-comparison.json) |
+| RA-2026-11-08-1 | Agree on outstanding main scope and bounded preview | Native Windows evidence is for #66’s proposed merge, with current exact parents verified. No conclusion on successful ledger append bytes. [Preview job](https://github.com/sasasqt/invest/actions/runs/44802209769/job/136516962817) |
+| RA-2026-11-08-2 / RA-2026-11-08-3 | Cannot check within this visit | Existing peer evidence retained. Truncated HTTP body and report timing are outside the bounded data question. [Peer report](https://github.com/sasasqt/invest/blob/3e7b4d5c3f6e64897164c2bb5df717260ee10497/audits/claude/2026-11-22.md) |
+
+Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` shares today’s audited main. No compatible peer exact ranges were available. One fresh independent reviewer and no disagreement verifier were used. No peer product result was treated as an independently executed control.

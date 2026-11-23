@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-23",
+  "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_index": "https://github.com/sasasqt/invest/blob/bab6ba12399787496ba1108a9a368e00f8643441/audits/gpt/protocol/rotation-v3-2026-11-02/index.json",
+  "output_before_start": "429715ca66f671644b2905dc20254038b9ec2f88",
+  "verified_started_checkpoint": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+  "runner": "no qualified product execution",
+  "model": "gpt-6.2-sol",
+  "effort": "unavailable",
+  "plan": {
+    "date": "2026-11-23",
+    "question": "Can import-csv and the typed bundle readers establish the daily-session contract that mining horizons and evaluation annualization assume?",
+    "expected": "Trace a synthetic weekly series versus a daily history with missing sessions, explicit non-1d metadata, and the standard consumers. Classify pre-existing reports and concrete scope. Read one deterministic relevant unread ingress test slice.",
+    "stop": "Pin producer, typed reader and two consumer paths plus controls and independent disposition. No runtime claim on those traces.",
+    "allocation": [
+      30,
+      70
+    ],
+    "inherited_field_budget": "adapted from 60/40",
+    "peer_exact_ranges": "unavailable",
+    "eligible": [
+      "cleaning_and_sources:CSV tests",
+      "signal-metadata:timing tests"
+    ],
+    "seed": "f09b63beda3ca17a3ef6df924d251ace32f79abab7bc9f5a4cad14ffc75a1d0f",
+    "draw": "cleaning_and_sources:CSV tests"
+  },
+  "interface_owners": [
+    {
+      "interface": "source data -> bundle",
+      "owner": "data",
+      "chain_owner": "integration",
+      "invariant": "schema/calendar/units/membership/provenance agreement"
+    },
+    {
+      "interface": "bundle -> point-in-time features",
+      "owner": "data",
+      "chain_owner": "integration",
+      "invariant": "no later-availability input changes past features"
+    },
+    {
+      "interface": "features -> diagnostics",
+      "owner": "mining",
+      "chain_owner": "integration",
+      "invariant": "horizons/ties/counts/trial lineage preserved"
+    },
+    {
+      "interface": "frozen expression -> signals",
+      "owner": "mining",
+      "chain_owner": "integration",
+      "invariant": "export/reload identities and causal semantics agree"
+    },
+    {
+      "interface": "signals -> evaluation",
+      "owner": "evaluation",
+      "chain_owner": "integration",
+      "invariant": "timing/fills/cash/cost/accounting agree"
+    },
+    {
+      "interface": "evaluation -> reports/recorder",
+      "owner": "integration",
+      "chain_owner": "integration",
+      "invariant": "tables/statuses/provenance/atomic recovery agree"
+    },
+    {
+      "interface": "trial/confirmation evidence -> verdict",
+      "owner": "mining",
+      "coowner": "evaluation",
+      "chain_owner": "integration",
+      "invariant": "evidence tiers, reserved-data and trial accounting preserved"
+    }
+  ],
+  "conclusion": "bounded data source review complete; runtime acceptance pending; whole-repository Audit incomplete",
+  "proof": [
+    {
+      "name": "Producer",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cli.py#L180-L199",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cli.py#L261-L291",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/sources.py#L135-L183",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/cleaning.py#L121-L169"
+      ],
+      "expected": "An XNYS session label represents a valid regular trading session. Publication as daily requires a truthful source interval declaration.",
+      "observed": "ISO complete dates are parsed and normalized, calendar is copied and frequency hardcoded to 1d. There is no source aggregation or supported-calendar validation in this path."
+    },
+    {
+      "name": "Typed data boundary",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L5-L14",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L190-L230",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L381-L433",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/bundle.py#L758-L785"
+      ],
+      "expected": "Daily market_bars must have supported frequency and the consumer must reject contradictory labels before output.",
+      "observed": "Typed writer and reader require the fields and check adjustment and numeric invariants. Missing frequency is refused; a present explicit 1wk is not refused by those checks. Canonical content hash covers rows and schema."
+    },
+    {
+      "name": "Mining",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/cli.py#L268-L323",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/expressions.py#L697-L725",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/diagnostics.py#L35-L45"
+      ],
+      "expected": "horizon_days is a count of trading sessions with causal entry after the decision.",
+      "observed": "Shared adjusted read enters observed-date panels and uses shifts by observed row index. Missing complete market dates and weekly bars can give longer economic periods than the label."
+    },
+    {
+      "name": "Evaluation and benchmark",
+      "location": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/cli.py#L200-L247",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/cli.py#L323-L339",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/engine.py#L235-L248",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/engine.py#L346-L347",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/metrics.py#L260-L279"
+      ],
+      "expected": "Valuation, delays, financing and annualization use the intended session axis. Daily benchmark gaps must not be bridged.",
+      "observed": "Run with no external benchmark and quantiles share the adjusted reader without a frequency gate. The external benchmark path rejects matching explicit non-1d metadata but only aligns to dates represented in market rows. The toy close-100/110/121 control traverses both retained closes after the middle market date is removed."
+    }
+  ],
+  "controls": [
+    {
+      "case": "Valid daily control",
+      "input": "Complete synthetic declared daily market, with enough dates and names and as-traded closes or disabled minimum price. Add a separate missing single-instrument session retaining another instrument's bar.",
+      "expected": "Supported daily workflows proceed, a per-name gap remains missing, and no data are filled to make an instrument tradable."
+    },
+    {
+      "case": "Explicit unsupported interval and malformed typed metadata",
+      "input": "A validly shaped synthetic `market_bars` bundle declared 1wk. Add a malformed present-null frequency as a related control. Use a separately constructed fixture when a corrected typed publisher appropriately refuses to write the control.",
+      "expected": "Clear typed-boundary or option-specific refusal before ledger/result mutation in evaluate, search, confirm, default run or quantiles. Matching explicit weekly benchmark refusal stays covered, with affected existing test updated if the refusal moves to the source schema."
+    },
+    {
+      "case": "Calendar membership and aggregation are distinct",
+      "input": "Valid XNYS session, ISO-valid XNYS Saturday and announced 2024-01-15 holiday, impossible ISO date, and legitimate non-XNYS synthetic weekday. Pair two identical OHLCV sparse-date grids whose independently declared source intervals differ.",
+      "expected": "A supported exchange calendar distinguishes valid and invalid sessions while preserving other supported calendars. Provenance distinguishes aggregation only when it specifies interval. Timestamp spacing alone cannot classify the pair."
+    },
+    {
+      "case": "Whole-market gap vs single-instrument benchmark gap",
+      "input": "Synthetic market dates 2024-01-05 and 09 with a guaranteed middle session on Jan 08. Benchmark closes 100/110/121 across all three dates. Compare a dense market axis with only benchmark close Jan 08 missing.",
+      "expected": "No 21% two-session benchmark return is represented as a one-session daily observation. Preserve the existing per-benchmark-gap behavior. If publication allows intentionally sparse whole-market histories, make the rule for full-axis gaps explicit."
+    },
+    {
+      "case": "Windows REVIEW-40/41 separate",
+      "input": "Matching native Git for Windows Bash and native Python on current source with a synthetic snapshot and temporary ledger.",
+      "expected": "Retain pending successful ledger LF/CRLF and direct date-byte captures, valid replay, and invalid benchmark refusal without ledger mutation."
+    }
+  ],
+  "arithmetic": {
+    "date_sets": {
+      "weekly": [
+        "2024-04-01",
+        "2024-04-08",
+        "2024-04-15"
+      ],
+      "sparse_daily_same_dates": [
+        "2024-04-01",
+        "2024-04-08",
+        "2024-04-15"
+      ],
+      "invalid_candidate": "2024-04-06"
+    },
+    "opens": [
+      100,
+      101,
+      103
+    ],
+    "default_annualization": 252,
+    "weekly_example_annualization": 52,
+    "weekly_one_step_label": 0.01980198019801982,
+    "volatility_annualization_ratio": 2.2013981571160284,
+    "daily_applied_cost_accrual_ratio": 0.20634920634920634,
+    "elapsed_days_two_steps": 14,
+    "monday_weekdays": [
+      1,
+      1,
+      1
+    ],
+    "off_calendar_weekday": 6,
+    "units": "All values are synthetic hand/stdlib arithmetic, no product path execution.",
+    "benchmark": {
+      "market_sessions": [
+        "2024-01-05",
+        "2024-01-09"
+      ],
+      "benchmark_closes": {
+        "2024-01-05": 100,
+        "2024-01-08": 110,
+        "2024-01-09": 121
+      },
+      "observed_date_ratio": 0.21,
+      "daily_ratio": 0.1,
+      "scope": "Synthetic arithmetic applied to inferred source call, without execution."
+    }
+  },
+  "capacity": {
+    "scheduled_local": "03:00 CET",
+    "observed_started_utc": "2026-11-23T02:03:15.911883Z",
+    "provisional_minutes": {
+      "setup": 20,
+      "data": 70,
+      "close": 30,
+      "total": 120
+    },
+    "elapsed_to_preparation_seconds": 635,
+    "helper_seconds_approx": 260,
+    "remote_jobs": 0,
+    "product_runs": 0,
+    "token_or_allowance_metadata": "unavailable"
+  },
+  "review": "verification-comparison.json",
+  "ci": "ci-observations.json",
+  "new_defects": 0,
+  "optional_new_recommendations": 0,
+  "findings_ledger_identity_retained": true,
+  "dedup": {
+    "listed_at": "https://github.com/sasasqt/invest/blob/a547a793ec90aea87692d549671909d627ea8fbf/TODO.md#L88",
+    "no_new_root": true,
+    "documentation_pr": "https://github.com/sasasqt/invest/pull/61",
+    "latest_relevant_author_reply": "https://github.com/sasasqt/invest/pull/61#issuecomment-7021621190",
+    "latest_checked_review": "https://github.com/sasasqt/invest/pull/61#issuecomment-7085034008",
+    "policy_decision": "No live decision requested. Proposed checkpoint material and fixes in other PRs are separate from current-main verified behavior."
+  },
+  "peer": {
+    "sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "scope": "Peer historical evidence remains peer-scoped. RA-2026-11-08-1 current Windows proposed fix rechecked at PR66. RA-2026-11-08-2 static/synthetic replay pending.",
+    "comparison": "../cross-check.md"
+  },
+  "remaining": [
+    "Review the remaining typed metadata and supported calendar contract, starting with callers that establish the full session axis. Retain the synthetic REVIEW-59 controls and extended K14 matrix for a qualified runner.",
+    "Preserve REVIEW-40/41 under engineering and retain existing runner fail-stop item and any untouched runtime prerequisites."
+  ],
+  "coverage": {
+    "tracked_files": 156,
+    "inventoried": 65,
+    "partially_reviewed": 36,
+    "reviewed": 29,
+    "checked_automatically": 5,
+    "blocked": 21,
+    "unread_lines": 39247,
+    "unread_paths": 119,
+    "no_applicable_or_unknown_line_count": 5,
+    "new_unique_semantic_lines": 1120
+  }
+}

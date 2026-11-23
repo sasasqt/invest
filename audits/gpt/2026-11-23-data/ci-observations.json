@@ -1,0 +1,93 @@
+{
+  "date": "2026-11-23",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "workflow": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/ci.yml",
+  "standard": {
+    "reuse": "Existing exact-source standard CI, originally 2026-11-18. Re-read job logs and gate configuration today.",
+    "run": 44246922942,
+    "url": "https://github.com/sasasqt/invest/actions/runs/44246922942",
+    "platform": "Linux",
+    "jobs": [
+      {
+        "python": "3.11",
+        "id": 134607997865,
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997865",
+        "result": "passed",
+        "tests_passed": 1269,
+        "skipped": 1,
+        "strict_mypy_files": 32,
+        "total_branch_coverage_percent": 96.88,
+        "coverage_floor_failures": 0
+      },
+      {
+        "python": "3.13",
+        "id": 134607997510,
+        "url": "https://github.com/sasasqt/invest/actions/runs/44246922942/job/134607997510",
+        "result": "passed",
+        "tests_passed": 1269,
+        "skipped": 1,
+        "strict_mypy_files": 32,
+        "total_branch_coverage_percent": 96.88,
+        "coverage_floor_failures": 0
+      }
+    ],
+    "strict_mypy": {
+      "status": "passed",
+      "command": "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+      "config": "pyproject.toml strict=true"
+    },
+    "branch_coverage": {
+      "status": "passed",
+      "observed_flag": "--cov-branch",
+      "gate": "scripts/check_coverage_floors.py against pyproject.toml",
+      "total_floor_percent": 96,
+      "default_per_file_floor_percent": 90,
+      "custom_per_file_floors": "Configured per file at pinned source and applied by the checker"
+    }
+  },
+  "encoding": {
+    "date": "2026-11-19",
+    "id": "BF-2026-11-14-5",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "status": "verified bounded acceptance through existing exact-main normal CI and source assertions",
+    "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+    "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+    "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
+    "run": 44246922942,
+    "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
+    "last_reused_date": "2026-11-23",
+    "reuse_reason": "Rechecked merged #39 and #51 ancestry, exact-source jobs and three-case source assertions today. No per-case log or independent runtime repetition."
+  },
+  "windows": {
+    "date": "2026-11-21",
+    "owner_field": "engineering",
+    "ids": [
+      "REVIEW-40",
+      "REVIEW-41"
+    ],
+    "status": "REVIEW-40 ledger LF/CRLF remains open; REVIEW-41 not reproduced in demonstrated PR66 native Git Bash/Python workflow, direct date bytes/other shells pending",
+    "current_main_status": "main remains eb64; PR66 unmerged, not current-main validation",
+    "pr66_head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+    "merge_sha": "013791c31ff147ad776a303618618091cc0bc822",
+    "main_parent": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "run": 44802209769,
+    "job": 136516962817,
+    "result": "Python3.11.9 Windows product CI1269passed7skipped; logged native Git Bash, strict mypy command; matching merge parents checked. Python3.13 job success observed, detailed log not reread.",
+    "evidence": "2026-11-21-performance/ci-observations.json",
+    "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested.",
+    "pr66_state_rechecked": "2026-11-23",
+    "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7085034351",
+    "parents_rechecked_utc": "2026-11-23T02:13:51Z",
+    "job_log_reuse": "Previously read CPython3.11.9 native Windows product job evidence for these exact merge parents, rechecked commit parents today. Native Git Bash replay and bytewise unchanged refusal, no successful append byte check or direct captured date bytes."
+  },
+  "isolated": {
+    "status": "unavailable",
+    "actual_runner_sha": null,
+    "workflow": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/audit-runtime.yml",
+    "requested_audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "existing_workflow_dispatch_runs_found": 0,
+    "new_remote_dispatches": 0,
+    "reason": "A local installed-lock and credential-isolation qualification was unavailable, no matching isolated job was found, and no authorized workflow dispatch action was available. Historical runner a73149d3cf8df7c133ea436a7787c5d5a2dc88b5 remains disqualified (INV-PR32-001). A later static correction does not qualify a current runner."
+  },
+  "runtime_for_review59": "pending"
+}

@@ -1,0 +1,812 @@
+{
+  "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+  "date": "2026-11-23",
+  "field": "data",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "planned_percent": {
+    "exploitation": 30,
+    "exploration": 70
+  },
+  "actual_discretionary_unique_lines": {
+    "exploitation": 149,
+    "exploration": 351,
+    "mandatory": 827
+  },
+  "actual_percent": {
+    "exploitation": 29.8,
+    "exploration": 70.2
+  },
+  "new_cumulative_lines_all_reviewers": 1120,
+  "new_verified_distinct_roots": {
+    "exploitation": 0,
+    "exploration": 0
+  },
+  "helper_unique_lines_separate": 655,
+  "helper_overlap_excluded": 580,
+  "root_count_scope": "Existing REVIEW-59 corroboration and stronger acceptance case without new root or new product execution.",
+  "pooled_eligible_visits": 4,
+  "pooled_lines": {
+    "exploitation": 1557,
+    "exploration": 1433
+  },
+  "pooled_rates_per_1000_lines": {
+    "exploitation": 0,
+    "exploration": 0.6978367062107467
+  },
+  "next_percent": {
+    "exploitation": 30,
+    "exploration": 70
+  },
+  "ranges": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          180,
+          199
+        ],
+        [
+          261,
+          291
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+      "count": 51
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          190,
+          230
+        ],
+        [
+          377,
+          433
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+      "count": 98
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          387,
+          694
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121",
+      "count": 308
+    },
+    {
+      "path": "data-pipeline/data-preparation/README.md",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "5728bfe50ed082fa5551ca93f3d77b43dc54259f",
+      "count": 43
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          110,
+          162
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+      "count": 53
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          43,
+          56
+        ],
+        [
+          120,
+          183
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567",
+      "count": 78
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          82,
+          182
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "eaee0678c88d084d29a7a5d55076530b806e0618",
+      "count": 101
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          97,
+          100
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+      "count": 4
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          486,
+          493
+        ],
+        [
+          758,
+          785
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+      "count": 36
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          268,
+          321
+        ],
+        [
+          383,
+          384
+        ],
+        [
+          435,
+          435
+        ],
+        [
+          521,
+          529
+        ],
+        [
+          565,
+          568
+        ],
+        [
+          842,
+          856
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+      "count": 85
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          146,
+          153
+        ],
+        [
+          195,
+          202
+        ],
+        [
+          224,
+          275
+        ],
+        [
+          323,
+          362
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+      "count": 108
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          35,
+          45
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+      "count": 11
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          695,
+          729
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "375c8b7467aac46233bcfdc0ab765ecf55d1cbd8",
+      "count": 35
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          160,
+          182
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f",
+      "count": 23
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          230,
+          248
+        ],
+        [
+          342,
+          347
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+      "count": 25
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          126,
+          179
+        ],
+        [
+          344,
+          367
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+      "count": 78
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          410,
+          441
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "0b0171ee59e2a2241a4378767702171a79481d24",
+      "count": 32
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          38,
+          47
+        ],
+        [
+          79,
+          85
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+      "count": 17
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          1,
+          14
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+      "count": 14
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          260,
+          279
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+      "count": 20
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          18,
+          30
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+      "count": 13
+    },
+    {
+      "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          60,
+          77
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "332bd6f387f1101540392d757426de0b6d159723",
+      "count": 18
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          372,
+          412
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+      "count": 41
+    },
+    {
+      "path": "strategy-evaluation/README.md",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          24,
+          24
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+      "count": 1
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          247,
+          280
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+      "count": 34
+    }
+  ],
+  "verifier_ranges": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          5,
+          14
+        ],
+        [
+          97,
+          97
+        ],
+        [
+          190,
+          230
+        ],
+        [
+          381,
+          433
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+      "count": 105
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          337,
+          350
+        ],
+        [
+          393,
+          397
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+      "count": 19
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          268,
+          276
+        ],
+        [
+          294,
+          294
+        ],
+        [
+          319,
+          323
+        ],
+        [
+          382,
+          401
+        ],
+        [
+          521,
+          524
+        ],
+        [
+          845,
+          847
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+      "count": 42
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          146,
+          153
+        ],
+        [
+          200,
+          202
+        ],
+        [
+          228,
+          247
+        ],
+        [
+          254,
+          275
+        ],
+        [
+          323,
+          339
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+      "count": 70
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          129,
+          151
+        ],
+        [
+          180,
+          191
+        ],
+        [
+          261,
+          266
+        ],
+        [
+          284,
+          290
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+      "count": 48
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          121,
+          126
+        ],
+        [
+          153,
+          169
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "eaee0678c88d084d29a7a5d55076530b806e0618",
+      "count": 23
+    },
+    {
+      "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          410,
+          439
+        ],
+        [
+          482,
+          490
+        ],
+        [
+          593,
+          601
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121",
+      "count": 48
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          120,
+          127
+        ],
+        [
+          135,
+          171
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567",
+      "count": 45
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          345,
+          366
+        ],
+        [
+          410,
+          435
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "0b0171ee59e2a2241a4378767702171a79481d24",
+      "count": 48
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          697,
+          725
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "375c8b7467aac46233bcfdc0ab765ecf55d1cbd8",
+      "count": 29
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          35,
+          45
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+      "count": 11
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          116,
+          117
+        ],
+        [
+          235,
+          248
+        ],
+        [
+          346,
+          347
+        ],
+        [
+          578,
+          589
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+      "count": 30
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          165,
+          165
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f",
+      "count": 1
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          152,
+          158
+        ],
+        [
+          260,
+          279
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+      "count": 27
+    },
+    {
+      "path": "docs/DATA_CONTRACT.md",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          44,
+          44
+        ],
+        [
+          81,
+          81
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+      "count": 2
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          18,
+          30
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+      "count": 13
+    },
+    {
+      "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          60,
+          77
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "332bd6f387f1101540392d757426de0b6d159723",
+      "count": 18
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          372,
+          412
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+      "count": 41
+    },
+    {
+      "path": "strategy-evaluation/README.md",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          24,
+          24
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+      "count": 1
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "bucket": "verifier_a",
+      "ranges": [
+        [
+          247,
+          280
+        ]
+      ],
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+      "count": 34
+    }
+  ],
+  "selection": {
+    "date": "2026-11-23",
+    "question": "Can import-csv and the typed bundle readers establish the daily-session contract that mining horizons and evaluation annualization assume?",
+    "expected": "Trace a synthetic weekly series versus a daily history with missing sessions, explicit non-1d metadata, and the standard consumers. Classify pre-existing reports and concrete scope. Read one deterministic relevant unread ingress test slice.",
+    "stop": "Pin producer, typed reader and two consumer paths plus controls and independent disposition. No runtime claim on those traces.",
+    "allocation": [
+      30,
+      70
+    ],
+    "inherited_field_budget": "adapted from 60/40",
+    "peer_exact_ranges": "unavailable",
+    "eligible": [
+      "cleaning_and_sources:CSV tests",
+      "signal-metadata:timing tests"
+    ],
+    "seed": "f09b63beda3ca17a3ef6df924d251ace32f79abab7bc9f5a4cad14ffc75a1d0f",
+    "draw": "cleaning_and_sources:CSV tests"
+  },
+  "research": "not scheduled; no primary research investigation or experiments in field denominator"
+}

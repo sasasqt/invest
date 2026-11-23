@@ -1,0 +1,14 @@
+{
+  "id": "REVIEW-59 (frequency/calendar slice)",
+  "aliases": [
+    "BH-2026-11-17-2",
+    "BH-2026-11-18-1"
+  ],
+  "disposition": "Keep as corroborated known static contract defect, with no new root ID and no local product runtime claim.",
+  "severity": "medium for knowingly wrong horizon/annualized metrics",
+  "confidence": "high for code paths and negative-control distinction",
+  "expected": "Daily-only workflows reject explicit unsupported cadence before any ledger/output mutation; producer does not silently certify unverified aggregation. Valid sparse daily data must stay distinguishable from weekly aggregation by declared provenance and supported calendar, including all-market gaps.",
+  "actual": "CSV producer hardcodes 1d. Shared readers only check required metadata and adjustment. Both mining and evaluation default paths accept explicit non-1d metadata assuming other inputs valid. Evaluation run with external benchmark rejects an explicit non-1d label after matching metadata. Identically mislabeled 1d series can pass that guard's cadence checks.",
+  "rejected_claim": "Drop a rule that rejects any spacing >1 weekday or certifies daily cadence from valid weekdays. Same date list can represent weekly bars or sparse daily returns, and holidays/halts are allowed.",
+  "missing": "Untouched source runtime repeated controls, authoritative supported-calendar contract for public CSV, downstream saved-result reconciliation only after correction."
+}

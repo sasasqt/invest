@@ -47,19 +47,19 @@
   },
   "status": "bounded static and existing-CI review complete; full RECORD replay and native Windows pending",
   "last_audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-  "last_audited_date": "2026-11-22",
-  "last_run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+  "last_audited_date": "2026-11-23",
+  "last_run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
   "coverage_counts": {
     "tracked_files": 156,
-    "inventoried": 77,
-    "partially_reviewed": 25,
-    "reviewed": 28,
+    "inventoried": 65,
+    "partially_reviewed": 36,
+    "reviewed": 29,
     "checked_automatically": 5,
     "blocked": 21,
-    "unread_lines": 40367,
-    "unread_paths": 120,
+    "unread_lines": 39247,
+    "unread_paths": 119,
     "no_applicable_or_unknown_line_count": 5,
-    "new_unique_semantic_lines": 967
+    "new_unique_semantic_lines": 1120
   },
   "last_four_completed_runs": [
     {
@@ -450,7 +450,13 @@
       "first_queued_utc": "2026-11-09T02:10:45.754Z",
       "last_queued_utc": "2026-11-09T02:10:45.754Z",
       "status": "queued lead; no defect asserted",
-      "deferral_reason": "outside bounded question"
+      "deferral_reason": "outside bounded question",
+      "latest_scope_check": {
+        "date": "2026-11-23",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "status": "content hash omission of semantic metadata corroborated as designed; no distinct consumer false-equivalence evaluated",
+        "evidence": "2026-11-23-data/evidence.json"
+      }
     },
     {
       "id": "OPEN-PEER-RA-2026-11-08-1",
@@ -464,8 +470,15 @@
       "next_check": "Independently verify Windows snapshot publication claim on a supported isolated Windows route or precise API invariant.",
       "first_queued_utc": "2026-11-09T02:10:45.754Z",
       "last_queued_utc": "2026-11-09T02:10:45.754Z",
-      "status": "peer lead queued; cannot check today",
-      "deferral_reason": "bounded question and runtime gate"
+      "status": "open on main; #66 proposes a fix; existing native Windows evidence covers the merge preview",
+      "deferral_reason": "bounded question and runtime gate",
+      "latest_scope_check": {
+        "date": "2026-11-23",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "proposed_fix_sha": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+        "merge_sha": "013791c31ff147ad776a303618618091cc0bc822",
+        "evidence": "https://github.com/sasasqt/invest/actions/runs/44802209769/job/136516962817"
+      }
     },
     {
       "id": "OPEN-PEER-RA-2026-11-08-2",
@@ -480,7 +493,13 @@
       "first_queued_utc": "2026-11-09T02:10:45.754Z",
       "last_queued_utc": "2026-11-09T02:10:45.754Z",
       "status": "peer lead queued; cannot check today",
-      "deferral_reason": "bounded question and runtime gate"
+      "deferral_reason": "bounded question and runtime gate",
+      "latest_scope_check": {
+        "date": "2026-11-23",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "status": "not independently runtime-checked today; peer evidence retained in original scope",
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497"
+      }
     },
     {
       "id": "OPEN-MINING-IDENTITY-SAME-READ-001",
@@ -1038,18 +1057,22 @@
       "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
       "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
       "evidence": "2026-11-22-research/evidence.json"
+    },
+    {
+      "date": "2026-11-23",
+      "field": "data",
+      "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "status": "bounded data source review complete; runtime acceptance pending; whole-repository Audit incomplete",
+      "evidence": "2026-11-23-data/evidence.json"
     }
   ],
-  "latest_current_run_evidence": "2026-11-22-research/evidence.json",
+  "latest_current_run_evidence": "2026-11-23-data/evidence.json",
   "report_summary_counts": {
-    "date": "2026-11-22",
-    "new_verified_defects": 0,
-    "new_unverified_concerns": 0,
-    "optional_improvements": 0,
-    "research_candidates": 1,
-    "independent_verified_research_advances": 1,
-    "experiments_attempted": 0,
-    "remote_dispatches": 0
+    "confirmed_new": 0,
+    "known_static_corroborated": 1,
+    "dropped_interpretations": 1,
+    "optional_new_recommendations": 0
   },
   "rotation_v3": {
     "version": 3,
@@ -1065,21 +1088,10 @@
     "fields": {
       "data": {
         "weekday": 0,
-        "last_rotation_visit": "2026-11-16",
-        "last_substantive_advance": "2026-11-16",
+        "last_rotation_visit": "2026-11-23",
+        "last_substantive_advance": "2026-11-23",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
-          {
-            "path": "data-pipeline/data-preparation/README.md",
-            "unread_ranges": [
-              [
-                1,
-                43
-              ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "5728bfe50ed082fa5551ca93f3d77b43dc54259f"
-          },
           {
             "path": "data-pipeline/data-preparation/pyproject.toml",
             "unread_ranges": [
@@ -1088,7 +1100,7 @@
                 13
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "b903570376b0ee54dcf09fa474642a70b4462ac9"
           },
           {
@@ -1096,6 +1108,18 @@
             "unread_ranges": [
               [
                 1,
+                336
+              ],
+              [
+                351,
+                392
+              ],
+              [
+                398,
+                485
+              ],
+              [
+                494,
                 495
               ],
               [
@@ -1104,10 +1128,14 @@
               ],
               [
                 786,
+                826
+              ],
+              [
+                838,
                 937
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "211de651b6ca45fb4a7784b61f652b596ffce031"
           },
           {
@@ -1115,10 +1143,10 @@
             "unread_ranges": [
               [
                 1,
-                182
+                81
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "eaee0678c88d084d29a7a5d55076530b806e0618"
           },
           {
@@ -1126,10 +1154,22 @@
             "unread_ranges": [
               [
                 1,
+                107
+              ],
+              [
+                163,
+                179
+              ],
+              [
+                200,
+                260
+              ],
+              [
+                292,
                 295
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76"
           },
           {
@@ -1140,14 +1180,18 @@
                 40
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "420c54dc3d9da263b282352c9d4842f6be32e5f8"
           },
           {
             "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
             "unread_ranges": [
               [
-                1,
+                15,
+                96
+              ],
+              [
+                101,
                 117
               ],
               [
@@ -1155,8 +1199,8 @@
                 184
               ],
               [
-                203,
-                425
+                231,
+                376
               ],
               [
                 434,
@@ -1167,7 +1211,7 @@
                 512
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "ac5b41665bd62621a188d7e0d671a01bde129252"
           },
           {
@@ -1175,10 +1219,18 @@
             "unread_ranges": [
               [
                 1,
+                42
+              ],
+              [
+                57,
+                119
+              ],
+              [
+                184,
                 243
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567"
           },
           {
@@ -1186,10 +1238,14 @@
             "unread_ranges": [
               [
                 1,
-                441
+                344
+              ],
+              [
+                367,
+                409
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "0b0171ee59e2a2241a4378767702171a79481d24"
           },
           {
@@ -1200,7 +1256,7 @@
                 861
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "3bf79318499fd9157d332e0d6de3ae24a8757667"
           },
           {
@@ -1208,10 +1264,10 @@
             "unread_ranges": [
               [
                 1,
-                694
+                386
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121"
           },
           {
@@ -1226,7 +1282,7 @@
                 154
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "85418cc40a41523aeccea7bf4ade28e70be8a06e"
           },
           {
@@ -1237,7 +1293,7 @@
                 330
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "821f4e4667e8fc33b4d3c2b3fb1dcdcc7c8e104e"
           },
           {
@@ -1248,7 +1304,7 @@
                 464
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "e70a13c1fb223ce3a80a52482ffc94f3e5b811a3"
           },
           {
@@ -1259,7 +1315,7 @@
                 62
               ]
             ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
             "blob": "4372a9d28cb4796d7783d7eb25ccccfae7d17538"
           }
         ],
@@ -1267,7 +1323,8 @@
           "OPEN-FUNDAMENTALS-CROSS-FORMAT-CONTROLS-001",
           "OPEN-DATA-METADATA-IDENTITY-001",
           "OPEN-PEER-RA-2026-11-08-1",
-          "OPEN-PEER-RA-2026-11-08-2"
+          "OPEN-PEER-RA-2026-11-08-2",
+          "REVIEW-59"
         ],
         "deferrals": {
           "k14-runtime-controls": {
@@ -1278,6 +1335,17 @@
             "status": "superseded by scoped root resolution with residual matrix queued",
             "last_reconciled": "2026-11-16",
             "current_evidence": "2026-11-16-data/evidence.json"
+          },
+          "review-59-runtime": {
+            "date": "2026-11-23",
+            "reason": "Qualified installed lock and credential-isolated runner unavailable; existing product reproductions historical",
+            "next_check": [
+              "Valid daily control",
+              "Explicit unsupported interval and malformed typed metadata",
+              "Calendar membership and aggregation are distinct",
+              "Whole-market gap vs single-instrument benchmark gap"
+            ],
+            "status": "pending"
           }
         },
         "reading_allocation": [
@@ -1656,18 +1724,831 @@
               "peer_exact_ranges": "unavailable"
             },
             "research": "not scheduled; no papers, ideas or experiments"
+          },
+          {
+            "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+            "date": "2026-11-23",
+            "field": "data",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "planned_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 149,
+              "exploration": 351,
+              "mandatory": 827
+            },
+            "actual_percent": {
+              "exploitation": 29.8,
+              "exploration": 70.2
+            },
+            "new_cumulative_lines_all_reviewers": 1120,
+            "new_verified_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "helper_unique_lines_separate": 655,
+            "helper_overlap_excluded": 580,
+            "root_count_scope": "Existing REVIEW-59 corroboration and stronger acceptance case without new root or new product execution.",
+            "pooled_eligible_visits": 4,
+            "pooled_lines": {
+              "exploitation": 1557,
+              "exploration": 1433
+            },
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 0,
+              "exploration": 0.6978367062107467
+            },
+            "next_percent": {
+              "exploitation": 30,
+              "exploration": 70
+            },
+            "ranges": [
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    180,
+                    199
+                  ],
+                  [
+                    261,
+                    291
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+                "count": 51
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    190,
+                    230
+                  ],
+                  [
+                    377,
+                    433
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "count": 98
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    387,
+                    694
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121",
+                "count": 308
+              },
+              {
+                "path": "data-pipeline/data-preparation/README.md",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    43
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "5728bfe50ed082fa5551ca93f3d77b43dc54259f",
+                "count": 43
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    110,
+                    162
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+                "count": 53
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    43,
+                    56
+                  ],
+                  [
+                    120,
+                    183
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567",
+                "count": 78
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    82,
+                    182
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "eaee0678c88d084d29a7a5d55076530b806e0618",
+                "count": 101
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    97,
+                    100
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "count": 4
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    486,
+                    493
+                  ],
+                  [
+                    758,
+                    785
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+                "count": 36
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    268,
+                    321
+                  ],
+                  [
+                    383,
+                    384
+                  ],
+                  [
+                    435,
+                    435
+                  ],
+                  [
+                    521,
+                    529
+                  ],
+                  [
+                    565,
+                    568
+                  ],
+                  [
+                    842,
+                    856
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+                "count": 85
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    146,
+                    153
+                  ],
+                  [
+                    195,
+                    202
+                  ],
+                  [
+                    224,
+                    275
+                  ],
+                  [
+                    323,
+                    362
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+                "count": 108
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    35,
+                    45
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+                "count": 11
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/expressions.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    695,
+                    729
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "375c8b7467aac46233bcfdc0ab765ecf55d1cbd8",
+                "count": 35
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/config.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    160,
+                    182
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f",
+                "count": 23
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    230,
+                    248
+                  ],
+                  [
+                    342,
+                    347
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+                "count": 25
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    126,
+                    179
+                  ],
+                  [
+                    344,
+                    367
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+                "count": 78
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    410,
+                    441
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "0b0171ee59e2a2241a4378767702171a79481d24",
+                "count": 32
+              },
+              {
+                "path": "docs/DATA_CONTRACT.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    38,
+                    47
+                  ],
+                  [
+                    79,
+                    85
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+                "count": 17
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    1,
+                    14
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "count": 14
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    260,
+                    279
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+                "count": 20
+              },
+              {
+                "path": "strategy-evaluation/tests/test_metrics.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    18,
+                    30
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+                "count": 13
+              },
+              {
+                "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    60,
+                    77
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "332bd6f387f1101540392d757426de0b6d159723",
+                "count": 18
+              },
+              {
+                "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    372,
+                    412
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+                "count": 41
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    24,
+                    24
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+                "count": 1
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    247,
+                    280
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+                "count": 34
+              }
+            ],
+            "verifier_ranges": [
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    5,
+                    14
+                  ],
+                  [
+                    97,
+                    97
+                  ],
+                  [
+                    190,
+                    230
+                  ],
+                  [
+                    381,
+                    433
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+                "count": 105
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    337,
+                    350
+                  ],
+                  [
+                    393,
+                    397
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "211de651b6ca45fb4a7784b61f652b596ffce031",
+                "count": 19
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    268,
+                    276
+                  ],
+                  [
+                    294,
+                    294
+                  ],
+                  [
+                    319,
+                    323
+                  ],
+                  [
+                    382,
+                    401
+                  ],
+                  [
+                    521,
+                    524
+                  ],
+                  [
+                    845,
+                    847
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+                "count": 42
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    146,
+                    153
+                  ],
+                  [
+                    200,
+                    202
+                  ],
+                  [
+                    228,
+                    247
+                  ],
+                  [
+                    254,
+                    275
+                  ],
+                  [
+                    323,
+                    339
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+                "count": 70
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    129,
+                    151
+                  ],
+                  [
+                    180,
+                    191
+                  ],
+                  [
+                    261,
+                    266
+                  ],
+                  [
+                    284,
+                    290
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "bf27f5fb432fc65c37a6e029351e3c6b71df7c76",
+                "count": 48
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    121,
+                    126
+                  ],
+                  [
+                    153,
+                    169
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "eaee0678c88d084d29a7a5d55076530b806e0618",
+                "count": 23
+              },
+              {
+                "path": "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    410,
+                    439
+                  ],
+                  [
+                    482,
+                    490
+                  ],
+                  [
+                    593,
+                    601
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "5764643ff2f7d7f1912148c6f41eebc79a77a121",
+                "count": 48
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    120,
+                    127
+                  ],
+                  [
+                    135,
+                    171
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "fd143b1d2d96c0b264bd5b20277b27527062a567",
+                "count": 45
+              },
+              {
+                "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    345,
+                    366
+                  ],
+                  [
+                    410,
+                    435
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "0b0171ee59e2a2241a4378767702171a79481d24",
+                "count": 48
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/expressions.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    697,
+                    725
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "375c8b7467aac46233bcfdc0ab765ecf55d1cbd8",
+                "count": 29
+              },
+              {
+                "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    35,
+                    45
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+                "count": 11
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    116,
+                    117
+                  ],
+                  [
+                    235,
+                    248
+                  ],
+                  [
+                    346,
+                    347
+                  ],
+                  [
+                    578,
+                    589
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+                "count": 30
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/config.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    165,
+                    165
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "c4803c5d4d5814143a24b25611ce678c2b037b3f",
+                "count": 1
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    152,
+                    158
+                  ],
+                  [
+                    260,
+                    279
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "63900b8e28beafcb25b8fe1621bddaa7db01279e",
+                "count": 27
+              },
+              {
+                "path": "docs/DATA_CONTRACT.md",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    44,
+                    44
+                  ],
+                  [
+                    81,
+                    81
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+                "count": 2
+              },
+              {
+                "path": "strategy-evaluation/tests/test_metrics.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    18,
+                    30
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+                "count": 13
+              },
+              {
+                "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    60,
+                    77
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "332bd6f387f1101540392d757426de0b6d159723",
+                "count": 18
+              },
+              {
+                "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    372,
+                    412
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+                "count": 41
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    24,
+                    24
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+                "count": 1
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+                "bucket": "verifier_a",
+                "ranges": [
+                  [
+                    247,
+                    280
+                  ]
+                ],
+                "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+                "blob": "2d90858523a4cbe716596b412aae75a94334b4a4",
+                "count": 34
+              }
+            ],
+            "selection": {
+              "date": "2026-11-23",
+              "question": "Can import-csv and the typed bundle readers establish the daily-session contract that mining horizons and evaluation annualization assume?",
+              "expected": "Trace a synthetic weekly series versus a daily history with missing sessions, explicit non-1d metadata, and the standard consumers. Classify pre-existing reports and concrete scope. Read one deterministic relevant unread ingress test slice.",
+              "stop": "Pin producer, typed reader and two consumer paths plus controls and independent disposition. No runtime claim on those traces.",
+              "allocation": [
+                30,
+                70
+              ],
+              "inherited_field_budget": "adapted from 60/40",
+              "peer_exact_ranges": "unavailable",
+              "eligible": [
+                "cleaning_and_sources:CSV tests",
+                "signal-metadata:timing tests"
+              ],
+              "seed": "f09b63beda3ca17a3ef6df924d251ace32f79abab7bc9f5a4cad14ffc75a1d0f",
+              "draw": "cleaning_and_sources:CSV tests"
+            },
+            "research": "not scheduled; no primary research investigation or experiments in field denominator"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+        "last_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
         "completed_advances": [
           "Independent static trace of known K14 / REVIEW-16 through generic reader, financial reader and feature consumer; C1 dropped with separately derived reference controls.",
           "Resolved OPEN-FUNDAMENTALS-AVAILABLE-AT-001 as not a repository defect after full current-consumer trace and fresh independent review; closed four unread data ranges (759 cumulative lines).",
-          "Verified merged #39 resolves K14 typed ingress in source and existing exact-main CI scope; malformed SQLite/Parquet matrix retained."
+          "Verified merged #39 resolves K14 typed ingress in source and existing exact-main CI scope; malformed SQLite/Parquet matrix retained.",
+          "Independently corroborated REVIEW-59 source-to-bundle-to-label/evaluation cadence path, with a whole-market date-gap benchmark control. Ruled out dates alone as aggregation proof. No new runtime or defect ID."
         ],
-        "validation_freshness": "current exact-source static and standard CI; extended runtime unavailable",
-        "next_item": "Earliest feasible unread data slice and remaining canonical null/non-key validation. Run extended K14 synthetic matrix only when the authorized locked runner is qualified. BF-2026-11-14-5 remains queued until #51 merges.",
-        "last_substantive_run_id": "4bd807ed-4e98-8322-9aa3-1e48e6a2e4bb"
+        "validation_freshness": "current pinned static source; exact-source standard CI bounded; cadence isolated acceptance and cross-format K14 still pending",
+        "next_item": "Review the remaining typed metadata and supported calendar contract, starting with callers that establish the full session axis. Retain the synthetic REVIEW-59 controls and extended K14 matrix for a qualified runner.",
+        "last_substantive_run_id": "410fece5-62d8-8325-85e1-398cad16e30a"
       },
       "mining": {
         "weekday": 1,
@@ -4241,8 +5122,8 @@
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 40367,
-    "unread_paths": 120,
+    "unread_lines": 39247,
+    "unread_paths": 119,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -4474,6 +5355,14 @@
           "engineering: last 2026-11-06, age 16 days; take oldest feasible slice next visit"
         ],
         "next": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment."
+      },
+      "data_visit": {
+        "date": "2026-11-23",
+        "fourteen_day_flags": [
+          "engineering: last substantive 2026-11-06; age 17 days; reserve the oldest feasible slice on next engineering visit"
+        ],
+        "oldest_feasible_advanced": "Data preparation README and deterministic CSV-parser test slice",
+        "retained_blocked": "K14 cross-format and REVIEW-59 runtime. No unchanged blocker retried."
       }
     },
     "visit_history": [
@@ -4823,6 +5712,59 @@
         "completed_utc": "2026-11-22T02:14:02Z",
         "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
         "elapsed_to_verified_publication_seconds": 752
+      },
+      {
+        "date": "2026-11-23",
+        "field": "data",
+        "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+        "scheduled_for": "2026-11-23T02:00:00Z",
+        "started_utc": "2026-11-23T02:03:15.911883Z",
+        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "output_base": "429715ca66f671644b2905dc20254038b9ec2f88",
+        "started_checkpoint_commit": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+        "status": "bounded data source review complete; runtime acceptance pending; whole-repository Audit incomplete",
+        "completed_steps": [
+          "pin source and verify method bytes",
+          "reconcile previous runs and persist started checkpoint",
+          "reconfirm CI and carried controls",
+          "read primary data path and explored tests",
+          "review pinned sources independently and reconcile",
+          "prepare coverage and cumulative state"
+        ],
+        "remaining_steps": [
+          "guarded publication and remote readback"
+        ],
+        "pending_jobs": [],
+        "model": "gpt-6.2-sol",
+        "effort": "unavailable",
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+        "actual_runner_sha": null,
+        "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "helper_count": 1,
+        "helper_stage_elapsed_seconds_approx": 260,
+        "evidence": "2026-11-23-data/evidence.json",
+        "report": "2026-11-23.md",
+        "publication_status": "prepared_pending_guarded_publication",
+        "prepared_utc": "2026-11-23T02:13:51Z",
+        "elapsed_to_preparation_seconds": 635,
+        "scope_counts": {
+          "tracked_files": 156,
+          "inventoried": 65,
+          "partially_reviewed": 36,
+          "reviewed": 29,
+          "checked_automatically": 5,
+          "blocked": 21,
+          "unread_lines": 39247,
+          "unread_paths": 119,
+          "no_applicable_or_unknown_line_count": 5,
+          "new_unique_semantic_lines": 1120
+        }
       }
     ],
     "shared_controls": {
@@ -4836,8 +5778,8 @@
         "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
         "run": 44246922942,
         "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
-        "last_reused_date": "2026-11-22",
-        "reuse_reason": "Re-read exact current-main fixture and standard CI logs. Same demonstrated case/refusal scope."
+        "last_reused_date": "2026-11-23",
+        "reuse_reason": "Rechecked merged #39 and #51 ancestry, exact-source jobs and three-case source assertions today. No per-case log or independent runtime repetition."
       },
       "windows": {
         "date": "2026-11-21",
@@ -4856,8 +5798,10 @@
         "result": "Python3.11.9 Windows product CI1269passed7skipped; logged native Git Bash, strict mypy command; matching merge parents checked. Python3.13 job success observed, detailed log not reread.",
         "evidence": "2026-11-21-performance/ci-observations.json",
         "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested.",
-        "pr66_state_rechecked": "2026-11-22",
-        "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7049539333"
+        "pr66_state_rechecked": "2026-11-23",
+        "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7085034351",
+        "parents_rechecked_utc": "2026-11-23T02:13:51Z",
+        "job_log_reuse": "Previously read CPython3.11.9 native Windows product job evidence for these exact merge parents, rechecked commit parents today. Native Git Bash replay and bytewise unchanged refusal, no successful append byte check or direct captured date bytes."
       }
     },
     "peer_leads": [
@@ -5215,32 +6159,88 @@
       "verified_report_commit": "194e0f5b856a67fdf578effaa3a7749a69eb08e4",
       "completed_utc": "2026-11-21T02:23:23.729243Z",
       "elapsed_to_verified_publication_seconds": 1327
+    },
+    {
+      "date": "2026-11-22",
+      "field": "research",
+      "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+      "scheduled_for": "2026-11-22T02:00:00Z",
+      "started_utc": "2026-11-22T02:01:29.986058Z",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+      "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "output_base": "5bdddda433d641b1225293f1496bfc4551ec40a4",
+      "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
+      "completed_steps": [
+        "pinned identities and verified methods",
+        "overlap and started checkpoint",
+        "same-SHA CI and common controls",
+        "targeted primary-source research",
+        "prospective synthetic design",
+        "fresh independent review and reconciliation",
+        "cumulative state and week aggregation",
+        "guarded publication and remote readback"
+      ],
+      "remaining_steps": [],
+      "pending_jobs": [],
+      "model": "gpt-6.2-sol",
+      "effort": "unavailable",
+      "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+      "actual_runner_sha": null,
+      "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "helper_count": 1,
+      "helper_stage_elapsed_seconds_approx": 210,
+      "evidence": "2026-11-22-research/evidence.json",
+      "report": "2026-11-22.md",
+      "publication_status": "published_verified",
+      "prepared_utc": "2026-11-22T02:12:57Z",
+      "elapsed_to_preparation_seconds": 687,
+      "scope_counts": {
+        "tracked_files": 156,
+        "inventoried": 77,
+        "partially_reviewed": 25,
+        "reviewed": 28,
+        "checked_automatically": 5,
+        "blocked": 21,
+        "unread_lines": 40367,
+        "unread_paths": 120,
+        "no_applicable_or_unknown_line_count": 5,
+        "new_unique_semantic_lines": 0
+      },
+      "completed_utc": "2026-11-22T02:14:02Z",
+      "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
+      "elapsed_to_verified_publication_seconds": 752
     }
   ],
   "current_run": {
-    "date": "2026-11-22",
-    "field": "research",
-    "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
-    "scheduled_for": "2026-11-22T02:00:00Z",
-    "started_utc": "2026-11-22T02:01:29.986058Z",
+    "date": "2026-11-23",
+    "field": "data",
+    "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+    "scheduled_for": "2026-11-23T02:00:00Z",
+    "started_utc": "2026-11-23T02:03:15.911883Z",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
     "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
     "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
     "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-    "output_base": "5bdddda433d641b1225293f1496bfc4551ec40a4",
-    "status": "bounded literature and static scope complete; synthetic and historical evaluation pending; whole-repository Audit incomplete",
+    "output_base": "429715ca66f671644b2905dc20254038b9ec2f88",
+    "started_checkpoint_commit": "7a9bcb977b1947b9135c88e862fc26af5507bcad",
+    "status": "bounded data source review complete; runtime acceptance pending; whole-repository Audit incomplete",
     "completed_steps": [
-      "pinned identities and verified methods",
-      "overlap and started checkpoint",
-      "same-SHA CI and common controls",
-      "targeted primary-source research",
-      "prospective synthetic design",
-      "fresh independent review and reconciliation",
-      "cumulative state and week aggregation",
+      "pin source and verify method bytes",
+      "reconcile previous runs and persist started checkpoint",
+      "reconfirm CI and carried controls",
+      "read primary data path and explored tests",
+      "review pinned sources independently and reconcile",
+      "prepare coverage and cumulative state"
+    ],
+    "remaining_steps": [
       "guarded publication and remote readback"
     ],
-    "remaining_steps": [],
     "pending_jobs": [],
     "model": "gpt-6.2-sol",
     "effort": "unavailable",
@@ -5250,27 +6250,24 @@
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
     "helper_count": 1,
-    "helper_stage_elapsed_seconds_approx": 210,
-    "evidence": "2026-11-22-research/evidence.json",
-    "report": "2026-11-22.md",
-    "publication_status": "published_verified",
-    "prepared_utc": "2026-11-22T02:12:57Z",
-    "elapsed_to_preparation_seconds": 687,
+    "helper_stage_elapsed_seconds_approx": 260,
+    "evidence": "2026-11-23-data/evidence.json",
+    "report": "2026-11-23.md",
+    "publication_status": "prepared_pending_guarded_publication",
+    "prepared_utc": "2026-11-23T02:13:51Z",
+    "elapsed_to_preparation_seconds": 635,
     "scope_counts": {
       "tracked_files": 156,
-      "inventoried": 77,
-      "partially_reviewed": 25,
-      "reviewed": 28,
+      "inventoried": 65,
+      "partially_reviewed": 36,
+      "reviewed": 29,
       "checked_automatically": 5,
       "blocked": 21,
-      "unread_lines": 40367,
-      "unread_paths": 120,
+      "unread_lines": 39247,
+      "unread_paths": 119,
       "no_applicable_or_unknown_line_count": 5,
-      "new_unique_semantic_lines": 0
-    },
-    "completed_utc": "2026-11-22T02:14:02Z",
-    "verified_report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
-    "elapsed_to_verified_publication_seconds": 752
+      "new_unique_semantic_lines": 1120
+    }
   },
   "publication_history": [
     {
@@ -6019,78 +7016,17 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-22",
-    "run_id": "0bf95b89-f140-8333-9e8c-6eaa33ebac2f",
+    "date": "2026-11-23",
+    "run_id": "410fece5-62d8-8325-85e1-398cad16e30a",
+    "status": "prepared_pending_guarded_publication",
     "branch": "gpt/repo-audits",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "main_rechecked": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "report_commit": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
-    "verified_head_at_report": "a0959fe1f7e5e47e4da4981ccf3e4258298f1dba",
-    "output_parent": "5bdddda433d641b1225293f1496bfc4551ec40a4",
-    "tree": "e34f812eea58fd6a2424880a711c667bde459ab2",
-    "status": "published_verified",
-    "verified_utc": "2026-11-22T02:14:02Z",
-    "report_url": "https://github.com/sasasqt/invest/blob/a0959fe1f7e5e47e4da4981ccf3e4258298f1dba/audits/gpt/2026-11-22.md",
-    "guarded_expected_old_sha": true,
-    "force": false,
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-22-research/ci-observations.json",
-      "audits/gpt/2026-11-22-research/evidence.json",
-      "audits/gpt/2026-11-22-research/method-verification.json",
-      "audits/gpt/2026-11-22-research/publication.json",
-      "audits/gpt/2026-11-22-research/reviewer1-initial.json",
-      "audits/gpt/2026-11-22-research/reviewer2.md",
-      "audits/gpt/2026-11-22-research/started.json",
-      "audits/gpt/2026-11-22-research/verification-comparison.json",
-      "audits/gpt/2026-11-22.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/research/backlog.md",
-      "audits/gpt/research/experiments.jsonl",
-      "audits/gpt/research/ideas.md",
-      "audits/gpt/research/papers.jsonl",
-      "audits/gpt/research/queries.jsonl",
-      "audits/gpt/research/scouting-2026-11-22.md",
-      "audits/gpt/research/state.json",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv",
-      "audits/gpt/weekly-2026-W47.md"
-    ],
-    "verified_git_blob_ids": {
-      "audits/gpt/2026-11-22.md": "e46d9f51044dfbd346bd59212de15d47e2e5890a",
-      "audits/gpt/weekly-2026-W47.md": "c5eff7457b555e7e7da9db5af451d691e74a136b",
-      "audits/gpt/state.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
-      "audits/gpt/checkpoint.json": "29102634e0e155b8f717afb90066bf7d9bc31d6e",
-      "audits/gpt/2026-11-22-research/started.json": "e06fc49af982921fabe9e0d0fc0d583ba4047445",
-      "audits/gpt/2026-11-22-research/method-verification.json": "d0790485b8772c2c138e5af7bda606fe51fd3a6e",
-      "audits/gpt/2026-11-22-research/evidence.json": "4bd9400610821ad090c0e015b9cfb88492bfcdf3",
-      "audits/gpt/2026-11-22-research/ci-observations.json": "ae1ab06d6f1baa96be976d8a4712c7f6cc072012",
-      "audits/gpt/2026-11-22-research/reviewer1-initial.json": "8bc89579614a9dbfc58c72cbc9fa4d8261c60b7d",
-      "audits/gpt/2026-11-22-research/reviewer2.md": "33b2689260a5101df8136ebf5e684d9f9dc74e05",
-      "audits/gpt/2026-11-22-research/verification-comparison.json": "4cdd051b0230a60fa068df04ee2562297224d591",
-      "audits/gpt/2026-11-22-research/publication.json": "9f906ebbdece65dc838da188fd54fc5ab0ce26bf",
-      "audits/gpt/research/scouting-2026-11-22.md": "064779778a53ba6512be28e69323afb78b7339f7",
-      "audits/gpt/research/state.json": "b845d5438fb413bd40dd8ef31d38cf9705d68182",
-      "audits/gpt/research/ideas.md": "a44add9e4d92efb71dd09ca10428e5defa36be16",
-      "audits/gpt/research/backlog.md": "3312b56c96351e98ebeda41e4de288b0b1bd6498",
-      "audits/gpt/research/papers.jsonl": "e724e8724b5be753a22f4051abe53285173e8d2a",
-      "audits/gpt/research/queries.jsonl": "e88115fb5b9674246dc9897beadbfdd56960721d",
-      "audits/gpt/research/experiments.jsonl": "92aa8de193a142b8052fe17c2079dd4921c1c726",
-      "audits/gpt/cross-check.md": "ac44142ceb29fe317ba0638d72e5b4c88d0212ee",
-      "audits/gpt/validation.csv": "43512a71afb07a60d7493568cf04bb90aec8058c"
-    },
-    "full_text_readback_paths": [
-      "audits/gpt/2026-11-22.md",
-      "audits/gpt/weekly-2026-W47.md",
-      "audits/gpt/state.json",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/research/state.json",
-      "audits/gpt/2026-11-22-research/evidence.json"
-    ],
-    "peer_and_root_tree_unchanged": true,
-    "elapsed_to_verified_publication_seconds": 752
+    "output_parent": "7a9bcb977b1947b9135c88e862fc26af5507bcad"
   },
-  "remaining_work_current_visit": "Qualified warmed actual-fill buffer paired fixture first, then freeze signed curve and same-contract roll/collateral controls before any permitted carry experiment.",
+  "remaining_work_current_visit": [
+    "Review the remaining typed metadata and supported calendar contract, starting with callers that establish the full session axis. Retain the synthetic REVIEW-59 controls and extended K14 matrix for a qualified runner.",
+    "Preserve REVIEW-40/41 under engineering and retain existing runner fail-stop item and any untouched runtime prerequisites."
+  ],
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",
