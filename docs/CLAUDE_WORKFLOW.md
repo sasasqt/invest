@@ -76,7 +76,7 @@ If the hunt has not finished (and on weekends, when it does not run), the bug fi
 A report-only hunt for real defects on `main`, before the user meets them. It never commits, pushes, opens pull requests or issues, or edits tracked files. Each night it:
 
 1. **Orients** on a fresh worktree of `origin/main`, fetches the audit branches `claude/repo-audits` and `gpt/repo-audits`, reads the README, the contracts and TODO, and gathers what is already known: its ledger, open pull requests, unchecked `REVIEW-xx` items, the repo audit's `RA-` rows and the GPT audit's findings.
-2. **Runs the CI checks** (and the coverage floors once their check is on `main`), the synthetic workflow and the Yahoo snapshot replay, and counts the type gaps that strict mypy reports (report only).
+2. **Runs the CI checks**, the coverage floors (`scripts/check_coverage_floors.py`, on `main` since 2026-11-14), the synthetic workflow and the Yahoo snapshot replay, and counts the type gaps that strict mypy reports (report only).
 3. **Reviews the commits** that landed since the last run (`code-review xhigh`).
 4. **Hunts:** an end-to-end pass every night (guard parity between paths, reports versus numbers, side effects, docs for changed code), a real-data pass on the replay, a deep pass that rotates over four areas (data pipeline, mining, evaluation, then scripts, root tests and docs versus behavior), a statistics cross-check and mutation sampling on Wednesdays, a type-holes lens whose findings name the type that would have caught them, and the GPT audit findings (step 4e, below).
 5. **Verifies every candidate.** Reviewer 2, a fresh helper, judges every keep, drop and severity blind first, then compares with the run's verdicts; verifier B settles disagreements.
