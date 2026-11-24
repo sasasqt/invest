@@ -38,10 +38,11 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 LEDGER_VERSION = 1
-KINDS = ("reservation", "inspection", "experiment")
+EntryKind = Literal["reservation", "inspection", "experiment"]
+KINDS: tuple[EntryKind, ...] = ("reservation", "inspection", "experiment")
 
 
 class LedgerError(ValueError):
@@ -131,7 +132,7 @@ def _validate_entry(entry: Any) -> None:
         raise LedgerError("experiment entry without experiment_id")
 
 
-def _window_fields(kind: str) -> tuple[str, ...]:
+def _window_fields(kind: EntryKind) -> tuple[str, ...]:
     return ("development", "confirmation") if kind == "experiment" else ("window",)
 
 
@@ -158,7 +159,10 @@ def entry_windows(entry: Mapping[str, Any]) -> dict[str, Window]:
 
 
 def append(
-    path: str | os.PathLike[str], kind: str, fields: Mapping[str, Any], now: datetime | None = None
+    path: str | os.PathLike[str],
+    kind: EntryKind,
+    fields: Mapping[str, Any],
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     """Append one validated entry and flush it to disk.
 
@@ -264,7 +268,7 @@ def assess_confirmation(
     exp_id: str,
     *,
     sessions: Iterable[date] | None = None,
-) -> tuple[str, list[str]]:
+) -> tuple[Literal["confirmatory", "exploratory"], list[str]]:
     """Classify a planned search as ``confirmatory`` or ``exploratory``, with reasons.
 
     Raises :class:`LedgerError` (before any data is evaluated) when the development window

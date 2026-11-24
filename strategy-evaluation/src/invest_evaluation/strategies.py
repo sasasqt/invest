@@ -10,14 +10,15 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from numbers import Integral, Real
-from typing import Protocol
+from typing import Literal, Protocol
 
 import numpy as np
 import pandas as pd
 
 from invest_evaluation.config import StrategyConfig
 
-SLICE_KINDS = ("bucket", "top", "bottom")
+SliceKind = Literal["bucket", "top", "bottom"]
+SLICE_KINDS: tuple[SliceKind, ...] = ("bucket", "top", "bottom")
 
 
 class Strategy(Protocol):
@@ -130,22 +131,21 @@ class Slice:
     unequal or empty, and are reported instead of being rebalanced by instrument id.
     """
 
-    kind: str
+    kind: SliceKind
     value: float
     n_buckets: int = 10
 
     def __post_init__(self) -> None:
-        if self.kind not in SLICE_KINDS:
+        kind: object = self.kind  # a caller can pass any value
+        if kind not in SLICE_KINDS:
             raise ValueError(f"slice kind must be one of {SLICE_KINDS}")
-        if (
-            isinstance(self.n_buckets, bool)
-            or not isinstance(self.n_buckets, Integral)
-            or self.n_buckets < 2
-        ):
+        n: object = self.n_buckets  # a caller can pass any value
+        if isinstance(n, bool) or not isinstance(n, Integral) or n < 2:
             raise ValueError("n_buckets must be an integer >= 2")
-        v = self.value
-        if isinstance(v, bool) or not isinstance(v, Real) or not math.isfinite(v):
+        checked: object = self.value  # a caller can pass any value
+        if isinstance(checked, bool) or not isinstance(checked, Real) or not math.isfinite(checked):
             raise ValueError("slice value must be a finite number")
+        v = self.value
         if self.kind == "bucket":
             if v != int(v) or not 1 <= v <= self.n_buckets:
                 raise ValueError("bucket must be an integer in 1..n_buckets")

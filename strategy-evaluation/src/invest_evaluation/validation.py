@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import math
 from numbers import Real
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
@@ -20,6 +20,7 @@ from invest_evaluation.config import ValidationConfig
 
 VERDICT_VERSION = 2
 PORTFOLIO_STATUSES = ("supported", "rejected", "inconclusive", "insufficient_data")
+CheckStatus = Literal["pass", "fail", "undefined", "not_run"]
 
 
 def factor_section(signal_metadata: dict[str, Any]) -> dict[str, Any]:
@@ -34,7 +35,9 @@ def factor_section(signal_metadata: dict[str, Any]) -> dict[str, Any]:
     return dict(evidence)
 
 
-def _check(name: str, status: str, value: Any, threshold: Any, detail: str) -> dict[str, Any]:
+def _check(
+    name: str, status: CheckStatus, value: Any, threshold: Any, detail: str
+) -> dict[str, Any]:
     return {
         "name": name,
         "status": status,
@@ -83,8 +86,8 @@ def portfolio_verdict(
     sharpe_value = sharpe.get("value")
     valid_sharpe = (
         sharpe.get("status") == "ok"
-        and isinstance(sharpe_value, Real)
         and not isinstance(sharpe_value, bool)
+        and isinstance(sharpe_value, Real)
         and math.isfinite(sharpe_value)
     )
     checks = [
@@ -130,11 +133,10 @@ def portfolio_verdict(
         )
     else:
         lo, hi = ci
-        status = "pass" if lo > 0 else "fail"
         checks.append(
             _check(
                 "net_sharpe_ci",
-                status,
+                "pass" if lo > 0 else "fail",
                 [lo, hi],
                 "lower bound > 0",
                 f"{boot['level']:.0%} stationary-bootstrap interval of the net excess Sharpe",

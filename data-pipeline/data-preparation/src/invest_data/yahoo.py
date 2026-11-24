@@ -105,7 +105,7 @@ def chart_url(symbol: str, start: str, end: str) -> str:
     return CHART_URL.format(symbol=urllib.parse.quote(symbol, safe="")) + "?" + query
 
 
-def _chart_result(payload: dict[str, Any], symbol: str) -> dict[str, Any]:
+def _chart_result(payload: object, symbol: str) -> dict[str, Any]:
     chart = payload.get("chart") if isinstance(payload, dict) else None
     if not isinstance(chart, dict):
         raise SourceError(f"{symbol}: response has no 'chart' object")

@@ -20,7 +20,7 @@ Three rules apply to every change, in code, data, research results and documenta
 2. **Verify under real conditions, at the scope of the claim.** Evidence counts only when it comes from the actual inputs and covers the same scope as the claim. Convenient inputs and partial checks prove less than they appear to.
 3. **Seek disconfirmation.** When a check disagrees with the work, change the work, not the check, and try to prove a change wrong before handing it off.
 
-Use the type system: CI runs mypy in strict mode on the three `src/` trees and `scripts/`, and the rule covers all code, tests included. Annotate every function, prefer precise types (`Literal`, enums, `NewType`, `TypedDict`, frozen dataclasses) over `Any` and bare strings, and make invalid states impossible to write, keeping the runtime checks where data enters. Follow the [type rules](PYTHON_GUIDELINES.md#use-the-type-system); typing the older code is [QUALITY-04](TODO.md#m1--packages-and-tooling).
+Use the type system: CI runs mypy in strict mode, with `warn_unreachable` and the `redundant-expr` and `possibly-undefined` checks, on the three `src/` trees, `scripts/` and the type tests in `tests/type_checks/`, and the rule covers all code, tests included. Annotate every function, prefer precise types (`Literal`, enums, `NewType`, `TypedDict`, frozen dataclasses) over `Any` and bare strings, and make invalid states impossible to write, keeping the runtime checks where data enters. Follow the [type rules](PYTHON_GUIDELINES.md#use-the-type-system); typing the older code is [QUALITY-04](TODO.md#m1--packages-and-tooling).
 
 Every change must work on both Linux and Windows. The standard CI workflow runs the tests and strict mypy on Windows as well as Linux (formatting, lint, coverage floors, link checks and the install checks run on Linux only), but it only catches what a test exercises, so follow the [Linux and Windows rules](PYTHON_GUIDELINES.md#linux-and-windows) for paths, text encodings, renames, processes and tests.
 
@@ -118,7 +118,7 @@ Checks (the same as CI):
 
 ```sh
 uv run ruff format --check . && uv run ruff check .
-uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts
+uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts tests/type_checks
 uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing
 uv run coverage json -q -o coverage.json
 uv run python scripts/check_coverage_floors.py coverage.json
