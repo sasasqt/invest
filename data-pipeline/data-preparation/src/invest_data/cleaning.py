@@ -161,8 +161,8 @@ def clean_bars(
     order = df.assign(_row=np.arange(len(df))).sort_values(["date", "instrument", "_row"])
     dup = order.duplicated(["date", "instrument"], keep=False)
     flag(dup.reindex(df.index).fillna(False).astype(bool), "duplicate_key")
-    if adjusted_close is not None:
-        converted = total_return_adjust(df, adjusted_close)
+    converted = None if adjusted_close is None else total_return_adjust(df, adjusted_close)
+    if converted is not None:
         values = converted[REQUIRED[2:]].to_numpy(dtype="float64")
         # NaN unless the adjusted close is positive; underflow or overflow are refused too.
         fine = np.isfinite(values).all(axis=1) & (values[:, :4] > 0).all(axis=1)
@@ -171,7 +171,7 @@ def clean_bars(
     bad = reason.notna()
     rejected = raw.loc[bad].copy()
     rejected["reason"] = reason[bad]
-    if adjusted_close is not None:
+    if converted is not None:
         optional = df[[c for c in OPTIONAL if c in df]]
         kept = df["close"].rename(AS_TRADED_CLOSE.name) if as_traded else optional
         df = pd.concat([converted, kept], axis=1)

@@ -60,6 +60,7 @@ from invest_mining.reporting import write_factor_report
 from invest_mining.search import (
     MIN_CONFIRM_DATES,
     SEARCH_VERSION,
+    ConfirmationUse,
     chronological_split,
     confirm,
     mark_confirmation_use,
@@ -170,7 +171,7 @@ def _prepare_out(
     return root
 
 
-def _unwritten(out: Path, exc: OSError, exp_id: str, use: str) -> SystemExit:
+def _unwritten(out: Path, exc: OSError, exp_id: str, use: ConfirmationUse) -> SystemExit:
     """The error for outputs that failed after the ledger recorded the experiment."""
     return SystemExit(
         f"--out {out}: {exc}; the ledger already recorded experiment {exp_id} ({use})"
@@ -414,7 +415,8 @@ def _search(args: argparse.Namespace) -> int:
         "confirmation": confirmation.to_json(),
     }
     exp_id = ledger.experiment_id(identity)
-    use, reasons = "unrecorded", list[str]()
+    use: ConfirmationUse = "unrecorded"
+    reasons: list[str] = []
     if args.ledger is not None:
         # Decided before any candidate is scored, so the outcome cannot influence it.
         try:
@@ -904,7 +906,7 @@ def _ledger(args: argparse.Namespace) -> int:
             ledger.check_inspection(entries, window)
     except LedgerError as exc:
         raise SystemExit(f"{args.ledger}: {exc}") from exc
-    kind = "reservation" if args.action == "reserve" else "inspection"
+    kind: ledger.EntryKind = "reservation" if args.action == "reserve" else "inspection"
     entry = ledger.append(args.ledger, kind, {"window": window.to_json(), "note": args.note})
     print(json.dumps(entry))
     return 0

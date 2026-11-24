@@ -10,7 +10,7 @@ Every pull request and every push to `main` runs `docs`, `changes` and `ci-ok`. 
 |---|---|
 | `docs` (`docs.yml`, `ubuntu-latest` and `windows-latest`) | `ruff format --check` (which also formats the Python blocks in `.md` files) and the Markdown link check below, with `uv run --frozen --only-group dev`; the Windows checkout also refuses file names Windows cannot hold |
 | `changes` | Decides from the pull request's changed files whether the jobs below run; on a push to `main` they always do |
-| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees and `scripts/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
+| `checks` (Python 3.11 and 3.13) | `uv sync --frozen`, `ruff format --check`, `ruff check`, `mypy` in strict mode on all three `src/` trees, `scripts/` and the type tests in `tests/type_checks/`, `pytest` with branch coverage, the per-file and total coverage floors (`scripts/check_coverage_floors.py`, floors in `pyproject.toml`), and an offline check of relative Markdown links and heading anchors (`scripts/check_markdown_links.py`) |
 | `tests-windows` (Python 3.11 and 3.13, `windows-latest`) | `uv sync --frozen`, strict `mypy` (which also type-checks the Windows side of platform checks) and `pytest` without coverage, in Git Bash. Lint and coverage floors do not depend on the platform and run only in `checks`; formatting and links also run on Windows in `docs` |
 | `wheels` | Builds all three wheels, installs them into a clean venv, runs each CLI's `--help`, then runs the component tests and the end-to-end test against the installed wheels |
 | `independent-install` (one per component) | Installs the component into a clean venv with only its declared dependencies and runs its own tests. Also fails if evaluation can import mining. |
@@ -18,7 +18,7 @@ Every pull request and every push to `main` runs `docs`, `changes` and `ci-ok`. 
 
 A PR is mergeable only when `docs` and `ci-ok` are green on its latest commit, and so is every other job that ran (the conditional audit checks below).
 
-mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)). It checks the three `src/` trees and `scripts/`; the first type test adds `tests/type_checks`, and [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
+mypy runs in strict mode with the settings in `pyproject.toml` ([type rules](PYTHON_GUIDELINES.md#use-the-type-system)), which add `warn_unreachable` and the error codes `ignore-without-code`, `truthy-bool`, `redundant-expr` and `possibly-undefined`. It checks the three `src/` trees, `scripts/` and the type tests in `tests/type_checks/`; [QUALITY-04](TODO.md#m1--packages-and-tooling) adds the test trees.
 
 ## Conditional isolated audit checks
 

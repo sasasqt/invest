@@ -7,7 +7,7 @@ from typing import Any
 
 import pandas as pd
 
-from invest_data.bundle import Manifest
+from invest_data.bundle import Manifest, StorageFormat
 from invest_data.schemas import publish_signals
 from invest_mining.artifact import FrozenFactor
 from invest_mining.expressions import build_panel, evaluate, restrict
@@ -41,7 +41,7 @@ def export_signals(
     *,
     dataset_id: str,
     start: str | None = None,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
     universe: pd.DataFrame | None = None,
     fundamentals: pd.DataFrame | None = None,
     evidence: dict[str, Any] | None = None,

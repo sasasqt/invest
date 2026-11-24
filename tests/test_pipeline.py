@@ -15,7 +15,17 @@ CONFIG = ROOT / "strategy-evaluation/examples/quantile_long_short.json"
 
 
 def _bash() -> str:
-    """The bash that runs the workflow scripts.
+    """The bash that runs the workflow scripts: Git Bash on Windows (see ``_git_bash``)."""
+    # if/else, not an early return: mypy's warn_unreachable then skips the branch that
+    # cannot run on the platform it checks for, on Linux and with --platform win32 alike.
+    if sys.platform == "win32":
+        return _git_bash()
+    else:
+        return "bash"
+
+
+def _git_bash() -> str:
+    """Git Bash's ``bash.exe`` on Windows.
 
     On Windows a bare ``"bash"`` makes CreateProcess search System32 before PATH, so it
     starts the WSL launcher there (which fails without a Linux distribution) instead of
@@ -26,8 +36,6 @@ def _bash() -> str:
     on PATH (MSYS2, Cygwin) is used as found, and a ``git.exe`` shim (scoop) does not lead
     to Git's folder; put Git Bash's ``bin`` first on PATH then.
     """
-    if sys.platform != "win32":
-        return "bash"
     system = os.path.normcase(os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "System32"))
     git = ""
     for entry in (e.strip('"') for e in os.environ.get("PATH", "").split(os.pathsep)):
