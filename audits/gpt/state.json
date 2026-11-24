@@ -6609,11 +6609,10 @@
           "checked exact CI and carried controls",
           "traced mining lag and consumers and repeated a trusted synthetic control",
           "completed independent review and reconciled candidates",
-          "prepared report and state for guarded publication"
+          "prepared report and state for guarded publication",
+          "Guarded report publication and verified remote readback"
         ],
-        "remaining_steps": [
-          "Guarded publication and remote readback"
-        ],
+        "remaining_steps": [],
         "pending_jobs": [],
         "model": "gpt-6.2-sol",
         "effort": "unavailable",
@@ -6626,7 +6625,7 @@
         "verifier_b_count": 0,
         "evidence": "2026-11-24-mining/evidence.json",
         "report": "2026-11-24.md",
-        "publication_status": "prepared",
+        "publication_status": "published_verified",
         "prepared_utc": "2026-11-24T02:08:57Z",
         "elapsed_to_preparation_seconds": 621,
         "scope_counts": {
@@ -6640,7 +6639,10 @@
           "unread_paths": 119,
           "no_applicable_or_unknown_line_count": 5,
           "new_unique_semantic_lines": 503
-        }
+        },
+        "completed_utc": "2026-11-24T02:13:04Z",
+        "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
+        "elapsed_to_verified_publication_seconds": 868
       }
     ],
     "shared_controls": {
@@ -7167,11 +7169,10 @@
       "checked exact CI and carried controls",
       "traced mining lag and consumers and repeated a trusted synthetic control",
       "completed independent review and reconciled candidates",
-      "prepared report and state for guarded publication"
+      "prepared report and state for guarded publication",
+      "Guarded report publication and verified remote readback"
     ],
-    "remaining_steps": [
-      "Guarded publication and remote readback"
-    ],
+    "remaining_steps": [],
     "pending_jobs": [],
     "model": "gpt-6.2-sol",
     "effort": "unavailable",
@@ -7184,7 +7185,7 @@
     "verifier_b_count": 0,
     "evidence": "2026-11-24-mining/evidence.json",
     "report": "2026-11-24.md",
-    "publication_status": "prepared",
+    "publication_status": "published_verified",
     "prepared_utc": "2026-11-24T02:08:57Z",
     "elapsed_to_preparation_seconds": 621,
     "scope_counts": {
@@ -7198,7 +7199,10 @@
       "unread_paths": 119,
       "no_applicable_or_unknown_line_count": 5,
       "new_unique_semantic_lines": 503
-    }
+    },
+    "completed_utc": "2026-11-24T02:13:04Z",
+    "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
+    "elapsed_to_verified_publication_seconds": 868
   },
   "publication_history": [
     {
@@ -8014,6 +8018,74 @@
       ],
       "peer_and_root_tree_unchanged": true,
       "elapsed_to_verified_publication_seconds": 732
+    },
+    {
+      "date": "2026-11-24",
+      "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+      "branch": "gpt/repo-audits",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
+      "report_tree": "354fac0fc348ee928b035a866a586a17dc4c47c7",
+      "output_parent": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
+      "verified_utc": "2026-11-24T02:13:04Z",
+      "report_url": "https://github.com/sasasqt/invest/blob/17647ac8a349a298bd54824961b3e33b7abd7ed4/audits/gpt/2026-11-24.md",
+      "status": "published_verified",
+      "expected_old_sha": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
+      "force": false,
+      "verified_paths": [
+        "audits/gpt/2026-11-24-mining/ci-observations.json",
+        "audits/gpt/2026-11-24-mining/evidence.json",
+        "audits/gpt/2026-11-24-mining/hac-oracle.json",
+        "audits/gpt/2026-11-24-mining/hac_check.py",
+        "audits/gpt/2026-11-24-mining/hac_confirm_control.py",
+        "audits/gpt/2026-11-24-mining/method-verification.json",
+        "audits/gpt/2026-11-24-mining/reading.json",
+        "audits/gpt/2026-11-24-mining/reviewer1-initial.json",
+        "audits/gpt/2026-11-24-mining/reviewer2.md",
+        "audits/gpt/2026-11-24-mining/source-verification.json",
+        "audits/gpt/2026-11-24.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "read_back": [
+        "2026-11-24.md",
+        "state.json",
+        "checkpoint.json",
+        "2026-11-24-mining/evidence.json",
+        "2026-11-24-mining/reviewer2.md",
+        "2026-11-24-mining/hac-oracle.json",
+        "2026-11-24-mining/started.json"
+      ],
+      "verified_blob_ids": {
+        "state.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
+        "checkpoint.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
+        "coverage-map.json": "2fbbca5f56286cac5c79799742d5381efbbf3466",
+        "coverage-map.md": "dd0076738cc8f3a6ee0f5dcc1da13b4957991e1d",
+        "coverage.csv": "17c254b3f8085909fc75d658174c9b92ebd24d3c",
+        "findings.json": "c590f949359e8a319dc2169a69b06a4e15198cb3",
+        "exploration.json": "786632ba0f80710ebc4d30211e509e8993c7fc98",
+        "cross-check.md": "7256e44aec99d9ab5400b15824f1e1321b04cfc0",
+        "validation.csv": "0c907ad3083cbf85469e50028bd3575ce4d46769",
+        "2026-11-24-mining/evidence.json": "614e8412cd0053e1e44a87198d0834cfa8aaed26",
+        "2026-11-24-mining/reading.json": "0af21e38c1e34fae132a79940bd0fe39852e7a62",
+        "2026-11-24-mining/ci-observations.json": "b2cc0c05875779973735185da7df5acd4bacd565",
+        "2026-11-24-mining/reviewer2.md": "e334e723574ec36492cd86f709b3152286ef1d0a",
+        "2026-11-24.md": "7bc696a46207f8c2181899194c7450b86f8425d1",
+        "2026-11-24-mining/method-verification.json": "3a49054a9c9699ed0d04384b5c56c0b6531dea8a",
+        "2026-11-24-mining/source-verification.json": "18596e37d6e950259036cce2c5e256e718a9be92",
+        "2026-11-24-mining/hac-oracle.json": "a6b0a9d71d0d24ba65f19821e86d0f1f9cd0ce82",
+        "2026-11-24-mining/reviewer1-initial.json": "1090a5cd57d298fd3f372a3a49a91ba5b7b1fa6c",
+        "2026-11-24-mining/hac_check.py": "e59952ca2b1331803f46a92036ce6aa396d2dca2",
+        "2026-11-24-mining/hac_confirm_control.py": "09d2367cff0058d352fd7eeb27dfa4767e3bca3f"
+      },
+      "elapsed_seconds": 868
     }
   ],
   "publication_current_run": {
@@ -8021,8 +8093,68 @@
     "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
     "branch": "gpt/repo-audits",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
+    "report_tree": "354fac0fc348ee928b035a866a586a17dc4c47c7",
     "output_parent": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
-    "status": "prepared"
+    "verified_utc": "2026-11-24T02:13:04Z",
+    "report_url": "https://github.com/sasasqt/invest/blob/17647ac8a349a298bd54824961b3e33b7abd7ed4/audits/gpt/2026-11-24.md",
+    "status": "published_verified",
+    "expected_old_sha": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
+    "force": false,
+    "verified_paths": [
+      "audits/gpt/2026-11-24-mining/ci-observations.json",
+      "audits/gpt/2026-11-24-mining/evidence.json",
+      "audits/gpt/2026-11-24-mining/hac-oracle.json",
+      "audits/gpt/2026-11-24-mining/hac_check.py",
+      "audits/gpt/2026-11-24-mining/hac_confirm_control.py",
+      "audits/gpt/2026-11-24-mining/method-verification.json",
+      "audits/gpt/2026-11-24-mining/reading.json",
+      "audits/gpt/2026-11-24-mining/reviewer1-initial.json",
+      "audits/gpt/2026-11-24-mining/reviewer2.md",
+      "audits/gpt/2026-11-24-mining/source-verification.json",
+      "audits/gpt/2026-11-24.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "read_back": [
+      "2026-11-24.md",
+      "state.json",
+      "checkpoint.json",
+      "2026-11-24-mining/evidence.json",
+      "2026-11-24-mining/reviewer2.md",
+      "2026-11-24-mining/hac-oracle.json",
+      "2026-11-24-mining/started.json"
+    ],
+    "verified_blob_ids": {
+      "state.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
+      "checkpoint.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
+      "coverage-map.json": "2fbbca5f56286cac5c79799742d5381efbbf3466",
+      "coverage-map.md": "dd0076738cc8f3a6ee0f5dcc1da13b4957991e1d",
+      "coverage.csv": "17c254b3f8085909fc75d658174c9b92ebd24d3c",
+      "findings.json": "c590f949359e8a319dc2169a69b06a4e15198cb3",
+      "exploration.json": "786632ba0f80710ebc4d30211e509e8993c7fc98",
+      "cross-check.md": "7256e44aec99d9ab5400b15824f1e1321b04cfc0",
+      "validation.csv": "0c907ad3083cbf85469e50028bd3575ce4d46769",
+      "2026-11-24-mining/evidence.json": "614e8412cd0053e1e44a87198d0834cfa8aaed26",
+      "2026-11-24-mining/reading.json": "0af21e38c1e34fae132a79940bd0fe39852e7a62",
+      "2026-11-24-mining/ci-observations.json": "b2cc0c05875779973735185da7df5acd4bacd565",
+      "2026-11-24-mining/reviewer2.md": "e334e723574ec36492cd86f709b3152286ef1d0a",
+      "2026-11-24.md": "7bc696a46207f8c2181899194c7450b86f8425d1",
+      "2026-11-24-mining/method-verification.json": "3a49054a9c9699ed0d04384b5c56c0b6531dea8a",
+      "2026-11-24-mining/source-verification.json": "18596e37d6e950259036cce2c5e256e718a9be92",
+      "2026-11-24-mining/hac-oracle.json": "a6b0a9d71d0d24ba65f19821e86d0f1f9cd0ce82",
+      "2026-11-24-mining/reviewer1-initial.json": "1090a5cd57d298fd3f372a3a49a91ba5b7b1fa6c",
+      "2026-11-24-mining/hac_check.py": "e59952ca2b1331803f46a92036ce6aa396d2dca2",
+      "2026-11-24-mining/hac_confirm_control.py": "09d2367cff0058d352fd7eeb27dfa4767e3bca3f"
+    },
+    "elapsed_seconds": 868
   },
   "remaining_work_current_visit": "After qualified runtime, add dense and masked synthetic acceptance to REVIEW-57 and test search/confirm export. If unavailable, oldest feasible remaining mining test slice with verified file identities.",
   "runtime_validation_history": [
