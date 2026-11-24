@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-24",
+  "field": "mining",
+  "status": "in_progress",
+  "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+  "scheduled_for": "2026-11-24T02:00:00Z",
+  "started_utc": "2026-11-24T01:58:36.294602Z",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "output_base": "d2aa84bf47a5dcf2431b3202447c427d537a19ee",
+  "previous_final_date": "2026-11-23",
+  "pending_jobs": [],
+  "model": "gpt-6.2-sol",
+  "effort": "unavailable"
+}
