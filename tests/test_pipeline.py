@@ -14,6 +14,46 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "strategy-evaluation/examples/quantile_long_short.json"
 
 
+def _bash() -> str:
+    """The bash that runs the workflow scripts: Git Bash on Windows (see ``_git_bash``)."""
+    # if/else, not an early return: mypy's warn_unreachable then skips the branch that
+    # cannot run on the platform it checks for, on Linux and with --platform win32 alike.
+    if sys.platform == "win32":
+        return _git_bash()
+    else:
+        return "bash"
+
+
+def _git_bash() -> str:
+    """Git Bash's ``bash.exe`` on Windows.
+
+    On Windows a bare ``"bash"`` makes CreateProcess search System32 before PATH, so it
+    starts the WSL launcher there (which fails without a Linux distribution) instead of
+    Git Bash. Search PATH in order instead, skipping System32 and the WindowsApps aliases,
+    then Git for Windows' own ``bin`` folder next to the first ``git.exe`` found, which a
+    default install leaves off PATH (it adds only ``Git\\cmd``). Each folder is checked
+    directly: ``shutil.which`` would look in the current folder first. Another bash earlier
+    on PATH (MSYS2, Cygwin) is used as found, and a ``git.exe`` shim (scoop) does not lead
+    to Git's folder; put Git Bash's ``bin`` first on PATH then.
+    """
+    system = os.path.normcase(os.path.join(os.environ.get("SystemRoot", r"C:\Windows"), "System32"))
+    git = ""
+    for entry in (e.strip('"') for e in os.environ.get("PATH", "").split(os.pathsep)):
+        folder = os.path.normcase(os.path.normpath(entry)) if entry else ""
+        if not folder or folder == system or folder.endswith(os.path.normcase(r"\WindowsApps")):
+            continue
+        if os.path.isfile(bash_exe := os.path.join(entry, "bash.exe")):
+            return bash_exe
+        if not git and os.path.isfile(git_exe := os.path.join(entry, "git.exe")):
+            git = git_exe
+    if git:
+        # git.exe sits in Git\cmd, Git\bin or Git\mingw64\bin; bash.exe in Git\bin.
+        for root in Path(git).resolve().parents[1:3]:
+            if (bash := root / "bin" / "bash.exe").is_file():
+                return str(bash)
+    raise RuntimeError("no Git Bash found; the workflow scripts need one on Windows")
+
+
 def run(module: str, *args: str) -> str:
     out = subprocess.run(
         [sys.executable, "-m", module, *args],
@@ -143,7 +183,7 @@ def test_synthetic_workflow_script(tmp_path):
     }
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/synthetic_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/synthetic_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -205,7 +245,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
     }
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -304,7 +344,7 @@ def test_historical_workflow_script_replays_snapshot_offline(tmp_path, subset):
         code_manifest.update(code_revision="0" * 40, code_dirty=False)
         (out / part / "manifest.json").write_text(json.dumps(code_manifest))
     record = tmp_path / "record"
-    saved = {str(p) for p in save_run.save_run(out, record, snapshot)}
+    saved = {p.as_posix() for p in save_run.save_run(out, record, snapshot)}
     assert set(save_run.REQUIRED) | {"data/benchmark/manifest.json"} <= saved
     assert {"README.md", "snapshot/snapshot.json"} <= saved
     assert "data/market/manifest.json" in saved
@@ -356,7 +396,7 @@ def _clean_checkout_of_the_workflow(path):
 
 def _run_workflow(script, out, env):
     return subprocess.run(
-        ["bash", str(script), str(out)],
+        [_bash(), str(script), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -594,7 +634,7 @@ def test_historical_workflow_refuses_an_existing_record_before_work(tmp_path):
         "RECORD": str(record),
     }
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(tmp_path / "wf")],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(tmp_path / "wf")],
         capture_output=True,
         text=True,
         check=False,
@@ -615,7 +655,7 @@ def test_historical_workflow_rejects_out_of_snapshot_range_before_publication(tm
     )
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
@@ -637,7 +677,7 @@ def test_historical_workflow_refuses_the_reserved_window_before_download(tmp_pat
     """The committed Yahoo ledger keeps 2025 onward untouched for confirmation."""
     out = tmp_path / "wf"
     done = subprocess.run(
-        ["bash", str(ROOT / "scripts/historical_workflow.sh"), str(out)],
+        [_bash(), str(ROOT / "scripts/historical_workflow.sh"), str(out)],
         capture_output=True,
         text=True,
         check=False,
