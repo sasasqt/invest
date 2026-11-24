@@ -12,12 +12,15 @@ import math
 from dataclasses import asdict, dataclass
 from numbers import Integral
 from statistics import NormalDist
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
 
+from invest_mining._typing import unhandled
+
 MIN_CROSS_SECTION = 5
+ICMethod = Literal["spearman", "pearson"]
 # Recorded with tail tables; before this rule, top f held p > 1 - f (sometimes one name
 # more than the bottom tail).
 TAIL_RULE = (
@@ -45,7 +48,9 @@ def forward_returns(open_: pd.DataFrame, horizon: int) -> pd.DataFrame:
     return (exit_ / entry - 1.0).replace([np.inf, -np.inf], np.nan)
 
 
-def daily_ic(factor: pd.DataFrame, label: pd.DataFrame, method: str = "spearman") -> pd.DataFrame:
+def daily_ic(
+    factor: pd.DataFrame, label: pd.DataFrame, method: ICMethod = "spearman"
+) -> pd.DataFrame:
     """Per-date cross-sectional correlation. Returns columns ``ic`` and ``n``.
 
     Dates with fewer than MIN_CROSS_SECTION valid pairs, or constant factor/label values,
@@ -57,7 +62,7 @@ def daily_ic(factor: pd.DataFrame, label: pd.DataFrame, method: str = "spearman"
     if method == "spearman":
         f, y = f.rank(axis=1), y.rank(axis=1)
     elif method != "pearson":
-        raise ValueError(f"unknown method {method!r}")
+        raise unhandled(method, ValueError(f"unknown method {method!r}"))
     n = valid.sum(axis=1)
     fc = f.sub(f.mean(axis=1), axis=0)
     yc = y.sub(y.mean(axis=1), axis=0)
@@ -74,6 +79,11 @@ def newey_west_lags(n: int, horizon: int = 1) -> int:
     return max(horizon, rule)
 
 
+#: Whether the HAC mean test could be run: ``ok``, too few observations, or a long-run
+#: variance of zero (the statistic is undefined).
+MeanTestStatus = Literal["ok", "insufficient_data", "undefined"]
+
+
 @dataclass(frozen=True)
 class MeanTest:
     mean: float
@@ -83,7 +93,7 @@ class MeanTest:
     p_one_sided: float  # H1: mean > 0
     n: int
     lags: int
-    status: str
+    status: MeanTestStatus
     reason: str | None = None
 
     def to_dict(self) -> dict[str, object]:

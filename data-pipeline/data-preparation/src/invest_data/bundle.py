@@ -26,15 +26,31 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from decimal import Context, Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
 
+from invest_data._typing import unhandled
+
 CONTRACT_VERSION = 1
 NULL_TOKEN = "\\N"
-LOGICAL_TYPES = ("string", "int64", "float64", "boolean", "date", "timestamp", "decimal")
-STORAGE_FORMATS = {"csv": "data.csv", "sqlite": "data.sqlite", "parquet": "data.parquet"}
+ColumnType = Literal["string", "int64", "float64", "boolean", "date", "timestamp", "decimal"]
+LOGICAL_TYPES: tuple[ColumnType, ...] = (
+    "string",
+    "int64",
+    "float64",
+    "boolean",
+    "date",
+    "timestamp",
+    "decimal",
+)
+StorageFormat = Literal["csv", "sqlite", "parquet"]
+STORAGE_FORMATS: dict[StorageFormat, str] = {
+    "csv": "data.csv",
+    "sqlite": "data.sqlite",
+    "parquet": "data.parquet",
+}
 # int64 bounds, and the most digits a Parquet decimal128 holds.
 _INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
 _MAX_DECIMAL_PRECISION = 38
@@ -63,7 +79,7 @@ class BundleError(ValueError):
 @dataclass(frozen=True)
 class Column:
     name: str
-    type: str
+    type: ColumnType
     nullable: bool = True
     precision: int | None = None
     scale: int | None = None
@@ -79,7 +95,7 @@ class Column:
         return out
 
     @staticmethod
-    def from_json(raw: Mapping[str, Any]) -> Column:
+    def from_json(raw: object) -> Column:
         if not isinstance(raw, Mapping):
             raise BundleError(f"column definition must be a JSON object, not {raw!r}")
         for key in ("name", "type"):
@@ -366,7 +382,7 @@ def format_value(col: Column, value: Any) -> str | int | float | None:
         return _utc_text(utc)
     if col.type == "decimal":
         return _decimal(col, value)
-    raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
+    raise unhandled(col.type, BundleError(f"unsupported type {col.type}"))  # pragma: no cover
 
 
 def _parse_value(col: Column, raw: Any) -> Any:
@@ -410,7 +426,7 @@ def _parse_value(col: Column, raw: Any) -> Any:
         if isinstance(exc, BundleError):
             raise
         raise BundleError(f"column {col.name!r}: cannot parse {raw!r} as {col.type}") from exc
-    raise BundleError(f"unsupported type {col.type}")  # pragma: no cover
+    raise unhandled(col.type, BundleError(f"unsupported type {col.type}"))  # pragma: no cover
 
 
 def _to_frame(columns: Sequence[Column], rows: list[list[Any]]) -> pd.DataFrame:
@@ -448,6 +464,7 @@ def infer_columns(
     cols = []
     for name in frame.columns:
         s = frame[name]
+        t: ColumnType
         if pd.api.types.is_bool_dtype(s):
             t = "boolean"
         elif pd.api.types.is_integer_dtype(s):
@@ -522,14 +539,14 @@ def write_bundle(
     path: str | os.PathLike[str],
     *,
     dataset_id: str,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
     columns: Sequence[Column] | None = None,
     primary_key: Sequence[str] = (),
     provenance: Mapping[str, Any] | None = None,
     dataset_kind: str | None = None,
     metadata: Mapping[str, Any] | None = None,
     table: str = "observations",
-    created_at: datetime | None = None,
+    created_at: object = None,  # a timezone-aware datetime; checked below
 ) -> Manifest:
     """Validate ``frame`` and publish it atomically as a new bundle directory at ``path``.
 
@@ -556,7 +573,7 @@ def write_bundle(
     when = datetime.now(UTC) if created_at is None else created_at
     try:  # pd.NaT raises here; a time near year 1 or 9999 can leave the range in UTC
         aware = isinstance(when, datetime) and when.utcoffset() is not None
-        utc = when.astimezone(UTC) if aware else None
+        utc = when.astimezone(UTC) if isinstance(when, datetime) and aware else None
     except (ValueError, OverflowError):
         utc = None
     if utc is None or not 1 <= utc.year <= 9999:  # a pandas Timestamp can lie beyond them
