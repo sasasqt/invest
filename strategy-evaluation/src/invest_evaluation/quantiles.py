@@ -23,7 +23,7 @@ import os
 from dataclasses import asdict, dataclass
 from numbers import Integral, Real
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import matplotlib
 
@@ -77,11 +77,16 @@ class QuantileConfig:
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, Integral) or value < minimum:
                 raise ValueError(f"{name} must be an integer >= {minimum}")
-        fractions = self.tail_fractions
+        fractions: object = self.tail_fractions  # a caller can pass any value
         if isinstance(fractions, str) or not isinstance(fractions, list | tuple):
             raise ValueError("tail_fractions must be a list of fractions")
         for f in fractions:
-            if isinstance(f, bool) or not isinstance(f, Real) or not math.isfinite(f):
+            checked: object = f
+            if (
+                isinstance(checked, bool)
+                or not isinstance(checked, Real)
+                or not math.isfinite(checked)
+            ):
                 raise ValueError("tail fractions must be finite numbers")
             if not 0 < f <= 0.5:
                 raise ValueError("tail fractions must be in (0, 0.5]")
@@ -96,10 +101,14 @@ class QuantileConfig:
         return out
 
 
+PortfolioKind = Literal["bucket", "top", "bottom", "long_short"]
+"""``bucket``, ``top`` and ``bottom`` are long-only; ``long_short`` is top minus bottom."""
+
+
 @dataclass(frozen=True)
 class BucketPortfolio:
     name: str
-    kind: str  # "bucket", "top", "bottom" (long-only) or "long_short"
+    kind: PortfolioKind
     long: Slice
     short: Slice | None = None
 
