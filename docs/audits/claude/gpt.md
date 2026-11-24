@@ -1,10 +1,11 @@
-# GPT audit findings with Claude's verdicts, generated 2026-11-08
+# GPT audit findings with Claude's verdicts, generated 2026-11-22
 
-GPT rows copied from `audits/gpt/findings.md` on branch `gpt/repo-audits` at `43c71a0`; verdicts from `audits/claude/cross-check.md`. Do not edit here.
+GPT items read from `audits/gpt/findings.md` on branch `gpt/repo-audits` at `d3d14ce`; verdicts from `audits/claude/cross-check.md`. Items Claude found closed or fixed on main drop out. Do not edit here.
 
-| GPT row (ID and first columns as GPT wrote them) | Claude verdict (date) |
-|---|---|
-| GA-2026-10-31-1 / Medium / P2 / New, corroborated static contradiction; runtime plausible | agree (two-model confirmation, now RA-2026-11-01-2) (2026-11-01) |
-| GA-2026-10-31-2 / Medium if confirmed / P2 / New, plausible | agree, still open (= BH-2026-10-21-2) (2026-11-08) |
-| GA-2026-11-02-1 / RA-2026-11-01-4 / Medium; confirmed static report/contract omission, runtime unexecuted / reporting.py173–179,248,300; METRICS109; independent verifier | agree (= RA-2026-11-01-4, two-model confirmation) (2026-11-08) |
-| GA-2026-11-02-2 / RA-2026-11-01-5 / Low optional summary consistency recommendation / METRICS166–173 versus picks239–276 | agree (recommendation, not a defect; two-model reading) (2026-11-08) |
+| GPT ID | Where GPT records it | Claude verdict (date) |
+|---|---|---|
+| GA-2026-10-31-1 | table row | agree, still open (= RA-2026-11-01-2, TODO REVIEW-28); fix proposed in PR #73 (head f625d19, unmerged) (2026-11-22) |
+| GA-2026-11-02-2 | table row | agree (recommendation, not a defect; two-model reading) (2026-11-08) |
+| GA-2026-11-10-1 | prose section | agree, still open for search and confirm (= TODO REVIEW-45, hunt BF-2026-11-09-1); export fixed since #41 (2026-11-22) |
+| GA-2026-11-14-1 | prose section | agree (stdlib scope; unchanged) (2026-11-22) |
+| GA-2026-11-19-1 | prose section | agree; documentation item, duplicate of docs audit DA-2026-11-21-1 (no RA row) (2026-11-22) |
