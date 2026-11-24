@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-24",
+  "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "evidence": "2026-11-24-mining/evidence.json",
+  "question": {
+    "question": "Can undefined interior rank-IC dates make mining's reported HAC lag and decision differ from a fixed trading-session lag calculation, with observed values, horizon, n and cutoff held fixed?",
+    "expected": "Trace full-session labels to the test's pair selection and the confirmation/status artifact. Obtain a dense negative control, a gap-pair calculation and an independent review.",
+    "stopping": "Stop after source, contract, two test paths, artifact consumers, existing evidence, deterministic gap and dense controls, and independent candidate decisions. Leave full masked-null calibration for a qualified runtime.",
+    "tested_case": "h=1, 60 valid five-name rank ICs alternating +0.6/-0.4, every fourth decision session. Synthetic session indices only. The one-sided normal cut is 5% for one frozen factor.",
+    "scope": "Static scoped mining pass and new trusted arithmetic. Current exact-SHA CI reused. No product commands, reserved data, or remote jobs."
+  },
+  "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+  "output_checkpoint": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
+  "protocol": {
+    "commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index": {
+      "sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "blob": "3b4c33551bc0e0c32fab3c3bba613bdc353f1f3b",
+      "bytes": 6525
+    },
+    "baseline": {
+      "sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "blob": "c0ea67e98e9cc33f49effaf9bc2ec8a043145a4d",
+      "bytes": 91850
+    },
+    "modules": 14
+  },
+  "disposition": "Bounded source and independent arithmetic complete. Masked null calibration and untouched product acceptance pending. Audit incomplete.",
+  "physical_runner": null,
+  "model": "gpt-6.2-sol",
+  "effort": "unavailable",
+  "usage": "Token/account allowance data unavailable.",
+  "budget_minutes": {
+    "common": 20,
+    "field": 70,
+    "review_reporting": 30,
+    "total": 120
+  },
+  "prepared_utc": "2026-11-24T02:08:57Z",
+  "elapsed_wall_to_preparation_seconds": 621,
+  "runtime_new": {
+    "local_product_executions": 0,
+    "remote_dispatches": 0
+  },
+  "reviewers": {
+    "main": 1,
+    "independent": 1,
+    "verifier_b": 0,
+    "helper_model": "Inherited, independent identity/effort unavailable.",
+    "verification": "completed scoped Stage A and candidate adjudication."
+  },
+  "historical": {
+    "pr61_head": "a547a793ec90aea87692d549671909d627ea8fbf",
+    "pr61_evidence": "https://github.com/sasasqt/invest/blob/a547a793ec90aea87692d549671909d627ea8fbf/docs/reviews/2026-11-18-m3/README.md#review-57-size-of-the-factor-confirmation-test-hac",
+    "pr61_latest_author_reply": "https://github.com/sasasqt/invest/pull/61#issuecomment-7112784466",
+    "pr61_author_result": "Ancillary recipe repeats reported, documentation edit prepared and unpushed. No masked HAC work claimed.",
+    "pr66": {
+      "ids": [
+        "REVIEW-40",
+        "REVIEW-41"
+      ],
+      "workflow_pr": 40,
+      "head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+      "merge": "013791c31ff147ad776a303618618091cc0bc822",
+      "parents": [
+        "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+        "513470e00dc4a58a7bb65aa3e0a1809dff04149e"
+      ],
+      "open_pr": "https://github.com/sasasqt/invest/pull/66",
+      "discussion": "https://github.com/sasasqt/invest/pull/66#issuecomment-7112622696",
+      "job": "https://github.com/sasasqt/invest/actions/runs/44802209769/job/136516962817",
+      "runtime": "Native Windows CPython 3.11.9 and Git for Windows Bash, 1269 passed and 7 skipped",
+      "status": "Reused exact PR merge CI. Synthetic replay and invalid benchmark refusal without ledger mutation evidenced. Successful append ledger LF/CRLF bytes and direct captured date bytes unasserted. Neither check closed on main. PR36 host tests are a separate scope."
+    },
+    "pr73": "f625d1961505aa3c8fffe9ab662da967649754c8 (proposed, unmerged)",
+    "older_missing": "Nov 1, 7, 8, 13, 20 unknown/not observed"
+  },
+  "controls": "Synthetic sessions only. No data ledger read or modified. No product imports, builds, test execution or runtime dispatch.",
+  "records": {
+    "case": {
+      "id": "GA-2026-11-24-1",
+      "kind": "statistical method and evidence contract",
+      "title": "HAC lag units and missing IC sessions are absent from confirmation provenance",
+      "status": "confirmed source observation; calibration pending",
+      "severity": "medium conditional consequence",
+      "priority": "P2",
+      "confidence": "High for source and same-values synthetic discrepancy; undetermined for mask-specific size or historical effect.",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/diagnostics.py#L96-L132",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/search.py#L296-L353",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/cli.py#L765-L784",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/ALPHA_VALIDATION.md#L34-L48"
+      ],
+      "expected": "Make session or retained-observation lag units and missingness treatment explicit and validate them before interpreting confirmation p-values.",
+      "observed": "After dropping undefined IC dates, HAC pairs by retained position. h is defined in panel sessions. confirmation.csv gives n_dates and hac_lags, but neither the gap pattern nor lag unit. Evidence v2 omits bandwidth.",
+      "impact": "Potentially changes the development family ordering or factor verdict under gaps. The evaluator copies the factor verdict beside its independent portfolio verdict. No trading or saved-result impact demonstrated.",
+      "evidence": [
+        "2026-11-24-mining/evidence.json",
+        "2026-11-24-mining/hac-oracle.json",
+        "2026-11-24-mining/reviewer2.md"
+      ],
+      "root_fingerprint": "mining-hac:undefined-interior-rank-IC-session-distance-provenance",
+      "related": [
+        "REVIEW-57/STATS-01 dense overlap calibration; related acceptance, different mechanism",
+        "GA-2026-11-10-1 / BF-2026-11-09-1 / REVIEW-45 distinct input-read identity"
+      ],
+      "owner": "mining / evaluation evidence consumer",
+      "correction": "Specify the estimator clock, missingness assumptions, and lag/mask provenance. Keep supported estimator choices open. Preserve signals evidence compatibility, trial identity and reservation rules.",
+      "acceptance": "Dense and interior-gap synthetic controls at the real minimum, same observed ranks and bandwidth, exogenous and eligibility-driven masks, small-sample null calibration, and evaluate/search/confirm to evidence compatibility. Use the qualified workflow and preserve historical outputs.",
+      "runtime_repeats": 0,
+      "static_arithmetic_repeats": 2,
+      "independent_review_status": "Reviewer 2 completed blind scope and candidate adjudication. No substantive disagreement.",
+      "history": [
+        {
+          "date": "2026-11-24",
+          "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-24-mining/evidence.json",
+          "status": "new observed case linked to REVIEW-57 acceptance"
+        }
+      ],
+      "main_initial": "Keep confirmed clock/provenance gap; quantitative severity conditional, no market outcome.",
+      "independent": "Keep medium/P2. Independent reachable synthetic score construction meets label guard and min 60; blind lower-n control observed both directions.",
+      "deciding_evidence": "Static current main plus repeated exact synthetic arithmetic. L=3, n=60 h=1, pairs [59,58,57] vs [0,0,0]; normal p_one_sided 0 under product CDF arithmetic vs .060667625 using session distance and same L, dense equality. Exact tail for compacted t=12 is 1.77648e-33.",
+      "expected_basis": "Session distance is an explicit sensitivity case, not a universal estimator. Contract asks sampling frequency and dependence to be considered.",
+      "checked_siblings": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/cli.py#L319-L326",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/search.py#L198-L218",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-pipeline/data-preparation/src/invest_data/schemas.py#L105-L115",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/validation.py#L25-L34",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/strategy-evaluation/src/invest_evaluation/stats.py#L46-L69"
+      ],
+      "remaining": [
+        "Qualified untouched synthetic search/confirm and evidence integration",
+        "Null calibration for specified exogenous and informative masks",
+        "Panel meaning when a whole exchange session is absent"
+      ],
+      "drop_counterfactual": "Document and justify retained-observation bandwidth and mask behavior with scoped calibration, or prove accepted IC series are always contiguous on the label clock.",
+      "closing_question": "Reviewer 2 checked panel/restrict, labels, HAC products, development and confirmation, export and schema, evidence consumer, tests, and #61. Named the three remaining priorities above."
+    },
+    "drops": [
+      {
+        "id": "GA-2026-11-24-1-D1",
+        "kind": "inference claim",
+        "main": "Drop universal invalidity of equal spacing or universal validity of calendar pairs.",
+        "independent": "Agree. Missingness independence and regularity matter in Datta and Du §§3.1 and 3.4.2.",
+        "counterfactual": "A scoped, reproducible masked-null experiment against a specified target could establish miscalibration for that design.",
+        "status": "dropped generalized claim"
+      },
+      {
+        "id": "GA-2026-11-24-1-D2",
+        "kind": "duplication claim",
+        "main": "Drop claim #61 already reproduced this gap.",
+        "independent": "Agree. Dense MA and pipeline cases cover overlap and terminal availability; no imposed interior mask.",
+        "counterfactual": "A pinned script/output with a controlled interior mask and matched dense case would establish duplication.",
+        "status": "dropped duplication claim",
+        "sources": [
+          "https://github.com/sasasqt/invest/blob/a547a793ec90aea87692d549671909d627ea8fbf/docs/reviews/2026-11-18-m3/README.md#review-57-size-of-the-factor-confirmation-test-hac",
+          "https://github.com/sasasqt/invest/pull/61#issuecomment-7112784466"
+        ]
+      }
+    ],
+    "verifier_b": "Not used because the independent verdict agreed on scope and severity."
+  }
+}

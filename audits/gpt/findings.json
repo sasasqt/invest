@@ -675,6 +675,50 @@
         "2026-11-19-integration/evidence.json"
       ],
       "dedup": "Own findings, known external ledger, current docs-audit mirror and current PR40 review history searched; no earlier matching stale-current-limitations root found."
+    },
+    {
+      "id": "GA-2026-11-24-1",
+      "kind": "statistical method and evidence contract",
+      "title": "HAC lag units and missing IC sessions are absent from confirmation provenance",
+      "status": "confirmed source observation; calibration pending",
+      "severity": "medium conditional consequence",
+      "priority": "P2",
+      "confidence": "High for source and same-values synthetic discrepancy; undetermined for mask-specific size or historical effect.",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/diagnostics.py#L96-L132",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/search.py#L296-L353",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/src/invest_mining/cli.py#L765-L784",
+        "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/ALPHA_VALIDATION.md#L34-L48"
+      ],
+      "expected": "Make session or retained-observation lag units and missingness treatment explicit and validate them before interpreting confirmation p-values.",
+      "observed": "After dropping undefined IC dates, HAC pairs by retained position. h is defined in panel sessions. confirmation.csv gives n_dates and hac_lags, but neither the gap pattern nor lag unit. Evidence v2 omits bandwidth.",
+      "impact": "Potentially changes the development family ordering or factor verdict under gaps. The evaluator copies the factor verdict beside its independent portfolio verdict. No trading or saved-result impact demonstrated.",
+      "evidence": [
+        "2026-11-24-mining/evidence.json",
+        "2026-11-24-mining/hac-oracle.json",
+        "2026-11-24-mining/reviewer2.md"
+      ],
+      "root_fingerprint": "mining-hac:undefined-interior-rank-IC-session-distance-provenance",
+      "related": [
+        "REVIEW-57/STATS-01 dense overlap calibration; related acceptance, different mechanism",
+        "GA-2026-11-10-1 / BF-2026-11-09-1 / REVIEW-45 distinct input-read identity"
+      ],
+      "owner": "mining / evaluation evidence consumer",
+      "correction": "Specify the estimator clock, missingness assumptions, and lag/mask provenance. Keep supported estimator choices open. Preserve signals evidence compatibility, trial identity and reservation rules.",
+      "acceptance": "Dense and interior-gap synthetic controls at the real minimum, same observed ranks and bandwidth, exogenous and eligibility-driven masks, small-sample null calibration, and evaluate/search/confirm to evidence compatibility. Use the qualified workflow and preserve historical outputs.",
+      "runtime_repeats": 0,
+      "static_arithmetic_repeats": 2,
+      "independent_review_status": "Reviewer 2 completed blind scope and candidate adjudication. No substantive disagreement.",
+      "history": [
+        {
+          "date": "2026-11-24",
+          "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "evidence": "2026-11-24-mining/evidence.json",
+          "status": "new observed case linked to REVIEW-57 acceptance"
+        }
+      ]
     }
   ],
   "known_external": [
@@ -877,6 +921,32 @@
         "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/scripts/historical_workflow.sh#L102-L110",
         "https://github.com/sasasqt/invest/pull/40#issuecomment-6806412330"
       ]
+    },
+    {
+      "id": "GA-2026-11-24-1-D1",
+      "kind": "inference claim",
+      "main": "Drop universal invalidity of equal spacing or universal validity of calendar pairs.",
+      "independent": "Agree. Missingness independence and regularity matter in Datta and Du §§3.1 and 3.4.2.",
+      "counterfactual": "A scoped, reproducible masked-null experiment against a specified target could establish miscalibration for that design.",
+      "status": "dropped generalized claim",
+      "date": "2026-11-24",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "evidence": "2026-11-24-mining/evidence.json"
+    },
+    {
+      "id": "GA-2026-11-24-1-D2",
+      "kind": "duplication claim",
+      "main": "Drop claim #61 already reproduced this gap.",
+      "independent": "Agree. Dense MA and pipeline cases cover overlap and terminal availability; no imposed interior mask.",
+      "counterfactual": "A pinned script/output with a controlled interior mask and matched dense case would establish duplication.",
+      "status": "dropped duplication claim",
+      "sources": [
+        "https://github.com/sasasqt/invest/blob/a547a793ec90aea87692d549671909d627ea8fbf/docs/reviews/2026-11-18-m3/README.md#review-57-size-of-the-factor-confirmation-test-hac",
+        "https://github.com/sasasqt/invest/pull/61#issuecomment-7112784466"
+      ],
+      "date": "2026-11-24",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "evidence": "2026-11-24-mining/evidence.json"
     }
   ],
   "run_history": [
@@ -964,6 +1034,17 @@
         "BF-2026-11-14-5"
       ],
       "evidence": "2026-11-19-integration/evidence.json"
+    },
+    {
+      "date": "2026-11-24",
+      "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+      "field": "mining",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "observation": [
+        "GA-2026-11-24-1"
+      ],
+      "new_verified_defects": [],
+      "evidence": "2026-11-24-mining/evidence.json"
     }
   ],
   "carried_cross_checks": [
@@ -999,14 +1080,22 @@
     }
   ],
   "current_visit": {
-    "date": "2026-11-21",
+    "date": "2026-11-24",
     "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "new_verified_defects": 0,
-    "new_unverified_concerns": 0,
-    "optional_improvements": 0,
-    "known_revisited": [
-      "GA-2026-11-14-1"
+    "new_verified_defects": [],
+    "new_material_observations": [
+      "GA-2026-11-24-1"
     ],
-    "evidence": "2026-11-21-performance/evidence.json"
+    "new_unverified_concerns": [
+      "Masked finite-sample calibration and prevalence"
+    ],
+    "optional_improvements": [],
+    "known_revisited": [
+      "REVIEW-57",
+      "BF-2026-11-14-5",
+      "REVIEW-40",
+      "REVIEW-41"
+    ],
+    "evidence": "2026-11-24-mining/evidence.json"
   }
 }

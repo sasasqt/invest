@@ -2994,8 +2994,511 @@
         "draw": "cleaning_and_sources:CSV tests"
       },
       "research": "not scheduled; no primary research investigation or experiments in field denominator"
+    },
+    {
+      "date": "2026-11-24",
+      "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "evidence": "2026-11-24-mining/evidence.json",
+      "field": "mining",
+      "planned_percent": {
+        "exploitation": 70,
+        "exploration": 30
+      },
+      "actual_discretionary_unique_lines": {
+        "exploitation": 147,
+        "exploration": 63,
+        "mandatory": 629
+      },
+      "actual_percent": {
+        "exploitation": 70,
+        "exploration": 30
+      },
+      "new_verified_distinct_roots": {
+        "exploitation": 0,
+        "exploration": 0
+      },
+      "root_scope": "A material observed extension to existing calibration work, no separately established calibration defect counted.",
+      "pooled_eligible_visits": 4,
+      "pooled_lines": {
+        "exploitation": 800,
+        "exploration": 554
+      },
+      "pooled_rates_per_1000_lines": {
+        "exploitation": 1.25,
+        "exploration": 0
+      },
+      "next_percent": {
+        "exploitation": 70,
+        "exploration": 30
+      },
+      "selection": {
+        "seed_sha256": "a433c8ba83101c75c5b5b9199a033e85a6b3d665ef460418c99e77abffb6fded",
+        "algorithm": "Python random.Random(int(SHA256(Berlin YYYY-MM-DD),16)).choice(sorted(eligible))",
+        "eligible": [
+          "tests/test_diagnostics.py:182-295",
+          "tests/test_reporting.py:1-58",
+          "tests/test_search_and_inference.py:125-168"
+        ],
+        "draw": "tests/test_search_and_inference.py:125-168",
+        "oldest_feasible": "ALPHA_VALIDATION.md:81-99 after at least two deferrals of blocked member reentry and identity runtime",
+        "lens": "Conditional eligibility masks and elapsed-session vs retained-observation weighting",
+        "peer_range_status": "Unknown",
+        "selection_phase": "After triage and before scope reading. No outcome-based redraw."
+      },
+      "ranges": [
+        {
+          "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+          "k": "d",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              48,
+              132
+            ]
+          ],
+          "count": 85,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+          "k": "d",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              1,
+              7
+            ],
+            [
+              35,
+              45
+            ]
+          ],
+          "count": 18,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "k": "s",
+          "bucket": "exploitation",
+          "ranges": [
+            [
+              137,
+              145
+            ],
+            [
+              301,
+              353
+            ]
+          ],
+          "count": 62,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "k": "s",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              46,
+              54
+            ],
+            [
+              198,
+              223
+            ],
+            [
+              242,
+              254
+            ],
+            [
+              273,
+              282
+            ],
+            [
+              296,
+              300
+            ],
+            [
+              357,
+              374
+            ]
+          ],
+          "count": 81,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad"
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "k": "c",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              180,
+              200
+            ],
+            [
+              313,
+              338
+            ],
+            [
+              469,
+              489
+            ],
+            [
+              565,
+              607
+            ],
+            [
+              703,
+              723
+            ],
+            [
+              763,
+              784
+            ],
+            [
+              818,
+              839
+            ]
+          ],
+          "count": 176,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "34019f08773791fa45fab181fe5a3794dfadc079"
+        },
+        {
+          "path": "data-mining-framework/ALPHA_VALIDATION.md",
+          "k": "v",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              81,
+              99
+            ]
+          ],
+          "count": 19,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "b02bf5478505329027db917222e9b45b1c8221f5"
+        },
+        {
+          "path": "data-mining-framework/ALPHA_VALIDATION.md",
+          "k": "v",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              34,
+              64
+            ]
+          ],
+          "count": 31,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "b02bf5478505329027db917222e9b45b1c8221f5"
+        },
+        {
+          "path": "data-mining-framework/tests/test_search_and_inference.py",
+          "k": "st",
+          "bucket": "exploration",
+          "ranges": [
+            [
+              125,
+              168
+            ]
+          ],
+          "count": 44,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "de5227893503e6f5af60bcc0eb069773e8dfed3f"
+        },
+        {
+          "path": "data-mining-framework/tests/test_search_and_inference.py",
+          "k": "st",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              61,
+              98
+            ],
+            [
+              169,
+              170
+            ]
+          ],
+          "count": 40,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "de5227893503e6f5af60bcc0eb069773e8dfed3f"
+        },
+        {
+          "path": "data-mining-framework/tests/test_diagnostics.py",
+          "k": "dt",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              32,
+              59
+            ]
+          ],
+          "count": 28,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+          "k": "val",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              25,
+              34
+            ],
+            [
+              228,
+              240
+            ]
+          ],
+          "count": 23,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a"
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+          "k": "stats",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              46,
+              69
+            ]
+          ],
+          "count": 24,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "cb1370b53af886e6a0ac9119ca0b3a750cc827c1"
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "k": "sig",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              105,
+              115
+            ],
+            [
+              353,
+              374
+            ]
+          ],
+          "count": 33,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "ac5b41665bd62621a188d7e0d671a01bde129252"
+        },
+        {
+          "path": "data-mining-framework/tests/test_scale_check.py",
+          "k": "scale",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              657,
+              693
+            ]
+          ],
+          "count": 37,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "k": "ci",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              23,
+              29
+            ]
+          ],
+          "count": 7,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "349966e67762855257a7672ca25639a38ef87e7b"
+        },
+        {
+          "path": "pyproject.toml",
+          "k": "toml",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              37,
+              57
+            ],
+            [
+              60,
+              98
+            ]
+          ],
+          "count": 60,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "7e6d10be25c8ca2e3d03512c586a42be05f4f712"
+        },
+        {
+          "path": "scripts/check_coverage_floors.py",
+          "k": "floors",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              111,
+              141
+            ],
+            [
+              150,
+              174
+            ]
+          ],
+          "count": 56,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "b469ae3184219c852847ac87fe470a8a02900376"
+        },
+        {
+          "path": "docs/ARCHITECTURE.md",
+          "k": "docs",
+          "bucket": "mandatory",
+          "ranges": [
+            [
+              59,
+              67
+            ],
+            [
+              119,
+              124
+            ]
+          ],
+          "count": 15,
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89"
+        }
+      ],
+      "helper_ranges": [
+        {
+          "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+          "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              35,
+              45
+            ],
+            [
+              48,
+              68
+            ],
+            [
+              96,
+              120
+            ]
+          ]
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              46,
+              54
+            ],
+            [
+              198,
+              219
+            ],
+            [
+              273,
+              292
+            ],
+            [
+              296,
+              353
+            ]
+          ]
+        },
+        {
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              180,
+              199
+            ],
+            [
+              319,
+              326
+            ],
+            [
+              444,
+              456
+            ],
+            [
+              567,
+              574
+            ],
+            [
+              765,
+              784
+            ]
+          ]
+        },
+        {
+          "path": "data-mining-framework/ALPHA_VALIDATION.md",
+          "blob": "b02bf5478505329027db917222e9b45b1c8221f5",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              36,
+              48
+            ]
+          ]
+        },
+        {
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              105,
+              115
+            ],
+            [
+              353,
+              374
+            ]
+          ]
+        },
+        {
+          "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+          "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              25,
+              34
+            ]
+          ]
+        },
+        {
+          "path": "data-mining-framework/tests/test_diagnostics.py",
+          "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+          "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+          "ranges": [
+            [
+              22,
+              57
+            ]
+          ]
+        }
+      ],
+      "helper_overlap_excluded": 294,
+      "new_cumulative_lines_all_reviewers": 503
     }
   ],
-  "date": "2026-11-21",
+  "date": "2026-11-24",
   "note": "Wednesday evaluation visit; research not scheduled."
 }

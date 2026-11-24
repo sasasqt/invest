@@ -138,3 +138,7 @@ Fresh independent review agreed on the literature-only carry candidate and three
 | RA-2026-11-08-2 / RA-2026-11-08-3 | Cannot check within this visit | Existing peer evidence retained. Truncated HTTP body and report timing are outside the bounded data question. [Peer report](https://github.com/sasasqt/invest/blob/3e7b4d5c3f6e64897164c2bb5df717260ee10497/audits/claude/2026-11-22.md) |
 
 Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` shares today’s audited main. No compatible peer exact ranges were available. One fresh independent reviewer and no disagreement verifier were used. No peer product result was treated as an independently executed control.
+
+## 2026-11-24 · Mining
+
+Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` and its November 22 source `eb64ad8` match this audit. The accessible peer findings and handoffs yielded no matching HAC-gap item. Independent Reviewer 2 corroborated the new synthetic scope. Exact peer reading ranges are unavailable. RA-2026-11-01-2 and GA-2026-10-31-1 retain previously established agreement on the unary mask behavior, with a proposed fix in #73. RA-2026-11-22-1 parser coverage remains queued and cannot be checked within this HAC slice. Neither lead was rerun today.

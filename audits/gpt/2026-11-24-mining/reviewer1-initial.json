@@ -1,0 +1,13 @@
+{
+  "id": "GA-2026-11-24-1",
+  "head": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "claim": "Mining reports a lag count while dropping undefined IC sessions before HAC and without separately describing the valid-observation spacing/lag units.",
+  "initial": "Keep statically observed clock/contract gap, medium impact/high confidence. Treat runtime behavior as source-audited plus synthetic arithmetic, and material real-data calibration consequences as conditional.",
+  "pending": [
+    "independent blind read and arithmetic",
+    "read exact CI and PR61 overlap",
+    "decide whether separate root ID or continuation of REVIEW-57",
+    "calibration for missingness assumptions"
+  ],
+  "control": "Dense complete input equality, gapped same values and n but different pair selection, h=1 with no overlapping forward labels"
+}

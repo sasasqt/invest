@@ -1,0 +1,72 @@
+{
+  "data-mining-framework/src/invest_mining/diagnostics.py": {
+    "blob": "165772e4f27cf7d6d9b288e2bcb6e0f71b3a8857",
+    "bytes": 14937,
+    "line_count": 363
+  },
+  "data-mining-framework/src/invest_mining/search.py": {
+    "blob": "1c57205909eac9ac78b137c2ecb0105ad14490ad",
+    "bytes": 13567,
+    "line_count": 374
+  },
+  "data-mining-framework/src/invest_mining/cli.py": {
+    "blob": "34019f08773791fa45fab181fe5a3794dfadc079",
+    "bytes": 44213,
+    "line_count": 1068
+  },
+  "data-mining-framework/ALPHA_VALIDATION.md": {
+    "blob": "b02bf5478505329027db917222e9b45b1c8221f5",
+    "bytes": 18905,
+    "line_count": 155
+  },
+  "data-mining-framework/tests/test_search_and_inference.py": {
+    "blob": "de5227893503e6f5af60bcc0eb069773e8dfed3f",
+    "bytes": 7550,
+    "line_count": 170
+  },
+  "data-mining-framework/tests/test_diagnostics.py": {
+    "blob": "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+    "bytes": 13546,
+    "line_count": 295
+  },
+  "strategy-evaluation/src/invest_evaluation/validation.py": {
+    "blob": "35d6a30ba0581b6a804d0525dcb31b531718402a",
+    "bytes": 8806,
+    "line_count": 240
+  },
+  "strategy-evaluation/src/invest_evaluation/stats.py": {
+    "blob": "cb1370b53af886e6a0ac9119ca0b3a750cc827c1",
+    "bytes": 9663,
+    "line_count": 255
+  },
+  "data-pipeline/data-preparation/src/invest_data/schemas.py": {
+    "blob": "ac5b41665bd62621a188d7e0d671a01bde129252",
+    "bytes": 24324,
+    "line_count": 561
+  },
+  "data-mining-framework/tests/test_scale_check.py": {
+    "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+    "bytes": 40951,
+    "line_count": 902
+  },
+  ".github/workflows/ci.yml": {
+    "blob": "349966e67762855257a7672ca25639a38ef87e7b",
+    "bytes": 3361,
+    "line_count": 79
+  },
+  "pyproject.toml": {
+    "blob": "7e6d10be25c8ca2e3d03512c586a42be05f4f712",
+    "bytes": 3077,
+    "line_count": 98
+  },
+  "scripts/check_coverage_floors.py": {
+    "blob": "b469ae3184219c852847ac87fe470a8a02900376",
+    "bytes": 8141,
+    "line_count": 178
+  },
+  "docs/ARCHITECTURE.md": {
+    "blob": "992f90f015c695927f1c8e4bab686fc0bf152f89",
+    "bytes": 14056,
+    "line_count": 147
+  }
+}

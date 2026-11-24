@@ -1,0 +1,311 @@
+{
+  "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "branch": "main",
+  "workflow": ".github/workflows/ci.yml",
+  "workflow_source": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/ci.yml#L23-L29",
+  "run": 44246922942,
+  "run_url": "https://github.com/sasasqt/invest/actions/runs/44246922942",
+  "started": "2026-11-18T05:49:34Z",
+  "freshness": "Reused exact-source standard CI. Run metadata and checked-out SHA confirmed in both job logs.",
+  "commands": [
+    "uv sync --frozen",
+    "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts",
+    "uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+    "uv run coverage json -q -o coverage.json",
+    "uv run python scripts/check_coverage_floors.py coverage.json"
+  ],
+  "mypy": "pyproject strict=true, 32 files clean in each job",
+  "floors": {
+    "report": "line and branch combined; checks branch_coverage flag, configured files and unlisted files, and overall",
+    "total": 96,
+    "unlisted_file": 90,
+    "actual_total": 96.88,
+    "failures": 0
+  },
+  "jobs": [
+    {
+      "id": 134607997865,
+      "python": "3.11.18",
+      "os": "Linux",
+      "passed": 1269,
+      "skipped": 1,
+      "test_seconds": 629.49
+    },
+    {
+      "id": 134607997510,
+      "python": "3.13.18",
+      "os": "Linux",
+      "passed": 1269,
+      "skipped": 1,
+      "test_seconds": 472.72
+    }
+  ],
+  "isolated": {
+    "matching_run": null,
+    "target": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "runner": "No new runner executed",
+    "workflow": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/.github/workflows/audit-runtime.yml",
+    "status": "Not run. No matching qualified run or authorized dispatch endpoint. Local boundary and installed provenance unverified. INV-PR32-001 remains engineering queue."
+  },
+  "encoding": {
+    "id": "BF-2026-11-14-5",
+    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+    "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+    "ancestry_rechecked": true,
+    "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
+    "status": "Reused exact-main aggregate standard CI and reread all three synthetic assertions. A flag-specific non-UTF-8 error precedes out/ledger creation for --data, --universe, and --fundamentals. Individual case logs and independent reruns unavailable."
+  },
+  "windows": {
+    "ids": [
+      "REVIEW-40",
+      "REVIEW-41"
+    ],
+    "workflow_pr": 40,
+    "head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+    "merge": "013791c31ff147ad776a303618618091cc0bc822",
+    "parents": [
+      "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "513470e00dc4a58a7bb65aa3e0a1809dff04149e"
+    ],
+    "open_pr": "https://github.com/sasasqt/invest/pull/66",
+    "discussion": "https://github.com/sasasqt/invest/pull/66#issuecomment-7112622696",
+    "job": "https://github.com/sasasqt/invest/actions/runs/44802209769/job/136516962817",
+    "runtime": "Native Windows CPython 3.11.9 and Git for Windows Bash, 1269 passed and 7 skipped",
+    "status": "Reused exact PR merge CI. Synthetic replay and invalid benchmark refusal without ledger mutation evidenced. Successful append ledger LF/CRLF bytes and direct captured date bytes unasserted. Neither check closed on main. PR36 host tests are a separate scope."
+  },
+  "python311_per_file_display": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "statements": 221,
+      "missing": 13,
+      "branches": 60,
+      "partial": 9,
+      "combined_percent_rounded": 92
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "statements": 591,
+      "missing": 37,
+      "branches": 298,
+      "partial": 26,
+      "combined_percent_rounded": 93
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "statements": 117,
+      "missing": 4,
+      "branches": 34,
+      "partial": 4,
+      "combined_percent_rounded": 95
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "statements": 107,
+      "missing": 4,
+      "branches": 42,
+      "partial": 4,
+      "combined_percent_rounded": 95
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "statements": 466,
+      "missing": 15,
+      "branches": 208,
+      "partial": 5,
+      "combined_percent_rounded": 96
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "statements": 159,
+      "missing": 4,
+      "branches": 54,
+      "partial": 4,
+      "combined_percent_rounded": 96
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "statements": 112,
+      "missing": 2,
+      "branches": 38,
+      "partial": 2,
+      "combined_percent_rounded": 97
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "statements": 140,
+      "missing": 3,
+      "branches": 42,
+      "partial": 3,
+      "combined_percent_rounded": 97
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "statements": 356,
+      "missing": 10,
+      "branches": 136,
+      "partial": 6,
+      "combined_percent_rounded": 97
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "statements": 448,
+      "missing": 9,
+      "branches": 128,
+      "partial": 3,
+      "combined_percent_rounded": 98
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "statements": 150,
+      "missing": 2,
+      "branches": 48,
+      "partial": 2,
+      "combined_percent_rounded": 98
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "statements": 192,
+      "missing": 3,
+      "branches": 48,
+      "partial": 3,
+      "combined_percent_rounded": 98
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "statements": 186,
+      "missing": 1,
+      "branches": 68,
+      "partial": 4,
+      "combined_percent_rounded": 98
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "statements": 151,
+      "missing": 1,
+      "branches": 62,
+      "partial": 1,
+      "combined_percent_rounded": 99
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "statements": 188,
+      "missing": 1,
+      "branches": 54,
+      "partial": 1,
+      "combined_percent_rounded": 99
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "statements": 186,
+      "missing": 2,
+      "branches": 48,
+      "partial": 1,
+      "combined_percent_rounded": 99
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/__init__.py",
+      "statements": 1,
+      "missing": 0,
+      "branches": 0,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "statements": 50,
+      "missing": 0,
+      "branches": 8,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "statements": 174,
+      "missing": 0,
+      "branches": 30,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "statements": 20,
+      "missing": 0,
+      "branches": 2,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "statements": 66,
+      "missing": 0,
+      "branches": 6,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+      "statements": 1,
+      "missing": 0,
+      "branches": 0,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "statements": 40,
+      "missing": 0,
+      "branches": 22,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "statements": 249,
+      "missing": 0,
+      "branches": 100,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "statements": 135,
+      "missing": 0,
+      "branches": 40,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "statements": 23,
+      "missing": 0,
+      "branches": 0,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+      "statements": 1,
+      "missing": 0,
+      "branches": 0,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "statements": 27,
+      "missing": 0,
+      "branches": 12,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "statements": 80,
+      "missing": 0,
+      "branches": 26,
+      "partial": 0,
+      "combined_percent_rounded": 100
+    }
+  ]
+}

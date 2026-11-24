@@ -1,0 +1,88 @@
+{
+  "n": 60,
+  "mean": 0.09999999999999996,
+  "horizon": 1,
+  "lag": 3,
+  "attainable_spearman_ranks": {
+    "0.6": [
+      1,
+      2,
+      5,
+      4,
+      3
+    ],
+    "-0.4": [
+      2,
+      5,
+      4,
+      3,
+      1
+    ]
+  },
+  "indexed_dense": {
+    "pair_counts": [
+      59,
+      58,
+      57
+    ],
+    "long_run_variance": 0.004166666666666707,
+    "standard_error": 0.008333333333333375,
+    "z": 11.999999999999936,
+    "normal_two_sided_p": 3.5529642241581e-33,
+    "product_normal_cdf_arithmetic": 0.0
+  },
+  "indexed_gapped": {
+    "pair_counts": [
+      0,
+      0,
+      0
+    ],
+    "long_run_variance": 0.25,
+    "standard_error": 0.06454972243679027,
+    "z": 1.5491933384829664,
+    "normal_two_sided_p": 0.12133525035848225,
+    "product_normal_cdf_arithmetic": 0.12133525035848214
+  },
+  "gap_compressed": {
+    "pair_counts": [
+      59,
+      58,
+      57
+    ],
+    "long_run_variance": 0.004166666666666707,
+    "standard_error": 0.008333333333333375,
+    "z": 11.999999999999936,
+    "normal_two_sided_p": 3.5529642241581e-33,
+    "product_normal_cdf_arithmetic": 0.0
+  },
+  "evidence": "Trusted independent arithmetic with synthetic values only. No repository code imported or executed. The indexed alternative varies pair selection only; no universal validity is asserted.",
+  "separate_fraction_repeat": {
+    "dense_and_compressed": {
+      "lags": 3,
+      "pair_counts": [
+        59,
+        58,
+        57
+      ],
+      "long_run_variance_exact": "1/240",
+      "se": 0.008333333333333333,
+      "t": 12.0,
+      "p_one_sided": 1.776482112077702e-33,
+      "singleton_holm_passes_0_05": true
+    },
+    "session_distance_gapped": {
+      "lags": 3,
+      "pair_counts": [
+        0,
+        0,
+        0
+      ],
+      "long_run_variance_exact": "1/4",
+      "se": 0.06454972243679027,
+      "t": 1.549193338482967,
+      "p_one_sided": 0.06066762517924105,
+      "singleton_holm_passes_0_05": false
+    },
+    "controls_match": "Same 60 finite values, lag 3 and denominator. Dense equivalence. h=1 removes label overlap, while the gap design isolates pair selection."
+  }
+}
