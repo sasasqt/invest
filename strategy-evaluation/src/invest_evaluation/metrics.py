@@ -224,7 +224,49 @@ def return_metrics(
     return out
 
 
+def _expected_shortfall(loss: np.ndarray, level: float) -> tuple[float, float, int]:
+    """Historical expected shortfall at ``level`` with the Acerbi-Tasche tail (METRICS.md).
+
+    The tail is the worst ``(1 - level) * n`` losses by rank: the whole part of that tail
+    mass counts fully and the fractional remainder weights the next largest loss. Ties carry
+    only their own weight, so a book that is flat on most sessions no longer averages every
+    flat session into the tail (BH-2026-11-03-1). Returns the mean tail loss, the tail mass
+    and the number of observations with positive weight. A fractional part below 1e-9 is
+    rounding noise (``0.05 * 100`` is ``5.000000000000004``) and counts as zero, unless it is
+    the whole tail (a tail mass below 1e-9): then it is kept and the estimate is the largest
+    loss.
+    """
+    mass = (1.0 - level) * len(loss)
+    whole = math.floor(mass + 1e-9)
+    # The remainder is clamped at zero: rounding can leave it slightly negative (level 0.9 on
+    # 100 observations gives a mass of 9.999999999999998 and a whole part of 10). A remainder
+    # that is the whole tail (a tail mass below the tolerance) is kept, so the estimate is the
+    # largest loss and never a zero from an empty tail.
+    frac = mass - whole
+    if whole and frac < 1e-9:
+        frac = 0.0
+    ordered = np.sort(loss)[::-1]
+    total = float(ordered[:whole].sum())
+    if frac > 0.0:
+        total += frac * float(ordered[whole])
+    # Record the mass from the parts the count uses, so the two always agree: a remainder
+    # dropped as noise is not shown, and one kept (at least 1e-9) survives the rounding.
+    return (
+        total / mass,
+        whole + (round(frac, 9) if whole else frac),
+        whole + (1 if frac > 0.0 else 0),
+    )
+
+
+def _significant(x: float, digits: int = 12) -> float:
+    """``x`` with rounding noise removed (``5.000000000000004`` becomes ``5.0``), keeping small
+    values such as a tail probability of ``1e-12`` instead of rounding them to zero."""
+    return float(f"{x:.{digits}g}")
+
+
 def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
+    if not 0.0 < level < 1.0:
+        raise ValueError(f"level must lie strictly between 0 and 1, got {level}")
     n = len(r)
     out: dict[str, Metric] = {}
     if n < 20:
@@ -240,12 +282,17 @@ def tail_metrics(r: np.ndarray, level: float = 0.95) -> dict[str, Metric]:
         return out
     loss = -r
     var = float(np.quantile(loss, level, method="linear"))
-    tail = loss[loss >= var]
+    es, tail_mass, tail_observations = _expected_shortfall(loss, level)
     m = r - r.mean()
     s2 = float(np.mean(m**2))
     out["var_loss_95"] = _ok(var, "fraction/period", quantile_method="linear", sign="loss>0")
     out["expected_shortfall_95"] = _ok(
-        float(tail.mean()), "fraction/period", tail_observations=len(tail)
+        es,
+        "fraction/period",
+        estimator="acerbi_tasche",
+        tail_probability=_significant(1.0 - level),
+        tail_mass=tail_mass,
+        tail_observations=tail_observations,
     )
     if s2 > 0:
         out["skewness"] = _ok(float(np.mean(m**3) / s2**1.5), "", estimator="g1 (biased)")
