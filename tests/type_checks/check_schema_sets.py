@@ -17,7 +17,6 @@ from invest_data.schemas import (
     FACTOR_TEST_OUTCOMES,
     PRICE_ADJUSTMENTS,
     _check_kind,
-    _check_metadata,
     _validate_metadata,
 )
 from invest_evaluation.validation import PORTFOLIO_STATUSES
@@ -26,7 +25,6 @@ from invest_evaluation.validation import PORTFOLIO_STATUSES
 def _never_called(manifest: Manifest) -> list[bool]:
     _check_kind(manifest, "bars")  # type: ignore[arg-type]
     _validate_metadata({}, (), "bars")  # type: ignore[arg-type]
-    _check_metadata(manifest, (), "bars")  # type: ignore[arg-type]
     _check_convertible("raw")  # type: ignore[arg-type]
     return [
         PRICE_ADJUSTMENTS[0] == "raw",  # type: ignore[comparison-overlap]

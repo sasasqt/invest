@@ -42,7 +42,7 @@ import numbers
 import os
 from datetime import date
 from decimal import Decimal
-from typing import Any, Literal, NoReturn
+from typing import Any, Literal, NoReturn, cast
 
 import numpy as np
 import pandas as pd
@@ -209,7 +209,7 @@ def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, p
     """
     manifest = read_manifest(path)
     _check_kind(manifest, MARKET_BARS)
-    _check_metadata(manifest, REQUIRED_MARKET_METADATA, MARKET_BARS)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     require_adjusted_prices(manifest)
     manifest, frame = read_market_bars(path)
     require_adjusted_prices(manifest)
@@ -390,9 +390,10 @@ def validate_factor_evidence(
             fail(f"statistics.{key} must be a finite number or null")
 
 
-def _check_metadata(manifest: Manifest, required: tuple[str, ...], kind: DatasetKind) -> None:
-    """Check a read manifest's metadata; every caller has checked that its kind is ``kind``."""
-    _validate_metadata(manifest.metadata, required, kind)
+def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:
+    # Every caller checks the manifest's dataset kind first (`_check_kind`, or the signals
+    # test in `read_signals`), so it is one of the `DatasetKind` values here.
+    _validate_metadata(manifest.metadata, required, cast(DatasetKind, str(manifest.dataset_kind)))
 
 
 def publish_market_bars(
@@ -445,7 +446,7 @@ def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFra
     _check_kind(manifest, MARKET_BARS)
     _check_columns(manifest, market_bar_columns(manifest.column_names))
     _check_key(manifest, MARKET_BAR_PRIMARY_KEY)
-    _check_metadata(manifest, REQUIRED_MARKET_METADATA, MARKET_BARS)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
     validate_market_frame(frame)
     return manifest, frame
 
@@ -484,7 +485,7 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
         raise BundleError(f"expected dataset_kind {SIGNALS!r}, got {manifest.dataset_kind!r}")
     _check_columns(manifest, SIGNAL_COLUMNS)
     _check_key(manifest, SIGNAL_PRIMARY_KEY)
-    _check_metadata(manifest, REQUIRED_SIGNAL_METADATA, SIGNALS)
+    _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
     _check_signal_window(frame["decision_date"], manifest.metadata)
