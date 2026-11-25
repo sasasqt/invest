@@ -15,19 +15,24 @@ from __future__ import annotations
 
 import math
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pandas as pd
 
 from invest_evaluation.engine import COST_KINDS, BacktestResult
 
+#: Whether a metric's value can be used: ``ok`` carries a value; the other statuses carry
+#: ``None`` and name why in ``reason`` (undefined arithmetic, too few observations, an input
+#: the definition rejects, or a quantity that does not apply to this run).
+MetricStatus = Literal["ok", "undefined", "insufficient_data", "invalid_input", "not_applicable"]
+
 
 @dataclass(frozen=True)
 class Metric:
     value: float | int | str | None
     unit: str
-    status: str = "ok"
+    status: MetricStatus = "ok"
     reason: str | None = None
     extra: dict[str, Any] = field(default_factory=dict)
 
@@ -46,7 +51,7 @@ def _ok(value: float | int | str | None, unit: str, **extra: Any) -> Metric:
     return Metric(value, unit, extra=extra)
 
 
-def _undef(unit: str, reason: str, status: str = "undefined") -> Metric:
+def _undef(unit: str, reason: str, status: MetricStatus = "undefined") -> Metric:
     return Metric(None, unit, status=status, reason=reason)
 
 

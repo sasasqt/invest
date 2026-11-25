@@ -45,7 +45,7 @@ def write_factor_report(
     return root
 
 
-def staggered_spread_wealth(spread: pd.Series, horizon: int) -> pd.Series:
+def staggered_spread_wealth(spread: pd.Series, horizon: object) -> pd.Series:
     """Growth of 1 split evenly over ``horizon`` staggered cohorts of the h-day spread.
 
     ``spread`` holds overlapping h-day forward returns, one per decision date. Cohort

@@ -26,7 +26,7 @@ from collections.abc import Callable, Mapping
 from contextvars import ContextVar
 from dataclasses import dataclass
 from fractions import Fraction
-from typing import TypeAlias, TypeVar
+from typing import Literal, TypeAlias, TypeVar
 
 import numpy as np
 import pandas as pd
@@ -138,9 +138,19 @@ def _text(node: Node, parts: list[str]) -> str:
     return f"{node.op}({', '.join(parts)})"
 
 
+#: How an operator takes its arguments: one input, two inputs, an input and a window,
+#: two inputs and a window, or one input transformed across names on each date (rank,
+#: z-score or demean).
+OpKind: TypeAlias = Literal["unary", "binary", "ts", "ts2", "cs"]
+#: The kinds whose last argument is a window.
+_WINDOWED: tuple[OpKind, ...] = ("ts", "ts2")
+#: The number of arguments each kind takes, the window included.
+_ARITY: dict[OpKind, int] = {"unary": 1, "binary": 2, "ts": 2, "ts2": 3, "cs": 1}
+
+
 @dataclass(frozen=True)
 class OpSpec:
-    kind: str  # unary | binary | ts | ts2 | cs
+    kind: OpKind
     fn: Callable[..., pd.DataFrame]
 
 
@@ -286,10 +296,10 @@ def _convert(node: ast.expr) -> Node:
         if spec is None:
             raise ExpressionError(f"unknown operator {op!r}")
         args = node.args
-        arity = {"unary": 1, "binary": 2, "ts": 2, "ts2": 3, "cs": 1}[spec.kind]
+        arity = _ARITY[spec.kind]
         if len(args) != arity:
             raise ExpressionError(f"{op} expects {arity} arguments, got {len(args)}")
-        if spec.kind in ("ts", "ts2"):
+        if spec.kind in _WINDOWED:
             children = tuple(_series_arg(a, op) for a in args[:-1])
             return Call(op, children, _window(args[-1], op))
         if spec.kind == "binary":
@@ -380,7 +390,7 @@ def check_scale_free(node: Node) -> None:
     dividend. The message names the offending part and the form to use instead.
     """
     for sub in _calls(node):
-        if OPS[sub.op].kind in ("ts", "ts2"):
+        if OPS[sub.op].kind in _WINDOWED:
             read = set().union(*(features_used(a) for a in sub.args)) & set(AS_TRADED_FEATURES)
             if read:
                 raise _as_traded_series_error(sub, sorted(read)[0])
@@ -760,7 +770,7 @@ def evaluate(node: Node | str, panel: Panel) -> pd.DataFrame:
             if spec.kind == "binary":
                 a, b = vals
                 out = spec.fn(_frame(a, like), _frame(b, like))
-            elif spec.kind in ("ts", "ts2"):
+            elif spec.kind in _WINDOWED:
                 out = spec.fn(*[_frame(v, like) for v in vals], n.window)
             elif spec.kind == "cs":
                 arg = _frame(vals[0], like)

@@ -656,7 +656,7 @@ def test_deeply_nested_metadata_is_refused_on_write_and_read(tmp_path):
 def test_created_at_must_be_a_datetime(tmp_path):
     frame = pd.DataFrame({"k": ["a"]})
     with pytest.raises(BundleError, match="created_at must be timezone-aware"):
-        write_bundle(frame, tmp_path / "b", dataset_id="x", created_at=date(2026, 1, 1))  # type: ignore[arg-type]
+        write_bundle(frame, tmp_path / "b", dataset_id="x", created_at=date(2026, 1, 1))
 
 
 def test_parquet_readers_refuse_a_stored_nan_like_csv_readers(tmp_path):
