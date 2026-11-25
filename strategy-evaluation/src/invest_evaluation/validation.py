@@ -19,7 +19,13 @@ import pandas as pd
 from invest_evaluation.config import ValidationConfig
 
 VERDICT_VERSION = 2
-PORTFOLIO_STATUSES = ("supported", "rejected", "inconclusive", "insufficient_data")
+PortfolioStatus = Literal["supported", "rejected", "inconclusive", "insufficient_data"]
+PORTFOLIO_STATUSES: tuple[PortfolioStatus, ...] = (
+    "supported",
+    "rejected",
+    "inconclusive",
+    "insufficient_data",
+)
 CheckStatus = Literal["pass", "fail", "undefined", "not_run"]
 
 
@@ -197,6 +203,7 @@ def portfolio_verdict(
         )
 
     by_name = {c["name"]: c for c in checks}
+    status: PortfolioStatus
     if insolvent:
         status = "rejected"
     elif (

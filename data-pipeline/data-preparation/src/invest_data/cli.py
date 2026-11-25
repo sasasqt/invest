@@ -17,6 +17,7 @@ from invest_data.cleaning import clean_bars
 from invest_data.schemas import (
     ADJUSTED_PRICES,
     PRICE_ADJUSTMENTS,
+    PriceAdjustment,
     publish_fundamentals,
     publish_market_bars,
     publish_universe,
@@ -99,7 +100,7 @@ def _yahoo(args: argparse.Namespace) -> int:
     )
 
 
-def _check_convertible(adjustment: str) -> None:
+def _check_convertible(adjustment: PriceAdjustment) -> None:
     if adjustment not in ("unadjusted", "split_adjusted"):
         raise SystemExit("--adjusted-close converts unadjusted or split_adjusted prices")
 
