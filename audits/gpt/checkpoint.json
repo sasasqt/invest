@@ -7821,18 +7821,20 @@
           "no_applicable_or_unknown_line_count": 5,
           "new_unique_semantic_lines": 1414
         },
-        "publication_status": "prepared",
+        "publication_status": "published_verified",
         "completed_steps": [
           "Verified methods and source",
           "Reconciled state and saved started checkpoint",
           "Checked exact CI and carried controls",
           "Traced benchmark and verified synthetic arithmetic",
           "Completed independent candidate review",
-          "Prepared scoped reporting and publication"
+          "Prepared scoped reporting and publication",
+          "Verified guarded report publication"
         ],
-        "remaining_steps": [
-          "Guarded publication and readback"
-        ]
+        "remaining_steps": [],
+        "completed_utc": "2026-11-25T02:17:19Z",
+        "verified_report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
+        "elapsed_to_verified_publication_seconds": 974
       }
     ],
     "shared_controls": {
@@ -8472,18 +8474,20 @@
       "no_applicable_or_unknown_line_count": 5,
       "new_unique_semantic_lines": 1414
     },
-    "publication_status": "prepared",
+    "publication_status": "published_verified",
     "completed_steps": [
       "Verified methods and source",
       "Reconciled state and saved started checkpoint",
       "Checked exact CI and carried controls",
       "Traced benchmark and verified synthetic arithmetic",
       "Completed independent candidate review",
-      "Prepared scoped reporting and publication"
+      "Prepared scoped reporting and publication",
+      "Verified guarded report publication"
     ],
-    "remaining_steps": [
-      "Guarded publication and readback"
-    ]
+    "remaining_steps": [],
+    "completed_utc": "2026-11-25T02:17:19Z",
+    "verified_report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
+    "elapsed_to_verified_publication_seconds": 974
   },
   "publication_history": [
     {
@@ -9367,15 +9371,145 @@
         "2026-11-24-mining/hac_confirm_control.py": "09d2367cff0058d352fd7eeb27dfa4767e3bca3f"
       },
       "elapsed_seconds": 868
+    },
+    {
+      "date": "2026-11-25",
+      "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+      "branch": "gpt/repo-audits",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "output_parent": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+      "report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
+      "report_tree": "484cee3427201ae03ab186ae0736dc1c18f0dfcc",
+      "status": "published_verified",
+      "verified_utc": "2026-11-25T02:17:19Z",
+      "report_url": "https://github.com/sasasqt/invest/blob/a50b95ce5c6db60202eb14fc8e1648a5f351ac89/audits/gpt/2026-11-25.md",
+      "guarded_expected_old_sha": true,
+      "force": false,
+      "verified_changed_paths": [
+        "audits/gpt/2026-11-25-evaluation/check_control.py",
+        "audits/gpt/2026-11-25-evaluation/ci-observations.json",
+        "audits/gpt/2026-11-25-evaluation/control-output.txt",
+        "audits/gpt/2026-11-25-evaluation/evidence.json",
+        "audits/gpt/2026-11-25-evaluation/method-verification.json",
+        "audits/gpt/2026-11-25-evaluation/reading.json",
+        "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json",
+        "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md",
+        "audits/gpt/2026-11-25-evaluation/reviewer2.md",
+        "audits/gpt/2026-11-25-evaluation/settlement-oracle.json",
+        "audits/gpt/2026-11-25-evaluation/source-verification.json",
+        "audits/gpt/2026-11-25.md",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/coverage-map.json",
+        "audits/gpt/coverage-map.md",
+        "audits/gpt/coverage.csv",
+        "audits/gpt/cross-check.md",
+        "audits/gpt/exploration.json",
+        "audits/gpt/findings.json",
+        "audits/gpt/findings.md",
+        "audits/gpt/state.json",
+        "audits/gpt/validation.csv"
+      ],
+      "verified_git_blob_ids": {
+        "audits/gpt/state.json": "71b74618c9432acbb9482011a897fefa552470ca",
+        "audits/gpt/checkpoint.json": "71b74618c9432acbb9482011a897fefa552470ca",
+        "audits/gpt/findings.json": "db3ec6194c8a6179e27ec59611dc34e0abb72710",
+        "audits/gpt/exploration.json": "cf793884da713f72ddb1f3c35c7fdc3c0b8b3d6b",
+        "audits/gpt/coverage-map.json": "2e3002e19fa97d3f503851727e3850d46c0fe79b",
+        "audits/gpt/coverage-map.md": "533521b86cf6658228d3d9f0087fa21ad6d78c0d",
+        "audits/gpt/coverage.csv": "bbc3bc31b95711dd398105b567ef90113bb5b306",
+        "audits/gpt/cross-check.md": "1882e1c9aa1e0fbccfedcc36c782da07f57c36dd",
+        "audits/gpt/validation.csv": "21a63410fc7d338a25452954bb8c21338fc6481e",
+        "audits/gpt/2026-11-25-evaluation/evidence.json": "e24acd40e5d3d2618e114c101eb210604f9fd689",
+        "audits/gpt/2026-11-25-evaluation/ci-observations.json": "2df18a6d77f7009a8a01efb8bba4b4500bc6f226",
+        "audits/gpt/2026-11-25-evaluation/reading.json": "c34bf26f704949a9454d575dabf61031b182f66a",
+        "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md": "80b0744d3f3802cd8327b3b588e5c3f359bde23e",
+        "audits/gpt/2026-11-25-evaluation/reviewer2.md": "1c3000bc266cebde8dc96fcad8144affa3874eec",
+        "audits/gpt/2026-11-25.md": "aa97502ab70f48dc6ecfbbd58b8def2db5c7c8dc",
+        "audits/gpt/2026-11-25-evaluation/method-verification.json": "492b4be251b15780e3ce1c622eccaae2f91493a4",
+        "audits/gpt/2026-11-25-evaluation/source-verification.json": "084ce0a5f4140f0517ed049123a3e548cb8b7a34",
+        "audits/gpt/2026-11-25-evaluation/settlement-oracle.json": "87cbc02ff5646d850c60a42df770e14dfa1a5e40",
+        "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json": "433f09d342f2e85069b4032046ca4052acdab398",
+        "audits/gpt/2026-11-25-evaluation/check_control.py": "818a616086a9183e525ecf7886a8acccb7f30835",
+        "audits/gpt/2026-11-25-evaluation/control-output.txt": "55f40da85cdd87c6995be4d0c6c019dea5e552a3",
+        "audits/gpt/findings.md": "9a33785936ea6a730edbf0ebfd175cf27a2bd602"
+      },
+      "full_text_readback_paths": [
+        "audits/gpt/state.json",
+        "audits/gpt/checkpoint.json",
+        "audits/gpt/2026-11-25-evaluation/evidence.json",
+        "audits/gpt/2026-11-25.md"
+      ],
+      "elapsed_to_verified_publication_seconds": 974
     }
   ],
   "publication_current_run": {
     "date": "2026-11-25",
     "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
-    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "branch": "gpt/repo-audits",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "output_parent": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
-    "status": "prepared"
+    "report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
+    "report_tree": "484cee3427201ae03ab186ae0736dc1c18f0dfcc",
+    "status": "published_verified",
+    "verified_utc": "2026-11-25T02:17:19Z",
+    "report_url": "https://github.com/sasasqt/invest/blob/a50b95ce5c6db60202eb14fc8e1648a5f351ac89/audits/gpt/2026-11-25.md",
+    "guarded_expected_old_sha": true,
+    "force": false,
+    "verified_changed_paths": [
+      "audits/gpt/2026-11-25-evaluation/check_control.py",
+      "audits/gpt/2026-11-25-evaluation/ci-observations.json",
+      "audits/gpt/2026-11-25-evaluation/control-output.txt",
+      "audits/gpt/2026-11-25-evaluation/evidence.json",
+      "audits/gpt/2026-11-25-evaluation/method-verification.json",
+      "audits/gpt/2026-11-25-evaluation/reading.json",
+      "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json",
+      "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md",
+      "audits/gpt/2026-11-25-evaluation/reviewer2.md",
+      "audits/gpt/2026-11-25-evaluation/settlement-oracle.json",
+      "audits/gpt/2026-11-25-evaluation/source-verification.json",
+      "audits/gpt/2026-11-25.md",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/coverage-map.json",
+      "audits/gpt/coverage-map.md",
+      "audits/gpt/coverage.csv",
+      "audits/gpt/cross-check.md",
+      "audits/gpt/exploration.json",
+      "audits/gpt/findings.json",
+      "audits/gpt/findings.md",
+      "audits/gpt/state.json",
+      "audits/gpt/validation.csv"
+    ],
+    "verified_git_blob_ids": {
+      "audits/gpt/state.json": "71b74618c9432acbb9482011a897fefa552470ca",
+      "audits/gpt/checkpoint.json": "71b74618c9432acbb9482011a897fefa552470ca",
+      "audits/gpt/findings.json": "db3ec6194c8a6179e27ec59611dc34e0abb72710",
+      "audits/gpt/exploration.json": "cf793884da713f72ddb1f3c35c7fdc3c0b8b3d6b",
+      "audits/gpt/coverage-map.json": "2e3002e19fa97d3f503851727e3850d46c0fe79b",
+      "audits/gpt/coverage-map.md": "533521b86cf6658228d3d9f0087fa21ad6d78c0d",
+      "audits/gpt/coverage.csv": "bbc3bc31b95711dd398105b567ef90113bb5b306",
+      "audits/gpt/cross-check.md": "1882e1c9aa1e0fbccfedcc36c782da07f57c36dd",
+      "audits/gpt/validation.csv": "21a63410fc7d338a25452954bb8c21338fc6481e",
+      "audits/gpt/2026-11-25-evaluation/evidence.json": "e24acd40e5d3d2618e114c101eb210604f9fd689",
+      "audits/gpt/2026-11-25-evaluation/ci-observations.json": "2df18a6d77f7009a8a01efb8bba4b4500bc6f226",
+      "audits/gpt/2026-11-25-evaluation/reading.json": "c34bf26f704949a9454d575dabf61031b182f66a",
+      "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md": "80b0744d3f3802cd8327b3b588e5c3f359bde23e",
+      "audits/gpt/2026-11-25-evaluation/reviewer2.md": "1c3000bc266cebde8dc96fcad8144affa3874eec",
+      "audits/gpt/2026-11-25.md": "aa97502ab70f48dc6ecfbbd58b8def2db5c7c8dc",
+      "audits/gpt/2026-11-25-evaluation/method-verification.json": "492b4be251b15780e3ce1c622eccaae2f91493a4",
+      "audits/gpt/2026-11-25-evaluation/source-verification.json": "084ce0a5f4140f0517ed049123a3e548cb8b7a34",
+      "audits/gpt/2026-11-25-evaluation/settlement-oracle.json": "87cbc02ff5646d850c60a42df770e14dfa1a5e40",
+      "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json": "433f09d342f2e85069b4032046ca4052acdab398",
+      "audits/gpt/2026-11-25-evaluation/check_control.py": "818a616086a9183e525ecf7886a8acccb7f30835",
+      "audits/gpt/2026-11-25-evaluation/control-output.txt": "55f40da85cdd87c6995be4d0c6c019dea5e552a3",
+      "audits/gpt/findings.md": "9a33785936ea6a730edbf0ebfd175cf27a2bd602"
+    },
+    "full_text_readback_paths": [
+      "audits/gpt/state.json",
+      "audits/gpt/checkpoint.json",
+      "audits/gpt/2026-11-25-evaluation/evidence.json",
+      "audits/gpt/2026-11-25.md"
+    ],
+    "elapsed_to_verified_publication_seconds": 974
   },
   "remaining_work_current_visit": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
   "runtime_validation_history": [
