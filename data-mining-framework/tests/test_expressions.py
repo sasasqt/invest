@@ -259,7 +259,7 @@ def test_time_series_operators_see_the_bars_of_a_membership_gap() -> None:
     assert delisted.loc[dates[4:]].isna().all()
 
 
-def test_universe_changes_only_cross_sectional_results(bars) -> None:
+def test_universe_changes_only_cross_sectional_results(bars: pd.DataFrame) -> None:
     """A universe changes nothing a member sees unless the formula has a cross-sectional operator.
 
     For every generated formula without one, the values with a universe, masked by ``restrict``,
