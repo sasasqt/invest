@@ -42,7 +42,7 @@ import numbers
 import os
 from datetime import date
 from decimal import Decimal
-from typing import Any, NoReturn
+from typing import Any, Literal, NoReturn
 
 import numpy as np
 import pandas as pd
@@ -58,10 +58,11 @@ from invest_data.bundle import (
     write_bundle,
 )
 
-MARKET_BARS = "market_bars"
-UNIVERSE = "universe"
-FUNDAMENTALS = "fundamentals"
-SIGNALS = "signals"
+DatasetKind = Literal["market_bars", "universe", "fundamentals", "signals"]
+MARKET_BARS: DatasetKind = "market_bars"
+UNIVERSE: DatasetKind = "universe"
+FUNDAMENTALS: DatasetKind = "fundamentals"
+SIGNALS: DatasetKind = "signals"
 
 MARKET_BAR_COLUMNS = (
     Column("date", "date", nullable=False),
@@ -96,17 +97,29 @@ SIGNAL_PRIMARY_KEY = ("decision_date", "instrument")
 UNIVERSE_PRIMARY_KEY = ("universe", "instrument", "start_date")
 FUNDAMENTAL_PRIMARY_KEY = ("instrument", "field", "period_end", "available_date")
 REQUIRED_MARKET_METADATA = ("frequency", "currency", "price_adjustment", "calendar")
-PRICE_ADJUSTMENTS = ("total_return_adjusted", "split_adjusted", "unadjusted")
+PriceAdjustment = Literal["total_return_adjusted", "split_adjusted", "unadjusted"]
+PRICE_ADJUSTMENTS: tuple[PriceAdjustment, ...] = (
+    "total_return_adjusted",
+    "split_adjusted",
+    "unadjusted",
+)
 # What evaluation and mining accept: closes whose returns include splits and dividends.
-ADJUSTED_PRICES = ("total_return_adjusted",)
+ADJUSTED_PRICES: tuple[PriceAdjustment, ...] = ("total_return_adjusted",)
 REQUIRED_SIGNAL_METADATA = ("available_at", "signal_type", "factor_id", "horizon_days")
 
 # Version 2 binds factor evidence to the tested prediction/holding horizon.
 FACTOR_EVIDENCE_VERSION = 2
 CONFIRMATION_USES = ("confirmatory", "exploratory", "unrecorded")
-FACTOR_TEST_OUTCOMES = ("confirmation_passed", "rejected", "inconclusive")
-FACTOR_STATUSES = (*FACTOR_TEST_OUTCOMES, "exploratory")
-FACTOR_EVIDENCE_SOURCES = ("search", "confirm")
+FactorTestOutcome = Literal["confirmation_passed", "rejected", "inconclusive"]
+FACTOR_TEST_OUTCOMES: tuple[FactorTestOutcome, ...] = (
+    "confirmation_passed",
+    "rejected",
+    "inconclusive",
+)
+FactorStatus = Literal[FactorTestOutcome, "exploratory"]
+FACTOR_STATUSES: tuple[FactorStatus, ...] = (*FACTOR_TEST_OUTCOMES, "exploratory")
+FactorEvidenceSource = Literal["search", "confirm"]
+FACTOR_EVIDENCE_SOURCES: tuple[FactorEvidenceSource, ...] = ("search", "confirm")
 FACTOR_EVIDENCE_STATISTICS = (
     "confirm_mean_rank_ic",
     "confirm_t",
@@ -133,7 +146,7 @@ def _check_key(manifest: Manifest, key: tuple[str, ...]) -> None:
         )
 
 
-def _check_kind(manifest: Manifest, kind: str) -> None:
+def _check_kind(manifest: Manifest, kind: DatasetKind) -> None:
     if manifest.dataset_kind != kind:
         raise BundleError(f"expected dataset_kind {kind!r}, got {manifest.dataset_kind!r}")
 
@@ -196,7 +209,7 @@ def read_adjusted_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, p
     """
     manifest = read_manifest(path)
     _check_kind(manifest, MARKET_BARS)
-    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA, MARKET_BARS)
     require_adjusted_prices(manifest)
     manifest, frame = read_market_bars(path)
     require_adjusted_prices(manifest)
@@ -220,7 +233,9 @@ def require_adjusted_prices(manifest: Manifest) -> None:
         )
 
 
-def _validate_metadata(metadata: dict[str, Any], required: tuple[str, ...], kind: str) -> None:
+def _validate_metadata(
+    metadata: dict[str, Any], required: tuple[str, ...], kind: DatasetKind
+) -> None:
     missing = [k for k in required if k not in metadata]
     if missing:
         raise BundleError(f"{kind}: metadata missing {missing}")
@@ -375,8 +390,9 @@ def validate_factor_evidence(
             fail(f"statistics.{key} must be a finite number or null")
 
 
-def _check_metadata(manifest: Manifest, required: tuple[str, ...]) -> None:
-    _validate_metadata(manifest.metadata, required, str(manifest.dataset_kind))
+def _check_metadata(manifest: Manifest, required: tuple[str, ...], kind: DatasetKind) -> None:
+    """Check a read manifest's metadata; every caller has checked that its kind is ``kind``."""
+    _validate_metadata(manifest.metadata, required, kind)
 
 
 def publish_market_bars(
@@ -429,7 +445,7 @@ def read_market_bars(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFra
     _check_kind(manifest, MARKET_BARS)
     _check_columns(manifest, market_bar_columns(manifest.column_names))
     _check_key(manifest, MARKET_BAR_PRIMARY_KEY)
-    _check_metadata(manifest, REQUIRED_MARKET_METADATA)
+    _check_metadata(manifest, REQUIRED_MARKET_METADATA, MARKET_BARS)
     validate_market_frame(frame)
     return manifest, frame
 
@@ -468,7 +484,7 @@ def read_signals(path: str | os.PathLike[str]) -> tuple[Manifest, pd.DataFrame]:
         raise BundleError(f"expected dataset_kind {SIGNALS!r}, got {manifest.dataset_kind!r}")
     _check_columns(manifest, SIGNAL_COLUMNS)
     _check_key(manifest, SIGNAL_PRIMARY_KEY)
-    _check_metadata(manifest, REQUIRED_SIGNAL_METADATA)
+    _check_metadata(manifest, REQUIRED_SIGNAL_METADATA, SIGNALS)
     if manifest.metadata["available_at"] != "decision_date_close":
         raise BundleError("signals: unsupported available_at convention")
     _check_signal_window(frame["decision_date"], manifest.metadata)
