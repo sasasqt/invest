@@ -1,0 +1,2 @@
+settled event return: -1/3 aligned returns: 23 total: -1/3 annualized tracking error: 0.0 annualized IR: None optional IR check: undefined
+settlement omitted event return: 0 aligned returns: 23 total: 0 annualized tracking error: 1.103354568734741 annualized IR: -3.310063706204223 optional IR check: fail

@@ -1,0 +1,347 @@
+{
+  "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "workflow": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/.github/workflows/ci.yml#L23-L30",
+  "standard_run": "https://github.com/sasasqt/invest/actions/runs/45452913021",
+  "strict_mypy": "uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts tests/type_checks",
+  "pytest": "uv run pytest --cov=invest_data --cov=invest_mining --cov=invest_evaluation --cov-branch --cov-report=term-missing",
+  "coverage": [
+    "uv run coverage json -q -o coverage.json",
+    "uv run python scripts/check_coverage_floors.py coverage.json"
+  ],
+  "settings": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/pyproject.toml#L37-L105",
+  "checker": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/scripts/check_coverage_floors.py#L111-L174",
+  "jobs": [
+    {
+      "id": 138654545799,
+      "platform": "Linux",
+      "python": "3.11.18",
+      "mypy_files": 35,
+      "passed": 1269,
+      "skipped": 1,
+      "coverage_pct": 96.89,
+      "floor_failures": 0,
+      "test_seconds": 745.52
+    },
+    {
+      "id": 138654546084,
+      "platform": "Linux",
+      "python": "3.13.18",
+      "mypy_files": 35,
+      "passed": 1269,
+      "skipped": 1,
+      "coverage_pct": 96.89,
+      "floor_failures": 0,
+      "test_seconds": 666.8
+    }
+  ],
+  "floors": {
+    "total": 96,
+    "default": 90,
+    "per_file": "Configured table evaluated and required entries present. Line and branch combined."
+  },
+  "case_visibility": "Existing logs show checkout and aggregate results. They do not show individual case transcripts. This run rechecked pinned fixture inclusion, scope and assertions.",
+  "isolated": {
+    "matching_qualified_run": null,
+    "workflow": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/.github/workflows/audit-runtime.yml",
+    "audited_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "runner_sha": null,
+    "dispatched": 0,
+    "reason": "No credential isolation and installed-lock attestation locally. No workflow_dispatch run returned for repository. No authorized qualified new run. INV-PR32-001 remains open against runner a73149d3cf8df7c133ea436a7787c5d5a2dc88b5."
+  },
+  "utf8": {
+    "id": "BF-2026-11-14-5",
+    "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+    "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+    "merge_ancestors_rechecked": true,
+    "fixture": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/data-mining-framework/tests/test_scale_check.py#L657-L693",
+    "cases": [
+      "--data",
+      "--universe",
+      "--fundamentals"
+    ],
+    "result": "Same-SHA CI suite passed the synthetic malformed encoding fixture scope with named refusal before ledger/output creation. Cases only aggregate log evidence."
+  },
+  "windows": {
+    "ids": [
+      "REVIEW-40",
+      "REVIEW-41"
+    ],
+    "head": "448fa537cc156ff7dfb71e5b9996b690a06208e1",
+    "pr": "https://github.com/sasasqt/invest/pull/66",
+    "merge_sha": "ff626ba1c1c00c2ab4dbea31287966775dc90d2c",
+    "parents": [
+      "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "448fa537cc156ff7dfb71e5b9996b690a06208e1"
+    ],
+    "runner": "native Windows product under standard PR CI, not audit runtime",
+    "jobs": [
+      {
+        "id": 138748119619,
+        "python": "3.11.9",
+        "passed": 1269,
+        "skipped": 7,
+        "test_seconds": 278.42
+      },
+      {
+        "id": 138748119468,
+        "python": "3.13.17",
+        "passed": 1269,
+        "skipped": 7,
+        "test_seconds": 271.5
+      }
+    ],
+    "run": "https://github.com/sasasqt/invest/actions/runs/45479385159",
+    "source_tests": "https://github.com/sasasqt/invest/blob/ff626ba1c1c00c2ab4dbea31287966775dc90d2c/tests/test_pipeline.py#L518-L589",
+    "scope": "New PR66 head integrates c6 main and the Windows command includes tests/type_checks. Git for Windows Bash and native CPython synthetic replay and refusal proved only by current pinned fixture assertions plus aggregate logs. Ledger remains byte-identical after the invalid benchmark. Successful append and direct captured date bytes still unasserted. Linux main and PR36 host tests do not cover these."
+  },
+  "per_file_display": [
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "statements": 221,
+      "missed": 13,
+      "branches": 60,
+      "partial": 9,
+      "percent": 92
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "statements": 594,
+      "missed": 37,
+      "branches": 298,
+      "partial": 26,
+      "percent": 93
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "statements": 117,
+      "missed": 4,
+      "branches": 34,
+      "partial": 4,
+      "percent": 95
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "statements": 111,
+      "missed": 4,
+      "branches": 42,
+      "partial": 4,
+      "percent": 95
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/expressions.py",
+      "statements": 469,
+      "missed": 15,
+      "branches": 208,
+      "partial": 5,
+      "percent": 96
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/search.py",
+      "statements": 160,
+      "missed": 4,
+      "branches": 54,
+      "partial": 4,
+      "percent": 96
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "statements": 112,
+      "missed": 2,
+      "branches": 38,
+      "partial": 2,
+      "percent": 97
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "statements": 142,
+      "missed": 3,
+      "branches": 42,
+      "partial": 3,
+      "percent": 97
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "statements": 356,
+      "missed": 10,
+      "branches": 136,
+      "partial": 6,
+      "percent": 97
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/cli.py",
+      "statements": 449,
+      "missed": 9,
+      "branches": 128,
+      "partial": 3,
+      "percent": 98
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "statements": 151,
+      "missed": 2,
+      "branches": 48,
+      "partial": 2,
+      "percent": 98
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "statements": 195,
+      "missed": 3,
+      "branches": 48,
+      "partial": 3,
+      "percent": 98
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "statements": 186,
+      "missed": 1,
+      "branches": 68,
+      "partial": 4,
+      "percent": 98
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/ledger.py",
+      "statements": 152,
+      "missed": 1,
+      "branches": 62,
+      "partial": 1,
+      "percent": 99
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "statements": 188,
+      "missed": 1,
+      "branches": 54,
+      "partial": 1,
+      "percent": 99
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "statements": 187,
+      "missed": 2,
+      "branches": 48,
+      "partial": 1,
+      "percent": 99
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/__init__.py",
+      "statements": 1,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/_typing.py",
+      "statements": 3,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/artifact.py",
+      "statements": 50,
+      "missed": 0,
+      "branches": 8,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/diagnostics.py",
+      "statements": 177,
+      "missed": 0,
+      "branches": 30,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/inference.py",
+      "statements": 20,
+      "missed": 0,
+      "branches": 2,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-mining-framework/src/invest_mining/reporting.py",
+      "statements": 66,
+      "missed": 0,
+      "branches": 6,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/__init__.py",
+      "statements": 1,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/_typing.py",
+      "statements": 3,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "statements": 40,
+      "missed": 0,
+      "branches": 22,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "statements": 249,
+      "missed": 0,
+      "branches": 100,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "statements": 135,
+      "missed": 0,
+      "branches": 40,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "statements": 23,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+      "statements": 1,
+      "missed": 0,
+      "branches": 0,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "statements": 27,
+      "missed": 0,
+      "branches": 12,
+      "partial": 0,
+      "percent": 100
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "statements": 80,
+      "missed": 0,
+      "branches": 26,
+      "partial": 0,
+      "percent": 100
+    }
+  ]
+}

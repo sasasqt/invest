@@ -88,3 +88,8 @@ GA-2026-11-19-1 (low) is a new independently verified textual mismatch: README18
 ### 2026-11-21 performance
 
 No new defect confirmed in the bounded static acceptance review at `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`. GA-2026-11-14-1 remains low/P3 and open: current source still trusts decoded gzip bytes without a member-presence check. Historical standalone controls remain historical; no untouched runner execution today. Two reviewers agree. OPEN-EXPECTED-ARTIFACT-GATE-001 remains a validation prerequisite, while a new W5/schema-correctness defect interpretation was dropped against the explicit repeatability contract. [Evidence](2026-11-21-performance/evidence.json) · [Control specification](2026-11-21-performance/expected-artifacts.json).
+
+## 25 November 2026 · Evaluation status
+
+- **GA-2026-10-31-2 / BH-2026-10-21-2 / REVIEW-24.** Merged #58 verified on current main for direct settlement benchmark fixtures. Coupled qualified CLI acceptance through information ratio, the optional verdict check and saved report remains pending. [Evidence](2026-11-25-evaluation/evidence.json)
+- **INV-PR58-O1.** Previously acknowledged low README settlement exception remains omitted after both prerequisites merged. The detailed metrics contract is current. [Evidence](2026-11-25-evaluation/reviewer2.md)

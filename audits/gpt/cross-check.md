@@ -142,3 +142,7 @@ Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` shares today’s audited ma
 ## 2026-11-24 · Mining
 
 Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` and its November 22 source `eb64ad8` match this audit. The accessible peer findings and handoffs yielded no matching HAC-gap item. Independent Reviewer 2 corroborated the new synthetic scope. Exact peer reading ranges are unavailable. RA-2026-11-01-2 and GA-2026-10-31-1 retain previously established agreement on the unary mask behavior, with a proposed fix in #73. RA-2026-11-22-1 parser coverage remains queued and cannot be checked within this HAC slice. Neither lead was rerun today.
+
+## 2026-11-25 · Evaluation
+
+The accessible peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` audited `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`. The former settlement finding remains historically corroborated. Current main contains #58 with direct current CI and this audit's independent source and arithmetic controls. The dated main open-bugs mirror predates the fix. The proposed #57 mirror lists BH-2026-10-21-2 under fixed, consistent with the checked source. RA-2026-11-22-1 evaluation fixture lead remains queued outside this bounded check. Peer coverage union is unavailable without comparable same-blob ranges.

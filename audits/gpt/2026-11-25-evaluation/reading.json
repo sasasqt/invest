@@ -1,0 +1,619 @@
+{
+  "date": "2026-11-25",
+  "field": "evaluation",
+  "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+  "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "planned_percent": {
+    "exploitation": 70,
+    "exploration": 30
+  },
+  "actual_discretionary_unique_lines": {
+    "exploitation": 143,
+    "exploration": 61,
+    "mandatory_callers_contracts": 735
+  },
+  "actual_percent": {
+    "exploitation": 70.09803921568627,
+    "exploration": 29.901960784313726
+  },
+  "new_verified_distinct_roots": {
+    "exploitation": 0,
+    "exploration": 0
+  },
+  "pooled_eligible_visits": 4,
+  "pooled_lines": {
+    "exploitation": 1118,
+    "exploration": 765
+  },
+  "pooled_rates_per_1000_lines": {
+    "exploitation": 0.8944543828264758,
+    "exploration": 0
+  },
+  "next_percent": {
+    "exploitation": 70,
+    "exploration": 30
+  },
+  "selection": {
+    "seed_sha256": "059da136dbf487af96e836ebb9e751b446402f1865b6089b797505d77749ae92",
+    "eligible": [
+      "strategy-evaluation/src/invest_evaluation/reporting.py:275-325",
+      "strategy-evaluation/tests/test_benchmark_delistings.py:1-42",
+      "strategy-evaluation/tests/test_validation.py:1-50"
+    ],
+    "draw": "strategy-evaluation/tests/test_validation.py:1-50",
+    "algorithm": "Python random.Random(int(SHA256(date),16)).choice(sorted(eligible))",
+    "oldest_feasible": "strategy-evaluation/README.md:72-82 settlement contract. Runtime item has two prior deferrals.",
+    "lens": "Event amount, optional benchmark gate and saved-report propagation",
+    "peer_range_status": "Unknown"
+  },
+  "ranges": [
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          156,
+          186
+        ]
+      ],
+      "lines": 31,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          119,
+          155
+        ],
+        [
+          533,
+          558
+        ],
+        [
+          694,
+          707
+        ]
+      ],
+      "lines": 77,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          287,
+          342
+        ]
+      ],
+      "lines": 56,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          454,
+          496
+        ]
+      ],
+      "lines": 43,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+      "bucket": "exploitation",
+      "ranges": [
+        [
+          85,
+          140
+        ]
+      ],
+      "lines": 56,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          1,
+          84
+        ],
+        [
+          141,
+          226
+        ]
+      ],
+      "lines": 170,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+    },
+    {
+      "path": "strategy-evaluation/README.md",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          72,
+          82
+        ]
+      ],
+      "lines": 11,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+    },
+    {
+      "path": "strategy-evaluation/README.md",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          23,
+          30
+        ]
+      ],
+      "lines": 8,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "bucket": "exploration",
+      "ranges": [
+        [
+          1,
+          50
+        ]
+      ],
+      "lines": 50,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          50,
+          75
+        ],
+        [
+          185,
+          217
+        ]
+      ],
+      "lines": 59,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          240,
+          305
+        ]
+      ],
+      "lines": 66,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          28,
+          62
+        ],
+        [
+          250,
+          337
+        ]
+      ],
+      "lines": 123,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+    },
+    {
+      "path": "strategy-evaluation/METRICS.md",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          119,
+          130
+        ]
+      ],
+      "lines": 12,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096"
+    },
+    {
+      "path": "data-mining-framework/tests/test_scale_check.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          657,
+          693
+        ]
+      ],
+      "lines": 37,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          20,
+          30
+        ]
+      ],
+      "lines": 11,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+    },
+    {
+      "path": "pyproject.toml",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          37,
+          105
+        ]
+      ],
+      "lines": 69,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e"
+    },
+    {
+      "path": "scripts/check_coverage_floors.py",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          111,
+          141
+        ],
+        [
+          150,
+          174
+        ]
+      ],
+      "lines": 56,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "b469ae3184219c852847ac87fe470a8a02900376"
+    },
+    {
+      "path": "TODO.md",
+      "bucket": "mandatory",
+      "ranges": [
+        [
+          54,
+          54
+        ],
+        [
+          63,
+          63
+        ],
+        [
+          70,
+          71
+        ]
+      ],
+      "lines": 4,
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90"
+    }
+  ],
+  "helper_ranges": [
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+      "ranges": [
+        [
+          54,
+          79
+        ],
+        [
+          120,
+          186
+        ],
+        [
+          235,
+          274
+        ],
+        [
+          314,
+          323
+        ],
+        [
+          392,
+          433
+        ],
+        [
+          521,
+          558
+        ],
+        [
+          679,
+          707
+        ],
+        [
+          720,
+          737
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+    },
+    {
+      "path": "strategy-evaluation/METRICS.md",
+      "ranges": [
+        [
+          121,
+          138
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096"
+    },
+    {
+      "path": "strategy-evaluation/README.md",
+      "ranges": [
+        [
+          24,
+          28
+        ],
+        [
+          71,
+          83
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+      "ranges": [
+        [
+          1,
+          226
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "ranges": [
+        [
+          284,
+          352
+        ],
+        [
+          731,
+          779
+        ],
+        [
+          855,
+          876
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "cca968d4819dc078f1775a15d4b24360c4710827"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_validation.py",
+      "ranges": [
+        [
+          17,
+          51
+        ],
+        [
+          430,
+          443
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820"
+    },
+    {
+      "path": "strategy-evaluation/tests/test_metrics.py",
+      "ranges": [
+        [
+          18,
+          51
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "ranges": [
+        [
+          287,
+          342
+        ],
+        [
+          454,
+          496
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/config.py",
+      "ranges": [
+        [
+          121,
+          168
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "9e4ad8f597c09dca898f70c1a14c14759aef33dc"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+      "ranges": [
+        [
+          23,
+          27
+        ],
+        [
+          93,
+          107
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "29b78494e27dc41cf967332c49084f0e37772aa4"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+      "ranges": [
+        [
+          38,
+          75
+        ],
+        [
+          108,
+          225
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+      "ranges": [
+        [
+          68,
+          77
+        ],
+        [
+          121,
+          149
+        ],
+        [
+          217,
+          305
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+    },
+    {
+      "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "ranges": [
+        [
+          22,
+          62
+        ],
+        [
+          82,
+          117
+        ],
+        [
+          174,
+          179
+        ],
+        [
+          232,
+          256
+        ],
+        [
+          286,
+          319
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+    },
+    {
+      "path": "docs/REPORTING.md",
+      "ranges": [
+        [
+          1,
+          37
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "648df723460b75355cfa274d9fc99f302f0faabd"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "ranges": [
+        [
+          1,
+          79
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+    },
+    {
+      "path": "pyproject.toml",
+      "ranges": [
+        [
+          56,
+          65
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e"
+    },
+    {
+      "path": "TODO.md",
+      "ranges": [
+        [
+          54,
+          54
+        ],
+        [
+          63,
+          63
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90"
+    },
+    {
+      "path": "docs/audits/open-bugs.md",
+      "ranges": [
+        [
+          1,
+          5
+        ],
+        [
+          22,
+          22
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "0c8a824c0bdd03bd8bcf15534fc51c98c20ed5f8"
+    },
+    {
+      "path": "docs/audits/claude/gpt.md",
+      "ranges": [
+        [
+          8,
+          8
+        ]
+      ],
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "blob": "b547b64fa82ae39ed6142f267121b5f8f8fab6e5"
+    }
+  ],
+  "helper_overlap_lines": 716,
+  "helper_unique_lines_separate": 1483,
+  "new_cumulative_semantic_lines": 1414
+}

@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-25",
+  "field": "evaluation",
+  "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "legacy_reference": {
+    "original": "606eae209af0d426aaf83280585e1afaca3b4084",
+    "resolved": "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f"
+  },
+  "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
+  "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+  "actual_runner_sha": null,
+  "question": {
+    "question": "Does the merged #58 settlement return reach evaluation's reported universe comparator and optional information-ratio check at current main, with the portfolio path held fixed?",
+    "expected": "For three equal-weight eligible names, A settled at zero after a last mark of ten contributes -1 on the event date, not zero or exclusion. Trace exact current source to aligned active returns, serialized results and configured benchmark check.",
+    "stop": "Pinned source, current CI regressions and independent fixed-portfolio arithmetic and review; leave end-to-end qualified runtime and full verdict calibration pending.",
+    "controls": "Synthetic two-peer plus settled constituent, prior member versus never-member, held portfolio fixed, no event control, information-ratio sign and zero tracking error."
+  },
+  "prior_report": "2026-11-18.md",
+  "prior_source_main": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+  "pr58": {
+    "head": "4334be535f70b4278e010598678919caafc0201b",
+    "target_before_merge": "5814601cb85148b4d1919a1feaa8289fbbe423fd",
+    "merged_sha": "5fca7eb3d19be42d91930faafcd39d2e5c6e8bac",
+    "merged_at": "2026-11-18T05:35:43Z",
+    "ancestor_verified": true,
+    "engine_identical_between_merge_and_pin": true,
+    "author_reply": "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
+  },
+  "ci": "2026-11-25-evaluation/ci-observations.json",
+  "confirmation": {
+    "id": "GA-2026-10-31-2",
+    "aliases": [
+      "BH-2026-10-21-2",
+      "REVIEW-24"
+    ],
+    "disposition": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending."
+  },
+  "main_control": {
+    "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "old_close_only": {
+      "count": 60,
+      "event": "1/750",
+      "mean_active_exact": "-89/90000",
+      "variance": 2.729441305712492e-7,
+      "ir": -30.0476760080819,
+      "positive_check": false
+    },
+    "merged_last_close_settlement": {
+      "count": 60,
+      "event": "-83/250",
+      "mean_active_exact": "137/30000",
+      "variance": 0.0018651819209039545,
+      "ir": 1.6785681727606194,
+      "positive_check": true
+    },
+    "no_settlement_control": {
+      "count": 60,
+      "event": "1/750",
+      "mean_active_exact": "-89/90000",
+      "variance": 2.729441305712492e-7,
+      "ir": -30.0476760080819,
+      "positive_check": false
+    },
+    "nonmember_at_last_close_control": "1/500",
+    "loss_if_held_at_one_third": "-1/3 before other names' returns",
+    "scope": "Trusted synthetic arithmetic. Portfolio returns held fixed. Old event bar unchanged from the prior close; two peers each return 0.002. A missing after the event. Event date only changes in paired benchmark. Prior-member versus nonmember denominator differs; no full verdict executed."
+  },
+  "candidate_records": [
+    {
+      "id": "GA-2026-10-31-2",
+      "kind": "carried implementation defect",
+      "main_initial": "Keep merged fix in direct regression scope and pending for current coupled CLI",
+      "independent": "Same disposition. 23 aligned fixture returns with no tracking error imply undefined optional IR, while omission gives IR -3.31006",
+      "expected": "Apply event value relative to prior mark when member at that mark and retire future returns",
+      "actual": "Pinned implementation and test expectations agree. Direct exact-main CI passes at aggregate scope",
+      "control": "Trusted fixed-portfolio arithmetic 60 and 23 observation cases, with and without benchmark event; no product executed. Neither proves the overall verdict can flip.",
+      "severity": "historical medium",
+      "confidence": "High for source contract and direct regression. Downstream execution and real-market effect are unverified",
+      "sources": [
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/src/invest_evaluation/engine.py#L156-L186",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/tests/test_benchmark_delistings.py#L220-L226",
+        "https://github.com/sasasqt/invest/actions/runs/45452913021"
+      ]
+    },
+    {
+      "id": "INV-PR58-O1",
+      "kind": "carried documentation",
+      "main_initial": "Keep existing low omitted exception",
+      "independent": "Agrees. #53 and #56 merged; the current README still omits the last-close settlement rule",
+      "severity": "low",
+      "confidence": "High source evidence",
+      "disposition": "Open under its original ID. Do not classify current text as a proven code contradiction",
+      "sources": [
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/README.md#L24-L28",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/METRICS.md#L121-L129",
+        "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
+      ]
+    },
+    {
+      "id": "GA-2026-10-31-2-downstream-overclaim",
+      "kind": "proposed drop",
+      "main_initial": "Drop complete verdict and real-world claims",
+      "independent": "Agrees. Comparator sensitivity captures one rule. All other verdict checks require actual fixture assessment",
+      "would_change": "Qualified untouched coupled result with remaining gates measured on both variants",
+      "disposition": "Dropped overclaim, preserve observed and pending scope"
+    }
+  ],
+  "related_pending": [
+    "REVIEW-33 remains historical and separate, including open-ending settlement context",
+    "OPEN-SETTLEMENT-PRICE-BASIS-001 stays unverified for nonzero cash and total-return adjusted marks",
+    "RA-2026-11-22-1 leg-size/split decision branch remains a separate queue"
+  ],
+  "next_item": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+  "reviewer2": "One fresh independent reviewer completed first pass and reconciliation. No substantive disagreement. Model/effort inherited without independent service metadata.",
+  "model": "gpt-6.2-sol",
+  "effort": "unavailable",
+  "usage": "unavailable",
+  "budget_minutes": [
+    20,
+    70,
+    30
+  ],
+  "prepared_utc": "2026-11-25T02:15:07Z",
+  "elapsed_seconds_to_preparation": 842,
+  "new_local_product_runs": 0,
+  "new_remote_dispatches": 0,
+  "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+  "peer_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+  "peer_status": "Historical peer snapshot with older audited source. No current independent peer replication and no comparable exact ranges."
+}

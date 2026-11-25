@@ -1,0 +1,187 @@
+{
+  ".github/workflows/ci.yml": {
+    "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d",
+    "lines": 79,
+    "bytes": 3379
+  },
+  "CI_CD_GUIDELINES.md": {
+    "blob": "306a149dff89e4018a6a4e5ac379d8944988fae6",
+    "lines": 83,
+    "bytes": 10218
+  },
+  "PYTHON_GUIDELINES.md": {
+    "blob": "133da1e1db1b81cdec3cb57377740d957bc4d7b1",
+    "lines": 152,
+    "bytes": 21008
+  },
+  "README.md": {
+    "blob": "ea81a9361789ae760859efda5a30c2c0fd61743d",
+    "lines": 200,
+    "bytes": 38559
+  },
+  "TODO.md": {
+    "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90",
+    "lines": 139,
+    "bytes": 78488
+  },
+  "data-mining-framework/src/invest_mining/_typing.py": {
+    "blob": "863e98a74fbdb2873bdc78878e21202cd8056e39",
+    "lines": 16,
+    "bytes": 661
+  },
+  "data-mining-framework/src/invest_mining/cli.py": {
+    "blob": "618af52e4d9c6e926ccc0cbbae2037a3bcb724be",
+    "lines": 1070,
+    "bytes": 44287
+  },
+  "data-mining-framework/src/invest_mining/diagnostics.py": {
+    "blob": "9cc46300ec125226ddf93ac2654389e1bcd6e66c",
+    "lines": 373,
+    "bytes": 15278
+  },
+  "data-mining-framework/src/invest_mining/expressions.py": {
+    "blob": "cc5ea3457592cd5052aa2fb7ab203e3495d9333c",
+    "lines": 831,
+    "bytes": 34423
+  },
+  "data-mining-framework/src/invest_mining/inference.py": {
+    "blob": "1d3e4137678fba58d31b79566d5cffd338f40a44",
+    "lines": 77,
+    "bytes": 2905
+  },
+  "data-mining-framework/src/invest_mining/ledger.py": {
+    "blob": "ddff3090752d10c68399cea117d977deeb532543",
+    "lines": 327,
+    "bytes": 14632
+  },
+  "data-mining-framework/src/invest_mining/reporting.py": {
+    "blob": "9322b7fb22fb3bffbab3edd3a5e44c665d55dc37",
+    "lines": 114,
+    "bytes": 4941
+  },
+  "data-mining-framework/src/invest_mining/search.py": {
+    "blob": "a29c456a3d79db924776e7c588c1696582818d81",
+    "lines": 375,
+    "bytes": 13688
+  },
+  "data-mining-framework/tests/test_scale_check.py": {
+    "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+    "lines": 902,
+    "bytes": 40951
+  },
+  "data-pipeline/data-preparation/src/invest_data/_typing.py": {
+    "blob": "863e98a74fbdb2873bdc78878e21202cd8056e39",
+    "lines": 16,
+    "bytes": 661
+  },
+  "data-pipeline/data-preparation/src/invest_data/bundle.py": {
+    "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994",
+    "lines": 954,
+    "bytes": 40707
+  },
+  "data-pipeline/data-preparation/src/invest_data/cleaning.py": {
+    "blob": "b026db3cae4af4539ff6ecbac03d1cbffee6c4d0",
+    "lines": 182,
+    "bytes": 9162
+  },
+  "data-pipeline/data-preparation/src/invest_data/cli.py": {
+    "blob": "6a0e810bd43914bbc445a11c79c87b396fedda71",
+    "lines": 296,
+    "bytes": 12071
+  },
+  "data-pipeline/data-preparation/src/invest_data/schemas.py": {
+    "blob": "a80f904a1fa37da49f61f2087f17b63fdb99c078",
+    "lines": 562,
+    "bytes": 24383
+  },
+  "data-pipeline/data-preparation/src/invest_data/yahoo.py": {
+    "blob": "a2ef989b11b83298d51f9b44fbdfe8b42f52a163",
+    "lines": 441,
+    "bytes": 17847
+  },
+  "data-pipeline/data-preparation/tests/test_bundle.py": {
+    "blob": "184c4f2ca4c848f0d614da168f77b34125208aa4",
+    "lines": 861,
+    "bytes": 36890
+  },
+  "pyproject.toml": {
+    "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e",
+    "lines": 105,
+    "bytes": 3261
+  },
+  "scripts/check_coverage_floors.py": {
+    "blob": "b469ae3184219c852847ac87fe470a8a02900376",
+    "lines": 178,
+    "bytes": 8141
+  },
+  "strategy-evaluation/METRICS.md": {
+    "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096",
+    "lines": 194,
+    "bytes": 23484
+  },
+  "strategy-evaluation/README.md": {
+    "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+    "lines": 85,
+    "bytes": 19817
+  },
+  "strategy-evaluation/src/invest_evaluation/cli.py": {
+    "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+    "lines": 379,
+    "bytes": 15412
+  },
+  "strategy-evaluation/src/invest_evaluation/config.py": {
+    "blob": "9e4ad8f597c09dca898f70c1a14c14759aef33dc",
+    "lines": 232,
+    "bytes": 10226
+  },
+  "strategy-evaluation/src/invest_evaluation/engine.py": {
+    "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+    "lines": 744,
+    "bytes": 35228
+  },
+  "strategy-evaluation/src/invest_evaluation/metrics.py": {
+    "blob": "fef2c798d20746c2ffff540fb40d3a4755835733",
+    "lines": 496,
+    "bytes": 20366
+  },
+  "strategy-evaluation/src/invest_evaluation/quantiles.py": {
+    "blob": "ae9c8f21c27525b99f41e8f48b558d1d439a3324",
+    "lines": 438,
+    "bytes": 18018
+  },
+  "strategy-evaluation/src/invest_evaluation/reporting.py": {
+    "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+    "lines": 337,
+    "bytes": 13797
+  },
+  "strategy-evaluation/src/invest_evaluation/stats.py": {
+    "blob": "29b78494e27dc41cf967332c49084f0e37772aa4",
+    "lines": 255,
+    "bytes": 9666
+  },
+  "strategy-evaluation/src/invest_evaluation/strategies.py": {
+    "blob": "d5bb30c3d156248aadf5c8055cfce743b899fdc0",
+    "lines": 216,
+    "bytes": 9641
+  },
+  "strategy-evaluation/src/invest_evaluation/validation.py": {
+    "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb",
+    "lines": 242,
+    "bytes": 8867
+  },
+  "strategy-evaluation/tests/test_benchmark_delistings.py": {
+    "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39",
+    "lines": 226,
+    "bytes": 10497
+  },
+  "strategy-evaluation/tests/test_validation.py": {
+    "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820",
+    "lines": 485,
+    "bytes": 20796
+  },
+  "tests/type_checks/check_closed_sets.py": {
+    "blob": "76f524bdd62cd4e4533b566502fd51a3134de456",
+    "lines": 40,
+    "bytes": 2022
+  }
+}

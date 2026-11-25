@@ -1,0 +1,30 @@
+{
+  "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "old_close_only": {
+    "count": 60,
+    "event": "1/750",
+    "mean_active_exact": "-89/90000",
+    "variance": 2.729441305712492e-07,
+    "ir": -30.0476760080819,
+    "positive_check": false
+  },
+  "merged_last_close_settlement": {
+    "count": 60,
+    "event": "-83/250",
+    "mean_active_exact": "137/30000",
+    "variance": 0.0018651819209039545,
+    "ir": 1.6785681727606194,
+    "positive_check": true
+  },
+  "no_settlement_control": {
+    "count": 60,
+    "event": "1/750",
+    "mean_active_exact": "-89/90000",
+    "variance": 2.729441305712492e-07,
+    "ir": -30.0476760080819,
+    "positive_check": false
+  },
+  "nonmember_at_last_close_control": "1/500",
+  "loss_if_held_at_one_third": "-1/3 before other names' returns",
+  "scope": "Trusted synthetic arithmetic. Portfolio returns held fixed. Old event bar unchanged from the prior close; two peers each return 0.002. A missing after the event. Event date only changes in paired benchmark. Prior-member versus nonmember denominator differs; no full verdict executed."
+}

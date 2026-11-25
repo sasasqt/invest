@@ -112,7 +112,7 @@
       "category": "financial benchmark",
       "severity": "medium",
       "priority": "P2",
-      "status": "fix merged; owning-field acceptance pending",
+      "status": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending.",
       "confidence": "high static contract/dataflow evidence with independent review; same-SHA peer runtime corroboration; local untouched runtime not executed",
       "evidence_label": "confirmed_static_contract_mismatch",
       "title": "Universe benchmark omits explicit cash settlements",
@@ -147,7 +147,8 @@
         "2026-11-11-evaluation/reviewer-comparison.json",
         "2026-11-11-evaluation/oracle-results.json",
         "https://github.com/sasasqt/invest/blob/f73a1d1136502f6faee9134a65301aa5a090c817/audits/claude/cross-check.md",
-        "2026-11-18-evaluation/evidence.json"
+        "2026-11-18-evaluation/evidence.json",
+        "2026-11-25-evaluation/evidence.json"
       ],
       "correction_boundary": "Benchmark construction, documentation, saved metrics and verdict regression tests. Do not change external benchmark semantics unless separately justified.",
       "acceptance": "On untouched supported runtime, run the settlement/event case and no-event/equal-close controls twice, cover membership ending on the settlement date, zero settlements and shorts, and a >=20-session relative-metric fixture. The saved benchmark and verdict must follow the declared policy.",
@@ -197,6 +198,14 @@
           "status": "fix merged; owning-field acceptance pending",
           "pr": 58,
           "evidence": "2026-11-19-integration/evidence.json"
+        },
+        {
+          "date": "2026-11-25",
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+          "status": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending.",
+          "advance": "Merged #58 verified for direct settlement-return fixtures at exact current main CI, independently traced to optional IR and persisted artifacts. Coupled qualified CLI acceptance pending.",
+          "evidence": "2026-11-25-evaluation/evidence.json"
         }
       ],
       "first_seen_unpublished": "2026-10-28",
@@ -217,7 +226,7 @@
           "why": "Fresh semantic trace and exact pinned peer evidence; PR CI on separately identified integration commit"
         }
       ],
-      "runtime_label": "same-SHA peer reproduction corroborated; local product execution unavailable",
+      "runtime_label": "Current standard CI for direct regression only. Qualified end-to-end acceptance remains pending.",
       "acceptance_history": [
         {
           "date": "2026-11-18",
@@ -225,9 +234,19 @@
           "verdict_minimum_configurable": 60,
           "verdict_default_minimum": 252,
           "remaining": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead."
+        },
+        {
+          "date": "2026-11-25",
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+          "status": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending.",
+          "advance": "Merged #58 verified for direct settlement-return fixtures at exact current main CI, independently traced to optional IR and persisted artifacts. Coupled qualified CLI acceptance pending.",
+          "evidence": "2026-11-25-evaluation/evidence.json",
+          "standard_ci": "https://github.com/sasasqt/invest/actions/runs/45452913021",
+          "execution": "Exact-main aggregate CI with direct fixture. Trusted arithmetic and static artifact chain. No fresh product runtime."
         }
       ],
-      "current_source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2"
+      "current_source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6"
     },
     {
       "id": "GA-2026-11-02-1",
@@ -1045,6 +1064,17 @@
       ],
       "new_verified_defects": [],
       "evidence": "2026-11-24-mining/evidence.json"
+    },
+    {
+      "date": "2026-11-25",
+      "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+      "field": "evaluation",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "findings": [
+        "GA-2026-10-31-2"
+      ],
+      "new_verified_defects": [],
+      "evidence": "2026-11-25-evaluation/evidence.json"
     }
   ],
   "carried_cross_checks": [
@@ -1080,22 +1110,19 @@
     }
   ],
   "current_visit": {
-    "date": "2026-11-24",
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "date": "2026-11-25",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "new_verified_defects": [],
-    "new_material_observations": [
-      "GA-2026-11-24-1"
-    ],
-    "new_unverified_concerns": [
-      "Masked finite-sample calibration and prevalence"
-    ],
+    "new_unverified_concerns": [],
     "optional_improvements": [],
     "known_revisited": [
-      "REVIEW-57",
+      "GA-2026-10-31-2",
+      "INV-PR58-O1",
+      "REVIEW-33",
       "BF-2026-11-14-5",
       "REVIEW-40",
       "REVIEW-41"
     ],
-    "evidence": "2026-11-24-mining/evidence.json"
+    "evidence": "2026-11-25-evaluation/evidence.json"
   }
 }

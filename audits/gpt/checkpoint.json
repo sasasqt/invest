@@ -45,21 +45,21 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "Bounded mining source review and independent synthetic checks complete. Product calibration remains pending. Audit incomplete.",
-  "last_audited_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-  "last_audited_date": "2026-11-24",
-  "last_run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+  "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
+  "last_audited_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "last_audited_date": "2026-11-25",
+  "last_run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
   "coverage_counts": {
-    "tracked_files": 156,
-    "inventoried": 60,
-    "partially_reviewed": 41,
-    "reviewed": 29,
+    "tracked_files": 159,
+    "inventoried": 72,
+    "reviewed": 27,
+    "partially_reviewed": 34,
     "checked_automatically": 5,
     "blocked": 21,
-    "unread_lines": 38744,
-    "unread_paths": 119,
+    "unread_lines": 40295,
+    "unread_paths": 124,
     "no_applicable_or_unknown_line_count": 5,
-    "new_unique_semantic_lines": 503
+    "new_unique_semantic_lines": 1414
   },
   "last_four_completed_runs": [
     {
@@ -533,13 +533,14 @@
       "risk": "Settlement-aware portfolio and close-only universe comparator can produce wrong relative metrics and optional verdict gate.",
       "originating_item": "GA-2026-10-31-2",
       "originating_reviewer": "Reviewer 1 + fresh Reviewer 2",
-      "status": "confirmed and current on main; proposed fix corroborated; independent runtime acceptance pending",
+      "status": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending.",
       "first_queued_utc": "2026-11-11T02:20:00Z",
-      "last_queued_utc": "2026-11-18T02:19:52Z",
-      "next_check": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead.",
-      "deferral_reason": "Current runtime boundary and installed origins unavailable; clean same-parent CI validates proposed benchmark fixtures only",
-      "current_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-      "proposal_sha": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90"
+      "last_queued_utc": "2026-11-25T02:15:07Z",
+      "next_check": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+      "deferral_reason": "No credential isolation and installed-lock attestation locally. No workflow_dispatch run returned for repository. No authorized qualified new run. INV-PR32-001 remains open against runner a73149d3cf8df7c133ea436a7787c5d5a2dc88b5.",
+      "current_source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "proposal_sha": "30f9db9fc165f2f9ce369986c72b34dd4a45ae90",
+      "evidence": "2026-11-25-evaluation/evidence.json"
     },
     {
       "id": "BH-2026-10-12-3",
@@ -603,10 +604,11 @@
       "originating_item": "GA-2026-10-31-2 follow-up",
       "originating_reviewer": "Reviewer 2",
       "first_queued_utc": "2026-11-18T02:19:52Z",
-      "last_queued_utc": "2026-11-18T02:19:52Z",
-      "status": "unchecked lead",
+      "last_queued_utc": "2026-11-25T02:15:07Z",
+      "status": "Retained unverified lead. Public settlement input contract located. Nonzero unit-basis case not resolved.",
       "deferral_reason": "Separate contract and upstream data-adapter question; no wrong result established",
-      "next_check": "Find the declared settlement-price basis and synthetic nonzero example where adjusted close differs from as-traded close."
+      "next_check": "Find the declared settlement-price basis and synthetic nonzero example where adjusted close differs from as-traded close.",
+      "current_source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6"
     },
     {
       "id": "OPEN-DOC-REVIEW17-STATUS-001",
@@ -1089,15 +1091,149 @@
       "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
       "status": "Bounded mining source review and independent synthetic checks complete. Product calibration remains pending. Audit incomplete.",
       "evidence": "2026-11-24-mining/evidence.json"
+    },
+    {
+      "date": "2026-11-25",
+      "field": "evaluation",
+      "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
+      "evidence": "2026-11-25-evaluation/evidence.json"
     }
   ],
   "latest_current_run_evidence": {
-    "date": "2026-11-24",
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "field": "mining",
-    "evidence": "2026-11-24-mining/evidence.json",
-    "ci": "2026-11-24-mining/ci-observations.json",
-    "bounded_scope": "Confirmed clock/provenance gap, trusted synthetic decision sensitivity. Product size remains unverified."
+    "date": "2026-11-25",
+    "field": "evaluation",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+    "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+    "legacy_reference": {
+      "original": "606eae209af0d426aaf83280585e1afaca3b4084",
+      "resolved": "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f"
+    },
+    "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
+    "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+    "actual_runner_sha": null,
+    "question": {
+      "question": "Does the merged #58 settlement return reach evaluation's reported universe comparator and optional information-ratio check at current main, with the portfolio path held fixed?",
+      "expected": "For three equal-weight eligible names, A settled at zero after a last mark of ten contributes -1 on the event date, not zero or exclusion. Trace exact current source to aligned active returns, serialized results and configured benchmark check.",
+      "stop": "Pinned source, current CI regressions and independent fixed-portfolio arithmetic and review; leave end-to-end qualified runtime and full verdict calibration pending.",
+      "controls": "Synthetic two-peer plus settled constituent, prior member versus never-member, held portfolio fixed, no event control, information-ratio sign and zero tracking error."
+    },
+    "prior_report": "2026-11-18.md",
+    "prior_source_main": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+    "pr58": {
+      "head": "4334be535f70b4278e010598678919caafc0201b",
+      "target_before_merge": "5814601cb85148b4d1919a1feaa8289fbbe423fd",
+      "merged_sha": "5fca7eb3d19be42d91930faafcd39d2e5c6e8bac",
+      "merged_at": "2026-11-18T05:35:43Z",
+      "ancestor_verified": true,
+      "engine_identical_between_merge_and_pin": true,
+      "author_reply": "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
+    },
+    "ci": "2026-11-25-evaluation/ci-observations.json",
+    "confirmation": {
+      "id": "GA-2026-10-31-2",
+      "aliases": [
+        "BH-2026-10-21-2",
+        "REVIEW-24"
+      ],
+      "disposition": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending."
+    },
+    "main_control": {
+      "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "old_close_only": {
+        "count": 60,
+        "event": "1/750",
+        "mean_active_exact": "-89/90000",
+        "variance": 2.729441305712492e-7,
+        "ir": -30.0476760080819,
+        "positive_check": false
+      },
+      "merged_last_close_settlement": {
+        "count": 60,
+        "event": "-83/250",
+        "mean_active_exact": "137/30000",
+        "variance": 0.0018651819209039545,
+        "ir": 1.6785681727606194,
+        "positive_check": true
+      },
+      "no_settlement_control": {
+        "count": 60,
+        "event": "1/750",
+        "mean_active_exact": "-89/90000",
+        "variance": 2.729441305712492e-7,
+        "ir": -30.0476760080819,
+        "positive_check": false
+      },
+      "nonmember_at_last_close_control": "1/500",
+      "loss_if_held_at_one_third": "-1/3 before other names' returns",
+      "scope": "Trusted synthetic arithmetic. Portfolio returns held fixed. Old event bar unchanged from the prior close; two peers each return 0.002. A missing after the event. Event date only changes in paired benchmark. Prior-member versus nonmember denominator differs; no full verdict executed."
+    },
+    "candidate_records": [
+      {
+        "id": "GA-2026-10-31-2",
+        "kind": "carried implementation defect",
+        "main_initial": "Keep merged fix in direct regression scope and pending for current coupled CLI",
+        "independent": "Same disposition. 23 aligned fixture returns with no tracking error imply undefined optional IR, while omission gives IR -3.31006",
+        "expected": "Apply event value relative to prior mark when member at that mark and retire future returns",
+        "actual": "Pinned implementation and test expectations agree. Direct exact-main CI passes at aggregate scope",
+        "control": "Trusted fixed-portfolio arithmetic 60 and 23 observation cases, with and without benchmark event; no product executed. Neither proves the overall verdict can flip.",
+        "severity": "historical medium",
+        "confidence": "High for source contract and direct regression. Downstream execution and real-market effect are unverified",
+        "sources": [
+          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/src/invest_evaluation/engine.py#L156-L186",
+          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/tests/test_benchmark_delistings.py#L220-L226",
+          "https://github.com/sasasqt/invest/actions/runs/45452913021"
+        ]
+      },
+      {
+        "id": "INV-PR58-O1",
+        "kind": "carried documentation",
+        "main_initial": "Keep existing low omitted exception",
+        "independent": "Agrees. #53 and #56 merged; the current README still omits the last-close settlement rule",
+        "severity": "low",
+        "confidence": "High source evidence",
+        "disposition": "Open under its original ID. Do not classify current text as a proven code contradiction",
+        "sources": [
+          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/README.md#L24-L28",
+          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/METRICS.md#L121-L129",
+          "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
+        ]
+      },
+      {
+        "id": "GA-2026-10-31-2-downstream-overclaim",
+        "kind": "proposed drop",
+        "main_initial": "Drop complete verdict and real-world claims",
+        "independent": "Agrees. Comparator sensitivity captures one rule. All other verdict checks require actual fixture assessment",
+        "would_change": "Qualified untouched coupled result with remaining gates measured on both variants",
+        "disposition": "Dropped overclaim, preserve observed and pending scope"
+      }
+    ],
+    "related_pending": [
+      "REVIEW-33 remains historical and separate, including open-ending settlement context",
+      "OPEN-SETTLEMENT-PRICE-BASIS-001 stays unverified for nonzero cash and total-return adjusted marks",
+      "RA-2026-11-22-1 leg-size/split decision branch remains a separate queue"
+    ],
+    "next_item": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+    "reviewer2": "One fresh independent reviewer completed first pass and reconciliation. No substantive disagreement. Model/effort inherited without independent service metadata.",
+    "model": "gpt-6.2-sol",
+    "effort": "unavailable",
+    "usage": "unavailable",
+    "budget_minutes": [
+      20,
+      70,
+      30
+    ],
+    "prepared_utc": "2026-11-25T02:15:07Z",
+    "elapsed_seconds_to_preparation": 842,
+    "new_local_product_runs": 0,
+    "new_remote_dispatches": 0,
+    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "peer_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "peer_status": "Historical peer snapshot with older audited source. No current independent peer replication and no comparable exact ranges."
   },
   "report_summary_counts": {
     "confirmed_new": 0,
@@ -4174,143 +4310,288 @@
       },
       "evaluation": {
         "weekday": 2,
-        "last_rotation_visit": "2026-11-18",
-        "last_substantive_advance": "2026-11-18",
+        "last_rotation_visit": "2026-11-25",
+        "last_substantive_advance": "2026-11-25",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [
           {
             "path": "strategy-evaluation/METRICS.md",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096",
             "unread_ranges": [
               [
                 1,
-                97
+                118
+              ],
+              [
+                139,
+                194
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+            ]
           },
           {
             "path": "strategy-evaluation/README.md",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
             "unread_ranges": [
               [
                 1,
-                23
+                22
               ],
               [
-                29,
+                31,
                 70
               ],
               [
                 84,
                 85
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "00fbd1d1b74dee8a59f70dec284753ddf08ffda9"
+            ]
           },
           {
             "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "eb517e1412c20b5d64bb62945936f1d4447ec669",
             "unread_ranges": [
               [
                 1,
                 3
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "eb517e1412c20b5d64bb62945936f1d4447ec669"
+            ]
           },
           {
             "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
             "unread_ranges": [
               [
                 1,
+                35
+              ],
+              [
+                64,
+                67
+              ],
+              [
+                78,
+                120
+              ],
+              [
+                154,
+                194
+              ],
+              [
+                203,
                 216
               ],
               [
                 306,
+                322
+              ],
+              [
+                363,
                 379
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+            ]
           },
           {
-            "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+            "path": "strategy-evaluation/src/invest_evaluation/config.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "9e4ad8f597c09dca898f70c1a14c14759aef33dc",
             "unread_ranges": [
               [
                 1,
+                120
+              ],
+              [
+                169,
+                232
+              ]
+            ]
+          },
+          {
+            "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+            "unread_ranges": [
+              [
+                1,
+                53
+              ],
+              [
+                80,
                 115
               ],
               [
-                150,
-                264
+                118,
+                118
               ],
               [
-                282,
-                468
+                187,
+                229
               ],
               [
-                507,
-                605
+                275,
+                313
+              ],
+              [
+                324,
+                341
+              ],
+              [
+                348,
+                391
+              ],
+              [
+                434,
+                520
+              ],
+              [
+                559,
+                577
+              ],
+              [
+                590,
+                678
+              ],
+              [
+                708,
+                719
+              ],
+              [
+                738,
+                744
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+            ]
           },
           {
             "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "fef2c798d20746c2ffff540fb40d3a4755835733",
             "unread_ranges": [
               [
-                213,
-                249
+                1,
+                286
               ],
               [
-                338,
-                448
+                343,
+                453
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+            ]
           },
           {
             "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "ae9c8f21c27525b99f41e8f48b558d1d439a3324",
             "unread_ranges": [
               [
-                151,
-                177
+                1,
+                438
+              ]
+            ]
+          },
+          {
+            "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+            "unread_ranges": [
+              [
+                1,
+                20
               ],
               [
-                349,
-                401
+                66,
+                81
+              ],
+              [
+                118,
+                173
+              ],
+              [
+                180,
+                231
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "2d90858523a4cbe716596b412aae75a94334b4a4"
+            ]
+          },
+          {
+            "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "29b78494e27dc41cf967332c49084f0e37772aa4",
+            "unread_ranges": [
+              [
+                1,
+                22
+              ],
+              [
+                28,
+                92
+              ],
+              [
+                108,
+                255
+              ]
+            ]
           },
           {
             "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "d5bb30c3d156248aadf5c8055cfce743b899fdc0",
             "unread_ranges": [
               [
                 1,
                 216
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "a9bc132bcade42ead17d5427441a9130837d7562"
+            ]
+          },
+          {
+            "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb",
+            "unread_ranges": [
+              [
+                1,
+                37
+              ],
+              [
+                76,
+                107
+              ],
+              [
+                226,
+                242
+              ]
+            ]
           },
           {
             "path": "strategy-evaluation/tests/conftest.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "1bf40269e7f48e547dfa03d512ca37999dc6fca3",
             "unread_ranges": [
               [
                 1,
                 19
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "1bf40269e7f48e547dfa03d512ca37999dc6fca3"
+            ]
+          },
+          {
+            "path": "strategy-evaluation/tests/test_coverage_evaluation.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "332bd6f387f1101540392d757426de0b6d159723",
+            "unread_ranges": [
+              [
+                1,
+                59
+              ],
+              [
+                78,
+                91
+              ]
+            ]
           },
           {
             "path": "strategy-evaluation/tests/test_engine.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0",
             "unread_ranges": [
               [
                 1,
@@ -4324,57 +4605,86 @@
                 558,
                 1274
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0"
+            ]
           },
           {
             "path": "strategy-evaluation/tests/test_metrics.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
             "unread_ranges": [
               [
                 1,
-                74
+                17
               ],
               [
-                139,
-                186
+                52,
+                213
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee"
+            ]
           },
           {
             "path": "strategy-evaluation/tests/test_quantiles.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "7bef11bf398e844820594b734208b5a2c4dd4b97",
             "unread_ranges": [
               [
                 1,
                 439
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "7bef11bf398e844820594b734208b5a2c4dd4b97"
+            ]
+          },
+          {
+            "path": "strategy-evaluation/tests/test_sparse_signals.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "5fc109ca6b6c874737aafe2a957fe5a1caf94567",
+            "unread_ranges": [
+              [
+                1,
+                266
+              ]
+            ]
           },
           {
             "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
             "unread_ranges": [
               [
                 1,
-                862
+                283
+              ],
+              [
+                353,
+                371
+              ],
+              [
+                413,
+                730
+              ],
+              [
+                780,
+                854
+              ],
+              [
+                877,
+                1173
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "be13f6430b4be33079f85cb73f7cafa4d5e70045"
+            ]
           },
           {
             "path": "strategy-evaluation/tests/test_validation.py",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820",
             "unread_ranges": [
               [
-                1,
-                484
+                52,
+                429
+              ],
+              [
+                444,
+                485
               ]
-            ],
-            "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-            "blob": "e1ecd69d3cff0278816c68d60c029ef62a757d2c"
+            ]
           }
         ],
         "queue_refs": [
@@ -4383,9 +4693,11 @@
         "deferrals": {
           "settlement-benchmark-runtime-controls": {
             "date": "2026-11-18",
-            "reason": "No qualified local runtime and no matching or dispatchable isolated workflow evidence. Exact GitHub standard CI covers the PR benchmark fixtures.",
-            "consecutive_comparable_visits": 2,
-            "next_check": "After #58 merges, use authorized qualified evidence on current main for two event and negative-control repetitions, with an information-ratio and serialized-report check. Use at least 60 sessions and otherwise passing rules for a full verdict, or 252 with default minimum. If blocked, reserve the next bounded slice for the oldest feasible evaluation lead."
+            "reason": "No credential isolation and installed-lock attestation locally. No workflow_dispatch run returned for repository. No authorized qualified new run. INV-PR32-001 remains open against runner a73149d3cf8df7c133ea436a7787c5d5a2dc88b5.",
+            "consecutive_comparable_visits": 3,
+            "next_check": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+            "still_blocked_as_of": "2026-11-25",
+            "evidence": "2026-11-25-evaluation/evidence.json"
           }
         },
         "reading_allocation": [
@@ -4966,14 +5278,838 @@
             "rule": "Three comparable evaluation visits contain a single historical first-confirmed root over 975 exploitation lines and zero over 704 exploration lines; lower exploration by 10 points to its 30% floor.",
             "new_cumulative_lines_all_reviewers": 607,
             "research": "not scheduled"
+          },
+          {
+            "date": "2026-11-25",
+            "field": "evaluation",
+            "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "planned_percent": {
+              "exploitation": 70,
+              "exploration": 30
+            },
+            "actual_discretionary_unique_lines": {
+              "exploitation": 143,
+              "exploration": 61,
+              "mandatory_callers_contracts": 735
+            },
+            "actual_percent": {
+              "exploitation": 70.09803921568627,
+              "exploration": 29.901960784313726
+            },
+            "new_verified_distinct_roots": {
+              "exploitation": 0,
+              "exploration": 0
+            },
+            "pooled_eligible_visits": 4,
+            "pooled_lines": {
+              "exploitation": 1118,
+              "exploration": 765
+            },
+            "pooled_rates_per_1000_lines": {
+              "exploitation": 0.8944543828264758,
+              "exploration": 0
+            },
+            "next_percent": {
+              "exploitation": 70,
+              "exploration": 30
+            },
+            "selection": {
+              "seed_sha256": "059da136dbf487af96e836ebb9e751b446402f1865b6089b797505d77749ae92",
+              "eligible": [
+                "strategy-evaluation/src/invest_evaluation/reporting.py:275-325",
+                "strategy-evaluation/tests/test_benchmark_delistings.py:1-42",
+                "strategy-evaluation/tests/test_validation.py:1-50"
+              ],
+              "draw": "strategy-evaluation/tests/test_validation.py:1-50",
+              "algorithm": "Python random.Random(int(SHA256(date),16)).choice(sorted(eligible))",
+              "oldest_feasible": "strategy-evaluation/README.md:72-82 settlement contract. Runtime item has two prior deferrals.",
+              "lens": "Event amount, optional benchmark gate and saved-report propagation",
+              "peer_range_status": "Unknown"
+            },
+            "ranges": [
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    156,
+                    186
+                  ]
+                ],
+                "lines": 31,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    119,
+                    155
+                  ],
+                  [
+                    533,
+                    558
+                  ],
+                  [
+                    694,
+                    707
+                  ]
+                ],
+                "lines": 77,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    287,
+                    342
+                  ]
+                ],
+                "lines": 56,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    454,
+                    496
+                  ]
+                ],
+                "lines": 43,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+                "bucket": "exploitation",
+                "ranges": [
+                  [
+                    85,
+                    140
+                  ]
+                ],
+                "lines": 56,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    1,
+                    84
+                  ],
+                  [
+                    141,
+                    226
+                  ]
+                ],
+                "lines": 170,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    72,
+                    82
+                  ]
+                ],
+                "lines": 11,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    23,
+                    30
+                  ]
+                ],
+                "lines": 8,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_validation.py",
+                "bucket": "exploration",
+                "ranges": [
+                  [
+                    1,
+                    50
+                  ]
+                ],
+                "lines": 50,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    50,
+                    75
+                  ],
+                  [
+                    185,
+                    217
+                  ]
+                ],
+                "lines": 59,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    240,
+                    305
+                  ]
+                ],
+                "lines": 66,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    28,
+                    62
+                  ],
+                  [
+                    250,
+                    337
+                  ]
+                ],
+                "lines": 123,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+              },
+              {
+                "path": "strategy-evaluation/METRICS.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    119,
+                    130
+                  ]
+                ],
+                "lines": 12,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096"
+              },
+              {
+                "path": "data-mining-framework/tests/test_scale_check.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    657,
+                    693
+                  ]
+                ],
+                "lines": 37,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+              },
+              {
+                "path": ".github/workflows/ci.yml",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    20,
+                    30
+                  ]
+                ],
+                "lines": 11,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+              },
+              {
+                "path": "pyproject.toml",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    37,
+                    105
+                  ]
+                ],
+                "lines": 69,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e"
+              },
+              {
+                "path": "scripts/check_coverage_floors.py",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    111,
+                    141
+                  ],
+                  [
+                    150,
+                    174
+                  ]
+                ],
+                "lines": 56,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "b469ae3184219c852847ac87fe470a8a02900376"
+              },
+              {
+                "path": "TODO.md",
+                "bucket": "mandatory",
+                "ranges": [
+                  [
+                    54,
+                    54
+                  ],
+                  [
+                    63,
+                    63
+                  ],
+                  [
+                    70,
+                    71
+                  ]
+                ],
+                "lines": 4,
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90"
+              }
+            ],
+            "helper_ranges": [
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "ranges": [
+                  [
+                    54,
+                    79
+                  ],
+                  [
+                    120,
+                    186
+                  ],
+                  [
+                    235,
+                    274
+                  ],
+                  [
+                    314,
+                    323
+                  ],
+                  [
+                    392,
+                    433
+                  ],
+                  [
+                    521,
+                    558
+                  ],
+                  [
+                    679,
+                    707
+                  ],
+                  [
+                    720,
+                    737
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ba2bd13960eedf5e742706dde0f90acadb6560d6"
+              },
+              {
+                "path": "strategy-evaluation/METRICS.md",
+                "ranges": [
+                  [
+                    121,
+                    138
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "5cff2a1e93c457902a6cc1ff8feb3af951e41096"
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "ranges": [
+                  [
+                    24,
+                    28
+                  ],
+                  [
+                    71,
+                    83
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_benchmark_delistings.py",
+                "ranges": [
+                  [
+                    1,
+                    226
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "54b36f56320d59db9a744c41f0766f5ff096ff39"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+                "ranges": [
+                  [
+                    284,
+                    352
+                  ],
+                  [
+                    731,
+                    779
+                  ],
+                  [
+                    855,
+                    876
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "cca968d4819dc078f1775a15d4b24360c4710827"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_validation.py",
+                "ranges": [
+                  [
+                    17,
+                    51
+                  ],
+                  [
+                    430,
+                    443
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_metrics.py",
+                "ranges": [
+                  [
+                    18,
+                    51
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "ranges": [
+                  [
+                    287,
+                    342
+                  ],
+                  [
+                    454,
+                    496
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fef2c798d20746c2ffff540fb40d3a4755835733"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/config.py",
+                "ranges": [
+                  [
+                    121,
+                    168
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "9e4ad8f597c09dca898f70c1a14c14759aef33dc"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+                "ranges": [
+                  [
+                    23,
+                    27
+                  ],
+                  [
+                    93,
+                    107
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "29b78494e27dc41cf967332c49084f0e37772aa4"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/validation.py",
+                "ranges": [
+                  [
+                    38,
+                    75
+                  ],
+                  [
+                    108,
+                    225
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "ranges": [
+                  [
+                    68,
+                    77
+                  ],
+                  [
+                    121,
+                    149
+                  ],
+                  [
+                    217,
+                    305
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+                "ranges": [
+                  [
+                    22,
+                    62
+                  ],
+                  [
+                    82,
+                    117
+                  ],
+                  [
+                    174,
+                    179
+                  ],
+                  [
+                    232,
+                    256
+                  ],
+                  [
+                    286,
+                    319
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+              },
+              {
+                "path": "docs/REPORTING.md",
+                "ranges": [
+                  [
+                    1,
+                    37
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "648df723460b75355cfa274d9fc99f302f0faabd"
+              },
+              {
+                "path": ".github/workflows/ci.yml",
+                "ranges": [
+                  [
+                    1,
+                    79
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+              },
+              {
+                "path": "pyproject.toml",
+                "ranges": [
+                  [
+                    56,
+                    65
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e"
+              },
+              {
+                "path": "TODO.md",
+                "ranges": [
+                  [
+                    54,
+                    54
+                  ],
+                  [
+                    63,
+                    63
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90"
+              },
+              {
+                "path": "docs/audits/open-bugs.md",
+                "ranges": [
+                  [
+                    1,
+                    5
+                  ],
+                  [
+                    22,
+                    22
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0c8a824c0bdd03bd8bcf15534fc51c98c20ed5f8"
+              },
+              {
+                "path": "docs/audits/claude/gpt.md",
+                "ranges": [
+                  [
+                    8,
+                    8
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "b547b64fa82ae39ed6142f267121b5f8f8fab6e5"
+              }
+            ],
+            "helper_overlap_lines": 716,
+            "new_cumulative_semantic_lines": 1414,
+            "helper_unique_lines_separate": 1483
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
-        "last_source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-        "last_report": "2026-11-11.md",
-        "last_advance": "Promoted GA-2026-10-31-2 from plausible to confirmed static contract mismatch after fresh independent review and same-SHA peer runtime corroboration; current CLI and settlement/benchmark test coverage advanced.",
-        "validation_freshness": "current static contract/dataflow scope at 9913f94; same-SHA peer runtime settlement reproduction corroborated; local untouched runtime and verdict-flip fixture unavailable",
-        "next_item": "Untouched settlement/event/control repetitions and >=20-session information-ratio verdict fixture after runner qualification; then remaining evaluation ranges."
+        "last_source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "last_report": "2026-11-25.md",
+        "last_advance": "Merged #58 verified for direct settlement-return fixtures at exact current main CI, independently traced to optional IR and persisted artifacts. Coupled qualified CLI acceptance pending.",
+        "validation_freshness": "Current standard CI and static scopes. Qualified runtime acceptance pending.",
+        "next_item": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+        "prior_unread_range_snapshots": [
+          {
+            "as_of": "2026-11-18",
+            "ranges": [
+              {
+                "path": "strategy-evaluation/METRICS.md",
+                "unread_ranges": [
+                  [
+                    1,
+                    97
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "9ebe4107077ea6f82f869cbac71dce839376dc11"
+              },
+              {
+                "path": "strategy-evaluation/README.md",
+                "unread_ranges": [
+                  [
+                    1,
+                    23
+                  ],
+                  [
+                    29,
+                    70
+                  ],
+                  [
+                    84,
+                    85
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "00fbd1d1b74dee8a59f70dec284753ddf08ffda9"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/__init__.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    3
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "eb517e1412c20b5d64bb62945936f1d4447ec669"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    216
+                  ],
+                  [
+                    306,
+                    379
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/engine.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    115
+                  ],
+                  [
+                    150,
+                    264
+                  ],
+                  [
+                    282,
+                    468
+                  ],
+                  [
+                    507,
+                    605
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "c3277e0779c67aea745ababb027f92bf7e05bfc0"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/metrics.py",
+                "unread_ranges": [
+                  [
+                    213,
+                    249
+                  ],
+                  [
+                    338,
+                    448
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "9396e5e456aad00f78dc2badcf35effb84f32e75"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/quantiles.py",
+                "unread_ranges": [
+                  [
+                    151,
+                    177
+                  ],
+                  [
+                    349,
+                    401
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "2d90858523a4cbe716596b412aae75a94334b4a4"
+              },
+              {
+                "path": "strategy-evaluation/src/invest_evaluation/strategies.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    216
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "a9bc132bcade42ead17d5427441a9130837d7562"
+              },
+              {
+                "path": "strategy-evaluation/tests/conftest.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    19
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "1bf40269e7f48e547dfa03d512ca37999dc6fca3"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_engine.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    231
+                  ],
+                  [
+                    273,
+                    522
+                  ],
+                  [
+                    558,
+                    1274
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_metrics.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    74
+                  ],
+                  [
+                    139,
+                    186
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "fb982b98dbeb5b21b7e16a62ffa5fd9e8efe06ee"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_quantiles.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    439
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "7bef11bf398e844820594b734208b5a2c4dd4b97"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    862
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "be13f6430b4be33079f85cb73f7cafa4d5e70045"
+              },
+              {
+                "path": "strategy-evaluation/tests/test_validation.py",
+                "unread_ranges": [
+                  [
+                    1,
+                    484
+                  ]
+                ],
+                "source_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
+                "blob": "e1ecd69d3cff0278816c68d60c029ef62a757d2c"
+              }
+            ]
+          }
+        ]
       },
       "integration": {
         "weekday": 3,
@@ -5937,11 +7073,11 @@
         "GA-2026-10-31-4"
       ]
     },
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 38744,
-    "unread_paths": 119,
+    "unread_lines": 40295,
+    "unread_paths": 124,
     "weekly_summaries": [
       {
         "week_id": "2026-W45",
@@ -6141,11 +7277,13 @@
         "next": "After qualified runtime, add dense and masked synthetic acceptance to REVIEW-57 and test search/confirm export. If unavailable, oldest feasible remaining mining test slice with verified file identities."
       },
       "evaluation_visit": {
-        "date": "2026-11-18",
-        "consecutive_runtime_deferrals": 2,
-        "oldest_feasible_advanced": "docs/QUANTILE_ANALYSIS.md",
-        "fields_14_days": "No among fields with recorded substantive dates; missing-run status remains unknown",
-        "next_slice": "Reserve a bounded slice for the oldest feasible item if runtime is still blocked."
+        "date": "2026-11-25",
+        "oldest_feasible_advanced": "Settlement input documentation and independent verdict tests",
+        "consecutive_runtime_deferrals": 3,
+        "fourteen_day_flags": [
+          "Engineering last substantive advance 2026-11-06, age 19 days"
+        ],
+        "next": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice."
       },
       "integration_visit": {
         "date": "2026-11-19",
@@ -6643,43 +7781,134 @@
         "completed_utc": "2026-11-24T02:13:04Z",
         "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
         "elapsed_to_verified_publication_seconds": 868
+      },
+      {
+        "date": "2026-11-25",
+        "field": "evaluation",
+        "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+        "scheduled_for": "2026-11-25T02:00:00Z",
+        "started_utc": "2026-11-25T02:01:05.437820Z",
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
+        "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+        "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
+        "model": "gpt-6.2-sol",
+        "effort": "unavailable",
+        "helper_count": 1,
+        "verifier_b_count": 0,
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+        "actual_runner_sha": null,
+        "pending_jobs": [],
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "evidence": "2026-11-25-evaluation/evidence.json",
+        "report": "2026-11-25.md",
+        "prepared_utc": "2026-11-25T02:15:07Z",
+        "elapsed_to_preparation_seconds": 842,
+        "scope_counts": {
+          "tracked_files": 159,
+          "inventoried": 72,
+          "reviewed": 27,
+          "partially_reviewed": 34,
+          "checked_automatically": 5,
+          "blocked": 21,
+          "unread_lines": 40295,
+          "unread_paths": 124,
+          "no_applicable_or_unknown_line_count": 5,
+          "new_unique_semantic_lines": 1414
+        },
+        "publication_status": "prepared",
+        "completed_steps": [
+          "Verified methods and source",
+          "Reconciled state and saved started checkpoint",
+          "Checked exact CI and carried controls",
+          "Traced benchmark and verified synthetic arithmetic",
+          "Completed independent candidate review",
+          "Prepared scoped reporting and publication"
+        ],
+        "remaining_steps": [
+          "Guarded publication and readback"
+        ]
       }
     ],
     "shared_controls": {
       "encoding": {
-        "date": "2026-11-19",
+        "date": "2026-11-25",
         "id": "BF-2026-11-14-5",
-        "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "status": "verified bounded acceptance through existing exact-main normal CI and source assertions",
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "status": "Same-SHA CI suite passed the synthetic malformed encoding fixture scope with named refusal before ledger/output creation. Cases only aggregate log evidence.",
         "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
         "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
-        "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
-        "run": 44246922942,
+        "fixture": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/data-mining-framework/tests/test_scale_check.py#L657-L693",
+        "run": 45452913021,
         "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
-        "last_reused_date": "2026-11-24",
-        "reuse_reason": "Reused exact-main aggregate standard CI and reread all three synthetic assertions. A flag-specific non-UTF-8 error precedes out/ledger creation for --data, --universe, and --fundamentals. Individual case logs and independent reruns unavailable."
+        "last_reused_date": "2026-11-25",
+        "reuse_reason": "Refreshed against new main and verified ancestry, fixture and standard CI.",
+        "history": [
+          {
+            "date": "2026-11-19",
+            "id": "BF-2026-11-14-5",
+            "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "status": "verified bounded acceptance through existing exact-main normal CI and source assertions",
+            "merge39": "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+            "merge51": "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+            "fixture": "https://github.com/sasasqt/invest/blob/eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2/data-mining-framework/tests/test_scale_check.py#L657-L693",
+            "run": 44246922942,
+            "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
+            "last_reused_date": "2026-11-24",
+            "reuse_reason": "Reused exact-main aggregate standard CI and reread all three synthetic assertions. A flag-specific non-UTF-8 error precedes out/ledger creation for --data, --universe, and --fundamentals. Individual case logs and independent reruns unavailable."
+          }
+        ]
       },
       "windows": {
-        "date": "2026-11-21",
+        "date": "2026-11-25",
         "owner_field": "engineering",
         "ids": [
           "REVIEW-40",
           "REVIEW-41"
         ],
-        "status": "REVIEW-40 ledger LF/CRLF remains open; REVIEW-41 not reproduced in demonstrated PR66 native Git Bash/Python workflow, direct date bytes/other shells pending",
-        "current_main_status": "main remains eb64; PR66 unmerged, not current-main validation",
-        "pr66_head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
-        "merge_sha": "013791c31ff147ad776a303618618091cc0bc822",
-        "main_parent": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "run": 44802209769,
-        "job": 136516962817,
-        "result": "Python3.11.9 Windows product CI1269passed7skipped; logged native Git Bash, strict mypy command; matching merge parents checked. Python3.13 job success observed, detailed log not reread.",
-        "evidence": "2026-11-21-performance/ci-observations.json",
+        "status": "Both native Windows product jobs pass the new preview. REVIEW-40 successful append and REVIEW-41 direct capture bytes remain open.",
+        "current_main_status": "Current main is first parent. The second parent's native Windows implementation is still open PR #66.",
+        "pr66_head": "448fa537cc156ff7dfb71e5b9996b690a06208e1",
+        "merge_sha": "ff626ba1c1c00c2ab4dbea31287966775dc90d2c",
+        "main_parent": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "run": 45479385159,
+        "job": 138748119619,
+        "result": "New PR66 head integrates c6 main and the Windows command includes tests/type_checks. Git for Windows Bash and native CPython synthetic replay and refusal proved only by current pinned fixture assertions plus aggregate logs. Ledger remains byte-identical after the invalid benchmark. Successful append and direct captured date bytes still unasserted. Linux main and PR36 host tests do not cover these.",
+        "evidence": "2026-11-25-evaluation/ci-observations.json",
         "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested.",
-        "pr66_state_rechecked": "2026-11-24",
+        "pr66_state_rechecked": "2026-11-25",
         "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7112622696",
-        "parents_rechecked_utc": "2026-11-24T02:08:57Z",
-        "job_log_reuse": "Reused exact PR merge CI. Synthetic replay and invalid benchmark refusal without ledger mutation evidenced. Successful append ledger LF/CRLF bytes and direct captured date bytes unasserted. Neither check closed on main. PR36 host tests are a separate scope."
+        "parents_rechecked_utc": "2026-11-25T02:15:07Z",
+        "job_log_reuse": "New exact PR66 merge jobs compared to the prior source.",
+        "history": [
+          {
+            "date": "2026-11-21",
+            "owner_field": "engineering",
+            "ids": [
+              "REVIEW-40",
+              "REVIEW-41"
+            ],
+            "status": "REVIEW-40 ledger LF/CRLF remains open; REVIEW-41 not reproduced in demonstrated PR66 native Git Bash/Python workflow, direct date bytes/other shells pending",
+            "current_main_status": "main remains eb64; PR66 unmerged, not current-main validation",
+            "pr66_head": "513470e00dc4a58a7bb65aa3e0a1809dff04149e",
+            "merge_sha": "013791c31ff147ad776a303618618091cc0bc822",
+            "main_parent": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+            "run": 44802209769,
+            "job": 136516962817,
+            "result": "Python3.11.9 Windows product CI1269passed7skipped; logged native Git Bash, strict mypy command; matching merge parents checked. Python3.13 job success observed, detailed log not reread.",
+            "evidence": "2026-11-21-performance/ci-observations.json",
+            "limits": "Workflow tests use synthetic snapshot and temporary ledger; refusal asserts bytewise no mutation. Successful append LF/CRLF and direct captured date bytes not asserted. Standard CI is not installed-lock attestation. No new policy decision requested.",
+            "pr66_state_rechecked": "2026-11-24",
+            "latest_review_ref": "https://github.com/sasasqt/invest/pull/66#issuecomment-7112622696",
+            "parents_rechecked_utc": "2026-11-24T02:08:57Z",
+            "job_log_reuse": "Reused exact PR merge CI. Synthetic replay and invalid benchmark refusal without ledger mutation evidenced. Successful append ledger LF/CRLF bytes and direct captured date bytes unasserted. Neither check closed on main. PR36 host tests are a separate scope."
+          }
+        ]
       }
     },
     "peer_leads": [
@@ -7147,62 +8376,114 @@
       "completed_utc": "2026-11-23T02:15:28Z",
       "verified_report_commit": "4ca507b95e9e2261bd6b62b4ea62fca94b6207af",
       "elapsed_to_verified_publication_seconds": 732
+    },
+    {
+      "date": "2026-11-24",
+      "field": "mining",
+      "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+      "scheduled_for": "2026-11-24T02:00:00Z",
+      "started_utc": "2026-11-24T01:58:36.294602Z",
+      "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+      "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "output_base": "d2aa84bf47a5dcf2431b3202447c427d537a19ee",
+      "started_checkpoint_commit": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
+      "status": "Bounded mining source review and independent synthetic checks complete. Product calibration remains pending. Audit incomplete.",
+      "completed_steps": [
+        "verified pinned methods and source",
+        "reconciled state and saved started checkpoint",
+        "checked exact CI and carried controls",
+        "traced mining lag and consumers and repeated a trusted synthetic control",
+        "completed independent review and reconciled candidates",
+        "prepared report and state for guarded publication",
+        "Guarded report publication and verified remote readback"
+      ],
+      "remaining_steps": [],
+      "pending_jobs": [],
+      "model": "gpt-6.2-sol",
+      "effort": "unavailable",
+      "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+      "actual_runner_sha": null,
+      "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "helper_count": 1,
+      "verifier_b_count": 0,
+      "evidence": "2026-11-24-mining/evidence.json",
+      "report": "2026-11-24.md",
+      "publication_status": "published_verified",
+      "prepared_utc": "2026-11-24T02:08:57Z",
+      "elapsed_to_preparation_seconds": 621,
+      "scope_counts": {
+        "tracked_files": 156,
+        "inventoried": 60,
+        "partially_reviewed": 41,
+        "reviewed": 29,
+        "checked_automatically": 5,
+        "blocked": 21,
+        "unread_lines": 38744,
+        "unread_paths": 119,
+        "no_applicable_or_unknown_line_count": 5,
+        "new_unique_semantic_lines": 503
+      },
+      "completed_utc": "2026-11-24T02:13:04Z",
+      "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
+      "elapsed_to_verified_publication_seconds": 868
     }
   ],
   "current_run": {
-    "date": "2026-11-24",
-    "field": "mining",
-    "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
-    "scheduled_for": "2026-11-24T02:00:00Z",
-    "started_utc": "2026-11-24T01:58:36.294602Z",
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "source_tree": "81c4aba7f8dfcf229c2b8900365e4f3b7551a63c",
+    "date": "2026-11-25",
+    "field": "evaluation",
+    "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+    "scheduled_for": "2026-11-25T02:00:00Z",
+    "started_utc": "2026-11-25T02:01:05.437820Z",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
     "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
     "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-    "output_base": "d2aa84bf47a5dcf2431b3202447c427d537a19ee",
-    "started_checkpoint_commit": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
-    "status": "Bounded mining source review and independent synthetic checks complete. Product calibration remains pending. Audit incomplete.",
-    "completed_steps": [
-      "verified pinned methods and source",
-      "reconciled state and saved started checkpoint",
-      "checked exact CI and carried controls",
-      "traced mining lag and consumers and repeated a trusted synthetic control",
-      "completed independent review and reconciled candidates",
-      "prepared report and state for guarded publication",
-      "Guarded report publication and verified remote readback"
-    ],
-    "remaining_steps": [],
-    "pending_jobs": [],
+    "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
+    "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+    "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
     "model": "gpt-6.2-sol",
     "effort": "unavailable",
-    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
-    "actual_runner_sha": null,
-    "prospective_runner_ref": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "new_product_runs": 0,
-    "remote_compute_dispatched": 0,
     "helper_count": 1,
     "verifier_b_count": 0,
-    "evidence": "2026-11-24-mining/evidence.json",
-    "report": "2026-11-24.md",
-    "publication_status": "published_verified",
-    "prepared_utc": "2026-11-24T02:08:57Z",
-    "elapsed_to_preparation_seconds": 621,
+    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "actual_runner_sha": null,
+    "pending_jobs": [],
+    "new_product_runs": 0,
+    "remote_compute_dispatched": 0,
+    "evidence": "2026-11-25-evaluation/evidence.json",
+    "report": "2026-11-25.md",
+    "prepared_utc": "2026-11-25T02:15:07Z",
+    "elapsed_to_preparation_seconds": 842,
     "scope_counts": {
-      "tracked_files": 156,
-      "inventoried": 60,
-      "partially_reviewed": 41,
-      "reviewed": 29,
+      "tracked_files": 159,
+      "inventoried": 72,
+      "reviewed": 27,
+      "partially_reviewed": 34,
       "checked_automatically": 5,
       "blocked": 21,
-      "unread_lines": 38744,
-      "unread_paths": 119,
+      "unread_lines": 40295,
+      "unread_paths": 124,
       "no_applicable_or_unknown_line_count": 5,
-      "new_unique_semantic_lines": 503
+      "new_unique_semantic_lines": 1414
     },
-    "completed_utc": "2026-11-24T02:13:04Z",
-    "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
-    "elapsed_to_verified_publication_seconds": 868
+    "publication_status": "prepared",
+    "completed_steps": [
+      "Verified methods and source",
+      "Reconciled state and saved started checkpoint",
+      "Checked exact CI and carried controls",
+      "Traced benchmark and verified synthetic arithmetic",
+      "Completed independent candidate review",
+      "Prepared scoped reporting and publication"
+    ],
+    "remaining_steps": [
+      "Guarded publication and readback"
+    ]
   },
   "publication_history": [
     {
@@ -8089,74 +9370,14 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-24",
-    "run_id": "1e66132c-ddbc-832b-9608-42d3db544706",
+    "date": "2026-11-25",
+    "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "branch": "gpt/repo-audits",
-    "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
-    "report_tree": "354fac0fc348ee928b035a866a586a17dc4c47c7",
-    "output_parent": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
-    "verified_utc": "2026-11-24T02:13:04Z",
-    "report_url": "https://github.com/sasasqt/invest/blob/17647ac8a349a298bd54824961b3e33b7abd7ed4/audits/gpt/2026-11-24.md",
-    "status": "published_verified",
-    "expected_old_sha": "a6e8f5502d2c1ee717ee18e759af63477a140b78",
-    "force": false,
-    "verified_paths": [
-      "audits/gpt/2026-11-24-mining/ci-observations.json",
-      "audits/gpt/2026-11-24-mining/evidence.json",
-      "audits/gpt/2026-11-24-mining/hac-oracle.json",
-      "audits/gpt/2026-11-24-mining/hac_check.py",
-      "audits/gpt/2026-11-24-mining/hac_confirm_control.py",
-      "audits/gpt/2026-11-24-mining/method-verification.json",
-      "audits/gpt/2026-11-24-mining/reading.json",
-      "audits/gpt/2026-11-24-mining/reviewer1-initial.json",
-      "audits/gpt/2026-11-24-mining/reviewer2.md",
-      "audits/gpt/2026-11-24-mining/source-verification.json",
-      "audits/gpt/2026-11-24.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv"
-    ],
-    "read_back": [
-      "2026-11-24.md",
-      "state.json",
-      "checkpoint.json",
-      "2026-11-24-mining/evidence.json",
-      "2026-11-24-mining/reviewer2.md",
-      "2026-11-24-mining/hac-oracle.json",
-      "2026-11-24-mining/started.json"
-    ],
-    "verified_blob_ids": {
-      "state.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
-      "checkpoint.json": "cd0b99bd28546b8a86995501327335e7dc386bb9",
-      "coverage-map.json": "2fbbca5f56286cac5c79799742d5381efbbf3466",
-      "coverage-map.md": "dd0076738cc8f3a6ee0f5dcc1da13b4957991e1d",
-      "coverage.csv": "17c254b3f8085909fc75d658174c9b92ebd24d3c",
-      "findings.json": "c590f949359e8a319dc2169a69b06a4e15198cb3",
-      "exploration.json": "786632ba0f80710ebc4d30211e509e8993c7fc98",
-      "cross-check.md": "7256e44aec99d9ab5400b15824f1e1321b04cfc0",
-      "validation.csv": "0c907ad3083cbf85469e50028bd3575ce4d46769",
-      "2026-11-24-mining/evidence.json": "614e8412cd0053e1e44a87198d0834cfa8aaed26",
-      "2026-11-24-mining/reading.json": "0af21e38c1e34fae132a79940bd0fe39852e7a62",
-      "2026-11-24-mining/ci-observations.json": "b2cc0c05875779973735185da7df5acd4bacd565",
-      "2026-11-24-mining/reviewer2.md": "e334e723574ec36492cd86f709b3152286ef1d0a",
-      "2026-11-24.md": "7bc696a46207f8c2181899194c7450b86f8425d1",
-      "2026-11-24-mining/method-verification.json": "3a49054a9c9699ed0d04384b5c56c0b6531dea8a",
-      "2026-11-24-mining/source-verification.json": "18596e37d6e950259036cce2c5e256e718a9be92",
-      "2026-11-24-mining/hac-oracle.json": "a6b0a9d71d0d24ba65f19821e86d0f1f9cd0ce82",
-      "2026-11-24-mining/reviewer1-initial.json": "1090a5cd57d298fd3f372a3a49a91ba5b7b1fa6c",
-      "2026-11-24-mining/hac_check.py": "e59952ca2b1331803f46a92036ce6aa396d2dca2",
-      "2026-11-24-mining/hac_confirm_control.py": "09d2367cff0058d352fd7eeb27dfa4767e3bca3f"
-    },
-    "elapsed_seconds": 868
+    "output_parent": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+    "status": "prepared"
   },
-  "remaining_work_current_visit": "After qualified runtime, add dense and masked synthetic acceptance to REVIEW-57 and test search/confirm export. If unavailable, oldest feasible remaining mining test slice with verified file identities.",
+  "remaining_work_current_visit": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",
