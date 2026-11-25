@@ -31,7 +31,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from numbers import Real
-from typing import Any, NoReturn
+from typing import Any, Literal, NoReturn
 
 import numpy as np
 import numpy.typing as npt
@@ -209,6 +209,11 @@ def _validated_weights(weights: pd.Series, eligible: pd.Index, gross_limit: floa
     return pd.Series(values, index=weights.index.copy())
 
 
+OrderPlan = Literal["fill", "skip", "no_bar_on_fill_date", "no_liquidity_estimate"]
+"""What `_plan_order` decides for one order: fill it, skip it as too small, or reject it
+for the named reason (the reason is written to the trade log as it is)."""
+
+
 def _plan_order(
     target: float,
     held: float,
@@ -218,7 +223,7 @@ def _plan_order(
     adv: float,
     vol: float,
     max_participation: float,
-) -> tuple[str, float, bool]:
+) -> tuple[OrderPlan, float, bool]:
     """One order at the open, its target weight sized on ``sizing``: ``("fill", shares,
     clipped)``; ``("skip", 0.0, False)`` for a trade below 1e-9 of ``equity``; or a
     rejection reason with no shares. ``price`` is the fill date's open (NaN without a bar);
