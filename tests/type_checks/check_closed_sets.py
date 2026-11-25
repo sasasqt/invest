@@ -11,6 +11,7 @@ import pandas as pd
 
 from invest_data.bundle import Column, write_bundle
 from invest_evaluation.config import ValidationConfig
+from invest_evaluation.engine import _plan_order
 from invest_evaluation.metrics import Metric, _undef
 from invest_evaluation.quantiles import BucketPortfolio
 from invest_evaluation.strategies import Slice
@@ -38,3 +39,5 @@ def _never_called(frame: pd.DataFrame) -> None:
     Metric(1.0, "ratio", status="fine")  # type: ignore[arg-type]
     _undef("ratio", "no_data", "missing")  # type: ignore[arg-type]
     MeanTest(0.0, 1.0, 0.0, 1.0, 0.5, 30, 5, "pending")  # type: ignore[arg-type]
+    if _plan_order(0.1, 0.0, 1.0, 1.0, 1.0, 1.0, 0.1, 0.1)[0] == "filled":  # type: ignore[comparison-overlap]
+        pass
