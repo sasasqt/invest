@@ -38,10 +38,17 @@ known-first-party = ["invest_data", "invest_mining", "invest_evaluation"]
 
 [tool.mypy]
 # Strict mode (PYTHON_GUIDELINES.md, "Use the type system"); it includes
-# check_untyped_defs and warn_unused_ignores.
+# check_untyped_defs and warn_unused_ignores. warn_unreachable, redundant-expr and
+# possibly-undefined are the further checks of TODO QUALITY-04.
 python_version = "3.11"
 strict = true
-enable_error_code = ["ignore-without-code", "truthy-bool"]
+warn_unreachable = true
+enable_error_code = [
+    "ignore-without-code",
+    "truthy-bool",
+    "redundant-expr",
+    "possibly-undefined",
+]
 
 [[tool.mypy.overrides]]
 # pandas and pyarrow ship no py.typed marker and pandas-stubs is not installed (QUALITY-04).

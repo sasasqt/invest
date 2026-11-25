@@ -93,7 +93,7 @@ def bootstrap_ci(
     returns: pd.Series,
     annualization: int,
     *,
-    n_boot: int = 2000,
+    n_boot: object = 2000,
     mean_block: float | None = None,
     level: float = 0.95,
     seed: int = 0,

@@ -51,6 +51,7 @@ from invest_data.bundle import (
     BundleError,
     Column,
     Manifest,
+    StorageFormat,
     format_value,
     read_bundle,
     read_manifest,
@@ -385,7 +386,7 @@ def publish_market_bars(
     dataset_id: str,
     metadata: dict[str, Any],
     provenance: dict[str, Any] | None = None,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
 ) -> Manifest:
     _validate_metadata(metadata, REQUIRED_MARKET_METADATA, MARKET_BARS)
     columns = market_bar_columns(frame.columns)
@@ -440,7 +441,7 @@ def publish_signals(
     dataset_id: str,
     metadata: dict[str, Any],
     provenance: dict[str, Any] | None = None,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
 ) -> Manifest:
     frame = frame[[c.name for c in SIGNAL_COLUMNS]].sort_values(["decision_date", "instrument"])
     meta = {"available_at": "decision_date_close", "signal_type": "score", **metadata}
@@ -493,7 +494,7 @@ def publish_universe(
     dataset_id: str,
     metadata: dict[str, Any] | None = None,
     provenance: dict[str, Any] | None = None,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
 ) -> Manifest:
     frame = frame[[c.name for c in UNIVERSE_COLUMNS]].sort_values(list(UNIVERSE_PRIMARY_KEY))
     validate_universe_frame(frame)
@@ -534,7 +535,7 @@ def publish_fundamentals(
     dataset_id: str,
     metadata: dict[str, Any] | None = None,
     provenance: dict[str, Any] | None = None,
-    fmt: str = "csv",
+    fmt: StorageFormat = "csv",
 ) -> Manifest:
     frame = frame[[c.name for c in FUNDAMENTAL_COLUMNS]].sort_values(list(FUNDAMENTAL_PRIMARY_KEY))
     validate_fundamentals_frame(frame)
