@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-26",
+  "field": "integration",
+  "run_id": "e2f25ec4-3db0-8323-8a60-bf9ae71c8cb8",
+  "scheduled_for": "2026-11-26T02:00:00Z",
+  "started_utc": "2026-11-26T01:59:07.997340Z",
+  "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "source_tree": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "output_base": "b2fd02dec71cec336405fb52308a1afa0c1f4ddf",
+  "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+  "status": "in_progress",
+  "prior_latest_report": "2026-11-25.md",
+  "pending_jobs": [],
+  "steps": {
+    "preflight": "started",
+    "field": "pending"
+  },
+  "bounded_question": "Which historical RECORD recovery claims survive provenance and artifact checks at current main?",
+  "runtime": "credential isolation and installed origins unavailable; static and existing CI only until qualified"
+}
