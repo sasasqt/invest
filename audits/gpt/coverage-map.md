@@ -1,5 +1,30 @@
 # Repository audit coverage
 
+Source `c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6` · 2026-11-28. **159** tracked files, **39,441** known unread lines across **124** paths, and **5** unknown/non-applicable line counts. Added **854** newly read source lines; comparative peer line coverage unavailable. [Structured current map](coverage-map.json) · [This visit's ranges](2026-11-28-performance/reading.json)
+
+| Status | Files |
+|---|---:|
+| blocked | 21 |
+| checked_automatically | 5 |
+| inventoried | 66 |
+| partially_reviewed | 40 |
+| reviewed | 27 |
+
+| Component | Files | Known unread lines |
+|---|---:|---:|
+| audit_runner | 17 | 10,331 |
+| workspace | 43 | 4,594 |
+| mining | 26 | 6,950 |
+| preparation | 18 | 4,443 |
+| data | 6 | 289 |
+| saved_results | 23 | 6,924 |
+| evaluation | 26 | 5,910 |
+
+<details>
+<summary>Prior published coverage snapshot</summary>
+
+# Repository audit coverage
+
 Source `c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6` · 2026-11-25. 159 tracked paths, 40,295 known unread lines across 124 paths, 5 unknown or non-applicable line counts. The new source changed or added 28 blobs. Prior reviewed ranges of replaced blobs remain in history. This visit adds 1414 unique current-blob lines. Comparable peer ranges are unavailable.
 
 | Status | Files |
@@ -53,3 +78,5 @@ Current-blob semantic reading in the last 28 days is recorded for 61 files by la
 | data-mining-framework/src/invest_mining/cli.py | 98% |
 
 [Exact scope](coverage-map.json) · [Evaluation reading and next slice](2026-11-25-evaluation/reading.json) · [CI results](2026-11-25-evaluation/ci-observations.json)
+
+</details>

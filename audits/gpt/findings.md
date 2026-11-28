@@ -93,3 +93,7 @@ No new defect confirmed in the bounded static acceptance review at `eb64ad8f317f
 
 - **GA-2026-10-31-2 / BH-2026-10-21-2 / REVIEW-24.** Merged #58 verified on current main for direct settlement benchmark fixtures. Coupled qualified CLI acceptance through information ratio, the optional verdict check and saved report remains pending. [Evidence](2026-11-25-evaluation/evidence.json)
 - **INV-PR58-O1.** Previously acknowledged low README settlement exception remains omitted after both prerequisites merged. The detailed metrics contract is current. [Evidence](2026-11-25-evaluation/reviewer2.md)
+
+## 2026-11-28 performance
+
+**GA-2026-11-28-1 · Low/P3 · Open.** Matching nonstandard nonfinite JSON/JSONL can pass benchmark equality, confirmed by code and independent standard-library controls. No product workload or existing artifact was shown affected. [Evidence](2026-11-28-performance/evidence.json) · [Report](2026-11-28.md).

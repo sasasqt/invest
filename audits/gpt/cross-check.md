@@ -146,3 +146,12 @@ Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` and its November 22 source 
 ## 2026-11-25 · Evaluation
 
 The accessible peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497` audited `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`. The former settlement finding remains historically corroborated. Current main contains #58 with direct current CI and this audit's independent source and arithmetic controls. The dated main open-bugs mirror predates the fix. The proposed #57 mirror lists BH-2026-10-21-2 under fixed, consistent with the checked source. RA-2026-11-22-1 evaluation fixture lead remains queued outside this bounded check. Peer coverage union is unavailable without comparable same-blob ranges.
+
+## 2026-11-28 · Performance
+
+Peer head `3e7b4d5c3f6e64897164c2bb5df717260ee10497`, report 22 November, audited `eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2`. This audit `c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6`.
+
+| ID | Verdict | Evidence |
+|---|---|---|
+| GA-2026-11-14-1 | Agree for documented zero-byte gzip behavior | Prior peer stdlib corroboration retained; current blind reviewer reproduced parser scope with valid controls. No runner or producer claim. |
+| GA-2026-11-28-1 | No peer verdict | Separate from mirrored BH-2026-10-19-2 on the bundle path. Independent reviewers corroborated JSON parser and static gate behavior. |

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "run_id": "fc2da219-69c8-832c-969e-037c8b88ca82",
-  "audited_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
+  "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+  "audited_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
   "findings": [
     {
       "id": "GA-2026-10-31-1",
@@ -738,6 +738,44 @@
           "status": "new observed case linked to REVIEW-57 acceptance"
         }
       ]
+    },
+    {
+      "id": "GA-2026-11-28-1",
+      "fingerprint": "benchmark:audits/gpt/runner/runner_workload.py:non-finite-json-accepted-and-normalized",
+      "kind": "benchmark output validation",
+      "severity": "low",
+      "priority": "P3",
+      "status": "new/open",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "discovery_bucket": "exploitation",
+      "confidence": "high parser and static; full runner unexecuted",
+      "evidence_label": "verified_static_contract_gap_with_standalone_parser_controls",
+      "title": "Semantic benchmark comparator accepts forbidden JSON numeric literals",
+      "expected": "Invalidate compared JSON and JSONL that contain bare NaN or Infinity; valid finite/null output remains comparable.",
+      "observed": "Default loads/dumps in both branches preserves JSON extensions as canonical bytes. Matching invalid files can pass warm-up equality.",
+      "impact": "Timing can be included for repeated corrupted artifacts. No default producer corruption or affected timing was observed.",
+      "correction": "Reject bare nonfinite constants and declared finite-range overflow in both JSON branches before normalization; surface path-specific failure.",
+      "acceptance": "Two untouched-run failures for invalid warm-up and repeated sample JSON/JSONL with a valid finite/null control and changed substantive record control. Retain failed records and exclude from timing summaries.",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/audits/gpt/runner/runner_workload.py#L66-L106",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/audits/gpt/runner/runner_workload.py#L573-L608",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/data-pipeline/data-preparation/src/invest_data/bundle.py#L699-L722"
+      ],
+      "related": [
+        "BH-2026-10-19-2 (different producer/reader path)",
+        "GA-2026-11-14-1 (different format)"
+      ],
+      "verifier_status": "Blind agree after independent stdlib controls. No substantive disagreement.",
+      "first_seen": "2026-11-28",
+      "evidence": "2026-11-28-performance/evidence.json",
+      "history": [
+        {
+          "date": "2026-11-28",
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "status": "new/open",
+          "evidence": "2026-11-28-performance/evidence.json"
+        }
+      ]
     }
   ],
   "known_external": [
@@ -966,6 +1004,22 @@
       "date": "2026-11-24",
       "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
       "evidence": "2026-11-24-mining/evidence.json"
+    },
+    {
+      "id": "GA-2026-11-28-1-D1",
+      "date": "2026-11-28",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "disposition": "drop W5 bug; retain expected-artifact queue",
+      "counterfactual": "W5 promises independent expected outputs, or a required artifact differs versus warm-up with no gate failure.",
+      "evidence": "2026-11-28-performance/evidence.json"
+    },
+    {
+      "id": "GA-2026-11-28-1-D2",
+      "date": "2026-11-28",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "disposition": "drop ordinary synth-S trial-count defect at static scope",
+      "counterfactual": "Recover exact successful native receipts where any full-proposal count field is not 27 or the DSR consumes a different count.",
+      "evidence": "2026-11-28-performance/evidence.json"
     }
   ],
   "run_history": [
@@ -1075,6 +1129,16 @@
       ],
       "new_verified_defects": [],
       "evidence": "2026-11-25-evaluation/evidence.json"
+    },
+    {
+      "date": "2026-11-28",
+      "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+      "field": "performance",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "findings": [
+        "GA-2026-11-28-1"
+      ],
+      "evidence": "2026-11-28-performance/evidence.json"
     }
   ],
   "carried_cross_checks": [
@@ -1110,19 +1174,19 @@
     }
   ],
   "current_visit": {
-    "date": "2026-11-25",
+    "date": "2026-11-28",
     "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
-    "new_verified_defects": [],
+    "new_verified_defects": [
+      "GA-2026-11-28-1"
+    ],
     "new_unverified_concerns": [],
     "optional_improvements": [],
     "known_revisited": [
-      "GA-2026-10-31-2",
-      "INV-PR58-O1",
-      "REVIEW-33",
+      "GA-2026-11-14-1",
       "BF-2026-11-14-5",
       "REVIEW-40",
       "REVIEW-41"
     ],
-    "evidence": "2026-11-25-evaluation/evidence.json"
+    "evidence": "2026-11-28-performance/evidence.json"
   }
 }

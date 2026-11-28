@@ -1,9 +1,9 @@
 {
-  "run_id": "cca879dd-1568-8330-a387-44c5c10194a4",
-  "start_date": "2026-11-15",
-  "started_utc": "2026-11-15T01:57:57.101136Z",
-  "audited_sha": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-  "tree": "86826bdb9de53aa1b03bd3203b01a3f855bde07f",
+  "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+  "start_date": "2026-11-28",
+  "started_utc": "2026-11-28T02:04:35.524898Z",
+  "audited_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "tree": "5c4c26988f925f4ff919799293cb01169113b109",
   "profile": "rotating_daily_data_static_slice",
   "setup_budget_seconds": 900,
   "total_budget_seconds": 7200,
@@ -18,10 +18,7 @@
     "exploitation": 60,
     "exploration": 40
   },
-  "model_effort": {
-    "model": "unavailable",
-    "effort": "unavailable"
-  },
+  "model_effort": "unavailable",
   "preflight": {
     "source_sha": "9913f94b9b795bd9633a6a683e9f420301e400b3",
     "source_inventory_blobs": 111,
@@ -45,21 +42,16 @@
     "report": "prepared",
     "publication": "pending"
   },
-  "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
+  "status": "Bounded static and parser audit complete; product runtime and benchmarks blocked; Audit incomplete.",
   "last_audited_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
-  "last_audited_date": "2026-11-25",
-  "last_run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+  "last_audited_date": "2026-11-28",
+  "last_run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
   "coverage_counts": {
     "tracked_files": 159,
-    "inventoried": 72,
-    "reviewed": 27,
-    "partially_reviewed": 34,
-    "checked_automatically": 5,
-    "blocked": 21,
-    "unread_lines": 40295,
+    "unread_lines": 39441,
     "unread_paths": 124,
-    "no_applicable_or_unknown_line_count": 5,
-    "new_unique_semantic_lines": 1414
+    "unknown_line_counts": 5,
+    "added_current_semantic_lines": 854
   },
   "last_four_completed_runs": [
     {
@@ -355,9 +347,9 @@
       "first_queued_utc": "2026-11-02T02:19:56.603239+00:00",
       "last_queued_utc": "2026-11-02T02:19:56.603239+00:00",
       "deferral_reason": "credential-inaccessible locked execution boundary remains unverified",
-      "last_static_checked_date": "2026-11-21",
-      "latest_checked_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-      "latest_evidence": "2026-11-21-performance/evidence.json",
+      "last_static_checked_date": "2026-11-28",
+      "latest_checked_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "latest_evidence": "2026-11-28-performance/evidence.json",
       "history": [
         {
           "date": "2026-11-21",
@@ -639,6 +631,22 @@
       "deferral_reason": "Not run. No matching qualified run or authorized dispatch endpoint. Local boundary and installed provenance unverified. INV-PR32-001 remains engineering queue.",
       "next_check": "After qualified runtime, add dense and masked synthetic acceptance to REVIEW-57 and test search/confirm export. If unavailable, oldest feasible remaining mining test slice with verified file identities.",
       "evidence": "2026-11-24-mining/evidence.json"
+    },
+    {
+      "id": "OPEN-PERF-JSON-COMPARATOR-001",
+      "path": "audits/gpt/runner/runner_workload.py:66-106,573-608",
+      "field": "performance",
+      "source_fingerprint": "benchmark:audits/gpt/runner/runner_workload.py:non-finite-json-accepted-and-normalized",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "originating_item": "GA-2026-11-28-1",
+      "originating_reviewer": "main and independent reviewer",
+      "priority": "P3",
+      "risk": "Incorrect benchmark timing acceptance on equal malformed output",
+      "next_check": "Run paired invalid JSON/JSONL, zero-byte gzip, equal-missing artifact and consistent-wrong-trial-count controls in a qualified exact-source runtime; then establish matched software performance baseline.",
+      "first_queued_utc": "2026-11-28T02:13:01Z",
+      "last_queued_utc": "2026-11-28T02:13:01Z",
+      "deferral_reason": "No qualified runtime route",
+      "evidence": "2026-11-28-performance/evidence.json"
     }
   ],
   "followup_queue_history": [
@@ -1099,147 +1107,21 @@
       "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
       "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
       "evidence": "2026-11-25-evaluation/evidence.json"
+    },
+    {
+      "date": "2026-11-28",
+      "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+      "field": "performance",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "status": "Bounded static and parser audit complete; product runtime and benchmarks blocked; Audit incomplete.",
+      "evidence": "2026-11-28-performance/evidence.json"
     }
   ],
-  "latest_current_run_evidence": {
-    "date": "2026-11-25",
-    "field": "evaluation",
-    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
-    "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
-    "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
-    "index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
-    "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-    "legacy_reference": {
-      "original": "606eae209af0d426aaf83280585e1afaca3b4084",
-      "resolved": "5f1d9004ea5b236b59d29a66bb97ecbdf81b296f"
-    },
-    "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
-    "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
-    "actual_runner_sha": null,
-    "question": {
-      "question": "Does the merged #58 settlement return reach evaluation's reported universe comparator and optional information-ratio check at current main, with the portfolio path held fixed?",
-      "expected": "For three equal-weight eligible names, A settled at zero after a last mark of ten contributes -1 on the event date, not zero or exclusion. Trace exact current source to aligned active returns, serialized results and configured benchmark check.",
-      "stop": "Pinned source, current CI regressions and independent fixed-portfolio arithmetic and review; leave end-to-end qualified runtime and full verdict calibration pending.",
-      "controls": "Synthetic two-peer plus settled constituent, prior member versus never-member, held portfolio fixed, no event control, information-ratio sign and zero tracking error."
-    },
-    "prior_report": "2026-11-18.md",
-    "prior_source_main": "2edd7ae1168eda1192ff73698ba5d42a7c034a41",
-    "pr58": {
-      "head": "4334be535f70b4278e010598678919caafc0201b",
-      "target_before_merge": "5814601cb85148b4d1919a1feaa8289fbbe423fd",
-      "merged_sha": "5fca7eb3d19be42d91930faafcd39d2e5c6e8bac",
-      "merged_at": "2026-11-18T05:35:43Z",
-      "ancestor_verified": true,
-      "engine_identical_between_merge_and_pin": true,
-      "author_reply": "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
-    },
-    "ci": "2026-11-25-evaluation/ci-observations.json",
-    "confirmation": {
-      "id": "GA-2026-10-31-2",
-      "aliases": [
-        "BH-2026-10-21-2",
-        "REVIEW-24"
-      ],
-      "disposition": "Verified fixed on current main for direct settlement/benchmark scope. Qualified coupled CLI and verdict control pending."
-    },
-    "main_control": {
-      "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
-      "old_close_only": {
-        "count": 60,
-        "event": "1/750",
-        "mean_active_exact": "-89/90000",
-        "variance": 2.729441305712492e-7,
-        "ir": -30.0476760080819,
-        "positive_check": false
-      },
-      "merged_last_close_settlement": {
-        "count": 60,
-        "event": "-83/250",
-        "mean_active_exact": "137/30000",
-        "variance": 0.0018651819209039545,
-        "ir": 1.6785681727606194,
-        "positive_check": true
-      },
-      "no_settlement_control": {
-        "count": 60,
-        "event": "1/750",
-        "mean_active_exact": "-89/90000",
-        "variance": 2.729441305712492e-7,
-        "ir": -30.0476760080819,
-        "positive_check": false
-      },
-      "nonmember_at_last_close_control": "1/500",
-      "loss_if_held_at_one_third": "-1/3 before other names' returns",
-      "scope": "Trusted synthetic arithmetic. Portfolio returns held fixed. Old event bar unchanged from the prior close; two peers each return 0.002. A missing after the event. Event date only changes in paired benchmark. Prior-member versus nonmember denominator differs; no full verdict executed."
-    },
-    "candidate_records": [
-      {
-        "id": "GA-2026-10-31-2",
-        "kind": "carried implementation defect",
-        "main_initial": "Keep merged fix in direct regression scope and pending for current coupled CLI",
-        "independent": "Same disposition. 23 aligned fixture returns with no tracking error imply undefined optional IR, while omission gives IR -3.31006",
-        "expected": "Apply event value relative to prior mark when member at that mark and retire future returns",
-        "actual": "Pinned implementation and test expectations agree. Direct exact-main CI passes at aggregate scope",
-        "control": "Trusted fixed-portfolio arithmetic 60 and 23 observation cases, with and without benchmark event; no product executed. Neither proves the overall verdict can flip.",
-        "severity": "historical medium",
-        "confidence": "High for source contract and direct regression. Downstream execution and real-market effect are unverified",
-        "sources": [
-          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/src/invest_evaluation/engine.py#L156-L186",
-          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/tests/test_benchmark_delistings.py#L220-L226",
-          "https://github.com/sasasqt/invest/actions/runs/45452913021"
-        ]
-      },
-      {
-        "id": "INV-PR58-O1",
-        "kind": "carried documentation",
-        "main_initial": "Keep existing low omitted exception",
-        "independent": "Agrees. #53 and #56 merged; the current README still omits the last-close settlement rule",
-        "severity": "low",
-        "confidence": "High source evidence",
-        "disposition": "Open under its original ID. Do not classify current text as a proven code contradiction",
-        "sources": [
-          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/README.md#L24-L28",
-          "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/strategy-evaluation/METRICS.md#L121-L129",
-          "https://github.com/sasasqt/invest/pull/58#issuecomment-6927869422"
-        ]
-      },
-      {
-        "id": "GA-2026-10-31-2-downstream-overclaim",
-        "kind": "proposed drop",
-        "main_initial": "Drop complete verdict and real-world claims",
-        "independent": "Agrees. Comparator sensitivity captures one rule. All other verdict checks require actual fixture assessment",
-        "would_change": "Qualified untouched coupled result with remaining gates measured on both variants",
-        "disposition": "Dropped overclaim, preserve observed and pending scope"
-      }
-    ],
-    "related_pending": [
-      "REVIEW-33 remains historical and separate, including open-ending settlement context",
-      "OPEN-SETTLEMENT-PRICE-BASIS-001 stays unverified for nonzero cash and total-return adjusted marks",
-      "RA-2026-11-22-1 leg-size/split decision branch remains a separate queue"
-    ],
-    "next_item": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
-    "reviewer2": "One fresh independent reviewer completed first pass and reconciliation. No substantive disagreement. Model/effort inherited without independent service metadata.",
-    "model": "gpt-6.2-sol",
-    "effort": "unavailable",
-    "usage": "unavailable",
-    "budget_minutes": [
-      20,
-      70,
-      30
-    ],
-    "prepared_utc": "2026-11-25T02:15:07Z",
-    "elapsed_seconds_to_preparation": 842,
-    "new_local_product_runs": 0,
-    "new_remote_dispatches": 0,
-    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
-    "peer_source": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-    "peer_status": "Historical peer snapshot with older audited source. No current independent peer replication and no comparable exact ranges."
-  },
+  "latest_current_run_evidence": "2026-11-28-performance/evidence.json",
   "report_summary_counts": {
-    "confirmed_new": 0,
-    "known_static_corroborated": 1,
-    "dropped_interpretations": 1,
-    "optional_new_recommendations": 0
+    "verified_new": 1,
+    "unverified_new": 0,
+    "optional_new": 0
   },
   "rotation_v3": {
     "version": 3,
@@ -6917,8 +6799,8 @@
       },
       "performance": {
         "weekday": 5,
-        "last_rotation_visit": "2026-11-21",
-        "last_substantive_advance": "2026-11-21",
+        "last_rotation_visit": "2026-11-28",
+        "last_substantive_advance": "2026-11-28",
         "legacy_evidence_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
         "unread_ranges": [],
         "queue_refs": [
@@ -6929,9 +6811,9 @@
           "GA-2026-11-14-1"
         ],
         "deferrals": {
-          "runtime_comparable_visits": 2,
+          "runtime_comparable_visits": 3,
           "unchanged_blocker": "local credential boundary and installed-lock provenance unverified; no callable authorized dispatch route",
-          "next_oldest_slice": "Reserve bounded static bundle/export expected-schema slice; do not rerun unchanged runtime blocker merely to obtain green."
+          "next_oldest_slice": "Finish expected-artifact gate across recorded mining/portfolio and format receipts, subject to qualified runtime."
         },
         "reading_allocation": [
           70,
@@ -6997,11 +6879,342 @@
               30
             ],
             "evidence": "2026-11-21-performance/evidence.json"
+          },
+          {
+            "date": "2026-11-28",
+            "field": "performance",
+            "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+            "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+            "planned_percent": [
+              70,
+              30
+            ],
+            "actual_percent": [
+              69.84,
+              30.16
+            ],
+            "primary_discretionary_lines": [
+              352,
+              152
+            ],
+            "mandatory_lines": 829,
+            "new_verified_distinct_root_causes": [
+              1,
+              0
+            ],
+            "pooled_rates_per_1000_lines": [
+              1.34499,
+              0.0
+            ],
+            "pooled_denominators": [
+              1487,
+              450
+            ],
+            "comparable_visits": 3,
+            "next_planned_percent": [
+              70,
+              30
+            ],
+            "evidence": "2026-11-28-performance/evidence.json",
+            "selection": {
+              "seed": "4c0d617c974a763f9f8f3bc12947409d1ac8da48216a58e4f2c41d85a0735141",
+              "eligible": [
+                "audits/gpt/runner/test_guards.py",
+                "strategy-evaluation/tests/test_stats_and_cli.py"
+              ],
+              "draw": "strategy-evaluation/tests/test_stats_and_cli.py",
+              "rule": "SHA-256 Berlin date modulo sorted eligible files with unread current ranges",
+              "index": 1,
+              "lens": "Verify missingness and count propagation into statistical output, including explicit human-readable DSR metadata and genuine independently declared expectations."
+            },
+            "ranges": [
+              {
+                "bucket": "exploitation",
+                "path": "audits/gpt/runner/runner_workload.py",
+                "ranges": [
+                  [
+                    66,
+                    149
+                  ],
+                  [
+                    547,
+                    622
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26"
+              },
+              {
+                "bucket": "exploitation",
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "ranges": [
+                  [
+                    699,
+                    802
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+              },
+              {
+                "bucket": "exploitation",
+                "path": "data-mining-framework/src/invest_mining/inference.py",
+                "ranges": [
+                  [
+                    37,
+                    77
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "1d3e4137678fba58d31b79566d5cffd338f40a44"
+              },
+              {
+                "bucket": "exploitation",
+                "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+                "ranges": [
+                  [
+                    200,
+                    216
+                  ],
+                  [
+                    270,
+                    299
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+              },
+              {
+                "bucket": "exploration",
+                "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+                "ranges": [
+                  [
+                    1,
+                    152
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "cca968d4819dc078f1775a15d4b24360c4710827"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "audits/gpt/runner/README.md",
+                "ranges": [
+                  [
+                    65,
+                    81
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "audits/gpt/runner/CONTRACT.md",
+                "ranges": [
+                  [
+                    139,
+                    152
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "audits/gpt/runner/test_guards.py",
+                "ranges": [
+                  [
+                    3463,
+                    3564
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "scripts/synthetic_workflow.sh",
+                "ranges": [
+                  [
+                    1,
+                    37
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+                "ranges": [
+                  [
+                    234,
+                    260
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "6a0e810bd43914bbc445a11c79c87b396fedda71"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+                "ranges": [
+                  [
+                    495,
+                    511
+                  ],
+                  [
+                    585,
+                    629
+                  ],
+                  [
+                    844,
+                    854
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+                "ranges": [
+                  [
+                    94,
+                    102
+                  ],
+                  [
+                    223,
+                    271
+                  ],
+                  [
+                    427,
+                    475
+                  ],
+                  [
+                    490,
+                    562
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "a80f904a1fa37da49f61f2087f17b63fdb99c078"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/search.py",
+                "ranges": [
+                  [
+                    56,
+                    64
+                  ],
+                  [
+                    143,
+                    197
+                  ],
+                  [
+                    231,
+                    270
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "a29c456a3d79db924776e7c588c1696582818d81"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/src/invest_mining/cli.py",
+                "ranges": [
+                  [
+                    446,
+                    481
+                  ],
+                  [
+                    820,
+                    872
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "618af52e4d9c6e926ccc0cbbae2037a3bcb724be"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "data-mining-framework/tests/test_scale_check.py",
+                "ranges": [
+                  [
+                    657,
+                    693
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+                "ranges": [
+                  [
+                    174,
+                    208
+                  ],
+                  [
+                    221,
+                    255
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "29b78494e27dc41cf967332c49084f0e37772aa4"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+                "ranges": [
+                  [
+                    320,
+                    337
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": "tests/test_pipeline.py",
+                "ranges": [
+                  [
+                    135,
+                    175
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260"
+              },
+              {
+                "bucket": "mandatory_callers_contracts",
+                "path": ".github/workflows/ci.yml",
+                "ranges": [
+                  [
+                    11,
+                    30
+                  ]
+                ],
+                "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+                "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+              }
+            ],
+            "helper_lines": "not counted",
+            "research": "not scheduled"
           }
         ],
         "history_note": "Prior whole-audit yields retained as legacy; no per-field history invented.",
         "source_sha": "eb64ad8f317fdb81d652a0c2ac1bbcbedd4b63f2",
-        "next_check": "Complete bundle/export schemas and downstream trial/DSR trace, then qualified zero-byte gzip and equal-missing-output controls; matched scale/format timings remain blocked."
+        "next_check": "Run paired invalid JSON/JSONL, zero-byte gzip, equal-missing artifact and consistent-wrong-trial-count controls in a qualified exact-source runtime; then establish matched software performance baseline.",
+        "last_substantive_run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+        "last_source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "last_report": "2026-11-28.md",
+        "validation_freshness": "Current static source and existing standard CI, standalone parser controls only; runtime benchmarks pending.",
+        "completed_advances": [
+          "Comparator JSON permissiveness isolated and producer budget/typed readback controls mapped."
+        ]
       },
       "research": {
         "weekday": 6,
@@ -7076,7 +7289,7 @@
     "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "migration_base_commit": "606eae209af0d426aaf83280585e1afaca3b4084",
     "migration_is_audit_execution": false,
-    "unread_lines": 40295,
+    "unread_lines": 39441,
     "unread_paths": 124,
     "weekly_summaries": [
       {
@@ -7260,6 +7473,17 @@
         "status": "no final report or started record observed in latest audit output tree",
         "execution": "unknown/not observed",
         "note": "No exhaustion/interruption inference; Friday field not added to Saturday."
+      },
+      {
+        "date": "2026-11-26",
+        "status": "started record present; final publication not observed",
+        "execution": "terminal outcome unknown",
+        "checkpoint": "2026-11-26-integration/started.json"
+      },
+      {
+        "date": "2026-11-27",
+        "status": "No started or final report observed",
+        "execution": "unknown/not observed"
       }
     ],
     "queue_age_status": {
@@ -7292,14 +7516,13 @@
         "fourteen_day_flags": "None among known substantive visit dates; engineering13 days; earlier missing executions remain unknown"
       },
       "performance_visit": {
-        "date": "2026-11-21",
-        "comparable_visits": 2,
-        "oldest_feasible_advanced": "OPEN-EXPECTED-ARTIFACT-GATE-001 producer-anchored control specification; deterministic reporting exploration",
-        "twice_deferred": "runtime formats/scale and untouched gzip acceptance retained across two visits; prerequisites unchanged",
-        "next_slice": "bounded oldest feasible bundle/export schema and trial consumer trace",
+        "date": "2026-11-28",
+        "twice_deferred": "Three comparable visits of blocked qualified runtime",
+        "oldest_feasible_advanced": "Bundle/export expected schema and evaluation DSR test slice",
         "fourteen_day_flags": [
-          "engineering: last substantive advance2026-11-06, age15days;13/20Nov execution unknown. Reserve oldest feasible slice on next engineering visit."
-        ]
+          "Engineering last substantive advance 2026-11-06, 22 days"
+        ],
+        "next_slice": "Run paired invalid JSON/JSONL, zero-byte gzip, equal-missing artifact and consistent-wrong-trial-count controls in a qualified exact-source runtime; then establish matched software performance baseline."
       },
       "research_visit": {
         "date": "2026-11-22",
@@ -7835,6 +8058,52 @@
         "completed_utc": "2026-11-25T02:17:19Z",
         "verified_report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
         "elapsed_to_verified_publication_seconds": 974
+      },
+      {
+        "date": "2026-11-28",
+        "field": "performance",
+        "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+        "scheduled_for": "2026-11-28T02:00:00Z",
+        "started_utc": "2026-11-28T02:04:35.524898Z",
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+        "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+        "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+        "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+        "output_base": "877b87b052892fc1f6cc298ccae75c55ec59d2b2",
+        "started_checkpoint_commit": "dbc176894bd3a1ece0646c6b17dd63e651ed6703",
+        "actual_runner_sha": null,
+        "status": "Bounded static and parser audit complete; product runtime and benchmarks blocked; Audit incomplete.",
+        "pending_jobs": [],
+        "new_product_runs": 0,
+        "remote_compute_dispatched": 0,
+        "model": "unavailable",
+        "effort": "unavailable",
+        "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+        "helper_count": 1,
+        "verifier_b_count": 0,
+        "evidence": "2026-11-28-performance/evidence.json",
+        "report": "2026-11-28.md",
+        "scope_counts": {
+          "tracked_files": 159,
+          "unread_lines": 39441,
+          "unread_paths": 124,
+          "unknown_line_counts": 5,
+          "added_current_semantic_lines": 854
+        },
+        "prepared_utc": "2026-11-28T02:13:01Z",
+        "elapsed_to_preparation_seconds": 506,
+        "publication_status": "prepared_pending_readback",
+        "completed_steps": [
+          "Methods verified",
+          "Started checkpoint verified",
+          "Source, gates and carried checks refreshed",
+          "Bounded field source trace and independent controls verified",
+          "Scoped report prepared"
+        ],
+        "remaining_steps": [
+          "Verify publication"
+        ]
       }
     ],
     "shared_controls": {
@@ -7848,8 +8117,8 @@
         "fixture": "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/data-mining-framework/tests/test_scale_check.py#L657-L693",
         "run": 45452913021,
         "scope": "evaluate --data/--universe/--fundamentals with synthetic malformed UTF8; named refusal and no ledger/out; aggregate logs, no individual case transcript; no local repeats",
-        "last_reused_date": "2026-11-25",
-        "reuse_reason": "Refreshed against new main and verified ancestry, fixture and standard CI.",
+        "last_reused_date": "2026-11-28",
+        "reuse_reason": "Same source as prior exact Linux CI; reread tests for flags and merge ancestry. No case transcript or rerun.",
         "history": [
           {
             "date": "2026-11-19",
@@ -7942,7 +8211,7 @@
     "current_unread_lines": 17827,
     "current_unread_paths": 69
   },
-  "prepared_utc": "2026-11-22T02:12:57Z",
+  "prepared_utc": "2026-11-28T02:13:01Z",
   "elapsed_wall_seconds_from_supplied_run_context": 713,
   "elapsed_clock_limitation": "Wall-clock difference from scheduled run start; not exclusive model/tool CPU.",
   "delivery_observation": {
@@ -8433,61 +8702,107 @@
       "completed_utc": "2026-11-24T02:13:04Z",
       "verified_report_commit": "17647ac8a349a298bd54824961b3e33b7abd7ed4",
       "elapsed_to_verified_publication_seconds": 868
+    },
+    {
+      "date": "2026-11-25",
+      "field": "evaluation",
+      "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
+      "scheduled_for": "2026-11-25T02:00:00Z",
+      "started_utc": "2026-11-25T02:01:05.437820Z",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+      "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
+      "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+      "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
+      "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
+      "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
+      "model": "gpt-6.2-sol",
+      "effort": "unavailable",
+      "helper_count": 1,
+      "verifier_b_count": 0,
+      "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+      "actual_runner_sha": null,
+      "pending_jobs": [],
+      "new_product_runs": 0,
+      "remote_compute_dispatched": 0,
+      "evidence": "2026-11-25-evaluation/evidence.json",
+      "report": "2026-11-25.md",
+      "prepared_utc": "2026-11-25T02:15:07Z",
+      "elapsed_to_preparation_seconds": 842,
+      "scope_counts": {
+        "tracked_files": 159,
+        "inventoried": 72,
+        "reviewed": 27,
+        "partially_reviewed": 34,
+        "checked_automatically": 5,
+        "blocked": 21,
+        "unread_lines": 40295,
+        "unread_paths": 124,
+        "no_applicable_or_unknown_line_count": 5,
+        "new_unique_semantic_lines": 1414
+      },
+      "publication_status": "published_verified",
+      "completed_steps": [
+        "Verified methods and source",
+        "Reconciled state and saved started checkpoint",
+        "Checked exact CI and carried controls",
+        "Traced benchmark and verified synthetic arithmetic",
+        "Completed independent candidate review",
+        "Prepared scoped reporting and publication",
+        "Verified guarded report publication"
+      ],
+      "remaining_steps": [],
+      "completed_utc": "2026-11-25T02:17:19Z",
+      "verified_report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
+      "elapsed_to_verified_publication_seconds": 974
     }
   ],
   "current_run": {
-    "date": "2026-11-25",
-    "field": "evaluation",
-    "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
-    "scheduled_for": "2026-11-25T02:00:00Z",
-    "started_utc": "2026-11-25T02:01:05.437820Z",
+    "date": "2026-11-28",
+    "field": "performance",
+    "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+    "scheduled_for": "2026-11-28T02:00:00Z",
+    "started_utc": "2026-11-28T02:04:35.524898Z",
     "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
     "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
     "protocol_sha": "bab6ba12399787496ba1108a9a368e00f8643441",
     "protocol_index_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
     "baseline_sha256": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
-    "output_base": "c0bf8eae123121c41d617e474567f4fc2df45833",
-    "started_checkpoint_commit": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
-    "status": "Bounded evaluation source and direct CI acceptance complete. Coupled runtime pending. Audit incomplete.",
-    "model": "gpt-6.2-sol",
-    "effort": "unavailable",
-    "helper_count": 1,
-    "verifier_b_count": 0,
-    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "output_base": "877b87b052892fc1f6cc298ccae75c55ec59d2b2",
+    "started_checkpoint_commit": "dbc176894bd3a1ece0646c6b17dd63e651ed6703",
     "actual_runner_sha": null,
+    "status": "Bounded static and parser audit complete; product runtime and benchmarks blocked; Audit incomplete.",
     "pending_jobs": [],
     "new_product_runs": 0,
     "remote_compute_dispatched": 0,
-    "evidence": "2026-11-25-evaluation/evidence.json",
-    "report": "2026-11-25.md",
-    "prepared_utc": "2026-11-25T02:15:07Z",
-    "elapsed_to_preparation_seconds": 842,
+    "model": "unavailable",
+    "effort": "unavailable",
+    "peer_sha": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+    "helper_count": 1,
+    "verifier_b_count": 0,
+    "evidence": "2026-11-28-performance/evidence.json",
+    "report": "2026-11-28.md",
     "scope_counts": {
       "tracked_files": 159,
-      "inventoried": 72,
-      "reviewed": 27,
-      "partially_reviewed": 34,
-      "checked_automatically": 5,
-      "blocked": 21,
-      "unread_lines": 40295,
+      "unread_lines": 39441,
       "unread_paths": 124,
-      "no_applicable_or_unknown_line_count": 5,
-      "new_unique_semantic_lines": 1414
+      "unknown_line_counts": 5,
+      "added_current_semantic_lines": 854
     },
-    "publication_status": "published_verified",
+    "prepared_utc": "2026-11-28T02:13:01Z",
+    "elapsed_to_preparation_seconds": 506,
+    "publication_status": "prepared_pending_readback",
     "completed_steps": [
-      "Verified methods and source",
-      "Reconciled state and saved started checkpoint",
-      "Checked exact CI and carried controls",
-      "Traced benchmark and verified synthetic arithmetic",
-      "Completed independent candidate review",
-      "Prepared scoped reporting and publication",
-      "Verified guarded report publication"
+      "Methods verified",
+      "Started checkpoint verified",
+      "Source, gates and carried checks refreshed",
+      "Bounded field source trace and independent controls verified",
+      "Scoped report prepared"
     ],
-    "remaining_steps": [],
-    "completed_utc": "2026-11-25T02:17:19Z",
-    "verified_report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
-    "elapsed_to_verified_publication_seconds": 974
+    "remaining_steps": [
+      "Verify publication"
+    ]
   },
   "publication_history": [
     {
@@ -9443,75 +9758,12 @@
     }
   ],
   "publication_current_run": {
-    "date": "2026-11-25",
-    "run_id": "c5dff66f-8258-8331-b9ff-b2f041562f66",
-    "branch": "gpt/repo-audits",
-    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
-    "output_parent": "ae76cdd4eea24d93495ab93fa9836bad7bb15673",
-    "report_commit": "a50b95ce5c6db60202eb14fc8e1648a5f351ac89",
-    "report_tree": "484cee3427201ae03ab186ae0736dc1c18f0dfcc",
-    "status": "published_verified",
-    "verified_utc": "2026-11-25T02:17:19Z",
-    "report_url": "https://github.com/sasasqt/invest/blob/a50b95ce5c6db60202eb14fc8e1648a5f351ac89/audits/gpt/2026-11-25.md",
-    "guarded_expected_old_sha": true,
-    "force": false,
-    "verified_changed_paths": [
-      "audits/gpt/2026-11-25-evaluation/check_control.py",
-      "audits/gpt/2026-11-25-evaluation/ci-observations.json",
-      "audits/gpt/2026-11-25-evaluation/control-output.txt",
-      "audits/gpt/2026-11-25-evaluation/evidence.json",
-      "audits/gpt/2026-11-25-evaluation/method-verification.json",
-      "audits/gpt/2026-11-25-evaluation/reading.json",
-      "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json",
-      "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md",
-      "audits/gpt/2026-11-25-evaluation/reviewer2.md",
-      "audits/gpt/2026-11-25-evaluation/settlement-oracle.json",
-      "audits/gpt/2026-11-25-evaluation/source-verification.json",
-      "audits/gpt/2026-11-25.md",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/coverage-map.json",
-      "audits/gpt/coverage-map.md",
-      "audits/gpt/coverage.csv",
-      "audits/gpt/cross-check.md",
-      "audits/gpt/exploration.json",
-      "audits/gpt/findings.json",
-      "audits/gpt/findings.md",
-      "audits/gpt/state.json",
-      "audits/gpt/validation.csv"
-    ],
-    "verified_git_blob_ids": {
-      "audits/gpt/state.json": "71b74618c9432acbb9482011a897fefa552470ca",
-      "audits/gpt/checkpoint.json": "71b74618c9432acbb9482011a897fefa552470ca",
-      "audits/gpt/findings.json": "db3ec6194c8a6179e27ec59611dc34e0abb72710",
-      "audits/gpt/exploration.json": "cf793884da713f72ddb1f3c35c7fdc3c0b8b3d6b",
-      "audits/gpt/coverage-map.json": "2e3002e19fa97d3f503851727e3850d46c0fe79b",
-      "audits/gpt/coverage-map.md": "533521b86cf6658228d3d9f0087fa21ad6d78c0d",
-      "audits/gpt/coverage.csv": "bbc3bc31b95711dd398105b567ef90113bb5b306",
-      "audits/gpt/cross-check.md": "1882e1c9aa1e0fbccfedcc36c782da07f57c36dd",
-      "audits/gpt/validation.csv": "21a63410fc7d338a25452954bb8c21338fc6481e",
-      "audits/gpt/2026-11-25-evaluation/evidence.json": "e24acd40e5d3d2618e114c101eb210604f9fd689",
-      "audits/gpt/2026-11-25-evaluation/ci-observations.json": "2df18a6d77f7009a8a01efb8bba4b4500bc6f226",
-      "audits/gpt/2026-11-25-evaluation/reading.json": "c34bf26f704949a9454d575dabf61031b182f66a",
-      "audits/gpt/2026-11-25-evaluation/reviewer2-initial.md": "80b0744d3f3802cd8327b3b588e5c3f359bde23e",
-      "audits/gpt/2026-11-25-evaluation/reviewer2.md": "1c3000bc266cebde8dc96fcad8144affa3874eec",
-      "audits/gpt/2026-11-25.md": "aa97502ab70f48dc6ecfbbd58b8def2db5c7c8dc",
-      "audits/gpt/2026-11-25-evaluation/method-verification.json": "492b4be251b15780e3ce1c622eccaae2f91493a4",
-      "audits/gpt/2026-11-25-evaluation/source-verification.json": "084ce0a5f4140f0517ed049123a3e548cb8b7a34",
-      "audits/gpt/2026-11-25-evaluation/settlement-oracle.json": "87cbc02ff5646d850c60a42df770e14dfa1a5e40",
-      "audits/gpt/2026-11-25-evaluation/reviewer1-initial.json": "433f09d342f2e85069b4032046ca4052acdab398",
-      "audits/gpt/2026-11-25-evaluation/check_control.py": "818a616086a9183e525ecf7886a8acccb7f30835",
-      "audits/gpt/2026-11-25-evaluation/control-output.txt": "55f40da85cdd87c6995be4d0c6c019dea5e552a3",
-      "audits/gpt/findings.md": "9a33785936ea6a730edbf0ebfd175cf27a2bd602"
-    },
-    "full_text_readback_paths": [
-      "audits/gpt/state.json",
-      "audits/gpt/checkpoint.json",
-      "audits/gpt/2026-11-25-evaluation/evidence.json",
-      "audits/gpt/2026-11-25.md"
-    ],
-    "elapsed_to_verified_publication_seconds": 974
+    "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+    "status": "prepared",
+    "report": "2026-11-28.md",
+    "base": "dbc176894bd3a1ece0646c6b17dd63e651ed6703"
   },
-  "remaining_work_current_visit": "Qualified paired 252-session synthetic CLI settlement and no-event cases through daily.csv, metrics.json, verdict.json and report.md. If runner remains unavailable, trace the settlement cash basis and nonzero settlement contract in the oldest feasible evaluation slice.",
+  "remaining_work_current_visit": "Run paired invalid JSON/JSONL, zero-byte gzip, equal-missing artifact and consistent-wrong-trial-count controls in a qualified exact-source runtime; then establish matched software performance baseline.",
   "runtime_validation_history": [
     {
       "superseded_as_latest_on": "2026-11-10",

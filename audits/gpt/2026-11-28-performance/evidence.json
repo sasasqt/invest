@@ -1,0 +1,1580 @@
+{
+  "start": {
+    "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+    "date": "2026-11-28",
+    "field": "performance",
+    "scheduled_for": "2026-11-28T02:00:00Z",
+    "started_utc": "2026-11-28T02:04:35.524898Z",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+    "output_base": "877b87b052892fc1f6cc298ccae75c55ec59d2b2",
+    "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+    "protocol_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+    "status": "started",
+    "pending_runtime_jobs": [],
+    "previous": "26 Nov start exists and final absent; 27 Nov final not observed",
+    "question": "Does the synthetic performance gate validate producer-declared bundle and signal outputs and consumers, rather than just agreement between two runs?"
+  },
+  "start_publication": {
+    "sha": "dbc176894bd3a1ece0646c6b17dd63e651ed6703",
+    "tree": "49e458b0cf2432f31d7cf4de916a2f01864c0444",
+    "parent": "877b87b052892fc1f6cc298ccae75c55ec59d2b2",
+    "changed": [
+      "audits/gpt/2026-11-28-performance/started.json"
+    ]
+  },
+  "canonical_files": {
+    ".github/workflows/audit-runtime.yml": {
+      "blob": "535399e4583266314fcf09a93fca6a61dd341d4d",
+      "ok": true,
+      "lines": 167
+    },
+    ".github/workflows/ci.yml": {
+      "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d",
+      "ok": true,
+      "lines": 79
+    },
+    "CI_CD_GUIDELINES.md": {
+      "blob": "306a149dff89e4018a6a4e5ac379d8944988fae6",
+      "ok": true,
+      "lines": 83
+    },
+    "GIT_GUIDELINES.md": {
+      "blob": "9fa23cfd3722d14d1e0634698389621339efc382",
+      "ok": true,
+      "lines": 152
+    },
+    "PYTHON_GUIDELINES.md": {
+      "blob": "133da1e1db1b81cdec3cb57377740d957bc4d7b1",
+      "ok": true,
+      "lines": 152
+    },
+    "README.md": {
+      "blob": "ea81a9361789ae760859efda5a30c2c0fd61743d",
+      "ok": true,
+      "lines": 200
+    },
+    "TODO.md": {
+      "blob": "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90",
+      "ok": true,
+      "lines": 139
+    },
+    "audits/gpt/runner/CONTRACT.md": {
+      "blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd",
+      "ok": true,
+      "lines": 234
+    },
+    "audits/gpt/runner/README.md": {
+      "blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+      "ok": true,
+      "lines": 157
+    },
+    "audits/gpt/runner/runner_workload.py": {
+      "blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+      "ok": true,
+      "lines": 627
+    },
+    "audits/gpt/runner/test_guards.py": {
+      "blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b",
+      "ok": true,
+      "lines": 4269
+    },
+    "data-mining-framework/src/invest_mining/artifact.py": {
+      "blob": "0e6f93023dfbb1fb6bc86495be75f281f0252b26",
+      "ok": true,
+      "lines": 72
+    },
+    "data-mining-framework/src/invest_mining/cli.py": {
+      "blob": "618af52e4d9c6e926ccc0cbbae2037a3bcb724be",
+      "ok": true,
+      "lines": 1070
+    },
+    "data-mining-framework/src/invest_mining/inference.py": {
+      "blob": "1d3e4137678fba58d31b79566d5cffd338f40a44",
+      "ok": true,
+      "lines": 77
+    },
+    "data-mining-framework/src/invest_mining/ledger.py": {
+      "blob": "ddff3090752d10c68399cea117d977deeb532543",
+      "ok": true,
+      "lines": 327
+    },
+    "data-mining-framework/src/invest_mining/search.py": {
+      "blob": "a29c456a3d79db924776e7c588c1696582818d81",
+      "ok": true,
+      "lines": 375
+    },
+    "data-mining-framework/tests/test_scale_check.py": {
+      "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c",
+      "ok": true,
+      "lines": 902
+    },
+    "data-pipeline/data-preparation/src/invest_data/bundle.py": {
+      "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994",
+      "ok": true,
+      "lines": 954
+    },
+    "data-pipeline/data-preparation/src/invest_data/cli.py": {
+      "blob": "6a0e810bd43914bbc445a11c79c87b396fedda71",
+      "ok": true,
+      "lines": 296
+    },
+    "data-pipeline/data-preparation/src/invest_data/schemas.py": {
+      "blob": "a80f904a1fa37da49f61f2087f17b63fdb99c078",
+      "ok": true,
+      "lines": 562
+    },
+    "data-pipeline/data-preparation/tests/test_dataset_keys.py": {
+      "blob": "2e3af1580707392badabe4bf32578dc79ccd7c0e",
+      "ok": true,
+      "lines": 115
+    },
+    "docs/DATA_CONTRACT.md": {
+      "blob": "09b2545f2c3a67c48853005acb86bde393923cf6",
+      "ok": true,
+      "lines": 85
+    },
+    "docs/REPORTING.md": {
+      "blob": "648df723460b75355cfa274d9fc99f302f0faabd",
+      "ok": true,
+      "lines": 46
+    },
+    "docs/audits/bug-fix.md": {
+      "blob": "35a582346e33b0bfd41e73259c5e2dd8cee39659",
+      "ok": true,
+      "lines": 49
+    },
+    "docs/audits/docs-audit.md": {
+      "blob": "260ec56f9c9ab463c940b0ac5e4aaa1674dbdfe4",
+      "ok": true,
+      "lines": 18
+    },
+    "docs/audits/open-bugs.md": {
+      "blob": "0c8a824c0bdd03bd8bcf15534fc51c98c20ed5f8",
+      "ok": true,
+      "lines": 182
+    },
+    "pyproject.toml": {
+      "blob": "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e",
+      "ok": true,
+      "lines": 105
+    },
+    "scripts/check_coverage_floors.py": {
+      "blob": "b469ae3184219c852847ac87fe470a8a02900376",
+      "ok": true,
+      "lines": 178
+    },
+    "scripts/synthetic_workflow.sh": {
+      "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+      "ok": true,
+      "lines": 37
+    },
+    "strategy-evaluation/src/invest_evaluation/cli.py": {
+      "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+      "ok": true,
+      "lines": 379
+    },
+    "strategy-evaluation/src/invest_evaluation/reporting.py": {
+      "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+      "ok": true,
+      "lines": 337
+    },
+    "strategy-evaluation/src/invest_evaluation/stats.py": {
+      "blob": "29b78494e27dc41cf967332c49084f0e37772aa4",
+      "ok": true,
+      "lines": 255
+    },
+    "strategy-evaluation/tests/test_stats_and_cli.py": {
+      "blob": "cca968d4819dc078f1775a15d4b24360c4710827",
+      "ok": true,
+      "lines": 1173
+    },
+    "tests/test_pipeline.py": {
+      "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+      "ok": true,
+      "lines": 654
+    }
+  },
+  "methods": {
+    "overview": {
+      "ok": true,
+      "digest": "16bd3d3c92332a57df0a4cadf5146cdb9d1da74fa372cd8f591044032f91c848",
+      "blob": "6013adc8de8625ae20f011a976e69d778475e11c"
+    },
+    "00-preflight": {
+      "ok": true,
+      "digest": "262238ba4c4703109dc4c304cb92e154cb1cec6d53f091c4cdba250558af1b25",
+      "blob": "0ec6804d6a3616113b927f0a24afe3623bfa7335"
+    },
+    "01-scope": {
+      "ok": true,
+      "digest": "e0d2245c484a7bfc3a3fc24cce1b31ae8db0ed31ebc220294358e35e86b23c90",
+      "blob": "3d8f9084843949afcc5f4af1b1c2650550b2f7c3"
+    },
+    "02-coverage": {
+      "ok": true,
+      "digest": "6c107734fc157aff1c4973f9ce264b624049347150d6aeb0f4b6f88b6086fa20",
+      "blob": "5167046b421b44702de387968a20e16a474b92de"
+    },
+    "06-engineering-checks": {
+      "ok": true,
+      "digest": "f2a2fc93f0067915e136b14228ea30e95d5196d0c28fb47a70fd45cc7fc3134b",
+      "blob": "800002ea2d08574243d7d33918b3f2beece85b4d"
+    },
+    "07-independent-checks": {
+      "ok": true,
+      "digest": "d6e744c8516f6bfd74c722abb464c20ee290db87db63f2dfc92b496d03b6e3b0",
+      "blob": "1b4b0a4d11df1a113ec68b681e076e385fc9b152"
+    },
+    "09-performance": {
+      "ok": true,
+      "digest": "48e708f64ce144d7074ef7dc01b688be1bf2bd45846721d18f0145cdd38e2db7",
+      "blob": "6d87c8fc317a5e20b2c993e6da70ac5fce977dab"
+    },
+    "10-improvements": {
+      "ok": true,
+      "digest": "81983f4cecb351cd72571a2067879f3c650f2f524abce9db1ff3452f9eca17fb",
+      "blob": "7d90b5e5b50f258b1f36f16c58e9991412df5b14"
+    },
+    "11-findings-review": {
+      "ok": true,
+      "digest": "36d9be7c58ca8898d27aa2b39180cf454f8c9eddc0dee6598a98544b10f8af8a",
+      "blob": "480c94f9f4a4e39e9efb812cf187620e76c69c65"
+    },
+    "12-reporting": {
+      "ok": true,
+      "digest": "a71902a2512ddaeeadcb525f7898a6f23165d90f1f97514eb62c098153d6a469",
+      "blob": "8a83745c2502c507ecd824ab49277219033a27d3"
+    },
+    "13-continuity": {
+      "ok": true,
+      "digest": "604a8da3e4a1aa645397eefaef1c2a17e3afff9a30429e32aed7db3ad3307457",
+      "blob": "f80497a8448ff68bdfb51a6fee7c6e0d9ab7bb3b"
+    },
+    "14-crosscheck-publication": {
+      "ok": true,
+      "digest": "d4237fe9cd6e5c96f52598338bc0a8e4dfd03db75161e648552ab4ed1f6302ea",
+      "blob": "d67dc237af9df166806b599068575ce7109af50b"
+    },
+    "action-boundary": {
+      "ok": true,
+      "digest": "0bc4a6f559ebb7b012a4610bc21fd7db7c65b91d8781c45fd0663485720e52fd",
+      "blob": "91b4620c27c4c12fff4dbbc320ea5e18b52af04d"
+    },
+    "baseline-v2.txt": {
+      "ok": true,
+      "digest": "d099b81cae1b7f50b6b0a7d448379c88b18a7030614946edec4632f22f1de1fa",
+      "blob": "c0ea67e98e9cc33f49effaf9bc2ec8a043145a4d"
+    },
+    "activation-state.json": {
+      "ok": true,
+      "digest": "027d83302b4e45756bc7393ffd5c80daaa35af16e1d9ae3dbf09d60a6babc9e3",
+      "blob": "386c217aaf0ba89b6a26f9934c9f26ec3af8c79b"
+    },
+    "index": {
+      "ok": true,
+      "digest": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f"
+    }
+  },
+  "ci": [
+    {
+      "job": 138654545799,
+      "name": "checks (3.11)",
+      "verified_source": true,
+      "lines": [
+        "2026-11-24T17:50:15.9194767Z Using CPython 3.11.18",
+        "2026-11-24T17:50:17.3084626Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts tests/type_checks",
+        "2026-11-24T17:50:21.8569620Z Success: no issues found in 35 source files",
+        "2026-11-24T18:02:49.4060083Z 1269 passed, 1 skipped in 745.52s (0:12:25)",
+        "2026-11-24T18:02:50.3761620Z coverage floors: 0 failure(s), total 96.89%"
+      ]
+    },
+    {
+      "job": 138654546084,
+      "name": "checks (3.13)",
+      "verified_source": true,
+      "lines": [
+        "2026-11-24T17:50:16.2952880Z Using CPython 3.13.18",
+        "2026-11-24T17:50:17.7031706Z ##[group]Run uv run mypy data-pipeline/data-preparation/src data-mining-framework/src strategy-evaluation/src scripts tests/type_checks",
+        "2026-11-24T17:50:22.7602081Z Success: no issues found in 35 source files",
+        "2026-11-24T18:01:31.8925946Z 1269 passed, 1 skipped in 666.80s (0:11:06)",
+        "2026-11-24T18:01:32.8164157Z coverage floors: 0 failure(s), total 96.89%"
+      ]
+    }
+  ],
+  "ci_jobs": [
+    [
+      138654545166,
+      "wheels",
+      "success"
+    ],
+    [
+      138654545677,
+      "independent-install (data-mining-framework)",
+      "success"
+    ],
+    [
+      138654545692,
+      "independent-install (data-pipeline/data-preparation)",
+      "success"
+    ],
+    [
+      138654545799,
+      "checks (3.11)",
+      "success"
+    ],
+    [
+      138654545842,
+      "independent-install (strategy-evaluation)",
+      "success"
+    ],
+    [
+      138654546084,
+      "checks (3.13)",
+      "success"
+    ]
+  ],
+  "windows": {
+    "pr": {
+      "state": "open",
+      "merged": null,
+      "head": "448fa537cc156ff7dfb71e5b9996b690a06208e1",
+      "merge": "ff626ba1c1c00c2ab4dbea31287966775dc90d2c"
+    },
+    "parents": [
+      "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "448fa537cc156ff7dfb71e5b9996b690a06208e1"
+    ],
+    "sandbox": false,
+    "latest": "https://github.com/sasasqt/invest/pull/66#issuecomment-7049539333",
+    "job": 138748119619,
+    "run": 45479385159,
+    "lines": [
+      "2026-11-24T20:18:31.4394243Z HEAD is now at ff626ba Merge 448fa537cc156ff7dfb71e5b9996b690a06208e1 into c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6\r",
+      "2026-11-24T20:18:33.1006006Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}\r",
+      "2026-11-24T20:18:35.6873396Z Using CPython 3.11.9 interpreter at: C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe\r",
+      "2026-11-24T20:18:37.5315449Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}\r",
+      "2026-11-24T20:18:40.6748080Z shell: C:\\Program Files\\Git\\bin\\bash.EXE --noprofile --norc -e -o pipefail {0}\r",
+      "2026-11-24T20:23:21.2785863Z 1269 passed, 7 skipped in 278.42s (0:04:38)\r"
+    ]
+  },
+  "ancestry": [
+    [
+      "39",
+      "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+      "613ed5b20c27b4bb8dbbeeec49ef0e88acf4c1c8",
+      "ahead"
+    ],
+    [
+      "40",
+      "2a8fc5f8fb7f1ebed8b33b9da4bed25e434c559e",
+      "2a8fc5f8fb7f1ebed8b33b9da4bed25e434c559e",
+      "ahead"
+    ],
+    [
+      "51",
+      "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+      "e79f0dcb5b7b9ec7c675e57d806ae4e816521003",
+      "ahead"
+    ]
+  ],
+  "peer": "3e7b4d5c3f6e64897164c2bb5df717260ee10497",
+  "model": "unavailable",
+  "effort": "unavailable",
+  "main_tree_inventory": [
+    [
+      ".github/workflows/audit-runtime.yml",
+      "535399e4583266314fcf09a93fca6a61dd341d4d",
+      "100644"
+    ],
+    [
+      ".github/workflows/ci.yml",
+      "a23c929a5e146d1695e26a18076ef8dc4b8a008d",
+      "100644"
+    ],
+    [
+      ".gitignore",
+      "7f7180c29a9853a4ba6e7162594c804780c66b3b",
+      "100644"
+    ],
+    [
+      "CI_CD_GUIDELINES.md",
+      "306a149dff89e4018a6a4e5ac379d8944988fae6",
+      "100644"
+    ],
+    [
+      "DESIGN_BY_CONTRACT.md",
+      "912e9ffa9ca0ea8f7a4462f613864f36d88d11e4",
+      "100644"
+    ],
+    [
+      "GIT_GUIDELINES.md",
+      "9fa23cfd3722d14d1e0634698389621339efc382",
+      "100644"
+    ],
+    [
+      "PYTHON_GUIDELINES.md",
+      "133da1e1db1b81cdec3cb57377740d957bc4d7b1",
+      "100644"
+    ],
+    [
+      "RAPID_DEVELOPMENT.md",
+      "a1af0fcef538f1d2b5a2d299bd0f8d43590921ed",
+      "100644"
+    ],
+    [
+      "README.md",
+      "ea81a9361789ae760859efda5a30c2c0fd61743d",
+      "100644"
+    ],
+    [
+      "ROADMAP.md",
+      "8184a851e79583b71bff2026f49050de2d5bc9cb",
+      "100644"
+    ],
+    [
+      "TODO.md",
+      "9ec1bfbbbb4e3e0d905f9c7676b10b4110a4dc90",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/CONTRACT.md",
+      "cfb25f94de6d731483026570a51ff66a4b6fdecd",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/Dockerfile",
+      "ae438e2ad8047d0304394c95b4cdab2b6ac442cc",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/README.md",
+      "c5b197ca2a268f06c24d56ed2429595ba2055e8b",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/build-requirements.txt",
+      "1611d477d8e032566200303c04cdb5c7516ddb42",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/ci_evidence.py",
+      "22d6f92ab32738777966ac01b029b0b0776d36a8",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/collection_checks.py",
+      "8c30b9cab26b606d8550f5ab9d144e7ed9b50ff7",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/contract.py",
+      "2f38e30a0d76574ef403da8822b55604d0f7925a",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/isolated_runner.py",
+      "13dc1e3177c6c6007bd8b878c51a4518c7ec257f",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/output_collection.py",
+      "ef971a23064e95f23ee9724519bb6d25ea3af160",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/runner_workload.py",
+      "8a48e64dacc6645cad5a94e13d33de4c8d01aa26",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/test_execution_logs.py",
+      "f912c6e7f83154253baaf3bd0b62dbcf3be43f43",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/test_guards.py",
+      "e1e3f3e6f751957a923faa853d5283cceb825e8b",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/test_host_safety.py",
+      "8d337c5128dad0b2661478c4c518204e025680b3",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/test_output_collection.py",
+      "a5d0f6527567e1e04b7e7524ddfff9b8f813b0d2",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/verify_installed.py",
+      "5ea79c9991f9722cb9a2bc149efca6fa2a47ab77",
+      "100644"
+    ],
+    [
+      "audits/gpt/runner/verify_snapshot.py",
+      "860b2e010091e24a2e3cc11c222e73dc10947bf3",
+      "100644"
+    ],
+    [
+      "data-mining-framework/ALPHA_VALIDATION.md",
+      "b02bf5478505329027db917222e9b45b1c8221f5",
+      "100644"
+    ],
+    [
+      "data-mining-framework/LITERATURE_REVIEW.md",
+      "b8558ebf9d5567526166a27e86a5baa63fdaea02",
+      "100644"
+    ],
+    [
+      "data-mining-framework/PRIMARY_SOURCE_CATALOG.md",
+      "4d3f1fce77a41493501069a9505e902c45f2bf3a",
+      "100644"
+    ],
+    [
+      "data-mining-framework/README.md",
+      "614ae8e442b63d468a7bb8dd411d57ab05c7d155",
+      "100644"
+    ],
+    [
+      "data-mining-framework/pyproject.toml",
+      "c5141b424e6b825ccd7be72e9b337be6750be844",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/__init__.py",
+      "baccd52dc4d6b4181c6da24771ade8be626e9a8b",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/_typing.py",
+      "863e98a74fbdb2873bdc78878e21202cd8056e39",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/artifact.py",
+      "0e6f93023dfbb1fb6bc86495be75f281f0252b26",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/cli.py",
+      "618af52e4d9c6e926ccc0cbbae2037a3bcb724be",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/diagnostics.py",
+      "9cc46300ec125226ddf93ac2654389e1bcd6e66c",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/expressions.py",
+      "cc5ea3457592cd5052aa2fb7ab203e3495d9333c",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/inference.py",
+      "1d3e4137678fba58d31b79566d5cffd338f40a44",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/ledger.py",
+      "ddff3090752d10c68399cea117d977deeb532543",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/py.typed",
+      "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/reporting.py",
+      "9322b7fb22fb3bffbab3edd3a5e44c665d55dc37",
+      "100644"
+    ],
+    [
+      "data-mining-framework/src/invest_mining/search.py",
+      "a29c456a3d79db924776e7c588c1696582818d81",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/conftest.py",
+      "f22892a57326b46fd568301feb5d3adf80ad92c3",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_cli.py",
+      "7e3e80f125ec4250581fa81e5bd5c77d8279cd2c",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_coverage_mining.py",
+      "0e298ddb4f6dc6243309362432fa8ea0340db55d",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_diagnostics.py",
+      "7658cb2a65c0065aae98d4131a0a467e27e1f039",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_evidence.py",
+      "32849416807e7d9987bbe3c28980e9e8267fad0c",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_expressions.py",
+      "bbceb14b08bfda33a3f76e6faed9bae502d581e4",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_ledger.py",
+      "4166d4082632d9e37a147dca6b009e7c52d03a24",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_reporting.py",
+      "9b801218cd234efcf1b8003739ae772ca9992487",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_scale_check.py",
+      "7402a294974ceb5558703b7c4d39b463add8fe3c",
+      "100644"
+    ],
+    [
+      "data-mining-framework/tests/test_search_and_inference.py",
+      "de5227893503e6f5af60bcc0eb069773e8dfed3f",
+      "100644"
+    ],
+    [
+      "data-pipeline/README.md",
+      "b6a7bfbaa64c365741a09f52a9e8b1555cfdad6d",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/README.md",
+      "5728bfe50ed082fa5551ca93f3d77b43dc54259f",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/pyproject.toml",
+      "b903570376b0ee54dcf09fa474642a70b4462ac9",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/__init__.py",
+      "81ea032ff0bc4706e52ac7e09cf2d721f0328a4f",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/_typing.py",
+      "863e98a74fbdb2873bdc78878e21202cd8056e39",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/bundle.py",
+      "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/cleaning.py",
+      "b026db3cae4af4539ff6ecbac03d1cbffee6c4d0",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/cli.py",
+      "6a0e810bd43914bbc445a11c79c87b396fedda71",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/pit.py",
+      "420c54dc3d9da263b282352c9d4842f6be32e5f8",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/py.typed",
+      "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/schemas.py",
+      "a80f904a1fa37da49f61f2087f17b63fdb99c078",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/sources.py",
+      "fd143b1d2d96c0b264bd5b20277b27527062a567",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/testing.py",
+      "eceedbe2d876a54d484704b98b0de432240c2f5a",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/src/invest_data/yahoo.py",
+      "a2ef989b11b83298d51f9b44fbdfe8b42f52a163",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_bundle.py",
+      "184c4f2ca4c848f0d614da168f77b34125208aa4",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_cleaning_and_sources.py",
+      "5764643ff2f7d7f1912148c6f41eebc79a77a121",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_coverage_data_cli.py",
+      "26d773b8eed0b5543856d5b52325d0d734bfb3e8",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_coverage_schemas.py",
+      "f38e4281f64737d479d257bf0fc0bfc8e714f738",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_coverage_sources_and_pit.py",
+      "5d3cebc40d2b197d1231dc4891c8d068ce240383",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_dataset_keys.py",
+      "2e3af1580707392badabe4bf32578dc79ccd7c0e",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_point_in_time.py",
+      "85418cc40a41523aeccea7bf4ade28e70be8a06e",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_signal_metadata.py",
+      "821f4e4667e8fc33b4d3c2b3fb1dcdcc7c8e104e",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_yahoo.py",
+      "e70a13c1fb223ce3a80a52482ffc94f3e5b811a3",
+      "100644"
+    ],
+    [
+      "data-pipeline/data-preparation/tests/test_yahoo_symbols.py",
+      "4372a9d28cb4796d7783d7eb25ccccfae7d17538",
+      "100644"
+    ],
+    [
+      "docs/ARCHITECTURE.md",
+      "992f90f015c695927f1c8e4bab686fc0bf152f89",
+      "100644"
+    ],
+    [
+      "docs/CLAUDE_WORKFLOW.md",
+      "61ea6d368a2cae6dc136fa527df1dcdf86e92ac1",
+      "100644"
+    ],
+    [
+      "docs/DATA_CONTRACT.md",
+      "09b2545f2c3a67c48853005acb86bde393923cf6",
+      "100644"
+    ],
+    [
+      "docs/GPT_OPENAI_ROUTINES.md",
+      "a43cf98daa27940b17cee7067e17a2326d1c4359",
+      "100644"
+    ],
+    [
+      "docs/HISTORICAL_BASELINE.md",
+      "baa6e19438c1e67543f6e986230efbae8c520f4e",
+      "100644"
+    ],
+    [
+      "docs/QUANTILE_ANALYSIS.md",
+      "0c98e844cc1da6dbc6c41cc2a50cb08f920f96cb",
+      "100644"
+    ],
+    [
+      "docs/REPORTING.md",
+      "648df723460b75355cfa274d9fc99f302f0faabd",
+      "100644"
+    ],
+    [
+      "docs/audits/README.md",
+      "6af3296aaed2407919db22c4714116daeac1fce3",
+      "100644"
+    ],
+    [
+      "docs/audits/bug-fix-decisions.md",
+      "44ec0855a5339ad184d342063c5b2bdf058e3a81",
+      "100644"
+    ],
+    [
+      "docs/audits/bug-fix.md",
+      "35a582346e33b0bfd41e73259c5e2dd8cee39659",
+      "100644"
+    ],
+    [
+      "docs/audits/claude/README.md",
+      "a033d919e4ac59eb4c13c55ddbf78db03b1f97df",
+      "100644"
+    ],
+    [
+      "docs/audits/claude/coverage.md",
+      "4ec054ef29ab40ec617250b5cb60bf0c8055baf3",
+      "100644"
+    ],
+    [
+      "docs/audits/claude/findings.md",
+      "107af2c28fe051b7aae59a820573957665286edd",
+      "100644"
+    ],
+    [
+      "docs/audits/claude/gpt.md",
+      "b547b64fa82ae39ed6142f267121b5f8f8fab6e5",
+      "100644"
+    ],
+    [
+      "docs/audits/claude/recommendations.md",
+      "d846da5fa2719db5eda4700f48d679f4e3def0df",
+      "100644"
+    ],
+    [
+      "docs/audits/docs-audit.md",
+      "260ec56f9c9ab463c940b0ac5e4aaa1674dbdfe4",
+      "100644"
+    ],
+    [
+      "docs/audits/ideas.md",
+      "ebae45b9592b03f4c3ba8cbf1488b789f62980e9",
+      "100644"
+    ],
+    [
+      "docs/audits/open-bugs.md",
+      "0c8a824c0bdd03bd8bcf15534fc51c98c20ed5f8",
+      "100644"
+    ],
+    [
+      "docs/reviews/README.md",
+      "9bd17360f86040cdcfed8d8b4adea50b04c6f64a",
+      "100644"
+    ],
+    [
+      "ledgers/yahoo-test.jsonl",
+      "3cce23c7c92b1f4fa4ed1bc75ab7e4f11317523e",
+      "100644"
+    ],
+    [
+      "pyproject.toml",
+      "99fb7ad4aa0aa7cc65a2fa880832a1c012fc930e",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/README.md",
+      "322d17f9d320942f69666345d914466df0e5093e",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/data/benchmark/manifest.json",
+      "06a08c4400145564465bd3d8956191a59fc0fd7b",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/data/market/manifest.json",
+      "475a5dfb8b118909008573fd44c6716700e50de1",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/config.json",
+      "f2c8645460bb43d4020ec35763b0d6e6410869a7",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/figures/diagnostics.png",
+      "4fc609c35dae6a08c152cd323e976d3c4e00d4c5",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/figures/equity_drawdown.png",
+      "eb077b9b5fff6aadb7f4d265ea69062c8d8f9997",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/figures/scenarios.png",
+      "03d4e23cd902943b186173f6f4b2787c941fed0e",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/manifest.json",
+      "dffbd1c84a8c8dc7fe1bfc4322b56b3b7d4268a7",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/metrics.json",
+      "41e4f9c1d7f4321ad2241150629f233ab24200bf",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/report.md",
+      "828e480c36bef4f23a6516fd3151e89c142ae200",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/statistics.json",
+      "370e1007111b15f48711ae441bc42ef21ad560d7",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/tables/scenarios.csv",
+      "66254000961b61147dbfa8f86cddf0350fb55d05",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/eval/verdict.json",
+      "5ea1c8b74be6afc40c086b0b7b37f5382a8139b6",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/config.json",
+      "d0fe3533dd3ba5bb567703dff118927adce26aba",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/ic.png",
+      "30409e5f830b1f87c70e3269f9ad3901c46e9eb4",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/figures/quantiles.png",
+      "72d17c181f08edc3bd3ce4bcb852176b9c5d29cf",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/metrics.json",
+      "e2b5065c74e1375168e82f95b6089077e16050d6",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/daily_ic.csv",
+      "881fa2a36b240dc085d91da822d20abd844d2027",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/diagnostics/tables/tail_returns.csv",
+      "be48d864cf9b53cb419fb04b65bde8b2abc1dae2",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/mining/factor.json",
+      "f0b69b34df752b90b9c04aa85f00fa607595599f",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/signals/manifest.json",
+      "4dd1c9efedab6d77815e8cf2690dcaa7615acd06",
+      "100644"
+    ],
+    [
+      "runs/yahoo-test/2026-10-07/snapshot/snapshot.json",
+      "0e9548b4f97b5867d47dedbdbd95e7087f0a9b14",
+      "100644"
+    ],
+    [
+      "scripts/check_coverage_floors.py",
+      "b469ae3184219c852847ac87fe470a8a02900376",
+      "100644"
+    ],
+    [
+      "scripts/check_markdown_links.py",
+      "a77add6237d32c2f05840b7834d022467bbd355e",
+      "100644"
+    ],
+    [
+      "scripts/historical_workflow.sh",
+      "82055dc6afe2646e23089a2bcdc2b633367dc73a",
+      "100755"
+    ],
+    [
+      "scripts/save_run.py",
+      "d2c33645772df22ad244c7d92cce7c7e7fdf3f88",
+      "100644"
+    ],
+    [
+      "scripts/sp100_members.txt",
+      "65a13e475da1da872420679b794943fb91c64e4c",
+      "100644"
+    ],
+    [
+      "scripts/synthetic_workflow.sh",
+      "09a0e78a5428b9a2791dc220b28958c4a3cd485e",
+      "100755"
+    ],
+    [
+      "strategy-evaluation/METRICS.md",
+      "5cff2a1e93c457902a6cc1ff8feb3af951e41096",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/README.md",
+      "ca93dad0089b3c25e1cdf4370eb43a5c0af08ef4",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/examples/quantile_long_short.json",
+      "cbe0d7b22eb6c25198d74d83297924582a1c0a82",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/pyproject.toml",
+      "b593c4601b42b7dbc47255e42252e8e35a32742f",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/__init__.py",
+      "eb517e1412c20b5d64bb62945936f1d4447ec669",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/cli.py",
+      "fb368d273d0bca62f52ff0ae6bc433764aa40f61",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/config.py",
+      "9e4ad8f597c09dca898f70c1a14c14759aef33dc",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/engine.py",
+      "ba2bd13960eedf5e742706dde0f90acadb6560d6",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/metrics.py",
+      "fef2c798d20746c2ffff540fb40d3a4755835733",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/py.typed",
+      "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/quantiles.py",
+      "ae9c8f21c27525b99f41e8f48b558d1d439a3324",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/reporting.py",
+      "0810f8e8c86dbd645e695b0b9c81f34037138d03",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/robustness.py",
+      "459f64e681e6c2bbcf24f0ee1c2386646a928f70",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/stats.py",
+      "29b78494e27dc41cf967332c49084f0e37772aa4",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/strategies.py",
+      "d5bb30c3d156248aadf5c8055cfce743b899fdc0",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/src/invest_evaluation/validation.py",
+      "0a83f278bb48f1a87f89edf8f7cce1ddc214e9bb",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/conftest.py",
+      "1bf40269e7f48e547dfa03d512ca37999dc6fca3",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_benchmark_delistings.py",
+      "54b36f56320d59db9a744c41f0766f5ff096ff39",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_config.py",
+      "c414a7390315cec7bc80ee60e5f640f0c1c23cb8",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_coverage_evaluation.py",
+      "332bd6f387f1101540392d757426de0b6d159723",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_engine.py",
+      "a9411fc5cb2b3c57fb5f918f7f32c8f4cdafe6c0",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_metrics.py",
+      "5fbb53ae18eb86c5b9e1d47a9b2808e0b36e7d1f",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_quantiles.py",
+      "7bef11bf398e844820594b734208b5a2c4dd4b97",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_sparse_signals.py",
+      "5fc109ca6b6c874737aafe2a957fe5a1caf94567",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_stats_and_cli.py",
+      "cca968d4819dc078f1775a15d4b24360c4710827",
+      "100644"
+    ],
+    [
+      "strategy-evaluation/tests/test_validation.py",
+      "1fd78c81adf41b20b222fc80eb7e3fbaf7e74820",
+      "100644"
+    ],
+    [
+      "tests/test_check_coverage_floors.py",
+      "98be61be0e0f9d02df6837acaf3b807443c5c24a",
+      "100644"
+    ],
+    [
+      "tests/test_markdown_links.py",
+      "ac801770e35bc79a3c90b2bc3f9ee6a45a8ac693",
+      "100644"
+    ],
+    [
+      "tests/test_pipeline.py",
+      "ac828d2d056c1f2608a7fd93e90bfd09bdc91260",
+      "100644"
+    ],
+    [
+      "tests/test_quantile_consistency.py",
+      "8295679fbde48c5ac1d4781c9f812273f65b327c",
+      "100644"
+    ],
+    [
+      "tests/test_save_run.py",
+      "f266a908918ecf4e546185adf269894360f8c092",
+      "100644"
+    ],
+    [
+      "tests/type_checks/check_closed_sets.py",
+      "76f524bdd62cd4e4533b566502fd51a3134de456",
+      "100644"
+    ],
+    [
+      "uv.lock",
+      "e9daf12b3804bb615babda39ac3097b30cc17168",
+      "100644"
+    ]
+  ],
+  "scope": {
+    "tracked_files": 159,
+    "unread_lines": 39441,
+    "unread_paths": 124,
+    "unknown_line_counts": 5,
+    "added_current_semantic_lines": 854
+  },
+  "reading": {
+    "date": "2026-11-28",
+    "field": "performance",
+    "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+    "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+    "planned_percent": [
+      70,
+      30
+    ],
+    "actual_percent": [
+      69.84,
+      30.16
+    ],
+    "primary_discretionary_lines": [
+      352,
+      152
+    ],
+    "mandatory_lines": 829,
+    "new_verified_distinct_root_causes": [
+      1,
+      0
+    ],
+    "pooled_rates_per_1000_lines": [
+      1.34499,
+      0.0
+    ],
+    "pooled_denominators": [
+      1487,
+      450
+    ],
+    "comparable_visits": 3,
+    "next_planned_percent": [
+      70,
+      30
+    ],
+    "evidence": "2026-11-28-performance/evidence.json",
+    "selection": {
+      "seed": "4c0d617c974a763f9f8f3bc12947409d1ac8da48216a58e4f2c41d85a0735141",
+      "eligible": [
+        "audits/gpt/runner/test_guards.py",
+        "strategy-evaluation/tests/test_stats_and_cli.py"
+      ],
+      "draw": "strategy-evaluation/tests/test_stats_and_cli.py",
+      "rule": "SHA-256 Berlin date modulo sorted eligible files with unread current ranges",
+      "index": 1,
+      "lens": "Verify missingness and count propagation into statistical output, including explicit human-readable DSR metadata and genuine independently declared expectations."
+    },
+    "ranges": [
+      {
+        "bucket": "exploitation",
+        "path": "audits/gpt/runner/runner_workload.py",
+        "ranges": [
+          [
+            66,
+            149
+          ],
+          [
+            547,
+            622
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26"
+      },
+      {
+        "bucket": "exploitation",
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "ranges": [
+          [
+            699,
+            802
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+      },
+      {
+        "bucket": "exploitation",
+        "path": "data-mining-framework/src/invest_mining/inference.py",
+        "ranges": [
+          [
+            37,
+            77
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "1d3e4137678fba58d31b79566d5cffd338f40a44"
+      },
+      {
+        "bucket": "exploitation",
+        "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+        "ranges": [
+          [
+            200,
+            216
+          ],
+          [
+            270,
+            299
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+      },
+      {
+        "bucket": "exploration",
+        "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+        "ranges": [
+          [
+            1,
+            152
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "cca968d4819dc078f1775a15d4b24360c4710827"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "audits/gpt/runner/README.md",
+        "ranges": [
+          [
+            65,
+            81
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "audits/gpt/runner/CONTRACT.md",
+        "ranges": [
+          [
+            139,
+            152
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "audits/gpt/runner/test_guards.py",
+        "ranges": [
+          [
+            3463,
+            3564
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "scripts/synthetic_workflow.sh",
+        "ranges": [
+          [
+            1,
+            37
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+        "ranges": [
+          [
+            234,
+            260
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "6a0e810bd43914bbc445a11c79c87b396fedda71"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+        "ranges": [
+          [
+            495,
+            511
+          ],
+          [
+            585,
+            629
+          ],
+          [
+            844,
+            854
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+        "ranges": [
+          [
+            94,
+            102
+          ],
+          [
+            223,
+            271
+          ],
+          [
+            427,
+            475
+          ],
+          [
+            490,
+            562
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "a80f904a1fa37da49f61f2087f17b63fdb99c078"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/search.py",
+        "ranges": [
+          [
+            56,
+            64
+          ],
+          [
+            143,
+            197
+          ],
+          [
+            231,
+            270
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "a29c456a3d79db924776e7c588c1696582818d81"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/src/invest_mining/cli.py",
+        "ranges": [
+          [
+            446,
+            481
+          ],
+          [
+            820,
+            872
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "618af52e4d9c6e926ccc0cbbae2037a3bcb724be"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "data-mining-framework/tests/test_scale_check.py",
+        "ranges": [
+          [
+            657,
+            693
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+        "ranges": [
+          [
+            174,
+            208
+          ],
+          [
+            221,
+            255
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "29b78494e27dc41cf967332c49084f0e37772aa4"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+        "ranges": [
+          [
+            320,
+            337
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": "tests/test_pipeline.py",
+        "ranges": [
+          [
+            135,
+            175
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260"
+      },
+      {
+        "bucket": "mandatory_callers_contracts",
+        "path": ".github/workflows/ci.yml",
+        "ranges": [
+          [
+            11,
+            30
+          ]
+        ],
+        "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+        "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+      }
+    ],
+    "helper_lines": "not counted",
+    "research": "not scheduled"
+  },
+  "findings": [
+    {
+      "id": "GA-2026-11-28-1",
+      "fingerprint": "benchmark:audits/gpt/runner/runner_workload.py:non-finite-json-accepted-and-normalized",
+      "kind": "benchmark output validation",
+      "severity": "low",
+      "priority": "P3",
+      "status": "new/open",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "discovery_bucket": "exploitation",
+      "confidence": "high parser and static; full runner unexecuted",
+      "evidence_label": "verified_static_contract_gap_with_standalone_parser_controls",
+      "title": "Semantic benchmark comparator accepts forbidden JSON numeric literals",
+      "expected": "Invalidate compared JSON and JSONL that contain bare NaN or Infinity; valid finite/null output remains comparable.",
+      "observed": "Default loads/dumps in both branches preserves JSON extensions as canonical bytes. Matching invalid files can pass warm-up equality.",
+      "impact": "Timing can be included for repeated corrupted artifacts. No default producer corruption or affected timing was observed.",
+      "correction": "Reject bare nonfinite constants and declared finite-range overflow in both JSON branches before normalization; surface path-specific failure.",
+      "acceptance": "Two untouched-run failures for invalid warm-up and repeated sample JSON/JSONL with a valid finite/null control and changed substantive record control. Retain failed records and exclude from timing summaries.",
+      "locations": [
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/audits/gpt/runner/runner_workload.py#L66-L106",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/audits/gpt/runner/runner_workload.py#L573-L608",
+        "https://github.com/sasasqt/invest/blob/c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6/data-pipeline/data-preparation/src/invest_data/bundle.py#L699-L722"
+      ],
+      "related": [
+        "BH-2026-10-19-2 (different producer/reader path)",
+        "GA-2026-11-14-1 (different format)"
+      ],
+      "verifier_status": "Blind agree after independent stdlib controls. No substantive disagreement.",
+      "first_seen": "2026-11-28",
+      "evidence": "2026-11-28-performance/evidence.json",
+      "history": [
+        {
+          "date": "2026-11-28",
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "status": "new/open",
+          "evidence": "2026-11-28-performance/evidence.json"
+        }
+      ]
+    }
+  ],
+  "candidate_records": {
+    "initial": "2026-11-28-performance/reviewer1-initial.json",
+    "independent": "2026-11-28-performance/reviewer2.md",
+    "comparison": "2026-11-28-performance/review-comparison.md"
+  },
+  "execution": {
+    "benchmarks": 0,
+    "fresh_product_commands": 0,
+    "remote_jobs_dispatched": 0,
+    "pending_jobs": [],
+    "standard_library_command": "env -u PYTHONPATH python -I -S json-control.py",
+    "standalone_python": "CPython 3.12.14",
+    "planned_minutes": {
+      "setup": 20,
+      "field": 70,
+      "reporting": 30
+    },
+    "elapsed_to_preparation_seconds": 506,
+    "helper_elapsed": "not formally measured",
+    "account_usage": "unavailable"
+  },
+  "continuity": {
+    "prior_start_only": "2026-11-26",
+    "prior_final_missing": "2026-11-27",
+    "terminal_outcomes": "unknown",
+    "previous_26_working_notes": "Local incomplete source-analysis artifacts observed; no final publication or unfinished write inferred.",
+    "own_map": "history-rewrite-2026-11-02/commit-map.json"
+  }
+}

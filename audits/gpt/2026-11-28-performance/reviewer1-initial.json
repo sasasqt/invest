@@ -1,0 +1,27 @@
+{
+  "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "at": "audits/gpt/runner/runner_workload.py:66–106,573–608",
+  "candidates": [
+    {
+      "id": "performance-json-nonfinite",
+      "initial": "keep low comparator contract gap, no normal producer or performance claim",
+      "expected": "The pinned semantic gate requires compared files to be parseable JSON/JSONL and corrupted outputs to fail; an identical pair of invalid JSON files cannot contribute timings.",
+      "actual": "The comparator uses default json.loads/dumps for JSON and JSONL, preserving NaN/Infinity extensions as canonical bytes. Equal invalid artifacts can therefore match and pass if all other files/figures are present.",
+      "controls": "Synthetic literal NaN/±Infinity and valid null/finite. Two trials using isolated stdlib functions only; production end-to-end still pending.",
+      "confidence": "High in parser semantics and static acceptance path",
+      "counterfactual": "An authoritative contract explicitly permitting those extensions in all compared output, or a mandatory strict gate before sampling, would change disposition."
+    },
+    {
+      "id": "GA-2026-11-14-1",
+      "initial": "known gzip zero-byte issue retained, no new ID or runtime claim"
+    },
+    {
+      "id": "OPEN-EXPECTED-ARTIFACT-GATE-001",
+      "initial": "retain as expected-producer control, drop calling it a newly discovered W5 bug because README expressly claims only repeatability"
+    },
+    {
+      "id": "synth-S trial undercount",
+      "initial": "drop if full proposal count emitted, consumed and recorded; need qualified runtime assertions with self-consistent incorrect-count negative control"
+    }
+  ]
+}

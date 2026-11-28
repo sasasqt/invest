@@ -1,28 +1,26 @@
 {
-  "run_id": "73eef481-80fc-832d-907f-3292605f87b8",
-  "planned_percent": [
-    70,
-    30
-  ],
-  "actual_primary_unique_lines": [
-    888,
-    172
-  ],
-  "new_verified_distinct_root_causes": [
-    0,
-    0
-  ],
+  "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+  "planned_percent": {
+    "exploitation": 70,
+    "exploration": 30
+  },
+  "actual_primary_unique_lines": {
+    "exploitation": 352,
+    "exploration": 152,
+    "mandatory_callers_contracts": 829
+  },
+  "new_verified_distinct_root_causes": 1,
   "evidence_scope": "2026-11-21-performance/evidence.json",
-  "pooled_rates_per_1000_lines": [
-    0.8810572687224669,
-    0
-  ],
+  "pooled_rates_per_1000_lines": {
+    "exploitation": 1.34499,
+    "exploration": 0.0
+  },
   "runs": 2,
   "completed_full_audits": 0,
-  "next_planned_percent": [
-    70,
-    30
-  ],
+  "next_planned_percent": {
+    "exploitation": 70,
+    "exploration": 30
+  },
   "last_four_completed_runs": [
     {
       "run_id": "GA-2026-10-31T001744Z",
@@ -47,26 +45,22 @@
       "confirmed_scope": "GA-2026-11-02-1 static contract/renderer omission only; peer origin RA4 retained; zero runtime confirmations"
     }
   ],
-  "helper_overlap": "tracked in coverage, not added to primary reading denominators or root counts",
+  "helper_overlap": null,
   "selection": {
-    "date_seed": "2026-11-21",
-    "sha256": "82f092903953279ea0c40b5afd8d0b2a07b20e89fb811fc07bdd1596b1ce6ccd",
-    "algorithm": "random.Random(int.from_bytes(sha256(date UTF8).digest(), big)).choice(sorted eligible set)",
+    "seed": "4c0d617c974a763f9f8f3bc12947409d1ac8da48216a58e4f2c41d85a0735141",
     "eligible": [
-      "data-mining-framework/src/invest_mining/reporting.py",
-      "data-mining-framework/tests/test_reporting.py",
-      "strategy-evaluation/src/invest_evaluation/reporting.py",
-      "strategy-evaluation/tests/test_quantiles.py"
+      "audits/gpt/runner/test_guards.py",
+      "strategy-evaluation/tests/test_stats_and_cli.py"
     ],
-    "selected": "data-mining-framework/tests/test_reporting.py",
-    "followed": "data-mining-framework/src/invest_mining/reporting.py",
-    "lens": "saved numeric tables, overlapping diagnostic cohorts and missingness in plots",
-    "peer_uncertainty": "No compatible current per-blob exact-range peer map; do not claim peer absence."
+    "draw": "strategy-evaluation/tests/test_stats_and_cli.py",
+    "rule": "SHA-256 Berlin date modulo sorted eligible files with unread current ranges",
+    "index": 1,
+    "lens": "Verify missingness and count propagation into statistical output, including explicit human-readable DSR metadata and genuine independently declared expectations."
   },
-  "actual_percent": [
-    83.77358490566037,
-    16.22641509433962
-  ],
+  "actual_percent": {
+    "exploitation": 69.84,
+    "exploration": 30.16
+  },
   "limitations": "Required producer/consumer tracing expanded exploitation beyond planned70%; actual ranges retained rather than relabelled to meet quota.",
   "rotation_v3_visits": [
     {
@@ -4116,8 +4110,332 @@
       "helper_overlap_lines": 716,
       "new_cumulative_semantic_lines": 1414,
       "helper_unique_lines_separate": 1483
+    },
+    {
+      "date": "2026-11-28",
+      "field": "performance",
+      "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+      "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+      "planned_percent": [
+        70,
+        30
+      ],
+      "actual_percent": [
+        69.84,
+        30.16
+      ],
+      "primary_discretionary_lines": [
+        352,
+        152
+      ],
+      "mandatory_lines": 829,
+      "new_verified_distinct_root_causes": [
+        1,
+        0
+      ],
+      "pooled_rates_per_1000_lines": [
+        1.34499,
+        0.0
+      ],
+      "pooled_denominators": [
+        1487,
+        450
+      ],
+      "comparable_visits": 3,
+      "next_planned_percent": [
+        70,
+        30
+      ],
+      "evidence": "2026-11-28-performance/evidence.json",
+      "selection": {
+        "seed": "4c0d617c974a763f9f8f3bc12947409d1ac8da48216a58e4f2c41d85a0735141",
+        "eligible": [
+          "audits/gpt/runner/test_guards.py",
+          "strategy-evaluation/tests/test_stats_and_cli.py"
+        ],
+        "draw": "strategy-evaluation/tests/test_stats_and_cli.py",
+        "rule": "SHA-256 Berlin date modulo sorted eligible files with unread current ranges",
+        "index": 1,
+        "lens": "Verify missingness and count propagation into statistical output, including explicit human-readable DSR metadata and genuine independently declared expectations."
+      },
+      "ranges": [
+        {
+          "bucket": "exploitation",
+          "path": "audits/gpt/runner/runner_workload.py",
+          "ranges": [
+            [
+              66,
+              149
+            ],
+            [
+              547,
+              622
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "8a48e64dacc6645cad5a94e13d33de4c8d01aa26"
+        },
+        {
+          "bucket": "exploitation",
+          "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+          "ranges": [
+            [
+              699,
+              802
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+        },
+        {
+          "bucket": "exploitation",
+          "path": "data-mining-framework/src/invest_mining/inference.py",
+          "ranges": [
+            [
+              37,
+              77
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "1d3e4137678fba58d31b79566d5cffd338f40a44"
+        },
+        {
+          "bucket": "exploitation",
+          "path": "strategy-evaluation/src/invest_evaluation/cli.py",
+          "ranges": [
+            [
+              200,
+              216
+            ],
+            [
+              270,
+              299
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "fb368d273d0bca62f52ff0ae6bc433764aa40f61"
+        },
+        {
+          "bucket": "exploration",
+          "path": "strategy-evaluation/tests/test_stats_and_cli.py",
+          "ranges": [
+            [
+              1,
+              152
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "cca968d4819dc078f1775a15d4b24360c4710827"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "audits/gpt/runner/README.md",
+          "ranges": [
+            [
+              65,
+              81
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "c5b197ca2a268f06c24d56ed2429595ba2055e8b"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "audits/gpt/runner/CONTRACT.md",
+          "ranges": [
+            [
+              139,
+              152
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "cfb25f94de6d731483026570a51ff66a4b6fdecd"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "audits/gpt/runner/test_guards.py",
+          "ranges": [
+            [
+              3463,
+              3564
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "e1e3f3e6f751957a923faa853d5283cceb825e8b"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "scripts/synthetic_workflow.sh",
+          "ranges": [
+            [
+              1,
+              37
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "09a0e78a5428b9a2791dc220b28958c4a3cd485e"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/cli.py",
+          "ranges": [
+            [
+              234,
+              260
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "6a0e810bd43914bbc445a11c79c87b396fedda71"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+          "ranges": [
+            [
+              495,
+              511
+            ],
+            [
+              585,
+              629
+            ],
+            [
+              844,
+              854
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "d8e9ef90f7ab5440c8a8fc8900469e1005b2b994"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+          "ranges": [
+            [
+              94,
+              102
+            ],
+            [
+              223,
+              271
+            ],
+            [
+              427,
+              475
+            ],
+            [
+              490,
+              562
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "a80f904a1fa37da49f61f2087f17b63fdb99c078"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/search.py",
+          "ranges": [
+            [
+              56,
+              64
+            ],
+            [
+              143,
+              197
+            ],
+            [
+              231,
+              270
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "a29c456a3d79db924776e7c588c1696582818d81"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/src/invest_mining/cli.py",
+          "ranges": [
+            [
+              446,
+              481
+            ],
+            [
+              820,
+              872
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "618af52e4d9c6e926ccc0cbbae2037a3bcb724be"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "data-mining-framework/tests/test_scale_check.py",
+          "ranges": [
+            [
+              657,
+              693
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "7402a294974ceb5558703b7c4d39b463add8fe3c"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "strategy-evaluation/src/invest_evaluation/stats.py",
+          "ranges": [
+            [
+              174,
+              208
+            ],
+            [
+              221,
+              255
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "29b78494e27dc41cf967332c49084f0e37772aa4"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "strategy-evaluation/src/invest_evaluation/reporting.py",
+          "ranges": [
+            [
+              320,
+              337
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "0810f8e8c86dbd645e695b0b9c81f34037138d03"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": "tests/test_pipeline.py",
+          "ranges": [
+            [
+              135,
+              175
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "ac828d2d056c1f2608a7fd93e90bfd09bdc91260"
+        },
+        {
+          "bucket": "mandatory_callers_contracts",
+          "path": ".github/workflows/ci.yml",
+          "ranges": [
+            [
+              11,
+              30
+            ]
+          ],
+          "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+          "blob": "a23c929a5e146d1695e26a18076ef8dc4b8a008d"
+        }
+      ],
+      "helper_lines": "not counted",
+      "research": "not scheduled"
     }
   ],
-  "date": "2026-11-25",
+  "date": "2026-11-28",
   "note": "Wednesday evaluation visit; research not scheduled."
 }
