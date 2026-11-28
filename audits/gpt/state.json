@@ -8093,17 +8093,19 @@
         },
         "prepared_utc": "2026-11-28T02:13:01Z",
         "elapsed_to_preparation_seconds": 506,
-        "publication_status": "prepared_pending_readback",
+        "publication_status": "published_verified",
         "completed_steps": [
           "Methods verified",
           "Started checkpoint verified",
           "Source, gates and carried checks refreshed",
           "Bounded field source trace and independent controls verified",
-          "Scoped report prepared"
+          "Scoped report prepared",
+          "Verified guarded report publication"
         ],
-        "remaining_steps": [
-          "Verify publication"
-        ]
+        "remaining_steps": [],
+        "verified_report_commit": "edddcbadc7353ff180f3f133a9710f92a8a084e8",
+        "completed_utc": "2026-11-28 02:14:32 UTC",
+        "local_publication_receipt": "2026-11-28-performance/publication.json"
       }
     ],
     "shared_controls": {
@@ -8792,17 +8794,19 @@
     },
     "prepared_utc": "2026-11-28T02:13:01Z",
     "elapsed_to_preparation_seconds": 506,
-    "publication_status": "prepared_pending_readback",
+    "publication_status": "published_verified",
     "completed_steps": [
       "Methods verified",
       "Started checkpoint verified",
       "Source, gates and carried checks refreshed",
       "Bounded field source trace and independent controls verified",
-      "Scoped report prepared"
+      "Scoped report prepared",
+      "Verified guarded report publication"
     ],
-    "remaining_steps": [
-      "Verify publication"
-    ]
+    "remaining_steps": [],
+    "verified_report_commit": "edddcbadc7353ff180f3f133a9710f92a8a084e8",
+    "completed_utc": "2026-11-28 02:14:32 UTC",
+    "local_publication_receipt": "2026-11-28-performance/publication.json"
   },
   "publication_history": [
     {
@@ -9755,13 +9759,21 @@
         "audits/gpt/2026-11-25.md"
       ],
       "elapsed_to_verified_publication_seconds": 974
+    },
+    {
+      "status": "published_verified",
+      "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+      "report": "2026-11-28.md",
+      "report_commit": "edddcbadc7353ff180f3f133a9710f92a8a084e8",
+      "receipt": "2026-11-28-performance/publication.json"
     }
   ],
   "publication_current_run": {
+    "status": "published_verified",
     "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
-    "status": "prepared",
     "report": "2026-11-28.md",
-    "base": "dbc176894bd3a1ece0646c6b17dd63e651ed6703"
+    "report_commit": "edddcbadc7353ff180f3f133a9710f92a8a084e8",
+    "receipt": "2026-11-28-performance/publication.json"
   },
   "remaining_work_current_visit": "Run paired invalid JSON/JSONL, zero-byte gzip, equal-missing artifact and consistent-wrong-trial-count controls in a qualified exact-source runtime; then establish matched software performance baseline.",
   "runtime_validation_history": [

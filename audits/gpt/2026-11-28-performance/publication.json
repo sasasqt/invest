@@ -1,0 +1,129 @@
+{
+  "date": "2026-11-28",
+  "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+  "status": "published_verified",
+  "sha": "edddcbadc7353ff180f3f133a9710f92a8a084e8",
+  "tree": "3c3af830ca6145dffd6bc1a7d095b99430599510",
+  "parent": "dbc176894bd3a1ece0646c6b17dd63e651ed6703",
+  "diff": [
+    "audits/gpt/checkpoint.json",
+    "audits/gpt/coverage-map.json",
+    "audits/gpt/coverage-map.md",
+    "audits/gpt/coverage.csv",
+    "audits/gpt/cross-check.md",
+    "audits/gpt/exploration.json",
+    "audits/gpt/findings.json",
+    "audits/gpt/findings.md",
+    "audits/gpt/state.json",
+    "audits/gpt/validation.csv",
+    "audits/gpt/2026-11-28-performance/evidence.json",
+    "audits/gpt/2026-11-28-performance/expected-controls.json",
+    "audits/gpt/2026-11-28-performance/json-control.py",
+    "audits/gpt/2026-11-28-performance/parser-control.txt",
+    "audits/gpt/2026-11-28-performance/reading.json",
+    "audits/gpt/2026-11-28-performance/review-comparison.md",
+    "audits/gpt/2026-11-28-performance/reviewer1-initial.json",
+    "audits/gpt/2026-11-28-performance/reviewer2.md",
+    "audits/gpt/2026-11-28.md"
+  ],
+  "source": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "verified_utc": "2026-11-28 02:14:32 UTC",
+  "method": "Single audit-branch parent and expected-head/non-force ref update. Full recursive path and staged blob identity checks were followed by remote commit/ref readback.",
+  "file_blobs": {
+    "audits/gpt/2026-11-28-performance/evidence.json": {
+      "size": 45428,
+      "blob": "bbc80bdbfa8a4592faff356d6f5bbfe7c5bf3a7a",
+      "sha256": "2c0c8389089491af8a3187d096f9d78d0132e17785935ea876525b3800fbf86b"
+    },
+    "audits/gpt/2026-11-28-performance/expected-controls.json": {
+      "size": 3240,
+      "blob": "1f003cb70982f5b8d50f1a0ccd4d6fea0ee81ab4",
+      "sha256": "fb6a60b650b2e930f10268733f560d121318f944f6a7a101d1bd86805b9ca344"
+    },
+    "audits/gpt/2026-11-28-performance/json-control.py": {
+      "size": 1348,
+      "blob": "a86529e02a7844ebc76debb3c8f313e62b472226",
+      "sha256": "39b2a9afd93514a86d43d27fe8cc7bf5e706e93b58a70d7e13eb9c33bd23fcef"
+    },
+    "audits/gpt/2026-11-28-performance/parser-control.txt": {
+      "size": 1486,
+      "blob": "e88f0f628665ebda8e8c10ac719fd6394e764701",
+      "sha256": "30a6578c314be395b033f079d1aef56aadf68dd5ad48f4ca1e93f86600bac1a2"
+    },
+    "audits/gpt/2026-11-28-performance/reading.json": {
+      "size": 7790,
+      "blob": "d3ec98495e75d80369193542775a3cccb0d81e59",
+      "sha256": "ed122022ea58280484e5ae5222b498e6d2e47a7462b87e8c2f207a023f62e8a3"
+    },
+    "audits/gpt/2026-11-28-performance/review-comparison.md": {
+      "size": 1971,
+      "blob": "25b51eb94ac00afeb1052670aba9a2364fb11325",
+      "sha256": "511d1e1e2a2b153c0b5aeb7283d3a3b74788763cb9e2131d148f83491dd7f4de"
+    },
+    "audits/gpt/2026-11-28-performance/reviewer1-initial.json": {
+      "size": 1703,
+      "blob": "569d642eeb1c53b5822785c544b556fb0c63fd72",
+      "sha256": "2798ab3377edab374f203746ad61ecf6be611049dd8c76a69de71888b2e43102"
+    },
+    "audits/gpt/2026-11-28-performance/reviewer2.md": {
+      "size": 7199,
+      "blob": "4030acb1748ead47efeaced68923307becd23697",
+      "sha256": "e13cbd9da7d971ddb275137eb8b1c131cec388375c38fcd72a8b9476fd873c0d"
+    },
+    "audits/gpt/2026-11-28.md": {
+      "size": 7834,
+      "blob": "f94f57076447101ee4235c1e66fe21d5927a8998",
+      "sha256": "b899aabd13d1146362d4b0bb2ee40dfbfbb631328e806ee904f1eb5f4cade7e1"
+    },
+    "audits/gpt/checkpoint.json": {
+      "size": 385355,
+      "blob": "03d4bfc9d7e5618cf18927e59e7fa341a9fedb32",
+      "sha256": "595a47241dcfc7f79952a44044355f6e73fcf50f90012e78361d2e49d21f39a4"
+    },
+    "audits/gpt/coverage-map.json": {
+      "size": 551660,
+      "blob": "1db1e03ba43cfc0b7ab5dbde36d712b839a58979",
+      "sha256": "76dfbba685e30b9e6a88fbfa3cba31aebbc1a205e899b79e97882a7bbfb84d10"
+    },
+    "audits/gpt/coverage-map.md": {
+      "size": 3356,
+      "blob": "cd215f69edf57cd3201f8827b88e783956e87849",
+      "sha256": "c892e526af13323662b0c7065c0ad32996a709e89dfa303c2649987dc5cfb82c"
+    },
+    "audits/gpt/coverage.csv": {
+      "size": 74002,
+      "blob": "f51baf7ef1eada71f8295a21a71e1bf0934be49b",
+      "sha256": "cf35b51685249e6f80de4068e3c0a82c89877513754617095660550d14fb6a0d"
+    },
+    "audits/gpt/cross-check.md": {
+      "size": 20643,
+      "blob": "5bf6d1b72abd99507b3de5747507a37b4b54441d",
+      "sha256": "65f8492cf6ab61b17c1175065c256f4844024281ec2956bd0514ea134359387d"
+    },
+    "audits/gpt/exploration.json": {
+      "size": 127850,
+      "blob": "d762eca2db5df016faafa440bbf780902bf9228c",
+      "sha256": "2be0b09f0744f769eaf689ca2e643b64e178313824a6c2bb886752cc47424e05"
+    },
+    "audits/gpt/findings.json": {
+      "size": 68191,
+      "blob": "7bbca7a628fe99c464b1724f622614ccf9d15c96",
+      "sha256": "59b0a377953e534767559be0cff6cceea16a220d09ab20274b6617adb9ad3135"
+    },
+    "audits/gpt/findings.md": {
+      "size": 13002,
+      "blob": "a3966969ba3660c4ca2faf023afe1049ad0b560a",
+      "sha256": "2e46ef3d6a465e6c1aa3175b6a20fa2a7de04332687c621141dc5d5b86cdf007"
+    },
+    "audits/gpt/state.json": {
+      "size": 385355,
+      "blob": "03d4bfc9d7e5618cf18927e59e7fa341a9fedb32",
+      "sha256": "595a47241dcfc7f79952a44044355f6e73fcf50f90012e78361d2e49d21f39a4"
+    },
+    "audits/gpt/validation.csv": {
+      "size": 29136,
+      "blob": "f2e7c140bd25e646c6ad1ba44e7c89f7b566dc7f",
+      "sha256": "f1c6b91c23bbaf64664eb80c29dd59acd8bf3fad561859ca06abe8b4a0e9830b"
+    }
+  }
+}
