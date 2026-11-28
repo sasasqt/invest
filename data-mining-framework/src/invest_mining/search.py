@@ -46,8 +46,9 @@ from invest_mining.expressions import (
 # The proposal stream: templates, random draws and selection for a seed. Change it whenever
 # the same data, seed and settings could propose or select other formulas, so that two
 # different families never share an experiment id. 2: draws the scale check refuses are
-# drawn again (BH-2026-11-10-1).
-SEARCH_VERSION = "2"
+# drawn again (BH-2026-11-10-1). 3: exact dev t ties go to the earlier trial on every CPU
+# (BH-2026-11-11-4).
+SEARCH_VERSION = "3"
 
 # Fewest confirmation dates with a rank IC for the one-shot test; with fewer it reports
 # insufficient_data, so the CLI refuses such a window before the ledger records it.
@@ -273,10 +274,18 @@ def run_search(
 def _select_family(
     ledger: pd.DataFrame, values: dict[str, pd.DataFrame], top_k: int, max_corr: float
 ) -> list[str]:
-    """Greedy by dev t-stat, skipping candidates too correlated with already chosen ones."""
+    """Greedy by dev t-stat, skipping candidates too correlated with already chosen ones.
+
+    Exact ties in ``dev_t`` (formulas that rank names identically, such as ``returns`` and
+    ``cs_rank(returns)``) go to the earlier trial, whatever the row order. The trial is the
+    second sort key so that no ties are left: NumPy's default quicksort orders ties by a
+    CPU-specific code path, so the family would depend on the machine (BH-2026-11-11-4).
+    """
     if "dev_t" not in ledger:
         return []
-    ranked = ledger[ledger["status"] == "evaluated"].sort_values("dev_t", ascending=False)
+    ranked = ledger[ledger["status"] == "evaluated"].sort_values(
+        ["dev_t", "trial"], ascending=[False, True], kind="stable"
+    )
     chosen: list[str] = []
     for text in ranked["expression"]:
         cand = values[text]
