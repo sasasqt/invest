@@ -1,0 +1,16 @@
+{
+  "run_id": "ed541142-44e4-832f-9dc3-e843300677a4",
+  "date": "2026-11-28",
+  "field": "performance",
+  "scheduled_for": "2026-11-28T02:00:00Z",
+  "started_utc": "2026-11-28T02:04:35.524898Z",
+  "source_sha": "c6c7191c2c0ed2a79bdfdaa02b9cec9c968b18f6",
+  "source_tree": "5c4c26988f925f4ff919799293cb01169113b109",
+  "output_base": "877b87b052892fc1f6cc298ccae75c55ec59d2b2",
+  "protocol_commit": "bab6ba12399787496ba1108a9a368e00f8643441",
+  "protocol_sha256": "6b9898f8c6e9ddbe0d38e38865672b022b52a5d23ae7a7891d776f45ec95ad3f",
+  "status": "started",
+  "pending_runtime_jobs": [],
+  "previous": "26 Nov start exists and final absent; 27 Nov final not observed",
+  "question": "Does the synthetic performance gate validate producer-declared bundle and signal outputs and consumers, rather than just agreement between two runs?"
+}
