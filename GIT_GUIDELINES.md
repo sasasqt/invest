@@ -66,26 +66,33 @@ git commit -m "Describe the change"
 
 The author applies the README's [three development rules](README.md#development-guidelines) before asking for review:
 
-1. **Self-review with the review ladder.** Start at round 1 and move up one round only when the current round earns it (the one exception is the extra full-diff round below): a full-diff round whose verified findings lead to non-trivial fixes (they change logic, a public interface or saved outputs, or span several functions), or a fix-commits round that finds a real defect in the fix code. Docs-, comment-, rename-, test- or formatting-only fixes never move the pull request up. A real defect is a verified finding with a regression test that fails before the fix.
+1. **Self-review with the review ladder.** Run the rounds below in order. Rounds 1 to 7 always run, except that a fix-commits round with nothing to review is recorded as "nothing to review" and does not run: round 2 or 4 when the round before it led to no fix commits, and round 6 when rounds 1 to 5 led to none. From round 7 on, the ladder stops after the first round whose verified findings are all low, rated as in [Hardening rounds](#hardening-rounds) step 2 (a round with none counts as all low): fix each of those findings with its check, then mark the pull request ready. Findings that are disproved, kept with a checked reason (step 2 of this list) or recorded as unrelated bugs (step 6 of this list) do not keep the rounds going.
 
-   | Round | Model | Effort | Scope |
-   |---|---|---|---|
-   | 1 | Opus | high | Full diff |
-   | 2 | Opus | medium | Fix commits |
-   | 3 | Fable | high | Full diff |
-   | 4 | Fable | medium | Fix commits |
-   | 5 | Fable | xhigh | Full diff |
-   | 6 | Fable | high | Fix commits |
-   | 7 | Fable | max | Full diff |
-   | 8 | Fable | xhigh | Fix commits |
+   | Round | Model | Effort | Scope | Context |
+   |---|---|---|---|---|
+   | 1 | Opus | high | Full diff | Blind |
+   | 2 | Opus | medium | Fix commits | Previous round's findings |
+   | 3 | Opus | xhigh | Full diff | Blind |
+   | 4 | Opus | high | Fix commits | Previous round's findings |
+   | 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request | Blind first, then the records of rounds 1 to 4 |
+   | 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 | Every finding and fix commit so far |
+   | 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request | The records of rounds 1 to 6 |
+   | 8 | Opus | xhigh | Fix commits | Round 7's findings |
+   | 9 | Opus | xhigh | Full diff | Blind |
+   | 10 | Opus | high | Fix commits | Previous round's findings |
+   | 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request | Blind first, then the records of rounds 1 to 10 |
+   | 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 | Every finding and fix commit so far |
+   | 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request | The records of rounds 1 to 12 |
 
-   - Each round is a `/code-review <effort>` run (or an equivalent adversarial review) with the named model. **Full diff** is the whole pull request. **Fix commits** is only the commits that fixed the previous round's findings, plus the whole functions they touch, reviewed with the previous round's findings and their outcomes.
-   - Run each full-diff round fresh: show it the earlier findings only after it has reported its own, so it does not re-check the same spots.
-   - Fable rounds may run as a subagent so the main session keeps its model.
-   - If round 8 still finds a real defect, stop and say "checkpoint due" ([RAPID_DEVELOPMENT.md §11](RAPID_DEVELOPMENT.md#11-step-back-between-milestones)). The person who requested the change chooses: redesign, a multi-agent review, or accept with the defect recorded in TODO.
+   - Each round is a `/code-review <effort>` run (or an equivalent adversarial review) with the named model. **Full diff** is the whole pull request. **Fix commits** is only the commits that fixed the previous round's findings (for round 8, round 7's), plus the whole functions they touch, reviewed with the previous round's findings and their outcomes. A **re-review** reads the whole pull request at its current head together with the named rounds' records (each finding, how it was resolved, the checks added) and the original request or issue, and checks that every finding was resolved correctly, that no fix broke something else, and that the change still does what was asked.
+   - **Fix all issues** (rounds 6 and 12): before the round, every verified finding so far that is still open, low ones included, is fixed with its check, kept with a checked reason (step 2 of this list) or recorded as unrelated (step 6 of this list); the round then reviews all fix commits since round 1 together, with every finding and its outcome.
+   - A full-diff review, including the first part of rounds 5 and 11, reports its own findings before it is shown earlier ones, so it does not re-check the same spots.
+   - Every round runs in a fresh reviewer session (a subagent that never saw the authoring conversation), never in the author's own session, so no round inherits the author's reasoning. Besides its scope and the original request, a reviewer is shown what the Context column names; a **blind** reviewer is shown earlier findings only after it has reported its own. When Fable is at its usage limit, its rounds may run on Opus at xhigh, named "Opus stand-in for Fable" in the pull request, but the pull request stays a draft until at least one of its Fable rounds has run on Fable; when the ladder would stop before that, round 7 runs again on Fable as soon as Fable may run again.
+   - If round 13's verified findings are not all low, fix them with their checks but open or keep the pull request as a draft, and list those findings and their fixes in its description. The person who requested the change chooses: redesign, more review, or accept, with any finding left unfixed recorded in TODO.
    - The same ladder applies to non-trivial pushes that answer a reviewer's comments.
-   - A bug found after the pull request was marked ready (by a reviewer or the nightly bug hunt) means the next review of that area starts at round 3.
-   - If the ladder would end after a single full-diff round, also run the next full-diff round (round 3 after round 1, round 5 after round 3), fresh, when either holds: the step 4 workflow, run on `main` and on the branch, shows any difference in metrics, verdicts or decisions, even one the change explains; or the pull request changes more than about 100 lines of source code outside tests (Markdown, run records and other generated output do not count). Check both again on the final code. If the current round's fixes earned the fix-commits round, run that first. Say in the pull request which condition triggered the extra round; climbing after it follows the usual rule.
+   - A bug found after the pull request was marked ready (by a reviewer or the nightly bug hunt) means the next review of that area skips rounds 1 and 2 and starts at round 3.
+   - A scheduled routine whose own instructions set another review rule follows them until they move to this ladder; the daily bug fix's rule is in [docs/CLAUDE_WORKFLOW.md](docs/CLAUDE_WORKFLOW.md#review-ladder).
+   - **Reviewer brief:** a round that runs as a subagent gets in its prompt the original request word for word; the round's scope (a commit range, or the whole pull request at its head) and only the earlier records the round is meant to see; the [development rules](README.md#development-guidelines), the [type rules](PYTHON_GUIDELINES.md#use-the-type-system), the [When reviewing](#when-reviewing) steps and the contracts the code must keep ([docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md) and any `CONTRACT.md` written for the code); the one scratch folder it may write, and that it commits, pushes, posts and comments nothing; and the report format: each finding with file and line, a check that fails on the current code, and a severity rated as in [Hardening rounds](#hardening-rounds) step 2.
 2. **Verify every finding.** Treat each one as a claim: reproduce it, then fix it or record why it does not hold. Keep blocking findings separate from optional cleanups.
    - A finding kept as is needs a checked reason, just as a fix needs a test. If it is the same kind of problem as a finding being fixed, ask the person who requested the change instead of deciding alone.
    - When a later pass contradicts an earlier decision, decide once and record why; do not switch the code back and forth between passes.
@@ -104,7 +111,7 @@ Green CI proves only what the tests already ask; it is not readiness on its own.
 
 ### Hardening rounds
 
-When the person who requested a change asks to make it bug free or to harden it, review and fix it in rounds. Hardening rounds take the place of the review ladder for that change: the ladder's table, its climbing rule and its round 8 "checkpoint due" stop do not apply, while steps 2 to 7 of [Before marking ready](#before-marking-ready) still do. The rounds go on until one of the stops in steps 3 and 4.
+When the person who requested a change asks to make it bug free or to harden it, review and fix it in rounds. Hardening rounds take the place of the review ladder for that change: the ladder's table, its early stop and its round 13 draft rule do not apply, while steps 2 to 7 of [Before marking ready](#before-marking-ready) still do. The rounds go on until one of the stops in steps 3 and 4.
 
 1. **Run each round with independent reviewers.** A round has up to three reviewers, run in parallel, each with its own lens, scratch folder and port range, and every safety limit of the task in its prompt (including indirect routes such as configuration files and environment variables). Reviewers run on the model and effort the requester sets for the task; otherwise on Fable at xhigh effort, or on Opus at xhigh effort when Fable cannot run, with max effort only where steps 3 and 4 ask for it. A real bug is reproducible wrong behavior: it breaks a documented contract (such as [docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md) or a `CONTRACT.md` written for the code) or the documentation, crashes, hangs, loses data or misleads. Known, deliberate and purely cosmetic items are fixed when cheap but do not keep the rounds going. Findings that step 6 of Before marking ready treats as unrelated (another class and root cause, and not needed to make the fix or its tests correct) are recorded in TODO instead of fixed here, and do not keep the rounds going either; a finding needed for the fix stays in this pull request even when it lies outside the code the requester asked to harden. A finding counts only with a check that fails on the current version and passes on the fix, and the check stays in a suite. Apply all confirmed fixes to the pull request's branch, rerun every suite, and add one line per round to the pull request description: findings by severity, checks added and pass counts.
 2. **Rate severity by outcome, not by likelihood.** In these rounds a finding is **low** only when it fails closed in a normal run with any test-only check mode switched off, where one exists (a refusal or an error exit that changes nothing outside the run's own folders), or when it lives only in that test mode, a test, a document or wording. Every other finding is at least **medium**, however unlikely its trigger: for example one that deletes or changes files it should not, exposes data or secrets, hangs, or reports a wrong number, verdict or pass as valid. The author re-rates every reviewer's finding by this rule before counting severities or calling a round all-low.
