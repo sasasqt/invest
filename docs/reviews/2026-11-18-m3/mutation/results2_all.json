@@ -1,0 +1,101 @@
+[
+ {
+  "id": "M16",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/engine.py"
+  ],
+  "target": [
+   "strategy-evaluation/tests/"
+  ],
+  "target_rc": 0,
+  "target_s": 130.9,
+  "target_tail": [
+   "........................................................................ [ 76%]",
+   "........................................................................ [ 95%]",
+   "................                                                         [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/",
+   "tests/test_pipeline.py"
+  ],
+  "wider_rc": 0,
+  "wider_s": 253.5,
+  "wider_tail": [
+   "........................................................................ [ 18%]",
+   "........................................................................ [ 36%]",
+   "........................................................................ [ 55%]",
+   "........................................................................ [ 73%]",
+   "........................................................................ [ 92%]",
+   "...............................                                          [100%]"
+  ],
+  "verdict": "SURVIVED target and wider set"
+ },
+ {
+  "id": "M17",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/robustness.py"
+  ],
+  "target": [
+   "strategy-evaluation/tests/"
+  ],
+  "target_rc": 0,
+  "target_s": 125.7,
+  "target_tail": [
+   "........................................................................ [ 76%]",
+   "........................................................................ [ 95%]",
+   "................                                                         [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/",
+   "tests/test_pipeline.py"
+  ],
+  "wider_rc": 0,
+  "wider_s": 245.4,
+  "wider_tail": [
+   "........................................................................ [ 18%]",
+   "........................................................................ [ 36%]",
+   "........................................................................ [ 55%]",
+   "........................................................................ [ 73%]",
+   "........................................................................ [ 92%]",
+   "...............................                                          [100%]"
+  ],
+  "verdict": "SURVIVED target and wider set"
+ },
+ {
+  "id": "M18",
+  "edits": [
+   "data-mining-framework/src/invest_mining/diagnostics.py",
+   "strategy-evaluation/src/invest_evaluation/strategies.py"
+  ],
+  "target": [
+   "data-mining-framework/tests/test_diagnostics.py",
+   "strategy-evaluation/tests/test_quantiles.py",
+   "tests/test_quantile_consistency.py"
+  ],
+  "target_rc": 1,
+  "target_s": 11.2,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_quantiles.py::test_constant_signals_fill_one_bucket_and_leave_the_rest_empty",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M21",
+  "edits": [
+   "strategy-evaluation/src/invest_evaluation/strategies.py"
+  ],
+  "target": [
+   "strategy-evaluation/tests/test_quantiles.py"
+  ],
+  "target_rc": 1,
+  "target_s": 10.6,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_quantiles.py::test_constant_signals_fill_one_bucket_and_leave_the_rest_empty",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ }
+]

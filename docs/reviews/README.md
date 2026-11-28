@@ -10,3 +10,7 @@ One report per [checkpoint review](../../RAPID_DEVELOPMENT.md#11-step-back-betwe
 4. **Decisions:** one line each with its reason, so later work does not reopen them.
 5. **Guideline changes:** rules added because of escapes, and rules removed or reworded because nobody follows them.
 6. **Exit:** blocking findings merged, tag set, README/ROADMAP/TODO reconciled, and the next milestone's plan agreed (or the reason the checkpoint was skipped).
+
+## Reports
+
+- [2026-11-18-m3.md](2026-11-18-m3.md): the first checkpoint, before STATS-01, covering the whole history to `eb64ad8`.

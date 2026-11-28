@@ -1,0 +1,20 @@
+same signals <= T for 'close / delay(close, 5) - 1': 20121 rows
+same signals <= T for 'cs_rank(fund_book_to_price)': 19677 rows
+same signals <= T for 'cs_zscore(ts_mean(returns, 10))': 20121 rows
+same signals <= T for 'ts_corr(returns, volume, 10)': 20121 rows
+same signals <= T for 'cs_rank(close_as_traded)': 20121 rows
+same signals <= T for 'fund_earnings_yield - ts_mean(fund_earnings_yield, 60)': 16227 rows
+same signals <= T for 'cs_demean(ts_rank(intraday_return, 20))': 20121 rows
+same diag8 daily_ic.csv labels known by T: 374 rows
+same diag8 quantile_returns.csv labels known by T: 374 rows
+same diag9 daily_ic.csv labels known by T: 374 rows
+same diag9 quantile_returns.csv labels known by T: 374 rows
+same eval daily.csv <= T (P signals): 360 rows
+same eval trades.csv <= T (P signals): 1290 rows
+same quantiles memberships.csv.gz <= T (P signals): 4023 rows
+same quantiles daily_returns.csv.gz <= T (P signals): 360 rows
+same eval daily.csv <= T (O signals on P): 360 rows
+same eval trades.csv <= T (O signals on P): 1290 rows
+same quantiles memberships.csv.gz <= T (O signals on P): 4023 rows
+same quantiles daily_returns.csv.gz <= T (O signals on P): 360 rows
+PROBLEMS: 0

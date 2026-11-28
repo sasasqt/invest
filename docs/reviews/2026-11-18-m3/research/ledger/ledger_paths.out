@@ -1,0 +1,46 @@
+--- <invest>/.venv/bin/invest-mine ledger reserve --ledger <scratch>/ledger/work/ledger.jsonl --start 2022-01-03 --note test reservation
+exit 0
+{"ledger_version": 1, "kind": "reservation", "recorded_at": "2026-11-18T20:06:36+00:00", "window": {"start": "2022-01-03", "end": null}, "note": "test reservation"}
+--- <invest>/.venv/bin/invest-mine evaluate --data <scratch>/syn/market --expr close / delay(close, 5) - 1 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/eval1
+exit 1
+<scratch>/ledger/work/ledger.jsonl: 2020-01-01..2022-11-15 overlaps the reserved confirmation window 2022-01-03..open; it may only be used as the confirmation period of a search
+--- <invest>/.venv/bin/invest-mine search --data <scratch>/syn/market --universe <scratch>/syn/universe --trials 10 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/s_overlap
+exit 1
+<scratch>/ledger/work/ledger.jsonl: confirmation window 2021-09-22..2022-11-15 starts before the reserved window 2022-01-03..open; start confirmation on or after 2022-01-03 (--confirm-start) so reserved data is not mixed with inspected data
+--- <invest>/.venv/bin/invest-mine search --data <scratch>/syn/market --universe <scratch>/syn/universe --trials 10 --confirm-start 2022-01-10 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/s_late
+exit 1
+<scratch>/ledger/work/ledger.jsonl: development window 2020-01-01..2022-01-07 overlaps the reserved confirmation window 2022-01-03..open; end the development data before 2022-01-03
+--- <invest>/.venv/bin/invest-mine search --data <scratch>/syn/market --universe <scratch>/syn/universe --trials 10 --confirm-start 2022-01-03 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/s1
+exit 0
+f_97e8945c84e9                     ts_mean(returns, 10)              0.045449 5.845321e-08 confirmation_passed
+f_f19df225bd2b       ((close / delay(close, 20)) - 1.0)              0.030468 5.348344e-04 confirmation_passed
+f_788653b048c4                          intraday_return              0.019225 4.224301e-02 confirmation_passed
+--- <invest>/.venv/bin/invest-mine search --data <scratch>/syn/market --universe <scratch>/syn/universe --trials 10 --seed 1 --confirm-start 2022-01-03 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/s2
+exit 0
+f_788653b048c4                    intraday_return              0.019225 8.448601e-02 exploratory
+f_59cfa9648f92 ts_corr(open, intraday_return, 20)              0.006665 2.362648e-01 exploratory
+Exploratory: confirmation data was already used (confirmation overlaps the confirmation window of e_040856f73732).
+--- <invest>/.venv/bin/invest-mine search --data <scratch>/syn/market --universe <scratch>/syn/universe --trials 10 --seed 1 --confirm-start 2022-01-03 --ledger <scratch>/ledger/work/ledger.jsonl --require-confirmatory --out <scratch>/ledger/work/s3
+exit 1
+<scratch>/ledger/work/ledger.jsonl: confirmation data was already used (confirmation overlaps the confirmation window of e_040856f73732; repeat of experiment e_36bfdeec3c9b)
+--- <invest>/.venv/bin/invest-mine freeze --expr ts_mean(returns, 10) --horizon 1 --out <scratch>/ledger/work/f.json
+exit 0
+{"factor": "<scratch>/ledger/work/f.json", "factor_id": "f_c7d9abb54b16", "n_trials": 1}
+--- <invest>/.venv/bin/invest-mine confirm --data <scratch>/syn/market --universe <scratch>/syn/universe --factor <scratch>/ledger/work/f.json --confirm-start 2022-01-03 --ledger <scratch>/ledger/work/ledger.jsonl --out <scratch>/ledger/work/c1
+exit 0
+     factor_id           expression  confirm_mean_rank_ic  p_one_sided      status
+f_c7d9abb54b16 ts_mean(returns, 10)             -0.045449          1.0 exploratory
+Exploratory: confirmation data was already used (confirmation overlaps the confirmation window of e_040856f73732; confirmation overlaps the confirmation window of e_36bfdeec3c9b).
+--- <invest>/.venv/bin/invest-mine export --data <scratch>/syn/market --universe <scratch>/syn/universe --from-search <scratch>/ledger/work/s2 --out <scratch>/ledger/work/sig_s2
+exit 0
+{"signals": "<scratch>/ledger/work/sig_s2", "rows": 12248, "factor_id": "f_f4031d273d5d", "start": "2022-01-03", "factor_status": "exploratory"}
+s2 evidence: exploratory exploratory confirmation_passed
+--- <invest>/.venv/bin/invest-mine export --data <scratch>/syn/market --universe <scratch>/syn/universe --from-search <scratch>/ledger/work/s1 --out <scratch>/ledger/work/sig_s1
+exit 0
+{"signals": "<scratch>/ledger/work/sig_s1", "rows": 12248, "factor_id": "f_f4031d273d5d", "start": "2022-01-03", "factor_status": "confirmation_passed"}
+s1 evidence: confirmatory confirmation_passed confirmation_passed
+--- ledger entries:
+reservation {'end': None, 'start': '2022-01-03'} None None
+experiment ({'end': '2021-12-31', 'start': '2020-01-01'}, {'end': '2022-11-15', 'start': '2022-01-03'}) confirmatory 17
+experiment ({'end': '2021-12-31', 'start': '2020-01-01'}, {'end': '2022-11-15', 'start': '2022-01-03'}) exploratory 17
+experiment ({'end': '2021-12-31', 'start': '2021-12-20'}, {'end': '2022-11-15', 'start': '2022-01-03'}) exploratory 1

@@ -1,0 +1,2 @@
+engine return held from decision 2020-05-20 (exit filled 2020-05-28): -0.063937367887
+mining label open t+1 -> open t+1+h:                                  -0.063937367887

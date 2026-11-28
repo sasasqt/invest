@@ -1,0 +1,10 @@
+exit=0
+{"run": "<scratch>/work/x_eval_on8", "cagr": -0.11458016461831089, "sharpe": -1.1223380380026526, "max_drawdown": 0.20422953448126835, "warnings": 1, "factor_status": "confirmation_passed", "portfolio_status": "inconclusive"}
+stderr bytes: 0
+signals provenance market_dataset_id: synthetic-7
+eval --data id: synthetic-8
+eval manifest keys under signals: ['id', 'metadata', 'sha256'] -> market id of the signals recorded: False
+eval warnings: ['SYN044 has no close on 2021-12-02; retaining last known mark until a new price or explicit settlement is available']
+expected: refusal or at least a warning that the signals were scored on synthetic-7, not synthetic-8
+(2) factor evidence horizon_days: 1 | signals horizon_days: 1 | backtest rebalance_every: 5 | delay: 0
+report.md lines mentioning horizon: 0

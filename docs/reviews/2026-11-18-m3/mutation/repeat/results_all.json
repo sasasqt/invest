@@ -1,0 +1,290 @@
+[
+ {
+  "id": "M1",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py::test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligibility"
+  ],
+  "target_rc": 1,
+  "target_s": 7.2,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_engine.py::test_min_price_uses_the_as_traded_close_so_later_actions_cannot_change_eligibility",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M2",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py::test_future_prices_and_signals_cannot_change_the_past"
+  ],
+  "target_rc": 0,
+  "target_s": 1.0,
+  "target_tail": [
+   ".                                                                        [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/",
+   "tests/test_pipeline.py",
+   "tests/test_quantile_consistency.py"
+  ],
+  "wider_rc": 1,
+  "wider_s": 5.1,
+  "wider_tail": [
+   "E         Expected: 0.003857583749052299 \u00b1 3.9e-09",
+   "",
+   "strategy-evaluation/tests/test_engine.py:108: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_engine.py::test_spread_impact_and_borrow_costs",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M3",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py::test_future_prices_and_signals_cannot_change_the_past"
+  ],
+  "target_rc": 0,
+  "target_s": 1.1,
+  "target_tail": [
+   ".                                                                        [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/"
+  ],
+  "wider_rc": 1,
+  "wider_s": 8.6,
+  "wider_tail": [
+   "E         Expected: 1044.4545454545455 \u00b1 0.00104445",
+   "",
+   "strategy-evaluation/tests/test_quantiles.py:161: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_quantiles.py::test_hand_calculated_bucket_portfolio",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M4",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py::test_gross_of_costs_metrics_are_not_diluted_by_past_costs"
+  ],
+  "target_rc": 0,
+  "target_s": 1.3,
+  "target_tail": [
+   ".                                                                        [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/",
+   "tests/test_pipeline.py"
+  ],
+  "wider_rc": 1,
+  "wider_s": 4.3,
+  "wider_tail": [
+   "E               7.936508e-05,  7.936508e-05,  7.936508e-05,  7.936508e-05,...",
+   "",
+   "strategy-evaluation/tests/test_engine.py:124: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_engine.py::test_accounting_reconciles_with_all_costs",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M5",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py",
+   "strategy-evaluation/tests/test_validation.py"
+  ],
+  "target_rc": 0,
+  "target_s": 13.7,
+  "target_tail": [
+   "........................................................................ [ 43%]",
+   "........................................................................ [ 86%]",
+   ".......................                                                  [100%]"
+  ],
+  "wider": [
+   "strategy-evaluation/tests/"
+  ],
+  "wider_rc": 1,
+  "wider_s": 35.6,
+  "wider_tail": [
+   "strategy-evaluation/tests/test_stats_and_cli.py:274: AssertionError",
+   "----------------------------- Captured stdout call -----------------------------",
+   "{\"run\": \"/tmp/pytest-of-root/pytest-26/test_cli_applies_cash_settleme1/run\", \"cagr\": null, \"sharpe\": null, \"max_drawdown\": 1.0, \"warnings\": 4, \"factor_status\": \"not_confirmed\", \"portfolio_status\": \"rejected\"}",
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_stats_and_cli.py::test_cli_applies_cash_settlements_to_base_and_stress_runs[0.0]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M6",
+  "file": "strategy-evaluation/src/invest_evaluation/strategies.py",
+  "target": [
+   "strategy-evaluation/tests/test_quantiles.py"
+  ],
+  "target_rc": 1,
+  "target_s": 1.0,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_quantiles.py::test_deciles_are_symmetric_and_end_buckets_equal_the_tails[100]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M7",
+  "file": "data-mining-framework/src/invest_mining/diagnostics.py",
+  "target": [
+   "data-mining-framework/tests/test_diagnostics.py"
+  ],
+  "target_rc": 0,
+  "target_s": 0.8,
+  "target_tail": [
+   "......................................                                   [100%]"
+  ],
+  "wider": [
+   "data-mining-framework/tests/",
+   "tests/test_quantile_consistency.py"
+  ],
+  "wider_rc": 1,
+  "wider_s": 89.7,
+  "wider_tail": [
+   "E             ...Full output truncated (3 lines hidden), use '-vv' to show",
+   "",
+   "tests/test_quantile_consistency.py:38: AssertionError",
+   "=========================== short test summary info ============================",
+   "FAILED tests/test_quantile_consistency.py::test_bucket_and_tail_membership_match_factor_diagnostics[4]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "SURVIVED target; killed by wider set"
+ },
+ {
+  "id": "M8",
+  "file": "strategy-evaluation/src/invest_evaluation/strategies.py",
+  "target": [
+   "strategy-evaluation/tests/test_engine.py",
+   "strategy-evaluation/tests/test_quantiles.py"
+  ],
+  "target_rc": 1,
+  "target_s": 1.8,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_engine.py::test_gross_of_costs_metrics_are_not_diluted_by_past_costs",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M9",
+  "file": "strategy-evaluation/src/invest_evaluation/metrics.py",
+  "target": [
+   "strategy-evaluation/tests/test_metrics.py"
+  ],
+  "target_rc": 1,
+  "target_s": 0.6,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_metrics.py::test_core_return_metrics_against_hand_calculation",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M10",
+  "file": "strategy-evaluation/src/invest_evaluation/engine.py",
+  "target": [
+   "strategy-evaluation/tests/test_benchmark_delistings.py::test_a_settlement_after_the_last_bar_spans_the_missing_bars_like_the_holdings"
+  ],
+  "target_rc": 1,
+  "target_s": 0.6,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_benchmark_delistings.py::test_a_settlement_after_the_last_bar_spans_the_missing_bars_like_the_holdings",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M11",
+  "file": "data-mining-framework/src/invest_mining/ledger.py",
+  "target": [
+   "data-mining-framework/tests/test_ledger.py::test_window_overlap_containment_and_validation"
+  ],
+  "target_rc": 1,
+  "target_s": 1.1,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-mining-framework/tests/test_ledger.py::test_window_overlap_containment_and_validation",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M12",
+  "file": "data-mining-framework/src/invest_mining/expressions.py",
+  "target": [
+   "data-mining-framework/tests/test_scale_check.py"
+  ],
+  "target_rc": 1,
+  "target_s": 1.0,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-mining-framework/tests/test_scale_check.py::test_scale_free_formulas_pass[(high - low) / close]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M13",
+  "file": "data-mining-framework/src/invest_mining/expressions.py",
+  "target": [
+   "data-mining-framework/tests/test_scale_check.py"
+  ],
+  "target_rc": 1,
+  "target_s": 1.1,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-mining-framework/tests/test_scale_check.py::test_scale_dependent_formulas_are_refused_with_the_safe_form[ts_corr(close_as_traded, returns, 20)-safe22]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M14",
+  "file": "data-pipeline/data-preparation/src/invest_data/schemas.py",
+  "target": [
+   "strategy-evaluation/tests/test_stats_and_cli.py"
+  ],
+  "target_rc": 1,
+  "target_s": 20.8,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED strategy-evaluation/tests/test_stats_and_cli.py::test_cli_refuses_bars_without_total_return_closes[unadjusted-is not supported-run]",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ },
+ {
+  "id": "M15",
+  "file": "data-pipeline/data-preparation/src/invest_data/bundle.py",
+  "target": [
+   "data-pipeline/data-preparation/tests/test_bundle.py"
+  ],
+  "target_rc": 1,
+  "target_s": 0.9,
+  "target_tail": [
+   "=========================== short test summary info ============================",
+   "FAILED data-pipeline/data-preparation/tests/test_bundle.py::test_reader_detects_tampered_data",
+   "!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  ],
+  "verdict": "killed by target"
+ }
+]

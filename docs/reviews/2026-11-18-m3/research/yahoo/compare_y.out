@@ -1,0 +1,43 @@
+== Y1 (rtol 0.0)
+same signals <= T 'close / delay(close, 5) - 1' (values): 176807 compared
+same signals <= T 'close / delay(close, 5) - 1' (per-date ranks): 176807 compared
+same signals <= T 'cs_zscore(ts_std(returns, 20))' (values): 175352 compared
+same signals <= T 'cs_zscore(ts_std(returns, 20))' (per-date ranks): 175352 compared
+same signals <= T 'ts_corr(returns, volume, 10)' (values): 176322 compared
+same signals <= T 'ts_corr(returns, volume, 10)' (per-date ranks): 176322 compared
+same signals <= T 'volume / ts_mean(volume, 20)' (values): 175449 compared
+same signals <= T 'volume / ts_mean(volume, 20)' (per-date ranks): 175449 compared
+same signals <= T 'cs_rank(dollar_volume)' (values): 177292 compared
+same signals <= T 'cs_rank(dollar_volume)' (per-date ranks): 177292 compared
+same signals <= T 'ts_rank(close, 20)' (values): 175449 compared
+same signals <= T 'ts_rank(close, 20)' (per-date ranks): 175449 compared
+same diag7 daily_ic.csv (labels known by T): 5643 compared
+same diag7 quantile_returns.csv (labels known by T): 20691 compared
+same diag8 daily_ic.csv (labels known by T): 5643 compared
+same diag8 quantile_returns.csv (labels known by T): 20691 compared
+same eval daily.csv <= T: 22584 compared
+same eval trades.csv <= T: 57440 compared
+same quantiles memberships.csv.gz <= T: 210750 compared
+same quantiles daily_returns.csv.gz <= T: 37640 compared
+== Y2 (rtol 1e-09)
+same signals <= T 'close / delay(close, 5) - 1' (values): 176807 compared
+same signals <= T 'close / delay(close, 5) - 1' (per-date ranks): 176807 compared
+same signals <= T 'cs_zscore(ts_std(returns, 20))' (values): 175352 compared
+same signals <= T 'cs_zscore(ts_std(returns, 20))' (per-date ranks): 175352 compared
+same signals <= T 'ts_corr(returns, volume, 10)' (values): 176322 compared
+same signals <= T 'ts_corr(returns, volume, 10)' (per-date ranks): 176322 compared
+same signals <= T 'volume / ts_mean(volume, 20)' (values): 175449 compared
+same signals <= T 'volume / ts_mean(volume, 20)' (per-date ranks): 175449 compared
+same signals <= T 'cs_rank(dollar_volume)' (values): 177292 compared
+same signals <= T 'cs_rank(dollar_volume)' (per-date ranks): 177292 compared
+same signals <= T 'ts_rank(close, 20)' (values): 175449 compared
+same signals <= T 'ts_rank(close, 20)' (per-date ranks): 175449 compared
+same diag7 daily_ic.csv (labels known by T): 5643 compared
+same diag7 quantile_returns.csv (labels known by T): 20691 compared
+same diag8 daily_ic.csv (labels known by T): 5643 compared
+same diag8 quantile_returns.csv (labels known by T): 20691 compared
+same eval daily.csv <= T: 22584 compared
+same eval trades.csv <= T: 57440 compared
+same quantiles memberships.csv.gz <= T: 210750 compared
+same quantiles daily_returns.csv.gz <= T: 37640 compared
+PROBLEMS: 0
