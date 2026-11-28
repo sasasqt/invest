@@ -218,7 +218,7 @@ sequenceDiagram
   PR->>CI: checks
   GPT->>PR: maintained review comment
   opt Changes needed
-    A->>A: a non-trivial fix climbs the ladder again
+    A->>A: a non-trivial fix runs the ladder again
     A->>PR: fix on the same branch, answer each finding in a comment
     GPT->>PR: review the new head
   end
@@ -227,37 +227,39 @@ sequenceDiagram
 
 ### Review ladder
 
-Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder that starts at round 1 and moves up one round only when the current round earns it (a full-diff round whose verified findings lead to non-trivial fixes, or a fix-commits round that finds a real defect in the fix code), with one exception, the extra full-diff round in the chart below:
+Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder of up to 13 full-diff, fix-commit and re-review rounds on Opus and Fable. Rounds 1 to 7 always run (a fix-commits round with nothing to review is skipped); from round 7 on, the ladder stops after the first round whose verified findings are all low:
 
 | Round | Model | Effort | Scope |
 |---|---|---|---|
 | 1 | Opus | high | Full diff |
 | 2 | Opus | medium | Fix commits |
-| 3 | Fable | high | Full diff |
-| 4 | Fable | medium | Fix commits |
-| 5 | Fable | xhigh | Full diff |
-| 6 | Fable | high | Fix commits |
-| 7 | Fable | max | Full diff |
-| 8 | Fable | xhigh | Fix commits |
+| 3 | Opus | xhigh | Full diff |
+| 4 | Opus | high | Fix commits |
+| 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request |
+| 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 |
+| 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request |
+| 8 | Opus | xhigh | Fix commits |
+| 9 | Opus | xhigh | Full diff |
+| 10 | Opus | high | Fix commits |
+| 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request |
+| 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 |
+| 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request |
 
 ```mermaid
 flowchart TD
-  A["Full-diff round 1 (start), 3, 5 or 7, run fresh"] --> B{"Verified findings led to<br/>non-trivial fixes?"}
-  B -- yes --> C["Fix-commits round 2, 4, 6 or 8"]
-  C --> D{"Real defect in the fix code?"}
-  D -- "yes, after round 8" --> K["Checkpoint due:<br/>the requester decides"]
-  D -- "yes: next full-diff round" --> A
-  D -- no --> E{"Only one full-diff round so far, and results<br/>change or over about 100 source lines change?"}
-  B -- no --> E
-  E -- "yes: next full-diff round" --> A
-  E -- no --> R["Ready for review"]
+  A["Rounds 1 to 6 in order:<br/>Opus rounds, then Fable full diff and fix all issues"] --> B["Round 7: Fable re-review of rounds 1 to 6<br/>and the original request"]
+  B --> C{"This round's findings<br/>all low, or none?"}
+  C -- yes --> R["Fix them with checks:<br/>ready for review"]
+  C -- "no, before round 13" --> D["Next round, 8 to 13"]
+  D --> C
+  C -- "no, at round 13" --> K["Fix them, keep the pull request a draft<br/>listing them: the requester decides"]
 ```
 
-- A full-diff round sees earlier findings only after it has reported its own. Docs-, comment-, rename-, test- or formatting-only fixes never move a pull request up.
-- A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area starts at round 3.
+- Severity is rated as in [hardening rounds](../GIT_GUIDELINES.md#hardening-rounds) step 2: a finding is low only when it fails closed or lives only in a test, a document or wording. Disproved findings, findings kept with a checked reason and unrelated bugs recorded in TODO do not keep the rounds going. "Fix all issues" (rounds 6 and 12) first resolves every open finding, low ones included, then reviews all fix commits so far. A re-review reads the whole pull request with the earlier rounds' records and the original request. A full-diff review sees earlier findings only after it has reported its own. When Fable is at its usage limit, its rounds may run on Opus 5.5 at xhigh as "Opus stand-in for Fable", and the pull request stays a draft until at least one Fable round has run on Fable.
+- A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area skips rounds 1 and 2 and starts at round 3.
 - The pull request states each round's number, model, effort, scope and finding count, and how each finding was resolved. Green CI alone is not readiness.
-- **In the bug fix:** every fix gets two fresh full-diff rounds (the user's rule of 2026-10-27, stricter than the conditional extra round): rounds 3 and 5 when the area had an escaped bug, and every hunt finding counts as one, otherwise rounds 1 and 3. A docs-only pull request gets one round (round 3), and so does a coverage pull request; a typing pull request gets one, or two when it changes more than about 100 lines of source code; a pull request that carries only mirrors gets none. The fix-commit rounds 4, 6 and 8 always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
-- **Bug-free requests:** when the user asks for a change to be made bug free or hardened, [hardening rounds](../GIT_GUIDELINES.md#hardening-rounds) replace the ladder and its checkpoint after round 8: rounds of up to three independent reviewers go on until a round finds no real bug (when that round ran below max effort, one more round at max must also be clean), or stop early at a Fable round at max effort whose findings are all low, after one all-low Fable round or three consecutive all-low rounds (Opus-only rounds pause after three all-low rounds and wait for that Fable round); the cap is 10 rounds unless the user sets another for that pull request (a clean round 10 that ran below max effort still gets its confirming round), severity is rated by outcome rather than likelihood, and the pull request stays a draft until a stop (PR #32 ran 19 rounds after the user lifted the cap at round 10 and later set a stop rule).
+- **In the bug fix:** until the routine's skill (in the project library) moves to this ladder, the bug fix keeps its own rule of 2026-10-27, written for the earlier 8-round ladder: every fix gets two fresh full-diff rounds, Fable high and then Fable xhigh when the area had an escaped bug (every hunt finding counts as one), otherwise Opus high and then Fable high. A docs-only pull request gets one round (Fable high, full diff), and so does a coverage pull request; a typing pull request gets one, or two when it changes more than about 100 lines of source code; a pull request that carries only mirrors gets none. Its fix-commit rounds always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
+- **Bug-free requests:** when the user asks for a change to be made bug free or hardened, [hardening rounds](../GIT_GUIDELINES.md#hardening-rounds) replace the ladder and its draft rule after round 13: rounds of up to three independent reviewers go on until a round finds no real bug (when that round ran below max effort, one more round at max must also be clean), or stop early at a Fable round at max effort whose findings are all low, after one all-low Fable round or three consecutive all-low rounds (Opus-only rounds pause after three all-low rounds and wait for that Fable round); the cap is 10 rounds unless the user sets another for that pull request (a clean round 10 that ran below max effort still gets its confirming round), severity is rated by outcome rather than likelihood, and the pull request stays a draft until a stop (PR #32 ran 19 rounds after the user lifted the cap at round 10 and later set a stop rule).
 - Before a milestone closes, or earlier when the same kind of defect keeps recurring, a [checkpoint review](../RAPID_DEVELOPMENT.md#11-step-back-between-milestones) of the whole system comes before the next feature.
 
 ### ChatGPT review
