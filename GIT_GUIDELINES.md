@@ -68,26 +68,26 @@ The author applies the README's [three development rules](README.md#development-
 
 1. **Self-review with the review ladder.** Run the rounds below in order. Rounds 1 to 7 always run, except that a fix-commits round with nothing to review is recorded as "nothing to review" and does not run: round 2 or 4 when the round before it led to no fix commits, and round 6 when rounds 1 to 5 led to none. From round 7 on, the ladder stops after the first round whose verified findings are all low, rated as in [Hardening rounds](#hardening-rounds) step 2 (a round with none counts as all low): fix each of those findings with its check, then mark the pull request ready. Findings that are disproved, kept with a checked reason (step 2 of this list) or recorded as unrelated bugs (step 6 of this list) do not keep the rounds going.
 
-   | Round | Model | Effort | Scope |
-   |---|---|---|---|
-   | 1 | Opus | high | Full diff |
-   | 2 | Opus | medium | Fix commits |
-   | 3 | Opus | xhigh | Full diff |
-   | 4 | Opus | high | Fix commits |
-   | 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request |
-   | 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 |
-   | 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request |
-   | 8 | Opus | xhigh | Fix commits |
-   | 9 | Opus | xhigh | Full diff |
-   | 10 | Opus | high | Fix commits |
-   | 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request |
-   | 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 |
-   | 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request |
+   | Round | Model | Effort | Scope | Context |
+   |---|---|---|---|---|
+   | 1 | Opus | high | Full diff | Blind |
+   | 2 | Opus | medium | Fix commits | Previous round's findings |
+   | 3 | Opus | xhigh | Full diff | Blind |
+   | 4 | Opus | high | Fix commits | Previous round's findings |
+   | 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request | Blind first, then the records of rounds 1 to 4 |
+   | 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 | Every finding and fix commit so far |
+   | 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request | The records of rounds 1 to 6 |
+   | 8 | Opus | xhigh | Fix commits | Round 7's findings |
+   | 9 | Opus | xhigh | Full diff | Blind |
+   | 10 | Opus | high | Fix commits | Previous round's findings |
+   | 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request | Blind first, then the records of rounds 1 to 10 |
+   | 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 | Every finding and fix commit so far |
+   | 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request | The records of rounds 1 to 12 |
 
    - Each round is a `/code-review <effort>` run (or an equivalent adversarial review) with the named model. **Full diff** is the whole pull request. **Fix commits** is only the commits that fixed the previous round's findings (for round 8, round 7's), plus the whole functions they touch, reviewed with the previous round's findings and their outcomes. A **re-review** reads the whole pull request at its current head together with the named rounds' records (each finding, how it was resolved, the checks added) and the original request or issue, and checks that every finding was resolved correctly, that no fix broke something else, and that the change still does what was asked.
    - **Fix all issues** (rounds 6 and 12): before the round, every verified finding so far that is still open, low ones included, is fixed with its check, kept with a checked reason (step 2 of this list) or recorded as unrelated (step 6 of this list); the round then reviews all fix commits since round 1 together, with every finding and its outcome.
    - A full-diff review, including the first part of rounds 5 and 11, reports its own findings before it is shown earlier ones, so it does not re-check the same spots.
-   - Fable rounds may run as a subagent so the main session keeps its model. When Fable is at its usage limit, its rounds may run on Opus at xhigh, named "Opus stand-in for Fable" in the pull request, but the pull request stays a draft until at least one of its Fable rounds has run on Fable; when the ladder would stop before that, round 7 runs again on Fable as soon as Fable may run again.
+   - Every round runs in a fresh reviewer session (a subagent that never saw the authoring conversation), never in the author's own session, so no round inherits the author's reasoning. Besides its scope and the original request, a reviewer is shown what the Context column names; a **blind** reviewer is shown earlier findings only after it has reported its own. When Fable is at its usage limit, its rounds may run on Opus at xhigh, named "Opus stand-in for Fable" in the pull request, but the pull request stays a draft until at least one of its Fable rounds has run on Fable; when the ladder would stop before that, round 7 runs again on Fable as soon as Fable may run again.
    - If round 13's verified findings are not all low, fix them with their checks but open or keep the pull request as a draft, and list those findings and their fixes in its description. The person who requested the change chooses: redesign, more review, or accept, with any finding left unfixed recorded in TODO.
    - The same ladder applies to non-trivial pushes that answer a reviewer's comments.
    - A bug found after the pull request was marked ready (by a reviewer or the nightly bug hunt) means the next review of that area skips rounds 1 and 2 and starts at round 3.

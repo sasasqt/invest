@@ -229,21 +229,21 @@ sequenceDiagram
 
 Before a pull request is marked ready, its author runs the [author steps](../GIT_GUIDELINES.md#before-marking-ready), which are the source of truth. Step 1 is a review ladder of up to 13 full-diff, fix-commit and re-review rounds on Opus and Fable. Rounds 1 to 7 always run (a fix-commits round with nothing to review is skipped); from round 7 on, the ladder stops after the first round whose verified findings are all low:
 
-| Round | Model | Effort | Scope |
-|---|---|---|---|
-| 1 | Opus | high | Full diff |
-| 2 | Opus | medium | Fix commits |
-| 3 | Opus | xhigh | Full diff |
-| 4 | Opus | high | Fix commits |
-| 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request |
-| 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 |
-| 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request |
-| 8 | Opus | xhigh | Fix commits |
-| 9 | Opus | xhigh | Full diff |
-| 10 | Opus | high | Fix commits |
-| 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request |
-| 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 |
-| 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request |
+| Round | Model | Effort | Scope | Context |
+|---|---|---|---|---|
+| 1 | Opus | high | Full diff | Blind |
+| 2 | Opus | medium | Fix commits | Previous round's findings |
+| 3 | Opus | xhigh | Full diff | Blind |
+| 4 | Opus | high | Fix commits | Previous round's findings |
+| 5 | Fable | xhigh | Full diff, then re-review of rounds 1 to 4 and the original request | Blind first, then the records of rounds 1 to 4 |
+| 6 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 5 | Every finding and fix commit so far |
+| 7 | Fable | xhigh | Re-review of rounds 1 to 6 and the original request | The records of rounds 1 to 6 |
+| 8 | Opus | xhigh | Fix commits | Round 7's findings |
+| 9 | Opus | xhigh | Full diff | Blind |
+| 10 | Opus | high | Fix commits | Previous round's findings |
+| 11 | Fable | xhigh | Full diff, then re-review of rounds 1 to 10 and the original request | Blind first, then the records of rounds 1 to 10 |
+| 12 | Fable | xhigh | Fix all issues: every fix commit of rounds 1 to 11 | Every finding and fix commit so far |
+| 13 | Fable | xhigh | Final re-review of rounds 1 to 12 and the original request | The records of rounds 1 to 12 |
 
 ```mermaid
 flowchart TD
@@ -255,7 +255,7 @@ flowchart TD
   C -- "no, at round 13" --> K["Fix them, keep the pull request a draft<br/>listing them: the requester decides"]
 ```
 
-- Severity is rated as in [hardening rounds](../GIT_GUIDELINES.md#hardening-rounds) step 2: a finding is low only when it fails closed or lives only in a test, a document or wording. Disproved findings, findings kept with a checked reason and unrelated bugs recorded in TODO do not keep the rounds going. "Fix all issues" (rounds 6 and 12) first resolves every open finding, low ones included, then reviews all fix commits so far. A re-review reads the whole pull request with the earlier rounds' records and the original request. A full-diff review sees earlier findings only after it has reported its own. When Fable is at its usage limit, its rounds may run on Opus 5.5 at xhigh as "Opus stand-in for Fable", and the pull request stays a draft until at least one Fable round has run on Fable.
+- Severity is rated as in [hardening rounds](../GIT_GUIDELINES.md#hardening-rounds) step 2: a finding is low only when it fails closed or lives only in a test, a document or wording. Disproved findings, findings kept with a checked reason and unrelated bugs recorded in TODO do not keep the rounds going. "Fix all issues" (rounds 6 and 12) first resolves every open finding, low ones included, then reviews all fix commits so far. A re-review reads the whole pull request with the earlier rounds' records and the original request. A full-diff review sees earlier findings only after it has reported its own ("blind"). Every round runs in a fresh reviewer session, never in the author's own, and is shown its scope, the original request and what the Context column names. When Fable is at its usage limit, its rounds may run on Opus 5.5 at xhigh as "Opus stand-in for Fable", and the pull request stays a draft until at least one Fable round has run on Fable.
 - A bug found after a pull request was marked ready (by a reviewer or the bug hunt) means the next review of that area skips rounds 1 and 2 and starts at round 3.
 - The pull request states each round's number, model, effort, scope and finding count, and how each finding was resolved. Green CI alone is not readiness.
 - **In the bug fix:** until the routine's skill (in the project library) moves to this ladder, the bug fix keeps its own rule of 2026-10-27, written for the earlier 8-round ladder: every fix gets two fresh full-diff rounds, Fable high and then Fable xhigh when the area had an escaped bug (every hunt finding counts as one), otherwise Opus high and then Fable high. A docs-only pull request gets one round (Fable high, full diff), and so does a coverage pull request; a typing pull request gets one, or two when it changes more than about 100 lines of source code; a pull request that carries only mirrors gets none. Its fix-commit rounds always run on Opus 5.5 in the main session, named "Opus stand-in for Fable"; when Fable is at its limit, the full-diff Fable rounds also run on Opus 5.5 at xhigh under that name.
